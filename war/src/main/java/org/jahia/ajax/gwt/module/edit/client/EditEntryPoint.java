@@ -69,7 +69,12 @@
  */
 package org.jahia.ajax.gwt.module.edit.client;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Element;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
@@ -80,11 +85,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
-
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
 
@@ -104,8 +104,9 @@ public class EditEntryPoint extends CommonEntryPoint {
         checkSession();
         final RootPanel panel = RootPanel.get("editmode");
         if (panel != null) {
-            final String path = DOM.getElementAttribute(panel.getElement(), "path");
-            String config = DOM.getElementAttribute(panel.getElement(), "config");
+            final Element element = panel.getElement();
+            final String path = DOM.getElementAttribute(element, "path");
+            String config = DOM.getElementAttribute(element, "config");
             String hash = Window.Location.getHash();
             if (!hash.equals("")) {
                 config = hash.substring(1, hash.indexOf('|'));
@@ -113,16 +114,17 @@ public class EditEntryPoint extends CommonEntryPoint {
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config,"default", new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     PermissionsUtils.loadPermissions(gwtEditConfiguration.getPermissions());
-                    DOM.setInnerHTML(panel.getElement(), "");
+                    DOM.setInnerHTML(element, "");
                     panel.add(EditPanelViewport.createInstance(
                             path,
-                            DOM.getElementAttribute(panel.getElement(), "template"), 
-                            DOM.getElementAttribute(panel.getElement(), "nodetypes"),
-                            DOM.getElementAttribute(panel.getElement(), "locale"), gwtEditConfiguration));
+                            DOM.getElementAttribute(element, "template"),
+                            DOM.getElementAttribute(element, "nodetypes"),
+                            DOM.getElementAttribute(element, "locale"), gwtEditConfiguration));
                 }
 
                 public void onApplicationFailure(Throwable throwable) {
                     Log.error("Error when loading EditConfiguration", throwable);
+                    Window.Location.assign("/errors/error_404.jsp");
                 }
             });
         }

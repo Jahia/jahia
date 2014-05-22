@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="jahia" uri="http://www.jahia.org/tags/templateLib" %>
@@ -19,5 +20,5 @@
     <img src="${url}" alt="${fn:escapeXml(not empty title.string ? title.string : currentNode.name)}" <c:out value="${height} ${width}" escapeXml="false"/> />
 </c:if>
 <c:if test="${empty node and renderContext.editMode}">
-    Missing image
+    <fmt:message key="label.missingReference"/>
 </c:if>

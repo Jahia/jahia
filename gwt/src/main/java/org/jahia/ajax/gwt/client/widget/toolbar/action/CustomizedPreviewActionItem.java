@@ -86,6 +86,7 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
@@ -108,10 +109,12 @@ import java.util.Map;
 /**
  * @author rincevent
  */
+@SuppressWarnings("serial")
 public class CustomizedPreviewActionItem extends BaseActionItem {
     private transient SearchField userSearchField;
     private transient String lastUserSearchValue;
     private transient Grid<GWTJahiaUser> userGrid;
+    private transient String defaultWindowOptions = "resizable=yes,scrollbars=yes";
 
     @Override
     public void onComponentSelection() {
@@ -293,7 +296,6 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                                 previewDate = "prevdate="+calendarField.getValue().getTime();
                                 urlParameters.add(previewDate);
                             }
-                            String channelIdentifier = null;
                             GWTJahiaChannel channel = combo.getValue();
                             String windowFeatures = null;
                             if ((channel != null) && (!"default".equals(channel.getValue()))) {
@@ -327,7 +329,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                             }
                             String url1 = url + urlParams.toString();
 
-                            openWindow(url1, "customizedpreview", windowFeatures);
+                            openWindow(url1, "customizedpreview", windowFeatures != null ? windowFeatures : defaultWindowOptions);
                         }
 
                     });
@@ -344,5 +346,9 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         }
         previewWindow = $wnd.open(url, name, features);
     }-*/;
+
+    public void setDefaultWindowOptions(String defaultWindowOptions) {
+        this.defaultWindowOptions = defaultWindowOptions;
+    }
 
 }

@@ -7,7 +7,7 @@ function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nod
         hideOnOverlayClick: false,
         hideOnContentClick: false,
         afterClose : function() {
-            $("#" + fieldId + "-treeItemSelectorTree").empty();
+            $("#" + fieldId + "-treeItemSelectorTree").remove();
 
             if (onClose && (typeof onClose == 'function')) {
                 onClose();
@@ -18,7 +18,10 @@ function jahiaCreateTreeItemSelector(fieldId, displayFieldId, baseUrl, root, nod
                     selectableNodeTypes.length > 0 ? "&selectableNodeTypes=" + encodeURIComponent(selectableNodeTypes) :
                             "");
             queryString = queryString.length > 0 ? "?" + queryString : "";
-            $("#" + fieldId + "-treeItemSelectorTree").treeview($.extend({
+
+            var treeItemSelectorTree = $("<ul id='" + fieldId + "-treeItemSelectorTree'></ul>");
+            $("#" + fieldId + "-treeItemSelector").append(treeItemSelectorTree);
+            treeItemSelectorTree.treeview($.extend({
                 urlBase: baseUrl,
                 urlExtension: ".tree.json" + queryString,
                 urlStartWith: baseUrl + root + ".treeRootItem.json" + queryString,

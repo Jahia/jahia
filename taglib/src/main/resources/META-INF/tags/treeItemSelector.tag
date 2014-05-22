@@ -79,4 +79,4 @@
     $(document).ready(function() { jahiaCreateTreeItemSelector("${fieldId}", "${displayFieldId}", "${baseURL}", "${root}", "${nodeTypes}", "${selectableNodeTypes}", "${valueType}", ${not empty onSelect ? onSelect : 'null'}, ${not empty onClose ? onClose : 'null'}, ${not empty treeviewOptions ? treeviewOptions :  'null'}, ${not empty fancyboxOptions ? fancyboxOptions : 'null'}); });
 </script>
 
-<div style="display:none"><div id="${fieldId}-treeItemSelector"><ul id="${fieldId}-treeItemSelectorTree"></ul></div></div>
+<div style="display:none"><div id="${fieldId}-treeItemSelector"></div></div>

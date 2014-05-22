@@ -134,6 +134,9 @@ public class ModuleBuildHelper implements InitializingBean {
             FileInputStream is = new FileInputStream(moduleInfo.getFile());
             try {
                 bundle.update(is);
+
+                // start the bundle to make sure its template is available to be displayed
+                bundle.start();
             } finally {
                 IOUtils.closeQuietly(is);
             }

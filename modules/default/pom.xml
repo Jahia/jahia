@@ -126,7 +126,7 @@
             <Jahia-Depends>assets</Jahia-Depends>
             <Embed-Dependency>*; scope=compile; type=!pom;
                             inline=false</Embed-Dependency>
-            <Export-Package>org.jahia.modules.osgi</Export-Package>
+            <Export-Package>org.jahia.modules.osgi,org.jahia.modules.defaultmodule.filter</Export-Package>
           </instructions>
         </configuration>
       </plugin>

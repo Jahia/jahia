@@ -91,6 +91,9 @@ import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
  */
 public class SeoTabItem extends EditEngineTabItem {
 
+    /** The serialVersionUID. */
+    private static final long serialVersionUID = -3131345831935771996L;
+
     private transient UrlMappingEditor activeEditor;
 
     private transient Map<String, UrlMappingEditor> editorsByLanguage = new HashMap<String, UrlMappingEditor>(1);
@@ -147,8 +150,11 @@ public class SeoTabItem extends EditEngineTabItem {
             return;
         }
         List<GWTJahiaUrlMapping> mappings = new ArrayList<GWTJahiaUrlMapping>();
-        for (UrlMappingEditor editor : editorsByLanguage.values()) {
-            mappings.addAll(editor.getMappings());
+        for (Map.Entry<String, UrlMappingEditor> editor : editorsByLanguage.entrySet()) {
+            if (!changedI18NProperties.containsKey(editor.getKey())) {
+                changedI18NProperties.put(editor.getKey(), new ArrayList<GWTJahiaNodeProperty>());
+            }
+            mappings.addAll(editor.getValue().getMappings());
         }
         if (!node.getNodeTypes().contains("jmix:vanityUrlMapped")) {
             node.getNodeTypes().add("jmix:vanityUrlMapped");

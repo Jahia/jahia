@@ -75,6 +75,8 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
+import org.jahia.services.channels.Channel;
+import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -98,11 +100,10 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import javax.servlet.http.HttpServletRequest;
-
 import java.io.IOException;
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -134,6 +135,12 @@ public class RenderService {
 
     public void setAclCacheKeyPartGenerator(AclCacheKeyPartGenerator aclCacheKeyPartGenerator) {
         this.aclCacheKeyPartGenerator = aclCacheKeyPartGenerator;
+    }
+
+    private ChannelService channelService;
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
     }
 
     @SuppressWarnings("unchecked")
@@ -460,9 +467,8 @@ public class RenderService {
 
     private void addTemplate(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode, SortedSet<Template> templates)
             throws RepositoryException {
-        boolean ok = true;
         if (templateNode.hasProperty("j:applyOn")) {
-            ok = false;
+            boolean ok = false;
             Value[] values = templateNode.getProperty("j:applyOn").getValues();
             for (Value value : values) {
                 if (resource.getNode().isNodeType(value.getString())) {
@@ -473,15 +479,55 @@ public class RenderService {
             if (values.length == 0) {
                 ok = true;
             }
+            if (!ok) {
+                return;
+            }
         }
+
+        if (!checkChannel(renderContext, templateNode)) return;
 
         if (!checkTemplatePermission(resource, renderContext, templateNode)) return;
 
-        if (ok) {
-            templates.add(new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view")
-                    .getString() : null, templateNode.getIdentifier(), null, templateNode.getName(), templateNode
-                    .hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
+        templates.add(new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view")
+                .getString() : null, templateNode.getIdentifier(), null, templateNode.getName(), templateNode
+                .hasProperty("j:priority") ? (int) templateNode.getProperty("j:priority").getLong() : 0));
+    }
+
+    private boolean checkChannel(RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {
+        if (templateNode.isNodeType("jmix:channelSelection") && templateNode.hasProperty("j:channelSelection")) {
+            Property channelExclusionProperty = templateNode.getProperty("j:channelSelection");
+            String includeOrExclude = templateNode.hasProperty("j:channelIncludeOrExclude") ? templateNode.getProperty("j:channelIncludeOrExclude").getString() : "exclude";
+            Value[] channelExclusionValues = channelExclusionProperty.getValues();
+            Channel currentChannel = renderContext.getChannel();
+            for (Value channelExclusionValue : channelExclusionValues) {
+                if (channelExclusionValue.getString() != null) {
+                    boolean inList = isInExclusionList(channelExclusionValue.getString(), currentChannel);
+                    if (inList && includeOrExclude.equals("exclude")) {
+                        return renderContext.isEditMode() && (renderContext.getChannel() == null || renderContext.getChannel().getIdentifier().equals("generic"));
+                    }
+                    if (inList && includeOrExclude.equals("include")) {
+                        return true;
+                    }
+                }
+            }
+            if (includeOrExclude.equals("include")) {
+                return renderContext.isEditMode() && (renderContext.getChannel() == null || renderContext.getChannel().getIdentifier().equals("generic"));
+            }
         }
+        return true;
+    }
+
+    private boolean isInExclusionList(String v, Channel channel) {
+        if (channel != null) {
+            if (v.equals(channel.getIdentifier())) {
+                return true;
+            } else {
+                if (channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
+                    return isInExclusionList(v, channelService.getChannel(channel.getFallBack()));
+                }
+            }
+        }
+        return false;
     }
 
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {

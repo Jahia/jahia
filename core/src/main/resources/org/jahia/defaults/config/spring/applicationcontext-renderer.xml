@@ -27,6 +27,7 @@
         </property>
         <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
+        <property name="channelService" ref="ChannelService"/>
     </bean>
 
     <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver">

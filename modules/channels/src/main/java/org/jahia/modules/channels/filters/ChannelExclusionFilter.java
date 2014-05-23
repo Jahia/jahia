@@ -107,7 +107,7 @@ public class ChannelExclusionFilter extends AbstractFilter {
             Channel currentChannel = renderContext.getChannel();
             for (Value channelExclusionValue : channelExclusionValues) {
                 if (channelExclusionValue.getString() != null) {
-                    boolean inList = isInExclusionList(channelExclusionValue.getString(), currentChannel);
+                    boolean inList = channelService.matchChannel(channelExclusionValue.getString(), currentChannel);
                     if (inList && includeOrExclude.equals("exclude")) {
                         return getExcludedResult(resource, renderContext);
                     }
@@ -131,17 +131,6 @@ public class ChannelExclusionFilter extends AbstractFilter {
             resource.pushWrapper("unselectedChannel");
         }
         return null;
-    }
-
-    private boolean isInExclusionList(String v, Channel channel) {
-        if (v.equals(channel.getIdentifier())) {
-            return true;
-        } else {
-            if (channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
-                return isInExclusionList(v, channelService.getChannel(channel.getFallBack()));
-            }
-        }
-        return false;
     }
 
 }

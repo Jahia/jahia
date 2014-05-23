@@ -501,7 +501,7 @@ public class RenderService {
             Channel currentChannel = renderContext.getChannel();
             for (Value channelExclusionValue : channelExclusionValues) {
                 if (channelExclusionValue.getString() != null) {
-                    boolean inList = isInExclusionList(channelExclusionValue.getString(), currentChannel);
+                    boolean inList = channelService.matchChannel(channelExclusionValue.getString(), currentChannel);
                     if (inList && includeOrExclude.equals("exclude")) {
                         return renderContext.isEditMode() && (renderContext.getChannel() == null || renderContext.getChannel().getIdentifier().equals("generic"));
                     }
@@ -515,19 +515,6 @@ public class RenderService {
             }
         }
         return true;
-    }
-
-    private boolean isInExclusionList(String v, Channel channel) {
-        if (channel != null) {
-            if (v.equals(channel.getIdentifier())) {
-                return true;
-            } else {
-                if (channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
-                    return isInExclusionList(v, channelService.getChannel(channel.getFallBack()));
-                }
-            }
-        }
-        return false;
     }
 
     private boolean checkTemplatePermission(Resource resource, RenderContext renderContext, JCRNodeWrapper templateNode) throws RepositoryException {

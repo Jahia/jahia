@@ -139,4 +139,18 @@ public class ChannelService {
             }
         });
     }
+
+    public boolean matchChannel(String channelId, Channel channel) {
+        if (channel != null) {
+            if (channelId.equals(channel.getIdentifier())) {
+                return true;
+            } else {
+                if (channel.getFallBack() != null && !channel.getFallBack().equals("root")) {
+                    return matchChannel(channelId, getChannel(channel.getFallBack()));
+                }
+            }
+        }
+        return false;
+    }
+
 }

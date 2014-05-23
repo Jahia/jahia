@@ -1075,6 +1075,13 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
+    void removeFromCache(String path) throws RepositoryException {
+        JCRNodeWrapper node = sessionCacheByPath.remove(path);
+        if (node != null) {
+            sessionCacheByIdentifier.remove(node.getIdentifier());
+        }
+    }
+
     public boolean hasPermission(String absPath, String actions) throws RepositoryException {
         throw new UnsupportedRepositoryOperationException();
     }

@@ -402,6 +402,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         String mountPoint = p.getMountPoint();
 
         synchronized (this) {
+            for (JCRSessionWrapper wrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
+                try {
+                    wrapper.removeFromCache(mountPoint);
+                } catch (RepositoryException e) {
+                    logger.warn("Cannot flush cache",e);
+                }
+            }
+
             List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
             newList.add(p);
             Collections.sort(newList);
@@ -443,6 +451,14 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             return;
         }
         synchronized (this) {
+            for (JCRSessionWrapper wrapper : JCRSessionWrapper.getActiveSessionsObjects().values()) {
+                try {
+                    wrapper.removeFromCache(p.getMountPoint());
+                } catch (RepositoryException e) {
+                    logger.warn("Cannot flush cache",e);
+                }
+            }
+
             List<JCRStoreProvider> newList = new ArrayList<JCRStoreProvider>(providerList);
             newList.remove(p);
             providerList = Collections.unmodifiableList(newList);

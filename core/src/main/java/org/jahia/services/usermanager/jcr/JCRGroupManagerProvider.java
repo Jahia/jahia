@@ -631,6 +631,8 @@ public class JCRGroupManagerProvider extends JahiaGroupManagerProvider implement
             return group;
         } catch (PathNotFoundException e) {
             logger.debug("Error while retrieving group " + name + " for site " + siteID, e);
+        } catch (InvalidItemStateException e) {
+            logger.debug("Error while retrieving group " + name + " for site " + siteID, e);
         } catch (RepositoryException e) {
             logger.warn("Error while retrieving group " + name + " for site " + siteID, e);
         }

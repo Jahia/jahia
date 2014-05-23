@@ -116,8 +116,6 @@ public class VFSContentStoreProviderTest {
     private static File staticMountDir;
     private static final String STATIC_MOUNT_FILE_NAME = "staticMountDirectory";
     private static final String DYNAMIC_MOUNT_FILE_NAME = "dynamicMountDirectory";
-    private static final String MOUNTS_STATIC_MOUNT_POINT_NAME = "static-mount-point";
-    private static final String MOUNTS_STATIC_MOUNT_POINT = "/mounts/static-mount-point";
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT = "/mounts/dynamic-mount-point";
     private static final String MOUNTS_DYNAMIC_MOUNT_POINT_NAME = "dynamic-mount-point";
 
@@ -176,32 +174,6 @@ public class VFSContentStoreProviderTest {
         }
     }
 
-    @Test
-    public void testStaticMount() throws JahiaInitializationException, RepositoryException, GWTJahiaServiceException {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        JCRNodeWrapper n = session.getNode("/mounts").addNode(MOUNTS_STATIC_MOUNT_POINT_NAME,"jnt:vfsMountPoint");
-        n.setProperty("j:rootPath",staticMountDir.getAbsolutePath());
-        session.save();
-
-        JCRStoreProvider vfsProvider = JCRStoreService.getInstance().getProviderFactories().get("jnt:vfsMountPoint").mountProvider(n);
-        try {
-            assertRootNavigation(session);
-
-            JCRNodeWrapper mountNode = getNode(session, MOUNTS_STATIC_MOUNT_POINT);
-            assertNode(mountNode, 0);
-            createFolder(session, "folder1", mountNode);
-            JCRNodeWrapper folder1Node = getNode(session, MOUNTS_STATIC_MOUNT_POINT + "/folder1");
-            assertNode(folder1Node, 0);
-            session.checkout(folder1Node);
-            folder1Node.remove();
-            session.save();
-        } finally {
-            vfsProvider.stop();
-            n.remove();
-            session.save();
-        }
-    }
-
     private void assertRootNavigation(JCRSessionWrapper session) throws RepositoryException, GWTJahiaServiceException {
         JCRSiteNode siteNode = (JCRSiteNode) session.getNode(SITECONTENT_ROOT_NODE);
         NavigationHelper navigationHelper = (NavigationHelper) SpringContextSingleton.getInstance().getContext().getBean("NavigationHelper");
@@ -242,7 +214,7 @@ public class VFSContentStoreProviderTest {
     }
 
     @Test
-    public void testDynamicMount() throws GWTJahiaServiceException, RepositoryException {
+    public void testDynamicMount() throws Exception, GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
         JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
         GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());
@@ -264,10 +236,7 @@ public class VFSContentStoreProviderTest {
             unMountDynamicMountPoint(jahiaRootUser);
 
             // we must recycle session because of internal session caches.
-            session.refresh(false);
-            session.logout();
-
-            JCRSessionFactory.getInstance().closeAllSessions();
+            getCleanSession();
 
             session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
@@ -295,11 +264,14 @@ public class VFSContentStoreProviderTest {
                 } catch (PathNotFoundException pnfe) {
                 }
                 if (mountNode != null) {
-                    if (!mountNode.getParent().isCheckedOut()) {
-                        mountNode.getParent().checkout();
+                    ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext()
+                            .getBean("ContentHubHelper");
+
+                    try {
+                        contentHubHelper.unmount(mountNode.getPath(), session, null);
+                    } catch (GWTJahiaServiceException e) {
+                        fail(e.getMessage());
                     }
-                    mountNode.remove();
-                    session.save();
                 }
                 return null;
             }
@@ -524,8 +496,6 @@ public class VFSContentStoreProviderTest {
             throws RepositoryException {
         NodeType primaryNodeType = node.getPrimaryNodeType();
         assertNotNull("Primary node type is null !", primaryNodeType);
-        NodeDefinition nodeDefinition = node.getDefinition();
-        assertNotNull("Node definition is null !", nodeDefinition);
         String nodeIdentifier = node.getIdentifier();
         assertNotNull("Node identifier is null!", nodeIdentifier);
         NodeType[] nodeMixinNodeTypes = node.getMixinNodeTypes();

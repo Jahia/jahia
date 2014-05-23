@@ -162,11 +162,9 @@ public class GenericPipeline implements Pipeline, ValveContext {
     }
 
     public Valve[] getValves() {
-        synchronized (valvesLock) {
-            Valve[] results = new Valve[valves.length];
-            System.arraycopy(valves, 0, results, 0, valves.length);
-            return results;
-        }
+        Valve[] results = new Valve[valves.length];
+        System.arraycopy(valves, 0, results, 0, valves.length);
+        return results;
     }
 
     public void setValves(Valve[] valves) {
@@ -243,15 +241,12 @@ public class GenericPipeline implements Pipeline, ValveContext {
         // Identify the current subscript for the current request thread
         int valvePos = state.get();
 
-        synchronized (valvesLock) {
-            if (valvePos < valves.length) {
-                // Invoke the requested Valve for the current request
-                // thread and increment its thread-local state.
-                state.set(valvePos + 1);
-                valves[valvePos].invoke(context, this);
-            }
+        if (valvePos < valves.length) {
+            // Invoke the requested Valve for the current request
+            // thread and increment its thread-local state.
+            state.set(valvePos + 1);
+            valves[valvePos].invoke(context, this);
         }
-
     }
 
     // BEGIN [added by Pascal Aubry for CAS authentication]
@@ -267,11 +262,9 @@ public class GenericPipeline implements Pipeline, ValveContext {
      * @see org.jahia.pipelines.Pipeline#getFirstValveOfClass(java.lang.Class)
      */
     public Valve getFirstValveOfClass(Class<Valve> c) {
-        synchronized (valvesLock) {
-            for (Valve valve : this.valves) {
-                if (c.isInstance(valve)) {
-                    return valve;
-                }
+        for (Valve valve : this.valves) {
+            if (c.isInstance(valve)) {
+                return valve;
             }
         }
         return null;
@@ -282,16 +275,6 @@ public class GenericPipeline implements Pipeline, ValveContext {
      * @since Jahia 6.6.0.0
      */
     public int indexOf(Valve valve) {
-        int pos = -1;
-        synchronized (valvesLock) {
-            for (int i = 0; i < valves.length; i++) {
-                if (valve.equals(valves[i])) {
-                    pos = i;
-                    break;
-                }
-            }
-        }
-
-        return pos;
+        return ArrayUtils.indexOf(valves,valve);
     }
 }

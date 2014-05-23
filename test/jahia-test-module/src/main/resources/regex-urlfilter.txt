@@ -52,6 +52,9 @@
 # skip URLs ending with ckeditor/
 -.*ckeditor/$
 
+# skip URLs ending with javascript/
+-.*javascript/$
+
 # skip URLs ending with equals
 -.*=$
 

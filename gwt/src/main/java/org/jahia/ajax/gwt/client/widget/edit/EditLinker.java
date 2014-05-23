@@ -117,6 +117,7 @@ public class EditLinker implements Linker {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
     private boolean isInSettingsPage = true;
+    private boolean refreshSidePanel = true;
 
     /**
      * Initializes an instance of this class.
@@ -573,5 +574,17 @@ public class EditLinker implements Linker {
             }
         }
         return result;
+    }
+
+    /**
+     * if true, the side panel will not be refreshed
+     * used when switching mode to avoid reloading it twice
+     */
+    public boolean needRefreshSidePanel() {
+        return refreshSidePanel;
+    }
+
+    public void setRefreshSidePanel(boolean refreshSidePanel) {
+        this.refreshSidePanel = refreshSidePanel;
     }
 }

@@ -237,6 +237,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
                                 if (finalEditLinker != null && finalEditLinker.getSidePanel() != null) {
                                     Map<String, Object> data = new HashMap<String, Object>();
                                     data.put(Linker.REFRESH_ALL, true);
+                                    finalEditLinker.setRefreshSidePanel(true);
                                     finalEditLinker.getSidePanel().refresh(data);
                                 }
                                 if (root.get(0).startsWith("/modules")) {

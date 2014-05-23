@@ -87,7 +87,6 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
 
@@ -146,7 +145,7 @@ public class SidePanelTabItem implements Serializable {
     }
 
     public void refresh(Map<String, Object> data) {
-        if (editLinker != null && data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
+        if (editLinker != null && editLinker.needRefreshSidePanel() && data != null && (data.containsKey(Linker.REFRESH_ALL) || needRefresh(data))) {
             doRefresh();
             autoRefreshData = null;
             needManualRefresh = false;
@@ -222,6 +221,14 @@ public class SidePanelTabItem implements Serializable {
             return new ActionContextMenu(toolbarBean, linker);
         }
         return null;
+    }
+
+    public void disable() {
+        tab.disable();
+    }
+
+    public void enable() {
+        tab.enable();
     }
 
     public class SidePanelLinker implements Linker {

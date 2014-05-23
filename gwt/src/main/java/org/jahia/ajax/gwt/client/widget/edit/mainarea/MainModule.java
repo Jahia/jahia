@@ -817,6 +817,7 @@ public class MainModule extends Module {
 
         this.config = config;
         configs.put(this.config.getName(), this.config);
+        editLinker.setRefreshSidePanel(false);
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
@@ -1096,9 +1097,12 @@ public class MainModule extends Module {
             if (el != null && elBody != null) {
                 ModuleHelper.tranformLinks((Element) contentDocument.getDocumentElement());
                 ModuleHelper.initAllModules(MainModule.this, body, el, elBody, config);
+                editLinker.getSidePanel().enable();
             } else {
                 // if body empty, this is not a jahia page
                 path = "";
+                // clear side panel
+                editLinker.getSidePanel().disable();
             }
             editLinker.getMainModule().unmask();
             needParseAfterLayout = true;

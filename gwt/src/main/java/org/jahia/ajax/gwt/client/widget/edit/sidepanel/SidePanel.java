@@ -211,6 +211,19 @@ public class SidePanel extends ContentPanel {
         layout();
     }
 
+    public void enable() {
+        for (SidePanelTabItem tab : tabs) {
+                tab.enable();
+        }
+    }
+
+    public void disable() {
+        for (SidePanelTabItem tab : tabs) {
+            tab.disable();
+        }
+    }
+
+
     private void updateRefreshButton() {
         if (tabPanel.getSelectedItem() != null) {
             boolean needRefresh = ((SidePanelTabItem) tabPanel.getSelectedItem().getData("tabItem")).isNeedManualRefresh();

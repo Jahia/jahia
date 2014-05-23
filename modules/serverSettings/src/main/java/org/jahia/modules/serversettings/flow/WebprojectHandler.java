@@ -77,6 +77,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -858,7 +859,8 @@ public class WebprojectHandler implements Serializable {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             final String siteKey = getSites().get(0).getSiteKey();
             JahiaSite site = sitesService.getSiteByKey(siteKey, session);
-            if (!StringUtils.equals(site.getServerName(), bean.getServerName())
+            boolean serverNameChanged = !StringUtils.equals(site.getServerName(), bean.getServerName());
+            if (serverNameChanged
                     || !StringUtils.equals(site.getTitle(), bean.getTitle())
                     || !StringUtils.equals(site.getDescription(), bean.getDescription())) {
                 site.setServerName(bean.getServerName());
@@ -878,6 +880,11 @@ public class WebprojectHandler implements Serializable {
             sitesService.updateModules(site, modules, session);
 
             session.save();
+
+            if (serverNameChanged) {
+                CacheHelper.flushOutputCachesForPath(site.getJCRLocalPath(), true);
+            }
+
             messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
         } catch (Exception e) {
             messages.addMessage(new MessageBuilder().error()

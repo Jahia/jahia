@@ -6,11 +6,28 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+<fmt:message key="serverSettings.manageWebProjects.warningMsg.serverNameChange" var="i18nServerNameChangeWarn"/><c:set var="i18nServerNameChangeWarn" value="${functions:escapeJavaScript(i18nServerNameChangeWarn)}"/>
 <%--@elvariable id="siteBean" type="org.jahia.modules.serversettings.flow.SiteBean"--%>
 <template:addResources>
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#${currentNode.identifier}-next').click(function() {workInProgress('${i18nWaiting}');});
+            $("#${currentNode.identifier}-editModules").click(function() {
+               $("#${currentNode.identifier}-eventId").val("editModules");
+            });
+
+            $("#${currentNode.identifier}-cancel").click(function() {
+                $("#${currentNode.identifier}-eventId").val("cancel");
+            });
+
+            $("#${currentNode.identifier}-updateSiteForm").submit(function(event) {
+                if ($("#${currentNode.identifier}-eventId").val() != 'next'
+                        ||'${siteBean.serverName}' == $("#serverName").val()
+                        || confirm('${i18nServerNameChangeWarn}')) {
+                    workInProgress('${i18nWaiting}');
+                    return;
+                }
+                event.preventDefault();
+            });
         });
     </script>
 </template:addResources>
@@ -26,7 +43,7 @@
             </c:forEach>
 </c:if>
 <div class="box-1">
-    <form action="${flowExecutionUrl}" method="POST">
+    <form id="${currentNode.identifier}-updateSiteForm" action="${flowExecutionUrl}" method="POST">
         <fieldset>
 
             <div class="container-fluid">
@@ -103,19 +120,20 @@
                 </div>
             </div>
 
+            <input type="hidden" id="${currentNode.identifier}-eventId" name="_eventId" value="next" />
         </fieldset>
         <div class="container-fluid">
             <div class="row-fluid">
                 <div class="span12">
-                    <button class="btn btn-primary" type="submit" name="_eventId_next" id="${currentNode.identifier}-next">
+                    <button class="btn btn-primary" type="submit" id="${currentNode.identifier}-next">
                         <i class="icon-ok icon-white"></i>
                         &nbsp;<fmt:message key='label.save'/>
                     </button>
-                    <button class="btn" type="submit" name="_eventId_editModules">
+                    <button class="btn" type="submit" id="${currentNode.identifier}-editModules">
                         <i class="icon-th-large"></i>
                         &nbsp;<fmt:message key='serverSettings.manageWebProjects.webProject.selectModules' />
                     </button>
-                    <button class="btn" type="submit" name="_eventId_cancel">
+                    <button class="btn" type="submit" id="${currentNode.identifier}-cancel">
                         <i class="icon-ban-circle"></i>
                         &nbsp;<fmt:message key='label.cancel' />
                     </button>

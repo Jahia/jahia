@@ -70,6 +70,7 @@
 package org.jahia.test.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -122,12 +123,18 @@ public class JahiaGroupManagerServiceTest {
 
     @After
     public void tearDown() throws Exception {
+        JCRSessionFactory.getInstance().closeAllSessions();
         JahiaGroup group = groupManager.lookupGroup(0, "test-group1");
         if (group != null) {
             groupManager.deleteGroup(group);
         }
 
         group = groupManager.lookupGroup(0, "test-group2");
+        if (group != null) {
+            groupManager.deleteGroup(group);
+        }
+
+        group = groupManager.lookupGroup(0, "test-user1");
         if (group != null) {
             groupManager.deleteGroup(group);
         }
@@ -143,6 +150,8 @@ public class JahiaGroupManagerServiceTest {
 
         groupManager.deleteGroup(group2);
         groupManager.deleteGroup(group1);
+
+        JCRSessionFactory.getInstance().closeAllSessions();
 
         group1 = groupManager.lookupGroup("test-group1:0");
         assertNull("Group 1 should have been deleted but is still available !", group1);

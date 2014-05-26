@@ -868,6 +868,7 @@ public class Activator implements BundleActivator {
                     break;
                     
                 case FrameworkEvent.STARTED:
+                    logger.info("Got started event from OSGi framework");
                     FrameworkService.notifyStarted();
                     break;
             }

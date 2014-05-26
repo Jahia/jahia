@@ -174,10 +174,13 @@ public class FrameworkService {
      * Notify this service that the framework has actually started.
      */
     public static void notifyStarted() {
+        logger.info("Got started event");
         if (instance != null) {
             synchronized (instance) {
+                logger.info("Started event arrived");
                 instance.started = true;
                 instance.notifyAll();
+                logger.info("Notified all about framework started event");
             }
         }
     }

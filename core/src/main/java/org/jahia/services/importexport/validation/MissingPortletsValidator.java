@@ -69,16 +69,17 @@
  */
 package org.jahia.services.importexport.validation;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
-import org.jahia.data.applications.ApplicationBean;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.xml.sax.Attributes;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -141,6 +142,9 @@ public class MissingPortletsValidator implements ImportValidator {
                 }
             } else if ("jnt:portletDefinition".equals(pt)) {
                 // portlet definitions are also exported when sites are exported.
+                if (currentPath.startsWith("/content/portletdefinitions/")) {
+                    currentPath = currentPath.substring("/content".length());
+                }
                 importedPortletDefinitionPaths.add(currentPath);
                 String context = atts.getValue("j:context");
                 try {
@@ -150,6 +154,9 @@ public class MissingPortletsValidator implements ImportValidator {
                 }
             } else if (Constants.JAHIANT_PORTLET.equals(pt)) {
                 // here we check for missing portlet definitions
+                if (currentPath.startsWith("/content/sites/")) {
+                    currentPath = currentPath.substring("/content".length());
+                }
                 importedPortletInstancePaths.add(currentPath);
                 final String applicationRef = resolveRefPath(rootPath, currentSitePath, atts.getValue("j:applicationRef"));
                 String application = atts.getValue("j:application");
@@ -171,7 +178,7 @@ public class MissingPortletsValidator implements ImportValidator {
                 }
             } else if ("jnt:portletReference".equals(pt)) {
                 // here we check for missing portlet instances
-                final String nodeRef = resolveRefPath(rootPath, currentSitePath, atts.getValue("j:node"));
+                final String nodeRef = ISO9075.decode(StringUtils.defaultString(resolveRefPath(rootPath, currentSitePath, atts.getValue("j:node"))));
                 if (importedPortletInstancePaths.contains(nodeRef)) {
                     // normal case, we are referencing a portlet instance that's being imported.
                 } else {
@@ -200,13 +207,5 @@ public class MissingPortletsValidator implements ImportValidator {
             return true;
         }
         return false;
-    }
-
-    private void addMissingPortlet(String applicationRef, String application) {
-        if (application != null) {
-            missingPortlets.add(application);
-        } else {
-            missingPortlets.add("portlet " + applicationRef);
-        }
     }
 }

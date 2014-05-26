@@ -5,6 +5,7 @@
 <%@ page import="javax.jcr.nodetype.NodeType"%>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
 <%@ page import="org.apache.commons.collections.IteratorUtils" %>
+<%@ page import="org.jahia.services.content.JCRContentUtils" %>
 <%@ page import="java.util.Comparator"%>
 <%@ page import="java.util.List" %>
 <%@ page import="java.util.Collections" %>
@@ -75,11 +76,7 @@
         <%
             NodeTypeIterator nodeTypes = nodeTypeRegistry.getNodeTypes((String) pageContext.getAttribute("package"));
             List ntList = IteratorUtils.toList(nodeTypes);
-            Collections.sort(ntList, new Comparator<NodeType>() {
-                public int compare(NodeType o1, NodeType o2) {
-                    return o1 == o2 ? 0 : o1.getName().compareTo(o2.getName());
-                }
-            });
+            Collections.sort(ntList, JCRContentUtils.NODE_TYPE_NAME_COMPARATOR);
             pageContext.setAttribute("nodeTypes", ntList);
         %>
         <tr class="gradeA">

@@ -166,8 +166,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             return s1.trim().equals(s2.trim());
         }
     });
-
-    private static final Pattern TEMPLATE_PATTERN = Pattern.compile("/modules/[^/]*/[^/]*/templates/(.*)");
+    
+    public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_NAME_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
+        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+        }
+    };
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 

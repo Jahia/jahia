@@ -128,6 +128,12 @@ import static org.jahia.api.Constants.*;
 public final class JCRContentUtils implements ServletContextAware {
 
     public static final Pattern COLON_PATTERN = Patterns.COLON;
+    
+    public static final Comparator<NodeType> NODE_TYPE_NAME_COMPARATOR = new Comparator<NodeType>() {
+        public int compare(NodeType o1, NodeType o2) {
+            return o1 == o2 ? 0 : o1.getName().compareTo(o2.getName());
+        }
+    };
 
     private static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512, 0.8f, 32);
     private static JCRContentUtils instance;

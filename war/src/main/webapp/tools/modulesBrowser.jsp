@@ -69,11 +69,7 @@
             "JahiaTemplateManagerService");
     List<JahiaTemplatesPackage> availableTemplatePackages = new ArrayList<JahiaTemplatesPackage>(
             jahiaTemplateManagerService.getAvailableTemplatePackages());
-    Collections.sort(availableTemplatePackages, new Comparator<JahiaTemplatesPackage>() {
-        public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
-            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
-        }
-    });
+    Collections.sort(availableTemplatePackages, JahiaTemplateManagerService.TEMPLATE_PACKAGE_NAME_COMPARATOR);
     pageContext.setAttribute("availablePackages", availableTemplatePackages);
 
     if (request.getParameter("delete") != null) {

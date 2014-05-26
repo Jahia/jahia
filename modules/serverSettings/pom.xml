@@ -112,6 +112,7 @@
             <Export-Package>org.jahia.modules.serversettings.forge</Export-Package>
             <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
             <Jahia-Depends>default,tabularList</Jahia-Depends>
+            <Jahia-Module-Type>system</Jahia-Module-Type>
           </instructions>
         </configuration>
       </plugin>

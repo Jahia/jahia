@@ -109,6 +109,7 @@
         <configuration>
           <instructions>
             <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
+            <Jahia-Module-Type>system</Jahia-Module-Type>
           </instructions>
         </configuration>
       </plugin>

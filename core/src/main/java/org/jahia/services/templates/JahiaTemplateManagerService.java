@@ -881,7 +881,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         if (packagesCount > 0) {
             List<JahiaTemplatesPackage> result = new ArrayList<JahiaTemplatesPackage>(packagesCount);
             for (JahiaTemplatesPackage templatePackage : getAvailableTemplatePackages()) {
-                if (!templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getId().equals("system")) {
+                if (!templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getModuleType().equals("system")) {
                     result.add(templatePackage);
                 }
             }

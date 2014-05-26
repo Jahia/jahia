@@ -110,6 +110,7 @@
           <instructions>
             <Jahia-Depends>contentRetrieval,default,default-skins,facets,grid,skins,tabularList,tags</Jahia-Depends>
             <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
+            <Jahia-Module-Type>system</Jahia-Module-Type>
           </instructions>
         </configuration>
       </plugin>

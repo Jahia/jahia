@@ -680,7 +680,7 @@ extends = jnt:content
 [jmix:navMenu] mixin
  itemtype=content
  extends = jmix:navMenuItem
- - j:displayInMenu (weakreference,choicelist[menus]) multiple nofulltext mandatory
+ - j:displayInMenu (string,choicelist[menus]) multiple nofulltext mandatory
 
 [jmix:navMenuItem] mixin
 

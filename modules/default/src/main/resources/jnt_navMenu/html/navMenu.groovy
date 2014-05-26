@@ -60,9 +60,7 @@ printMenu = { node, navMenuLevel, omitFormatting ->
             if (menuItem.properties['j:displayInMenu']) {
                 correctType = false
                 menuItem.properties['j:displayInMenu'].each() {
-                  if (it.node != null) {                  
-                    correctType |= (it.node.name == currentNode.name)
-                  }
+                    correctType |= (it.string == currentNode.name)
                 }
             }
             if ((startLevelValue < navMenuLevel || inpath) && correctType) {

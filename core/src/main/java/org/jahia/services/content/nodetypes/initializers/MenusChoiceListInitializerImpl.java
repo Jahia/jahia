@@ -114,7 +114,7 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
                     while (ni.hasNext()) {
                         JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
                         String displayName = nodeWrapper.getDisplayableName();
-                        set.add(new ChoiceListValue(displayName, nodeWrapper.getIdentifier()));
+                        set.add(new ChoiceListValue(displayName, nodeWrapper.getName()));
                     }
                 }
             }

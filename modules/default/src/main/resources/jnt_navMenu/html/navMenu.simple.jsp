@@ -81,8 +81,8 @@
         <c:if test="${!empty menuItem.properties['j:displayInMenu']}">
             <c:set var="correctType" value="false"/>
             <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
-                <c:if test="${display.node eq currentNode}">
-                    <c:set var="correctType" value="${display.node eq currentNode}"/>
+                <c:if test="${display.string eq currentNode.name}">
+                    <c:set var="correctType" value="${display.string eq currentNode.name}"/>
                 </c:if>
             </c:forEach>
         </c:if>

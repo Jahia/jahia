@@ -325,16 +325,26 @@ public class URLResolver {
             try {
                 String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
                 tempPath = StringUtils.substringAfter(getPath(), "/");
-                List<VanityUrl> vanityUrls = getVanityUrlService()
-                        .findExistingVanityUrls("/" + tempPath,
-                                StringUtils.EMPTY, tempWorkspace);
                 VanityUrl resolvedVanityUrl = null;
-                for (VanityUrl vanityUrl : vanityUrls) {
-                    if (vanityUrl.isActive()
-                            && (StringUtils.isEmpty(getSiteKey()) || getSiteKey().equals(
-                            vanityUrl.getSite()))) {
-                        resolvedVanityUrl = vanityUrl;
-                        break;
+                if(!StringUtils.isEmpty(getSiteKey()) && !tempPath.contains("/sites/")) {
+                    List<VanityUrl> vanityUrls = getVanityUrlService()
+                            .findExistingVanityUrls("/" + tempPath,
+                                    getSiteKey(), tempWorkspace);
+                    if(!vanityUrls.isEmpty() && vanityUrls.size()==1){
+                        resolvedVanityUrl = vanityUrls.get(0);
+                    }
+                } else if (!tempPath.contains("/sites/")) {
+                    List<VanityUrl> vanityUrls = getVanityUrlService()
+                            .findExistingVanityUrls("/" + tempPath,
+                                    StringUtils.EMPTY, tempWorkspace);
+
+                    for (VanityUrl vanityUrl : vanityUrls) {
+                        if (vanityUrl.isActive()
+                                && (StringUtils.isEmpty(getSiteKey()) || getSiteKey().equals(
+                                vanityUrl.getSite()))) {
+                            resolvedVanityUrl = vanityUrl;
+                            break;
+                        }
                     }
                 }
                 if (resolvedVanityUrl != null) {

@@ -72,8 +72,6 @@ package org.jahia.services.content.rules;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.response.FacetField;
-import org.apache.solr.client.solrj.response.FacetField.Count;
 import org.drools.core.FactException;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -90,7 +88,6 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
-import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.sites.JahiaSitesService;
@@ -116,7 +113,6 @@ import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.servlet.ServletException;
 import java.io.*;
-import java.security.Principal;
 import java.text.ParseException;
 import java.util.*;
 import java.util.zip.ZipEntry;
@@ -601,7 +597,7 @@ public class Service extends JahiaService {
         if (n.getNode().getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
             JCRNodeWrapper newNode = JCRAutoSplitUtils.applyAutoSplitRules(n.getNode());
             if (newNode != null) {
-                drools.retract(n);
+                drools.delete(n);
                 drools.insert(new AddedNodeFact(newNode));
             }
         }
@@ -612,7 +608,7 @@ public class Service extends JahiaService {
         Map<JCRNodeWrapper, JCRNodeWrapper> modifiedNodes = JCRAutoSplitUtils.applyAutoSplitRulesOnSubnodes(n.getNode());
         for (Map.Entry<JCRNodeWrapper, JCRNodeWrapper> modifiedNodeEntry : modifiedNodes.entrySet()) {
             try {
-                drools.retract(new AddedNodeFact(modifiedNodeEntry.getKey()));
+                drools.delete(new AddedNodeFact(modifiedNodeEntry.getKey()));
                 drools.insert(new AddedNodeFact(modifiedNodeEntry.getValue()));
             } catch (FactException fe) {
                 logger.debug("Seems node " + modifiedNodeEntry.getKey() + " was not in working memory, will not insert replacement.");
@@ -865,10 +861,6 @@ public class Service extends JahiaService {
         if(nodeWrapper.getPath().matches(".*/users/.*/files/profile/.*")) {
             final JCRSessionWrapper jcrSessionWrapper = nodeWrapper.getSession();
             jcrSessionWrapper.save();
-            Set<String> languages = null;
-            if (jcrSessionWrapper.getLocale() != null) {
-                languages = Collections.singleton(jcrSessionWrapper.getLocale().toString());
-            }
 
             boolean resetUser = false;
             if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
@@ -882,7 +874,7 @@ public class Service extends JahiaService {
                 uuidsToPublish.add(nodeWrapper.getParent().getIdentifier());
                 uuidsToPublish.add(nodeWrapper.getParent().getParent().getIdentifier());
                 JCRPublicationService.getInstance().publish(uuidsToPublish, jcrSessionWrapper.getWorkspace().getName(),
-                        Constants.LIVE_WORKSPACE, false, false, Collections.EMPTY_LIST);
+                        Constants.LIVE_WORKSPACE, false, false, Collections.<String>emptyList());
             } catch (Exception e) {
                 logger.error("Cannot publish node : " + nodeWrapper.getPath(), e);
             } finally {

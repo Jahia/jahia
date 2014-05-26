@@ -76,6 +76,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.management.UserProperties;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
@@ -858,7 +859,7 @@ public class WebprojectHandler implements Serializable {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             final String siteKey = getSites().get(0).getSiteKey();
-            JahiaSite site = sitesService.getSiteByKey(siteKey, session);
+            JCRSiteNode site = sitesService.getSiteByKey(siteKey, session);
             boolean serverNameChanged = !StringUtils.equals(site.getServerName(), bean.getServerName());
             if (serverNameChanged
                     || !StringUtils.equals(site.getTitle(), bean.getTitle())
@@ -883,6 +884,11 @@ public class WebprojectHandler implements Serializable {
 
             if (serverNameChanged) {
                 CacheHelper.flushOutputCachesForPath(site.getJCRLocalPath(), true);
+                JahiaTemplateManagerService jahiaTemplateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+                for (String moduleId : site.getAllInstalledModules()) {
+                    JahiaTemplatesPackage templatePackage = jahiaTemplateManagerService.getTemplatePackageById(moduleId);
+                    CacheHelper.flushOutputCachesForPath("/modules/" + templatePackage.getIdWithVersion() + "/templates", true);
+                }
             }
 
             messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());

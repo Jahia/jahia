@@ -355,7 +355,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
         String targetSiteKey = ServerNameToSiteMapper.getSiteKeyByServerName(request);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_LANG, StringUtils.EMPTY);
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_VANITY_PATH, StringUtils.EMPTY);
-        if (StringUtils.isNotEmpty(targetSiteKey)) {
+        if (StringUtils.isNotEmpty(targetSiteKey) && !path.startsWith("/sites")) {
             try {
                 List<VanityUrl> vanityUrls = vanityUrlService.findExistingVanityUrls(path,
                         targetSiteKey, "live");

@@ -184,4 +184,8 @@ public class FrameworkService {
             }
         }
     }
+
+    public static FrameworkService getInstance() {
+        return instance;
+    }
 }

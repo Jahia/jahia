@@ -101,7 +101,7 @@
         <tbody>
         <c:forEach items="${requestScope.modules}" var="module">
             <tr>
-                <td><c:if test="${not empty module.icon}"><img width="100" height="100" src="${module.icon}"/></c:if>${module.name}</td>
+                <td ><c:if test="${not empty module.icon}"><img style="width:32px; height:32px;padding-right:5px;"  src="${module.icon}"/></c:if>${module.name}</td>
                 <td> ${module.id}</td>
                 <td> ${module.groupId}</td>
                 <td> ${module.version}</td>

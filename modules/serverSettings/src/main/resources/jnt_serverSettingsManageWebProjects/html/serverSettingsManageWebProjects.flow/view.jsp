@@ -82,7 +82,7 @@
         var sitesTable = $('#sitesTable');
 
         sitesTable.dataTable({
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+            "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'p>>",
             "iDisplayLength": 10,
             "sPaginationType": "bootstrap",
             "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table

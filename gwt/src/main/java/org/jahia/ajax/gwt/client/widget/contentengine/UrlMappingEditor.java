@@ -233,6 +233,16 @@ public class UrlMappingEditor extends LayoutContainer {
             }
         });
 
+        re.addListener(Events.ValidateEdit, new Listener<RowEditorEvent>() {
+            public void handleEvent(RowEditorEvent ree) {
+                if(ree.getChanges().get("url").toString().matches("/sites")) {
+                    ree.setCancelled(true);
+                    store.remove(ree.getRowIndex());
+                    Window.alert(Messages.get("label.urlmapping.error.contains.sites", "SEO Url should not contains /sites as it is used by the system."));
+                }
+            }
+        });
+
         final Grid<GWTJahiaUrlMapping> grid = new Grid<GWTJahiaUrlMapping>(store, new ColumnModel(configs));
         grid.setAutoExpandColumn("url");
         grid.setBorders(true);

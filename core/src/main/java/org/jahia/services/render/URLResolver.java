@@ -78,6 +78,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -128,6 +129,8 @@ public class URLResolver {
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
+
+    private static final Pattern crossSitesURLPattern = Pattern.compile("[a-z]{0,2}_?[A-Z]{0,2}/sites/.*");
 
     private static Logger logger = LoggerFactory.getLogger(URLResolver.class);
 
@@ -326,14 +329,18 @@ public class URLResolver {
                 String tempWorkspace = verifyWorkspace(StringUtils.substringBefore(getPath(), "/"));
                 tempPath = StringUtils.substringAfter(getPath(), "/");
                 VanityUrl resolvedVanityUrl = null;
-                if(!StringUtils.isEmpty(getSiteKey()) && !tempPath.contains("/sites/")) {
+                if(logger.isDebugEnabled()){
+                    logger.debug("Trying to resolve vanity url for tempPath = " + tempPath);
+                }
+                boolean doNotMatchesCrossSitesPattern = !crossSitesURLPattern.matcher(tempPath).matches();
+                if(!StringUtils.isEmpty(getSiteKey()) && doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
                             .findExistingVanityUrls("/" + tempPath,
                                     getSiteKey(), tempWorkspace);
                     if(!vanityUrls.isEmpty() && vanityUrls.size()==1){
                         resolvedVanityUrl = vanityUrls.get(0);
                     }
-                } else if (!tempPath.contains("/sites/")) {
+                } else if (doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
                             .findExistingVanityUrls("/" + tempPath,
                                     StringUtils.EMPTY, tempWorkspace);

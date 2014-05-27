@@ -71,6 +71,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -84,6 +85,7 @@ import javax.jcr.*;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -96,6 +98,12 @@ import java.util.*;
  * @see JCRTemplate
  */
 public class JCRSessionFactory implements Repository, ServletContextAware {
+
+    private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
+        public int compare(String s1, String s2) {
+            return s2.compareTo(s1);
+        }
+    };
 
     public static final String DEFAULT_PROVIDER_KEY = "default";
 
@@ -120,21 +128,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private LocalValidatorFactoryBean validatorFactoryBean;
 
     private JCRSessionFactory() {
+        super();
     }
 
     public void start() {
-        Comparator<String> invertedStringComparator = new Comparator<String>() {
-            public int compare(String s1, String s2) {
-                return s2.compareTo(s1);
-            }
-        };
         synchronized (this) {
-            this.mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
+            mountPoints = new TreeMap<String, JCRStoreProvider>(invertedStringComparator);
         }
         namespaceRegistry = new NamespaceRegistryWrapper();
 
-        if ((servletContextAttributeName != null) &&
-                (servletContext != null)) {
+        if ((servletContextAttributeName != null) && (servletContext != null)) {
             servletContext.setAttribute(servletContextAttributeName, this);
         }
     }
@@ -209,13 +212,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         }
 
         if (workspace == null) {
-            workspace = "default";
+            workspace = Constants.EDIT_WORKSPACE;
         }
 
-        String localeString = "default";
-        if (locale != null) {
-            localeString = locale.toString();
-        }
+        String localeString = locale != null ? locale.toString() : "default";
 
         final String key = workspace + "-" + localeString + "-" + fallbackLocale;
         JCRSessionWrapper s = wsMap.get(key);
@@ -383,7 +383,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return mountPoints;
     }
 
-    @SuppressWarnings("unchecked")
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
     }

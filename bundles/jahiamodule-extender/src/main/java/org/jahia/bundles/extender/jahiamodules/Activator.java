@@ -457,8 +457,7 @@ public class Activator implements BundleActivator {
         }
 
         for (String depend : dependsList) {
-            Set<ModuleVersion> m = templatePackageRegistry.getAvailableVersionsForModule(depend);
-            if (m.isEmpty()) {
+            if (!templatePackageRegistry.areVersionsForModuleAvailable(depend)) {
                 if (!toBeParsed.containsKey(depend)) {
                     toBeParsed.put(depend, new ArrayList<Bundle>());
                 }
@@ -476,7 +475,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         registeredBundles.put(bundle, pkg);
-        boolean newModuleDeployment = templatePackageRegistry.getAvailableVersionsForModule(bundle.getSymbolicName()).isEmpty();
+        boolean newModuleDeployment = !templatePackageRegistry.areVersionsForModuleAvailable(bundle.getSymbolicName());
         templatePackageRegistry.registerPackageVersion(pkg);
 
         boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());

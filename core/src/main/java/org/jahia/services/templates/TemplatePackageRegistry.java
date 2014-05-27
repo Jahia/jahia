@@ -122,6 +122,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.servlet.Filter;
+
 import java.util.*;
 
 /**
@@ -328,6 +329,14 @@ public class TemplatePackageRegistry {
             return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionByName.get(moduleNameOrId).keySet());
         }
         return Collections.emptySet();
+    }
+
+    public boolean areVersionsForModuleAvailable(String moduleNameOrId) {
+        SortedMap<ModuleVersion, JahiaTemplatesPackage> m = packagesWithVersionById.get(moduleNameOrId);
+        if (m == null) {
+            m = packagesWithVersionByName.get(moduleNameOrId);
+        }
+        return m != null && !m.isEmpty();
     }
 
     public Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> getAllModuleVersions() {

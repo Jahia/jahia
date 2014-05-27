@@ -72,7 +72,6 @@ package org.jahia.modules.serversettings.flow;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.management.UserProperties;
@@ -451,10 +450,8 @@ public class WebprojectHandler implements Serializable {
                     ImportInfo value = prepareSiteImport(i, imports.get(i), messageContext);
                     if (value != null) {
                         if (value.isLegacyImport()) {
-                            final String defaultMappingsFolderPath = JahiaContextLoaderListener.getServletContext()
-                                    .getRealPath("/WEB-INF/var/legacyMappings");
-                            final File defaultMappingsFolder = defaultMappingsFolderPath != null ? new File(
-                                    defaultMappingsFolderPath) : null;
+                            File fld = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "legacyMappings");
+                            final File defaultMappingsFolder = fld.isDirectory() ? fld : null;
                             Collection<File> legacyMappings = null;
                             Collection<File> legacyDefinitions = null;
                             if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {

@@ -78,6 +78,7 @@ import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
@@ -111,6 +112,8 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class CustomizedPreviewActionItem extends BaseActionItem {
+    private static final String INIT_SPACES = "&nbsp;&nbsp;&nbsp;&nbsp;";
+    private static final String END_SPACES = "&nbsp;&nbsp;&nbsp;";
     private transient SearchField userSearchField;
     private transient String lastUserSearchValue;
     private transient Grid<GWTJahiaUser> userGrid;
@@ -119,7 +122,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
     @Override
     public void onComponentSelection() {
         final Window window = new Window();
-        window.setSize(500, 430);
+        window.setSize(500, 460);
         window.setPlain(true);
         window.setModal(true);
         window.setBlinkModal(true);
@@ -194,7 +197,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         panel = new HorizontalPanel();
         panel.setTableHeight("30px");
         panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
-        Label label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.date", "Pick a date for the preview")+"&nbsp;&nbsp;&nbsp;");
+        Label label = new Label(INIT_SPACES + Messages.get("label.preview.window.date", "Pick a date for the preview")+ END_SPACES);
         label.setWidth(200);
         label.setLabelFor("previewDate");
         final Date date = new Date();
@@ -204,15 +207,24 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         verticalPanel.add(panel);
         window.add(verticalPanel);
 
+        panel = new HorizontalPanel();
+        panel.setTableHeight("30px");
+        panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
+        label = new Label(INIT_SPACES + Messages.get("label.preview.window.live", "Display live version?") + END_SPACES);
+        final CheckBox checkBox = new CheckBox();
+        panel.add(label);
+        panel.add(checkBox);
+        verticalPanel.add(panel);
+
         // Channel selector
         panel = new HorizontalPanel();
         panel.setTableHeight("30px");
         panel.setVerticalAlign(Style.VerticalAlignment.BOTTOM);
-        label = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channel", "Channel")+"&nbsp;&nbsp;&nbsp;");
+        label = new Label(INIT_SPACES +Messages.get("label.preview.window.channel", "Channel")+ END_SPACES);
         label.setLabelFor("previewChannel");
 
         // we will setup the right elements now because we will need to reference them in the event listener
-        final Label orientationLabel = new Label("&nbsp;&nbsp;&nbsp;&nbsp;"+Messages.get("label.preview.window.channelOrientation", "Orientation")+"&nbsp;&nbsp;&nbsp;");
+        final Label orientationLabel = new Label(INIT_SPACES +Messages.get("label.preview.window.channelOrientation", "Orientation")+ END_SPACES);
         orientationLabel.setLabelFor("previewChannelOrientation");
         orientationLabel.hide();
         final ListStore<GWTJahiaBasicDataBean> orientations = new ListStore<GWTJahiaBasicDataBean>();
@@ -281,17 +293,23 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                 if (node != null) {
                     String path = node.getPath();
                     String locale = JahiaGWTParameters.getLanguage();
-                    JahiaContentManagementService.App.getInstance().getNodeURL(null, path, null, null, "default",
+
+                    // should we display live version?
+                    final Boolean value = checkBox.getValue();
+                    final boolean isLive = value != null && value;
+                    final String workspace = isLive ? "live" : "default";
+
+                    JahiaContentManagementService.App.getInstance().getNodeURL(null, path, null, null, workspace,
                             locale, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
                             GWTJahiaUser selectedItem = userGrid.getSelectionModel().getSelectedItem();
-                            String alias = null;
+                            String alias;
                             List<String> urlParameters = new ArrayList<String>();
                             if(selectedItem!=null) {
                                 alias = "alias="+selectedItem.getUsername();
                                 urlParameters.add(alias);
                             }
-                            String previewDate= null;
+                            String previewDate;
                             if(calendarField.getValue().after(date)) {
                                 previewDate = "prevdate="+calendarField.getValue().getTime();
                                 urlParameters.add(previewDate);
@@ -317,6 +335,12 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                                             ",height=" + imageSize[1];
                                 }
                             }
+
+                            // if we want to check the live workspace, add a URL parameter to make sure RenderContext.isPreviewMode will return true
+                            if(isLive) {
+                                urlParameters.add("preview=true");
+                            }
+
                             StringBuilder urlParams = new StringBuilder();
                             for (int i=0; i < urlParameters.size(); i++) {
                                 if (i==0) {

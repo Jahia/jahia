@@ -765,7 +765,19 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
             // check permission
             try {
-                if (!hasAccess(urlResolver.getNode())) {
+                // if we are in preview mode and the workspace is live, then try to access the node using the default workspace so that we can check the state of the page
+                // pre-publication
+                final JCRNodeWrapper node;
+                if(renderContext.isPreviewMode() && Constants.LIVE_WORKSPACE.equals(urlResolver.getWorkspace())) {
+                    jcrSessionFactory.setOnlyCheckLiveRoles(true);
+                    node = urlResolver.resolveNode(Constants.EDIT_WORKSPACE, urlResolver.getLocale(), urlResolver.getPath());
+                    jcrSessionFactory.setOnlyCheckLiveRoles(false);
+                }
+                else {
+                    node = urlResolver.getNode();
+                }
+
+                if (!hasAccess(node)) {
                     if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
                         throw new JahiaUnauthorizedException();
                     } else {

@@ -185,6 +185,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean isAliased = false;
     private JahiaUser jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
+    private boolean onlyCheckingLiveRoles;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
         if (workspace == null) {
@@ -274,7 +275,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Session getDefaultWorkspaceSecuritySession() throws RepositoryException {
-        if (workspaceConfig.getName().equals("default")) {
+        if (workspaceConfig.getName().equals(Constants.EDIT_WORKSPACE)) {
             return getSecuritySession();
         }
 
@@ -283,7 +284,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         defaultWorkspaceSecuritySession = new JahiaSystemSession(repositoryContext, SYSTEM_SUBJECT,
-                repositoryContext.getRepository().getConfig().getWorkspaceConfig("default"));
+                repositoryContext.getRepository().getConfig().getWorkspaceConfig(Constants.EDIT_WORKSPACE));
         return defaultWorkspaceSecuritySession;
     }
 
@@ -688,13 +689,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                     Value[] roleValues = aceNode.getProperty("j:roles").getValues();
                                     for (Value role1 : roleValues) {
                                         String role = role1.getString();
-                                        ace.roles.add(role + "/" + aceNode.getProperty("j:externalPermissionsName").getString());
+                                        if (!isOnlyCheckingLiveRoles() || isRoleLive(role, s)) {
+                                            ace.roles.add(role + "/" + aceNode.getProperty("j:externalPermissionsName").getString());
+                                        }
                                     }
                                 } else {
                                     Value[] roleValues = aceNode.getProperty("j:roles").getValues();
                                     for (Value role1 : roleValues) {
                                         String role = role1.getString();
-                                        ace.roles.add(role);
+                                        if (!isOnlyCheckingLiveRoles() || isRoleLive(role, s)) {
+                                            ace.roles.add(role);
+                                        }
                                     }
                                 }
                             }
@@ -735,6 +740,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return false;
     }
 
+    private boolean isRoleLive(String role, Session s) throws RepositoryException {
+        final Node roleNode = s.getNode("/roles/" + role);
+        return roleNode != null && roleNode.hasProperty(Constants.J_ROLE_GROUP) && "live-role".equals(roleNode.getProperty(Constants.J_ROLE_GROUP).getString());
+    }
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
         if(privilegesInRole!=null)
@@ -1044,6 +1053,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         }
         return grantedRoles;
+    }
+
+    public void setOnlyCheckingLiveRoles(boolean onlyCheckingLiveRoles) {
+        this.onlyCheckingLiveRoles = onlyCheckingLiveRoles;
+    }
+
+    public boolean isOnlyCheckingLiveRoles() {
+        return onlyCheckingLiveRoles;
     }
 
 

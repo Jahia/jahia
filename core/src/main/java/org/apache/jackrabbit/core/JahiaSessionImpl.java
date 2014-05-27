@@ -137,9 +137,10 @@ public class JahiaSessionImpl extends XASessionImpl {
 
     public void toggleThisSessionAsAliased() {
         setJahiaAttributes("isAliasedUser", Boolean.TRUE);
-        JahiaAccessManager accessManager = (JahiaAccessManager)context.getAccessManager();
-        if (jahiaAttributes.containsKey("isAliasedUser") && (Boolean) jahiaAttributes.get("isAliasedUser")) {
-            accessManager.setAliased(true);
-        }
+        getJahiaAccessManager().setAliased(true);
+    }
+
+    public JahiaAccessManager getJahiaAccessManager() {
+        return (JahiaAccessManager)context.getAccessManager();
     }
 }

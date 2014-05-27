@@ -474,7 +474,7 @@ public class URLResolver {
      *             if the resource cannot be resolved
      * @throws RepositoryException
      */
-    protected JCRNodeWrapper resolveNode(final String workspace,
+    public JCRNodeWrapper resolveNode(final String workspace,
                                          final Locale locale, final String path) throws RepositoryException {
         if (logger.isDebugEnabled()) {
             logger.debug("Resolving node for workspace '" + workspace

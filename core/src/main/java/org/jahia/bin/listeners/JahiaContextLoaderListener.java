@@ -148,8 +148,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
     
-    private FrameworkService osgiService;
-
     private static ServletContext servletContext;
     private static long startupTime;
 
@@ -250,13 +248,13 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             timer = System.currentTimeMillis();
             logger.info("Starting OSGi platform service");
             
-            osgiService = new FrameworkService(event.getServletContext());
-            osgiService.start();
+            new FrameworkService(event.getServletContext());
+            FrameworkService.getInstance().start();
             boolean stopWaiting = false;
-            synchronized (osgiService) {
-                while (!stopWaiting && !osgiService.isStarted()) {
+            synchronized (FrameworkService.getInstance()) {
+                while (!stopWaiting && !FrameworkService.getInstance().isStarted()) {
                     try {
-                        osgiService.wait(60 * 1000L);
+                        FrameworkService.getInstance().wait(60 * 1000L);
                         stopWaiting = true;
                         logger.info("Stopped waiting for OSGi framework startup");
                     } catch (InterruptedException e) {
@@ -392,7 +390,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         logger.info("Stopping OSGi platform service");
 
         try {
-            osgiService.stop();
+            FrameworkService.getInstance().stop();
         } catch (Exception e) {
             logger.error("Error stopping OSGi platform service. Cause: " + e.getMessage(), e);
         }

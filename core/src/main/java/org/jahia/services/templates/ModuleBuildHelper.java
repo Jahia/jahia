@@ -89,7 +89,6 @@ import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.ProcessHelper;
-import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;

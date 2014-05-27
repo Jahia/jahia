@@ -1069,33 +1069,30 @@ public class ContentManagerHelper {
                              JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = currentUserSession.getNode(location);
-            switch (operation) {
-                case 2:
-                    JCRNodeWrapper node = parent.getNode(newName);
-                    if (node == null) {
-                        throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found", uiLocale, location, newName));
-                    }
-                    versioning.addNewVersionFile(node, tmpName);
-                    break;
-                case 1:
+            if (2 == operation) {
+                JCRNodeWrapper node = parent.getNode(newName);
+                if (node == null) {
+                    throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found", uiLocale, location, newName));
+                }
+                versioning.addNewVersionFile(node, tmpName);
+            } else {
+                if (1 == operation) {
                     newName = findAvailableName(parent, newName);
-                case 0:
-                    if (parent.hasNode(newName)) {
-                        throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
-                    }
-                default:
-                    GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
-                    InputStream is = null;
-                    try {
-                        is = item.getStream();
-                        parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
-                    } catch (FileNotFoundException e) {
-                        logger.error(e.getMessage(), e);
-                    } finally {
-                        IOUtils.closeQuietly(is);
-                        item.dispose();
-                    }
-                    break;
+                }
+                if (parent.hasNode(newName)) {
+                    throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
+                }
+                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
+                InputStream is = null;
+                try {
+                    is = item.getStream();
+                    parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
+                } catch (FileNotFoundException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                    item.dispose();
+                }
             }
             currentUserSession.save();
         } catch (RepositoryException e) {

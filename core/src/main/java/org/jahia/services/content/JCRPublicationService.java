@@ -90,6 +90,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
+
 import java.util.*;
 
 /**
@@ -98,12 +99,15 @@ import java.util.*;
  * @author toto
  */
 public class JCRPublicationService extends JahiaService {
+    private static class Holder {
+        static final JCRPublicationService INSTANCE = new JCRPublicationService();
+    }
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
-    private static JCRPublicationService instance;
     private MetricsLoggingService loggingService;
 
     private JCRPublicationService() {
+        super();
     }
 
     /**
@@ -134,14 +138,7 @@ public class JCRPublicationService extends JahiaService {
      * @return the singleton instance of the JCRPublicationService
      */
     public static JCRPublicationService getInstance() {
-        if (instance == null) {
-            synchronized (JCRPublicationService.class) {
-                if (instance == null) {
-                    instance = new JCRPublicationService();
-                }
-            }
-        }
-        return instance;
+        return Holder.INSTANCE;
     }
 
     public boolean hasIndependantPublication(JCRNodeWrapper node) throws RepositoryException {

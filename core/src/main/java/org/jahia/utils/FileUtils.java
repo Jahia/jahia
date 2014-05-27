@@ -97,11 +97,25 @@ import java.text.DecimalFormat;
 import java.util.*;
 
 public final class FileUtils {
+    
+    @SuppressWarnings("unchecked")
+    private static class Holder {
+        static final Map<String, String> fileExtensionIcons;
+        static final String[] fileExtensionIconsMapping;
+        static {
+            Map<String, String> icons = (Map<String, String>) SpringContextSingleton.getBean("fileExtensionIcons");
+            FastHashMap mappings = new FastHashMap(icons);
+            mappings.setFast(true);
+            String[] jsMappings = new String[2];
+            jsMappings[0] = new StringBuilder(512).append("\"")
+                    .append(StringUtils.join(mappings.keySet().iterator(), "\", \"")).append("\"").toString();
+            jsMappings[1] = new StringBuilder(512).append("\"")
+                    .append(StringUtils.join(mappings.values().iterator(), "\", \"")).append("\"").toString();
+            fileExtensionIconsMapping = jsMappings;
+            fileExtensionIcons = mappings;
+        }
+    }
 
-    private static Map<String, String> fileExtensionIcons;
-    
-    private static String[] fileExtensionIconsMapping;
-    
     private static DocumentFormatRegistry formatRegistry = new DefaultDocumentFormatRegistry();
     
     /**
@@ -183,45 +197,12 @@ public final class FileUtils {
         return df.getExtension();
     }
 
-    @SuppressWarnings("unchecked")
     private static Map<String, String> getFileExtensionIcons() {
-        if (fileExtensionIcons == null) {
-            synchronized (FileUtils.class) {
-                if (fileExtensionIcons == null) {
-                    SpringContextSingleton ctxHolder = SpringContextSingleton
-                            .getInstance();
-                    if (ctxHolder.isInitialized()) {
-                        Map<String, String> icons = (Map<String, String>) ctxHolder
-                                .getContext().getBean("fileExtensionIcons");
-                        FastHashMap mappings = new FastHashMap(icons);
-                        mappings.setFast(true);
-                        String[] jsMappings = new String[2];
-                        jsMappings[0] = new StringBuilder(512).append("\"")
-                                .append(
-                                        StringUtils.join(mappings.keySet()
-                                                .iterator(), "\", \"")).append(
-                                        "\"").toString();
-                        jsMappings[1] = new StringBuilder(512).append("\"")
-                                .append(
-                                        StringUtils.join(mappings.values()
-                                                .iterator(), "\", \"")).append(
-                                        "\"").toString();
-                        fileExtensionIconsMapping = jsMappings;
-                        fileExtensionIcons = mappings;
-                    }
-                }
-            }
-        }
-
-        return fileExtensionIcons;
+        return Holder.fileExtensionIcons;
     }
 
     public static String[] getFileExtensionIconsMapping() {
-        if (null == fileExtensionIconsMapping) {
-            // initialize it
-            getFileExtensionIcons();
-        }
-        return Arrays.copyOf(fileExtensionIconsMapping, fileExtensionIconsMapping.length);
+        return Arrays.copyOf(Holder.fileExtensionIconsMapping, Holder.fileExtensionIconsMapping.length);         
     }
 
     public static String getFileIcon(String fileName) {

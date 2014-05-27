@@ -43,11 +43,11 @@ div.pagination {
      overflow:hidden;
      padding:0.2em 0.5em;
      margin:1em 0;
-     background-color:#DDDEDF;
+     /* background-color:#DDDEDF;
      border: 1px solid #d0d0d0;
      -webkit-border-radius: 6px;
      -moz-border-radius: 6px;
-     border-radius: 6px
+     border-radius: 6px */
  }
 div.pagination label {
     display: inline-block;

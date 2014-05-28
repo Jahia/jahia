@@ -96,7 +96,7 @@ public class JSR223ScriptJob extends BackgroundJob {
     private static final Logger logger = LoggerFactory.getLogger(JSR223ScriptJob.class);
 
     public final static String JOB_SCRIPT_PATH = "jobScriptPath";
-    public final static String JOB_SCRIPT_ABSOLUTE_PATH = "jobScriptPath";
+    public final static String JOB_SCRIPT_ABSOLUTE_PATH = "jobScriptAbsolutePath";
     public final static String JOB_SCRIPT_OUTPUT = "jobScriptOutput";
 
     @Override

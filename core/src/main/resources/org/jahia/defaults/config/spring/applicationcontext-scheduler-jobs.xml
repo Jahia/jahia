@@ -8,7 +8,7 @@
 
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">
-            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
+            <bean class="org.springframework.scheduling.quartz.JobDetailBean" depends-on="settingsBean">
                 <property name="name" value="ContentHistoryPurgeJob" />
                 <property name="jobClass" value="org.jahia.services.scheduler.JSR223ScriptJob" />
                 <property name="group" value="Maintenance" />
@@ -16,7 +16,7 @@
                 <property name="jobDataAsMap">
                     <map>
                         <entry key="userkey" value=" system " />
-                        <entry key="jobScriptPath" value="/WEB-INF/var/scripts/groovy/purgeContentHistory.groovy" />
+                        <entry key="jobScriptAbsolutePath" value="#{settingsBean.jahiaVarDiskPath}/scripts/groovy/purgeContentHistory.groovy" />
                     </map>
                 </property>
             </bean>

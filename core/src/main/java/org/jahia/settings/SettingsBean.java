@@ -524,7 +524,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             
             DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
-                SqlPatcher.apply(applicationContext);
+                SqlPatcher.apply(getJahiaVarDiskPath(), applicationContext);
                 GroovyPatcher.executeScripts(servletContext, "contextInitializing");
             }
         } catch (NullPointerException npe) {

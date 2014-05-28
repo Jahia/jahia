@@ -91,18 +91,21 @@ public final class SqlPatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(SqlPatcher.class);
 
-    public static void apply(ApplicationContext ctx) {
+    public static void apply(String varDir, ApplicationContext ctx) {
         try {
-            new SqlPatcher(ctx).execute();
+            new SqlPatcher(varDir, ctx).execute();
         } catch (IOException e) {
             logger.error("Error executing SQL patches", e);
         }
     }
 
     private ApplicationContext ctx;
+    
+    private String varDir;
 
-    private SqlPatcher(ApplicationContext ctx) {
+    private SqlPatcher(String varDir, ApplicationContext ctx) {
         super();
+        this.varDir = varDir;
         this.ctx = ctx;
     }
 
@@ -135,7 +138,7 @@ public final class SqlPatcher {
     }
 
     private Resource[] getPatches() throws IOException {
-        String folder = "/WEB-INF/var/patches/sql/" + DatabaseUtils.getDatabaseType();
+        String folder = "file:" + varDir + "/patches/sql/" + DatabaseUtils.getDatabaseType();
         if (ctx.getResource(folder).exists()) {
             return ctx.getResources(folder + "/**/*.sql");
         } else {

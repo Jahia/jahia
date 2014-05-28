@@ -442,6 +442,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         if (!mixinExtensions.containsKey(baseType)) {
             mixinExtensions.put(baseType, new HashSet<ExtendedNodeType>());
         }
+        mixinExtensions.get(baseType).remove(mixin);
         mixinExtensions.get(baseType).add(mixin);
     }
 

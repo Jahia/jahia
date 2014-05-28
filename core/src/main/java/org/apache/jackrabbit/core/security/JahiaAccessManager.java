@@ -588,6 +588,16 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+            // Always allow to add child nodes when it's a translation node and the user have the translate permission
+
+            if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))){
+                String childNodeName = ((DefaultNamePathResolver) pr).getJCRName(absPath.getName());
+                if(childNodeName.startsWith("j:translation_") &&
+                        hasPrivileges(jcrPath+ "/" + childNodeName, new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
+                    return true;
+                }
+            }
+
             String ntName = n.getPrimaryNodeType().getName();
             if (ntName.equals("jnt:acl") || ntName.equals("jnt:ace")) {
                 if (permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {

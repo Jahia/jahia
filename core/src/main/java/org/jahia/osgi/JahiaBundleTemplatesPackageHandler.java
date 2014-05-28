@@ -70,12 +70,12 @@
 package org.jahia.osgi;
 
 import java.io.File;
+import java.net.URL;
 import java.util.Enumeration;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.templates.ModuleBuildHelper;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -136,9 +136,9 @@ class JahiaBundleTemplatesPackageHandler {
         }
         pkg.setSourcesDownloadable(SettingsBean.getInstance().isMavenExecutableSet() && isSourcesDownloadable);
 
-
-        if (bundle.getEntry("/") != null) {
-            pkg.setFilePath(bundle.getEntry("/").getPath());
+        URL rootEntry = bundle.getEntry("/");
+        if (rootEntry != null) {
+            pkg.setFilePath(rootEntry.getPath());
         }
 
         String depends = getHeader(bundle, "Jahia-Depends");

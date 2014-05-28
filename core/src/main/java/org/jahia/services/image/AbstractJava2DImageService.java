@@ -171,7 +171,7 @@ public abstract class AbstractJava2DImageService extends AbstractImageService {
         int w = originalImage.getWidth(), h = originalImage.getHeight();
         int neww = (int) Math.floor(w * cos + h * sin), newh = (int) Math.floor(h * cos + w * sin);
         graphics2D.translate((neww - w) / 2, (newh - h) / 2);
-        graphics2D.rotate(angle, w / 2, h / 2);
+        graphics2D.rotate(angle, w / (double)2, h / (double)2);
         graphics2D.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
         if (originalImage.getColorModel() instanceof IndexColorModel) {
             graphics2D.drawImage(originalImage, 0, 0, graphics2D.getBackground(), null);

@@ -736,4 +736,10 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
            diskPersistent="false">
     </cache>
 
+    <cache name="RenderService.TemplatesCache"
+           eternal="true"
+           maxBytesLocalHeap="10M"
+           overflowToDisk="false">
+    </cache>
+
 </ehcache>

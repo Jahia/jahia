@@ -33,7 +33,7 @@
 </html>
 
 <!--ressources-->
-<template:addResources type="css" resources="contribute-960-fluid.css,contribute-01web.css,contribute-navigation.css,contribute-navigationN2-1.css," />
+<template:addResources type="css" resources="contribute-960-fluid.css,contribute-01web.css,contribute-navigation.css,contribute-navigationN2-1.css,contribute-box6.css,contribute-box8.css,contribute-box9.css,contribute-responsive.css" />
 <template:addResources><!--[if IE 6]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/contribute-ie6.css'/>" media="screen" /><![endif]--></template:addResources>
 <template:addResources><!--[if IE 7]><link rel="stylesheet" type="text/css" href="<c:url value='${url.currentModule}/css/contribute-ie.css'/>" media="screen" /><![endif]--></template:addResources>
 <template:theme/>

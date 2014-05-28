@@ -4,7 +4,7 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean name="combinedFelixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <bean name="combinedFelixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="properties">
             <props value-type="java.lang.String">
@@ -15,7 +15,7 @@
                 
                 <prop key="felix.fileinstall.active.level">2</prop>
                 <prop key="felix.fileinstall.bundles.new.start">false</prop>
-                <prop key="felix.fileinstall.dir">${jahiaWebAppRoot}/WEB-INF/var/bundles,${jahiaWebAppRoot}/WEB-INF/var/modules</prop>
+                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaVarDiskPath}/bundles,#{settingsBean.jahiaVarDiskPath}/modules</prop>
                 <prop key="felix.fileinstall.noInitialDelay">true</prop>
                 <prop key="felix.fileinstall.start.level">2</prop>
                 
@@ -24,7 +24,7 @@
                 <prop key="org.osgi.framework.bootdelegation">com.yourkit.*</prop>
                 <prop key="org.osgi.framework.bundle.parent">framework</prop>
                 <prop key="org.osgi.framework.startlevel.beginning">2</prop>
-                <prop key="org.osgi.framework.storage">${jahiaWebAppRoot}/WEB-INF/var/bundles-deployed</prop>
+                <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>
                 <prop key="org.osgi.framework.storage.clean">none</prop>
                 <prop key="org.apache.felix.http.shared_servlet_context_attributes">true</prop>
                 

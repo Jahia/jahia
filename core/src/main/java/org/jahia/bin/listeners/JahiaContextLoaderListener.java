@@ -70,7 +70,6 @@
 package org.jahia.bin.listeners;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
@@ -106,8 +105,6 @@ import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.jstl.core.Config;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
@@ -205,7 +202,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             throw new JahiaRuntimeException(e);
         }
 
-        writePID(servletContext);
+        detectPID(servletContext);
         
         GroovyPatcher.executeScripts(servletContext, "beforeContextInitializing");
 
@@ -331,34 +328,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
-    private void writePID(ServletContext servletContext) {
+    private void detectPID(ServletContext servletContext) {
         try {
             pid = Patterns.AT.split(ManagementFactory.getRuntimeMXBean().getName())[0];
         } catch (Exception e) {
             logger.warn("Unable to determine process id", e);
-        }
-        String path = servletContext.getRealPath("WEB-INF/var");
-        final String jahiaVarDiskPath = System.getProperty("jahiaVarDiskPath");
-        if (jahiaVarDiskPath != null) {
-            path = jahiaVarDiskPath;
-        }
-        if (path != null) {
-            try {
-                FileUtils.writeStringToFile(new File(path, "jahia.pid"), pid);
-            } catch (IOException e) {
-                logger.warn("Unable to write process ID into a file " + new File(path, "jahia.pid"), e);
-            }
-        }
-    }
-
-    private void removePID(ServletContext servletContext) {
-        String path = servletContext.getRealPath("WEB-INF/var");
-        final String jahiaVarDiskPath = System.getProperty("jahiaVarDiskPath");
-        if (jahiaVarDiskPath != null) {
-            path = jahiaVarDiskPath;
-        }
-        if (path != null) {
-            FileUtils.deleteQuietly(new File(path, "jahia.pid"));
         }
     }
 
@@ -386,7 +360,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             SpringContextSingleton.getInstance().publishEvent(
                     new ServletContextDestroyedEvent(event.getServletContext()));
         }
-        removePID(servletContext);
 
         long timer = System.currentTimeMillis();
         logger.info("Stopping OSGi platform service");

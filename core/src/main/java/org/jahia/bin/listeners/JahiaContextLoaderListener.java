@@ -338,8 +338,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             logger.warn("Unable to determine process id", e);
         }
         String path = servletContext.getRealPath("WEB-INF/var");
-        if (System.getProperty("jahiaVarDiskPath") != null) {
-            path = System.getProperty("jahiaVarDiskPath");
+        final String jahiaVarDiskPath = System.getProperty("jahiaVarDiskPath");
+        if (jahiaVarDiskPath != null) {
+            path = jahiaVarDiskPath;
         }
         if (path != null) {
             try {
@@ -352,8 +353,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private void removePID(ServletContext servletContext) {
         String path = servletContext.getRealPath("WEB-INF/var");
-        if (System.getProperty("jahiaVarDiskPath") != null) {
-            path = System.getProperty("jahiaVarDiskPath");
+        final String jahiaVarDiskPath = System.getProperty("jahiaVarDiskPath");
+        if (jahiaVarDiskPath != null) {
+            path = jahiaVarDiskPath;
         }
         if (path != null) {
             FileUtils.deleteQuietly(new File(path, "jahia.pid"));

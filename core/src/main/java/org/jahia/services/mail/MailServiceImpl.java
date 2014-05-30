@@ -390,7 +390,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             // Subject
             String subject;
             try {
-                String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath.getFilename(), ".") + ".subject."
+                String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath.getURI().getPath(), ".") + ".subject."
                         + StringUtils.substringAfterLast(templateRealPath.getFilename(), ".");
                 InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
                 scriptContent = new InputStreamReader(stream);

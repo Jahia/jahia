@@ -337,8 +337,11 @@ public class URLResolver {
                     List<VanityUrl> vanityUrls = getVanityUrlService()
                             .findExistingVanityUrls("/" + tempPath,
                                     getSiteKey(), tempWorkspace);
-                    if(!vanityUrls.isEmpty() && vanityUrls.size()==1){
-                        resolvedVanityUrl = vanityUrls.get(0);
+                    for (VanityUrl vanityUrl : vanityUrls) {
+                        if (vanityUrl.isActive()) {
+                            resolvedVanityUrl = vanityUrl;
+                            break;
+                        }
                     }
                 } else if (doNotMatchesCrossSitesPattern) {
                     List<VanityUrl> vanityUrls = getVanityUrlService()

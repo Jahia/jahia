@@ -176,7 +176,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private static volatile SelfPopulatingCache privilegesInRole = null;
     private static volatile Cache<String, Boolean> matchingPermissions = null;
-    private LRUMap pathPermissionCache = null;
+    private Map<String, Boolean> pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
     private Boolean isAdmin = null;
 
@@ -300,7 +300,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             throw new IllegalStateException("already initialized");
         }
 
-        pathPermissionCache = new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize());
+        pathPermissionCache = Collections.synchronizedMap(new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize()));
         globalGroupMembershipCheckActivated = SettingsBean.getInstance().isGlobalGroupMembershipCheckActivated();
         subject = context.getSubject();
         resolver = context.getNamePathResolver();
@@ -490,9 +490,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         boolean res = false;
 
         String cacheKey = absPathStr + " : " + permissions;
+<<<<<<< .working
         Boolean result = (Boolean) pathPermissionCache.get(cacheKey);
         if (result != null) {
             return result;
+=======
+        if (pathPermissionCache.containsKey(cacheKey)) {
+            return pathPermissionCache.get(cacheKey);
+>>>>>>> .merge-right.r49884
         }
 
         try {

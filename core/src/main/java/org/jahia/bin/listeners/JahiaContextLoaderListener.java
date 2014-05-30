@@ -187,7 +187,17 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         Jahia.setContextPath(servletContext.getContextPath());
         
         String jahiaWebAppRoot = servletContext.getRealPath("/");
-        System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
+        try {
+            System.setProperty("jahiaWebAppRoot", jahiaWebAppRoot);
+        } catch (SecurityException se) {
+            logger.error("System property jahiaWebAppRoot was NOT set to " + jahiaWebAppRoot + " successfully ! Please check app server security manager policies to allow this.", se);
+        }
+        // let's try to read it to make sure it was set properly as this is critical for Jahia startup and may fail on some application servers that have SecurityManager permissions set.
+        if (System.getProperty("jahiaWebAppRoot") != null && System.getProperty("jahiaWebAppRoot").equals(jahiaWebAppRoot)) {
+            logger.info("System property jahiaWebAppRoot set to " + jahiaWebAppRoot + " successfully.");
+        } else {
+            logger.error("System property jahiaWebAppRoot was NOT set to " + jahiaWebAppRoot + " successfully ! Please check app server security manager policies to allow this.");
+        }
         if (System.getProperty("jahia.config") == null) {
             System.setProperty("jahia.config", "");
         }

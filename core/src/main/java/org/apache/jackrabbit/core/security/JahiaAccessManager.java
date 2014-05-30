@@ -491,12 +491,19 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         String cacheKey = absPathStr + " : " + permissions;
 <<<<<<< .working
+<<<<<<< .working
         Boolean result = (Boolean) pathPermissionCache.get(cacheKey);
         if (result != null) {
             return result;
 =======
         if (pathPermissionCache.containsKey(cacheKey)) {
             return pathPermissionCache.get(cacheKey);
+=======
+
+        Boolean result = pathPermissionCache.get(cacheKey);
+        if (result != null) {
+            return result;
+>>>>>>> .merge-right.r49886
 >>>>>>> .merge-right.r49884
         }
 

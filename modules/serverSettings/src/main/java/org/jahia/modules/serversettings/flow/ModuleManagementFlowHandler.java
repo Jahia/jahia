@@ -422,6 +422,8 @@ public class ModuleManagementFlowHandler implements Serializable {
     private void populateModuleVersionStateInfo(RequestContext context, Map<String, List<String>> directSiteDep,
                                                 Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep) {
         Map<String, Map<ModuleVersion, ModuleVersionState>> states = new TreeMap<String, Map<ModuleVersion, ModuleVersionState>>();
+        Map<String, String> errors = new TreeMap<String,String>();
+
         Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
         context.getRequestScope().put("systemSiteRequiredModules", systemSiteRequiredModules);
         for (Map.Entry<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> entry : templateManagerService
@@ -431,6 +433,9 @@ public class ModuleManagementFlowHandler implements Serializable {
                 moduleVersions = new TreeMap<ModuleVersion, ModuleVersionState>();
                 states.put(entry.getKey(), moduleVersions);
             }
+            if (BundleUtils.getContextStartException(entry.getKey()) != null) {
+                errors.put(entry.getKey(), BundleUtils.getContextStartException(entry.getKey()).getLocalizedMessage());
+            }
 
             for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> moduleVersionEntry : entry.getValue().entrySet()) {
                 ModuleVersionState state = getModuleVersionState(moduleVersionEntry.getKey(),
@@ -439,6 +444,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             }
         }
         context.getRequestScope().put("moduleStates", states);
+        context.getRequestScope().put("errors", errors);
     }
 
     private ModuleVersionState getModuleVersionState(ModuleVersion moduleVersion, JahiaTemplatesPackage pkg,

@@ -5,6 +5,9 @@
             <c:if test="${isMandatoryDependency}">
                 <span class="text-error" title="${i18nMandatoryDependency}"><a href="#mandatory-dependency" class="text-error"><strong>*</strong></a></span>
             </c:if>
+            <c:if test="${not empty errors[entry.key]}">
+                <span class="label label-important"><strong>${errors[entry.key]}</strong></span>
+            </c:if>
         </td>
         <td>${entry.key}</td>
         <td>${currentModule.groupId}</td>

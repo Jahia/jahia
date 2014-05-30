@@ -99,6 +99,8 @@ public final class BundleUtils {
 
     private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<Bundle, AbstractApplicationContext>();
 
+    private static Map<String, Throwable> contextException = new HashMap<String, Throwable>();
+
     private static Map<String, Map<String, JahiaTemplatesPackage>> modules = new ConcurrentHashMap<String, Map<String, JahiaTemplatesPackage>>(
             64);
 
@@ -358,5 +360,15 @@ public final class BundleUtils {
     public static void setContextToStartForModule(Bundle bundle, AbstractApplicationContext context) {
         contextToStart.put(bundle,context);
     }
+
+    public static Throwable getContextStartException(String key) {
+        return contextException.get(key);
+    }
+
+    public static void setContextStartException(String key, Throwable exception) {
+        contextException.put(key,exception);
+    }
+
+
 
 }

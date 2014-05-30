@@ -76,9 +76,9 @@ import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
 import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
@@ -90,7 +90,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 /**
  * Listener for OSGi bundle application context life cycle events. Performs logging of events. Stops the corresponding bundle if the context
  * initialization fails. Performs cross-module import/exports of Spring beans.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaOsgiBundleApplicationContextListener implements
@@ -130,25 +130,38 @@ public class JahiaOsgiBundleApplicationContextListener implements
 
         logEvent(event, bundleDisplayName);
 
-        if (stopBundleIfContextFails && (event instanceof OsgiBundleContextFailedEvent)) {
-            if (!SettingsBean.getInstance().isDevelopmentMode()) {
-                logger.info("Stopping bundle {}", bundleDisplayName);
+        if (event instanceof OsgiBundleContextFailedEvent) {
+            Throwable cause = getRootCause(((OsgiBundleContextFailedEvent) event).getFailureCause());
+            BundleUtils.setContextStartException(bundle.getSymbolicName(),cause);
+            if (cause instanceof LicenseCheckException) {
+                logger.info("Stopping module, no license");
                 try {
                     bundle.stop();
-                    logger.info("...bundle {} stopped", bundleDisplayName);
+                    logger.info("Stopping module, xtooped");
                 } catch (BundleException e) {
                     logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
                 }
-            } else {
-                logger.error("Cannot start spring context for bundle {}", bundleDisplayName);
+            } else if (stopBundleIfContextFails) {
+                if (!SettingsBean.getInstance().isDevelopmentMode()) {
+                    logger.info("Stopping bundle {}", bundleDisplayName);
+                    try {
+                        bundle.stop();
+                        logger.info("...bundle {} stopped", bundleDisplayName);
+                    } catch (BundleException e) {
+                        logger.error("Unable to stop bundle " + bundleDisplayName + " due to: " + e.getMessage(), e);
+                    }
+                } else {
+                    logger.error("Cannot start spring context for bundle {}", bundleDisplayName);
+                }
+                return;
             }
-            return;
         }
 
         if (event instanceof OsgiBundleContextRefreshedEvent && BundleUtils.isJahiaModuleBundle(bundle)) {
             JahiaTemplatesPackage module = BundleUtils.getModule(bundle);
             // set the context
             module.setContext((AbstractApplicationContext) event.getApplicationContext());
+            BundleUtils.setContextStartException(bundle.getSymbolicName(), null);
 
             TemplatePackageRegistry moduleRegistry = null;
             // if module's Jahia late-initialization services were not initialized yet and the global initialization was already done
@@ -156,11 +169,18 @@ public class JahiaOsgiBundleApplicationContextListener implements
             if (module != null
                     && !module.isServiceInitialized()
                     && (moduleRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                            .getTemplatePackageRegistry()).isAfterInitializeDone()) {
+                    .getTemplatePackageRegistry()).isAfterInitializeDone()) {
                 // initializing services for module
                 moduleRegistry.afterInitializationForModule(module);
             }
         }
+    }
+
+    public Throwable getRootCause(Throwable t) {
+        while (t.getCause() != null) {
+            t = t.getCause();
+        }
+        return t;
     }
 
     public void setStopBundleIfContextFails(boolean stopBundleIfContextFails) {

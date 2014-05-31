@@ -94,12 +94,6 @@ public class CommonEntryPoint implements EntryPoint {
     JahiaContentManagementServiceAsync contentManagementService;
     
     public void onModuleLoad() {
-        /* todo The following two lines are a hack to get development mode to work on Mac OS X, should be removed once this
-           problem is fixed.
-         */
-        @SuppressWarnings("unused")
-        Layout junk = new AnchorLayout();
-        /* End of GWT hack */
     }
     
     protected void checkSession() {

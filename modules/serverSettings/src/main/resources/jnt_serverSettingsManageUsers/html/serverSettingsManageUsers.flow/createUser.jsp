@@ -45,26 +45,26 @@
                             <input type="text" name="username" class="span12" id="username" value="${userProperties.username}">
                         </div>
                         <div class="span4">
-                            <label for="firstName"><fmt:message key="label.firstName"/></label>
-                            <input type="text" name="firstName" class="span12" id="firstName" value="${userProperties.firstName}">
                         </div>
                     </div>
                     <div class="row-fluid">
+                        <div class="span4">
+                            <label for="firstName"><fmt:message key="label.firstName"/></label>
+                            <input type="text" name="firstName" class="span12" id="firstName" value="${userProperties.firstName}">
+                        </div>
                         <div class="span4">
                             <label for="lastName"><fmt:message key="label.lastName"/></label>
                             <input type="text" name="lastName" class="span12" id="lastName" value="${userProperties.lastName}">
                         </div>
+                    </div>
+                    <div class="row-fluid">
                         <div class="span4">
                             <label for="email"><fmt:message key="label.email"/></label>
                             <input type="text" name="email" class="span12" id="email" value="${userProperties.email}">
                         </div>
-                    </div>
-                    <div class="row-fluid">
                         <div class="span4">
                             <label for="organization"><fmt:message key="label.organization"/></label>
                             <input type="text" name="organization" class="span12" id="organization" value="${userProperties.organization}">
-                        </div>
-                        <div class="span4">
                         </div>
                     </div>
                     <div class="row-fluid">

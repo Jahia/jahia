@@ -203,7 +203,7 @@
                            j:defaultTemplate="false"
                            j:hiddenTemplate="false"
                            j:icon="/modules/serverSettings/templates/files/serveradmin/aboutJahia.png"
-                           j:requiredPermissionNames="adminAbout"
+                           j:requiredPermissionNames="administrationAccess"
                            j:titleKey="serverSettings.aboutJahia"
                            jcr:mixinTypes="jmix:rbTitle"
                            jcr:primaryType="jnt:contentTemplate">

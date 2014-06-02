@@ -62,7 +62,6 @@
             <adminPasswordPolicy jcr:primaryType="jnt:permission" />
             <adminIssueTracking jcr:primaryType="jnt:permission" />
             <adminDocumentation jcr:primaryType="jnt:permission" />
-            <adminAbout jcr:primaryType="jnt:permission" />
             <adminUsers jcr:primaryType="jnt:permission" />
             <adminDBSettings jcr:primaryType="jnt:permission" />
             <adminTemplates jcr:primaryType="jnt:permission" />

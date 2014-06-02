@@ -219,8 +219,27 @@ final class JahiaResourceBundleControl extends Control {
     public long getTimeToLive(String baseName, Locale locale) {
         JahiaTemplatesPackage aPackage = templatePackageRegistry.getPackageForResourceBundle(baseName);
         if (aPackage != null && aPackage.getSourcesFolder() != null) {
-            return TTL_DONT_CACHE;
+            return 1000;
         }
         return super.getTimeToLive(baseName, locale);
+    }
+    
+    @Override
+    public boolean needsReload(String baseName, Locale locale, String format, ClassLoader loader,
+            ResourceBundle bundle, long loadTime) {
+        boolean needsReload = super.needsReload(baseName, locale, format, loader, bundle, loadTime);
+
+        if (!needsReload) {
+            JahiaTemplatesPackage aPackage = templatePackageRegistry.getPackageForResourceBundle(baseName);
+            if (aPackage != null && aPackage.getSourcesFolder() != null) {
+                String resourceName = toResourceName(toBundleName(baseName, locale), "properties");
+                File rbSrc = new File(new File(aPackage.getSourcesFolder(), "src/main/resources"), resourceName);
+                if (rbSrc.exists() && rbSrc.lastModified() > loadTime) {
+                    needsReload = true;
+                }
+            }
+        }
+
+        return needsReload;
     }
 }

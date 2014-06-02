@@ -221,7 +221,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if(cacheService!=null) {
                 // Jahia is initialized
                 EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.priviliegesInRolesCache", new CacheEntryFactory() {
+                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.privilegesInRolesCache", new CacheEntryFactory() {
                     @Override
                     public Object createEntry(Object role) throws Exception {
                         String externalPermission = null;

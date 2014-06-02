@@ -202,13 +202,13 @@
 
                         <div style="display: none;">
                             <div id="config-${managerStatus.index}-${status.index}">
-                                <h3>${cache.name}</h3>
+                                <h3><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}">${cache.name}</a></h3>
                                 <pre>${fn:escapeXml(cache.config)}</pre>
                             </div>
                         </div>
                     </td>
                 </c:if>
-                <td>${cache.name}</td>
+                <td><a href="ehcache/ehcache_details.jsp?name=${manager.name}&cache=${cache.name}">${cache.name}</a></td>
                 <td align="center">${cache.size}</td>
                 <td align="center">${cache.localHeapSize}</td>
                 <td align="center">${cache.overflowToDisk ? cache.localDiskSize : '-'}</td>

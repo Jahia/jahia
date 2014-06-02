@@ -63,8 +63,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
          updateCheck="false" monitoring="autodetect"
          name="org.jahia.ehcachemanager"
          dynamicConfig="true"
-         maxBytesLocalHeap="25%"
-         maxBytesLocalDisk="100G">
+         maxBytesLocalHeap="25%">
 
     <!--
     DiskStore configuration
@@ -683,11 +682,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     The defaultCache has an implicit name "default" which is a reserved cache name.
     -->
     <defaultCache
-            eternal="false"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
+            eternal="true">
     </defaultCache>
 
     <cache name="FileContentCache"
@@ -698,24 +693,19 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     <cache name="HTMLCache"
             eternal="false"
             timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
+            timeToLiveSeconds="14400">
     </cache>
     <cache name="HTMLDependenciesCache"
             eternal="true"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
+            diskExpiryThreadIntervalSeconds="600">
     </cache>
     <cache name="HTMLREGEXPDependenciesCache"
             eternal="true"
-            diskExpiryThreadIntervalSeconds="600"
-            diskPersistent="true">
+            diskExpiryThreadIntervalSeconds="600">
     </cache>
 
     <cache name="org.jahia.selfPopulatingReplicatedCache"
            overflowToDisk="false"
-           diskPersistent="false"
            eternal="true" >
     </cache>
 
@@ -723,8 +713,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
            eternal="false"
            timeToIdleSeconds="7200"
            timeToLiveSeconds="0"
-           overflowToDisk="false"
-           diskPersistent="false">
+           overflowToDisk="false">
         <searchable keys="false" values="true"/>
     </cache>
 
@@ -732,13 +721,36 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
            eternal="false"
            timeToIdleSeconds="7200"
            timeToLiveSeconds="0"
-           overflowToDisk="false"
-           diskPersistent="false">
+           overflowToDisk="false">
     </cache>
 
     <cache name="RenderService.TemplatesCache"
            eternal="true"
            maxBytesLocalHeap="10M"
+           overflowToDisk="false">
+    </cache>
+
+    <cache name="HTMLNodeUsersACLs"
+           eternal="true"
+           maxBytesLocalHeap="50M"
+           overflowToDisk="false">
+    </cache>
+
+    <cache name="JCRGroupCache"
+           eternal="true"
+           maxBytesLocalHeap="100M"
+           overflowToDisk="false">
+    </cache>
+
+    <cache name="JCRGroupMembershipCache"
+           eternal="true"
+           maxBytesLocalHeap="100M"
+           overflowToDisk="false">
+    </cache>
+
+    <cache name="org.jahia.security.matchingPermissions"
+           eternal="true"
+           maxBytesLocalHeap="1M"
            overflowToDisk="false">
     </cache>
 

@@ -34,7 +34,6 @@
                                     <ref bean="Toolbar.Item.SiteContent"/>
                                     <ref bean="Toolbar.Item.SiteFiels"/>
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" parent="Toolbar.Item.NewPage">
-                                        <property name="requiredPermission" value="createPageAction"/>
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                                                 <property name="nodeTypes" value="jnt:page"/>

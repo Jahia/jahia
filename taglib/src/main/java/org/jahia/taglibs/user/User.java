@@ -284,4 +284,17 @@ public class User {
     public static String formatUserTextOption(Principal principal,String fieldsToDisplay) {
         return new PrincipalViewHelper(fieldsToDisplay.split(";")).getPrincipalTextOption(principal);
     }
+    
+    public static Boolean isReadOnlyProvider(Principal p) {
+        boolean readOnly = false;
+        if (p instanceof JahiaGroup) {
+            readOnly = JahiaGroupManagerRoutingService.getInstance().getProvider(((JahiaGroup) p).getProviderName())
+                    .isReadOnly();
+        } else if (p instanceof JahiaUser) {
+            readOnly = JahiaUserManagerRoutingService.getInstance().getProvider(((JahiaUser) p).getProviderName())
+                    .isReadOnly();
+        }
+
+        return readOnly;
+    }
 }

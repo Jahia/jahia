@@ -242,9 +242,11 @@
                                 <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.userKey)}')">
                                     <i class="icon-edit"></i>
                                 </a>
+                                <c:if test="${curUser.username != 'guest' && !user:isReadOnlyProvider(curUser)}">
                                 <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="doUserAction('removeUser', '${fn:escapeXml(curUser.userKey)}')">
                                     <i class="icon-remove icon-white"></i>
                                 </a>
+                                </c:if>
                             </td>
                         </tr>
                     </c:forEach>

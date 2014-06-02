@@ -181,4 +181,16 @@
             &lt;c:if test="${user:isAssignable(task)}"/&gt;
         </example>
     </function>
+
+    <function>
+        <description>
+            Checks if the provided principal comes from a read-only provider
+        </description>
+        <name>isReadOnlyProvider</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>java.lang.Boolean isReadOnlyProvider(java.security.Principal)</function-signature>
+        <example>
+            &lt;c:if test="${user:isReadOnlyProvider(testUser)}"/&gt;
+        </example>
+    </function>
 </taglib>

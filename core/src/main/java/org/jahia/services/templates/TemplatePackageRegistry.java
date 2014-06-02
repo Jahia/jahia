@@ -323,10 +323,22 @@ public class TemplatePackageRegistry {
 
     public Set<ModuleVersion> getAvailableVersionsForModule(String moduleNameOrId) {
         if (packagesWithVersionById.containsKey(moduleNameOrId)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionById.get(moduleNameOrId).keySet());
+            Set<ModuleVersion> moduleVersions = packagesWithVersionById.get(moduleNameOrId).keySet();
+            // the returned set might or might not be a SortedSet instance, depending on the JDK (Sun == SortedSet, IBM == something else)
+            if (moduleVersions instanceof SortedSet) {
+                return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) moduleVersions);
+            } else {
+                return Collections.unmodifiableSortedSet(new TreeSet<ModuleVersion>(moduleVersions));
+            }
         }
         if (packagesWithVersionByName.containsKey(moduleNameOrId)) {
-            return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) packagesWithVersionByName.get(moduleNameOrId).keySet());
+            Set<ModuleVersion> moduleVersions = packagesWithVersionByName.get(moduleNameOrId).keySet();
+            // the returned set might or might not be a SortedSet instance, depending on the JDK (Sun == SortedSet, IBM == something else)
+            if (moduleVersions instanceof SortedSet) {
+                return Collections.unmodifiableSortedSet((SortedSet<ModuleVersion>) moduleVersions);
+            } else {
+                return Collections.unmodifiableSortedSet(new TreeSet<ModuleVersion>(moduleVersions));
+            }
         }
         return Collections.emptySet();
     }

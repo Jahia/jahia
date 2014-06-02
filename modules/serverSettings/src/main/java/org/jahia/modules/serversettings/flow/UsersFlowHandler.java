@@ -297,9 +297,13 @@ public class UsersFlowHandler implements Serializable {
     }
 
     public Set<Principal> search(SearchCriteria searchCriteria) {
+        String searchTerm = searchCriteria.getSearchString();
+        if (StringUtils.isNotEmpty(searchTerm) && searchTerm.indexOf('*') == -1) {
+            searchTerm += '*';
+        }
         searchCriteria.setNumberOfRemovedJahiaAdministrators(0);
         Set<Principal> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                searchTerm, searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                 searchCriteria.getProviders());
         int searchSize = searchResult.size();
         searchResult = PrincipalViewHelper.removeJahiaAdministrators(searchResult);

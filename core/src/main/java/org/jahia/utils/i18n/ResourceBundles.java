@@ -70,11 +70,7 @@
 package org.jahia.utils.i18n;
 
 import java.lang.reflect.Field;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
@@ -102,6 +98,8 @@ public final class ResourceBundles {
             Field cacheList = ResourceBundle.class.getDeclaredField("cacheList");
             cacheList.setAccessible(true);
             ((Map<?, ?>) cacheList.get(ResourceBundle.class)).clear();
+        } catch (NoSuchElementException e) {
+            logger.warn("Field cacheList not found on ResourceBundle object, this only works on Oracle JDK : " + e.getMessage());
         } catch (Exception e) {
             logger.warn("Unable to flush resource bundle cache", e);
         }

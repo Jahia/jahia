@@ -77,6 +77,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.DefaultEventListener;
+import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -123,8 +124,8 @@ public class URLResolverListener extends DefaultEventListener {
 
                 String path = event.getPath();
                 if (event.getType() == Event.NODE_ADDED || event.getType() == Event.NODE_REMOVED || event.getType() == Event.NODE_MOVED ||
-                        path.endsWith("/j:published") ) {
-                    if (path.endsWith("/j:published")) {
+                        path.endsWith("/j:published") || path.contains("/vanityUrlMapping/")) {
+                    if (event.getType() == Event.PROPERTY_CHANGED || event.getType() == Event.PROPERTY_ADDED || event.getType() == Event.PROPERTY_REMOVED) {
                         path = path.substring(0, path.lastIndexOf("/"));
                         int pos = path.lastIndexOf("/");
                         if (pos != -1 && path.substring(pos, path.length()).startsWith("/j:translation_")) {

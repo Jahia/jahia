@@ -443,18 +443,20 @@ public class VanityUrlManager {
                     .hasNext(); ) {
                 JCRNodeWrapper currentNode = (JCRNodeWrapper) it.next();
                 String language = currentNode.getPropertyAsString(JCR_LANGUAGE);
-                Map<String, VanityUrl> existingVanityUrls = existingMappings
-                        .get(language);
-                if (existingVanityUrls == null) {
-                    existingMappings.put(language,
-                            new HashMap<String, VanityUrl>());
-                }
-                VanityUrl vanityUrl = populateJCRData(currentNode,
-                        new VanityUrl());
-                existingMappings.get(language).put(currentNode.getName(), vanityUrl);
-                if (currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()) {
-                    oldDefaultMappings.put(language, new DefaultKeyValue(
-                            currentNode.getName(), vanityUrl));
+                if (updatedLocales.contains(language)) {
+                    Map<String, VanityUrl> existingVanityUrls = existingMappings
+                            .get(language);
+                    if (existingVanityUrls == null) {
+                        existingMappings.put(language,
+                                new HashMap<String, VanityUrl>());
+                    }
+                    VanityUrl vanityUrl = populateJCRData(currentNode,
+                            new VanityUrl());
+                    existingMappings.get(language).put(currentNode.getName(), vanityUrl);
+                    if (currentNode.getProperty(PROPERTY_DEFAULT).getBoolean()) {
+                        oldDefaultMappings.put(language, new DefaultKeyValue(
+                                currentNode.getName(), vanityUrl));
+                    }
                 }
             }
         }

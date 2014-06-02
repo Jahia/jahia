@@ -428,9 +428,13 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return the list of groups, matching the specified search criteria
      */
     public Set<Principal> search(SearchCriteria searchCriteria) {
+        String searchTerm = searchCriteria.getSearchString();
+        if (StringUtils.isNotEmpty(searchTerm) && searchTerm.indexOf('*') == -1) {
+            searchTerm += '*';
+        }
         long timer = System.currentTimeMillis();
         Set<Principal> searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
-                searchCriteria.getSiteId(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
+                searchCriteria.getSiteId(), searchTerm, searchCriteria.getProperties(),
                 searchCriteria.getStoredOn(), searchCriteria.getProviders());
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
         return searchResult;

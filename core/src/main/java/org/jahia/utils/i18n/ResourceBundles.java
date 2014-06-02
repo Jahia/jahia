@@ -79,7 +79,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jahia resource bundle utility class.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class ResourceBundles {
@@ -98,7 +98,7 @@ public final class ResourceBundles {
             Field cacheList = ResourceBundle.class.getDeclaredField("cacheList");
             cacheList.setAccessible(true);
             ((Map<?, ?>) cacheList.get(ResourceBundle.class)).clear();
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchFieldException e) {
             logger.warn("Field cacheList not found on ResourceBundle object, this only works on Oracle JDK : " + e.getMessage());
         } catch (Exception e) {
             logger.warn("Unable to flush resource bundle cache", e);
@@ -109,7 +109,7 @@ public final class ResourceBundles {
 
     /**
      * Use the resource bundle lookup hierarchy of the provided template package.
-     * 
+     *
      * @param pkg
      *            the template package to use resources bundle lookup for
      * @param locale
@@ -131,7 +131,7 @@ public final class ResourceBundles {
 
     /**
      * Use the resource bundle lookup hierarchy of the provided template package, but first check for the specified bundle name.
-     * 
+     *
      * @param primaryBundleName
      *            the bundle name to peform lookup for in first turn
      * @param pkg
@@ -160,7 +160,7 @@ public final class ResourceBundles {
 
     /**
      * Looks up a resource bundle for the specified locale
-     * 
+     *
      * @param bundleName
      *            the name of the bundle to look up
      * @param locale
@@ -178,7 +178,7 @@ public final class ResourceBundles {
 
     /**
      * Looks up the JahiaInternalResources bundle for the specified locale
-     * 
+     *
      * @param locale
      *            the locale to look the bundle up
      * @return the JahiaInternalResources bundle for the specified locale
@@ -186,7 +186,7 @@ public final class ResourceBundles {
     public static ResourceBundle getInternal(Locale locale) {
         return get(JAHIA_INTERNAL_RESOURCES, locale);
     }
-    
+
     private ResourceBundles() {
         super();
     }

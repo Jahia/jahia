@@ -553,8 +553,8 @@
                                     <goal>prepare-agent</goal>
                                 </goals>
                                 <configuration>
-                                    <jacoco.append>true</jacoco.append>
-                                    <jacoco.destFile>${sonar.jacoco.reportPath}</jacoco.destFile>
+                                    <append>true</append>
+                                    <destFile>${sonar.jacoco.reportPath}</destFile>
                                 </configuration>
                             </execution>
                     </executions>

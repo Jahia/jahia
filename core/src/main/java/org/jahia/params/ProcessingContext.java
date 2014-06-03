@@ -167,7 +167,6 @@ public class ProcessingContext {
 
     // session names
     public static final String SESSION_USER = Constants.SESSION_USER;
-    public static final String SESSION_SITE = Constants.SESSION_SITE;
     public static final String SESSION_LOCALE = Constants.SESSION_LOCALE;
     public static final String SESSION_UI_LOCALE = Constants.SESSION_UI_LOCALE;
 

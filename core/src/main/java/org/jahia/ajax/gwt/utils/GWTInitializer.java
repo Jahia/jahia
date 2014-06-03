@@ -72,30 +72,27 @@ package org.jahia.ajax.gwt.utils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.api.Constants;
+import org.jahia.bin.Render;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.notification.ToolbarWarningsService;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.URLGenerator;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.api.Constants;
-import org.jahia.bin.Render;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.URLGenerator;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import java.util.*;
 
 /**
@@ -201,17 +198,6 @@ public class GWTInitializer {
             } else {
                 if (request.getParameter("site") != null) {
                     params.put(JahiaGWTParameters.SITE_UUID, StringEscapeUtils.escapeXml(request.getParameter("site")));
-                } else {
-                    final JahiaSite attribute = (JahiaSite) request.getSession().getAttribute(Constants.SESSION_SITE);
-                    if (attribute != null && !"".equals(attribute.getSiteKey())) {
-                        try {
-                            params.put(JahiaGWTParameters.SITE_UUID,
-                                    ((JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(attribute.getSiteKey())).getIdentifier());
-                            params.put(JahiaGWTParameters.SITE_KEY, attribute.getSiteKey());
-                        } catch (JahiaException e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
                 }
                 if (request.getParameter("workspace") != null) {
                     params.put(JahiaGWTParameters.WORKSPACE, request.getParameter("workspace"));

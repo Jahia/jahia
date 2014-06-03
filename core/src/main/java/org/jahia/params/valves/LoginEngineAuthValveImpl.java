@@ -218,14 +218,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
                 Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(theUser, LanguageCodeConverters.resolveLocaleForGuest(httpServletRequest));
-                JahiaSite site = (JahiaSite) authContext.getRequest().getSession().getAttribute(Constants.SESSION_SITE);
-                if (site != null) {
-                    List<Locale> siteLocales = site.getLanguagesAsLocales();
-                    if (siteLocales.contains(preferredUserLocale)) {
-                        httpServletRequest.getSession()
-                                .setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
-                    }
-                }
+                httpServletRequest.getSession().setAttribute(Constants.SESSION_LOCALE, preferredUserLocale);
             }
 
             String useCookie = httpServletRequest.getParameter(USE_COOKIE);

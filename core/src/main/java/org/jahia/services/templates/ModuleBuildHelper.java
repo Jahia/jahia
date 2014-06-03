@@ -82,6 +82,7 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.security.license.LicenseCheckException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -139,6 +140,9 @@ public class ModuleBuildHelper implements InitializingBean {
             } finally {
                 IOUtils.closeQuietly(is);
             }
+            if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+                throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
+            }
             return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                     moduleInfo.getVersion()));
         }
@@ -158,6 +162,10 @@ public class ModuleBuildHelper implements InitializingBean {
             throw new IOException("Missing dependency : " + pkg.getState().getDetails().toString());
         }
         bundle.start();
+        if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+            throw new IOException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
+        }
+
         return templatePackageRegistry.lookupByIdAndVersion(moduleInfo.getModuleName(), new ModuleVersion(
                 moduleInfo.getVersion()));
     }

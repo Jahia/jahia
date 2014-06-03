@@ -95,7 +95,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     Subdirectories can be specified below the property e.g. java.io.tmpdir/one
 
     -->
-    <diskStore path="java.io.tmpdir/jahia-caches"/>
+    <!--<diskStore path="java.io.tmpdir/jahia-caches"/>-->
 
     <!--
     TransactionManagerLookup configuration
@@ -685,9 +685,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             eternal="true">
     </defaultCache>
 
-    <cache name="FileContentCache"
-            overflowToDisk="false"
-            diskPersistent="false">
+    <cache name="FileContentCache">
     </cache>
 
     <cache name="HTMLCache"
@@ -696,62 +694,52 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
             timeToLiveSeconds="14400">
     </cache>
     <cache name="HTMLDependenciesCache"
-            eternal="true"
-            diskExpiryThreadIntervalSeconds="600">
+            eternal="true">
     </cache>
     <cache name="HTMLREGEXPDependenciesCache"
-            eternal="true"
-            diskExpiryThreadIntervalSeconds="600">
+            eternal="true">
     </cache>
 
     <cache name="org.jahia.selfPopulatingReplicatedCache"
-           overflowToDisk="false"
            eternal="true" >
     </cache>
 
     <cache name="urlResolverNodePath"
            eternal="false"
            timeToIdleSeconds="7200"
-           timeToLiveSeconds="0"
-           overflowToDisk="false">
+           timeToLiveSeconds="0">
         <searchable keys="false" values="true"/>
     </cache>
 
     <cache name="urlResolverSiteInfo"
            eternal="false"
            timeToIdleSeconds="7200"
-           timeToLiveSeconds="0"
-           overflowToDisk="false">
+           timeToLiveSeconds="0">
     </cache>
 
     <cache name="RenderService.TemplatesCache"
            eternal="true"
-           maxBytesLocalHeap="10M"
-           overflowToDisk="false">
+           maxBytesLocalHeap="10M">
     </cache>
 
     <cache name="HTMLNodeUsersACLs"
            eternal="true"
-           maxBytesLocalHeap="50M"
-           overflowToDisk="false">
+           maxBytesLocalHeap="50M">
     </cache>
 
     <cache name="JCRGroupCache"
            eternal="true"
-           maxBytesLocalHeap="100M"
-           overflowToDisk="false">
+           maxBytesLocalHeap="100M">
     </cache>
 
     <cache name="JCRGroupMembershipCache"
            eternal="true"
-           maxBytesLocalHeap="100M"
-           overflowToDisk="false">
+           maxBytesLocalHeap="100M">
     </cache>
 
     <cache name="org.jahia.security.matchingPermissions"
            eternal="true"
-           maxBytesLocalHeap="1M"
-           overflowToDisk="false">
+           maxBytesLocalHeap="1M">
     </cache>
 
 </ehcache>

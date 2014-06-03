@@ -96,11 +96,7 @@ public class MultipleCopyAction extends Action {
                                   JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         List<String> uuids = parameters.get(UUIDS);
         assert uuids != null && uuids.size()>0;
-        List<String> sessionUUIDS = (List<String>) req.getSession().getAttribute(UUIDS_TO_COPY);
         uuids = SetUniqueList.decorate(uuids);
-        if(sessionUUIDS!=null) {
-            uuids.addAll(sessionUUIDS);
-        }
         req.getSession().setAttribute(UUIDS_TO_COPY,uuids);
         return ActionResult.OK_JSON;
     }

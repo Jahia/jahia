@@ -130,8 +130,10 @@ public class JahiaTestCase {
         JCRPublicationService.getInstance().publishByMainId(nodeIdentifier);
     }
 
+    /**
+     * @deprecated
+     */
     protected static void setSessionSite(JahiaSite site) {
-        getRequest().getSession(true).setAttribute(Constants.SESSION_SITE, site);
     }
 
     private HttpClient client;

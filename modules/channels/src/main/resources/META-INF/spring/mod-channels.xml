@@ -261,6 +261,7 @@
             </bean>
         </property>
         <property name="parentEditConfiguration" ref="editmode" />
+        <property name="requiredPermission" value="viewChannelsTab"/>
     </bean>
 
     <bean id="Engine.Tab.Channels.Studio" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">

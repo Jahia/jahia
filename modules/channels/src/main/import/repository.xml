@@ -6,7 +6,7 @@
                 j:moduleType="system"
                 j:title="Jahia Channels"
                 jcr:primaryType="jnt:module">
-                
+
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
@@ -14,7 +14,7 @@
                     <files jcr:primaryType="jnt:folder"/>
                     <contents jcr:primaryType="jnt:contentFolder"/>
                 </templates>
-                
+
             </channels>
     </modules>
 </content>

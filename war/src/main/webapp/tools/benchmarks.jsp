@@ -195,8 +195,8 @@
         println(out, "Database type:" + dbType);
         boolean keyTypeLongLong = dbType.equals("derby") || dbType.equals("postgresql");
 
-        String readEditTableName = "jr_default_bundle";
-        String readLiveTableName = "jr_live_bundle";
+        String readEditTableName = "JR_DEFAULT_BUNDLE";
+        String readLiveTableName = "JR_LIVE_BUNDLE";
         String readIdColumn = "NODE_ID";
         String readBlobColumn = "BUNDLE_DATA";
         String readAllEditDataSQL = "SELECT " + readIdColumn + "," + readBlobColumn + " FROM " + readEditTableName;

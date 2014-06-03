@@ -145,10 +145,6 @@ public class SettingsTabItem extends SidePanelTabItem {
                 if (v != null) {
                     v = SafeHtmlUtils.htmlEscape(v);
                 }
-                Boolean hasAccessToSettings = node.get("hasAccessToSettings");
-                if (hasAccessToSettings == Boolean.FALSE) {
-                    v = "<span class=\"accessForbidden\">" + v + "</span>";
-                }
                 return v;
             }
         });
@@ -228,7 +224,9 @@ public class SettingsTabItem extends SidePanelTabItem {
                                 }
                             }
                             node.set("hasAccessToSettings", Boolean.valueOf(access));
-                            result.add(node);
+                            if(access){
+                                result.add(node);
+                            }
                         }
                     }
                 };

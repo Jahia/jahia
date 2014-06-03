@@ -39,7 +39,7 @@
                 "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "iDisplayLength": 10,
                 "sPaginationType": "bootstrap",
-                "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
+                "aaSorting": [[ 5, "asc" ],[ 1, "asc" ]],
                 "bStateSave": true
             });
 

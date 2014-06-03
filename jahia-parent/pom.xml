@@ -537,6 +537,31 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>coverage-per-test</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.7.1.201405082137</version>
+                        <executions>
+                            <execution>
+                                <id>prepare-agent</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                </goals>
+                                <configuration>
+                                    <jacoco.append>true</jacoco.append>
+                                    <jacoco.destFile>${sonar.jacoco.reportPath}</jacoco.destFile>
+                                </configuration>
+                            </execution>
+                    </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <distributionManagement>

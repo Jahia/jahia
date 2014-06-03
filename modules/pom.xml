@@ -205,7 +205,6 @@
             </activation>
             <modules>
                 <module>assets</module>
-                <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>default</module>
                 <module>siteSettings</module>
@@ -230,7 +229,6 @@
             </activation>
             <modules>
                 <module>assets</module>
-                <!--<module>atmosphere</module>-->
                 <module>channels</module>
                 <module>contentRetrieval</module>
                 <module>contribute</module>

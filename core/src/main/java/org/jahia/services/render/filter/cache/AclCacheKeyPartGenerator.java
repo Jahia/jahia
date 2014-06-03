@@ -356,7 +356,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();
 
-                        Map<String, Set<String>> mapGranted = new LinkedHashMap<String, Set<String>>();
+                        Map<String, Set<String>> mapGranted = new ConcurrentHashMap<String, Set<String>>();
                         Map<String, Set<String>> mapDenied = new LinkedHashMap<String, Set<String>>();
 
                         while (rowIterator.hasNext()) {

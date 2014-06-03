@@ -17,7 +17,7 @@ global JCRContentUtils jcrUtils
 rule "Check uniqueness"
     salience 50
     when
-        A new node is created
+        A property j:url has been set on a node
             - the node has the type jnt:vanityUrl
     then
         Check URL mapping uniqueness for node

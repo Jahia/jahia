@@ -341,7 +341,7 @@ public class PropertiesEditor extends FormPanel {
                 fieldSet.layout();
                 if (optional) {
                     boolean isOrderingList = "jmix:orderedList".equalsIgnoreCase(definition.getDeclaringNodeType());
-                    if (isWriteable) {
+                    if (isWriteable && isNonI18NWriteable) {
                         fieldSet.setCollapsible(true);
                         if (!isOrderingList) {
                             fieldSet.setCheckboxToggle(true);

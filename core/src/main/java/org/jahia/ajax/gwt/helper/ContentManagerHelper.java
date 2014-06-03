@@ -1001,7 +1001,7 @@ public class ContentManagerHelper {
                 } else if (node.getLockedLocales().contains(currentUserSession.getLocale()) || (node.getLockedLocales().isEmpty() && node.isLocked())) {
                     if (!toLock) {
                         try {
-                            node.unlock();
+                            node.unlock("user");
                         } catch (LockException e) {
                             logger.error(e.toString(), e);
                             missedPaths.add(node.getName() + ": repository exception");
@@ -1018,7 +1018,7 @@ public class ContentManagerHelper {
                             missedPaths.add(node.getName() + ": repository exception");
                         }
                     } else if (node.isLocked()) {
-                        node.unlock();
+                        node.unlock("user");
                     }
                 }
             } catch (RepositoryException e) {

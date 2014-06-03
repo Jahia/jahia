@@ -544,7 +544,7 @@ public class ContentTest {
             assertNotNull(providerRoot + " : lock is null", lock);
 
             try {
-                testFile.unlock();
+                testFile.unlock("user");
             } catch (LockException e) {
                 fail(providerRoot + " : unlock failed");
             }
@@ -553,7 +553,7 @@ public class ContentTest {
         Lock lock = testFile.lock(false, false);
         assertNotNull(providerRoot + " : Lock is null", lock);
         assertTrue(providerRoot + " : Node not locked", testFile.isLocked());
-        testFile.unlock();
+        testFile.unlock("user");
         assertFalse(providerRoot + " : Node not unlocked", testFile.isLocked());
     }
 

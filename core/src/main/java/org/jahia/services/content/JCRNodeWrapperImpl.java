@@ -2238,8 +2238,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public Lock lock(boolean isDeep, boolean isSessionScoped) throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        lockAndStoreToken("user");  // Not supported few parameters may be we will need to fix
-        return getLock();
+        return objectNode.lock(isDeep, isSessionScoped);
     }
 
     /**
@@ -2431,7 +2430,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public void unlock() throws UnsupportedRepositoryOperationException, LockException, AccessDeniedException, InvalidItemStateException, RepositoryException {
-        unlock("user");
+        objectNode.unlock();
     }
 
     public void unlock(String type)

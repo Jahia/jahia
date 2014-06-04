@@ -74,6 +74,7 @@ import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
 
@@ -90,17 +91,15 @@ public class ChannelPreviewFilter extends AbstractFilter {
     private ChannelService channelService;
 
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (StringUtils.isEmpty(renderContext.getRequest().getParameter(ChannelResolutionFilter.ACTIVE_CHANNEL_QUERY_PARAMETER)) || renderContext.getRequest().getParameter("noembed") != null) {
-            return previousOut;
+            return null;
         }
 
         Channel channel = channelService.getChannel(renderContext.getRequest().getParameter(ChannelResolutionFilter.ACTIVE_CHANNEL_QUERY_PARAMETER));
         if (channel.isGeneric()) {
-            return previousOut;
+            return null;
         }
-        StringBuffer out = new StringBuffer(previousOut);
         Map<String,String> capabilities = channel.getCapabilities();
         if (capabilities != null
                 && capabilities.containsKey("variants")
@@ -125,16 +124,25 @@ public class ChannelPreviewFilter extends AbstractFilter {
             String start = "<div style=\"width:" + imageSize[0] + "px; height:" + imageSize[1] + "px;";
             start += " background-image:url(" + imageUrl + "); background-repeat:no-repeat;\">\n";
             start += "<div style=\"position:absolute; left:" + (Integer.parseInt(position[0])+8) + "px; top:" + (Integer.parseInt(position[1])+7) + "px;";
+            String url = renderContext.getRequest().getContextPath();
+            url += new URLGenerator(renderContext, resource).getCurrent();
+            url += "?";
+            if (renderContext.getRequest().getQueryString() != null) {
+                url += renderContext.getRequest().getQueryString();
+                url += "&";
+            }
+            url += "channel="+channel.getIdentifier()+"&noembed=true&variant=" + variant;
+
             start += " width:" +  (Integer.parseInt(dimension[0])+15) + "px; height:" + dimension[1] + "px; overflow:hidden;\">" +
                     "<div>\n" +
-                    "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ (renderContext.getRequest().getContextPath() + renderContext.getURLGenerator().getCurrent() + "?channel="+channel.getIdentifier()+"&noembed=true&variant=" + variant) +"\"" +
+                    "<iframe height=\"" + dimension[1] +"\" width=\"" + dimension[0] +"\" src=\""+ url +"\"" +
                     " frameborder=\"0\" />\n" +
                     "</div>\n";
             return start;
 //            out.insert(out.indexOf(">", out.indexOf("<body")) + 1, start);
 //            out.insert(out.indexOf("</body>"), "</div>\n</div>\n");
         }
-        return out.toString();
+        return null;
     }
 
     public void setChannelService(ChannelService channelService) {

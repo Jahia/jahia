@@ -90,7 +90,7 @@ import java.util.jar.Manifest;
  */
 class JahiaLegacyModuleTransformer /* implements ArtifactUrlTransformer */ implements ArtifactTransformer {
 
-    private static Logger logger = LoggerFactory.getLogger(Activator.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaLegacyModuleTransformer.class);
 
     @Override
     public boolean canHandle(File artifact) {

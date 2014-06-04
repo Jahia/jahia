@@ -753,7 +753,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     private boolean isRoleLive(String role, Session s) throws RepositoryException {
-        final Node roleNode = s.getNode("/roles/" + role);
+        final Node roleNode = findRoleNode(role);
         return roleNode != null && roleNode.hasProperty(Constants.J_ROLE_GROUP) && "live-role".equals(roleNode.getProperty(Constants.J_ROLE_GROUP).getString());
     }
 

@@ -101,7 +101,7 @@ public class URLSystemAttributesAppenderFilter extends AbstractFilter {
             previousOut = traverser.traverse(previousOut, renderContext, resource,
                     new HtmlTagAttributeTraverser.HtmlTagAttributeVisitor() {
                         public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
-                            if (!value.startsWith("javascript:") && !value.startsWith("#")) {
+                            if (!value.startsWith("javascript:") && !value.startsWith("#") && !value.contains("##requestParameters##")) {
                                 final String urlContext = renderContext.getURLGenerator().getContext();
                                 final Map<String, String[]> parameterMap = renderContext.getRequest().getParameterMap();
 

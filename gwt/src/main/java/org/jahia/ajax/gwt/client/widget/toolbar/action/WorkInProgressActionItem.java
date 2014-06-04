@@ -90,7 +90,8 @@ import java.util.Map;
  * Date: Aug 30, 2010
  * Time: 8:16:07 PM
  */
-public class WorkInProgressActionItem extends BaseActionItem implements Poller.PollListener<ProcessPollingEvent> {
+@SuppressWarnings("serial")
+public class WorkInProgressActionItem extends BasePollerActionItem implements Poller.PollListener<ProcessPollingEvent> {
 
     private static WorkInProgressActionItem instance;
 
@@ -107,7 +108,7 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
         instance = this;
         refreshStatus();
 
-        Poller.getInstance().registerListener(this, ProcessPollingEvent.class);
+        Poller.getInstance(isUseWebsockets()).registerListener(this, ProcessPollingEvent.class);
     }
 
     public void handlePollingResult(ProcessPollingEvent result) {

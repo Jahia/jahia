@@ -70,6 +70,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Info;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -84,7 +85,8 @@ import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
  * Date: Jan 20, 2010
  * Time: 1:51:18 PM
  */
-public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener<TaskEvent> {
+@SuppressWarnings("serial")
+public class NumberOfTasksWorkflowMenuActionItem extends BasePollerActionItem implements Poller.PollListener<TaskEvent> {
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);
@@ -93,7 +95,7 @@ public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implemen
                 updateLabel(result);
             }
         });
-        Poller.getInstance().registerListener(this, TaskEvent.class);
+        Poller.getInstance(isUseWebsockets()).registerListener(this, TaskEvent.class);
 
     }
 

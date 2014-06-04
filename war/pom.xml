@@ -733,55 +733,6 @@
         </dependency>
 
 
-        <!--Atmosphere dependencies-->
-        <dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-compat-tomcat</artifactId>
-            <version>2.0.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-runtime</artifactId>
-            <version>${atmosphere.version}</version>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-annotations</artifactId>
-            <version>${atmosphere.version}</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>org.atmosphere</groupId>
-            <artifactId>atmosphere-jersey</artifactId>
-            <version>${atmosphere.version}</version>
-        </dependency>-->
-        <!--<dependency>
-            <groupId>com.sun.jersey.contribs</groupId>
-            <artifactId>jersey-spring</artifactId>
-            <version>1.16</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-aop</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-beans</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-context</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>spring-web</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>-->
-
         <dependency>
             <!-- Required for Eclipse Gemini Blueprint when proxying classes rather then interfaces -->
             <artifactId>cglib-nodep</artifactId>

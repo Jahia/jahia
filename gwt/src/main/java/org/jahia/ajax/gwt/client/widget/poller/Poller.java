@@ -71,6 +71,7 @@ package org.jahia.ajax.gwt.client.widget.poller;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
@@ -79,7 +80,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Execute recurrent calls to the server
@@ -91,14 +91,14 @@ public class Poller {
 
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
 
-    public static Poller getInstance() {
+    public static Poller getInstance(boolean useWebsockets) {
         if (instance == null) {
-            instance = new Poller();
+            instance = new Poller(useWebsockets);
         }
         return instance;
     }
 
-    public Poller() {
+    public Poller(final boolean useWebsockets) {
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
             public void execute() {
 
@@ -106,7 +106,8 @@ public class Poller {
 
                 AtmosphereRequestConfig rpcRequestConfig = AtmosphereRequestConfig.create(rpc_serializer);
                 rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc");
-                rpcRequestConfig.setTransport(AtmosphereRequestConfig.Transport.WEBSOCKET);
+                rpcRequestConfig.setTransport(useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET
+                        : AtmosphereRequestConfig.Transport.STREAMING);
                 rpcRequestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
                 rpcRequestConfig.setOpenHandler(new AtmosphereOpenHandler() {
                     @Override

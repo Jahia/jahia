@@ -16,11 +16,11 @@
 /**
  * Atmosphere.js
  * https://github.com/Atmosphere/atmosphere-javascript
- *
+ * 
  * API reference
  * https://github.com/Atmosphere/atmosphere/wiki/jQuery.atmosphere.js-API
- *
- * Highly inspired by
+ * 
+ * Highly inspired by 
  * - Portal by Donghwan Kim http://flowersinthesand.github.io/portal/
  */
 (function(root, factory) {
@@ -35,7 +35,7 @@
 
     "use strict";
 
-    var version = "2.1.5-javascript",
+    var version = "2.1.6-javascript",
         atmosphere = {},
         guid,
         requests = [],
@@ -1131,10 +1131,10 @@
 
                     // https://github.com/remy/polyfills/blob/master/EventSource.js
                     // Since we polling.
-                    /* if (_sse.URL) {
-                     _sse.interval = 100;
-                     _sse.URL = _buildSSEUrl();
-                     } */
+                   /* if (_sse.URL) {
+                        _sse.interval = 100;
+                        _sse.URL = _buildSSEUrl();
+                    } */
 
                     if (!skipCallbackInvocation) {
                         _invokeCallback();
@@ -1399,7 +1399,7 @@
                         _triggerOpen(request);
                     }
                     uuid = request.uuid;
-                } else if (request.enableProtocol && request.firstMessage) {
+                } else if (request.enableProtocol && request.firstMessage && atmosphere.util.browser.msie && +atmosphere.util.browser.version.split(".")[0] < 10) {
                     // In case we are getting some junk from IE
                     b = false;
                 } else {
@@ -2472,7 +2472,7 @@
                         break;
                     case "closedByClient":
                         if (typeof (f.onClientTimeout) !== 'undefined')
-                            f.onClientTimeout(_request);
+                           f.onClientTimeout(_request);
                         break;
                     case "re-opening":
                         delete _request.closed;
@@ -2619,14 +2619,14 @@
             atmosphere.addCallback(callback);
         }
 
-        // https://github.com/Atmosphere/atmosphere-javascript/issues/58
-        uuid = 0;
-
         if (typeof (url) !== "string") {
             request = url;
         } else {
             request.url = url;
         }
+
+        // https://github.com/Atmosphere/atmosphere-javascript/issues/58
+        uuid = ((typeof (request) !== 'undefined') && typeof (request.uuid) !== 'undefined') ? request.uuid : 0;
 
         var rq = new atmosphere.AtmosphereRequest(request);
         rq.execute();
@@ -2785,13 +2785,13 @@
         },
 
         storage: function () {
-            try {
-                return !!(window.localStorage && window.StorageEvent);
-            } catch (e) {
-                //Firefox throws an exception here, see
-                //https://bugzilla.mozilla.org/show_bug.cgi?id=748620
-                return false;
-            }
+        	try {
+        		return !!(window.localStorage && window.StorageEvent);
+        	} catch (e) {
+        		//Firefox throws an exception here, see 
+        		//https://bugzilla.mozilla.org/show_bug.cgi?id=748620
+        		return false;
+        	}
         },
 
         iterate: function (fn, interval) {
@@ -3044,7 +3044,7 @@
 
         atmosphere.util.browser[match[1] || ""] = true;
         atmosphere.util.browser.version = match[2] || "0";
-
+        
         // Trident is the layout engine of the Internet Explorer
         // IE 11 has no "MSIE: 11.0" token
         if (atmosphere.util.browser.trident) {
@@ -3075,7 +3075,7 @@
     atmosphere.util.on(window, "offline", function () {
         atmosphere.unsubscribe();
     });
-
+    
     return atmosphere;
 }));
 /* jshint eqnull:true, noarg:true, noempty:true, eqeqeq:true, evil:true, laxbreak:true, undef:true, browser:true, indent:false, maxerr:50 */

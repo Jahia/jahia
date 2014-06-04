@@ -1,6 +1,6 @@
 (function(a,b){if(typeof define==="function"&&define.amd){define(b)
 }else{a.atmosphere=b()
-}}(this,function(){var c="2.1.5-javascript",a={},d,g=[],f=[],e=0,b=Object.prototype.hasOwnProperty;
+}}(this,function(){var c="2.1.6-javascript",a={},d,g=[],f=[],e=0,b=Object.prototype.hasOwnProperty;
 a={onError:function(h){},onClose:function(h){},onOpen:function(h){},onReopen:function(h){},onMessage:function(h){},onReconnect:function(i,h){},onMessagePublished:function(h){},onTransportFailure:function(i,h){},onLocalMessage:function(h){},onFailureToReconnect:function(i,h){},onClientTimeout:function(h){},AtmosphereRequest:function(M){var O={timeout:300000,method:"GET",headers:{},contentType:"",callback:null,url:"",data:"",suspend:true,maxRequest:-1,reconnect:true,maxStreamingLength:10000000,lastIndex:0,logLevel:"info",requestCount:0,fallbackMethod:"GET",fallbackTransport:"streaming",transport:"long-polling",webSocketImpl:null,webSocketBinaryType:null,dispatchUrl:null,webSocketPathDelimiter:"@@",enableXDR:false,rewriteURL:false,attachHeadersAsQueryString:true,executeCallbackBeforeReconnect:false,readyState:0,lastTimestamp:0,withCredentials:false,trackMessageLength:false,messageDelimiter:"|",connectTimeout:-1,reconnectInterval:0,dropHeaders:true,uuid:0,async:true,shared:false,readResponsesHeaders:false,maxReconnectOnClose:5,enableProtocol:true,pollingInterval:0,onError:function(aA){},onClose:function(aA){},onOpen:function(aA){},onMessage:function(aA){},onReopen:function(aB,aA){},onReconnect:function(aB,aA){},onMessagePublished:function(aA){},onTransportFailure:function(aB,aA){},onLocalMessage:function(aA){},onFailureToReconnect:function(aB,aA){},onClientTimeout:function(aA){}};
 var W={status:200,reasonPhrase:"OK",responseBody:"",messages:[],headers:[],state:"messageReceived",transport:"polling",error:null,request:null,partialMessage:"",errorHandled:false,closedByClientTimeout:false};
 var Z=null;
@@ -418,7 +418,7 @@ aD.stime=a.util.trim(aB[aE+1]);
 aA=false;
 if(aD.transport!=="long-polling"){ao(aD)
 }e=aD.uuid
-}else{if(aD.enableProtocol&&aD.firstMessage){aA=false
+}else{if(aD.enableProtocol&&aD.firstMessage&&a.util.browser.msie&&+a.util.browser.version.split(".")[0]<10){aA=false
 }else{ao(aD)
 }}return aA
 }function y(aA){clearTimeout(aA.id);
@@ -871,10 +871,10 @@ this.request=O;
 this.response=W
 }};
 a.subscribe=function(h,k,j){if(typeof(k)==="function"){a.addCallback(k)
-}e=0;
-if(typeof(h)!=="string"){j=h
+}if(typeof(h)!=="string"){j=h
 }else{j.url=h
-}var i=new a.AtmosphereRequest(j);
+}e=((typeof(j)!=="undefined")&&typeof(j.uuid)!=="undefined")?j.uuid:0;
+var i=new a.AtmosphereRequest(j);
 i.execute();
 g[g.length]=i;
 return i

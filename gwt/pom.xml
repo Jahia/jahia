@@ -96,7 +96,7 @@
         <dependency>
             <groupId>org.atmosphere.extensions</groupId>
             <artifactId>atmosphere-gwt20-client</artifactId>
-            <version>${atmosphere.version}</version>
+            <version>${atmosphere.gwt.version}</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gwt-log</groupId>

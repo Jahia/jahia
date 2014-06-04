@@ -26,7 +26,21 @@
     JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION
     ============================================
 
+<<<<<<< .working
         Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+=======
+        <pluto.version>2.0.2</pluto.version>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <jackrabbit.version>2.2.4-patch11</jackrabbit.version>
+        <lucene.version>2.4.1</lucene.version>
+        <jbpm.version>4.4</jbpm.version>
+        <hibernate.version>3.3.2.GA</hibernate.version>
+        <apache.pdfbox.version>1.8.5</apache.pdfbox.version>
+        <apache.tika.version>0.9</apache.tika.version>
+        <camel.version>2.4.0</camel.version>
+        <gwt.version>2.2.0</gwt.version>
+        <ant.version>1.8.2</ant.version>
+>>>>>>> .merge-right.r49932
 
         THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
         1/GPL OR 2/JSEL

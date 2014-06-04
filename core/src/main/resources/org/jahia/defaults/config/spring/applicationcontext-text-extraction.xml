@@ -10,7 +10,7 @@
         <property name="configMetadata" value="classpath:tika-config-jahia-metadata.xml"/>
         <property name="autoDetectType" value="true"/>
         <!-- limits the number of characters extracted from the document -->
-        <property name="maxExtractedCharacters" value="100000"/>
+        <property name="maxExtractedCharacters" value="${jahia.textExtraction.maxExtractedCharacters:100000}"/>
     </bean>
 
     <bean id="org.jahia.services.content.rules.ExtractionService" class="org.jahia.services.content.rules.ExtractionService" factory-method="getInstance">

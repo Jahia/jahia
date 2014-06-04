@@ -845,12 +845,12 @@
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-api</artifactId>
-                                    <version>3.0.7</version>
+                                    <version>${pax.web.api.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.ops4j.pax.web</groupId>
                                     <artifactId>pax-web-jsp</artifactId>
-                                    <version>3.0.7-jahia1-SNAPSHOT</version>
+                                    <version>${pax.web.jsp.version}</version>
                                 </artifactItem>
 
                                 <artifactItem>

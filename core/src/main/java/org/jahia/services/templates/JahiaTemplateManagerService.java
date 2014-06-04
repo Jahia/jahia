@@ -792,6 +792,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleInstallationHelper.installModule(moduleId, sitePath, username);
     }
 
+    public void installModule(final String moduleId, final String version, final String sitePath, String username) throws RepositoryException {
+        moduleInstallationHelper.installModule(moduleId, version, sitePath, username);
+    }
+
     public void installModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
         installModules(Arrays.asList(module), sitePath, session);
     }
@@ -833,11 +837,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleInstallationHelper.uninstallModulesFromAllSites(module, username, purgeAllContent);
     }
 
-    public void uninstallModulesFromAllSites(final JahiaTemplatesPackage module, final JCRSessionWrapper session) throws RepositoryException {
+    public void uninstallModulesFromAllSites(final String module, final JCRSessionWrapper session) throws RepositoryException {
         uninstallModulesFromAllSites(Arrays.asList(module), session);
     }
 
-    public void uninstallModulesFromAllSites(final List<JahiaTemplatesPackage> modules, final JCRSessionWrapper session) throws RepositoryException {
+    public void uninstallModulesFromAllSites(final List<String> modules, final JCRSessionWrapper session) throws RepositoryException {
         moduleInstallationHelper.uninstallModulesFromAllSites(modules, session);
     }
 

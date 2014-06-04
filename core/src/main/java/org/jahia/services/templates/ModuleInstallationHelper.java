@@ -193,6 +193,16 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
         });
     }
 
+    public void installModule(final String moduleId, final String version, final String sitePath, String username) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                installModules(Arrays.asList(templatePackageRegistry.lookupByIdAndVersion(moduleId, new ModuleVersion(version))), sitePath, session);
+                session.save();
+                return null;
+            }
+        });
+    }
+
     public void installModuleOnAllSites(JahiaTemplatesPackage module, JCRSessionWrapper sessionWrapper,
             List<JCRNodeWrapper> sites) throws RepositoryException {
         if (sites == null) {
@@ -558,17 +568,17 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
                 ModuleInstallationHelper.class.getName()));
     }
 
-    public void uninstallModulesFromAllSites(final JahiaTemplatesPackage module, final JCRSessionWrapper session)
+    public void uninstallModulesFromAllSites(final String module, final JCRSessionWrapper session)
             throws RepositoryException {
         uninstallModulesFromAllSites(Arrays.asList(module), session);
     }
 
-    public void uninstallModulesFromAllSites(final List<JahiaTemplatesPackage> modules, final JCRSessionWrapper session)
+    public void uninstallModulesFromAllSites(final List<String> modules, final JCRSessionWrapper session)
             throws RepositoryException {
         List<JCRSiteNode> sitesList = siteService.getSitesNodeList(session);
         for (JCRSiteNode jahiaSite : sitesList) {
-            for (JahiaTemplatesPackage module : modules) {
-                if (uninstallModule(jahiaSite.getName(), session, jahiaSite, module.getId())) {
+            for (String module : modules) {
+                if (uninstallModule(jahiaSite.getName(), session, jahiaSite, module)) {
                     return;
                 }
                 applicationEventPublisher.publishEvent(new JahiaTemplateManagerService.ModuleDeployedOnSiteEvent(
@@ -581,7 +591,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(username, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                uninstallModulesFromAllSites(templatePackageRegistry.lookupById(module), session);
+                uninstallModulesFromAllSites(module, session);
                 if (purgeAllContent) {
                     purgeModuleContent(Arrays.asList(module), "/sites", session);
                 }

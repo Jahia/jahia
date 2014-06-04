@@ -130,7 +130,7 @@
 
     <action-state id="enableOnSite">
         <evaluate
-                expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.enableOn,null)"/>
+                expression="JahiaTemplateManagerService.installModule(requestParameters.module,requestParameters.version,requestParameters.enableOn,null)"/>
         <transition on-exception="java.lang.Exception" to="detailedView">
             <set name="flashScope.error" value="'serverSettings.manageModules.module.enable.error'"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

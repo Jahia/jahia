@@ -284,6 +284,7 @@
                         <c:otherwise>
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                 <input type="hidden" name="module" value="${activeVersion.id}"/>
+                                <input type="hidden" name="version" value="${activeVersion.version}"/>
                                 <input type="hidden" name="enableOn" value="/sites/${site}"/>
                                 <c:if test="${site ne 'systemsite' or not moduleStates[activeVersion.id][activeVersion.version].systemDependency}">
                                 <fmt:message var="label"

@@ -700,7 +700,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
                     } else {
                         if (!child.getRealNode().hasProperty(attrName) || !child.getRealNode().getProperty(attrName).getString().equals(attrValue)) {
-                            child.getRealNode().setProperty(attrName, attrValue);
+                            child.getRealNode().setProperty(attrName, attrValue, propDef.getRequiredType());
                         }
                     }
                 }

@@ -102,7 +102,7 @@
   - * (undefined)
 
 [jmix:i18n] mixin
- - j:invalidLanguages (string) multiple hidden
+ - j:invalidLanguages (string) multiple nofulltext hidden
  + * (jnt:translation)
 
 //---------------------------------------------------------
@@ -133,13 +133,13 @@
 
 [jnt:role] > nt:base, mix:title, jmix:observable, jmix:nolive
  - jcr:description (string,textarea) i18n itemtype = content
- - j:nodeTypes (string,choicelist[nodetypes=nt:base]) multiple
+ - j:nodeTypes (string,choicelist[nodetypes=nt:base]) nofulltext multiple
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
- - j:permissionNames (string) protected hidden multiple
+ - j:permissionNames (string) protected hidden nofulltext multiple
  - j:dependencies (weakreference) protected hidden multiple < jnt:role
  - j:privilegedAccess (boolean)
  - j:hidden (boolean) protected hidden
- - j:roleGroup (string)
+ - j:roleGroup (string) nofulltext
  + * (jnt:externalPermissions)
  + * (jnt:role)
 
@@ -147,9 +147,9 @@
  + * (jnt:role)
 
 [jnt:externalPermissions]
- - j:path (string)
+ - j:path (string) nofulltext
  - j:permissions (weakreference) protected hidden multiple < jnt:permission
- - j:permissionNames (string) protected hidden multiple
+ - j:permissionNames (string) protected hidden nofulltext multiple
 
 [jnt:permission] > nt:base, jmix:rbTitle, jmix:observable, jmix:nolive
  - j:isAbstract (boolean)
@@ -394,7 +394,7 @@
 [jmix:hasTemplateNode] mixin
  itemtype = layout
  - j:templateNode (weakreference,choicelist[templatesNode]) hidden < jnt:template
- - j:templateName (string,choicelist[templatesNode]) mandatory
+ - j:templateName (string,choicelist[templatesNode]) mandatory nofulltext
 
 [jnt:template] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:requiredPermissions, jmix:renderable, jmix:observable, jmix:hasIcon, mix:title
  - j:hiddenTemplate (boolean)
@@ -412,13 +412,13 @@
  - j:requiredMode (string, choicelist[renderModes]) nofulltext
  - j:requiredPermissions (weakreference) hidden nofulltext multiple
  - j:requiredPermissionNames (string, choicelist[permissions]) nofulltext multiple
- - j:contextNodePath (string)
+ - j:contextNodePath (string) nofulltext
  - j:invertCondition (boolean)
 
 [jnt:pageTemplate] > jnt:template
 
 [jnt:contentTemplate] > jnt:template
- - j:applyOn (string, choicelist[subnodetypes = 'nt:base']) multiple
+ - j:applyOn (string, choicelist[subnodetypes = 'nt:base']) nofulltext multiple
  - j:defaultTemplate (boolean) = false
  - j:priority (long)
 
@@ -504,16 +504,16 @@
  - j:defaultLanguage (string) protected nofulltext
  - j:mixLanguage (boolean) = false protected
  - j:allowsUnlistedLanguages (boolean) = false protected
- - j:templatesSet (string) protected
- - j:siteType (string) protected hidden
+ - j:templatesSet (string) protected nofulltext
+ - j:siteType (string) protected nofulltext hidden
  - j:dependencies (string) protected multiple nofulltext
  + * (nt:base)
 
 [jnt:versionInfo] > nt:base, jmix:observable
  - j:version
  - j:deployementDate (date)
- - j:sourcesFolder (string)
- - j:scmURI (string)
+ - j:sourcesFolder (string) nofulltext
+ - j:scmURI (string) nofulltext
 
 //---------------------------------------------------------
 // Imports
@@ -687,7 +687,7 @@ extends = jnt:content
 [jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
- - j:templateName (string,choicelist[templatesNode]) mandatory
+ - j:templateName (string,choicelist[templatesNode]) mandatory nofulltext
  - j:isHomePage (boolean) hidden
  + * (nt:base) = nt:base version
  + * (jmix:navMenuItem)
@@ -741,7 +741,7 @@ extends = jnt:content
  + * (nt:base)
 
 [jnt:templatesFolder] > nt:base, jmix:nodenameInfo, jmix:basemetadata, jmix:list, jmix:publication
- - j:rootTemplatePath (string)
+ - j:rootTemplatePath (string) nofulltext
  - j:templateSetContext (weakreference, choicelist[nodes='/modules;jnt:virtualsite'])
  + * (jnt:template)
  + * (jnt:contentFolder)

@@ -290,8 +290,10 @@ public class JahiaUserManagerRoutingService extends JahiaUserManagerService impl
      * @param jahiaUser JahiaUser the user to be updated in the cache.
      */
     public void updateCache(final JahiaUser jahiaUser) {
-        if (defaultProvider != null) {
-            defaultProvider.updateCache(jahiaUser);
+        for (JahiaUserManagerProvider p : providers) {
+            if (p.isDefaultProvider() || p.getKey().equals(jahiaUser.getProviderName())) {
+                p.updateCache(jahiaUser);
+            }
         }
     }
 

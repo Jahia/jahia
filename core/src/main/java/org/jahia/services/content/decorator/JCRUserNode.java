@@ -69,6 +69,8 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.jackrabbit.util.ISO8601;
+import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.services.content.LazyPropertyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,6 +95,8 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.jcr.version.VersionException;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -889,7 +893,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public Value[] getValues() throws ValueFormatException, RepositoryException {
-            return new Value[0];
+            throw new ValueFormatException();
         }
 
         /**
@@ -929,7 +933,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @deprecated As of JCR 2.0, {@link #getBinary()} should be used instead.
          */
         public InputStream getStream() throws ValueFormatException, RepositoryException {
-            return null;
+            return new ByteArrayInputStream(value.toString().getBytes());
         }
 
         /**
@@ -949,7 +953,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public Binary getBinary() throws ValueFormatException, RepositoryException {
-            return null;
+            try {
+                return new BinaryImpl(new ByteArrayInputStream(value.toString().getBytes()));
+            } catch (IOException e) {
+                throw new RepositoryException(e);
+            }
         }
 
         /**
@@ -969,7 +977,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public long getLong() throws ValueFormatException, RepositoryException {
-            return 0;
+            try {
+                return Long.parseLong(value.toString());
+            } catch (NumberFormatException e) {
+                throw new ValueFormatException(e);
+            }
         }
 
         /**
@@ -989,7 +1001,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public double getDouble() throws ValueFormatException, RepositoryException {
-            return 0;
+            try {
+                return Double.parseDouble(value.toString());
+            } catch (NumberFormatException e) {
+                throw new ValueFormatException(e);
+            }
         }
 
         /**
@@ -1010,7 +1026,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public BigDecimal getDecimal() throws ValueFormatException, RepositoryException {
-            return null;
+            return new BigDecimal(value.toString());
         }
 
         /**
@@ -1033,7 +1049,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public Calendar getDate() throws ValueFormatException, RepositoryException {
-            return null;
+            Calendar calendar = ISO8601.parse(value.toString());
+            if (calendar == null) {
+                throw new ValueFormatException();
+            }
+            return calendar;
         }
 
         /**
@@ -1053,7 +1073,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public boolean getBoolean() throws ValueFormatException, RepositoryException {
-            return false;
+            try {
+                return Boolean.parseBoolean(value.toString());
+            } catch (NumberFormatException e) {
+                throw new ValueFormatException(e);
+            }
         }
 
         /**
@@ -1090,7 +1114,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs
          */
         public Node getNode() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-            return null;
+            throw new ValueFormatException();
         }
 
         /**
@@ -1122,7 +1146,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @since JCR 2.0
          */
         public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
-            return null;
+            throw new ValueFormatException();
         }
 
         /**
@@ -1142,7 +1166,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public long getLength() throws ValueFormatException, RepositoryException {
-            return 0;
+            return value.toString().length();
         }
 
         /**
@@ -1161,7 +1185,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException  if another error occurs.
          */
         public long[] getLengths() throws ValueFormatException, RepositoryException {
-            return new long[0];
+            throw new ValueFormatException();
         }
 
         /**
@@ -1177,7 +1201,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @see javax.jcr.nodetype.NodeType#getPropertyDefinitions
          */
         public PropertyDefinition getDefinition() throws RepositoryException {
-            return null;
+            throw new RepositoryException("Cannot get property definition");
         }
 
         /**
@@ -1221,7 +1245,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public String getPath() throws RepositoryException {
-            return null;
+            return node.getPath() + "/" + getName();
         }
 
         /**
@@ -1272,7 +1296,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if another error occurs.
          */
         public Item getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-            return null;
+            throw new AccessDeniedException();
         }
 
         /**
@@ -1288,7 +1312,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if another error occurs.
          */
         public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
-            return null;
+            return node;
         }
 
         /**
@@ -1306,7 +1330,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public int getDepth() throws RepositoryException {
-            return 0;
+            return node.getDepth() + 1;
         }
 
         /**
@@ -1323,7 +1347,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public Session getSession() throws RepositoryException {
-            return null;
+            throw new RepositoryException("Cannot get session");
         }
 
         /**

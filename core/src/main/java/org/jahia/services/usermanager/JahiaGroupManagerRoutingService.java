@@ -380,8 +380,10 @@ public class JahiaGroupManagerRoutingService extends JahiaGroupManagerService im
      * @param jahiaGroup JahiaGroup the group to be updated in the cache.
      */
     public void updateCache(final JahiaGroup jahiaGroup) {
-        if (defaultProvider != null) {
-            defaultProvider.updateCache(jahiaGroup);
+        for (JahiaGroupManagerProvider p : providers) {
+            if (p.isDefaultProvider() || p.getKey().equals(jahiaGroup.getProviderName())) {
+                p.updateCache(jahiaGroup);
+            }
         }
     }
 

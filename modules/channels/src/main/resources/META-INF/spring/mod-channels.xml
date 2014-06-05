@@ -284,6 +284,7 @@
         <property name="parent" value="editmode"/>
         <property name="key" value="channel"/>
         <property name="icon" value="tab-channel"/>
+        <property name="positionBefore" value="siteSettings"/>
         <property name="tabItem">
             <bean class="org.jahia.ajax.gwt.client.widget.edit.sidepanel.ChannelsTabItem"/>
         </property>

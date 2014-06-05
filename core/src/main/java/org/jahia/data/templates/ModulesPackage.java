@@ -85,8 +85,7 @@ public class ModulesPackage {
     }
 
     /**
-     * This method gets a file from the archive according to its name only
-     * the name of the file, is the name before the version (separator is "-")
+     * This method gets a file from the archive according to its artifactID and version
      *
      * @return the file
      */

@@ -164,6 +164,8 @@ public class VisibilityTabItem extends EditEngineTabItem {
         allConditionsMatch.setEnabled(editable);
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
+                changed = true;
+                refreshConditionsList();
                 statusBar.update();
             }
         });

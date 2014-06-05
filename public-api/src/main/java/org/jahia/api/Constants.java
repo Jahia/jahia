@@ -327,12 +327,10 @@ public class Constants {
     public static final String JAHIANT_PERMISSION = "jnt:permission";
     public static final String JAHIANT_ROLE = "jnt:role";
     public static final String JAHIANT_ROLES = "jnt:roles";
-    public static final String J_ROLE_GROUP = "j:roleGroup";
 
     public static final Set<String> forbiddenPropertiesToSerialize = new HashSet<String>(Arrays.asList(PROCESSID,JCR_FROZENUUID,
             JCR_FROZENMIXINTYPES, JCR_FROZENPRIMARYTYPE,JCR_BASEVERSION,
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
-
 }

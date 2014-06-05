@@ -72,6 +72,7 @@ package org.apache.jackrabbit.core;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
+
 import javax.jcr.AccessDeniedException;
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
@@ -137,10 +138,9 @@ public class JahiaSessionImpl extends XASessionImpl {
 
     public void toggleThisSessionAsAliased() {
         setJahiaAttributes("isAliasedUser", Boolean.TRUE);
-        getJahiaAccessManager().setAliased(true);
-    }
-
-    public JahiaAccessManager getJahiaAccessManager() {
-        return (JahiaAccessManager)context.getAccessManager();
+        JahiaAccessManager accessManager = (JahiaAccessManager)context.getAccessManager();
+        if (jahiaAttributes.containsKey("isAliasedUser") && (Boolean) jahiaAttributes.get("isAliasedUser")) {
+            accessManager.setAliased(true);
+        }
     }
 }

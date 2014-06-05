@@ -85,7 +85,6 @@ import javax.jcr.*;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
-
 import java.io.IOException;
 import java.util.*;
 
@@ -126,12 +125,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
     private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
     private LocalValidatorFactoryBean validatorFactoryBean;
-    private final ThreadLocal<Boolean> onlyCheckLiveRoles = new ThreadLocal<Boolean>() {
-        @Override
-        protected Boolean initialValue() {
-            return Boolean.FALSE;
-        }
-    };
 
     private JCRSessionFactory() {
         super();
@@ -495,14 +488,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
      */
     public List<JCRStoreProvider> getProviderList() {
         return providerList;
-    }
-
-    public void setOnlyCheckLiveRoles(boolean onlyCheckLiveRoles) {
-        this.onlyCheckLiveRoles.set(onlyCheckLiveRoles);
-    }
-
-    public boolean isOnlyCheckingLiveRoles() {
-        return onlyCheckLiveRoles.get();
     }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization

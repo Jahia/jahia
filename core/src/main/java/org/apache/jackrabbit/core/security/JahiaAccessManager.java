@@ -72,7 +72,6 @@ package org.apache.jackrabbit.core.security;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -122,7 +121,6 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
-
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -185,7 +183,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean isAliased = false;
     private JahiaUser jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
-    private boolean onlyCheckingLiveRoles;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
         if (workspace == null) {
@@ -275,7 +272,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Session getDefaultWorkspaceSecuritySession() throws RepositoryException {
-        if (workspaceConfig.getName().equals(Constants.EDIT_WORKSPACE)) {
+        if (workspaceConfig.getName().equals("default")) {
             return getSecuritySession();
         }
 
@@ -284,7 +281,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         defaultWorkspaceSecuritySession = new JahiaSystemSession(repositoryContext, SYSTEM_SUBJECT,
-                repositoryContext.getRepository().getConfig().getWorkspaceConfig(Constants.EDIT_WORKSPACE));
+                repositoryContext.getRepository().getConfig().getWorkspaceConfig("default"));
         return defaultWorkspaceSecuritySession;
     }
 
@@ -701,17 +698,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                                     Value[] roleValues = aceNode.getProperty("j:roles").getValues();
                                     for (Value role1 : roleValues) {
                                         String role = role1.getString();
-                                        if (!isOnlyCheckingLiveRoles() || isRoleLive(role, s)) {
-                                            ace.roles.add(role + "/" + aceNode.getProperty("j:externalPermissionsName").getString());
-                                        }
+                                        ace.roles.add(role + "/" + aceNode.getProperty("j:externalPermissionsName").getString());
                                     }
                                 } else {
                                     Value[] roleValues = aceNode.getProperty("j:roles").getValues();
                                     for (Value role1 : roleValues) {
                                         String role = role1.getString();
-                                        if (!isOnlyCheckingLiveRoles() || isRoleLive(role, s)) {
-                                            ace.roles.add(role);
-                                        }
+                                        ace.roles.add(role);
                                     }
                                 }
                             }
@@ -750,11 +743,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         }
         return false;
-    }
-
-    private boolean isRoleLive(String role, Session s) throws RepositoryException {
-        final Node roleNode = findRoleNode(role);
-        return roleNode != null && roleNode.hasProperty(Constants.J_ROLE_GROUP) && "live-role".equals(roleNode.getProperty(Constants.J_ROLE_GROUP).getString());
     }
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
@@ -1065,14 +1053,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
         }
         return grantedRoles;
-    }
-
-    public void setOnlyCheckingLiveRoles(boolean onlyCheckingLiveRoles) {
-        this.onlyCheckingLiveRoles = onlyCheckingLiveRoles;
-    }
-
-    public boolean isOnlyCheckingLiveRoles() {
-        return onlyCheckingLiveRoles;
     }
 
 

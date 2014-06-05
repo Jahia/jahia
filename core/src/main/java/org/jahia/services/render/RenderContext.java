@@ -187,14 +187,7 @@ public class RenderContext {
             }
             if ("render".equals(mode)) {
                 if (workspace.equals("live")) {
-                    // if we have a preview parameter set to true in the URL, use the preview mode even if workspace is live
-                    // used for customized preview. See CustomizedPreviewActionItem
-                    final String preview = request.getParameter("preview");
-                    if(Boolean.parseBoolean(preview)) {
-                        mode = "preview";
-                    } else {
-                        mode = "live";
-                    }
+                    mode = "live";
                 } else {
                     mode = "preview";
                 }

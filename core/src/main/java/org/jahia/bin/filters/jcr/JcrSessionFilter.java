@@ -69,21 +69,20 @@
  */
 package org.jahia.bin.filters.jcr;
 
-import org.jahia.registries.ServicesRegistry;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 
 /**
@@ -146,7 +145,6 @@ public class JcrSessionFilter implements Filter {
         sessionFactory.setCurrentLocale(null);
         sessionFactory.setFallbackLocale(null);
         sessionFactory.setCurrentAliasedUser(null);
-        sessionFactory.setOnlyCheckLiveRoles(false);
         sessionFactory.setCurrentServletPath(null);
         sessionFactory.setCurrentPreviewDate(null);
         /*sessionFactory.setVersionDate(null);

@@ -39,10 +39,10 @@
 
 <form action="${flowExecutionUrl}" method="post">
         <div class="box-1">
-            <c:set var="hasValidationErrors" value="false"/>
+            <jsp:useBean id="validationErrors" class="java.util.HashMap" scope="request"/>
             <c:forEach items="${webprojectHandler.importsInfos}" var="importInfoMap">
                     <label for="${importInfoMap.key}">
-                        <input type="checkbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
+                        <input type="checkbox" class="importCheckbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
                                <c:if test="${importInfoMap.value.selected}">checked="checked"</c:if>/> ${importInfoMap.key}
                         <input type="hidden" id="${importInfoMap.key}" name="_importsInfos['${importInfoMap.key}'].selected"/>
                     </label>
@@ -119,7 +119,7 @@
                     </c:if>
             </c:forEach>
             <button class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport"
-                    <c:if test="${hasValidationErrors}"> disabled="disabled"</c:if> >
+                    <c:if test="${not empty validationErrors}"> disabled="disabled"</c:if> >
                 <i class="icon-chevron-right icon-white"></i>
                 &nbsp;<fmt:message key='label.next'/>
             </button>
@@ -129,4 +129,29 @@
             </button>
     </div>
 </form>
+<c:if test="${not empty validationErrors}">
+<script type="text/javascript">
+    $(document).ready(function () {
+        var importErrors = [<c:forEach items="${validationErrors}" var="error" varStatus="status">"${functions:escapeJavaScript(error.key)}"<c:if test="${not status.last}">, </c:if></c:forEach>];
+        $(".importCheckbox").change(function() {
+            var checkedImports = [];
+            $(".importCheckbox:checked").each(function() {
+                checkedImports.push($(this).attr('id'));
+            });
+            var disabled = false;
+            $.each(importErrors, function( index, value ) {
+               if ($.inArray(value, checkedImports) > -1) {
+                   disabled = true;
+                   return false;
+               }
+            });
+            if (disabled) {
+                $("#${currentNode.identifier}-processImport").attr("disabled", "disabled");
+            } else {
+                $("#${currentNode.identifier}-processImport").removeAttr("disabled");
+            }
+        });
+    });
+</script>
+</c:if>
 

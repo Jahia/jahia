@@ -848,7 +848,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             while (ni.hasNext()) {
                 Node node = ni.nextNode();
                 String name = node.getName();
-                if (!name.equals("jcr:content") && node.isNodeType("jnt:resource")) {
+                if (!name.equals("jcr:content") && (node.isNodeType("jnt:resource")
+                        || (node.isNodeType("nt:frozenNode") && "jnt:resource".equals(node.getProperty("jcr:frozenPrimaryType").getString())))) {
                     names.add(name);
                 }
             }
@@ -862,7 +863,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getThumbnailUrl(String name) {
-        return getUrl() + "?t=" + name;
+        String url = getUrl();
+        return url + (url.indexOf('?') != -1 ? "&" : "?") + "t=" + name;
     }
 
     /**

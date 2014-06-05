@@ -72,6 +72,8 @@ package org.jahia.modules.serversettings.flow;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Model;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModulesPackage;
@@ -93,7 +95,6 @@ import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.Version;
 import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -111,6 +112,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.util.*;
+import java.util.jar.Attributes;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
@@ -158,63 +160,10 @@ public class ModuleManagementFlowHandler implements Serializable {
     }
 
     public boolean installModule(String forgeId, String url, MessageContext context) {
+        JarFile jarFile = null;
         try {
             File file = forgeService.downloadModuleFromForge(forgeId, url);
-            Bundle bundle = installModule(file, context);
-            if (bundle != null) {
-                startBundles(context, Arrays.asList(bundle));
-                return true;
-            } else {
-                return false;
-            }
-        } catch (Exception e) {
-            context.addMessage(new MessageBuilder().source("moduleFile")
-                    .code("serverSettings.manageModules.install.failed")
-                    .arg(e.getMessage())
-                    .error()
-                    .build());
-            logger.error(e.getMessage(), e);
-        }
-        return false;
-    }
-
-    public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
-        List<Bundle> bundlesToStart = new ArrayList<Bundle>();
-        String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
-        if (!FilenameUtils.isExtension(StringUtils.lowerCase(originalFilename), Arrays.asList("war", "jar", "zip"))) {
-            context.addMessage(new MessageBuilder().error().source("moduleFile")
-                    .code("serverSettings.manageModules.install.wrongFormat").build());
-            return false;
-        }
-        try {
-            if (FilenameUtils.isExtension(StringUtils.lowerCase(originalFilename), Arrays.asList("zip"))) {
-                final File file = File.createTempFile("package-", "." + StringUtils.substringAfterLast(originalFilename, "."));
-                moduleFile.getModuleFile().transferTo(file);
-                ModulesPackage pack = new ModulesPackage(file);
-                for (ModulesPackage.Module module : pack.getModules()) {
-                    if (templatePackageRegistry.lookupById(module.getAtrifactId()) == null ||
-                            (templatePackageRegistry.lookupById(module.getAtrifactId()) != null && !module.getVersionRange().includes(new Version(StringUtils.removeEnd(templatePackageRegistry.lookupById(module.getAtrifactId()).getVersion().toString(), "-SNAPSHOT"))))) {
-                        File mod = pack.fetchFile(module.getAtrifactId());
-                        Bundle bundle = installModule(mod, context);
-                        if (bundle != null) {
-                            bundlesToStart.add(bundle);
-                        }
-                    } else {
-                        context.addMessage(new MessageBuilder().source("moduleFile")
-                                .code("serverSettings.manageModules.install.moduleExists")
-                                .args(new String[]{module.getAtrifactId(), templatePackageRegistry.lookupById(module.getAtrifactId()).getVersion().toString()})
-                                .build());
-                    }
-                }
-            } else {
-                final File file = File.createTempFile("module-", "." + StringUtils.substringAfterLast(originalFilename, "."));
-                moduleFile.getModuleFile().transferTo(file);
-                Bundle bundle = installModule(file, context);
-                if (bundle != null) {
-                    bundlesToStart.add(bundle);
-                }
-            }
-            startBundles(context, bundlesToStart);
+            jarFile = installBundles(file, context);
             return true;
 
         } catch (Exception e) {
@@ -224,8 +173,74 @@ public class ModuleManagementFlowHandler implements Serializable {
                     .error()
                     .build());
             logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(jarFile);
         }
         return false;
+    }
+
+    public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
+        String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
+        if (!FilenameUtils.isExtension(StringUtils.lowerCase(originalFilename), Arrays.asList("war", "jar"))) {
+            context.addMessage(new MessageBuilder().error().source("moduleFile")
+                    .code("serverSettings.manageModules.install.wrongFormat").build());
+            return false;
+        }
+        JarFile jarFile = null;
+        try {
+            final File file = File.createTempFile("module-", "." + StringUtils.substringAfterLast(originalFilename, "."));
+            moduleFile.getModuleFile().transferTo(file);
+            jarFile = installBundles(file, context);
+            return true;
+
+        } catch (Exception e) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.failed")
+                    .arg(e.getMessage())
+                    .error()
+                    .build());
+            logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(jarFile);
+        }
+        return false;
+    }
+
+    private JarFile installBundles(File file, MessageContext context) throws IOException, XmlPullParserException, BundleException {
+        List<Bundle> bundlesToStart = new ArrayList<Bundle>();
+        JarFile jarFile = new JarFile(file);
+        Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
+        boolean isPackage = manifestAttributes.getValue("Jahia-Package-Name") != null;
+
+        if (isPackage) {
+            ModulesPackage pack = ModulesPackage.create(jarFile);
+            List<String> providedBundles = new ArrayList<String>();
+            for (Model module : pack.getModules()) {
+                providedBundles.add(module.getArtifactId());
+            }
+            for (Model module : pack.getModules()) {
+                if (templatePackageRegistry.lookupById(module.getArtifactId()) == null ||
+                        (templatePackageRegistry.lookupById(module.getArtifactId()) != null && !StringUtils.equals(module.getVersion(), templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()))) {
+                    File mod = pack.fetchFile(module.getArtifactId(), module.getVersion());
+                    Bundle bundle = installModule(mod, context, providedBundles);
+                    if (bundle != null) {
+                        bundlesToStart.add(bundle);
+                    }
+                } else {
+                    context.addMessage(new MessageBuilder().source("moduleFile")
+                            .code("serverSettings.manageModules.install.moduleExists")
+                            .args(new String[]{module.getArtifactId(), templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()})
+                            .build());
+                }
+            }
+        } else {
+            Bundle bundle = installModule(file, context, null);
+            if (bundle != null) {
+                bundlesToStart.add(bundle);
+            }
+        }
+        startBundles(context, bundlesToStart);
+        return jarFile;
     }
 
     private void startBundles(MessageContext context, List<Bundle> bundlesToStart) throws BundleException {
@@ -248,7 +263,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
-    private Bundle installModule(File file, MessageContext context) throws IOException, BundleException {
+    private Bundle installModule(File file, MessageContext context, List<String> providedBundles) throws IOException, BundleException {
         JarFile jarFile = new JarFile(file);
         try {
             Manifest manifest = jarFile.getManifest();
@@ -292,6 +307,15 @@ public class ModuleManagementFlowHandler implements Serializable {
                 }
             }
             List<String> deps = BundleUtils.getModule(bundle).getDepends();
+            if (providedBundles != null) {
+                for (String providedBundle : providedBundles) {
+                    for (String dep : deps) {
+                        if (StringUtils.equals(providedBundle, dep)) {
+                            deps.remove(dep);
+                        }
+                    }
+                }
+            }
             List<String> missingDeps = getMissingDependenciesFrom(deps);
             if (!missingDeps.isEmpty()) {
                 createMessageForMissingDependencies(context, missingDeps);

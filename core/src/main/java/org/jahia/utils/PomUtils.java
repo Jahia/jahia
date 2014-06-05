@@ -70,6 +70,7 @@
 package org.jahia.utils;
 
 import org.apache.commons.io.*;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.*;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
@@ -92,7 +93,10 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.Enumeration;
 import java.util.Map;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
  * Utility class for reading and manipulating Maven project files (pom.xml).
@@ -353,6 +357,29 @@ public final class PomUtils {
         }
 
         org.apache.commons.io.FileUtils.write(targetPomXmlFile, pomContent);
+    }
+
+    public static File extractPomFromJar(JarFile jar, String groupId, String artifactId) throws IOException {
+        // deploy artifacts to Maven distribution server
+        Enumeration<JarEntry> jarEntries = jar.entries();
+        JarEntry jarEntry = null;
+        boolean found = false;
+        while (jarEntries.hasMoreElements()) {
+            jarEntry = jarEntries.nextElement();
+            String name = jarEntry.getName();
+            if (StringUtils.startsWith(name, groupId != null ? ("META-INF/maven/" + groupId + "/") : "META-INF/maven/")
+                    && StringUtils.endsWith(name, artifactId + "/pom.xml")) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) {
+            throw new IOException("unable to find pom.xml file within while looking for " + artifactId);
+        }
+        InputStream is = jar.getInputStream(jarEntry);
+        File pomFile = File.createTempFile("pom", ".xml");
+        FileUtils.copyInputStreamToFile(is, pomFile);
+        return pomFile;
     }
 
     private PomUtils() {

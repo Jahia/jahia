@@ -303,7 +303,7 @@ public class ModuleBuildHelper implements InitializingBean {
                 w.close();
             }
             JarFile jar = new JarFile(generatedJar);
-            pomFile = extractPomFromJar(jar, groupId, artifactId);
+            pomFile = PomUtils.extractPomFromJar(jar, groupId, artifactId);
             jar.close();
 
             Model pom;
@@ -345,28 +345,7 @@ public class ModuleBuildHelper implements InitializingBean {
         }
     }
 
-    private File extractPomFromJar(JarFile jar, String groupId, String artifactId) throws IOException {
-        // deploy artifacts to Maven distribution server
-        Enumeration<JarEntry> jarEntries = jar.entries();
-        JarEntry jarEntry = null;
-        boolean found = false;
-        while (jarEntries.hasMoreElements()) {
-            jarEntry = jarEntries.nextElement();
-            String name = jarEntry.getName();
-            if (StringUtils.startsWith(name, groupId != null ? ("META-INF/maven/" + groupId + "/") : "META-INF/maven/")
-                    && StringUtils.endsWith(name, artifactId + "/pom.xml")) {
-                found = true;
-                break;
-            }
-        }
-        if (!found) {
-            throw new IOException("unable to find pom.xml file within while looking for " + artifactId);
-        }
-        InputStream is = jar.getInputStream(jarEntry);
-        File pomFile = File.createTempFile("pom", ".xml");
-        FileUtils.copyInputStreamToFile(is, pomFile);
-        return pomFile;
-    }
+
 
     private String getMavenError(String out) {
         Matcher m = Pattern.compile("^\\[ERROR\\](.*)$", Pattern.MULTILINE).matcher(out);

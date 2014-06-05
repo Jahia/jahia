@@ -2,164 +2,120 @@ package org.jahia.data.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.model.Model;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.commons.Version;
-import org.jahia.services.importexport.NoCloseZipInputStream;
-import org.osgi.framework.BundleException;
-import org.osgi.framework.VersionRange;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
+import org.jahia.utils.PomUtils;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.jar.Attributes;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 
 /**
- * This represents a package of modules.
- * A package of module is an archive that contains Jahia modules (jar files) and a description File package.xml
- * here a sample structure of the description file :
- * <p>&lt;package&gt;<br />
- * &nbsp;&nbsp; &nbsp;&lt;packageDescription&gt;This is a sample package&lt;/packageDescription&gt;<br />
- * &nbsp;&nbsp; &nbsp;&lt;packageVersion&gt;1.0-SNAPSHOT&lt;/packageVersion&gt;<br />
- * &nbsp;&nbsp; &nbsp;&lt;modules&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;artifactId&gt;article&lt;/artifactId&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;versionRange&gt;[1.0,3.0]&lt;/versionRange&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;artifactId&gt;contact&lt;/artifactId&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;versionRange&gt;[1.0,3.0]&lt;/versionRange&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;artifactId&gt;bookmarks&lt;/artifactId&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;versionRange&gt;[1.0,3.0]&lt;/versionRange&gt;<br />
- * &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/module&gt;<br />
- * &nbsp;&nbsp; &nbsp;&lt;/modules&gt;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;<br />
- * &lt;/package&gt;</p>
- * <p>
- * where for the package :<br />
- * - &lt;packageVersion&gt; is the version of the current package (not used yet)<br />
- * - &lt;packageDescription&gt; is the description of the package (not used yet)<br />
- * - &lt;modules&gt; contains the description of the modules in the package<br />
- * </p>
- * <p>
- * for a module :<br />
- * - &lt;artifactId&gt; is the artifactID of the module, it corresponds to the module filename without the version<br />
- * - &lt;versionRange&gt; is the version range for the module allowed to be used by the package<br />
- * </p>
+ * This represents a Package of modules.
+ * A package of module is a jar file that contains jahia modules as jar file and a description file (MANIFEST.MF)
+ * the structure of the package is :
+ * - module1.jar
+ * - module2.jar
+ * - META-INF/MANIFEST.MF
+ * The manifest entries are :
+ * - Jahia-Package-Name : the name of the package
+ * - Jahia-Package-Version : the version of the package
+ * - Jahia-Package-Description : the description of the package
  */
 public class ModulesPackage {
 
-    private List<Module> modules;
+    private List<Model> modules;
+    private String name;
     private String description;
     private Version version;
-    private File zipFile;
+    private JarFile jarFile;
 
     /**
-     * Creates a new modules package from a ZipFile
-     * It reads the description file to build it.
+     * creates a new ModulesPackage from a jar file.
+     * All the information are loaded
      *
-     * @param zipFile is the archive that contains modules.
-     * @throws BundleException
+     * @param jarFile the package jar file
+     * @return a ModulesPackage
+     * @throws IOException
+     * @throws XmlPullParserException
      */
-    public ModulesPackage(File zipFile) throws BundleException {
-        org.jahia.utils.zip.ZipEntry z;
-        modules = new ArrayList<Module>();
-        try {
-            NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-            while ((z = zis2.getNextEntry()) != null) {
+    public static ModulesPackage create(JarFile jarFile) throws IOException, XmlPullParserException {
+        return new ModulesPackage(jarFile);
+    }
+
+    private ModulesPackage(JarFile jarFile) throws IOException, XmlPullParserException {
+        modules = new ArrayList<Model>();
+        Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
+        version = new Version(manifestAttributes.getValue("Jahia-Package-Version"));
+        name = manifestAttributes.getValue("Jahia-Package-Name");
+        description = manifestAttributes.getValue("Jahia-Package-Description");
+        // read jars
+        Enumeration<JarEntry> jars = jarFile.entries();
+
+        while (jars.hasMoreElements()) {
+            JarEntry jar = jars.nextElement();
+            JarFile moduleJarFile = null;
+            OutputStream output = null;
+            if (StringUtils.endsWith(jar.getName(), ".jar")) {
                 try {
-                    if (StringUtils.equals("package.xml", z.getName())) {
-                        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-                        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-                        Document doc = dBuilder.parse(zis2);
-                        description = doc.getElementsByTagName("packageDescription").item(0).getTextContent();
-                        version = new Version(doc.getElementsByTagName("packageVersion").item(0).getTextContent());
-                        NodeList moduleList = doc.getElementsByTagName("module");
-                        for (int i = 0; i < moduleList.getLength(); i++) {
-                            Node mod = moduleList.item(i);
-                            NodeList modDetails = mod.getChildNodes();
-                            Module module = new Module();
-                            for (int j = 0; j < modDetails.getLength(); j++) {
-                                Node modDetail = modDetails.item(j);
-                                if (StringUtils.equals(modDetail.getNodeName(), "artifactId")) {
-                                    module.setAtrifactId(modDetail.getTextContent());
-                                }
-                                if (StringUtils.equals(modDetail.getNodeName(), "versionRange")) {
-                                    module.setVersionRange(new VersionRange(modDetail.getTextContent()));
-                                }
-                                if (StringUtils.equals(modDetail.getNodeName(), "url")) {
-                                    module.setRemoteUrl(modDetail.getTextContent());
-                                }
-                            }
-                            modules.add(module);
-                        }
+                    InputStream input = jarFile.getInputStream(jar);
+                    File moduleFile = File.createTempFile(jar.getName(), "");
+                    output = new FileOutputStream(moduleFile);
+                    int read = 0;
+                    byte[] bytes = new byte[1024];
+
+                    while ((read = input.read(bytes)) != -1) {
+                        output.write(bytes, 0, read);
                     }
-                } catch (ParserConfigurationException e) {
-                    e.printStackTrace();
-                } catch (SAXException e) {
-                    e.printStackTrace();
+                    moduleJarFile = new JarFile(moduleFile);
+                    Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
+                    modules.add(PomUtils.read(PomUtils.extractPomFromJar(moduleJarFile, moduleManifestAttributes.getValue("Jahia-GroupId"), moduleManifestAttributes.getValue("Bundle-SymbolicName"))));
                 } finally {
-                    zis2.closeEntry();
-                    IOUtils.closeQuietly(zis2);
+                    IOUtils.closeQuietly(output);
+                    IOUtils.closeQuietly(moduleJarFile);
                 }
-                this.zipFile = zipFile;
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        this.jarFile = jarFile;
     }
 
     /**
      * This method gets a file from the archive according to its name only
      * the name of the file, is the name before the version (separator is "-")
      *
-     * @param fileName file to fetch
      * @return the file
      */
-    public File fetchFile(String fileName) {
-        org.jahia.utils.zip.ZipEntry z;
+    public File fetchFile(String artifactId, String version) throws IOException {
+        OutputStream output = null;
+        InputStream input = null;
         try {
-            NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(zipFile)));
-            try {
-                while ((z = zis2.getNextEntry()) != null) {
-                    if (StringUtils.startsWith(z.getName(), fileName + "-")) {
-                        File jarFile = File.createTempFile(z.getName(), "");
-                        OutputStream out = new FileOutputStream(jarFile);
-                        byte[] buffer = new byte[8192];
-                        int len;
-                        while ((len = zis2.read(buffer)) != -1) {
-                            out.write(buffer, 0, len);
-                        }
-                        out.flush();
-                        out.close();
-                        return jarFile;
-                    }
-                }
-            } finally {
-                zis2.closeEntry();
-                IOUtils.closeQuietly(zis2);
+            String fileName = artifactId + "-" + version + ".jar";
+            JarEntry jarEntry = jarFile.getJarEntry(fileName);
+            input = jarFile.getInputStream(jarEntry);
+            File moduleFile = File.createTempFile(fileName, "");
+            output = new FileOutputStream(moduleFile);
+            int read = 0;
+            byte[] bytes = new byte[1024];
+            while ((read = input.read(bytes)) != -1) {
+                output.write(bytes, 0, read);
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            return moduleFile;
+        } finally {
+            IOUtils.closeQuietly(output);
+            IOUtils.closeQuietly(input);
         }
-        return null;
     }
 
-    /**
-     * returns the list of Jahia modules within the package
-     *
-     * @return
-     */
-    public List<Module> getModules() {
+    public String getName() {
+        return name;
+    }
+
+    public List<Model> getModules() {
         return modules;
     }
 
@@ -171,36 +127,4 @@ public class ModulesPackage {
         return version;
     }
 
-    /**
-     * This is the representation of a Module within a ModulesPackage
-     */
-    public class Module {
-        private VersionRange versionRange;
-        private String atrifactId;
-        private String remoteUrl;
-
-        public String getRemoteUrl() {
-            return remoteUrl;
-        }
-
-        public void setRemoteUrl(String remoteUrl) {
-            this.remoteUrl = remoteUrl;
-        }
-
-        public String getAtrifactId() {
-            return atrifactId;
-        }
-
-        public void setAtrifactId(String atrifactId) {
-            this.atrifactId = atrifactId;
-        }
-
-        public void setVersionRange(VersionRange versionRange) {
-            this.versionRange = versionRange;
-        }
-
-        public VersionRange getVersionRange() {
-            return versionRange;
-        }
-    }
 }

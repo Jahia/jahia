@@ -864,6 +864,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- PDFBox dependency we override form Tika -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+             <version>1.8.5</version>
+        </dependency>
+        <!-- End of PDFBox dependency we override form Tika -->
         <!-- POI dependencies we are overriding from Tika -->
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -891,6 +898,7 @@
             </exclusions>
         </dependency>
         <!-- End of POI dependencies -->
+        
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>

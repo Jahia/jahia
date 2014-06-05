@@ -61,7 +61,7 @@
 <c:if test="${empty includeChildrenLabel}"><c:set var="includeChildrenLabel"><fmt:message key="selectors.includeChildren"/></c:set></c:if>
 <a href="\#${fieldId}-treeItemSelector" id="${fieldId}-treeItemSelectorTrigger" class="${styleClass}">${fn:escapeXml(label)}</a>
 <c:if test="${displayIncludeChildren}">
-    &nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;<label for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>
+    <div><label class="control-label" for="${fieldIdIncludeChildren}">${fn:escapeXml(includeChildrenLabel)}</label>&nbsp;<input type="checkbox" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true" ${includeChildren ? 'checked="checked"' : ''}/>&nbsp;</div>
 </c:if>
 <c:if test="${!displayIncludeChildren && includeChildren}">
     <input type="hidden" id="${fieldIdIncludeChildren}" name="${fieldNameIncludeChildren}" value="true"/>

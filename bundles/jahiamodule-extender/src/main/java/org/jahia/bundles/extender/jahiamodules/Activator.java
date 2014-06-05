@@ -795,12 +795,12 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopped(Bundle bundle) {
-        // nothing to do: we need to keep the bundles in toBeStarted so that they can be automatically restarted when missing dependencies are added
-        /*for (List<Bundle> list : toBeStarted.values()) {
+        // todo: why is toBeStarted emptied here when it was just populated in stopping? This prevents proper behavior of startDependantBundles
+        for (List<Bundle> list : toBeStarted.values()) {
             if (list.contains(bundle)) {
                 list.remove(bundle);
             }
-        }*/
+        }
     }
 
     private void registerHttpResources(final Bundle bundle) {

@@ -148,7 +148,7 @@ public class JahiaTemplatesPackage {
 
     private String description;
 
-    private List<JahiaTemplatesPackage> dependencies = Collections.emptyList();
+    private LinkedHashMap<String, JahiaTemplatesPackage> dependencies;
 
     private int modulePriority = 0;
 
@@ -203,6 +203,7 @@ public class JahiaTemplatesPackage {
      */
     public JahiaTemplatesPackage(Bundle bundle) {
         this.bundle = bundle;
+        resetDependencies();
     }
 
     /**
@@ -580,8 +581,8 @@ public class JahiaTemplatesPackage {
      * 
      * @return a list of modules which this module depends on
      */
-    public List<JahiaTemplatesPackage> getDependencies() {
-        return dependencies;
+    public Collection<JahiaTemplatesPackage> getDependencies() {
+        return dependencies.values();
     }
 
     /**
@@ -591,10 +592,8 @@ public class JahiaTemplatesPackage {
      *            a module to add as a dependency for this module
      */
     public void addDependency(JahiaTemplatesPackage dep) {
-        if (!dependencies.contains(dep)) {
-            List<JahiaTemplatesPackage> newList = new LinkedList<JahiaTemplatesPackage>(dependencies);
-            newList.add(dep);
-            dependencies = Collections.unmodifiableList(newList); 
+        if (dep != null) {
+            dependencies.put(dep.getId(), dep);
         }
     }
 
@@ -602,7 +601,7 @@ public class JahiaTemplatesPackage {
      * Reset the module dependencies.
      */
     public void resetDependencies() {
-        dependencies = Collections.emptyList();
+        dependencies = new LinkedHashMap<String, JahiaTemplatesPackage>();
     }
 
     /**

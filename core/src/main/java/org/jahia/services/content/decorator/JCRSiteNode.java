@@ -69,28 +69,27 @@
  */
 package org.jahia.services.content.decorator;
 
-import static org.jahia.services.sites.SitesSettings.*;
-
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.apache.commons.collections.set.UnmodifiableSet;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.*;
-import org.jahia.services.sites.JahiaSite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
 import java.util.*;
+
+import static org.jahia.services.sites.SitesSettings.*;
 
 /**
  * JCR node representing the Jahia virtual site.
@@ -452,8 +451,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                 final JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(
                         getProperty("j:templatesSet").getString());
                 if (templatePackage != null) {
-                final List<JahiaTemplatesPackage> dependencies = templatePackage.getDependencies();
-                for (JahiaTemplatesPackage dependency : dependencies) {
+                    for (JahiaTemplatesPackage dependency : templatePackage.getDependencies()) {
                     if(!modules.contains(dependency.getId())) {
                         modules.add(dependency.getId());
                     }

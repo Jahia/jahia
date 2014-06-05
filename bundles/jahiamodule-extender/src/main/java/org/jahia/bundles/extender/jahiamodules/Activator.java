@@ -91,7 +91,10 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.*;
+import org.jahia.services.templates.JCRModuleListener;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.TemplatePackageDeployer;
+import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
@@ -102,7 +105,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -339,10 +341,7 @@ public class Activator implements BundleActivator {
         for (Bundle bundle : new HashSet<Bundle>(registeredBundles.keySet())) {
             if (getModuleState(bundle).getState() == ModuleState.State.STARTED || getModuleState(bundle).getState() == ModuleState.State.SPRING_NOT_STARTED) {
                 stopping(bundle);
-                if (toBeStarted.get(symbolicName) == null) {
-                    toBeStarted.put(symbolicName, new ArrayList<Bundle>());
-                }
-                toBeStarted.get(symbolicName).add(bundle);
+                addToBeStarted(bundle, symbolicName);
                 setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
             }
             unresolve(bundle);
@@ -366,6 +365,15 @@ public class Activator implements BundleActivator {
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("== Jahia Extender stopped in {}ms ============================================================== ", totalTime);
 
+    }
+
+    private void addToBeStarted(Bundle bundle, String missingDependency) {
+        List<Bundle> toBeStartedForName = toBeStarted.get(missingDependency);
+        if (toBeStartedForName == null) {
+            toBeStartedForName = new ArrayList<Bundle>();
+            toBeStarted.put(missingDependency, toBeStartedForName);
+        }
+        toBeStartedForName.add(bundle);
     }
 
     private synchronized void install(final Bundle bundle, boolean fromFileInstall) {
@@ -458,13 +466,10 @@ public class Activator implements BundleActivator {
 
         for (String depend : dependsList) {
             if (!templatePackageRegistry.areVersionsForModuleAvailable(depend)) {
-                if (!toBeParsed.containsKey(depend)) {
-                    toBeParsed.put(depend, new ArrayList<Bundle>());
-                }
                 logger.debug("Delaying module {} parsing because it depends on module {} that is not yet parsed.",
                         bundle.getSymbolicName(), depend);
                 setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, depend);
-                toBeParsed.get(depend).add(bundle);
+                addToBeParsed(bundle, depend);
                 if (templatePackageRegistry.lookupByIdAndVersion(pkg.getId(), pkg.getVersion()) != null) {
                     templatePackageRegistry.unregisterPackageVersion(pkg);
                 }
@@ -525,12 +530,22 @@ public class Activator implements BundleActivator {
         }
     }
 
+    private void addToBeParsed(Bundle bundle, String missingDependency) {
+        List<Bundle> bundlesWaitingForDepend = toBeParsed.get(missingDependency);
+        if (bundlesWaitingForDepend == null) {
+            bundlesWaitingForDepend = new ArrayList<Bundle>();
+            toBeParsed.put(missingDependency, bundlesWaitingForDepend);
+        }
+        bundlesWaitingForDepend.add(bundle);
+    }
+
     private void parseDependantBundles(String key, boolean shouldAutoStart) {
-        if (toBeParsed.get(key) != null) {
-            for (Bundle bundle1 : toBeParsed.get(key)) {
-                if(bundle1.getState()!=Bundle.UNINSTALLED) {
-                    logger.debug("Parsing module " + bundle1.getSymbolicName() + " since it is dependent on just parsed module " + key);
-                    parseBundle(bundle1, shouldAutoStart);
+        final List<Bundle> toBeParsedForKey = toBeParsed.get(key);
+        if (toBeParsedForKey != null) {
+            for (Bundle bundle : toBeParsedForKey) {
+                if(bundle.getState()!=Bundle.UNINSTALLED) {
+                    logger.debug("Parsing module " + bundle.getSymbolicName() + " since it is dependent on just parsed module " + key);
+                    parseBundle(bundle, shouldAutoStart);
                 }
             }
             toBeParsed.remove(key);
@@ -574,10 +589,10 @@ public class Activator implements BundleActivator {
             return;
         }
         List<String> dependsList = jahiaTemplatesPackage.getDepends();
+        final String symbolicName = bundle.getSymbolicName();
         if (!dependsList.contains("default")
                 && !dependsList.contains("Default Jahia Templates")
-                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                        .contains(bundle.getSymbolicName())) {
+                && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency().contains(symbolicName)) {
             dependsList.add("default");
         }
 
@@ -587,20 +602,18 @@ public class Activator implements BundleActivator {
                 pack = templatePackageRegistry.lookup(depend);
             }
             if (pack == null) {
-                if (!toBeStarted.containsKey(depend)) {
-                    toBeStarted.put(depend, new ArrayList<Bundle>());
-                }
-                logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", bundle.getSymbolicName(), depend);
-                toBeStarted.get(depend).add(bundle);
+                logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", symbolicName, depend);
+                addToBeStarted(bundle, depend);
                 setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED, depend);
                 return;
             }
         }
 
+        final String id = jahiaTemplatesPackage.getId();
         try {
             boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return session.itemExists("/modules/" + jahiaTemplatesPackage.getId() + "/" + jahiaTemplatesPackage.getVersion());
+                    return session.itemExists("/modules/" + id + "/" + jahiaTemplatesPackage.getVersion());
                 }
             });
             if (!imported) {
@@ -657,7 +670,13 @@ public class Activator implements BundleActivator {
             setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
         }
 
-        startDependantBundles(jahiaTemplatesPackage.getId());
+        // update dependency entry for dependent modules
+        final List<JahiaTemplatesPackage> dependantModules = templatePackageRegistry.getDependantModules(jahiaTemplatesPackage, true);
+        for (JahiaTemplatesPackage dependantModule : dependantModules) {
+            dependantModule.addDependency(jahiaTemplatesPackage);
+        }
+
+        startDependantBundles(id);
         startDependantBundles(jahiaTemplatesPackage.getName());
     }
 
@@ -666,9 +685,10 @@ public class Activator implements BundleActivator {
     }
 
     private void startDependantBundles(String key) {
-        if (toBeStarted.get(key) != null) {
+        final List<Bundle> toBeStartedForKey = toBeStarted.get(key);
+        if (toBeStartedForKey != null) {
             List<Bundle> startedBundles = new ArrayList<Bundle>();
-            for (Bundle bundle : toBeStarted.get(key)) {
+            for (Bundle bundle : toBeStartedForKey) {
                 logger.debug("Starting module " + bundle.getSymbolicName() + " since it is dependent on just started module " + key);
                 setModuleState(bundle, ModuleState.State.STARTING, key);
                 try {
@@ -679,8 +699,8 @@ public class Activator implements BundleActivator {
                     setModuleState(bundle, ModuleState.State.ERROR_DURING_START, e);
                 }
             }
-            toBeStarted.get(key).removeAll(startedBundles);
-            if (toBeStarted.get(key).size() == 0) {
+            toBeStartedForKey.removeAll(startedBundles);
+            if (toBeStartedForKey.size() == 0) {
                 toBeStarted.remove(key);
             }
         }
@@ -700,14 +720,13 @@ public class Activator implements BundleActivator {
         
         flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
 
+        final String symbolicName = bundle.getSymbolicName();
         for (JahiaTemplatesPackage dependant : templatePackageRegistry.getDependantModules(jahiaTemplatesPackage)) {
-            if (!toBeStarted.containsKey(bundle.getSymbolicName())) {
-                toBeStarted.put(bundle.getSymbolicName(), new ArrayList<Bundle>());
-            }
-            toBeStarted.get(bundle.getSymbolicName()).add(dependant.getBundle());
-            setModuleState(dependant.getBundle(), ModuleState.State.STOPPING, bundle.getSymbolicName());
-            stopping(dependant.getBundle());
-            setModuleState(dependant.getBundle(), ModuleState.State.WAITING_TO_BE_STARTED, bundle.getSymbolicName());
+            final Bundle dependantBundle = dependant.getBundle();
+            addToBeStarted(dependantBundle, symbolicName);
+            setModuleState(dependantBundle, ModuleState.State.STOPPING, symbolicName);
+            stopping(dependantBundle);
+            setModuleState(dependantBundle, ModuleState.State.WAITING_TO_BE_STARTED, symbolicName);
         }
 
         templatePackageRegistry.unregister(jahiaTemplatesPackage);
@@ -776,11 +795,12 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopped(Bundle bundle) {
-        for (List<Bundle> list : toBeStarted.values()) {
+        // nothing to do: we need to keep the bundles in toBeStarted so that they can be automatically restarted when missing dependencies are added
+        /*for (List<Bundle> list : toBeStarted.values()) {
             if (list.contains(bundle)) {
                 list.remove(bundle);
             }
-        }
+        }*/
     }
 
     private void registerHttpResources(final Bundle bundle) {

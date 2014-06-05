@@ -125,7 +125,7 @@ public class MacrosChoiceListInitializer implements ModuleChoiceListInitializer 
                     JahiaTemplatesPackage pack = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
                     if (pack != null) {
                         packages.add(pack);
-                        final List<JahiaTemplatesPackage> dependencies = pack.getDependencies();
+                        final Collection<JahiaTemplatesPackage> dependencies = pack.getDependencies();
                         if (dependencies != null && !dependencies.isEmpty()) {
                             packages.addAll(dependencies);
                         }

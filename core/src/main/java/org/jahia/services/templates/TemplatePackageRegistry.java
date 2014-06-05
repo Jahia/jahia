@@ -122,7 +122,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
 import javax.servlet.Filter;
-
 import java.util.*;
 
 /**
@@ -223,9 +222,9 @@ public class TemplatePackageRegistry {
 
     private boolean computeDependencies(JahiaTemplatesPackage pack, JahiaTemplatesPackage currentPack) {
         for (String depends : currentPack.getDepends()) {
-            JahiaTemplatesPackage dependentPack = packagesByName.get(depends);
+            JahiaTemplatesPackage dependentPack = packagesById.get(depends);
             if (dependentPack == null) {
-                dependentPack = packagesById.get(depends);
+                dependentPack = packagesByName.get(depends);
             }
             if (dependentPack == null) {
                 return false;
@@ -481,7 +480,7 @@ public class TemplatePackageRegistry {
     }
 
     public JahiaTemplatesPackage lookupByIdAndVersion(String moduleId, ModuleVersion moduleVersion) {
-        if (moduleId == null || packagesByName == null) return null;
+        if (moduleId == null || packagesWithVersionById == null) return null;
         Map<ModuleVersion, JahiaTemplatesPackage> packageVersions = packagesWithVersionById.get(moduleId);
         if (packageVersions != null) {
             return packageVersions.get(moduleVersion);
@@ -608,8 +607,25 @@ public class TemplatePackageRegistry {
     }
 
     public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module) {
+        return getDependantModules(module, false);
+    }
+
+    public List<JahiaTemplatesPackage> getDependantModules(JahiaTemplatesPackage module, boolean includeNonStarted) {
         List<JahiaTemplatesPackage> modules = new ArrayList<JahiaTemplatesPackage>();
-        for (JahiaTemplatesPackage aPackage : packagesByName.values()) {
+        final Collection<JahiaTemplatesPackage> modulesToExamine;
+        if(includeNonStarted) {
+            modulesToExamine = new HashSet<JahiaTemplatesPackage>(packagesById.values());
+
+            // get non-started modules
+            Set<String> nonStartedKeys = new HashSet<String>(packagesWithVersionById.keySet());
+            nonStartedKeys.removeAll(packagesById.keySet());
+            for (String nonStartedKey : nonStartedKeys) {
+                modulesToExamine.addAll(packagesWithVersionById.get(nonStartedKey).values());
+            }
+        } else {
+            modulesToExamine = packagesById.values();
+        }
+        for (JahiaTemplatesPackage aPackage : modulesToExamine) {
             if (aPackage.getDepends().contains(module.getId()) || aPackage.getDepends().contains(module.getName())) {
                 modules.add(aPackage);
             }

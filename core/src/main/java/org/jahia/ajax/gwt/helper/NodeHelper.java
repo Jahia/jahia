@@ -548,12 +548,10 @@ class NodeHelper {
 
     private void populateDependencies(GWTJahiaNode n, JCRNodeWrapper node) {
         List<String> dependencies = new ArrayList<String>();
-        List<JahiaTemplatesPackage> s = null;
         try {
             JahiaTemplatesPackage templatePackageByFileName = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(node.getResolveSite().getTemplateFolder());
             if (templatePackageByFileName != null) {
-                s = templatePackageByFileName.getDependencies();
-                for (JahiaTemplatesPackage aPackage : s) {
+                for (JahiaTemplatesPackage aPackage : templatePackageByFileName.getDependencies()) {
                     dependencies.add(aPackage.getId());
                 }
                 n.set("j:resolvedDependencies",dependencies);

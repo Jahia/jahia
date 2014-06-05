@@ -448,8 +448,10 @@ public class SearchHelper {
         Date startDate = null;
         SearchCriteria.DateValue creationDate = new SearchCriteria.DateValue();
         creationDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        criteria.setCreated(creationDate);
         SearchCriteria.DateValue lastModifiedDate = new SearchCriteria.DateValue();
         lastModifiedDate.setType(SearchCriteria.DateValue.Type.RANGE);
+        criteria.setLastModified(lastModifiedDate);
         SearchCriteria.DateValue lastPublished = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").getDateValue();
         criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setType(SearchCriteria.NodeProperty.Type.DATE);
         criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setName("j:lastPublished");
@@ -473,15 +475,13 @@ public class SearchHelper {
             lastModifiedDate.setToAsDate(gwtQuery.getEndLastModifiedDate());
             if (startDate != null) {
                 lastModifiedDate.setFromAsDate(startDate);
-                criteria.setLastModified(lastModifiedDate);
             }
         } else if (gwtQuery.getEndCreatedDate() != null) {
             creationDate.setToAsDate(gwtQuery.getEndCreatedDate());
             if (startDate != null) {
                 creationDate.setFromAsDate(startDate);
-                criteria.setCreated(creationDate);
             }
-        } else if (gwtQuery.getEndPublishedDate() != null) {
+         } else if (gwtQuery.getEndPublishedDate() != null) {
             lastPublished.setToAsDate(gwtQuery.getEndPublishedDate());
             if (startDate != null) {
                 lastPublished.setFromAsDate(startDate);

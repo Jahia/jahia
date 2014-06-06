@@ -73,11 +73,9 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.OnConflictAction;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
-import javax.jcr.version.VersionHistory;
 import java.util.*;
 
 /**
@@ -89,55 +87,27 @@ public class ConflictResolver {
 
 
     private static List<String> ignore = Arrays.asList(Constants.JCR_UUID, Constants.JCR_PRIMARYTYPE,
-            Constants.JCR_FROZENUUID, Constants.JCR_FROZENPRIMARYTYPE,
-            Constants.JCR_FROZENMIXINTYPES, Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION,
+            Constants.JCR_CREATED, Constants.JCR_CREATEDBY, Constants.JCR_BASEVERSION,
             Constants.JCR_ISCHECKEDOUT, Constants.JCR_VERSIONHISTORY, Constants.JCR_PREDECESSORS,
             Constants.JCR_ACTIVITY, Constants.CHECKIN_DATE, "j:locktoken", "j:lockTypes", "jcr:lockOwner",
             "jcr:lockIsDeep", "j:deletedChildren", "j:processId");
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ConflictResolver.class);
-    // Constants.JCR_LASTMODIFIED, "jcr:lastModifiedBy",
-    // "jcr:lastPublished", "jcr:lastPublishedBy", "j:published");
 
     private JCRNodeWrapper sourceNode;
     private JCRNodeWrapper targetNode;
 
-    private Calendar sourceDate = null;
-    private Calendar targetDate = null;
-
-    private List<String> uuids;
-
     private Set<JCRNodeWrapper> toCheckpoint;
 
     private List<Diff> differences;
-    private List<Diff> resolvedDifferences;
     private List<Diff> unresolvedDifferences;
 
     public ConflictResolver(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode) throws RepositoryException {
         this.sourceNode = sourceNode;
         this.targetNode = targetNode;
-
-        if (sourceNode.hasProperty(Constants.JCR_LASTMODIFIED)) {
-            sourceDate = sourceNode.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-        }
-        if (targetNode.hasProperty(Constants.JCR_LASTMODIFIED)) {
-            targetDate = targetNode.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-        }
-    }
-
-    public void setUuids(List<String> uuids) {
-        this.uuids = uuids;
     }
 
     public void setToCheckpoint(Set<JCRNodeWrapper> toCheckpoint) {
         this.toCheckpoint = toCheckpoint;
-    }
-
-    public List<Diff> getDifferences() {
-        return differences;
-    }
-
-    public List<Diff> getResolvedDifferences() {
-        return resolvedDifferences;
     }
 
     public List<Diff> getUnresolvedDifferences() {
@@ -147,12 +117,9 @@ public class ConflictResolver {
     public void applyDifferences() throws RepositoryException {
         computeDifferences();
 
-        resolvedDifferences = new ArrayList<Diff>();
         unresolvedDifferences = new ArrayList<Diff>();
         for (Diff diff : differences) {
-            if (diff.apply()) {
-                resolvedDifferences.add(diff);
-            } else {
+            if (!diff.apply()) {
                 unresolvedDifferences.add(diff);
             }
         }
@@ -161,11 +128,9 @@ public class ConflictResolver {
 
     private void computeDifferences() throws RepositoryException {
         differences = compare(sourceNode, targetNode, "");
-        // Check originWS to avoid removal of ugc -nodes
     }
 
     private List<Diff> compare(JCRNodeWrapper sourceNode, JCRNodeWrapper targetNode, String basePath) throws RepositoryException {
-        boolean isNode1Frozen = targetNode.isNodeType(Constants.NT_FROZENNODE);
         List<Diff> diffs = new ArrayList<Diff>();
 
         final ListOrderedMap targetUuids = getChildEntries(targetNode, targetNode.getSession());
@@ -239,9 +204,7 @@ public class ConflictResolver {
             JCRPropertyWrapper prop1 = (JCRPropertyWrapper) pi1.next();
 
             String propName = prop1.getName();
-            if (propName.equals(Constants.JCR_FROZENMIXINTYPES)) {
-                propName = Constants.JCR_MIXINTYPES;
-            } else if (ignore.contains(propName)) {
+            if (ignore.contains(propName)) {
                 continue;
             }
             if (!sourceNode.hasProperty(propName)) {
@@ -303,11 +266,7 @@ public class ConflictResolver {
 
             String propName = prop2.getName();
 
-            if (propName.equals(Constants.JCR_MIXINTYPES)) {
-                if (isNode1Frozen) {
-                    propName = Constants.JCR_FROZENMIXINTYPES;
-                }
-            } else if (ignore.contains(propName)) {
+            if (ignore.contains(propName)) {
                 continue;
             }
             if (!targetNode.hasProperty(propName)) {
@@ -335,11 +294,9 @@ public class ConflictResolver {
 
         NodeIterator ni = targetNode.getNodes();
         while (ni.hasNext()) {
-            JCRNodeWrapper frozenSub = (JCRNodeWrapper) ni.next();
-            if (sourceNode.hasNode(frozenSub.getName()) &&
-                    ((isNode1Frozen && frozenSub.isNodeType(Constants.NT_FROZENNODE)) || (!isNode1Frozen && !frozenSub.isVersioned())) &&
-                    !sourceNode.getNode(frozenSub.getName()).isVersioned()) {
-                diffs.addAll(compare(sourceNode.getNode(frozenSub.getName()), frozenSub, addPath(basePath, frozenSub.getName())));
+            JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
+            if (sourceNode.hasNode(sub.getName()) && !sub.isVersioned() && !sourceNode.getNode(sub.getName()).isVersioned()) {
+                diffs.addAll(compare(sourceNode.getNode(sub.getName()), sub, addPath(basePath, sub.getName())));
             }
         }
 
@@ -366,20 +323,7 @@ public class ConflictResolver {
         while (ni1.hasNext()) {
             Node child = (Node) ni1.next();
             try {
-                if (child.isNodeType("jmix:nolive")) {
-                    // Skip non publishable content
-                    continue;
-                } else if (session.getWorkspace().getName().equals("live") && child.hasProperty("j:originWS") && child.getProperty("j:originWS").getString().equals("live")) {
-                    // Skip user generated content
-                    continue;
-                } else if (child.isNodeType(Constants.NT_VERSIONEDCHILD)) {
-                    VersionHistory vh = (VersionHistory) node.getSession().getNodeByIdentifier(child.getProperty("jcr:childVersionHistory").getValue().getString());
-                    String uuid = vh.getRootVersion().getFrozenNode().getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                    childEntries.put(uuid, child.getName());
-                } else if (child.isNodeType(Constants.NT_FROZENNODE)) {
-                    String uuid = child.getProperty(Constants.JCR_FROZENUUID).getValue().getString();
-                    childEntries.put(uuid, child.getName());
-                } else {
+                if (!child.isNodeType("jmix:nolive") && !(session.getWorkspace().getName().equals("live") && child.hasProperty("j:originWS") && child.getProperty("j:originWS").getString().equals("live"))) {
                     session.getNodeByUUID(child.getIdentifier());
                     childEntries.put(child.getIdentifier(), child.getName());
                 }
@@ -443,10 +387,8 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            if (targetNode.hasNode(oldName) && !targetNode.getNode(oldName).isVersioned()) {
-                return targetNode.getNode(oldName).rename(newName);
-            }
-            return true;
+            return !(targetNode.hasNode(oldName) && !targetNode.getNode(oldName).isVersioned()) ||
+                    targetNode.getNode(oldName).rename(newName);
         }
 
         @Override
@@ -484,7 +426,6 @@ public class ConflictResolver {
     class ChildAddedDiff implements Diff {
         private String uuid;
         private String newName;
-        private String sourceWorkspace;
         private String nextSibling;
 
         ChildAddedDiff(String uuid, String newName, String nextSibling) {
@@ -558,9 +499,6 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-//            if (prunedTargetPath.contains(targetNode.getPath() + "/" + oldName)) {
-//                return true;
-//            }
             if (targetNode.hasNode(oldName)) {
                 final JCRNodeWrapper node = targetNode.getNode(oldName);
                 if (node.getIdentifier().equals(identifier)) {
@@ -697,18 +635,17 @@ public class ConflictResolver {
             JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
             String propertyName = getTargetName(propertyPath);
 
-            String name = propertyName;
             if (!targetNode.isCheckedOut()) {
                 targetNode.checkout();
             }
             if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                 targetNode.addMixin(newValue.getString());
-            } else if (targetNode.hasProperty(name)) {
-                List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(name).getRealValues()));
+            } else if (targetNode.hasProperty(propertyName)) {
+                List<Value> values = new ArrayList<Value>(Arrays.asList(targetNode.getProperty(propertyName).getRealValues()));
                 values.add(newValue);
-                targetNode.setProperty(name, values.toArray(new Value[values.size()]));
+                targetNode.setProperty(propertyName, values.toArray(new Value[values.size()]));
             } else {
-                targetNode.setProperty(name, new Value[]{newValue});
+                targetNode.setProperty(propertyName, new Value[]{newValue});
             }
             return true;
         }
@@ -823,7 +760,6 @@ public class ConflictResolver {
             this.propertyPath = propertyPath;
             this.oldValue = oldValue;
             this.newValue = newValue;
-
         }
 
         public boolean apply() throws RepositoryException {
@@ -834,71 +770,14 @@ public class ConflictResolver {
                 targetNode.checkout();
             }
 
-            if (newTargetValue == null) {
-                if (newValue == null) {
-                    if (targetNode.hasProperty(propertyName)) {
-                        targetNode.getProperty(propertyName).remove();
-                    }
-                } else {
-                    targetNode.getRealNode().setProperty(propertyName, newValue);
+            if (newValue == null) {
+                if (targetNode.hasProperty(propertyName)) {
+                    targetNode.getProperty(propertyName).remove();
                 }
-                return true;
             } else {
-                int resolution = getResolutionForDefinition(propertyDefinition);
-
-                Value v;
-                boolean targetMoreRecent = sourceDate != null && sourceDate.before(targetDate);
-                switch (resolution) {
-                    case OnConflictAction.USE_SOURCE:
-                        v = newValue;
-                        break;
-                    case OnConflictAction.USE_TARGET:
-                        return true;
-                    case OnConflictAction.USE_OLDEST:
-                        if (targetMoreRecent) {
-                            v = newValue;
-                            break;
-                        } else {
-                            return true;
-                        }
-                    case OnConflictAction.USE_LATEST:
-                        if (!targetMoreRecent) {
-                            v = newValue;
-                            break;
-                        } else {
-                            return true;
-                        }
-                    case OnConflictAction.NUMERIC_USE_MIN:
-                        if (newValue.getLong() < newTargetValue.getLong()) {
-                            v = newValue;
-                            break;
-                        } else {
-                            return true;
-                        }
-                    case OnConflictAction.NUMERIC_USE_MAX:
-                        if (newValue.getLong() > newTargetValue.getLong()) {
-                            v = newValue;
-                            break;
-                        } else {
-                            return true;
-                        }
-                    case OnConflictAction.NUMERIC_SUM:
-                        v = targetNode.getSession().getValueFactory().createValue(newValue.getLong() + newTargetValue.getLong() - oldValue.getLong());
-                        break;
-                    case OnConflictAction.IGNORE:
-                        return true;
-                    default:
-                        return false;
-                }
-
-                targetNode.getRealNode().setProperty(propertyName, v);
-                return true;
+                targetNode.getRealNode().setProperty(propertyName, newValue);
             }
-        }
-
-        // todo : configure somewhere
-        private int getResolutionForDefinition(ExtendedPropertyDefinition definition) {
-            return definition.getOnConflict();
+            return true;
         }
 
         @Override

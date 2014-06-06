@@ -136,6 +136,11 @@
             return $(a).html().trim().localeCompare($(b).html().trim());
         }).appendTo("#language_list");
     })
+    function warningMandatory(checkbox) {
+        if (checkbox.checked) {
+            $("#warningMandatory").show();
+        }
+    }
 
 </script>
 
@@ -201,7 +206,7 @@
                                    <c:if test="${site.defaultLanguage eq locale}">checked="checked"</c:if> />
                         </td>
                         <td>
-                            <input type="checkbox" name="mandatoryLanguages" value="${locale}" onchange="updateBoxes()"
+                            <input onChange="warningMandatory(this)" type="checkbox" name="mandatoryLanguages" value="${locale}" onchange="updateBoxes()"
                                    <c:if test="${functions:contains(site.mandatoryLanguages, langAsString)}">checked="checked"</c:if>/>
                         </td>
                         <td>
@@ -216,6 +221,10 @@
                 </c:forEach>
                 </tbody>
             </table>
+            <div class="alert hide" id="warningMandatory">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <fmt:message key="siteSettings.locale.mandatory.warning"/>
+            </div>
         </div>
     </div>
     <div class="row-fluid">

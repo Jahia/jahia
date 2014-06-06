@@ -858,24 +858,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             for (Privilege privilege : permsInRole) {
                 String privilegeName = privilege.getName();
-                if (checkPrivilege(permissions, privilegeName)) {
-                    if (!isAliased) {
-                        matchingPermissions.put(entryKey, Boolean.TRUE);
-                    }
+                if (checkPrivilege(permissions, privilegeName, entryKey)) {
                     return true;
-                }
-                if (isAliased && privilegeName.contains("_" + Constants.LIVE_WORKSPACE)) {
-                    if (checkPrivilege(permissions, privilegeName.replaceAll("_" + Constants.LIVE_WORKSPACE,
-                            "_" + workspaceName))) {
-                        return true;
-                    }
                 }
 
                 for (Privilege sub : privilege.getAggregatePrivileges()) {
-                    if (checkPrivilege(permissions, sub.getName())) {
-                        if (!isAliased) {
-                            matchingPermissions.put(entryKey, Boolean.TRUE);
-                        }
+                    if (checkPrivilege(permissions, sub.getName(), entryKey)) {
                         return true;
                     }
                 }
@@ -893,6 +881,24 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return false;
             }
         }
+    }
+
+    private boolean checkPrivilege(Set<String> permissions, String name, String cacheEntryKey) {
+        if (!isAliased || !name.contains("_" + Constants.EDIT_WORKSPACE)) {
+            if (checkPrivilege(permissions, name)) {
+                if (!isAliased) {
+                    matchingPermissions.put(cacheEntryKey, Boolean.TRUE);
+                }
+                return true;
+            }
+        }
+        if (isAliased && name.contains("_" + Constants.LIVE_WORKSPACE)) {
+            if (checkPrivilege(permissions, name.replaceAll("_" + Constants.LIVE_WORKSPACE,
+                    "_" + workspaceName))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean checkPrivilege(Set<String> permissions, String privilegeName) {

@@ -12,6 +12,7 @@
     <view-state id="showMailSettings" model="mailSettings">
         <transition on="submitMailSettings" to="showMailSettings">
             <evaluate expression="MailService.store(mailSettings)"/>
+            <set name="flowScope.settingsUpdated" value="true" type="java.lang.Boolean"/>
         </transition>
     </view-state>
 </flow>

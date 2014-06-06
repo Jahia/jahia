@@ -87,6 +87,12 @@
         </c:if>
     </c:forEach>
 </p>
+<c:if test="${settingsUpdated}">
+<div class="alert alert-success">
+    <button type="button" class="close" data-dismiss="alert">&times;</button>
+    <fmt:message key="label.changeSaved"/>
+</div>
+</c:if>
 <div class="box-1">
     <form class="form-horizontal" name="jahiaAdmin" action='${flowExecutionUrl}' method="post">
 

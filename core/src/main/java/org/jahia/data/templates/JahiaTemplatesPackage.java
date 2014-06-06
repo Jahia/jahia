@@ -581,8 +581,8 @@ public class JahiaTemplatesPackage {
      * 
      * @return a list of modules which this module depends on
      */
-    public Collection<JahiaTemplatesPackage> getDependencies() {
-        return dependencies.values();
+    public List<JahiaTemplatesPackage> getDependencies() {
+        return new ArrayList<JahiaTemplatesPackage>(dependencies.values());
     }
 
     /**

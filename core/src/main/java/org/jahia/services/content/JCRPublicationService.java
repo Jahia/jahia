@@ -69,13 +69,9 @@
  */
 package org.jahia.services.content;
 
-import static org.jahia.api.Constants.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -84,14 +80,17 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
-
 import java.util.*;
+
+import static org.jahia.api.Constants.*;
 
 /**
  * This is a Jahia service, which offers functionality to publish, unpublish or get publication info of JCR nodes
@@ -102,6 +101,7 @@ public class JCRPublicationService extends JahiaService {
     private static class Holder {
         static final JCRPublicationService INSTANCE = new JCRPublicationService();
     }
+
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
     private MetricsLoggingService loggingService;
@@ -151,13 +151,14 @@ public class JCRPublicationService extends JahiaService {
         JCRTemplate.getInstance()
                 .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(),
                         workspace, null, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (String id : publicationInfo) {
-                            doLock(id, session, key);
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                for (String id : publicationInfo) {
+                                    doLock(id, session, key);
+                                }
+                                return null;
+                            }
                         }
-                        return null;
-                    }
-                });
+                );
     }
 
     private void doLock(String id, JCRSessionWrapper session, String key)
@@ -173,13 +174,14 @@ public class JCRPublicationService extends JahiaService {
         JCRTemplate.getInstance()
                 .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(),
                         workspace, null, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (String id : publicationInfo) {
-                            doUnlock(id, session, key);
+                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                for (String id : publicationInfo) {
+                                    doUnlock(id, session, key);
+                                }
+                                return null;
+                            }
                         }
-                        return null;
-                    }
-                });
+                );
     }
 
     private void doUnlock(String id, JCRSessionWrapper session, String key)
@@ -323,7 +325,7 @@ public class JCRPublicationService extends JahiaService {
         }
 
         VersionManager destinationVersionManager = destinationSession.getWorkspace().getVersionManager();
-        if (updateMetadata &&  destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
+        if (updateMetadata && destinationSession.getWorkspace().getName().equals(LIVE_WORKSPACE)) {
             for (JCRNodeWrapper jcrNodeWrapper : toPublish) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
@@ -470,23 +472,25 @@ public class JCRPublicationService extends JahiaService {
             final String destinationWorkspace = destinationSession.getWorkspace().getName();
             return JCRTemplate.getInstance().doExecute(true, node.getUser().getUsername(),
                     node.getSession().getWorkspace().getName(), null, new JCRCallback<CloneResult>() {
-                public CloneResult doInJCR(final JCRSessionWrapper sourceSession)
-                        throws RepositoryException {
-                    return JCRTemplate.getInstance().doExecute(true,
-                            node.getUser().getUsername(), destinationWorkspace,
-                            new JCRCallback<CloneResult>() {
-                                public CloneResult doInJCR(
-                                        final JCRSessionWrapper destinationSession)
-                                        throws RepositoryException {
-                                    CloneResult cloneResult = cloneParents(sourceSession.getNode(nodePath),
-                                            sourceSession, destinationSession, toCheckpoint);
-                                    sourceSession.save();
-                                    destinationSession.save();
-                                    return cloneResult;
-                                }
-                            });
-                }
-            });
+                        public CloneResult doInJCR(final JCRSessionWrapper sourceSession)
+                                throws RepositoryException {
+                            return JCRTemplate.getInstance().doExecute(true,
+                                    node.getUser().getUsername(), destinationWorkspace,
+                                    new JCRCallback<CloneResult>() {
+                                        public CloneResult doInJCR(
+                                                final JCRSessionWrapper destinationSession)
+                                                throws RepositoryException {
+                                            CloneResult cloneResult = cloneParents(sourceSession.getNode(nodePath),
+                                                    sourceSession, destinationSession, toCheckpoint);
+                                            sourceSession.save();
+                                            destinationSession.save();
+                                            return cloneResult;
+                                        }
+                                    }
+                            );
+                        }
+                    }
+            );
         } else {
             return cloneParents(node, node.getSession(), destinationSession, toCheckpoint);
         }
@@ -528,7 +532,6 @@ public class JCRPublicationService extends JahiaService {
         for (final JCRNodeWrapper node : toPublish) {
             if (!node.isNodeType("mix:versionable")) {
                 ConflictResolver conflictResolver = new ConflictResolver(node, destinationSession.getNode(node.getCorrespondingNodePath(destinationSession.getWorkspace().getName())));
-                conflictResolver.setUuids(uuids);
                 conflictResolver.setToCheckpoint(toCheckpoint);
                 conflictResolver.applyDifferences();
                 continue;
@@ -555,7 +558,8 @@ public class JCRPublicationService extends JahiaService {
             if (logger.isDebugEnabled()) {
                 logger.debug(
                         "Merge node : " + path + " source v=" + node.getBaseVersion().getName() + " , dest node v=" +
-                                destinationNode.getBaseVersion().getName());
+                                destinationNode.getBaseVersion().getName()
+                );
             }
 
             if (!node.getPath().equals(destinationPath)) {
@@ -608,7 +612,6 @@ public class JCRPublicationService extends JahiaService {
 
             checkpoint(sourceSession, node, sourceVersionManager);
             ConflictResolver resolver = new ConflictResolver(node, destinationNode);
-            resolver.setUuids(uuids);
             resolver.setToCheckpoint(toCheckpoint);
             try {
                 resolver.applyDifferences();
@@ -773,7 +776,7 @@ public class JCRPublicationService extends JahiaService {
         NodeIterator it = sourceNode.getNodes();
         while (it.hasNext()) {
             JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) it.next();
-            if (nodeWrapper.isVersioned() || nodeWrapper.isNodeType("jmix:nolive") || sourceNode.getProvider() != nodeWrapper.getProvider() ) {
+            if (nodeWrapper.isVersioned() || nodeWrapper.isNodeType("jmix:nolive") || sourceNode.getProvider() != nodeWrapper.getProvider()) {
                 deniedPaths.add(nodeWrapper.getPath());
             } else {
                 getDeniedPath(nodeWrapper, deniedPaths, includedUuids);
@@ -850,8 +853,7 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     *
-     * @param uuids     uuids of the node to unpublish
+     * @param uuids uuids of the node to unpublish
      * @throws javax.jcr.RepositoryException
      */
     public void unpublish(final List<String> uuids) throws RepositoryException {
@@ -862,8 +864,7 @@ public class JCRPublicationService extends JahiaService {
      * Unpublish a node from live workspace.
      * Referenced Node will not be unpublished.
      *
-     *
-     * @param uuids     uuids of the node to unpublish
+     * @param uuids uuids of the node to unpublish
      * @throws javax.jcr.RepositoryException
      */
     public void unpublish(final List<String> uuids, boolean checkPermissions) throws RepositoryException {
@@ -1043,12 +1044,12 @@ public class JCRPublicationService extends JahiaService {
                             deletedInfo.setStatus(PublicationInfo.DELETED);
                             info.addChild(deletedInfo);
                         } catch (ItemNotFoundException e) {
-                            if (logger.isDebugEnabled())  {
-                                logger.debug("Cannot find deleted subnode of "+node.getPath() + " : " + value.getString()+", we keep the reference until next publication to be sure to erase it from the live workspace.");
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Cannot find deleted subnode of " + node.getPath() + " : " + value.getString() + ", we keep the reference until next publication to be sure to erase it from the live workspace.");
                             }
                         }
                     }
-                }catch (PathNotFoundException e) {
+                } catch (PathNotFoundException e) {
                     logger.warn("property j:deletedChildren has been found on node " + node.getPath() + " but was not here");
                 }
             }
@@ -1168,7 +1169,8 @@ public class JCRPublicationService extends JahiaService {
                         logger.debug(
                                 "Unable to check publication status for node {}."
                                         + " One of properties [last published or last modified (live) / last modified] is null."
-                                        + " Considering node as modified.", node.getPath());
+                                        + " Considering node as modified.", node.getPath()
+                        );
                         status = PublicationInfo.NOT_PUBLISHED;
                     } else {
                         if (modProp.after(pubProp)) {

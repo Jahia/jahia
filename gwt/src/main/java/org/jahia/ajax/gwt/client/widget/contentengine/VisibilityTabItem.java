@@ -159,7 +159,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             top.add(addPanel);
         }
 
-        addPanel.add(new HTML(Messages.get("label.visibility.allConditionsMatch", "All conditions should match")+": &nbsp;"));
+        addPanel.add(new HTML(Messages.get("label.visibility.allConditionsMatch", "All conditions should match") + ":&nbsp;"));
         allConditionsMatch = new CheckBox();
         allConditionsMatch.setEnabled(editable);
         allConditionsMatch.addListener(Events.Change, new Listener<ComponentEvent>() {
@@ -170,7 +170,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             }
         });
         addPanel.add(allConditionsMatch);
-        addPanel.add(new HTML(""+Messages.get("label.visibility.addCondition", "Add new condition")+": "));
+        addPanel.add(new HTML("&nbsp;&nbsp;&nbsp;" + Messages.get("label.visibility.addCondition", "Add new condition") + ":&nbsp;"));
         final ListStore<GWTJahiaNodeType> typesStore = new ListStore<GWTJahiaNodeType>();
         final ComboBox<GWTJahiaNodeType> types = new ComboBox<GWTJahiaNodeType>();
         types.setDisplayField("label");
@@ -523,7 +523,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             this.node = node;
             this.statusPanel = statusPanel;
             this.editable = editable;
-            statusPanel.add(new HTML(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ": &nbsp;"));
+            statusPanel.add(new HTML(Messages.get("label.visibility.currentStatusInLive", "Current status in live") + ":&nbsp;"));
         }
 
         private void initStatusBar(final GWTJahiaPublicationInfo info, final Boolean liveStatus) {
@@ -537,17 +537,17 @@ public class VisibilityTabItem extends EditEngineTabItem {
                 statusPanel.add(new HTML("not published"));
             }
 
-            statusPanel.add(new HTML("" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + ": "));
+            statusPanel.add(new HTML("&nbsp;&nbsp;&nbsp;" + Messages.get("label.visibility.currentConditionsResult", "Current conditions result") + ":&nbsp;"));
             statusContainer = new LayoutContainer(new FitLayout());
             statusPanel.add(statusContainer);
 
             GWTJahiaPublicationInfo aggregatedPublicationInfo = node.getAggregatedPublicationInfo();
             if (aggregatedPublicationInfo!=null && aggregatedPublicationInfo.getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED) {
-                statusPanel.add(new HTML("" + Messages.get("label.visibility.publicationStatus", "Publication status") + ": "));
+                statusPanel.add(new HTML("&nbsp;&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + ":&nbsp;"));
                 publicationInfoContainer = new LayoutContainer(new FitLayout());
                 statusPanel.add(publicationInfoContainer);
 
-                statusPanel.add(new HTML("&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ": &nbsp;"));
+                statusPanel.add(new HTML("&nbsp;&nbsp;&nbsp;" + Messages.get("label.visibility.publishOnSave", "Publish conditions on save") + ":&nbsp;"));
 
                 checkbox = new CheckBox();
                 checkbox.setEnabled(editable);

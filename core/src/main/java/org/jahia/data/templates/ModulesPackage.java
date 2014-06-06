@@ -77,7 +77,9 @@ public class ModulesPackage {
                     modules.add(PomUtils.read(PomUtils.extractPomFromJar(moduleJarFile, moduleManifestAttributes.getValue("Jahia-GroupId"), moduleManifestAttributes.getValue("Bundle-SymbolicName"))));
                 } finally {
                     IOUtils.closeQuietly(output);
-                    IOUtils.closeQuietly(moduleJarFile);
+                    if (moduleJarFile != null) {
+                        moduleJarFile.close();
+                    }
                 }
             }
         }

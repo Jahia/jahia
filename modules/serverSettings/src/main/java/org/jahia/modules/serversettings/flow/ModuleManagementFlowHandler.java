@@ -323,9 +323,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                 return bundle;
             }
         } finally {
-            if (jarFile != null) {
-                jarFile.close();
-            }
+            jarFile.close();
         }
 
         return null;

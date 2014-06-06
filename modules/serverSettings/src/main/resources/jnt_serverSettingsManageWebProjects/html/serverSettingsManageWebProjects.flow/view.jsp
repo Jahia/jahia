@@ -5,6 +5,14 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <%--@elvariable id="webprojectHandler" type="org.jahia.modules.serversettings.flow.WebprojectHandler"--%>
+<%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
+<%--@elvariable id="out" type="java.io.PrintWriter"--%>
+<%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
+<%--@elvariable id="scriptInfo" type="java.lang.String"--%>
+<%--@elvariable id="workspace" type="java.lang.String"--%>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<%--@elvariable id="currentResource" type="org.jahia.services.render.Resource"--%>
+<%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <jcr:node var="sites" path="/sites"/>
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespaceelektra.zip"/>
@@ -166,10 +174,20 @@
                                 <c:set var="i18nExportStaging"><fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)</c:set>
                                 <c:set var="i18nExportStaging" value="${fn:escapeXml(i18nExportStaging)}"/>
                                 <c:if test="${jcr:hasPermission(site,'editModeAccess')}">
-                                <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
-                                <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
-                                    <i class="icon-pencil"></i>
-                                </a>
+                                    <c:choose>
+                                        <c:when test="${renderContext.settings.distantPublicationServerMode}">
+                                            <c:url var="editUrl" value="/cms/settings/default/${site.defaultLanguage}${site.path}.manageLanguages.html"/>
+                                            <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
+                                                <i class="icon-pencil"></i>
+                                            </a>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
+                                            <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
+                                                <i class="icon-pencil"></i>
+                                            </a>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </c:if>
                                 <a style="margin-bottom:0;" class="btn btn-small" href="#edit" title="<fmt:message key='serverSettings.manageWebProjects.editSite'/>" onclick="submitSiteForm('editSite', '${site.name}'); return false;">
                                     <i class=" icon-edit"></i>

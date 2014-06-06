@@ -621,7 +621,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     /**
      * Create the cache entry based on the rendered content. All sub-content (which should be surrounded by
-     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;esi:include&gt; tags, keeping only the
+     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;jahia_esi:include&gt; tags, keeping only the
      * cache key (without placeholder replacements).
      *
      * @param previousOut   The full rendered content, coming from the render chain
@@ -633,17 +633,17 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
         // Replace <!-- cache:include --> tags of sub fragments by HTML tags that can be parsed by jericho
-        String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</esi:include>");
-        cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<esi:include src=\"$1\">");
+        String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(previousOut).replaceAll("</jahia_esi:include>");
+        cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<jahia_esi:include src=\"$1\">");
 
-        if (cachedRenderContent.contains("<esi:include")) {
+        if (cachedRenderContent.contains("<jahia_esi:include")) {
             Source source = new Source(cachedRenderContent);
 
             //// This will remove all blank line and drastically reduce data in memory
             // source = new Source((new SourceFormatter(source)).toString());
 
             // We will remove module:tag content here has we do not want to store them twice in memory
-            List<StartTag> esiIncludeTags = source.getAllStartTags("esi:include");
+            List<StartTag> esiIncludeTags = source.getAllStartTags("jahia_esi:include");
             OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
 
             cachedRenderContent = outputDocument.toString();
@@ -718,14 +718,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier,
                                       Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
-        if (!cachedContent.contains("<esi:include")) {
+        if (!cachedContent.contains("<jahia_esi:include")) {
             return cachedContent;
         }
         // aggregate content
         Source htmlContent = new Source(cachedContent);
 
-        // Get all embedded esi:include tags that should be replaced with proper content
-        List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("esi:include");
+        // Get all embedded jahia_esi:include tags that should be replaced with proper content
+        List<? extends Tag> esiIncludeTags = htmlContent.getAllStartTags("jahia_esi:include");
         if (esiIncludeTags.size() > 0) {
             OutputDocument outputDocument = new OutputDocument(htmlContent);
             for (Tag esiIncludeTag : esiIncludeTags) {

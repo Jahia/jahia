@@ -160,13 +160,25 @@
             jcrSession.save();
         } catch (ItemNotFoundException e) {
             // not found
+        } catch (Exception ex) {
+            StringWriter traceWriter = new StringWriter();
+            ex.printStackTrace(new PrintWriter(traceWriter));
+            traceWriter.flush();
+            pageContext.setAttribute("deleteError", ex);
+            pageContext.setAttribute("deleteErrorTrace", traceWriter.getBuffer().toString());
         }
     %>
-    <c:if test="${not empty target}">
-        <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+    <c:if test="${empty deleteError}">
+        <c:if test="${not empty target}">
+            <p style="color: blue">Node <strong>${fn:escapeXml(target.path)}</strong> deleted successfully</p>
+        </c:if>
+        <c:if test="${empty target}">
+            <p style="color: red">Node with identifier <strong>${fn:escapeXml(param.target)}</strong> cannot be found</p>
+        </c:if>
     </c:if>
-    <c:if test="${empty target}">
-        <p style="color: red">Node with identifier <strong>${fn:escapeXml(param.target)}</strong> cannot be found</p>
+    <c:if test="${not empty deleteError}">
+        <p style="color: red">Error occurred deleting node with identifier <strong>${fn:escapeXml(param.target)}</strong>: ${deleteError}</p>
+        <p><textarea rows="15" cols="120" readonly="readonly">${deleteErrorTrace}</textarea></p>
     </c:if>
 </c:if>
 <c:if test="${param.action == 'deleteAll' && not empty param.query}">
@@ -198,9 +210,21 @@
            pageContext.setAttribute("deletedCount", Integer.valueOf(count));
        } catch (ItemNotFoundException e) {
            // not found
+       } catch (Exception ex) {
+           StringWriter traceWriter = new StringWriter();
+           ex.printStackTrace(new PrintWriter(traceWriter));
+           traceWriter.flush();
+           pageContext.setAttribute("deleteError", ex);
+           pageContext.setAttribute("deleteErrorTrace", traceWriter.getBuffer().toString());
        }
     %>
-    <p style="color: blue">${deletedCount} nodes were deleted</p>
+    <c:if test="${empty deleteError}">
+        <p style="color: blue">${deletedCount} nodes were deleted</p>
+    </c:if>
+    <c:if test="${not empty deleteError}">
+        <p style="color: red">Error occurred deleting nodes: ${deleteError}</p>
+        <p><textarea rows="15" cols="120" readonly="readonly">${deleteErrorTrace}</textarea></p>
+    </c:if>
 </c:if>
 <c:if test="${param.action == 'purgeHistory' && not empty param.query}">
     <pre><%

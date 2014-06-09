@@ -319,15 +319,17 @@ public class ModuleManagementFlowHandler implements Serializable {
                 }
             }
             List<String> deps = BundleUtils.getModule(bundle).getDepends();
+            List<String> foundDeps = new ArrayList<String>();
             if (providedBundles != null) {
                 for (String providedBundle : providedBundles) {
                     for (String dep : deps) {
                         if (StringUtils.equals(providedBundle, dep)) {
-                            deps.remove(dep);
+                            foundDeps.add(dep);
                         }
                     }
                 }
             }
+            deps.removeAll(foundDeps);
             List<String> missingDeps = getMissingDependenciesFrom(deps);
             if (!missingDeps.isEmpty()) {
                 createMessageForMissingDependencies(context, missingDeps);

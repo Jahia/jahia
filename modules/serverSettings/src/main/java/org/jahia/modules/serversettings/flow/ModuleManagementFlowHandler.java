@@ -231,9 +231,13 @@ public class ModuleManagementFlowHandler implements Serializable {
                 providedBundles.add(module.getArtifactId());
             }
             for (Model module : pack.getModules()) {
+                String version = module.getVersion();
+                if (version == null && module.getParent() != null) {
+                    version = module.getParent().getVersion();
+                }
                 if (templatePackageRegistry.lookupById(module.getArtifactId()) == null ||
-                        (templatePackageRegistry.lookupById(module.getArtifactId()) != null && !StringUtils.equals(module.getVersion(), templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()))) {
-                    File mod = pack.fetchFile(module.getArtifactId(), module.getVersion());
+                        (templatePackageRegistry.lookupById(module.getArtifactId()) != null && !StringUtils.equals(version, templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()))) {
+                    File mod = pack.fetchFile(module.getArtifactId(), version);
                     Bundle bundle = installModule(mod, context, providedBundles);
                     if (bundle != null) {
                         bundlesToStart.add(bundle);

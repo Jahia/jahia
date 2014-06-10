@@ -119,7 +119,7 @@
                     </c:if>
             </c:forEach>
             <button class="btn btn-primary" type="submit" name="_eventId_processImport" id="${currentNode.identifier}-processImport"
-                    <c:if test="${not empty validationErrors}"> disabled="disabled"</c:if> >
+                    <c:if test="${not empty validationErrors or empty webprojectHandler.importsInfos}"> disabled="disabled"</c:if> >
                 <i class="icon-chevron-right icon-white"></i>
                 &nbsp;<fmt:message key='label.next'/>
             </button>

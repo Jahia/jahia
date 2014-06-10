@@ -158,7 +158,7 @@ public class WebprojectHandler implements Serializable {
     private String importPath;
     private Properties importProperties;
 
-    private Map<String, ImportInfo> importsInfos;
+    private Map<String, ImportInfo> importsInfos = Collections.emptyMap();
 
     private List<File> prepackagedSites;
 
@@ -405,13 +405,27 @@ public class WebprojectHandler implements Serializable {
                 ZipEntry z;
                 Map<File, String> imports = new HashMap<File, String>();
                 List<File> importList = new ArrayList<File>();
+                List<String> emptyFiles = new ArrayList<String>();
                 while ((z = zis.getNextEntry()) != null) {
                     File i = File.createTempFile("import", ".zip");
                     OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
                     try {
-                        IOUtils.copy(zis, os);
+                        final int numberOfBytesCopied = IOUtils.copy(zis, os);
+                        if(numberOfBytesCopied == 0) {
+                            emptyFiles.add(z.getName());
+                        }
                     } finally {
                         IOUtils.closeQuietly(os);
+                    }
+
+                    if(!emptyFiles.isEmpty()) {
+                        // we've detected empty files, issue an error message and exit
+                        messageContext.addMessage(new MessageBuilder()
+                                .error()
+                                .code("serverSettings.manageWebProjects.import.emptyFiles")
+                                .arg(emptyFiles)
+                                .build());
+                        return;
                     }
 
                     String n = z.getName();

@@ -2537,7 +2537,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (owners.size() == 1 && owners.contains(session.getUserID())) {
                 objectNode.getSession().addLockToken(objectNode.getProperty("j:locktoken").getString());
             } else {
-                throw new LockException("Node locked.");
+                boolean lockOwningSession = false;
+                if (owners.size() == 0) {
+                    Lock lock = objectNode.getLock();
+                    lockOwningSession = lock != null && lock.isLockOwningSession();
+                }
+                if (!lockOwningSession) {
+                    throw new LockException("Node locked.");
+                }
             }
             if (session.getLocale() != null) {
                 try {
@@ -2547,7 +2554,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         if (owners.size() == 1 && owners.contains(session.getUserID())) {
                             i18n.getSession().addLockToken(i18n.getProperty("j:locktoken").getString());
                         } else {
-                            throw new LockException("Node locked.");
+                            boolean lockOwningSession = false;
+                            if (owners.size() == 0) {
+                                Lock lock = i18n.getLock();
+                                lockOwningSession = lock != null && lock.isLockOwningSession();
+                            }
+                            if (!lockOwningSession) {
+                                throw new LockException("Node locked.");
+                            }
                         }
                     }
                 } catch (ItemNotFoundException e) {

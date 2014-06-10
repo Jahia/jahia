@@ -131,7 +131,7 @@ public class ChangedPropertyFact implements Updateable {
         this.name = name;
         value = o;
 
-        if (node == null || node.isLocked()) {
+        if (node == null || AddedNodeFact.isLocked(node)) {
             logger.debug("Node is locked, delay property update to later");
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
             list.add(this);
@@ -145,7 +145,7 @@ public class ChangedPropertyFact implements Updateable {
         try {
             JCRNodeWrapper node = s.getNode(nodePath);
 
-            if (node.isLocked()) {
+            if (AddedNodeFact.isLocked(node)) {
                 logger.debug("Node is still locked, delay property update to later");
                 delayedUpdates.add(this);
             } else {

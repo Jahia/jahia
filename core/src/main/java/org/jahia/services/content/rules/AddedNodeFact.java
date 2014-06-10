@@ -80,11 +80,16 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.AccessDeniedException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.lock.Lock;
+import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.NodeType;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -96,6 +101,16 @@ import java.util.List;
  */
 public class AddedNodeFact extends AbstractNodeFact implements Updateable {
     private static Logger logger = LoggerFactory.getLogger(AddedNodeFact.class);
+    
+    static boolean isLocked(JCRNodeWrapper node) throws AccessDeniedException, UnsupportedRepositoryOperationException,
+            LockException, RepositoryException {
+        boolean locked = node.isLocked();
+        if (locked) {
+            Lock lock = node.getLock();
+            locked = lock == null || !lock.isLockOwningSession();
+        }
+        return locked;
+    }
 
     private AddedNodeFact parentNode;
     private String parentNodePath;
@@ -122,7 +137,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
 
         this.type = type;
 
-        if (node.isLocked()) {
+        if (isLocked(node)) {
             logger.debug("Node is locked, delay property update to later");
             @SuppressWarnings("unchecked")
             List<Updateable> list = (List<Updateable>) drools.getWorkingMemory().getGlobal("delayedUpdates");
@@ -139,7 +154,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
         try {
             JCRNodeWrapper node = s.getNode(parentNodePath);
 
-            if (node.isLocked()) {
+            if (isLocked(node)) {
                 logger.debug("Node is still locked, delay subnode creation to later");
                 delayedUpdates.add(this);
             } else {

@@ -3644,6 +3644,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static void markNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
         for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
             JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
+            if (child.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                continue;
+            }
 
             child.getSession().checkout(child);
 
@@ -3705,7 +3708,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static void unmarkNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
         for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
             JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
-
+            if (child.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                continue;
+            }
             child.getSession().checkout(child);
 
             // do unlock

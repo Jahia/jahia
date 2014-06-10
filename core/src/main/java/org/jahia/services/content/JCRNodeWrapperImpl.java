@@ -138,10 +138,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     protected Map<Locale, Node> i18NobjectNodes = null;
 
-    private static final String REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:referenceNodeIdentifiers";
-    private static final String REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:referencePropertyNames";
-    private static final String SHARED_REFERENCE_NODE_IDENTIFIERS_PROPERTYNAME = "j:sharedRefNodeIdentifiers";
-    private static final String SHARED_REFERENCE_PROPERTY_NAMES_PROPERTYNAME = "j:sharedRefPropertyNames";
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
     public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
 

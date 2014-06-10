@@ -72,8 +72,7 @@ package org.jahia.modules.serversettings.flow;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.model.Model;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModulesPackage;
@@ -84,6 +83,7 @@ import org.jahia.modules.serversettings.moduleManagement.ModuleFile;
 import org.jahia.modules.serversettings.moduleManagement.ModuleVersionState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
+import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -138,6 +138,9 @@ public class ModuleManagementFlowHandler implements Serializable {
     @Autowired
     private transient TemplatePackageRegistry templatePackageRegistry;
 
+    @Autowired
+    private transient LicenseCheckerService licenseCheckerService;
+
     private String moduleName;
 
     public boolean isInModule(RenderContext renderContext) {
@@ -163,7 +166,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         JarFile jarFile = null;
         try {
             File file = forgeService.downloadModuleFromForge(forgeId, url);
-            jarFile = installBundles(file, context);
+            jarFile = installBundles(file, context, url, false);
             return true;
 
         } catch (Exception e) {
@@ -185,7 +188,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         return false;
     }
 
-    public boolean uploadModule(ModuleFile moduleFile, MessageContext context) {
+    public boolean uploadModule(ModuleFile moduleFile, MessageContext context, boolean forceUpdate) {
         String originalFilename = moduleFile.getModuleFile().getOriginalFilename();
         if (!FilenameUtils.isExtension(StringUtils.lowerCase(originalFilename), Arrays.asList("war", "jar"))) {
             context.addMessage(new MessageBuilder().error().source("moduleFile")
@@ -196,7 +199,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         try {
             final File file = File.createTempFile("module-", "." + StringUtils.substringAfterLast(originalFilename, "."));
             moduleFile.getModuleFile().transferTo(file);
-            jarFile = installBundles(file, context);
+            jarFile = installBundles(file, context, originalFilename, forceUpdate);
             return true;
 
         } catch (Exception e) {
@@ -218,39 +221,33 @@ public class ModuleManagementFlowHandler implements Serializable {
         return false;
     }
 
-    private JarFile installBundles(File file, MessageContext context) throws IOException, XmlPullParserException, BundleException {
+    private JarFile installBundles(File file, MessageContext context, String originalFilename, boolean forceUpdate) throws IOException, BundleException {
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         JarFile jarFile = new JarFile(file);
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
         boolean isPackage = manifestAttributes.getValue("Jahia-Package-Name") != null;
 
         if (isPackage) {
-            ModulesPackage pack = ModulesPackage.create(jarFile);
-            List<String> providedBundles = new ArrayList<String>();
-            for (Model module : pack.getModules()) {
-                providedBundles.add(module.getArtifactId());
+            //Check license
+            String licenseFeature = manifestAttributes.getValue("Jahia-Package-License");
+            boolean isallowed = true;
+            if(licenseFeature!=null && !licenseCheckerService.checkFeature(licenseFeature)){
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .code("serverSettings.manageModules.install.package.missing.license")
+                        .args(new String[]{originalFilename, licenseFeature})
+                        .build());
+                return null;
             }
-            for (Model module : pack.getModules()) {
-                String version = module.getVersion();
-                if (version == null && module.getParent() != null) {
-                    version = module.getParent().getVersion();
-                }
-                if (templatePackageRegistry.lookupById(module.getArtifactId()) == null ||
-                        (templatePackageRegistry.lookupById(module.getArtifactId()) != null && !StringUtils.equals(version, templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()))) {
-                    File mod = pack.fetchFile(module.getArtifactId(), version);
-                    Bundle bundle = installModule(mod, context, providedBundles);
-                    if (bundle != null) {
-                        bundlesToStart.add(bundle);
-                    }
-                } else {
-                    context.addMessage(new MessageBuilder().source("moduleFile")
-                            .code("serverSettings.manageModules.install.moduleExists")
-                            .args(new String[]{module.getArtifactId(), templatePackageRegistry.lookupById(module.getArtifactId()).getVersion().toString()})
-                            .build());
+            ModulesPackage pack = ModulesPackage.create(jarFile);
+            List<String> providedBundles = new ArrayList<String>(pack.getModules().keySet());
+            for (ModulesPackage.PackagedModule entry : pack.getModules().values()) {
+                Bundle bundle = installModule(entry.getModuleFile(), context, providedBundles, forceUpdate);
+                if (bundle != null) {
+                    bundlesToStart.add(bundle);
                 }
             }
         } else {
-            Bundle bundle = installModule(file, context, null);
+            Bundle bundle = installModule(file, context, null, forceUpdate);
             if (bundle != null) {
                 bundlesToStart.add(bundle);
             }
@@ -279,7 +276,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
-    private Bundle installModule(File file, MessageContext context, List<String> providedBundles) throws IOException, BundleException {
+    private Bundle installModule(File file, MessageContext context, List<String> providedBundles, boolean forceUpdate) throws IOException, BundleException {
         JarFile jarFile = new JarFile(file);
         try {
             Manifest manifest = jarFile.getManifest();
@@ -297,7 +294,16 @@ public class ModuleManagementFlowHandler implements Serializable {
                         .build());
                 return null;
             }
-
+            if(!forceUpdate) {
+                Set<ModuleVersion> aPackage = templatePackageRegistry.getAvailableVersionsForModule(symbolicName);
+                if (aPackage.contains(new ModuleVersion(version))) {
+                    context.addMessage(new MessageBuilder().source("moduleExists")
+                            .code("serverSettings.manageModules.install.moduleExists")
+                            .args(new String[]{symbolicName, version})
+                            .build());
+                    return null;
+                }
+            }
             Bundle bundle = BundleUtils.getBundle(symbolicName, version);
 
             String location = file.toURI().toString();

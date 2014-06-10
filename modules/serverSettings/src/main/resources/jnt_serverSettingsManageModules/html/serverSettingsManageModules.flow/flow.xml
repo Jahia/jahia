@@ -37,7 +37,7 @@
         <transition on="stopModule" to="stopModule"/>
         <transition on="undeployModule" to="undeployModule"/>
         <transition on="upload" to="view">
-            <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext)"/>
+            <evaluate expression="flowHandler.uploadModule(moduleFile, messageContext, requestParameters.moduleForceUpdate != null ? true:false)"/>
         </transition>
         <transition on="installModule" to="view">
             <evaluate expression="flowHandler.installModule(requestParameters.forgeId, requestParameters.moduleUrl, messageContext)"/>

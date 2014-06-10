@@ -88,10 +88,25 @@
                         ${message.text}
                 </div>
             </c:if>
+            <c:if test="${message.source eq 'moduleExists'}">
+                <c:set var="forceUpdateDisplay" value="true"/>
+
+            </c:if>
         </c:forEach>
+        <c:if test="${forceUpdateDisplay eq 'true'}">
+            <div class="alert alert-warning">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                <fmt:message key="serverSettings.manageModules.upload.force.info"/>
+            </div>
+        </c:if>
         <div class="alert alert-info">
             <label for="moduleFileUpload"><fmt:message key="serverSettings.manageModules.upload.module"/></label>
             <input type="file" id="moduleFileUpload" name="moduleFile" accept=""/>
+            <c:if test="${forceUpdateDisplay eq 'true'}">
+                <label for="moduleForceUpdate"><fmt:message key="serverSettings.manageModules.upload.force"/>
+                    <input type="checkbox" name="moduleForceUpdate" id="moduleForceUpdate"/>
+                </label>
+            </c:if>
             <button class="btn btn-primary" type="submit" name="_eventId_upload">
                 <i class="icon-download icon-white"></i>
                 &nbsp;<fmt:message key='label.upload'/>

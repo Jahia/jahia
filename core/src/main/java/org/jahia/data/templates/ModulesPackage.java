@@ -2,15 +2,13 @@ package org.jahia.data.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.commons.Version;
-import org.jahia.utils.PomUtils;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.jar.Attributes;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -26,10 +24,12 @@ import java.util.jar.JarFile;
  * - Jahia-Package-Name : the name of the package
  * - Jahia-Package-Version : the version of the package
  * - Jahia-Package-Description : the description of the package
+ * - Jahia-Required-Version : the required version of Jahia
+ * - Jahia-Package-License : the required license to install this package
  */
 public class ModulesPackage {
 
-    private List<Model> modules;
+    private Map<String, PackagedModule> modules;
     private String name;
     private String description;
     private Version version;
@@ -44,12 +44,12 @@ public class ModulesPackage {
      * @throws IOException
      * @throws XmlPullParserException
      */
-    public static ModulesPackage create(JarFile jarFile) throws IOException, XmlPullParserException {
+    public static ModulesPackage create(JarFile jarFile) throws IOException {
         return new ModulesPackage(jarFile);
     }
 
-    private ModulesPackage(JarFile jarFile) throws IOException, XmlPullParserException {
-        modules = new ArrayList<Model>();
+    private ModulesPackage(JarFile jarFile) throws IOException {
+        modules = new LinkedHashMap<String, PackagedModule>();
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
         version = new Version(manifestAttributes.getValue("Jahia-Package-Version"));
         name = manifestAttributes.getValue("Jahia-Package-Name");
@@ -74,7 +74,7 @@ public class ModulesPackage {
                     }
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
-                    modules.add(PomUtils.read(PomUtils.extractPomFromJar(moduleJarFile, moduleManifestAttributes.getValue("Jahia-GroupId"), moduleManifestAttributes.getValue("Bundle-SymbolicName"))));
+                    modules.put(moduleManifestAttributes.getValue("Bundle-SymbolicName"), new PackagedModule(moduleManifestAttributes, moduleFile));
                 } finally {
                     IOUtils.closeQuietly(output);
                     if (moduleJarFile != null) {
@@ -116,7 +116,7 @@ public class ModulesPackage {
         return name;
     }
 
-    public List<Model> getModules() {
+    public Map<String, PackagedModule> getModules() {
         return modules;
     }
 
@@ -128,4 +128,21 @@ public class ModulesPackage {
         return version;
     }
 
+    public class PackagedModule {
+        private final Attributes manifestAttributes;
+        private final File moduleFile;
+
+        public PackagedModule(Attributes manifestAttributes, File moduleFile) {
+            this.manifestAttributes = manifestAttributes;
+            this.moduleFile = moduleFile;
+        }
+
+        public Attributes getManifestAttributes() {
+            return manifestAttributes;
+        }
+
+        public File getModuleFile() {
+            return moduleFile;
+        }
+    }
 }

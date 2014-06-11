@@ -117,16 +117,38 @@ public class LoggingConfigListener extends Log4jConfigListener {
                         File earFolder = war.getParentFile();
                         if (earFolder != null) {
                             File deploymentsFolder = earFolder.getParentFile();
-                        if (deploymentsFolder != null
-                                && "deployments".equals(deploymentsFolder.getName())) {
-                            File standaloneFolder = deploymentsFolder.getParentFile();
-                            if (standaloneFolder.exists()) {
-                                File log = new File(standaloneFolder, "log");
-                                if (log.isDirectory() && log.canWrite()) {
-                                    logDir = log.getAbsolutePath();
+                            if (deploymentsFolder != null && "deployments".equals(deploymentsFolder.getName())) {
+                                File standaloneFolder = deploymentsFolder.getParentFile();
+                                if (standaloneFolder.exists()) {
+                                    File log = new File(standaloneFolder, "log");
+                                    if (log.isDirectory() && log.canWrite()) {
+                                        logDir = log.getAbsolutePath();
+                                    }
                                 }
                             }
                         }
+                    } else if (server.contains("websphere")) {
+                        File logs = new File("logs");
+                        if (logs.isDirectory() && new File("installedApps").exists()) {
+                            logDir = logs.getAbsolutePath();
+                        } else {
+                            File war = new File(path);
+                            File earFolder = war.getParentFile();
+                            if (earFolder != null) {
+                                File nodeCell = earFolder.getParentFile();
+                                if (nodeCell != null) {
+                                    File installedApps = nodeCell.getParentFile();
+                                    if (installedApps != null && "installedApps".equals(installedApps.getName())) {
+                                        File appSrv = installedApps.getParentFile();
+                                        if (appSrv.exists()) {
+                                            File log = new File(appSrv, "logs");
+                                            if (log.isDirectory() && log.canWrite()) {
+                                                logDir = log.getAbsolutePath();
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     } else {
                         // no handling for other application servers

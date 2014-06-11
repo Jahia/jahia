@@ -146,16 +146,26 @@ public class InfoLayers {
         layoutContainer.setZIndex(1001);
         LayoutContainer container = module.getContainer();
         El el = container.el();
+        Point xy = el.getXY();
+        int w = el.getWidth();
+        int h = el.getHeight();
         final boolean header = headerOnly && module instanceof MainModule;
         int totalWidth = 0;
         if (header && module.getHeader() == null) {
             return;
         }
         if (header) {
-            for (Component component : module.getHeader().getTools()) {
-                totalWidth += component.el().getSize().width;
+            if (!module.getHeader().isVisible()) {
+                h = 30;
+            } else {
+                for (Component component : module.getHeader().getTools()) {
+                    totalWidth += component.el().getSize().width;
+                }
+                El headerEl = module.getHeader().el();
+                xy = headerEl.getXY();
+                w = headerEl.getWidth();
+                h = headerEl.getHeight();
             }
-            el = module.getHeader().el();
         }
 
         if (text != null) {
@@ -191,7 +201,7 @@ public class InfoLayers {
 
         layoutContainer.setStyleAttribute("opacity", opacity);
 
-        final InfoLayer infoLayer = new InfoLayer(layoutContainer, el, header, images.size());
+        final InfoLayer infoLayer = new InfoLayer(layoutContainer, xy, w, h, header, images.size());
 
         position(infoLayer, totalWidth);
 
@@ -204,19 +214,19 @@ public class InfoLayers {
 
     }
 
-    protected void position(InfoLayer infoLayer, int width) {
-        Point xy = infoLayer.el.getXY();
+    protected void position(InfoLayer infoLayer, int headerOffsetX) {
+        Point xy = infoLayer.xy;
         int x = xy.x;
         int y = xy.y;
-        int w = infoLayer.el.getWidth();
-        int h = infoLayer.el.getHeight();
+        int w = infoLayer.w;
+        int h = infoLayer.h;
 
         if (infoLayer.images > 0) {
             x = x + w - (infoLayer.images * 16);
             w = infoLayer.images * 16;
             h = 16;
             if (infoLayer.isHeader) {
-                x -= width + (infoLayer.images * 16);
+                x -= headerOffsetX + (infoLayer.images * 16);
                 y += 9;
             }
         }
@@ -267,13 +277,17 @@ public class InfoLayers {
 
     public class InfoLayer {
         LayoutContainer layoutContainer;
-        El el;
+        Point xy;
+        int w;
+        int h;
         boolean isHeader;
         int images;
 
-        InfoLayer(LayoutContainer layoutContainer, El el, boolean header, int images) {
+        InfoLayer(LayoutContainer layoutContainer, Point xy, int w, int h, boolean header, int images) {
             this.layoutContainer = layoutContainer;
-            this.el = el;
+            this.xy = xy;
+            this.w = w;
+            this.h = h;
             isHeader = header;
             this.images = images;
         }

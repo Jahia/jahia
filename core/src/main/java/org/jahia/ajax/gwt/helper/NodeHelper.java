@@ -219,7 +219,11 @@ class NodeHelper {
         n.setPath(node.getPath());
         n.setUrl(node.getUrl());
         populateNodeTypes(n, node);
-        n.setProviderKey(node.getProvider().getKey());
+        if (node.getProvider().isDynamicallyMounted()) {
+            n.setProviderKey(StringUtils.substringAfterLast(node.getProvider().getMountPoint(), "/"));
+        } else {
+            n.setProviderKey(node.getProvider().getKey());
+        }
 
         if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
             populatePermissions(n, node);

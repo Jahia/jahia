@@ -120,6 +120,8 @@ public class Mounter extends Window {
         factoriesTypeBox.setDisplayField("label");
         factoriesTypeBox.setAllowBlank(false);
         factoriesTypeBox.setFieldLabel(Messages.get("label.chooose.providerType", "choose provider"));
+        factoriesTypeBox.setTypeAhead(false);
+        factoriesTypeBox.setTriggerAction(ComboBox.TriggerAction.ALL);
         final ListStore<GWTJahiaNodeType> store =  new ListStore<GWTJahiaNodeType>();
         factoriesTypeBox.setStore(store);
         final SelectionListener<ButtonEvent> selectionListener = new SelectionListener<ButtonEvent>() {

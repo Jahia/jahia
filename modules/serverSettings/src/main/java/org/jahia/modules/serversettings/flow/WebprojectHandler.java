@@ -579,7 +579,8 @@ public class WebprojectHandler implements Serializable {
             if ("6.1".equals(importInfos.getOriginatingJahiaRelease())) isLegacySite = true;
             try {
                 while ((z = zis2.getNextEntry()) != null) {
-                    if ("site.properties".equals(z.getName())) {
+                    final String name = z.getName();
+                    if ("site.properties".equals(name)) {
                         Properties p = new Properties();
                         p.load(zis2);
                         importInfos.loadSiteProperties(p);
@@ -597,24 +598,28 @@ public class WebprojectHandler implements Serializable {
                         }
                         importInfos.setOldSiteKey(importInfos.getSiteKey());
                         isSite = true;
-                    } else if (z.getName().startsWith("export_")) {
+                    } else if (name.startsWith("export_")) {
                         isLegacySite = true;
-                    } else if (validityCheckOnImport && !isLegacySite && z.getName().contains("repository.xml")) {
+                    } else if (validityCheckOnImport && !isLegacySite && name.contains("repository.xml")) {
                         try {
                             long timer = System.currentTimeMillis();
                             ValidationResults validationResults = importExportBaseService.validateImportFile(
                                     JCRSessionFactory.getInstance().getCurrentUserSession(), zis2, "application/xml",
                                     installedModules);
+                            final String[] messageParams = {filename, name,
+                                    String.valueOf((System.currentTimeMillis() - timer)),
+                                    validationResults.toString()};
                             if (!validationResults.isSuccessful()) {
                                 logger.error(
-                                        "Failed Import {}/{} validated in {} ms: {}",
-                                        new String[] { filename, z.getName(),
-                                                String.valueOf((System.currentTimeMillis() - timer)),
-                                                validationResults.toString() });
+                                        "Failed validation {}/{} validated in {} ms: {}",
+                                        messageParams);
+                                messageContext.addMessage(new MessageBuilder()
+                                        .error()
+                                        .code("serverSettings.manageWebProjects.import.failed.validation")
+                                        .args(messageParams)
+                                        .build());
                             } else {
-                                logger.info("Successful Import {}/{} validated in {} ms: {}", new String[] { filename,
-                                        z.getName(), String.valueOf((System.currentTimeMillis() - timer)),
-                                        validationResults.toString() });
+                                logger.info("Successful Import {}/{} validated in {} ms: {}", messageParams);
                             }
                             if (!validationResults.isSuccessful()) {
                                 if (importInfos.getValidationResult() != null) {

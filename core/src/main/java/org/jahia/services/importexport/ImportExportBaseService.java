@@ -852,7 +852,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         SitesValidator sitesValidator = new SitesValidator();
                         validators.add(sitesValidator);
                         h.setValidators(validators);
-                        handleImport(zis, h);
+                        handleImport(zis, h, name);
 
                         Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
                         for (String s : sites.keySet()) {
@@ -1076,7 +1076,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             documentInput = new FileInputStream(document);
                         }
 
-                        handleImport(documentInput, importHandler);
+                        handleImport(documentInput, importHandler, name);
                         ReferencesHelper.resolveCrossReferences(session, references);
                         siteFolder.getSession().save(JCRObservationManager.IMPORT);
                     }
@@ -1269,7 +1269,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 zis.reallyClose();
             }
 
-            handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath));
+            handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath), file.getFilename());
         } catch (IOException e) {
             logger.error("Cannot extract zip", e);
         } finally {
@@ -1409,7 +1409,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
 
     private List<String[]> importCategoriesAndGetUuidProps(InputStream is, CategoriesImportHandler importHandler) {
-        handleImport(is, importHandler);
+        handleImport(is, importHandler, null);
         return importHandler.getUuidProps();
     }
 
@@ -1423,16 +1423,20 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public List<String[]> importUsers(File file) throws IOException {
         InputStream is = new BufferedInputStream(new FileInputStream(file));
         try {
-            return importUsers(is, new UsersImportHandler());
+            return importUsers(is, new UsersImportHandler(), file.getName());
         } finally {
             IOUtils.closeQuietly(is);
         }
     }
 
     private List<String[]> importUsers(InputStream is, UsersImportHandler importHandler) {
+        return importUsers(is, importHandler, USERS_XML);
+    }
+
+    private List<String[]> importUsers(InputStream is, UsersImportHandler importHandler, String fileName) {
         long timer = System.currentTimeMillis();
         logger.info("Start importing users");
-        handleImport(is, importHandler);
+        handleImport(is, importHandler, fileName);
         logger.info("Done importing users in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
 
         return importHandler.getUuidProps();
@@ -1453,7 +1457,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (zipentry == null)
                     break;
                 String name = zipentry.getName();
-                if (name.equals("users.xml")) {
+                if (name.equals(USERS_XML)) {
                     userProps = importUsers(zis, usersImportHandler);
                     break;
                 }
@@ -1465,7 +1469,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return userProps;
     }
 
-    private void handleImport(InputStream is, DefaultHandler h) {
+    private void handleImport(InputStream is, DefaultHandler h, String fileName) {
         try {
             SAXParserFactory factory;
 
@@ -1487,9 +1491,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
         } catch (SAXParseException e) {
-            logger.error("Cannot import - File is not a valid XML", e);
+            logger.error("Cannot import - File contains invalid XML", e);
+            throw new RuntimeException("Cannot import " + (fileName != null ? fileName : "") + " file because it contains invalid XML", e);
         } catch (Exception e) {
             logger.error("Cannot import", e);
+            throw new RuntimeException("Cannot import " + (fileName != null ? fileName : "") + " file", e);
         }
     }
 
@@ -1623,8 +1629,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             try {
                 ZipEntry zipentry = zis.getNextEntry();
                 while (zipentry != null) {
-                    if (zipentry.getName().endsWith("xml")) {
-                        handleImport(zis, documentViewValidationHandler);
+                    final String name = zipentry.getName();
+                    if (name.endsWith("xml")) {
+                        handleImport(zis, documentViewValidationHandler, name);
                     }
                     zipentry = zis.getNextEntry();
                 }
@@ -1638,7 +1645,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
         } else {
-            handleImport(is, documentViewValidationHandler);
+            try {
+                handleImport(is, documentViewValidationHandler, null);
+            } catch (Exception e) {
+                final ValidationResults results = new ValidationResults();
+                results.addResult(new ValidationResult.FailedValidationResult(e));
+                return results;
+            } finally {
+                IOUtils.closeQuietly(is);
+            }
         }
         return documentViewValidationHandler.getResults();
     }
@@ -1704,7 +1719,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         props.remove("j:published");
                         documentViewImportHandler.setPropertiesToSkip(props);
 
-                        handleImport(zis, documentViewImportHandler);
+                        handleImport(zis, documentViewImportHandler, name);
 
                         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
 
@@ -1784,7 +1799,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     documentViewImportHandler.setRootBehavior(rootBehaviour);
                     documentViewImportHandler.setAttributeProcessors(attributeProcessors);
 
-                    handleImport(zis, documentViewImportHandler);
+                    handleImport(zis, documentViewImportHandler, name);
 
                     if (importLive) {
                         liveUuids.removeAll(documentViewImportHandler.getUuids());
@@ -1846,7 +1861,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setBaseFilesPath("/live-content");
                         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
                         liveSession.getPathMapping().putAll(session.getPathMapping());
-                        handleImport(zis, documentViewImportHandler);
+                        handleImport(zis, documentViewImportHandler, name);
 
                         logger.debug("Saving JCR session for UGC");
 

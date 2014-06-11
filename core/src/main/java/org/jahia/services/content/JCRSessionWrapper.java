@@ -702,9 +702,11 @@ public class JCRSessionWrapper implements Session {
 
             parser.parse(inputStream, documentViewImportHandler);
         } catch (SAXParseException e) {
-            logger.error("Cannot import - File is not a valid XML", e);
+            logger.error("Cannot import - File contains invalid XML", e);
+            throw new RuntimeException("Cannot import file because it contains invalid XML", e);
         } catch (Exception e) {
             logger.error("Cannot import", e);
+            throw new RuntimeException("Cannot import file", e);
         }
     }
 

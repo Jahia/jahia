@@ -103,6 +103,10 @@ public class ValidationResults implements Serializable {
         return results;
     }
 
+    public void addResult(ValidationResult result) {
+        results.add(result);
+    }
+
     @SuppressWarnings("unchecked")
     protected Map<String, ValidationResult> getResultsByClassName() {
         if (resultsByClassName == null) {
@@ -150,12 +154,12 @@ public class ValidationResults implements Serializable {
             String clazz = thisResult.getClass().getName();
             typesMerged.add(clazz);
             ValidationResult other = toBeMergedWith.getResultByClassName(clazz);
-            merged.getResults().add(other != null ? thisResult.merge(other) : thisResult);
+            merged.addResult(other != null ? thisResult.merge(other) : thisResult);
         }
 
         for (ValidationResult otherResult : toBeMergedWith.getResults()) {
             if (!typesMerged.contains(otherResult.getClass().getName())) {
-                merged.getResults().add(otherResult);
+                merged.addResult(otherResult);
             }
         }
 

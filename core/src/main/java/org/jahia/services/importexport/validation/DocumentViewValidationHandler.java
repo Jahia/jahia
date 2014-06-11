@@ -112,7 +112,7 @@ public class DocumentViewValidationHandler extends BaseDocumentViewHandler imple
     public ValidationResults getResults() {
         ValidationResults results = new ValidationResults();
         for (ImportValidator validator : validators) {
-            results.getResults().add(validator.getResult());
+            results.addResult(validator.getResult());
         }
 
         return results;

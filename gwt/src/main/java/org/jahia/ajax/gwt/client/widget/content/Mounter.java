@@ -180,6 +180,7 @@ public class Mounter extends Window {
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
+                linker.loading(Messages.get("label.loading", "Loading"));
                 JahiaContentManagementService.App.getInstance().mount(
                         mountName.getValue(),
                         type.getName(),
@@ -187,12 +188,14 @@ public class Mounter extends Window {
                         new AsyncCallback<Object>() {
                             @Override
                             public void onFailure(Throwable caught) {
+                                linker.loaded();
                                 MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
                                 hide();
                             }
 
                             @Override
                             public void onSuccess(Object result) {
+                                linker.loaded();
                                 Map<String,Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);
                                 linker.refresh(data);

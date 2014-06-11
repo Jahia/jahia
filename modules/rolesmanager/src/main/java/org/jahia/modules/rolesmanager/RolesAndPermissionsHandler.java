@@ -73,10 +73,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -213,26 +210,34 @@ public class RolesAndPermissionsHandler implements Serializable {
         return createRoleBean(role, getPermissions, true);
     }
 
-    public boolean copyRole(String roleName, String deepCopy, String uuid, MessageContext messageContext) throws RepositoryException {
-        JCRSessionWrapper currentUserSession = getSession();
-        JCRNodeWrapper roleToCopy = currentUserSession.getNodeByIdentifier(uuid);
+    public boolean copyRole(final String roleName, final String deepCopy, final String uuid, final MessageContext messageContext) throws RepositoryException {
+        final JCRSessionWrapper currentUserSession = getSession();
+        boolean copy = JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), currentUserSession.getWorkspace().getName(), new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper roleToCopy = session.getNodeByIdentifier(uuid);
 
-        roleName = StringUtils.isNotEmpty(roleName) ? JCRContentUtils.generateNodeName(roleName) : roleName;
-        if(!testRoleName(roleName, messageContext, currentUserSession)){
-            return false;
-        }
-
-        boolean copy = roleToCopy.copy(roleToCopy.getParent().getPath(), roleName);
-        if(StringUtils.isEmpty(deepCopy)){
-            JCRNodeWrapper copiedNode = currentUserSession.getNode(roleToCopy.getParent().getPath() + "/" + roleName);
-            NodeIterator iterator = copiedNode.getNodes();
-            while (iterator.hasNext()){
-                JCRNodeWrapper subNode = (JCRNodeWrapper) iterator.next();
-                if(subNode.isNodeType("jnt:role")){
-                    subNode.remove();
+                String newRoleName = StringUtils.isNotEmpty(roleName) ? JCRContentUtils.generateNodeName(roleName) : roleName;
+                if(!testRoleName(newRoleName, messageContext, session)){
+                    return false;
                 }
+
+                boolean copy = roleToCopy.copy(roleToCopy.getParent().getPath(), newRoleName);
+                if(StringUtils.isEmpty(deepCopy)){
+                    JCRNodeWrapper copiedNode = session.getNode(roleToCopy.getParent().getPath() + "/" + newRoleName);
+                    NodeIterator iterator = copiedNode.getNodes();
+                    while (iterator.hasNext()){
+                        JCRNodeWrapper subNode = (JCRNodeWrapper) iterator.next();
+                        if(subNode.isNodeType("jnt:role")){
+                            subNode.remove();
+                        }
+                    }
+                }
+
+                session.save();
+                return copy;
             }
-        }
+        });
 
         if (copy) {
             messageContext.addMessage(new MessageBuilder().source("roleName")
@@ -240,7 +245,6 @@ public class RolesAndPermissionsHandler implements Serializable {
                     .build());
         }
 
-        currentUserSession.save();
         return copy;
     }
 

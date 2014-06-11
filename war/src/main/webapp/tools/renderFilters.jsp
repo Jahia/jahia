@@ -72,11 +72,13 @@
                 af = (AbstractFilter) f;
             }
             pageContext.setAttribute("aFilter",af);
+			
+			pageContext.setAttribute("filterClassName", f.getClass().getName());
         %>
-        <tr id="${filter.class.name}">
+        <tr id="${filterClassName}">
             <td align="center"><span style="font-size: 0.8em;">${status.index + 1}</span></td>
             <td align="center"><strong>${filter.priority}</strong></td>
-            <td title="${filter.class.name}"><c:set var="parts" value="${fn:split(filter.class.name, '.')}"/>${parts[fn:length(parts) - 1]}</td>
+            <td title="${filterClassName}"><c:set var="parts" value="${fn:split(filterClassName, '.')}"/>${parts[fn:length(parts) - 1]}</td>
             <td>
                 <% if (pageContext.getAttribute("filter") instanceof AbstractFilter) {%>
                     ${fn:escapeXml(filter.description)}
@@ -86,9 +88,9 @@
             <td><c:if test="${!empty aFilter}">${aFilter.disabled?"<font color='red'>disable</font>":"<font color='green'>enable</font>"}</c:if></td>
             <td>
                 <c:if test="${!empty aFilter}">
-                    <a href="renderFilters.jsp?bean=${filter.class.name}&switch=true&priority=${filter.priority}">${aFilter.disabled?"enable":"disable"}</a>
+                    <a href="renderFilters.jsp?bean=${filterClassName}&switch=true&priority=${filter.priority}">${aFilter.disabled?"enable":"disable"}</a>
                 </c:if>
-                <a href="renderFilters.jsp?bean=${filter.class.name}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority?previousPriority:filter.priority) -1}">down</a>
+                <a href="renderFilters.jsp?bean=${filterClassName}&switch=priority&priority=${filter.priority}&previousPriority=${(!empty previousPriority?previousPriority:filter.priority) -1}">down</a>
             </td>
         </tr>
         <c:set var="previousPriority" value="${filter.priority}"/>

@@ -124,38 +124,38 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${availablePackages}" var="package" varStatus="pstatus">
+    <c:forEach items="${availablePackages}" var="pkg" varStatus="pstatus">
         <tr class="gradeA">
             <td align="center">${pstatus.count}</td>
-            <td><a name="${package.name}" href="definitionsBrowser.jsp?#${package.name}">${package.name}</a>
+            <td><a name="${pkg.name}" href="definitionsBrowser.jsp?#${pkg.name}">${pkg.name}</a>
             <br>
-                <a href="modulesBrowser.jsp?delete=${package.name}">Delete</a>
+                <a href="modulesBrowser.jsp?delete=${pkg.name}">Delete</a>
 
             </td>
-            <td>${package.description}</td>
-            <td>${package.rootFolderPath}</td>
+            <td>${pkg.description}</td>
+            <td>${pkg.rootFolderPath}</td>
             <td>
                 <ol>
-                    <c:forEach items="${package.dependencies}" var="dep">
+                    <c:forEach items="${pkg.dependencies}" var="dep">
                         <li><a href="#${dep.name}">${dep.name}</a></li>
                     </c:forEach>
                 </ol>
             </td>
             <td>
                 <ol>
-                    <c:forEach items="${package.definitionsFiles}" var="defFile">
+                    <c:forEach items="${pkg.definitionsFiles}" var="defFile">
                     </c:forEach>
                 </ol>
             </td>
             <td>
                 <ol>
-                    <c:forEach items="${package.rulesFiles}" var="defFile">
+                    <c:forEach items="${pkg.rulesFiles}" var="defFile">
                     </c:forEach>
                 </ol>
             </td>
             <td>
                 <ol>
-                    <c:forEach items="${package.initialImports}" var="defFile">
+                    <c:forEach items="${pkg.initialImports}" var="defFile">
                         <li>${defFile}</li>
                     </c:forEach>
                 </ol>

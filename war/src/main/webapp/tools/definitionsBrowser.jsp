@@ -72,19 +72,19 @@
     </tr>
     </thead>
     <tbody>
-    <c:forEach items="${systemIds}" var="package" varStatus="pstatus">
+    <c:forEach items="${systemIds}" var="pkg" varStatus="pstatus">
         <%
-            NodeTypeIterator nodeTypes = nodeTypeRegistry.getNodeTypes((String) pageContext.getAttribute("package"));
+            NodeTypeIterator nodeTypes = nodeTypeRegistry.getNodeTypes((String) pageContext.getAttribute("pkg"));
             List ntList = IteratorUtils.toList(nodeTypes);
             Collections.sort(ntList, JCRContentUtils.NODE_TYPE_NAME_COMPARATOR);
             pageContext.setAttribute("nodeTypes", ntList);
         %>
         <tr class="gradeA">
             <td align="center">${pstatus.count}</td>
-            <td><a name="${package}" href="modulesBrowser.jsp?#${package}">${package}</a></td>
-                <%--<td>${package.description}</td>--%>
-                <%--<td>${package.rootFolderPath}</td>--%>
-                <%--<td>${package.moduleType}</td>--%>
+            <td><a name="${pkg}" href="modulesBrowser.jsp?#${pkg}">${pkg}</a></td>
+                <%--<td>${pkg.description}</td>--%>
+                <%--<td>${pkg.rootFolderPath}</td>--%>
+                <%--<td>${pkg.moduleType}</td>--%>
             <td>
                 <ol>
                     <c:forEach items="${nodeTypes}" var="dep">
@@ -147,10 +147,10 @@
             </td>
                 <%--            <td>
                     <ol>
-                        <c:forEach items="${package.definitionsFiles}" var="defFile">
+                        <c:forEach items="${pkg.definitionsFiles}" var="defFile">
                             <%
                                 JahiaTemplatesPackage aPackage = (JahiaTemplatesPackage) pageContext.getAttribute(
-                                        "package");
+                                        "pkg");
                                 String file = aPackage.getFilePath() + File.separator + pageContext.getAttribute("defFile");
                                 String s = FileUtils.readFileToString(new File(file));
                                 pageContext.setAttribute("defFileName", UUID.randomUUID());

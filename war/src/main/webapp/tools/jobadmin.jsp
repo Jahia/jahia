@@ -215,11 +215,14 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
                                     <td><strong>Next fire time:</strong></td><td><fmt:formatDate value="${trigger.nextFireTime}" pattern="yyyy-MM-dd HH:mm"/></td>
                                 </tr>
                                 </c:if>
-                                <c:if test="${not empty trigger && trigger.class.name == 'org.quartz.CronTrigger'}">
-                                <tr>
-                                    <td><strong>Cron:</strong></td><td>${fn:escapeXml(trigger.cronExpression)}</td>
-                                </tr>
-                                </c:if>
+								<c:if test="${not empty trigger}">
+									<% pageContext.setAttribute("triggerClassName", pageContext.getAttribute("trigger").getClass().getName()); %>
+									<c:if test="${triggerClassName == 'org.quartz.CronTrigger'}">
+									<tr>
+										<td><strong>Cron:</strong></td><td>${fn:escapeXml(trigger.cronExpression)}</td>
+									</tr>
+									</c:if>
+								</c:if>
                                 <tr>
                                     <td colspan="2">&nbsp;</td>
                                 </tr>

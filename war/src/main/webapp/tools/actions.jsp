@@ -33,7 +33,7 @@
     <c:forEach items="${actions}" var="action" varStatus="status">
         <tr>
             <td align="center"><span style="font-size: 0.8em;">${status.count}</span></td>
-            <td title="${action.class.name}"><strong>${action.name}</strong></td>
+            <td title='<%= pageContext.getAttribute("action").getClass().getName() %>'><strong>${action.name}</strong></td>
             <td align="center">${action.requireAuthenticatedUser}</td>
             <td align="center">${action.requiredPermission}</td>
             <td align="center">${action.requiredWorkspace}</td>

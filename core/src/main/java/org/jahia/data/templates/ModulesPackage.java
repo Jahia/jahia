@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.commons.Version;
+import org.osgi.framework.BundleException;
 
 import java.io.*;
 import java.util.Enumeration;
@@ -33,7 +34,6 @@ public class ModulesPackage {
     private String name;
     private String description;
     private Version version;
-    private JarFile jarFile;
 
     /**
      * creates a new ModulesPackage from a jar file.
@@ -42,7 +42,6 @@ public class ModulesPackage {
      * @param jarFile the package jar file
      * @return a ModulesPackage
      * @throws IOException
-     * @throws XmlPullParserException
      */
     public static ModulesPackage create(JarFile jarFile) throws IOException {
         return new ModulesPackage(jarFile);
@@ -74,7 +73,12 @@ public class ModulesPackage {
                     }
                     moduleJarFile = new JarFile(moduleFile);
                     Attributes moduleManifestAttributes = moduleJarFile.getManifest().getMainAttributes();
-                    modules.put(moduleManifestAttributes.getValue("Bundle-SymbolicName"), new PackagedModule(moduleManifestAttributes, moduleFile));
+                    String bundleName = moduleManifestAttributes.getValue("Bundle-SymbolicName");
+                    String jahiaGroupId = moduleManifestAttributes.getValue("Jahia-GroupId");
+                    if(bundleName==null || jahiaGroupId==null) {
+                        throw new IOException("Jar file "+jar.getName()+ " in package does not seems to be a Jahia bundle.");
+                    }
+                    modules.put(bundleName, new PackagedModule(moduleManifestAttributes, moduleFile));
                 } finally {
                     IOUtils.closeQuietly(output);
                     if (moduleJarFile != null) {
@@ -82,33 +86,6 @@ public class ModulesPackage {
                     }
                 }
             }
-        }
-        this.jarFile = jarFile;
-    }
-
-    /**
-     * This method gets a file from the archive according to its artifactID and version
-     *
-     * @return the file
-     */
-    public File fetchFile(String artifactId, String version) throws IOException {
-        OutputStream output = null;
-        InputStream input = null;
-        try {
-            String fileName = artifactId + "-" + version + ".jar";
-            JarEntry jarEntry = jarFile.getJarEntry(fileName);
-            input = jarFile.getInputStream(jarEntry);
-            File moduleFile = File.createTempFile(fileName, "");
-            output = new FileOutputStream(moduleFile);
-            int read = 0;
-            byte[] bytes = new byte[1024];
-            while ((read = input.read(bytes)) != -1) {
-                output.write(bytes, 0, read);
-            }
-            return moduleFile;
-        } finally {
-            IOUtils.closeQuietly(output);
-            IOUtils.closeQuietly(input);
         }
     }
 

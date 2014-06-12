@@ -225,7 +225,14 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         JarFile jarFile = new JarFile(file);
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
-        boolean isPackage = manifestAttributes.getValue("Jahia-Package-Name") != null;
+        String jahiaPackageName = manifestAttributes.getValue("Jahia-Package-Name");
+        if(jahiaPackageName!=null && jahiaPackageName.trim().length()==0){
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.package.name.error").error()
+                    .build());
+            return null;
+        }
+        boolean isPackage = jahiaPackageName != null;
 
         if (isPackage) {
             //Check license

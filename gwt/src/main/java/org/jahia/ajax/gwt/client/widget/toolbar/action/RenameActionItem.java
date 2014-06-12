@@ -108,7 +108,9 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
             linker.loading(Messages.get("statusbar.renaming.label"));
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());
-            if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
+            if (selection.isNodeType("nt:hierarchyNode") && newName != null && newName.matches(".*[\\\\/:*?\\\"<>|]+.*")) {
+                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename","", new String[]{newName}), null);
+            } else if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 JahiaContentManagementService.App.getInstance()
                         .rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {
                             public void onApplicationFailure(Throwable throwable) {

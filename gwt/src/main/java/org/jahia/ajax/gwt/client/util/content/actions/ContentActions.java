@@ -84,6 +84,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.FileUploader;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 
@@ -219,8 +220,8 @@ public class ContentActions {
         GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
         if (parent != null) {
             String newFolder = Window.prompt(Messages.get("newDirName.label"), "untitled");
-            if (newFolder != null && newFolder.matches(".*[\\\\/:*?\\\"<>|]+.*")) {
-                MessageBox.alert(Messages.get("label.error"),Messages.getWithArgs("failure.upload.invalid.filename","",new String[]{newFolder}), null);
+            if (newFolder != null && FileUploader.filenameHasInvalidCharacters(newFolder)) {
+                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "", new String[]{newFolder}), null);
             } else if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback<GWTJahiaNode>() {

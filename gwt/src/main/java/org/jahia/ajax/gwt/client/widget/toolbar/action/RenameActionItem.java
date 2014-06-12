@@ -78,7 +78,12 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+<<<<<<< .working
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
+=======
+import org.jahia.ajax.gwt.client.widget.content.FileUploader;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+>>>>>>> .merge-right.r50012
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -108,8 +113,8 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
             linker.loading(Messages.get("statusbar.renaming.label"));
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());
-            if (selection.isNodeType("nt:hierarchyNode") && newName != null && newName.matches(".*[\\\\/:*?\\\"<>|]+.*")) {
-                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename","", new String[]{newName}), null);
+            if (selection.isNodeType("nt:hierarchyNode") && newName != null && FileUploader.filenameHasInvalidCharacters(newName)) {
+                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "", new String[]{newName}), null);
             } else if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 JahiaContentManagementService.App.getInstance()
                         .rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {

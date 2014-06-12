@@ -139,7 +139,7 @@ public class FileUploader extends Window {
                 private boolean done;
                 public void onChange(ChangeEvent event) {
                     if ((!done || uploads.size() == 1) && upload.getFilename() != null && upload.getFilename().length() > 0) {
-                        if (upload.getFilename().matches(".*[\\\\/:*?\\\"<>|]+.*")) {
+                        if (filenameHasInvalidCharacters(upload.getFilename())) {
                             MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "", new String[]{upload.getFilename()}), null);
                             done = false;
                             upload.getElement().setPropertyString("value", "");
@@ -408,6 +408,16 @@ public class FileUploader extends Window {
             p.checkVisibility();
         }
         form.layout();
+    }
+
+    public static boolean filenameHasInvalidCharacters(String fileName) {
+        // fix for browsers that have filename starting by C:\fakepath\
+        if (fileName.contains("/")) {
+            fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
+        } else if (fileName.contains("\\")) {
+            fileName = fileName.substring(fileName.lastIndexOf("\\") + 1);
+        }
+        return fileName.matches(".*[\\\\/:*?\\\"<>|]+.*");
     }
 
 

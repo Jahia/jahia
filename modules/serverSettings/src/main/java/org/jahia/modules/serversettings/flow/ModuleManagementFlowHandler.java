@@ -534,6 +534,10 @@ public class ModuleManagementFlowHandler implements Serializable {
                 states.put(entry.getKey(), moduleVersions);
             }
 
+            if (BundleUtils.getContextStartException(entry.getKey()) != null) {
+                errors.put(entry.getKey(), BundleUtils.getContextStartException(entry.getKey()).getLocalizedMessage());
+            }
+
             for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> moduleVersionEntry : entry.getValue().entrySet()) {
                 ModuleVersionState state = getModuleVersionState(moduleVersionEntry.getKey(),
                         moduleVersionEntry.getValue(), entry.getValue().size() > 1, directSiteDep, templateSiteDep, transitiveSiteDep, systemSiteRequiredModules);

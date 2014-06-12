@@ -73,8 +73,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.commons.*;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
@@ -99,6 +101,7 @@ import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
+import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -455,6 +458,14 @@ public class Activator implements BundleActivator {
         }
 
         pkg.setState(getModuleState(bundle));
+        //Check required version
+        String jahiaRequiredVersion = bundle.getHeaders().get("Jahia-Required-Version");
+        if(!StringUtils.isEmpty(jahiaRequiredVersion) && new org.jahia.commons.Version(jahiaRequiredVersion).compareTo(new org.jahia.commons.Version(Jahia.VERSION))>0){
+            logger.error("Error while reading module, required version ("+jahiaRequiredVersion+") is higher than your Jahia version (" + Jahia.VERSION+")");
+            setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, "required version "+jahiaRequiredVersion);
+            addToBeParsed(bundle, jahiaRequiredVersion);
+            return;
+        }
 
         List<String> dependsList = pkg.getDepends();
         if (!dependsList.contains("default")

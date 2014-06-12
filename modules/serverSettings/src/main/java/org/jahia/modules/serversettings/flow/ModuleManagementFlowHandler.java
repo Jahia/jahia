@@ -423,7 +423,15 @@ public class ModuleManagementFlowHandler implements Serializable {
                 if (module.getId().equals(selectedModuleName)) {
                     populateActiveVersion(context, module);
                     final List<String> missing = getMissingDependenciesFrom(module.getDepends());
-                    createMessageForMissingDependencies(context.getMessageContext(), missing);
+                    if(!missing.isEmpty())
+                        createMessageForMissingDependencies(context.getMessageContext(), missing);
+                    else if(module.getState().getState()== ModuleState.State.WAITING_TO_BE_PARSED) {
+                        context.getMessageContext().addMessage(new MessageBuilder().source("moduleFile")
+                                .code("serverSettings.manageModules.install.missingDependencies")
+                                .arg(module.getState().getDetails())
+                                .error()
+                                .build());
+                    }
                     break;
                 }
 

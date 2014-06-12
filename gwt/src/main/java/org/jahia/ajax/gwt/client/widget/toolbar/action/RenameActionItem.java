@@ -71,19 +71,14 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.user.client.Window;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
-<<<<<<< .working
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
-=======
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
->>>>>>> .merge-right.r50012
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.Arrays;
 import java.util.HashMap;

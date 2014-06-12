@@ -69,21 +69,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
-import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
-import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
-import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
-
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.dnd.DND;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
@@ -101,6 +86,20 @@ import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
+import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
+import org.jahia.ajax.gwt.client.util.icons.ContentModelIconProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 
 /**
@@ -224,7 +223,7 @@ public class PlaceholderModule extends Module {
                 public void handleEvent(ComponentEvent be) {
                     GWTJahiaNode parentNode = getParentModule().getNode();
                     if (parentNode != null && PermissionsUtils.isPermitted("jcr:addChildNodes", parentNode) && !parentNode.isLocked()) {
-                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker());
+                        CopyPasteEngine.getInstance().paste(parentNode, mainModule.getEditLinker(), null);
                     }
                 }
             });

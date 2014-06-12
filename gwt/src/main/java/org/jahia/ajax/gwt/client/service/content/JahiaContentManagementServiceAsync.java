@@ -90,9 +90,11 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Remote GWT service for content management tasks.
@@ -308,7 +310,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void moveOnTopOf(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
-    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, AsyncCallback async);
+    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, List<String> childNodeTypesToSkip, AsyncCallback async);
 
     void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName, AsyncCallback async);
 

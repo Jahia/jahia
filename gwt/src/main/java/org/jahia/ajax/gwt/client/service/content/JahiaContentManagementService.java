@@ -373,7 +373,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public void moveOnTopOf(List<String> sourcePaths, String targetPath) throws GWTJahiaServiceException;
 
-    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut) throws GWTJahiaServiceException;
+    void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, List<String> childNodeTypesToSkip) throws GWTJahiaServiceException;
 
     void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName) throws GWTJahiaServiceException;
 

@@ -602,16 +602,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         contentManager.checkWriteable(paths, getUser(), retrieveCurrentSession(), getUILocale());
     }
 
-    public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut)
+    public void paste(List<String> pathsToCopy, String destinationPath, String newName, boolean cut, List<String> childNodeTypesToSkip)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, cut, false, true, retrieveCurrentSession(getLocale()), getUILocale());
+                .copy(pathsToCopy, destinationPath, newName, false, cut, false, childNodeTypesToSkip, true, retrieveCurrentSession(getLocale()), getUILocale());
     }
 
     public void pasteReferences(List<String> pathsToCopy, String destinationPath, String newName)
             throws GWTJahiaServiceException {
         contentManager
-                .copy(pathsToCopy, destinationPath, newName, false, false, true, false, retrieveCurrentSession(getLocale()), getUILocale());
+                .copy(pathsToCopy, destinationPath, newName, false, false, true, null, false, retrieveCurrentSession(getLocale()), getUILocale());
     }
 
     public GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException {

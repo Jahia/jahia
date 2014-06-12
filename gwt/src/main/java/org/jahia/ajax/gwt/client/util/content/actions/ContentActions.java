@@ -76,7 +76,6 @@ import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -145,7 +144,7 @@ public class ContentActions {
      * @param target
      */
     public static void move(final Linker linker, final List<GWTJahiaNode> sources, GWTJahiaNode target) {
-        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, new BaseAsyncCallback() {
+        JahiaContentManagementService.App.getInstance().paste(JCRClientUtils.getPathesList(sources), target.getPath(), null, true, null, new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable throwable) {
                 Window.alert("Paste failed :\n" + throwable.getLocalizedMessage());
                 linker.loaded();

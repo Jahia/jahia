@@ -88,11 +88,13 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.history.ContentHistoryService;
 import org.jahia.services.history.HistoryEntry;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.ImportJob;
+import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.importexport.validation.*;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
@@ -378,12 +380,12 @@ public class ContentManagerHelper {
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName,
                                    final boolean moveOnTop, final boolean cut, final boolean reference, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
-        return copy(pathsToCopy, destinationPath, newName, moveOnTop, cut, reference, allLanguages, currentUserSession,
+        return copy(pathsToCopy, destinationPath, newName, moveOnTop, cut, reference, null, allLanguages, currentUserSession,
                 currentUserSession.getLocale());
     }
 
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
-                                   final boolean cut, final boolean reference, boolean allLanguages,
+                                   final boolean cut, final boolean reference,final List<String> childNodeTypesToSkip, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
@@ -425,7 +427,7 @@ public class ContentManagerHelper {
                         try {
                             name = findAvailableName(targetParent, name);
                             if (targetParent.hasPermission("jcr:addChildNodes") && !targetParent.isLocked()) {
-                                final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference);
+                                final JCRNodeWrapper copy = doPaste(targetParent, node, name, cut, reference, childNodeTypesToSkip);
 
                                 if (moveOnTop && targetParent.getPrimaryNodeType().hasOrderableChildNodes()) {
                                     targetParent.orderBefore(name, targetNode.getName());
@@ -473,7 +475,7 @@ public class ContentManagerHelper {
     }
 
     private JCRNodeWrapper doPaste(JCRNodeWrapper targetNode, JCRNodeWrapper node, String name, boolean cut,
-                                   boolean reference) throws RepositoryException, JahiaException {
+                                   boolean reference, List<String> childNodeTypesToSkip) throws RepositoryException, JahiaException {
         targetNode.checkout();
         if (cut) {
             node.getSession().checkout(node);
@@ -515,7 +517,24 @@ public class ContentManagerHelper {
                     }
                 }
             }
-            node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
+            if (childNodeTypesToSkip == null) {
+                node.copy(targetNode, name, true, null, SettingsBean.getInstance().getImportMaxBatch());
+            } else {
+                String newName = JCRContentUtils.findAvailableNodeName(targetNode, name);
+                JCRNodeWrapper newNode = targetNode.addNode(newName, node.getPrimaryNodeTypeName());
+                for (ExtendedNodeType mixin : node.getMixinNodeTypes()) {
+                    if (!Constants.forbiddenMixinToCopy.contains(mixin.getName())) {
+                        newNode.addMixin(mixin.getName());
+                    }
+                }
+                Map<String, List<String>> references = new HashMap<String, List<String>>();
+                node.copyProperties(newNode, references);
+                ReferencesHelper.resolveCrossReferences(node.getSession(), references, false);
+
+                for (JCRNodeWrapper childNode : node.getNodes()) {
+                    childNode.copy(newNode, childNode.getName(), true, childNodeTypesToSkip, SettingsBean.getInstance().getImportMaxBatch());
+                }
+            }
         }
         return targetNode.getNode(name);
     }

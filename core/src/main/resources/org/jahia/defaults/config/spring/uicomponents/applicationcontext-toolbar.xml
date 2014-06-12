@@ -1012,6 +1012,25 @@
         <property name="icon" value="paste"/>
     </bean>
 
+    <bean id="Toolbar.Item.PasteCurrentPage" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem">
+                <property name="childNodeTypesToSkip">
+                    <list>
+                        <value>jnt:page</value>
+                    </list>
+                </property>
+                <property name="allowedNodeTypes">
+                    <list>
+                        <value>jnt:page</value>
+                    </list>
+                </property>
+            </bean>
+        </property>
+        <property name="titleKey" value="label.pasteCurrentPageOnly"/>
+        <property name="icon" value="paste"/>
+    </bean>
+
     <bean id="Toolbar.Item.PasteInMain" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem">

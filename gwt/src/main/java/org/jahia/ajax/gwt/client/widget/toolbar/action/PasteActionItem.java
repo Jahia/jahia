@@ -75,9 +75,7 @@ import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -86,8 +84,9 @@ import java.util.List;
  * Date: Sep 25, 2009
  * Time: 6:57:20 PM
  */
-public class PasteActionItem extends BaseActionItem {
+public class PasteActionItem extends NodeTypeAwareBaseActionItem {
     private boolean pasteInMainNode;
+    private List<String> childNodeTypesToSkip;
 
     public boolean isPasteInMainNode() {
         return pasteInMainNode;
@@ -105,7 +104,7 @@ public class PasteActionItem extends BaseActionItem {
         if (m != null) {
             linker.loading(Messages.get("statusbar.pasting.label"));
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
-            copyPasteEngine.paste(m, linker);
+            copyPasteEngine.paste(m, linker, childNodeTypesToSkip);
         }
     }
 
@@ -127,7 +126,11 @@ public class PasteActionItem extends BaseActionItem {
                 b = b && CopyPasteEngine.getInstance().checkNodeType(nodeTypes);
             }
         }
-        setEnabled(b);
+        boolean isCutWithNodeTypesSkipped = childNodeTypesToSkip != null && CopyPasteEngine.getInstance().isCut();
+        setEnabled(b && ! isCutWithNodeTypesSkipped && super.isNodeTypeAllowed(CopyPasteEngine.getInstance().getCopiedNodes()));
     }
 
+    public void setChildNodeTypesToSkip(List childNodeTypesToSkip) {
+        this.childNodeTypesToSkip = childNodeTypesToSkip;
+    }
 }

@@ -219,9 +219,7 @@ public class ContentActions {
         GWTJahiaNode parent = linker.getSelectionContext().getSingleSelection();
         if (parent != null) {
             String newFolder = Window.prompt(Messages.get("newDirName.label"), "untitled");
-            if (newFolder != null && newFolder.matches(".*[\\\\/:*?\\\"<>|]+.*")) {
-                MessageBox.alert(Messages.get("label.error"),Messages.getWithArgs("failure.upload.invalid.filename","",new String[]{newFolder}), null);
-            } else if (newFolder != null && newFolder.length() > 0) {
+            if (newFolder != null && newFolder.length() > 0) {
                 linker.loading(Messages.get("statusbar.newfoldering.label"));
                 JahiaContentManagementService.App.getInstance().createFolder(parent.getPath(), newFolder, new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onApplicationFailure(Throwable throwable) {

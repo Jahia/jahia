@@ -69,10 +69,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
@@ -120,19 +117,21 @@ public class SeoHelper {
         return mappings;
     }
 
-    public void saveUrlMappings(GWTJahiaNode gwtNode, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings,
+    public void saveUrlMappings(GWTJahiaNode gwtNode, Map<String, List<GWTJahiaUrlMapping>> mappings,
             JCRSessionWrapper session) throws ItemNotFoundException, RepositoryException, ConstraintViolationException {
         String site = JCRContentUtils.getSiteKey(gwtNode.getPath());
         List<VanityUrl> vanityUrls = new LinkedList<VanityUrl>();
-        for (GWTJahiaUrlMapping mapping : mappings) {
-            if (StringUtils.isNotBlank(mapping.getUrl())) {
-                VanityUrl url = new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(),
-                        mapping.isActive());
-                url.setPath(mapping.getPath());
-                vanityUrls.add(url);
+        for (List<GWTJahiaUrlMapping> mappingsPerLang : mappings.values()) {
+            for (GWTJahiaUrlMapping mapping : mappingsPerLang) {
+                if (StringUtils.isNotBlank(mapping.getUrl())) {
+                    VanityUrl url = new VanityUrl(mapping.getUrl(), site, mapping.getLanguage(), mapping.isDefault(),
+                            mapping.isActive());
+                    url.setPath(mapping.getPath());
+                    vanityUrls.add(url);
+                }
             }
         }
-        urlService.saveVanityUrlMappings(session.getNodeByIdentifier(gwtNode.getUUID()), vanityUrls, updatedLocales);
+        urlService.saveVanityUrlMappings(session.getNodeByIdentifier(gwtNode.getUUID()), vanityUrls, mappings.keySet());
     }
 
     /**

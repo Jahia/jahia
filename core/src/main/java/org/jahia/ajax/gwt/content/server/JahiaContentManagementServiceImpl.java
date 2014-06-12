@@ -853,7 +853,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
         }
         if (node.get("vanityMappings") != null) {
-            saveUrlMappings(node, langCodeProperties.keySet(), (List<GWTJahiaUrlMapping>) node.get("vanityMappings"));
+            saveUrlMappings(node, (Map<String, List<GWTJahiaUrlMapping>>) node.get("vanityMappings"));
         }
         if (node.get("visibilityConditions") != null) {
             List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
@@ -1509,10 +1509,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @see org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService#saveUrlMappings(org.jahia.ajax.gwt.client.data.node.GWTJahiaNode, java.util.Set, java.util.List)
      */
 
-    public void saveUrlMappings(GWTJahiaNode node, Set<String> updatedLocales, List<GWTJahiaUrlMapping> mappings)
+    public void saveUrlMappings(GWTJahiaNode node, Map<String, List<GWTJahiaUrlMapping>> mappings)
             throws GWTJahiaServiceException {
         try {
-            seo.saveUrlMappings(node, updatedLocales, mappings, retrieveCurrentSession());
+            seo.saveUrlMappings(node, mappings, retrieveCurrentSession());
         } catch (NonUniqueUrlMappingException e) {
             Locale uiLocale = getUILocale();
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments(

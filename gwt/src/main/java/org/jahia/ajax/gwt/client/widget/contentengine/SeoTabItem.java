@@ -149,16 +149,14 @@ public class SeoTabItem extends EditEngineTabItem {
         if (langs.isEmpty()) {
             return;
         }
-        List<GWTJahiaUrlMapping> mappings = new ArrayList<GWTJahiaUrlMapping>();
+        Map<String, List<GWTJahiaUrlMapping>> mappings = new HashMap<String, List<GWTJahiaUrlMapping>>();
         for (Map.Entry<String, UrlMappingEditor> editor : editorsByLanguage.entrySet()) {
-            if (!changedI18NProperties.containsKey(editor.getKey())) {
-                changedI18NProperties.put(editor.getKey(), new ArrayList<GWTJahiaNodeProperty>());
-            }
-            mappings.addAll(editor.getValue().getMappings());
+            mappings.put(editor.getKey(), editor.getValue().getMappings());
         }
         if (!node.getNodeTypes().contains("jmix:vanityUrlMapped")) {
             node.getNodeTypes().add("jmix:vanityUrlMapped");
         }
         node.set("vanityMappings", mappings);
+
     }
 }

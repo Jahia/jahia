@@ -500,7 +500,7 @@ public class VanityUrlManager {
                     }
                 }
             }
-            if (!found) {
+            if (!found && updatedLocales.contains(vanityUrl.getLanguage())) {
                 toAdd.add(vanityUrl);
             }
         }

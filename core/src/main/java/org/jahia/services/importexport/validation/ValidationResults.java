@@ -169,8 +169,9 @@ public class ValidationResults implements Serializable {
     @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
-        out.append("[overall result=").append(isSuccessful() ? "successful" : "failure");
-        if (!isSuccessful()) {
+        final boolean successful = isSuccessful();
+        out.append("[overall result=").append(successful ? "successful" : "failure");
+        if (!successful) {
             out.append(", details=[");
             boolean first = true;
             for (ValidationResult result : results) {

@@ -16,6 +16,23 @@
 <template:include view="hidden.header"/>
 <c:set var="isEmpty" value="true"/>
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
+<template:addResources type="javascript" resources="jquery.min.js"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
+
+<template:addResources>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#vanityUrlTable').dataTable({
+                "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                "iDisplayLength": 25,
+                "sPaginationType": "bootstrap",
+                "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
+                "bStateSave": true
+            });
+         });
+    </script>
+</template:addResources>
 
 <h2><fmt:message key="siteSettings.label.vanityURLSettings"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
@@ -25,7 +42,7 @@
     <button class="btn btn-primary" type="submit"><i class="icon-filter icon-white"></i> <fmt:message key="filters.label"/></button>
 </form>
 
-<table class="table table-bordered table-striped table-hover">
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" id="vanityUrlTable">
     <thead>
         <tr>
             <th><fmt:message key='label.urlmapping.mapping'/></th>

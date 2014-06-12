@@ -163,30 +163,10 @@
                                  jcr:mixinTypes="jmix:rbTitle"
                                 jcr:primaryType="jnt:contentTemplate">
                   <pagecontent jcr:primaryType="jnt:contentList">
-                                <pager displayNbOfItemsPerPage="true"
-                            displayNbOfItemsPerPageValues="5,10,25,50,100"
-                             displayPager="true"
-                             j:bindedComponent="/modules/siteSettings/templates/site-settings-base/vanityURLSetting/pagecontent/vanityurlslist"
-                            jcr:mixinTypes="jmix:accessControlled"
-                            jcr:primaryType="jnt:pager"
-                            nbOfPages="10"
-                             pageSize="10">
-                          <j:acl jcr:primaryType="jnt:acl"/>
-                      </pager>
                       <vanityurlslist jcr:mixinTypes="jmix:accessControlled"
                                       jcr:primaryType="jnt:siteSettingsVanityUrlsList">
                           <j:acl jcr:primaryType="jnt:acl"/>
                       </vanityurlslist>
-                                <pager-1 displayNbOfItemsPerPage="true"
-                              displayNbOfItemsPerPageValues="5,10,25,50,100"
-                               displayPager="true"
-                               j:bindedComponent="/modules/siteSettings/templates/site-settings-base/vanityURLSetting/pagecontent/vanityurlslist"
-                              jcr:mixinTypes="jmix:accessControlled"
-                              jcr:primaryType="jnt:pager"
-                              nbOfPages="10"
-                               pageSize="10">
-                          <j:acl jcr:primaryType="jnt:acl"/>
-                      </pager-1>
                   </pagecontent>
               </vanityURLSetting>
                         <manageModules j:applyOn="jnt:virtualsite"

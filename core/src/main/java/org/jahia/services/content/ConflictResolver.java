@@ -72,7 +72,6 @@ package org.jahia.services.content;
 import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
 import javax.jcr.*;
@@ -211,11 +210,11 @@ public class ConflictResolver {
                 if (prop1.isMultiple()) {
                     Value[] values = prop1.getRealValues();
                     for (Value value : values) {
-                        diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(), addPath(basePath, propName), value));
+                        diffs.add(new PropertyRemovedDiff(addPath(basePath, propName), value));
                     }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
-                            addPath(basePath, propName), prop1.getRealValue(), null));
+                    diffs.add(new PropertyChangedDiff(
+                            addPath(basePath, propName), null));
                 }
             } else {
                 JCRPropertyWrapper prop2 = sourceNode.getProperty(propName);
@@ -235,7 +234,7 @@ public class ConflictResolver {
                             added.remove(value.getString());
                         }
                         for (Value value : added.values()) {
-                            diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
+                            diffs.add(new PropertyAddedDiff(
                                     addPath(basePath, propName), value));
                         }
 
@@ -247,13 +246,13 @@ public class ConflictResolver {
                             removed.remove(value.getString());
                         }
                         for (Value value : removed.values()) {
-                            diffs.add(new PropertyRemovedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
+                            diffs.add(new PropertyRemovedDiff(
                                     addPath(basePath, propName), value));
                         }
                     } else {
                         if (!equalsValue(prop1.getRealValue(), prop2.getRealValue())) {
-                            diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop1.getDefinition(),
-                                    addPath(basePath, propName), prop1.getRealValue(), prop2.getRealValue()));
+                            diffs.add(new PropertyChangedDiff(
+                                    addPath(basePath, propName), prop2.getRealValue()));
                         }
                     }
                 }
@@ -273,10 +272,10 @@ public class ConflictResolver {
                 if (prop2.isMultiple()) {
                     Value[] values = prop2.getRealValues();
                     for (Value value : values) {
-                        diffs.add(new PropertyAddedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), addPath(basePath, prop2.getName()), value));
+                        diffs.add(new PropertyAddedDiff(addPath(basePath, prop2.getName()), value));
                     }
                 } else {
-                    diffs.add(new PropertyChangedDiff((ExtendedPropertyDefinition) prop2.getDefinition(), addPath(basePath, prop2.getName()), null, prop2.getRealValue()));
+                    diffs.add(new PropertyChangedDiff(addPath(basePath, prop2.getName()), prop2.getRealValue()));
                 }
             }
 
@@ -621,12 +620,10 @@ public class ConflictResolver {
     }
 
     class PropertyAddedDiff implements Diff {
-        private ExtendedPropertyDefinition propertyDefinition;
         private String propertyPath;
         private Value newValue;
 
-        PropertyAddedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyPath, Value newValue) {
-            this.propertyDefinition = propertyDefinition;
+        PropertyAddedDiff(String propertyPath, Value newValue) {
             this.propertyPath = propertyPath;
             this.newValue = newValue;
         }
@@ -658,35 +655,31 @@ public class ConflictResolver {
             PropertyAddedDiff that = (PropertyAddedDiff) o;
 
             if (!equalsValue(newValue, that.newValue)) return false;
-            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyDefinition.hashCode();
-            result = 31 * result + newValue.hashCode();
+            int result = propertyPath != null ? propertyPath.hashCode() : 0;
+            result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
             return result;
         }
 
         @Override
         public String toString() {
             return "PropertyAddedDiff{" +
-                    "propertyDefinition=" + propertyDefinition +
-                    ", propertyPath='" + propertyPath + '\'' +
+                    "propertyPath='" + propertyPath + '\'' +
                     ", newValue=" + newValue +
                     '}';
         }
     }
 
     class PropertyRemovedDiff implements Diff {
-        private ExtendedPropertyDefinition propertyDefinition;
         private String propertyPath;
         private Value oldValue;
 
-        PropertyRemovedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyPath, Value oldValue) {
-            this.propertyDefinition = propertyDefinition;
+        PropertyRemovedDiff(String propertyPath, Value oldValue) {
             this.propertyPath = propertyPath;
             this.oldValue = oldValue;
         }
@@ -726,39 +719,32 @@ public class ConflictResolver {
             PropertyRemovedDiff that = (PropertyRemovedDiff) o;
 
             if (!equalsValue(oldValue, that.oldValue)) return false;
-            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyDefinition.hashCode();
-            result = 31 * result + oldValue.hashCode();
+            int result = propertyPath != null ? propertyPath.hashCode() : 0;
+            result = 31 * result + (oldValue != null ? oldValue.hashCode() : 0);
             return result;
         }
 
         @Override
         public String toString() {
             return "PropertyRemovedDiff{" +
-                    "propertyDefinition=" + propertyDefinition +
-                    ", propertyPath='" + propertyPath + '\'' +
+                    "propertyPath='" + propertyPath + '\'' +
                     ", oldValue=" + oldValue +
                     '}';
         }
     }
 
     class PropertyChangedDiff implements Diff {
-        private ExtendedPropertyDefinition propertyDefinition;
         private String propertyPath;
-        private Value oldValue;
         private Value newValue;
-        private Value newTargetValue = null;
 
-        PropertyChangedDiff(ExtendedPropertyDefinition propertyDefinition, String propertyPath, Value oldValue, Value newValue) {
-            this.propertyDefinition = propertyDefinition;
+        PropertyChangedDiff(String propertyPath, Value newValue) {
             this.propertyPath = propertyPath;
-            this.oldValue = oldValue;
             this.newValue = newValue;
         }
 
@@ -787,31 +773,25 @@ public class ConflictResolver {
 
             PropertyChangedDiff that = (PropertyChangedDiff) o;
 
-            if (newTargetValue != null ? !newTargetValue.equals(that.newTargetValue) : that.newTargetValue != null)
-                return false;
             if (newValue != null ? !newValue.equals(that.newValue) : that.newValue != null) return false;
-            if (oldValue != null ? !oldValue.equals(that.oldValue) : that.oldValue != null) return false;
-            if (!propertyDefinition.equals(that.propertyDefinition)) return false;
+            if (propertyPath != null ? !propertyPath.equals(that.propertyPath) : that.propertyPath != null)
+                return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = propertyDefinition.hashCode();
-            result = 31 * result + oldValue.hashCode();
-            result = 31 * result + newValue.hashCode();
+            int result = propertyPath != null ? propertyPath.hashCode() : 0;
+            result = 31 * result + (newValue != null ? newValue.hashCode() : 0);
             return result;
         }
 
         @Override
         public String toString() {
             return "PropertyChangedDiff{" +
-                    "propertyDefinition=" + propertyDefinition +
-                    ", propertyPath='" + propertyPath + '\'' +
-                    ", oldValue=" + oldValue +
+                    "propertyPath='" + propertyPath + '\'' +
                     ", newValue=" + newValue +
-                    ", newTargetValue=" + newTargetValue +
                     '}';
         }
     }

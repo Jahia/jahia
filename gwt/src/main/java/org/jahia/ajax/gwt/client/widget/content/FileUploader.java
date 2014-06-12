@@ -72,6 +72,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Dialog;
+import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.ProgressBar;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -137,9 +138,15 @@ public class FileUploader extends Window {
             upload.addChangeHandler(new ChangeHandler() {
                 private boolean done;
                 public void onChange(ChangeEvent event) {
-                   if ((!done || uploads.size() == 1) && upload.getFilename() != null && upload.getFilename().length() > 0) {
-                       addUploadField();
-                       done = true;
+                    if ((!done || uploads.size() == 1) && upload.getFilename() != null && upload.getFilename().length() > 0) {
+                        if (upload.getFilename().matches(".*[\\\\/:*?\\\"<>|]+.*")) {
+                            MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "", new String[]{upload.getFilename()}), null);
+                            done = false;
+                            upload.getElement().setPropertyString("value", "");
+                        } else {
+                            addUploadField();
+                            done = true;
+                        }
                    }
                 }
             });
@@ -160,7 +167,9 @@ public class FileUploader extends Window {
         public void checkVisibility() {
             remove.setVisible(uploads.size() > 1);
         }
-        
+
+
+
     }
 
     public FileUploader(final Linker linker, final GWTJahiaNode location) {

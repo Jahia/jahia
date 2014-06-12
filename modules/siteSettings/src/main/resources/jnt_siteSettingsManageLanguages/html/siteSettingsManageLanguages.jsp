@@ -140,6 +140,7 @@
         if (checkbox.checked) {
             $("#warningMandatory").show();
         }
+        updateBoxes();
     }
 
 </script>
@@ -206,7 +207,7 @@
                                    <c:if test="${site.defaultLanguage eq locale}">checked="checked"</c:if> />
                         </td>
                         <td>
-                            <input onChange="warningMandatory(this)" type="checkbox" name="mandatoryLanguages" value="${locale}" onchange="updateBoxes()"
+                            <input type="checkbox" name="mandatoryLanguages" value="${locale}" onchange="warningMandatory(this)"
                                    <c:if test="${functions:contains(site.mandatoryLanguages, langAsString)}">checked="checked"</c:if>/>
                         </td>
                         <td>

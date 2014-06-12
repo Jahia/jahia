@@ -93,6 +93,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
+import org.jahia.commons.Version;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
@@ -225,6 +226,19 @@ public class ModuleManagementFlowHandler implements Serializable {
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         JarFile jarFile = new JarFile(file);
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
+        String jahiaRequiredVersion = manifestAttributes.getValue("Jahia-Required-Version");
+        if (StringUtils.isEmpty(jahiaRequiredVersion)) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.required.version.missing.error").error()
+                    .build());
+            return null;
+        }
+        if (new Version(jahiaRequiredVersion).compareTo(new Version(Jahia.VERSION)) > 0) {
+            context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.required.version.error").args(new String[]{jahiaRequiredVersion, Jahia.VERSION}).error()
+                    .build());
+            return null;
+        }
         String jahiaPackageName = manifestAttributes.getValue("Jahia-Package-Name");
         if(jahiaPackageName!=null && jahiaPackageName.trim().length()==0){
             context.addMessage(new MessageBuilder().source("moduleFile")

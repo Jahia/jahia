@@ -69,14 +69,8 @@
  */
 package org.jahia.services.importexport.validation;
 
-<<<<<<< .working
 import java.io.Serializable;
 
-=======
-import java.io.Serializable;
-
-
->>>>>>> .merge-right.r49993
 /**
  * Implementors represent results of the validation checks for imported content items.
  * 
@@ -99,7 +93,6 @@ public interface ValidationResult {
      * @return the results with the provided and returns a new instance of the {@link ValidationResult} object having "merged" results
      */
     ValidationResult merge(ValidationResult toBeMergedWith);
-<<<<<<< .working
 
     class FailedValidationResult implements ValidationResult, Serializable {
         private final Exception exception;
@@ -127,31 +120,4 @@ public interface ValidationResult {
                     + (cause == null ? "" : " caused by '" + cause.getLocalizedMessage() + "'");
         }
     }
-=======
-    
-    class FailedValidationResult implements ValidationResult, Serializable {
-        private final Exception exception;
-
-        public FailedValidationResult(Exception exception) {
-            this.exception = exception;
-        }
-
-        public boolean isSuccessful() {
-            return false;
-        }
-
-        public ValidationResult merge(ValidationResult toBeMergedWith) {
-            return toBeMergedWith;
-        }
-
-        @Override
-        public String toString() {
-            final String localizedMessage = exception.getLocalizedMessage();
-            final Throwable cause = exception.getCause();
-            return "Validation failed because of a " + exception.getClass().getSimpleName()
-                    + (localizedMessage == null ? " " : " with message '" + localizedMessage + "'")
-                    + (cause == null ? "" : " caused by '" + cause.getLocalizedMessage() + "'");
-        }
-    }
->>>>>>> .merge-right.r49993
 }

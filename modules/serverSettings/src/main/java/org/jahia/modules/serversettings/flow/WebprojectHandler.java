@@ -609,7 +609,8 @@ public class WebprojectHandler implements Serializable {
                             final String[] messageParams = {filename, name,
                                     String.valueOf((System.currentTimeMillis() - timer)),
                                     validationResults.toString()};
-                            if (!validationResults.isSuccessful()) {
+                            final boolean hasValidationErrors = !validationResults.isSuccessful();
+                            if (hasValidationErrors) {
                                 logger.error(
                                         "Failed validation {}/{} validated in {} ms: {}",
                                         messageParams);
@@ -621,7 +622,7 @@ public class WebprojectHandler implements Serializable {
                             } else {
                                 logger.info("Successful Import {}/{} validated in {} ms: {}", messageParams);
                             }
-                            if (!validationResults.isSuccessful()) {
+                            if (hasValidationErrors) {
                                 if (importInfos.getValidationResult() != null) {
                                     // merge results
                                     importInfos.setValidationResult(importInfos.getValidationResult().merge(

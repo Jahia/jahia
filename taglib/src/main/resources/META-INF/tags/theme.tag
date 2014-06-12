@@ -5,8 +5,7 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
-<%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
-<c:set var="sortAssetsByNodeName" value="${functions:default(sortAssetsByNodeName, false)}"/>
+<c:set var="sortAssetsByNodeName" value="${not empty sortAssetsByNodeName ? sortAssetsByNodeName : false}"/>
 
 <jcr:nodeProperty var="theme" node="${renderContext.mainResource.node}" name="j:theme" inherited="true"/>
 <c:if test="${!empty theme}">

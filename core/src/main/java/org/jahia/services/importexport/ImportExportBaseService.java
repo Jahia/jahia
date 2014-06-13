@@ -854,7 +854,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         SitesValidator sitesValidator = new SitesValidator();
                         validators.add(sitesValidator);
                         h.setValidators(validators);
+<<<<<<< .working
                         handleImport(zis, h, name);
+=======
+                        try {
+                            handleImport(zis, h, name);
+                        } catch (Exception e) {
+                            throw new IOException("Couldn't import " + USERS_XML + e.getCause());
+                        }
+>>>>>>> .merge-right.r50027
 
                         Map<String, Properties> sites = ((SitesValidatorResult) sitesValidator.getResult()).getSitesProperties();
                         for (String s : sites.keySet()) {

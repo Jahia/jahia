@@ -201,46 +201,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
-    public void testStartPage() throws Exception {
-        final URL url = new URL(getBaseServerURL() + Jahia.getContextPath() + "/start");
-
-        HttpThread t1 = new HttpThread(url, "root", "root1234", null);
-        HttpThread t2 = new HttpThread(url, "userAB", "password", null);
-        HttpThread t3 = new HttpThread(url, "userBC", "password", null);
-        HttpThread t4 = new HttpThread(url, "userAC", "password", null);
-
-        t1.start();
-        t2.start();
-        t3.start();
-        t4.start();
-
-        t1.join();
-        t2.join();
-        t3.join();
-        t4.join();
-
-        String root = t1.getResult();
-        String userAB = t2.getResult();
-        String userBC = t3.getResult();
-        String userAC = t4.getResult();
-
-        assertEquals("Content served is not the same", root, getContent(url, "root", "root1234", null));
-        assertEquals("Content served is not the same", userAB, getContent(url, "userAB", "password", null));
-        assertEquals("Content served is not the same", userBC, getContent(url, "userBC", "password", null));
-        assertEquals("Content served is not the same", userAC, getContent(url, "userAC", "password", null));
-        assertEquals("Content served is not the same", userBC, getContent(url, "userBC", "password", null));
-        assertEquals("Content served is not the same", userAC, getContent(url, "userAC", "password", null));
-        assertEquals("Content served is not the same", root, getContent(url, "root", "root1234", null));
-        assertEquals("Content served is not the same", userAB, getContent(url, "userAB", "password", null));
-
-        ServicesRegistry.getInstance().getCacheService().flushAllCaches();
-        assertEquals("Content served is not the same", root, getContent(url, "root", "root1234", null));
-        assertEquals("Content served is not the same", userAB, getContent(url, "userAB", "password", null));
-        assertEquals("Content served is not the same", userBC, getContent(url, "userBC", "password", null));
-        assertEquals("Content served is not the same", userAC, getContent(url, "userAC", "password", null));
-    }
-
-    @Test
     public void testACLs() throws Exception {
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl1");
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl2");

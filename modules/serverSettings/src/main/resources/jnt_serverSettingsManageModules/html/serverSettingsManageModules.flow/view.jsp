@@ -38,12 +38,21 @@
     </script>
     <script type="text/javascript">
         $(document).ready(function () {
+            var oldStart = 0;
             $('#${moduleTableId}').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
                 "iDisplayLength": 25,
                 "sPaginationType": "bootstrap",
                 "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
-                "bStateSave": true
+                "bStateSave": true,
+                "fnDrawCallback": function (o) {
+                    // auto scroll to top on paginate
+                    if ( o._iDisplayStart != oldStart ) {
+                        var targetOffset = $('#${moduleTableId}').offset().top;
+                        $('html,body').animate({scrollTop: targetOffset}, 350);
+                        oldStart = o._iDisplayStart;
+                    }
+                }
             });
 
             var refreshModulesButton = $("<button class='btn'><i class='icon-refresh'/>&nbsp; ${i18nRefreshModules}</button>");

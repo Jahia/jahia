@@ -311,7 +311,9 @@ public class Activator implements BundleActivator {
                             stopped(bundle);
                             break;
                         case BundleEvent.UNRESOLVED:
-                            setModuleState(bundle,ModuleState.State.UNRESOLVED, null);
+                            if (getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
+                                setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
+                            }
                             unresolve(bundle);
                             break;
                         case BundleEvent.UNINSTALLED:

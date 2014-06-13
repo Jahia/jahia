@@ -182,6 +182,7 @@ public class AdminCreateSiteAction extends AdminAction {
                     systemSite.getLanguages().addAll(site.getLanguages());
                     sitesService.updateSystemSitePermissions(systemSite);
                 }
+                session.save();
                 configureSite(site, req, renderContext, resource, session, parameters, urlResolver);
             } else {
                 result.put("warn", getMessage(renderContext.getUILocale(), "label.error.processingRequestError"));

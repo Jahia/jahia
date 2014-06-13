@@ -723,13 +723,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
-                boolean titleConstraintAdded = false;
                 if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
                     addConstraint(textSearchConstraints, "or", xpath ? ("jcr:contains(., " + searchExpression + ")") : ("contains(n, " + searchExpression + ")"));
-                    if (MatchType.WITHOUT_WORDS != textSearch.getMatch()) {
-                        addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:title", searchExpression, xpath));
-                        titleConstraintAdded = true;
-                    }
                 }
                 if (searchFields.isFileContent()) {
                     if (xpath) {
@@ -741,7 +736,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isDescription()) {
                     addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:description", searchExpression, xpath));
                 }
-                if (searchFields.isTitle() && !titleConstraintAdded) {
+                if (searchFields.isTitle()) {
                     addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:title", searchExpression, xpath));
                 }
                 if (searchFields.isKeywords()) {

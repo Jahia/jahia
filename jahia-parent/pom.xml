@@ -147,6 +147,8 @@
         <jahia.manifest.vendor.url>http://www.jahia.com</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.com</jahia.manifest.vendor.email>
         <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
+		<jahia.license.header>header.txt</jahia.license.header>
+		<jahia.license.style>style.xml</jahia.license.style>
 
         <!-- plugin versions -->
         <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
@@ -416,7 +418,7 @@
                         <version>2.6</version>
                         <configuration>
                             <basedir>${basedir}</basedir>
-                            <header>header.txt</header>
+                            <header>${jahia.license.header}</header>
                             <quiet>false</quiet>
                             <failIfMissing>true</failIfMissing>
                             <aggregate>true</aggregate>
@@ -445,7 +447,7 @@
                             <useDefaultMapping>true</useDefaultMapping>
                             <encoding>UTF-8</encoding>
                             <headerDefinitions>
-                                <headerDefinition>style.xml</headerDefinition>
+                                <headerDefinition>${jahia.license.style}</headerDefinition>
                             </headerDefinitions>
                             <properties>
                                 <year>${year}</year>

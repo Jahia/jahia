@@ -197,15 +197,13 @@ public abstract class FormDeployPortletDefinition extends FormPanel {
                 if (doCloseParent) {
                     closeParent();
                 }
-                String response = formEvent.getResultHtml();
-                if (response.startsWith("<pre>")) {
-                    response = response.substring(5, response.length() - 6);
-                }
+                HTML responseHTML = new HTML(formEvent.getResultHtml());
+                String response = responseHTML.getText();
+
                 if (!response.trim().isEmpty()) {
                     JSONValue rspValue = JSONParser.parseStrict(response);
                     if (rspValue != null && rspValue.isObject() != null && rspValue.isObject().containsKey("dspMsg")) {
                         String dspMsg = rspValue.isObject().get("dspMsg").isString().stringValue();
-                        dspMsg = new HTML(dspMsg).getText();
                         MessageBox.info(Messages.get("label.deployNewPortlet", "Deploy new portlets"), dspMsg, new Listener<MessageBoxEvent>() {
                             public void handleEvent(MessageBoxEvent be) {
                                 refreshParent();

@@ -464,12 +464,12 @@ public class TemplatePackageDeployer {
         return null;
     }
 
-    public void undeployModule(JahiaTemplatesPackage pack) throws RepositoryException {
+    public void undeployModule(String id, String version) throws RepositoryException {
         Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
             String moduleId = BundleUtils.getModuleId(bundle);
-            String version = BundleUtils.getModuleVersion(bundle);
-            if (moduleId.equals(pack.getId()) && version.equals(pack.getVersion().toString())) {
+            String moduleVersion = BundleUtils.getModuleVersion(bundle);
+            if (moduleId.equals(id) && moduleVersion.equals(version)) {
                 try {
                     bundle.uninstall();
                     return;

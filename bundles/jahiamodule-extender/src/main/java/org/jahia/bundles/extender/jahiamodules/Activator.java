@@ -462,8 +462,7 @@ public class Activator implements BundleActivator {
         String jahiaRequiredVersion = bundle.getHeaders().get("Jahia-Required-Version");
         if(!StringUtils.isEmpty(jahiaRequiredVersion) && new org.jahia.commons.Version(jahiaRequiredVersion).compareTo(new org.jahia.commons.Version(Jahia.VERSION))>0){
             logger.error("Error while reading module, required version ("+jahiaRequiredVersion+") is higher than your Jahia version (" + Jahia.VERSION+")");
-            setModuleState(bundle, ModuleState.State.WAITING_TO_BE_PARSED, "required version "+jahiaRequiredVersion);
-            addToBeParsed(bundle, jahiaRequiredVersion);
+            setModuleState(bundle, ModuleState.State.INCOMPATIBLE_VERSION, jahiaRequiredVersion);
             return;
         }
 

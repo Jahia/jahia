@@ -82,10 +82,7 @@ import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.FalseFileFilter;
 import org.apache.commons.io.filefilter.HiddenFileFilter;
-import org.apache.commons.io.filefilter.NotFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -1060,11 +1057,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void undeployModule(String moduleId, String version) throws RepositoryException {
-        undeployModule(templatePackageRegistry.lookupByIdAndVersion(moduleId, new ModuleVersion(version)));
+        templatePackageDeployer.undeployModule(moduleId, version);
     }
 
     public void undeployModule(JahiaTemplatesPackage pack) throws RepositoryException {
-        templatePackageDeployer.undeployModule(pack);
+        templatePackageDeployer.undeployModule(pack.getId(), pack.getVersion().toString());
     }
 
     /**

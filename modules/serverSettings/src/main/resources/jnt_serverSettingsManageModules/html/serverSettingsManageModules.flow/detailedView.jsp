@@ -149,6 +149,7 @@
                 <c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, activeVersion.id)}" var="isMandatoryDependency"/>
                 <c:set value="${activeVersion.sourcesDownloadable and not isMandatoryDependency}" var="sourcesDownloadable"/>
                 <td>
+                    <c:if test="${moduleStates[activeVersion.id][activeVersion.version].installed}">
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
                             <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.id}.html"/>
@@ -186,6 +187,7 @@
                             </form>
                         </c:otherwise>
                     </c:choose>
+                    </c:if>
                 </td>
             </c:if>
         </tr>
@@ -262,7 +264,7 @@
             </td>
             <td>
                 <c:set var="cellEmpty" value="true"/>
-                <c:if test="${activeVersion.moduleType ne 'templatesSet'}">
+                <c:if test="${activeVersion.moduleType ne 'templatesSet' and moduleStates[activeVersion.id][activeVersion.version].installed}">
                     <c:choose>
                         <c:when test="${not empty sitesDirect[activeVersion.id] and functions:contains(sitesDirect[activeVersion.id],site)}">
                             <form id="disable${status.index}" style="margin: 0;" action="${flowExecutionUrl}" method="POST">

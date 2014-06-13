@@ -94,6 +94,7 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.jahia.commons.Version;
+import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.startlevel.BundleStartLevel;
@@ -548,8 +549,7 @@ public class ModuleManagementFlowHandler implements Serializable {
 
         Set<String> systemSiteRequiredModules = getSystemSiteRequiredModules();
         context.getRequestScope().put("systemSiteRequiredModules", systemSiteRequiredModules);
-        for (Map.Entry<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> entry : templateManagerService
-                .getTemplatePackageRegistry().getAllModuleVersions().entrySet()) {
+        for (Map.Entry<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> entry : getAllModuleVersions().entrySet()) {
             Map<ModuleVersion, ModuleVersionState> moduleVersions = states.get(entry.getKey());
             if (moduleVersions == null) {
                 moduleVersions = new TreeMap<ModuleVersion, ModuleVersionState>();
@@ -561,8 +561,8 @@ public class ModuleManagementFlowHandler implements Serializable {
             }
 
             for (Map.Entry<ModuleVersion, JahiaTemplatesPackage> moduleVersionEntry : entry.getValue().entrySet()) {
-                ModuleVersionState state = getModuleVersionState(moduleVersionEntry.getKey(),
-                        moduleVersionEntry.getValue(), entry.getValue().size() > 1, directSiteDep, templateSiteDep, transitiveSiteDep, systemSiteRequiredModules);
+                ModuleVersionState state = getModuleVersionState(context, moduleVersionEntry.getKey(),
+                        moduleVersionEntry.getValue(), entry.getValue().size() > 1, directSiteDep, templateSiteDep, transitiveSiteDep, systemSiteRequiredModules, errors);
                 moduleVersions.put(moduleVersionEntry.getKey(), state);
             }
         }
@@ -570,9 +570,9 @@ public class ModuleManagementFlowHandler implements Serializable {
         context.getRequestScope().put("errors", errors);
     }
 
-    private ModuleVersionState getModuleVersionState(ModuleVersion moduleVersion, JahiaTemplatesPackage pkg,
+    private ModuleVersionState getModuleVersionState(RequestContext context, ModuleVersion moduleVersion, JahiaTemplatesPackage pkg,
                                                      boolean multipleVersionsOfModuleInstalled, Map<String, List<String>> directSiteDep,
-                                                     Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep, Set<String> systemSiteRequiredModules) {
+                                                     Map<String, List<String>> templateSiteDep, Map<String, List<String>> transitiveSiteDep, Set<String> systemSiteRequiredModules, Map<String, String> errors) {
         ModuleVersionState state = new ModuleVersionState();
         Map<String, JahiaTemplatesPackage> registeredModules = templateManagerService.getTemplatePackageRegistry()
                 .getRegisteredModules();
@@ -610,7 +610,15 @@ public class ModuleManagementFlowHandler implements Serializable {
             state.setCanBeStopped(!state.isSystemDependency());
         } else {
             // not currently active version of a module
-            if (state.getUnresolvedDependencies().isEmpty()) {
+            if (pkg.getState().getState() == ModuleState.State.INCOMPATIBLE_VERSION) {
+                state.setCanBeStarted(false);
+                state.setInstalled(false);
+                state.setCanBeUninstalled(state.getUsedInSites().isEmpty() || multipleVersionsOfModuleInstalled);
+                if (pkg.getState().getDetails() != null) {
+                    String dspMsg = Messages.getWithArgs("resources.JahiaServerSettings", "serverSettings.manageModules.incompatibleVersion", LocaleContextHolder.getLocale(),pkg.getState().getDetails().toString());
+                    errors.put(moduleId, dspMsg);
+                }
+            } else if (state.getUnresolvedDependencies().isEmpty()) {
                 // no unresolved dependencies -> can start module version
                 state.setCanBeStarted(true);
 

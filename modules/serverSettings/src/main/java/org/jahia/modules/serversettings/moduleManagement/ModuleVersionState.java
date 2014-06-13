@@ -84,6 +84,8 @@ public class ModuleVersionState implements Serializable {
 
     private static final long serialVersionUID = 7311222686981884149L;
 
+    private boolean isInstalled = true;
+
     private boolean canBeStarted;
 
     private boolean canBeStopped;
@@ -124,6 +126,14 @@ public class ModuleVersionState implements Serializable {
 
     public boolean isSystemDependency() {
         return systemDependency;
+    }
+
+    public boolean isInstalled() {
+        return isInstalled;
+    }
+
+    public void setInstalled(boolean isInstalled) {
+        this.isInstalled = isInstalled;
     }
 
     public void setCanBeStarted(boolean canBeStarted) {

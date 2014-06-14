@@ -71,117 +71,101 @@
  */
 package org.jahia.modules.serversettings.portlets;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringReader;
 import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
+import java.util.jar.JarOutputStream;
+import java.util.zip.ZipEntry;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.pluto.util.assemble.Assembler;
-import org.apache.pluto.util.assemble.AssemblerConfig;
-import org.apache.pluto.util.assemble.war.WarAssembler;
-import org.jahia.settings.SettingsBean;
+import org.jahia.utils.StringOutputStream;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.Namespace;
+import org.jdom.input.SAXBuilder;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * . User: jahia Date: 15 avr. 2009 Time: 12:31:07
+ * Helper class for preparing portlet WAR files to be deployed on WebSphere Application Server.
+ * 
+ * @author Sergiy Shyrkov
  */
-public class AssemblerTask {
+final class WebSpherePortletHelper extends BasePortletHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(AssemblerTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(WebSpherePortletHelper.class);
 
-    private File tempDir;
-    private File webapp;
-
-    public AssemblerTask(File tempDir, File webapp) {
-        this.tempDir = tempDir;
-        this.webapp = webapp;
-    }
-
-    public File execute() throws Exception {
-        long timer = System.currentTimeMillis();
-        logger.info("Got a command to prepare " + getWebapp() + " WAR file to be deployed into the Pluto container");
-        validateArgs();
-
-        BasePortletHelper portletHelper = getPortletHelperInstance();
-
-        if (!needRewriting(getWebapp())) {
-            File destFile = new File(tempDir, getWebapp().getName());
-            FileUtils.copyFile(getWebapp(), destFile, true);
-            return portletHelper != null ? portletHelper.process(destFile) : destFile;
+    @Override
+    boolean handled(JarEntry jarEntry, JarInputStream source, JarOutputStream dest) throws IOException {
+        if (!"WEB-INF/web.xml".equals(jarEntry.getName())) {
+            return false;
         }
-
-        final File tempDir = getTempDir();
-        final AssemblerConfig config = new AssemblerConfig();
-        config.setSource(getWebapp());
-        config.setDestination(tempDir);
-
-        WarAssembler assembler = new WarAssembler();
-        assembler.assemble(config);
-
-        File destFile = new File(tempDir, getWebapp().getName());
-
-        if (portletHelper != null) {
-            destFile = portletHelper.process(destFile);
-        }
-
-        logger.info("Done assembling WAR file {} in {} ms.", destFile, (System.currentTimeMillis() - timer));
-
-        return destFile;
-    }
-
-    private BasePortletHelper getPortletHelperInstance() {
-        String srv = SettingsBean.getInstance().getServer();
-        if (srv == null) {
-            return null;
-        }
-        if (srv.startsWith("jboss")) {
-            return new JBossPortletHelper();
-        } else if (srv.startsWith("was")) {
-            return new WebSpherePortletHelper();
-        }
-
-        return null;
-    }
-
-    public File getTempDir() {
-        return tempDir;
-    }
-
-    public File getWebapp() {
-        return webapp;
-    }
-
-    private boolean needRewriting(File source) throws FileNotFoundException, IOException {
-        final JarInputStream jarIn = new JarInputStream(new FileInputStream(source));
-        String webXml = null;
-        JarEntry jarEntry;
         try {
-            // Read the source archive entry by entry
-            while ((jarEntry = jarIn.getNextJarEntry()) != null) {
-                if (Assembler.SERVLET_XML.equals(jarEntry.getName())) {
-                    webXml = IOUtils.toString(jarIn);
-                }
-                jarIn.closeEntry();
-            }
-        } finally {
-            jarIn.close();
+            String processedWebXml = processWebXml(source);
+            IOUtils.write(processedWebXml, dest);
+        } catch (JDOMException e) {
+            throw new IOException(e);
         }
 
-        return webXml == null || !webXml.contains(Assembler.DISPATCH_SERVLET_CLASS);
+        return true;
     }
 
-    private void validateArgs() throws Exception {
-        if (webapp != null) {
-            if (!webapp.exists()) {
-                throw new Exception("webapp " + webapp.getAbsolutePath() + " does not exist");
-            }
-            return;
+    @Override
+    boolean needsProcessing(JarFile jar) {
+        ZipEntry webXml = jar.getEntry("WEB-INF/web.xml");
+        if (webXml == null) {
+            return false;
         }
+        boolean doProcess = false;
+        InputStream is = null;
+        try {
+            is = jar.getInputStream(webXml);
+            String webXmlContent = IOUtils.toString(is, "UTF-8");
+            doProcess = webXmlContent != null
+                    && !webXmlContent.contains("com.ibm.websphere.portletcontainer.PortletDeploymentEnabled");
+        } catch (IOException e) {
+            logger.error(e.getMessage(), e);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        return doProcess;
+    }
+
+    @Override
+    void process(JarInputStream jarIn, JarOutputStream jarOut) throws IOException {
+        // do nothing
+    }
+
+    private String processWebXml(JarInputStream source) throws JDOMException, IOException {
+        SAXBuilder saxBuilder = new SAXBuilder();
+        saxBuilder.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+        StringOutputStream os = new StringOutputStream();
+        IOUtils.copy(source, os);
+        org.jdom.Document jdomDocument = saxBuilder.build(new StringReader(os.toString()));
+        Element root = jdomDocument.getRootElement();
+        Namespace ns = root.getNamespace();
+
+        Element displayName = root.getChild("display-name", ns);
+
+        Element contextParam = new Element("context-param", ns);
+        contextParam.addContent(new Element("param-name", ns)
+                .setText("com.ibm.websphere.portletcontainer.PortletDeploymentEnabled"));
+        contextParam.addContent(new Element("param-value", ns).setText("false"));
+
+        root.addContent(displayName != null ? root.indexOf(displayName) + 1 : 0, contextParam);
+
+        Format customFormat = Format.getPrettyFormat();
+        customFormat.setLineSeparator(System.getProperty("line.separator"));
+        XMLOutputter xmlOutputter = new XMLOutputter(customFormat);
+        os = new StringOutputStream();
+        xmlOutputter.output(jdomDocument, os);
+
+        return os.toString();
     }
 
 }

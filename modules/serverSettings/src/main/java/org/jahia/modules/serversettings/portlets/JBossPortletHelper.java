@@ -71,119 +71,32 @@
  */
 package org.jahia.modules.serversettings.portlets;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
 
 /**
  * Helper class for preparing portlet WAR files to be deployed on JBoss Application Server.
  * 
  * @author Sergiy Shyrkov
  */
-final class JBossPortletHelper {
+final class JBossPortletHelper extends BasePortletHelper {
 
-    private static void addToJar(String resource, JarOutputStream jos) throws IOException {
-        jos.putNextEntry(new JarEntry("WEB-INF/" + resource));
-        InputStream is = JBossPortletHelper.class.getClassLoader().getResourceAsStream(
-                "META-INF/jboss-resources/" + resource);
-        try {
-            IOUtils.copy(is, jos);
-            jos.closeEntry();
-        } finally {
-            IOUtils.closeQuietly(is);
-        }
+    private boolean hasJbossDeploymentStructure;
+
+    @Override
+    boolean needsProcessing(JarFile jar) {
+        hasJbossDeploymentStructure = jar.getEntry("WEB-INF/jboss-deployment-structure.xml") != null;
+        return !hasJbossDeploymentStructure;
     }
 
-    private static JarEntry cloneEntry(JarEntry originalJarEntry) {
-        final JarEntry newJarEntry = new JarEntry(originalJarEntry.getName());
-        newJarEntry.setComment(originalJarEntry.getComment());
-        newJarEntry.setExtra(originalJarEntry.getExtra());
-        newJarEntry.setMethod(originalJarEntry.getMethod());
-        newJarEntry.setTime(originalJarEntry.getTime());
-
-        // Must set size and CRC for STORED entries
-        if (newJarEntry.getMethod() == ZipEntry.STORED) {
-            newJarEntry.setSize(originalJarEntry.getSize());
-            newJarEntry.setCrc(originalJarEntry.getCrc());
+    @Override
+    void process(JarInputStream jarIn, JarOutputStream jarOut) throws IOException {
+        if (!hasJbossDeploymentStructure) {
+            addToJar("META-INF/portlet-resources/jboss-deployment-structure.xml",
+                    "WEB-INF/jboss-deployment-structure.xml", jarOut);
         }
-
-        return newJarEntry;
-    }
-
-    private static void copyEntries(JarInputStream source, JarOutputStream dest) throws IOException {
-        JarEntry originalJarEntry = source.getNextJarEntry();
-        while (originalJarEntry != null) {
-            final JarEntry newJarEntry = cloneEntry(originalJarEntry);
-            dest.putNextEntry(newJarEntry);
-            IOUtils.copy(source, dest);
-            dest.closeEntry();
-            dest.flush();
-            originalJarEntry = source.getNextJarEntry();
-        }
-    }
-
-    /**
-     * Returns a file descriptor for the modified (prepared) portlet WAR file.
-     * 
-     * @param sourcePortletWar
-     *            the source portlet WAR file
-     * @return a file descriptor for the modified (prepared) portlet WAR file
-     * @throws IOException
-     *             in case of processing error
-     */
-    public static File process(File sourcePortletWar) throws IOException {
-        JarFile jar = new JarFile(sourcePortletWar);
-        File dest = new File(FilenameUtils.getFullPathNoEndSeparator(sourcePortletWar.getPath()),
-                FilenameUtils.getBaseName(sourcePortletWar.getName()) + ".war");
-        try {
-            boolean hasPortletTld = jar.getEntry("WEB-INF/portlet.tld") != null;
-            boolean hasPortlet2Tld = jar.getEntry("WEB-INF/portlet_2_0.tld") != null;
-            jar.close();
-            final JarInputStream jarIn = new JarInputStream(new FileInputStream(sourcePortletWar));
-            final Manifest manifest = jarIn.getManifest();
-            final JarOutputStream jarOut;
-            if (manifest != null) {
-                jarOut = new JarOutputStream(new FileOutputStream(dest), manifest);
-            } else {
-                jarOut = new JarOutputStream(new FileOutputStream(dest));
-            }
-
-            try {
-                copyEntries(jarIn, jarOut);
-
-                addToJar("jboss-deployment-structure.xml", jarOut);
-
-                if (!hasPortletTld) {
-                    addToJar("portlet.tld", jarOut);
-                }
-                if (!hasPortlet2Tld) {
-                    addToJar("portlet_2_0.tld", jarOut);
-                }
-            } finally {
-                jarIn.close();
-                jarOut.close();
-                FileUtils.deleteQuietly(sourcePortletWar);
-            }
-            return dest;
-        } finally {
-            jar.close();
-        }
-    }
-
-    private JBossPortletHelper() {
-        super();
     }
 
 }

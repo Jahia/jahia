@@ -57,9 +57,9 @@ printMenu = { node, navMenuLevel, omitFormatting ->
             if(menuItem.isNodeType("jmix:navMenu")){
                 correctType = false
             }
-            if (menuItem.properties['j:displayInMenu']) {
+            if (menuItem.properties['j:displayInMenuName']) {
                 correctType = false
-                menuItem.properties['j:displayInMenu'].each() {
+                menuItem.properties['j:displayInMenuName'].each() {
                     correctType |= (it.string == currentNode.name)
                 }
             }

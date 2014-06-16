@@ -78,9 +78,9 @@
         <c:set var="inpath" value="${fn:startsWith(renderContext.mainResource.node.path, menuItem.path)}"/>
         <%--test if the item and current menu type matches--%>
         <c:set var="correctType" value="true"/>
-        <c:if test="${!empty menuItem.properties['j:displayInMenu']}">
+        <c:if test="${!empty menuItem.properties['j:displayInMenuName']}">
             <c:set var="correctType" value="false"/>
-            <c:forEach items="${menuItem.properties['j:displayInMenu']}" var="display">
+            <c:forEach items="${menuItem.properties['j:displayInMenuName']}" var="display">
                 <c:if test="${display.string eq currentNode.name}">
                     <c:set var="correctType" value="${display.string eq currentNode.name}"/>
                 </c:if>

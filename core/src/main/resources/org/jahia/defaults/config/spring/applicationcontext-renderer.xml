@@ -161,6 +161,13 @@
         <property name="priority" value="15"/>
         <property name="description"
                   value="Stores the required request parameters before evaluating the template and restores original after."/>
+        <property name="configurationToSkipInResourceRenderedPath">
+            <map>
+                <entry key="option" value="true"/>
+                <entry key="wrapper" value="true"/>
+                <entry key="include" value="true"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="markedForDeletionEditModeFilter" class="org.jahia.services.render.filter.MarkedForDeletionEditModeFilter">

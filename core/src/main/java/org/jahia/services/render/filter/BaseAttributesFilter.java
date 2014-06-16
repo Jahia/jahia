@@ -79,6 +79,8 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Stores the required request parameters before evaluating the template and restores original after.
@@ -87,6 +89,9 @@ import javax.servlet.http.HttpServletRequest;
  * Time: 3:28:13 PM
  */
 public class BaseAttributesFilter extends AbstractFilter {
+
+    public Map<String,Boolean> configurationToSkipInResourceRenderedPath;
+
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
 
@@ -109,17 +114,23 @@ public class BaseAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "currentNode", node);
             chain.pushAttribute(request, "url", new URLGenerator(context, resource));
         }
-
-        boolean added = context.getRenderedPaths().add(resource.getNode().getPath());
-        chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
+        if(!configurationToSkipInResourceRenderedPath.containsKey(resource.getContextConfiguration())) {
+            boolean added = context.getRenderedPaths().add(resource.getNode().getPath());
+            chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
+        }
         return null;
     }
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
+        if (!configurationToSkipInResourceRenderedPath.containsKey(resource.getContextConfiguration()) &&
+            renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
             renderContext.getRenderedPaths().remove(resource.getNode().getPath());
         }
         return super.execute(previousOut, renderContext, resource, chain);
+    }
+
+    public void setConfigurationToSkipInResourceRenderedPath(Map<String, Boolean> configurationToSkipInResourceRenderedPath) {
+        this.configurationToSkipInResourceRenderedPath = configurationToSkipInResourceRenderedPath;
     }
 }

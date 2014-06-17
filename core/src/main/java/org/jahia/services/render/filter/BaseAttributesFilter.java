@@ -79,8 +79,6 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Set;
 
 /**

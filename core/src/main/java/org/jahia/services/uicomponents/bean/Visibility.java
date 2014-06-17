@@ -312,7 +312,7 @@ public class Visibility {
     private boolean isAllowedOperatingMode() {
         return (operatingMode == null) ||
                 (operatingMode.contains("development") && SettingsBean.getInstance().isDevelopmentMode()) ||
-                (operatingMode.contains("production") && SettingsBean.getInstance().isProductionMode()) ||
+                (operatingMode.contains("production") && (SettingsBean.getInstance().isProductionMode() && !SettingsBean.getInstance().isDistantPublicationServerMode())) ||
                 (operatingMode.contains("distantPublicationServer") && SettingsBean.getInstance().isDistantPublicationServerMode());
     }
 

@@ -45,6 +45,13 @@
                 <c:if test="${currentNode.properties.administrationlink.boolean}">
                     <td>
                         <c:choose>
+                            <c:when test="${renderContext.settings.distantPublicationServerMode and jcr:hasPermission(node,'siteAdministrationAccess')}">
+                                <c:url var="editUrl" value="/cms/settings/default/${node.defaultLanguage}${node.path}.manageLanguages.html"/>
+                                <a target="_blank" href="${editUrl}">
+                                    <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" " role="presentation"
+                                         style="position:relative;"/>
+                                </a>
+                            </c:when>
                             <c:when test="${jcr:hasPermission(node,'siteAdministrationAccess')}">
                                 <a href="<c:url value='${baseEdit}${node.path}.manageModules.html'/>" target="_blank">
                                     <img src="<c:url value='/icons/goto.png'/>" width="16" height="16" alt=" " role="presentation"

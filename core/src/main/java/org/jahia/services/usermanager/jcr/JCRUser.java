@@ -83,6 +83,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import java.util.List;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implementation of JahiaUser using the JCR API
@@ -100,12 +101,12 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     private final String nodeUuid;
-    private String name;
-    private Properties properties;
-    private UserProperties userProperties;
+    private final AtomicReference<String> name = new AtomicReference<String>();
+    private final AtomicReference<Properties> properties = new AtomicReference<Properties>();
+    private final AtomicReference<UserProperties> userProperties = new AtomicReference<UserProperties>();
     private boolean external;
-    private List<PasswordHistoryEntry> passwordHistory;
-    private String path = null;
+    private final AtomicReference<List<PasswordHistoryEntry>> passwordHistory = new AtomicReference<List<PasswordHistoryEntry>>();
+    private final AtomicReference<String> path = new AtomicReference<String>(null);
 
     public JCRUser(String nodeUuid) {
         this(nodeUuid, false);
@@ -125,17 +126,18 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      * corresponds to the user key, which is unique within a Jahia system.
      */
     public String getName() {
-        if (name == null) {
+        if (name.get() == null) {
             try {
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-                name = getNode(session).getName();
-                return name;
+                final String userName = getNode(session).getName();
+                name.set(userName);
+                return userName;
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving the user's name", e);
                 return "";
             }
         } else {
-            return name;
+            return name.get();
         }
     }
 
@@ -171,13 +173,13 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      * property is present.
      */
     public Properties getProperties() {
-        if (properties == null || properties.isEmpty()) {
+        if (properties.get() == null || properties.get().isEmpty()) {
             try {
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-                properties = new Properties();
+                Properties properties = new Properties();
                 JCRUserNode jcrUserNode = (JCRUserNode) getNode(session);
                 PropertyIterator iterator = jcrUserNode.getProperties();
-                for (; iterator.hasNext(); ) {
+                while (iterator.hasNext()) {
                     Property property = iterator.nextProperty();
                     if (!property.getDefinition().isMultiple()) {
                         properties.put(property.getName(), property.getString());
@@ -197,12 +199,13 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                         }
                     }
                 }
+                this.properties.set(properties);
                 return properties;
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving properties", e);
             }
         }
-        return properties;
+        return properties.get();
     }
 
     /**
@@ -215,13 +218,14 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      * @return UserProperties
      */
     public UserProperties getUserProperties() {
-        if (userProperties == null) {
-            userProperties = new UserProperties();
+        if (userProperties.get() == null) {
+            final UserProperties userProperties = new UserProperties();
+
             try {
                 JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
                 JCRUserNode jcrUserNode = (JCRUserNode) getNode(session);
                 PropertyIterator iterator = jcrUserNode.getProperties();
-                for (; iterator.hasNext(); ) {
+                while (iterator.hasNext()) {
                     Property property = iterator.nextProperty();
                     if (property instanceof JCRUserNode.JCRUserProperty) {
                         userProperties.setUserProperty(property.getName(), new UserProperty(property.getName(),
@@ -236,12 +240,13 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                 if (jcrUserNode.getDisplayableName() != null) {
                     userProperties.setUserProperty(J_DISPLAYABLE_NAME, new UserProperty(J_DISPLAYABLE_NAME, jcrUserNode.getDisplayableName(), true));
                 }
-                return userProperties;
+
+                this.userProperties.set(userProperties);
             } catch (RepositoryException e) {
                 logger.error("Error while retrieving user properties", e);
             }
         }
-        return userProperties;
+        return userProperties.get();
     }
 
     /**
@@ -283,8 +288,8 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                     if (property != null) {
                         property.remove();
                         session.save();
-                        properties = null;
-                        userProperties = null;
+                        properties.set(null);
+                        userProperties.set(null);
                         return Boolean.TRUE;
                     }
                     return Boolean.FALSE;
@@ -316,13 +321,13 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
                     Node node = getNode(session);
                     node.setProperty(key, value);
                     session.save();
-                    properties = null;
-                    userProperties = null;
+                    properties.set(null);
+                    userProperties.set(null);
                     return Boolean.TRUE;
                 }
             });
         } catch (RepositoryException e) {
-            logger.warn("Error while setting user property " + key + " with value " + value + " for user " + name, e);
+            logger.warn("Error while setting user property " + key + " with value " + value + " for user " + name.get(), e);
         }
         return false;
     }
@@ -432,10 +437,10 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      * @return String representation of the name of the provider of this user
      */
     public String getLocalPath() {
-        if (path == null) {
-            path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(getUsername());
+        if (path.get() == null) {
+            path.set(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(getUsername()));
         }
-        return path;
+        return path.get();
     }
 
     @Override
@@ -482,11 +487,11 @@ public class JCRUser implements JahiaUser, JCRPrincipal {
      * descending, i.e. the newer passwords are at the top of the list
      */
     public List<PasswordHistoryEntry> getPasswordHistory() {
-        if (passwordHistory == null) {
-            passwordHistory = JahiaPasswordPolicyService.getInstance().getPasswordHistory(this);
+        if (passwordHistory.get() == null) {
+            passwordHistory.set(JahiaPasswordPolicyService.getInstance().getPasswordHistory(this));
         }
 
-        return passwordHistory;
+        return passwordHistory.get();
     }
 
     /**

@@ -352,7 +352,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                     IOUtils.closeQuietly(is);
                 }
             }
-            List<String> deps = BundleUtils.getModule(bundle).getDepends();
+            List<String> deps = new ArrayList<String>(BundleUtils.getModule(bundle).getDepends());
             List<String> foundDeps = new ArrayList<String>();
             if (providedBundles != null) {
                 for (String providedBundle : providedBundles) {
@@ -617,7 +617,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                 state.setInstalled(false);
                 state.setCanBeUninstalled(state.getUsedInSites().isEmpty() || multipleVersionsOfModuleInstalled);
                 if (pkg.getState().getDetails() != null) {
-                    String dspMsg = Messages.getWithArgs("resources.JahiaServerSettings", "serverSettings.manageModules.incompatibleVersion", LocaleContextHolder.getLocale(),pkg.getState().getDetails().toString());
+                    String dspMsg = Messages.getWithArgs("resources.JahiaServerSettings", "serverSettings.manageModules.incompatibleVersion", LocaleContextHolder.getLocale(), pkg.getState().getDetails().toString());
                     errors.put(moduleId, dspMsg);
                 }
             } else if (state.getUnresolvedDependencies().isEmpty()) {

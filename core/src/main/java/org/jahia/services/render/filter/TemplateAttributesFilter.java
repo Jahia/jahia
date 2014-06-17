@@ -72,7 +72,9 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -81,6 +83,7 @@ import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.i18n.ResourceBundles;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.jstl.core.Config;
@@ -101,6 +104,12 @@ public class TemplateAttributesFilter extends AbstractFilter {
     public static final String FORCED_LOCALE_ATTRIBUTE = "org.jahia.utils.i18n.forceLocale";
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+        final JCRSiteNode site = context.getSite();
+        final JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
+        if (templatePackage == null) {
+            throw new ItemNotFoundException("Couldn't find the template associated with site " + site.getName() + ". Please check that all its dependencies are started.");
+        }
+
         JCRNodeWrapper node = resource.getNode();
 
         final HttpServletRequest request = context.getRequest();
@@ -129,8 +138,8 @@ public class TemplateAttributesFilter extends AbstractFilter {
         chain.pushAttribute(
                 context.getRequest(),
                 Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                new LocalizationContext(ResourceBundles.get(context.getSite().getTemplatePackage()
-                        .getResourceBundleName(), script.getView().getModule(),
+                new LocalizationContext(ResourceBundles.get(templatePackage
+                                .getResourceBundleName(), script.getView().getModule(),
                         locale != null ? locale : resource.getLocale())));
         return null;
     }

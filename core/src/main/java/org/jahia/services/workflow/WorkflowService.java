@@ -1042,4 +1042,8 @@ public class WorkflowService implements BeanPostProcessor {
     public void setJcrTemplate(JCRTemplate jcrTemplate) {
         this.jcrTemplate = jcrTemplate;
     }
+
+    public WorkflowObservationManager getObservationManager() {
+        return observationManager;
+    }
 }

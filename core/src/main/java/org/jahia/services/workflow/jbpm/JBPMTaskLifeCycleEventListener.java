@@ -77,6 +77,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -92,6 +93,9 @@ import org.jbpm.services.task.impl.model.GroupImpl;
 import org.jbpm.services.task.impl.model.UserImpl;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.Task;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.event.Reception;
@@ -109,8 +113,6 @@ import java.util.*;
  *        Created : 4 févr. 2010
  */
 public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventListener {
-
-    private static final long serialVersionUID = 4434614988996316632L;
 
     @Override
     public void afterTaskReleasedEvent(Task ti) {
@@ -187,8 +189,14 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             }
             createTask(task, taskInputParameters, taskOutputParameters, principals);
             ((SynchronizedTaskService) taskService).addContent(task.getId(), taskOutputParameters);
-
-            observationManager.notifyNewTask("jBPM", Long.toString(task.getId()));
+            JobDetail jobDetail = BackgroundJob.createJahiaJob("notifyNewTask", NotifyNewTaskJob.class);
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            jobDataMap.put(NotifyNewTaskJob.TASK_ID,Long.toString(task.getId()));
+            try {
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
+            } catch (SchedulerException e) {
+                throw new RuntimeException("error while notifying the task_id " + task.getId(),e);
+            }
         } catch (RepositoryException e) {
             throw new RuntimeException("Error while setting up task assignees and creating a JCR task", e);
         }

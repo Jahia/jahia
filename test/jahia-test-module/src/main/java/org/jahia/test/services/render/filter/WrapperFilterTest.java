@@ -97,6 +97,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
@@ -156,6 +158,7 @@ public class WrapperFilterTest extends JahiaTestCase {
         RenderChain chain = new RenderChain();
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
+        attributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include", "wrapper")));
         chain.addFilter(attributesFilter);
 
         WrapperFilter filter = new WrapperFilter();

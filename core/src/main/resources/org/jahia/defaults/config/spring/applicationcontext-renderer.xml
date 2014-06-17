@@ -162,11 +162,11 @@
         <property name="description"
                   value="Stores the required request parameters before evaluating the template and restores original after."/>
         <property name="configurationToSkipInResourceRenderedPath">
-            <map>
-                <entry key="option" value="true"/>
-                <entry key="wrapper" value="true"/>
-                <entry key="include" value="true"/>
-            </map>
+            <set>
+                <value type="java.lang.String">option</value>
+                <value type="java.lang.String">wrapper</value>
+                <value type="java.lang.String">include</value>
+            </set>
         </property>
     </bean>
 

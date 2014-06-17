@@ -81,6 +81,7 @@ import org.jahia.services.render.scripting.Script;
 import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Stores the required request parameters before evaluating the template and restores original after.
@@ -90,7 +91,7 @@ import java.util.Map;
  */
 public class BaseAttributesFilter extends AbstractFilter {
 
-    public Map<String,Boolean> configurationToSkipInResourceRenderedPath;
+    public Set<String> configurationToSkipInResourceRenderedPath;
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
         JCRNodeWrapper node = resource.getNode();
@@ -114,23 +115,23 @@ public class BaseAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, "currentNode", node);
             chain.pushAttribute(request, "url", new URLGenerator(context, resource));
         }
-        if(!configurationToSkipInResourceRenderedPath.containsKey(resource.getContextConfiguration())) {
-            boolean added = context.getRenderedPaths().add(resource.getNode().getPath());
-            chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
+        boolean added = false;
+        if(!configurationToSkipInResourceRenderedPath.contains(resource.getContextConfiguration())) {
+            added = context.getRenderedPaths().add(resource.getNode().getPath());
         }
+        chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
         return null;
     }
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (!configurationToSkipInResourceRenderedPath.containsKey(resource.getContextConfiguration()) &&
-            renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
+        if (renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
             renderContext.getRenderedPaths().remove(resource.getNode().getPath());
         }
         return super.execute(previousOut, renderContext, resource, chain);
     }
 
-    public void setConfigurationToSkipInResourceRenderedPath(Map<String, Boolean> configurationToSkipInResourceRenderedPath) {
+    public void setConfigurationToSkipInResourceRenderedPath(Set<String> configurationToSkipInResourceRenderedPath) {
         this.configurationToSkipInResourceRenderedPath = configurationToSkipInResourceRenderedPath;
     }
 }

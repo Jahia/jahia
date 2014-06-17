@@ -191,6 +191,7 @@ public class CacheFilterTest extends JahiaTestCase {
         // test on a resource from the default Jahia module
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
+        attributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
 
@@ -307,6 +308,7 @@ public class CacheFilterTest extends JahiaTestCase {
         // test on a resource from the default Jahia module
         BaseAttributesFilter attributesFilter = new BaseAttributesFilter();
         attributesFilter.setRenderService(RenderService.getInstance());
+        attributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         RenderFilter cacheFilter = (RenderFilter) SpringContextSingleton.getInstance().getContext().getBean("cacheFilter");
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");

@@ -93,6 +93,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Locale;
 
 import static org.junit.Assert.assertTrue;
@@ -171,6 +173,7 @@ public class ConditionalFilterTest extends JahiaTestCase {
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
         baseAttributesFilter.setPriority(0);
         baseAttributesFilter.setRenderService(RenderService.getInstance());
+        baseAttributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         TestFilter conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());
@@ -255,6 +258,7 @@ public class ConditionalFilterTest extends JahiaTestCase {
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
         baseAttributesFilter.setRenderService(RenderService.getInstance());
         baseAttributesFilter.setPriority(0);
+        baseAttributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         TestFilter conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());
@@ -342,6 +346,7 @@ public class ConditionalFilterTest extends JahiaTestCase {
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
         baseAttributesFilter.setRenderService(RenderService.getInstance());
         baseAttributesFilter.setPriority(0);
+        baseAttributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         TestFilter conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());
@@ -419,6 +424,7 @@ public class ConditionalFilterTest extends JahiaTestCase {
         BaseAttributesFilter baseAttributesFilter = new BaseAttributesFilter();
         baseAttributesFilter.setRenderService(RenderService.getInstance());
         baseAttributesFilter.setPriority(0);
+        baseAttributesFilter.setConfigurationToSkipInResourceRenderedPath(new HashSet<String>(Arrays.asList("include","wrapper")));
 
         TestFilter conditionalFilter = new TestFilter();
         conditionalFilter.setRenderService(RenderService.getInstance());

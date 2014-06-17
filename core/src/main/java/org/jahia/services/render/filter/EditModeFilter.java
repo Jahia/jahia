@@ -75,6 +75,8 @@ package org.jahia.services.render.filter;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
@@ -82,6 +84,7 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.StringResponseWrapper;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.ItemNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,8 +135,13 @@ public class EditModeFilter extends AbstractFilter {
      */
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        final JCRSiteNode site = resource.getNode().getResolveSite();
+        final JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
+        if(templatePackage == null) {
+            throw new ItemNotFoundException("Couldn't find the template associated with site " + site.getName() + ". Please check that all its dependencies are started.");
+        }
         if (blockableModes != null && blockableModes.contains(renderContext.getMode())
-                && resource.getNode().getResolveSite().getTemplatePackage().isEditModeBlocked()) {
+                && templatePackage.isEditModeBlocked()) {
             throw new AccessDeniedException("This site is not accessible in Edit mode.");
         }
 

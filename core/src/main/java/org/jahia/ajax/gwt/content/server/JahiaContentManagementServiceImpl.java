@@ -333,8 +333,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             config = uiConfigHelper.getGWTEditConfiguration(name, path, getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), session);
         } catch (Exception e) {
-            logger.error("Cannot get node", e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), e.getLocalizedMessage()));
+            logger.error("Cannot retrieve edit configuration " + name + " for path " + path, e);
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.edit.configuration", getUILocale(), name,
+                    path, e.getLocalizedMessage()));
         }
         return config;
     }

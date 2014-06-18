@@ -71,29 +71,24 @@
  */
 package org.jahia.services.scheduler;
 
-import static org.jahia.services.scheduler.BackgroundJob.*;
-
-import java.util.*;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.SimpleTrigger;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
+import java.util.*;
+import java.util.regex.Pattern;
+
+import static org.jahia.services.scheduler.BackgroundJob.*;
+
 /**
  * Jahia background task scheduling and management service.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class SchedulerService extends JahiaService implements JahiaAfterInitializationService {
@@ -101,7 +96,7 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
     /**
      * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance. So the instance remain in standby mode until
      * the scheduler is explicitly started.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     public static class JahiaSchedulerFactoryBean extends SchedulerFactoryBean {
@@ -127,6 +122,8 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
 
     private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
+    private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);
     }
@@ -136,12 +133,12 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
     }
 
     public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
-            boolean purgeWithNoEndDate) throws SchedulerException {
+                                          boolean purgeWithNoEndDate) throws SchedulerException {
         return deleteAllCompletedJobs(purgeStrategy, purgeWithNoEndDate, false);
     }
 
     public Integer deleteAllCompletedJobs(Map<Pattern, Long> purgeStrategy,
-            boolean purgeWithNoEndDate, boolean isRAMScheduler) throws SchedulerException {
+                                          boolean purgeWithNoEndDate, boolean isRAMScheduler) throws SchedulerException {
         logger.info("Start looking for completed jobs in {} scheduler", isRAMScheduler ? "RAM" : "persistent");
         int deletedCount = 0;
 
@@ -299,6 +296,10 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
     }
 
     public void scheduleJobNow(JobDetail jobDetail) throws SchedulerException {
+        scheduleJobNow(jobDetail, false);
+    }
+
+    public void scheduleJobNow(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
         JobDataMap data = jobDetail.getJobDataMap();
         SimpleTrigger trigger = new SimpleTrigger(jobDetail.getName() + "_Trigger",
                 INSTANT_TRIGGER_GROUP);
@@ -311,25 +312,53 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
             logger.debug("schedule job " + jobDetail.getName() + " volatile("
                     + jobDetail.isVolatile() + ") @ " + new Date(System.currentTimeMillis()));
         }
-        scheduler.scheduleJob(jobDetail, trigger);
+        if (useRamScheduler) {
+            ramScheduler.scheduleJob(jobDetail, trigger);
+        } else {
+            scheduler.scheduleJob(jobDetail, trigger);
+        }
     }
 
     public void scheduleJobAtEndOfRequest(JobDetail jobDetail) throws SchedulerException {
-        List<JobDetail> jobList = scheduledAtEndOfRequest.get();
+        scheduleJobAtEndOfRequest(jobDetail, false);
+    }
+
+    public void scheduleJobAtEndOfRequest(JobDetail jobDetail, boolean useRamScheduler) throws SchedulerException {
+        List<JobDetail> jobList = useRamScheduler?ramScheduledAtEndOfRequest.get():scheduledAtEndOfRequest.get();
+
         if (jobList == null) {
             jobList = new ArrayList<JobDetail>();
-            scheduledAtEndOfRequest.set(jobList);
+            if (useRamScheduler) {
+                ramScheduledAtEndOfRequest.set(jobList);
+            } else {
+                scheduledAtEndOfRequest.set(jobList);
+            }
         }
         jobList.add(jobDetail);
     }
 
     public void triggerEndOfRequest() {
-        List<JobDetail> jobList = scheduledAtEndOfRequest.get();
-        scheduledAtEndOfRequest.set(null);
+        if (ramScheduledAtEndOfRequest.get() != null) {
+            triggerJob(true);
+        }
+        if (scheduledAtEndOfRequest.get() != null) {
+            triggerJob(false);
+        }
+    }
+
+    private void triggerJob(boolean useRamScheduler) {
+        List<JobDetail> jobList;
+        if (useRamScheduler) {
+            jobList = ramScheduledAtEndOfRequest.get();
+            ramScheduledAtEndOfRequest.set(null);
+        } else {
+            jobList = scheduledAtEndOfRequest.get();
+            scheduledAtEndOfRequest.set(null);
+        }
         if (jobList != null) {
             for (JobDetail detail : jobList) {
                 try {
-                    scheduleJobNow(detail);
+                    scheduleJobNow(detail, useRamScheduler);
                 } catch (SchedulerException e) {
                     logger.error("Cannot schedule job", e);
                 }

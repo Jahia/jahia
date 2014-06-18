@@ -193,7 +193,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             jobDataMap.put(NotifyNewTaskJob.TASK_ID,Long.toString(task.getId()));
             try {
-                ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail);
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobAtEndOfRequest(jobDetail,true);
             } catch (SchedulerException e) {
                 throw new RuntimeException("error while notifying the task_id " + task.getId(),e);
             }

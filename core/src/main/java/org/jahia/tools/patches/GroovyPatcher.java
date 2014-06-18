@@ -118,8 +118,6 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
 
-    private static final String PATCHES_BASE = "/WEB-INF/var/patches/groovy";
-
     private static final Comparator<Resource> RESOURCE_COMPARATOR = new Comparator<Resource>() {
         public int compare(Resource o1, Resource o2) {
             try {
@@ -130,6 +128,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             return 0;
         }
     };
+    
     public static void executeScripts(Resource[] scripts) {
         long timer = System.currentTimeMillis();
         logger.info("Found new patch scripts {}. Executing...", StringUtils.join(scripts));
@@ -171,12 +170,8 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     public static void executeScripts(ServletContext ctx, String lifecyclePhase) {
         try {
-            String realPath = ctx.getRealPath(PATCHES_BASE);
-            if (System.getProperty("jahiaVarDiskPath") != null) {
-                realPath = System.getProperty("jahiaVarDiskPath") + File.separator + "patches" + File.separator + "groovy";
-            }
-            File lookupFolder = realPath != null ? new File(realPath) : null;
-            if (lookupFolder == null || !lookupFolder.isDirectory()) {
+            File lookupFolder = getPatchesFolder(ctx);
+            if (lookupFolder == null) {
                 return;
             }
 
@@ -229,6 +224,18 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
         }
     }
 
+    private static File getPatchesFolder(ServletContext ctx) {
+        String varFolder = System.getProperty("jahiaVarDiskPath");
+        if (varFolder == null) {
+            varFolder = SettingsBean.getInstance() != null ? SettingsBean.getInstance().getJahiaVarDiskPath() : null;
+        }
+        if (varFolder == null) {
+            varFolder = ctx.getRealPath("WEB-INF/var");
+        }
+        File lookupFolder = new File(varFolder, "patches" + File.separator + "groovy");
+        return lookupFolder.isDirectory() ? lookupFolder : null;
+    }
+    
     protected static void rename(Resource script, String suffix) {
         File scriptFile;
         try {
@@ -249,7 +256,7 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     private long interval = 5 * 60000L; // 5 minutes interval by default
 
-    private String patchesLookup = PATCHES_BASE + "/**/*.groovy";
+    private String patchesLookup;
 
     private ServletContext servletContext;
 
@@ -281,8 +288,12 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
             return;
         }
 
-        if (System.getProperty("jahiaVarDiskPath") != null) {
-            patchesLookup = "file://" + System.getProperty("jahiaVarDiskPath") + File.separator + "patches" + File.separator + "groovy" + File.separator + "**" + File.separator + "*.groovy";
+        if (patchesLookup == null) {
+            File patchesFolder = getPatchesFolder(servletContext);
+            if (patchesFolder != null) {
+                patchesLookup = "file://" + StringUtils.replaceChars(patchesFolder.getAbsolutePath(), '\\', '/')
+                        + "/**/*.groovy";
+            }
         }
 
         if (StringUtils.isEmpty(patchesLookup)) {

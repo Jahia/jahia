@@ -380,6 +380,10 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return new Value[0];
     }
 
+    /**
+     * Returns a <strong>read-only</strong> view of the known mount points.
+     * @return a <strong>read-only</strong> view of the known mount points.
+     */
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }

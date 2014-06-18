@@ -94,20 +94,27 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     public boolean checkMountPointValidity() {
+        final JCRStoreProvider provider;
         try {
-            getRootNode();
+            provider = getMountProvider();
+        } catch (RepositoryException e) {
+            return false;
+        }
+
+        try {
+            getRootNodeFrom(provider);
             return true;
         } catch (RepositoryException e) {
-            getProvider().getSessionFactory().getMountPoints().remove(getPath());
+            if (provider != null) {
+                getProvider().getSessionFactory().removeProvider(provider.getKey());
+            }
             return false;
         }
     }
 
-    private JCRNodeWrapper getRootNode() throws RepositoryException {
-        JCRStoreProvider provider = getMountProvider();
-
+    private JCRNodeWrapper getRootNodeFrom(JCRStoreProvider provider) throws RepositoryException {
         if (provider != null) {
-            JCRSessionWrapper sessionWrapper = (JCRSessionWrapper) getSession();
+            JCRSessionWrapper sessionWrapper = getSession();
             return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
         } else {
             throw new RepositoryException("No provider found for mount point " + getPath() + " of type " + getPrimaryNodeTypeName());

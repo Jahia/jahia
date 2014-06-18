@@ -201,6 +201,7 @@ public class Mounter extends Window {
                                 Map<String,Object> data = new HashMap<String, Object>();
                                 data.put(Linker.REFRESH_ALL, true);
                                 linker.refresh(data);
+                                MessageBox.info(Messages.get("label.information", "Information"), Messages.get("message.success", "Success"), null);
                                 hide();
                             }
                         });

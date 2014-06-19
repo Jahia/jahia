@@ -228,19 +228,22 @@ public class ModuleManagementFlowHandler implements Serializable {
     private JarFile installBundles(File file, MessageContext context, String originalFilename, boolean forceUpdate) throws IOException, BundleException {
         List<Bundle> bundlesToStart = new ArrayList<Bundle>();
         JarFile jarFile = new JarFile(file);
+        boolean isWarFile = FilenameUtils.isExtension(StringUtils.lowerCase(originalFilename), Arrays.asList("war"));
         Attributes manifestAttributes = jarFile.getManifest().getMainAttributes();
         String jahiaRequiredVersion = manifestAttributes.getValue("Jahia-Required-Version");
-        if (StringUtils.isEmpty(jahiaRequiredVersion)) {
-            context.addMessage(new MessageBuilder().source("moduleFile")
-                    .code("serverSettings.manageModules.install.required.version.missing.error").error()
-                    .build());
-            return null;
-        }
-        if (new Version(jahiaRequiredVersion).compareTo(new Version(Jahia.VERSION)) > 0) {
-            context.addMessage(new MessageBuilder().source("moduleFile")
-                    .code("serverSettings.manageModules.install.required.version.error").args(new String[]{jahiaRequiredVersion, Jahia.VERSION}).error()
-                    .build());
-            return null;
+        if(!isWarFile) {
+            if (StringUtils.isEmpty(jahiaRequiredVersion)) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .code("serverSettings.manageModules.install.required.version.missing.error").error()
+                        .build());
+                return null;
+            }
+            if (new Version(jahiaRequiredVersion).compareTo(new Version(Jahia.VERSION)) > 0) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                        .code("serverSettings.manageModules.install.required.version.error").args(new String[]{jahiaRequiredVersion, Jahia.VERSION}).error()
+                        .build());
+                return null;
+            }
         }
         String jahiaPackageName = manifestAttributes.getValue("Jahia-Package-Name");
         if(jahiaPackageName!=null && jahiaPackageName.trim().length()==0){

@@ -97,14 +97,16 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         final JCRStoreProvider provider;
         try {
             provider = getMountProvider();
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
+            logger.error("Couldn't retrieve provider", e);
             return false;
         }
 
         try {
             getRootNodeFrom(provider);
             return true;
-        } catch (RepositoryException e) {
+        } catch (Exception e) {
+            logger.error("Couldn't retrieve root node", e);
             if (provider != null) {
                 getProvider().getSessionFactory().removeProvider(provider.getKey());
             }

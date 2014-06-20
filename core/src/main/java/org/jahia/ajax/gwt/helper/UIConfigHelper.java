@@ -88,7 +88,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.Visibility;
@@ -131,8 +130,6 @@ public class UIConfigHelper {
     private ChannelHelper channelHelper;
 
     private ScriptEngineUtils scriptEngineUtils;
-
-    URLResolverFactory urlResolverFactory;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;

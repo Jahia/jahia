@@ -74,6 +74,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 
@@ -152,13 +153,32 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     public void onComponentSelection() {
         if (!configurationName.equals(MainModule.getInstance().getConfig().getName())) {
             linker.loading(Messages.get("label.loading", "Loading..."));
-            JahiaContentManagementService.App.getInstance().getEditConfiguration(linker.getSelectionContext().getMainNode().getPath(), configurationName, enforcedWorkspace, new BaseAsyncCallback<GWTEditConfiguration>() {
+            final Storage storage = Storage.getSessionStorageIfSupported();
+
+            String path = linker.getSelectionContext().getMainNode().getPath();
+            final boolean useSamePath = linker.getConfig().getSamePathConfigsList().contains(configurationName);
+            if ((storage != null && !useSamePath) || (storage != null && forceRootChange)) {
+                path = storage.getItem(configurationName + "_nodePath");
+            }
+
+            final String fPath = path;
+            JahiaContentManagementService.App.getInstance().getEditConfiguration(path, configurationName, enforcedWorkspace, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     if (gwtEditConfiguration.getDefaultLocation() == null) {
                         linker.loaded();
                         Window.alert(Messages.getWithArgs("label.gwt.error", "Error: {}", new Object[]{ Messages.get("label.noAvailableSites")} ));
                     } else {
-                        ((EditLinker)linker).switchConfig(gwtEditConfiguration, null, updateSidePanel, updateToolbar, enforcedWorkspace, forceRootChange);
+                        String newPath;
+                        if (useSamePath) {
+                            newPath = fPath;
+                        } else {
+                            if (storage != null && storage.getItem(gwtEditConfiguration.getName() + "_path") != null) {
+                                newPath = storage.getItem(gwtEditConfiguration.getName() + "_path");
+                            } else {
+                                newPath = MainModule.getInstance().getBaseUrl() + gwtEditConfiguration.getDefaultLocation();
+                            }
+                        }
+                        ((EditLinker) linker).switchConfig(gwtEditConfiguration, newPath, updateSidePanel, updateToolbar, enforcedWorkspace);
                     }
                 }
 

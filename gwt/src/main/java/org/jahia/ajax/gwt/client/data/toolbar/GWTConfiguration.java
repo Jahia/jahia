@@ -105,6 +105,7 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     private Set<String> nonVisibleTypes;
     private Set<String> skipMainModuleTypesDomParsing;
     private Set<String> excludedNodeTypes;
+    private List<String> samePathConfigsList;
 
     public GWTConfiguration() {
     	super();
@@ -257,4 +258,14 @@ public class GWTConfiguration implements IsSerializable, Serializable {
     public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
         this.excludedNodeTypes = excludedNodeTypes;
     }
+
+
+    public List<String> getSamePathConfigsList() {
+        return samePathConfigsList;
+    }
+
+    public void setSamePathConfigsList(List<String> samePathConfigsList) {
+        this.samePathConfigsList = samePathConfigsList;
+    }
+
 }

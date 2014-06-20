@@ -689,7 +689,7 @@ public class MainModule extends Module {
     public static void popState(String location, String config) {
         MainModule m = getInstance();
         if (!config.equals(m.getConfig().getName())) {
-            m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true, null, false);
+            m.getEditLinker().switchConfig(m.configs.get(config), location + "##", true, true, null);
         } else {
             m.goToUrl(location + "##", false, false, false);
         }
@@ -799,27 +799,20 @@ public class MainModule extends Module {
      * @param config
      * @param newPath
      */
-    public void setConfig(GWTEditConfiguration config, String newPath, boolean forceRootChange) {
+    public void setConfig(GWTEditConfiguration config, String newPath) {
         JahiaGWTParameters.changeServletMapping(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
 
-        boolean changedRoot = forceRootChange || !config.getSitesLocation().equals(this.config.getSitesLocation());
         activeChannel = null;
         activeChannelVariant = null;
         if (newPath != null) {
             newLocation = newPath;
-        } else if (changedRoot) {
-            if (storage != null && storage.getItem(config.getName() + "_path") != null) {
-                newLocation = storage.getItem(config.getName() + "_path");
-            } else {
-                newLocation = getBaseUrl() + config.getDefaultLocation();
-            }
         } else {
             newLocation = frame.getCurrentFrameUrl().replaceFirst(this.config.getDefaultUrlMapping(), config.getDefaultUrlMapping());
         }
 
         this.config = config;
+
         configs.put(this.config.getName(), this.config);
-        editLinker.setRefreshSidePanel(false);
     }
 
     public void handleNewModuleSelection(Module selectedModule) {
@@ -858,7 +851,9 @@ public class MainModule extends Module {
         if (head != null) {
             ((ToolbarHeader) head).handleNewLinkerSelection();
         }
-
+        if (storage != null) {
+            storage.setItem(MainModule.getInstance().getConfig().getName() + "_nodePath",path);
+        }
     }
 
     public void setInfoLayer(String key, boolean value) {

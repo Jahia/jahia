@@ -88,6 +88,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.uicomponents.bean.Visibility;
@@ -118,7 +119,7 @@ import java.util.*;
 
 /**
  * Utility class for populating GWT UI configuration data.
- * 
+ *
  * User: ktlili
  * Date: Apr 13, 2010
  * Time: 5:25:09 PM
@@ -130,6 +131,8 @@ public class UIConfigHelper {
     private ChannelHelper channelHelper;
 
     private ScriptEngineUtils scriptEngineUtils;
+
+    URLResolverFactory urlResolverFactory;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -317,17 +320,17 @@ public class UIConfigHelper {
                 logger.debug("Config. " + name + " found.");
                 GWTManagerConfiguration gwtConfig = new GWTManagerConfiguration();
                 gwtConfig.setName(name);
-                
+
                 // get a title from bundle if available
                 String title = null;
                 if (config.getTitleKey() != null) {
-                   title =  getResources(config.getTitleKey(), uiLocale, site, jahiaUser);
+                    title =  getResources(config.getTitleKey(), uiLocale, site, jahiaUser);
                 } else {
-                   //read from JahiaInternalResource  
-                   title = getResources("label." + name, uiLocale, site, jahiaUser);
+                    //read from JahiaInternalResource
+                    title = getResources("label." + name, uiLocale, site, jahiaUser);
                 }
-                if (title != null) {                
-                   gwtConfig.setTitle(title);
+                if (title != null) {
+                    gwtConfig.setTitle(title);
                 }
 
                 //  set all properties
@@ -352,7 +355,7 @@ public class UIConfigHelper {
                 gwtConfig.setDisplaySearchInFile(config.isDisplaySearchInFile());
                 gwtConfig.setDisplaySearchInContent(config.isDisplaySearchInContent());
                 gwtConfig.setSearchInFile(config.isSearchInFile());
-                gwtConfig.setSearchInContent(config.isSearchInContent());                
+                gwtConfig.setSearchInContent(config.isSearchInContent());
                 gwtConfig.setSearchInCurrentSiteOnly(config.isSearchInCurrentSiteOnly());
                 gwtConfig.setSearchBasePath(config.getSearchBasePath());
                 gwtConfig.setShowOnlyNodesWithTemplates(config.isShowOnlyNodesWithTemplates());
@@ -655,6 +658,10 @@ public class UIConfigHelper {
                 if(config.getSitesLocation().equals("/sites/systemsite")) {
                     contextNode = session.getNode("/sites/systemsite");
                     site = contextNode.getResolveSite();
+                } else if (contextPath == null ) {
+                    int nodeNameIndex = StringUtils.indexOf(defaultLocation,".",StringUtils.lastIndexOf(defaultLocation,"/"));
+                    contextNode = session.getNode(StringUtils.substring(defaultLocation,0,nodeNameIndex));
+                    site = contextNode.getResolveSite();
                 } else {
                     contextNode = session.getNode(contextPath);
                     site = contextNode.getResolveSite();
@@ -676,7 +683,13 @@ public class UIConfigHelper {
                 gwtConfig.setVisibleTypes(config.getVisibleTypes());
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
                 gwtConfig.setExcludedNodeTypes(config.getExcludedNodeTypes());
-
+                List<String> configsList = new ArrayList<String>();
+                for (EditConfiguration configuration : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).values()) {
+                    if (StringUtils.equals(configuration.getSitesLocation(),(config.getSitesLocation()))) {
+                        configsList.add(configuration.getName());
+                    }
+                }
+                gwtConfig.setSamePathConfigsList(configsList);
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
 
                 if (config.isLoadSitesList()) {
@@ -776,19 +789,19 @@ public class UIConfigHelper {
     private Map<String, GWTEngineConfiguration> createGWTEngineConfigurations(JCRNodeWrapper contextNode, JCRSiteNode site, JahiaUser jahiaUser, Locale locale, Locale uiLocale, HttpServletRequest request, Map<String, EngineConfiguration> engineConfigurations, List<EngineTab> defaultEngineTabs) {
         Map<String, GWTEngineConfiguration> gwtEngineConfigurations = new HashMap<String, GWTEngineConfiguration>();
         if (engineConfigurations != null) {
-        for (Map.Entry<String, EngineConfiguration> type : engineConfigurations.entrySet()) {
-            GWTEngineConfiguration gwtEngineConfiguration = new GWTEngineConfiguration();
-            EngineConfiguration engineConfiguration = type.getValue();
-            List<EngineTab> engineTabs = engineConfiguration.getEngineTabs();
-            if (engineTabs == null) {
-                engineTabs = defaultEngineTabs;
+            for (Map.Entry<String, EngineConfiguration> type : engineConfigurations.entrySet()) {
+                GWTEngineConfiguration gwtEngineConfiguration = new GWTEngineConfiguration();
+                EngineConfiguration engineConfiguration = type.getValue();
+                List<EngineTab> engineTabs = engineConfiguration.getEngineTabs();
+                if (engineTabs == null) {
+                    engineTabs = defaultEngineTabs;
+                }
+                gwtEngineConfiguration.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, engineTabs));
+                gwtEngineConfiguration.setCreationButtons(engineConfiguration.getCreationButtons());
+                gwtEngineConfiguration.setEditionButtons(engineConfiguration.getEditionButtons());
+                gwtEngineConfiguration.setCommonButtons(engineConfiguration.getCommonButtons());
+                gwtEngineConfigurations.put(type.getKey(), gwtEngineConfiguration);
             }
-            gwtEngineConfiguration.setEngineTabs(createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, engineTabs));
-            gwtEngineConfiguration.setCreationButtons(engineConfiguration.getCreationButtons());
-            gwtEngineConfiguration.setEditionButtons(engineConfiguration.getEditionButtons());
-            gwtEngineConfiguration.setCommonButtons(engineConfiguration.getCommonButtons());
-            gwtEngineConfigurations.put(type.getKey(), gwtEngineConfiguration);
-        }
         }
         return gwtEngineConfigurations;
     }
@@ -852,7 +865,7 @@ public class UIConfigHelper {
             baseName = StringUtils.substringAfter(key, "@");
             key = StringUtils.substringBefore(key, "@");
         }
-        
+
         value = Messages.get(baseName, site != null ? site.getTemplatePackage() : null, key, locale, null);
         if (value == null || value.length() == 0) {
             value = Messages.getInternal(key, locale);

@@ -335,16 +335,7 @@ public class GWTJahiaNodeTreeFactory {
             super(store, cm);
         }
 
-        @Override
-        protected void onRender(Element target, int index) {
-            super.onRender(target, index);
-        }
 
-        @Override
-        protected void onAfterRenderView() {
-            // init (loading) is done when the grid is displayed, not while we create the grid
-            //super.onAfterRenderView();
-        }
 
         protected void onDataChanged(TreeStoreEvent<GWTJahiaNode> mTreeStoreEvent) {
             super.onDataChanged(mTreeStoreEvent);

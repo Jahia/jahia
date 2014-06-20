@@ -124,8 +124,6 @@ public class PagesTabItem extends SidePanelTabItem {
 
     public TabItem create(GWTSidePanelTab config) {
         super.create(config);
-        VBoxLayout l = new VBoxLayout();
-        l.setVBoxLayoutAlign(VBoxLayout.VBoxLayoutAlign.STRETCH);
         tab.setLayout(new FitLayout());
         tab.setId("JahiaGxtPagesTab");
         return tab;

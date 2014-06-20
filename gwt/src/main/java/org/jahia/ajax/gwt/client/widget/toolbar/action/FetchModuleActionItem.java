@@ -107,7 +107,6 @@ public class FetchModuleActionItem extends BaseActionItem {
                         if (((EditLinker) linker).getSidePanel() != null) {
                             Map<String, Object> data = new HashMap<String, Object>();
                             data.put(Linker.REFRESH_ALL, true);
-                            ((EditLinker) linker).setRefreshSidePanel(true);
                             ((EditLinker) linker).getSidePanel().refresh(data);
                         }
                         MainModule.staticGoTo(result.getPath(), null);

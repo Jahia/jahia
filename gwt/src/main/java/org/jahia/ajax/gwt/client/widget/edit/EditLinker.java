@@ -76,6 +76,7 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.ui.Widget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
@@ -119,7 +120,6 @@ public class EditLinker implements Linker {
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant = null;
     private boolean isInSettingsPage = true;
-    private boolean refreshSidePanel = true;
 
     /**
      * Initializes an instance of this class.
@@ -197,7 +197,7 @@ public class EditLinker implements Linker {
      * @param updateSidePanel
      * @param updateToolbar
      */
-    public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar, String enforcedWorkspace, boolean forceRootChange) {
+    public void switchConfig(GWTEditConfiguration config, String newPath, boolean updateSidePanel, boolean updateToolbar, String enforcedWorkspace) {
         this.config = config;
 
         JahiaGWTParameters.setSiteNode(config.getSiteNode());
@@ -213,10 +213,11 @@ public class EditLinker implements Linker {
             this.activeChannelVariant = null;
         }
 
-        mainModule.setConfig(config, newPath, forceRootChange);
+        mainModule.setConfig(config, newPath);
         if (updateSidePanel) {
             sidePanel.setConfig(config);
         }
+
         if (updateToolbar) {
             toolbar.setConfig(config);
         }
@@ -582,11 +583,5 @@ public class EditLinker implements Linker {
      * if true, the side panel will not be refreshed
      * used when switching mode to avoid reloading it twice
      */
-    public boolean needRefreshSidePanel() {
-        return refreshSidePanel;
-    }
 
-    public void setRefreshSidePanel(boolean refreshSidePanel) {
-        this.refreshSidePanel = refreshSidePanel;
-    }
 }

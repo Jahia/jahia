@@ -161,9 +161,6 @@ public class SidePanel extends ContentPanel {
             tabs.add(tabItem);
 
             tabPanel.add(tabItem.create(tabConfig));
-            Map<String,Object> datas = new HashMap<String, Object>();
-            datas.put(Linker.REFRESH_ALL,"");
-            tabItem.markForAutoRefresh(datas);
         }
         tabPanel.setSelection(tabPanel.getItem(selectedTab));
         add(tabPanel);

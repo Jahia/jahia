@@ -155,13 +155,14 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
             linker.loading(Messages.get("label.loading", "Loading..."));
             final Storage storage = Storage.getSessionStorageIfSupported();
 
-            String path = linker.getSelectionContext().getMainNode().getPath();
             final boolean useSamePath = linker.getConfig().getSamePathConfigsList().contains(configurationName);
-            if ((storage != null && !useSamePath) || (storage != null && forceRootChange)) {
+            String path = null;
+            if (useSamePath && !forceRootChange) {
+                path = linker.getSelectionContext().getMainNode().getPath();
+            } else if (storage != null) {
                 path = storage.getItem(configurationName + "_nodePath");
             }
 
-            final String fPath = path;
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, configurationName, enforcedWorkspace, new BaseAsyncCallback<GWTEditConfiguration>() {
                 public void onSuccess(GWTEditConfiguration gwtEditConfiguration) {
                     if (gwtEditConfiguration.getDefaultLocation() == null) {
@@ -170,7 +171,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                     } else {
                         String newPath;
                         if (useSamePath) {
-                            newPath = fPath;
+                            newPath = null;
                         } else {
                             if (storage != null && storage.getItem(gwtEditConfiguration.getName() + "_path") != null) {
                                 newPath = storage.getItem(gwtEditConfiguration.getName() + "_path");

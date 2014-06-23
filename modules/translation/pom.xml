@@ -84,9 +84,9 @@
   <name>Jahia Translation Providers</name>
   <description>Registers providers for Translation Service</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/translation</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/translation</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/translation</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/translation</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/translation</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/translation</url>
   </scm>
   <repositories>
     <repository>

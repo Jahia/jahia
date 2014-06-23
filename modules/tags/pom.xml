@@ -84,9 +84,9 @@
   <name>Jahia Tags</name>
   <description>This is the custom module (Jahia Tags) for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tags</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tags</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/tags</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tags</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tags</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tags</url>
   </scm>
   <repositories>
     <repository>

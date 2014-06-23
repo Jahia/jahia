@@ -84,9 +84,9 @@
   <name>Jahia Tasks</name>
   <description>Jahia template module for leveraging simple user and shared task management.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tasks</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tasks</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/tasks</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tasks</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tasks</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/tasks</url>
   </scm>
   <repositories>
     <repository>

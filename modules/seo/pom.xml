@@ -84,9 +84,9 @@
   <name>Jahia SEO</name>
   <description>Jahia module that provides SEO-friendly URL mapping for content.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/seo</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/seo</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/seo</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/seo</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/seo</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/seo</url>
   </scm>
   <repositories>
     <repository>

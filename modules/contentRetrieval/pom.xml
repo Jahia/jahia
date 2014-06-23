@@ -85,9 +85,9 @@
   <name>Jahia Content retrieval</name>
   <description>These is a custom module (contentRetrieval) for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/contentRetrieval</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/contentRetrieval</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/contentRetrieval</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/contentRetrieval</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/contentRetrieval</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/contentRetrieval</url>
   </scm>
   <repositories>
     <repository>

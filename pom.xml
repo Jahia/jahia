@@ -89,9 +89,9 @@
     <description>Jahia Base Package</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC</url>
     </scm>
 
     <repositories>

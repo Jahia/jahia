@@ -84,9 +84,9 @@
   <name>Jahia Server Settings</name>
   <description>Server settings</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/serverSettings</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/serverSettings</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/serverSettings</url>
   </scm>
   <repositories>
     <repository>

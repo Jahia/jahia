@@ -84,9 +84,9 @@
   <name>Jahia Search</name>
   <description>Jahia template module for using simple and advanced content search features.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/search</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/search</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/search</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/search</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/search</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/search</url>
   </scm>
   <repositories>
     <repository>

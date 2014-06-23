@@ -387,7 +387,7 @@
         <!--<dependency>
             <groupId>org.jahia.modules</groupId>
             <artifactId>atmosphere</artifactId>
-            <version>7.0.0.1-SNAPSHOT</version>
+            <version>7.0.0.2-SNAPSHOT</version>
             <type>war</type>
             <scope>runtime</scope>
         </dependency>-->

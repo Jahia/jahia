@@ -77,16 +77,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.0.0.1-SNAPSHOT</version>
+    <version>7.0.0.2-SNAPSHOT</version>
   </parent>
   <artifactId>assets</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Static Assets</name>
   <description>Jahia template module that includes common CSS and JavaScript resources and also supports Content Delivery Network.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/assets</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/assets</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_1_RC/modules/assets</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/assets</url>
   </scm>
   <repositories>
     <repository>

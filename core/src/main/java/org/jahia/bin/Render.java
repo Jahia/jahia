@@ -1144,7 +1144,4 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 	public void setDefaultContentType(Map<String, String> defaultContentType) {
 		this.defaultContentType = defaultContentType;
 	}
-<<<<<<< .working
 }
-// test svn merge=======
-}>>>>>>> .merge-right.r50073

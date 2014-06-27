@@ -1635,7 +1635,10 @@
             </build>
         </profile>
     </profiles>
+<<<<<<< .working
 </project>
 <<<<<<< .working
 =======
 <!-- Test svn merge 4 -->>>>>>>> .merge-right.r50068
+=======
+</project>>>>>>>> .merge-right.r50075

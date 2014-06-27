@@ -1145,3 +1145,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 		this.defaultContentType = defaultContentType;
 	}
 }
+<<<<<<< .working
+=======
+// test svn merge 2>>>>>>> .merge-right.r50072

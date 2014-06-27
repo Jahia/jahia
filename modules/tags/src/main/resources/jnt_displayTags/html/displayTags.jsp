@@ -22,42 +22,35 @@
     <c:set var="nodeLocked" value="${not jcr:hasPermission(boundComponent, 'jcr:modifyProperties_default') or jcr:isLockedAndCannotBeEdited(boundComponent)}"/>
     <div id="tagThisPage${boundComponent.identifier}" class="tagthispage">
 
-        <jcr:nodeProperty node="${boundComponent}" name="j:tags" var="assignedTags"/>
+        <jcr:nodeProperty node="${boundComponent}" name="j:tagList" var="assignedTags"/>
         <c:set var="separator" value="${functions:default(currentResource.moduleParams.separator, ', ')}"/>
         <c:if test="${not nodeLocked}">
-        <c:url var="postUrl" value="${url.base}${boundComponent.path}"/>
-        <script type="text/javascript">
-            function deleteTag(htmlDeleteLink) {
-                var tagItem = $(htmlDeleteLink).parent();
-                var tag = tagItem.find(".taggeditem").text();
-                $.post("${postUrl}.removeTag.do", {"tag":tag}, function(result) {
-                    tagItem.hide();
-                    if(result.size == "0"){
-                        var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${boundComponent.identifier}');
-                        $("#jahia-tags-${boundComponent.identifier}").append(spanNotYetTag)
-                    }
-                }, "json");
-                return false;
-            }
-        </script>
+            <script type="text/javascript">
+                function deleteTag_${fn:replace(boundComponent.identifier, "-", "_")} (htmlDeleteLink) {
+                    var tagItem = $(htmlDeleteLink).parent();
+                    var tag = htmlDeleteLink.dataset.tag;
+                    $.post("<c:url value="${url.base}${boundComponent.path}"/>.removeTag.do", {"tag":tag, "unescape":true}, function(result) {
+                        tagItem.hide();
+                        if(result.size == "0"){
+                            var spanNotYetTag = $('<span><fmt:message key="label.tags.notag"/></span>').attr('class', 'notaggeditem${boundComponent.identifier}');
+                            $("#jahia-tags-${boundComponent.identifier}").append(spanNotYetTag)
+                        }
+                    }, "json");
+                    return false;
+                }
+            </script>
         </c:if>
-        <jsp:useBean id="filteredTags" class="java.util.LinkedHashMap"/>
-        <c:forEach items="${assignedTags}" var="tag" varStatus="status">
-            <c:if test="${not empty tag.node}">
-                <c:set target="${filteredTags}" property="${tag.node.identifier}" value="${tag.node.name}"/>
-            </c:if>
-        </c:forEach>
         <div class="tagged">
             <span><fmt:message key="label.tags"/>:</span>
             <span id="jahia-tags-${boundComponent.identifier}">
                 <c:choose>
-                    <c:when test="${not empty filteredTags}">
-                        <c:forEach items="${filteredTags}" var="tag" varStatus="status">
-                            <div id="tag-${tag.key}" style="display:inline;">
-                                <span class="taggeditem">${fn:escapeXml(tag.value)}</span>
+                    <c:when test="${not empty assignedTags}">
+                        <c:forEach items="${assignedTags}" var="tag" varStatus="status">
+                            <div style="display:inline;">
+                                <span class="taggeditem">${fn:escapeXml(tag.string)}</span>
                                 <c:if test="${not nodeLocked}">
-                                <a class="delete" onclick="deleteTag(this)"
-                                   href="#"></a>${!status.last ? separator : ''}
+                                    <a class="delete" onclick="deleteTag_${fn:replace(boundComponent.identifier, "-", "_")} (this); return false;"
+                                       data-tag="${functions:escapePath(tag.string)}" href="#"></a>${!status.last ? separator : ''}
                                 </c:if>
                             </div>
                         </c:forEach>

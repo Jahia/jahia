@@ -72,6 +72,7 @@
 package org.jahia.modules.tags.actions;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -79,6 +80,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
+import org.jahia.services.tags.TaggingService;
 import org.json.JSONObject;
 
 import javax.servlet.http.HttpServletRequest;
@@ -87,38 +89,34 @@ import java.util.*;
 
 
 public class RemoveTag extends Action {
+    private TaggingService taggingService;
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         Map<String,String> res = new HashMap<String,String>();
+        boolean unescape = parameters.get("unescape") != null && parameters.get("unescape").size() > 0 ? Boolean.valueOf(parameters.get("unescape").get(0)) : false;
 
         if(CollectionUtils.isNotEmpty(parameters.get("tag"))){
-            String[] tags = node.getPropertyAsString("j:tags").split(" ");
-            ArrayList<String> tagsList = new ArrayList<String>();
-            tagsList.addAll(Arrays.asList(tags));
-
-            for(String tag : parameters.get("tag")){
-                JCRNodeWrapper tagNode = session.getNode("/sites/" + urlResolver.getSiteKey() + "/tags/" + tag.trim());
-                if (tagsList.contains(tagNode.getIdentifier())) {
-                    if (tagsList.size() > 0) {
-                        for (int i = 0; i < tagsList.size(); i++) {
-                            if (tagsList.get(i).equals(tagNode.getIdentifier())) {
-                                tagsList.remove(i);
-                            }
-                        }
-                    }
+            if(unescape){
+                List<String> tags = new LinkedList<String>();
+                for (String tag : parameters.get("tag")){
+                    tags.add(Text.unescape(tag));
                 }
+                taggingService.untag(node.getPath(), tags, session);
+            }else {
+                taggingService.untag(node.getPath(), parameters.get("tag"), session);
             }
-            
-            String[] str = tagsList.toArray(new String[tagsList.size()]);
-            node.setProperty("j:tags", str);
             jcrSessionWrapper.save();
 
-            res.put("size", String.valueOf(tagsList.size()));
+            res.put("size", node.hasProperty("j:tagList") ? String.valueOf(node.getProperty("j:tagList").getValues().length) : "0");
         }
 
         return new ActionResult(HttpServletResponse.SC_OK, node.getPath(), new JSONObject(res));
+    }
+
+    public void setTaggingService(TaggingService taggingService) {
+        this.taggingService = taggingService;
     }
 }

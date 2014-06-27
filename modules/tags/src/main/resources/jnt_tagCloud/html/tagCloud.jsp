@@ -20,12 +20,8 @@
 <template:addResources type="javascript" resources="jquery.min.js,jqcloud.js"/>
 <c:set var="edit" value="${renderContext.editMode}" />
 
-<c:set var="usageThreshold"
-       value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
-<c:set var="numberOfTagsLimit"
-       value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>
-<jcr:node var="tagsRoot" path="${renderContext.site.path}/tags"/>
-<template:addCacheDependency flushOnPathMatchingRegexp="${renderContext.site.path}/tags/.*"/>
+<c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
+<c:set var="numberOfTagsLimit" value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>
 <div class="tags">
     <h3><c:if
             test="${not empty currentNode.properties['jcr:title'] && not empty currentNode.properties['jcr:title'].string}"
@@ -36,7 +32,7 @@
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
         <query:descendantNode path="${currentNode.properties['relative'].boolean ? renderContext.mainResource.node.path : renderContext.site.path}"/>
-        <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tags&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tags"/>
+        <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tagList&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tagList"/>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>
 
@@ -54,21 +50,20 @@
                     var word_list = [];
 
                     <c:forEach items="${tagCloud}" var="tag">
-                    <jcr:node var="tagName" uuid="${tag.key}"/>
-                    <c:if test="${empty currentNode.properties.resultPage}">
-                    <c:set var="edit" value="${true}"/>
-                    </c:if>
-                    <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html">
-                    <c:param name="src_terms[0].term" value="${tagName.name}"/>
-                    <c:param name="src_terms[0].fields.tags" value="true"/>
-                    <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
-                    <c:param name="autoSuggest" value="false"/>
-                    </c:url>
-                    word_list.push({
-                        text: "${tagName.name}",
-                        weight:${functions:round(10 * tag.value / totalUsages)},
-                        url: decodeURI("${facetUrl}")
-                    });
+                        <c:if test="${empty currentNode.properties.resultPage}">
+                            <c:set var="edit" value="${true}"/>
+                        </c:if>
+                        <c:url var="facetUrl" value="${url.base}${currentNode.properties.resultPage.node.path}.html">
+                            <c:param name="src_terms[0].term" value="${tag.key}"/>
+                            <c:param name="src_terms[0].fields.tagList" value="true"/>
+                            <c:param name="src_sites.values" value="${renderContext.site.siteKey}"/>
+                            <c:param name="autoSuggest" value="false"/>
+                        </c:url>
+                        word_list.push({
+                            text: "${tag.key}",
+                            weight:${functions:round(10 * tag.value / totalUsages)},
+                            url: decodeURI("${facetUrl}")
+                        });
                     </c:forEach>
 
                     $(document).ready(function () {

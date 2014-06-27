@@ -24,81 +24,79 @@
     <template:addResources type="javascript" resources="jquery.bgiframe.min.js"/>
     <template:addResources type="javascript" resources="thickbox-compressed.js"/>
     <script type="text/javascript">
-        function addNewTag(tagForm, uuid, separator) {
-            var regExp = /\s/g;
-            var newTag = tagForm.elements['j:newTag'];
-            if (newTag.value.length > 0) {
-                var tagContainer = jQuery('#jahia-tags-' + uuid);
-                if(jQuery(".notaggeditem"+uuid).length>0  && $(".notaggeditem" + uuid).is(":visible")){
-                    jQuery(".notaggeditem"+uuid).hide();
-                    separator = '';
-                }
-                if (tagContainer.find("span:contains('" + newTag.value + "')").length == 0) {
-                    jQuery.post(tagForm.action, jQuery(tagForm).serialize(), function (data) {
-                        var tagToAdds = newTag.value.split(',');
-                        for (i =0; i< tagToAdds.length; i++) {
-                        	var theTag = tagToAdds[i] != null ? jQuery.trim(tagToAdds[i]) : null;
-                            if(theTag != null && theTag.length > 0){
-                                var tagDiv = $('<div></div>').attr('id', 'tag-' + theTag.replace(regExp, "-")).attr('style', 'display:inline');
-                                var tagDisplay = jQuery('<span class="taggeditem"></span>').text(theTag);
-                                var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag(this)').attr('class', 'delete').attr('href', '#');
-                                tagContainer.append(tagDiv);
-                                if (separator.length > 0) {
-                                    tagDiv.append(separator);
-                                }
-                                tagDiv.append(tagDisplay);
-                                tagDiv.append(tagLinkDelete);
-                            }
-                        }
-                        newTag.value = '';
-                    },"json");
-                }
-            }
-        }
-
         $(document).ready(function() {
-
-            function getText(node) {
-                return node["nodename"];
-            }
-
-            function format(result) {
-                return getText(result["node"]);
-            }
-
-            $(".newTagInput").autocomplete("<c:url value='${url.find}'/>", {
+            $(".newTagInput${currentNode.identifier}").autocomplete("<c:url value='${url.base}${boundComponent.path}.matchingTags.do'/>", {
+                multiple:true,
+                multipleSeparator:",",
                 dataType: "json",
                 cacheLength: 1,
                 parse: function parse(data) {
-                    return $.map(data, function(row) {
-                        return {
-                            data: row,
-                            value: getText(row["node"]),
-                            result: getText(row["node"])
+                    var parsed = [];
+                    if(data.tags && data.tags.length > 0){
+                        for (var i=0; i < data.tags.length; i++) {
+                            parsed[parsed.length] = {
+                                data: [data.tags[i].name],
+                                value: data.tags[i].name,
+                                result: data.tags[i].name
+                            }
                         }
-                    });
-                },
-                formatItem: function(item) {
-                    return format(item);
-                },
-                extraParams: {
-                    query : "select * from [jnt:tag] as tags where isdescendantnode(tags,'${functions:sqlencode(renderContext.site.path)}/tags') and localname(tags) like '%{$q}%'",
-                    escapeColon : "false",
-                    propertyMatchRegexp : "{$q}.*",
-                    removeDuplicatePropValues : "false"
+                    }
+                    return parsed;
                 }
             });
         });
 
+        function addTag_${fn:replace(boundComponent.identifier, "-", "_")} (inputSelector) {
+            var separator = ',';
+            var $this = $(inputSelector);
+            if ($this.val().length > 0) {
+                var tagContainer = jQuery('#jahia-tags-${boundComponent.identifier}');
+                if (tagContainer.length > 0 && tagContainer.find("span:contains('" + $this.val() + "')").length == 0) {
+                    var options = {
+                        url: "<c:url value="${url.base}${boundComponent.path}"/>.addTag.do",
+                        type: "POST",
+                        dataType: "json",
+                        data: {tag: $this.val().split(',')},
+                        traditional: true
+                    };
+                    $.ajax(options)
+                            .done(function (result) {
+                                if (result.addedTags && result.addedTags.length > 0) {
+                                    for (var i = 0; i < result.addedTags.length; i++) {
+                                        var $noTaggedItem = $(".notaggeditem${boundComponent.identifier}");
+                                        if ($noTaggedItem.length > 0 && $noTaggedItem.is(":visible")) {
+                                            $noTaggedItem.hide();
+                                            separator = '';
+                                        } else {
+                                            separator = ',';
+                                        }
+
+                                        var tagDiv = $('<div></div>').attr('style', 'display:inline');
+                                        var tagDisplay = $('<span class="taggeditem"></span>').text(result.addedTags[i].name);
+                                        var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag_${fn:replace(boundComponent.identifier, "-", "_")}(this); return false;').attr('class', 'delete').attr('href', '#');
+                                        tagLinkDelete.attr('data-tag', result.addedTags[i].escapedName);
+                                        tagContainer.append(tagDiv);
+                                        if (separator.length > 0) {
+                                            tagDiv.append(separator);
+                                        }
+                                        tagDiv.append(tagDisplay);
+                                        tagDiv.append(tagLinkDelete);
+                                        $this.val("");
+                                    }
+                                }
+                            });
+                }
+            }
+            return false;
+        }
+
     </script>
     <c:if test="${renderContext.user.name != 'guest'}">
-        <form action="<c:url value='${url.base}${boundComponent.path}'/>" method="post">
+        <form action="/" method="post">
             <label><fmt:message key="label.add.tags"/></label>
-            <input type="hidden" name="jcrMethodToCall" value="put"/>
-            <input type="hidden" name="jcr:mixinTypes" value="jmix:tagged"/>
-            <input type="text" name="j:newTag" class="newTagInput" value=""/>
+            <input type="text" name="tag" class="newTagInput${currentNode.identifier}" value=""/>
             <input type="submit" title="<fmt:message key='add'/>" value="<fmt:message key='add'/>" class="button"
-                   onclick="addNewTag(this.form, '${boundComponent.identifier}', '${separator}'); return false;"/>
+                    onclick="addTag_${fn:replace(boundComponent.identifier, "-", "_")} ('.newTagInput${currentNode.identifier}'); return false;"/>
         </form>
     </c:if>
 </c:if>

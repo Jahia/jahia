@@ -70,29 +70,24 @@
  *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.tags;
-
-import static org.jahia.api.Constants.JAHIANT_TAG;
-import static org.jahia.api.Constants.JAHIAMIX_TAGGED;
-import static org.jahia.api.Constants.TAGS;
-
 import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.qom.QueryObjectModel;
+import javax.jcr.query.qom.QueryObjectModelFactory;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Collections2;
+import com.google.common.collect.Lists;
+import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.response.FacetField;
+import org.jahia.services.content.*;
+import org.jahia.services.query.QOMBuilder;
+import org.jahia.services.query.QueryResultWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.utils.ArrayUtils;
-import org.jahia.utils.Patterns;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * JCR content tagging service.
@@ -102,56 +97,33 @@ import java.util.Arrays;
 public class TaggingService {
 
     private static Logger logger = LoggerFactory.getLogger(TaggingService.class);
+    private final static String JMIX_TAGGED = "jmix:tagged";
+    private final static String J_TAG_LIST = "j:tagList";
 
-    private static String getTagsPath(String siteKey) {
-        if (siteKey == null || siteKey.length() == 0) {
-            throw new IllegalArgumentException("The site key cannot be null or empty.");
+    private final static Function<JCRValueWrapper, String> JCR_VALUE_WRAPPER_STRING_FUNCTION = new Function<JCRValueWrapper, String>() {
+        @Override
+        public String apply(JCRValueWrapper input) {
+            try {
+                return input.getString();
+            } catch (RepositoryException e) {
+                return null;
+            }
         }
-        return "/sites/" + siteKey + "/tags";
-    }
+    };
 
     /**
-     * Creates a new tag node using specified name for the current site.
-     * 
-     * @param tag
-     *            the name of the tag to be created
-     * @param siteKey
-     *            the site key for the current site
-     * @return <code>true</code> if a new tag was created; <code>false</code> in
-     *         case the specified tag already exists.
+     * @deprecated the tags are no longer nodes, there are stored directly on the content
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean createTag(final String tag, final String siteKey) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper existingNode = getTag(tag, siteKey, session);
-                if (existingNode == null) {
-                    createTag(tag, siteKey, session);
-                    session.save();
-                }
-                return existingNode == null;
-            }
-        });
-    }
-
-    private JCRNodeWrapper createTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = null;
-        final String tagsPath = getTagsPath(siteKey);
-        JCRNodeWrapper tagTreeNode = session.getNode(tagsPath);
-        if (tagTreeNode != null) {
-            session.checkout(tagTreeNode);
-            // TODO escape the tag node name
-            node = tagTreeNode.addNode(tag, JAHIANT_TAG);
-        } else {
-            logger.error("No tags folder found for the path " + tagsPath + ". Skip creating new tag");
-        }
-        return node;
+        return false;
     }
 
     /**
      * Deletes the specified tag node using specified name for the current site.
-     * 
+     *
      * @param tag
      *            the name of the tag to be deleted
      * @param siteKey
@@ -162,7 +134,9 @@ public class TaggingService {
      *             in case of errors
      */
     public boolean deleteTag(final String tag, final String siteKey) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+        //TODO
+
+        /*return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 final String tagsPath = getTagsPath(siteKey);
                 JCRNodeWrapper tagNode = null;
@@ -180,38 +154,28 @@ public class TaggingService {
                 }
                 return tagNode != null;
             }
-        });
+        });*/
+        return true;
     }
 
     /**
-     * Checks existence of the specified tag.
-     * 
-     * @param tag
-     *            the tag to look up for.
-     * @param siteKey
-     *            the current site key
-     * @return <code>true</code> if the specified tag already exists
+     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean exists(final String tag, final String siteKey) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
-                return tagNode != null;
-            }
-        });
+        return false;
     }
 
+    /**
+     * @deprecated the tags are no longer nodes, there are stored directly on the content
+     * @throws RepositoryException
+     *             in case of errors
+     */
+    @Deprecated
     public JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = null;
-        try {
-            node = session.getNode(getTagsPath(siteKey) + "/" + JCRContentUtils.escapeLocalNodeName(tag));
-        } catch (PathNotFoundException ex) {
-            // no tag can be found
-        }
-
-        return node;
+        return null;
     }
 
     /**
@@ -228,134 +192,229 @@ public class TaggingService {
      *             in case of errors
      */
     public long getTagCount(final String tag, final String siteKey) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Long>() {
-            public Long doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper tagNode = getTag(tag, siteKey, session);
-                return tagNode != null ? tagNode.getWeakReferences().getSize() : -1;
-            }
-        });
+        //TODO
+        return 0;
     }
 
     /**
-     * Tag the current node with the specified tag. The tag value is assigned to
-     * the node, if it is not tagged already with the same tag.
-     * 
-     * @param node
-     *            the node to be tagged
-     * @param tag
-     *            the tag to be used
-     * @param siteKey
-     *            the key of the current site
-     * @param createTagIfNotExists
-     *            do we need to create a new tag if the specified does not exist
-     *            yet?
-     * @return <code>true</code> if the tag was applied to the node
+     * @deprecated Use {@link #tag(org.jahia.services.content.JCRNodeWrapper, String)} instead
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean tag(final JCRNodeWrapper node, final String tag, final String siteKey, final boolean createTagIfNotExists)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return tag(node.getPath(), tag, siteKey, createTagIfNotExists, session);
-            }
-        });
+        tag(node, tag);
+        return true;
     }
 
     /**
-     * Tag the current node with the specified tag. The tag value is assigned to
-     * the node, if it is not tagged already with the same tag.
-     * 
-     * @param nodePath
-     *            the path of the node to be tagged
-     * @param tag
-     *            the tag to be used
-     * @param siteKey
-     *            the key of the current site
-     * @param createTagIfNotExists
-     *            do we need to create a new tag if the specified does not exist
-     *            yet?
-     * @param session
-     *            the current session
-     * @return <code>true</code> if the tag was applied to the node
+     * @deprecated Use {@link #tag(String, String, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
             JCRSessionWrapper session) throws RepositoryException {
-
-        boolean applied = false;
-        boolean doSessionCommit = false;
-        String[] tags = Patterns.COMMA.split(tag);
-        JCRNodeWrapper node = session.getNode(nodePath);
-        for (String t : tags) {
-            t = t.trim();
-            if (!"".equals(t)) {
-                JCRNodeWrapper tagNode = getTag(t, siteKey, session);
-                if (tagNode == null && createTagIfNotExists) {
-                    tagNode = createTag(t, siteKey, session);
-                    doSessionCommit = true;
-                }
-                if (tagNode != null) {
-                    Value[] values = null;
-                    boolean exists = false;
-                    if (node.hasProperty(TAGS)) {
-                        values = node.getProperty(TAGS).getValues();
-                        for (Value existingValue : values) {
-                            if (tagNode.getIdentifier().equals(existingValue.getString())) {
-                                exists = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!exists) {
-                        ArrayList<Value> newValues = new ArrayList<Value>();
-                        if (values != null) {
-                            newValues.addAll(Arrays.asList(values));
-                        }
-                        newValues.add(session.getValueFactory().createValue(tagNode.getIdentifier(), PropertyType.WEAKREFERENCE));
-
-                        session.checkout(node);
-                        if (!node.isNodeType(JAHIAMIX_TAGGED)) {
-                            node.addMixin(JAHIAMIX_TAGGED);
-                        }
-                        node.setProperty(TAGS, newValues.toArray(new Value[newValues.size()]));
-                        applied = true;
-                        doSessionCommit = true;
-                    }
-                    if (doSessionCommit) {
-                        session.save();
-                    }
-                }
-            }
-        }
-        return applied;
+        tag(nodePath, tag, session);
+        return true;
     }
 
     /**
-     * Tag the current node with the specified tag. The tag value is assigned to
-     * the node, if it is not tagged already with the same tag.
-     * 
-     * @param nodePath
-     *            the path of the node to be tagged
-     * @param tag
-     *            the tag to be used
-     * @param siteKey
-     *            the key of the current site
-     * @param createTagIfNotExists
-     *            do we need to create a new tag if the specified does not exist
-     *            yet?
-     * @return <code>true</code> if the tag was applied to the node
+     * @deprecated Use {@link #tag(String, String)} instead
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists)
             throws RepositoryException {
+        tag(nodePath, tag);
+        return true;
+    }
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                return tag(nodePath, tag, siteKey, createTagIfNotExists, session);
+    public List<String> tag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<List<String>>() {
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> addedTags = tag(node.getPath(), tags, session);
+                session.save();
+                return addedTags;
             }
         });
+    }
+
+    public List<String> tag(final String nodePath, final List<String> tags) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> addedTags = tag(nodePath, tags, session);
+                session.save();
+                return addedTags;
+            }
+        });
+    }
+
+    public List<String> tag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper node = session.getNode(nodePath);
+        List<String> currentTags = new ArrayList<String>();
+        List<JCRValueWrapper> currentTagValues = new ArrayList<JCRValueWrapper>();
+        List<String> addedTags = new ArrayList<String>();
+        boolean updated = false;
+        try {
+            currentTagValues = Arrays.asList(node.getProperty(J_TAG_LIST).getValues());
+        } catch (PathNotFoundException e) {
+            // property not found
+            if (tags.size() > 0) {
+                node.addMixin(JMIX_TAGGED);
+                updated = true;
+            }
+        }
+        currentTags = new ArrayList<String>(Collections2.transform(currentTagValues, JCR_VALUE_WRAPPER_STRING_FUNCTION));
+        for (String tag : tags) {
+            if (StringUtils.isNotEmpty(tag.trim()) && !currentTags.contains(tag)) {
+                currentTags.add(tag);
+                addedTags.add(tag);
+                updated = true;
+            }
+        }
+
+        if(updated){
+            node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
+        }
+
+        return addedTags;
+    }
+
+    public List<String> tag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<List<String>>() {
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> addedTags = tag(node.getPath(), tag, session);
+                session.save();
+                return addedTags;
+            }
+        });
+    }
+
+    public List<String> tag(final String nodePath, final String tag) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> addedTags = tag(nodePath, tag, session);
+                session.save();
+                return addedTags;
+            }
+        });
+    }
+
+    public List<String> tag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
+         return tag(nodePath, Lists.newArrayList(tag), session);
+    }
+
+    public void untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                untag(node.getPath(), tags, session);
+                session.save();
+                return null;
+            }
+        });
+    }
+
+    public void untag(final String nodePath, final List<String> tags) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                untag(nodePath, tags, session);
+                session.save();
+                return null;
+            }
+        });
+    }
+
+    public void untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper node = session.getNode(nodePath);
+        ArrayList<String> currentTags = new ArrayList<String>();
+        boolean updated = false;
+        if(node.isNodeType(JMIX_TAGGED)){
+            try{
+                JCRValueWrapper[] currentTagValues = node.getProperty(J_TAG_LIST).getValues();
+                currentTags = new ArrayList<String>(Collections2.transform(Arrays.asList(currentTagValues), JCR_VALUE_WRAPPER_STRING_FUNCTION));
+                for (String tag : tags){
+                    int index = currentTags.indexOf(tag);
+                    if(index != -1){
+                        currentTags.remove(index);
+                        updated = true;
+                    }
+                }
+            } catch (PathNotFoundException e){
+                // property not found
+            }
+        }
+
+        if(updated){
+            node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
+        }
+    }
+
+    public void untag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                untag(node.getPath(), tag, session);
+                session.save();
+                return null;
+            }
+        });
+    }
+
+    public void untag(final String nodePath, final String tag) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                untag(nodePath, tag, session);
+                session.save();
+                return null;
+            }
+        });
+    }
+
+    public void untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
+        untag(nodePath, Lists.newArrayList(tag), session);
+    }
+
+    public Map<String, Long> searchTags(String prefix, String startPath, Long mincount, Long limit, Long offset,
+                                        boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
+        LinkedHashMap<String, Long> tagsMap = new LinkedHashMap<String, Long>();
+
+        QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
+        if (queryManager == null) {
+            logger.error("Unable to obtain QueryManager instance");
+            return tagsMap;
+        }
+
+        if(StringUtils.isEmpty(startPath)){
+            startPath = "/sites";
+        }
+
+        StringBuilder facet = new StringBuilder();
+        facet.append("rep:facet(nodetype=jmix:tagged&key=j:tagList")
+                .append(mincount != null ? "&facet.mincount=" + mincount.toString() : "")
+                .append(limit != null ? "&facet.limit=" + limit.toString() : "")
+                .append(offset != null ? "&facet.offset=" + offset.toString() : "")
+                .append("&facet.sort=").append(String.valueOf(sortByCount))
+                .append(StringUtils.isNotEmpty(prefix) ? "&facet.prefix=" + prefix : "")
+                .append(")");
+
+        QueryObjectModelFactory factory = queryManager.getQOMFactory();
+        QOMBuilder qomBuilder = new QOMBuilder(factory, sessionWrapper.getValueFactory());
+
+        qomBuilder.setSource(factory.selector("jmix:tagged", "tagged"));
+        qomBuilder.andConstraint(factory.descendantNode("tagged", startPath));
+        qomBuilder.getColumns().add(factory.column("tagged", "j:tagList", facet.toString()));
+
+        QueryObjectModel qom = qomBuilder.createQOM();
+        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
+
+        if(res.getFacetField("j:tagList").getValues() != null){
+            for(FacetField.Count count : res.getFacetField("j:tagList").getValues()){
+                tagsMap.put(count.getName(), count.getCount());
+            }
+        }
+
+        return tagsMap;
     }
 }

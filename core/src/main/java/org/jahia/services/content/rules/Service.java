@@ -104,6 +104,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -495,12 +496,7 @@ public class Service extends JahiaService {
     }
 
     public void addNewTag(AddedNodeFact node, final String value, KnowledgeHelper drools) throws RepositoryException {
-        String siteKey = node.getPath().startsWith("/sites/") ? StringUtils.substringBefore(node.getPath().substring(7), "/") : null;
-        if (siteKey == null) {
-            logger.warn("Current site cannot be detected. Skip adding new tag for the node " + node.getPath());
-            return;
-        }
-        taggingService.tag(node.getNode(), value, siteKey, true);
+        taggingService.tag(node.getNode(), Arrays.asList(Patterns.COMMA.split(value)));
     }
 
     public void executeRuleLater(AddedNodeFact node, final String propertyName, final String ruleToExecute, KnowledgeHelper drools)

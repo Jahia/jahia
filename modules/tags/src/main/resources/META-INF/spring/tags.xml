@@ -5,6 +5,14 @@
 
     <bean class="org.jahia.modules.tags.actions.RemoveTag" >
         <property name="name" value="removeTag"/>
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
 
+    <bean class="org.jahia.modules.tags.actions.AddTag" >
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+    </bean>
+
+    <bean class="org.jahia.modules.tags.actions.MatchingTags" >
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+    </bean>
 </beans>

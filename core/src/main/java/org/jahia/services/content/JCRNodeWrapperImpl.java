@@ -142,6 +142,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     public static final String EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR = "___";
     public static final Pattern EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR_PATTERN = Pattern.compile(EXTERNAL_IDENTIFIER_PROP_NAME_SEPARATOR);
+    
+    private static final ExtendedNodeType[] EMPTY_EXTENDED_NODE_TYPE_ARRAY = new ExtendedNodeType[0];
 
     private Map<String, ExtendedPropertyDefinition> applicablePropertyDefinition = new HashMap<String, ExtendedPropertyDefinition>();
     private Map<String, Boolean> hasPropertyCache = new HashMap<String, Boolean>();
@@ -1070,15 +1072,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public ExtendedNodeType[] getMixinNodeTypes() throws RepositoryException {
-        List<NodeType> l = new ArrayList<NodeType>();
-        for (NodeType nodeType : objectNode.getMixinNodeTypes()) {
+        List<NodeType> l = null;
+        NodeType[] mixinNodeTypes = objectNode.getMixinNodeTypes();
+        for (NodeType nodeType : mixinNodeTypes) {
             try {
+                if (l == null) {
+                    l = new ArrayList<NodeType>(mixinNodeTypes.length);
+                }
                 l.add(NodeTypeRegistry.getInstance().getNodeType(nodeType.getName()));
             } catch (NoSuchNodeTypeException e) {
-                logger.warn("Skipping missing mixin " + nodeType.getName());
+                logger.warn("Skipping missing mixin {}", nodeType.getName());
             }
         }
-        return l.toArray(new ExtendedNodeType[l.size()]);
+        return l != null ? l.toArray(new ExtendedNodeType[l.size()]) : EMPTY_EXTENDED_NODE_TYPE_ARRAY;
     }
 
     /**

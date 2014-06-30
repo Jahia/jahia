@@ -79,9 +79,12 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
 import java.security.Principal;
 import java.util.*;
 
@@ -91,6 +94,8 @@ import java.util.*;
  * @author Quentin Lamerand
  */
 public class User {
+    
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     public static Boolean memberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
@@ -179,50 +184,43 @@ public class User {
      */
     public static Boolean isAssignable(JCRNodeWrapper task) throws RepositoryException {
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if(user == null || task == null) {
+        if (user == null || task == null) {
             return false;
         } else {
-           if(task.hasProperty("candidates")) {
-               final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-               Set<String> userMembership = null;
+            if (task.hasProperty("candidates")) {
+                final JahiaGroupManagerService managerService = ServicesRegistry.getInstance()
+                        .getJahiaGroupManagerService();
 
-               // candidates are using the u:userName or g:groupName format
-               final String formattedUserName = "u:" + user.getName();
+                // candidates are using the u:userName or g:groupName format
+                final String formattedUserName = "u:" + user.getName();
 
-               // look at all the candidates for assignment
-               final Value[] candidatesValues = task.getProperty("candidates").getValues();
-               for (Value value : candidatesValues) {
-                   final String candidate = value.getString();
+                // look at all the candidates for assignment
+                final Value[] candidatesValues = task.getProperty("candidates").getValues();
+                for (Value value : candidatesValues) {
+                    final String candidate = value.getString();
 
-                   // first check if the current candidate is the user name
-                   if(candidate.equals(formattedUserName)) {
-                       // if it is, we're done
-                       return true;
-                   } else {
-                       // otherwise, check if we're looking at a group, extract the group name and check whether the user is a member of that group
-                       if(candidate.startsWith("g:")) {
-                           final String groupName = candidate.substring(2);
-
-                           if(userMembership == null) {
-                               // only init userMembership if we need it
-                               userMembership = new HashSet<String>(managerService.getUserMembership(user));
-                           }
-
-                           for (String membership : userMembership) {
-                               // memberships are groupName:siteId so check if we have a membership that starts with our group name first
-                               if(membership.startsWith(groupName)) {
-                                   // we need to make sure that we have a full match instead of a partial only
-                                   final String group = membership.substring(0, membership.indexOf(':'));
-                                   if(groupName.equals(group)) {
-                                       // we have a match!
-                                       return true;
-                                   }
-                               }
-                           }
-                       }
-                   }
-               }
-           }
+                    // first check if the current candidate is the user name
+                    if (candidate.equals(formattedUserName)) {
+                        // if it is, we're done
+                        return true;
+                    } else {
+                        // otherwise, check if we're looking at a group, extract the group name and check whether the user is a member of
+                        // that group
+                        if (candidate.startsWith("g:")) {
+                            final String groupName = candidate.substring(2);
+                            JahiaGroup candidateGroup = managerService.lookupGroup(groupName);
+                            if (candidateGroup != null) {
+                                if (candidateGroup.isMember(user)) {
+                                    return true;
+                                }
+                            } else {
+                                logger.info("Unable to lookup group for key {}."
+                                        + " Skipping it when checking task assignee candidates.", groupName);
+                            }
+                        }
+                    }
+                }
+            }
         }
         return false;
     }

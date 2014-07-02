@@ -254,7 +254,7 @@ pageContext.setAttribute("limitReached", limitCount > 1000);
             <td>
                 <c:if test="${not empty trigger}">
                     <c:if test="${state != 'executing'}">
-                        <a title="Trigger immediate execution of the job" href="#trigger" onclick="if (confirm('You are about to trigger immediate execution of the job ${job.fullName} now. This have no influence on the job schedule. Continue?')) { go('action', 'trigger', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/css/images/andromeda/icons/gear_run.png'/>" width="16" height="16" alt="trigger" title="Trigger immediate execution of the job"/></a>
+                        <a title="Trigger immediate execution of the job" href="#trigger" onclick="if (confirm('You are about to trigger immediate execution of the job ${job.fullName} now. This have no influence on the job schedule. Continue?')) { go('action', 'trigger', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/resume.png'/>" width="16" height="16" alt="trigger" title="Trigger immediate execution of the job"/></a>
                     </c:if>
                     <c:if test="${triggerState == 0}">
                         <a title="Pause job" href="#pause" onclick="if (confirm('You are about to temporary pause the job ${job.fullName}. Continue?')) { go('action', 'pause', 'name', '${functions:escapeJavaScript(job.name)}', 'group', '${job.group}'); } return false;"><img src="<c:url value='/icons/media_pause.png'/>" width="16" height="16" alt="cancel" title="Pause job"/></a>

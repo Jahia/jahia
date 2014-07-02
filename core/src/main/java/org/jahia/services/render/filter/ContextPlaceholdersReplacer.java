@@ -72,13 +72,16 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-import org.jahia.utils.Url;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,10 +107,7 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
 
     private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
-    public static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
-    public static Pattern SERVER_PATTERN = Pattern.compile("\\{server:([a-zA-Z_0-9\\-\\.]+)\\}");
-
-    private UrlRewriteService urlRewriteService;
+    private static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
 
     public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
         if (value != null) {
@@ -119,24 +119,31 @@ public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
             } else{
                contextPath = "render";
             }
-            Matcher serverMatcher = SERVER_PATTERN.matcher(value);
-            if (serverMatcher.find()) {
-                String serverName = serverMatcher.group(1);
-                value = serverMatcher.replaceFirst("");
-                if (urlRewriteService != null && urlRewriteService.isSeoRulesEnabled() && context.isLiveMode()) {
-                    value = Url.getServer(context.getRequest(), serverName) + value;
+
+            String mode = contextPath + "/" + resource.getWorkspace();
+            String locale = resource.getLocale().toString();
+
+            if (value.startsWith(Jahia.getContextPath() + "/cms/")) {
+                Pattern p = Pattern.compile("/sites/([^/]+)");
+                Matcher m = p.matcher(value);
+                if (m.find()) {
+                    String siteName = m.group(1);
+                    try {
+                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName);
+                        if (site != null && !site.getLanguages().contains(locale)) {
+                            locale = site.getDefaultLanguage();
+                        }
+                    } catch (JahiaException e) {
+                        // cannot get site, don't change locale
+                    }
                 }
             }
-            value = LANG_PATTERN.matcher(
-                    CTX_PATTERN.matcher(value).replaceAll(contextPath+"/"+resource.getWorkspace())).replaceAll(resource.getLocale().toString());
+            value = CTX_PATTERN.matcher(value).replaceAll(mode);
+            value = LANG_PATTERN.matcher(value).replaceAll(locale);
             value = WORKSPACE_PATTERN.matcher(value).replaceAll(resource.getWorkspace());
         }
 
         return value;
-    }
-
-    public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
-        this.urlRewriteService = urlRewriteService;
     }
 
 }

@@ -76,14 +76,12 @@ import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.ContextPlaceholdersReplacer;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
-import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -108,13 +106,12 @@ import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
  * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
  * instead of pathes. It also replaces the servlet context and servlet name by a placeholder so that the stored link
  * is not dependant of the deployement.
- *
+ * <p/>
  * Two types of links are detected : CMS links (like /cms/render/default/en/sites/ACME/home.html ) and files
  * links ( /files/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg ).
- *
+ * <p/>
  * File path are transformed with references placeholders like ##ref:link1##. References targets are stored in the
  * jmix:referenceInField child nodes.
- *
  */
 public class URLInterceptor extends BaseInterceptor implements InitializingBean {
 
@@ -125,6 +122,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
     private static final String DOC_CONTEXT_PLACEHOLDER = "##doc-context##/";
     private static final String CMS_CONTEXT_PLACEHOLDER = "##cms-context##/";
+    private static final Pattern DOC_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(DOC_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
     private static final Pattern CMS_CONTEXT_PLACEHOLDER_PATTERN = Pattern.compile(CMS_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
 
     private Pattern cmsPattern;
@@ -134,13 +132,14 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     private HtmlTagAttributeTraverser urlTraverser;
 
     private String escape(String s) {
-        s = s.replace("{","\\{");
-        s = s.replace("}","\\}");
+        s = s.replace("{", "\\{");
+        s = s.replace("}", "\\}");
         return s;
     }
 
     /**
      * Initializes an instance of this class.
+     *
      * @param urlTraverser the URL utility class to visit HTML tag attributes
      */
     public URLInterceptor(HtmlTagAttributeTraverser urlTraverser) {
@@ -165,14 +164,14 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
     /**
      * Transform user URL with servlet context and links placeholders for storage.
-     *
+     * <p/>
      * Only URLs starting with /<context>/cms or /<context>/files are recognized.
-     *
+     * <p/>
      * CMS URLs can use mode and language placeholders : /<context>/cms/render/default/en/sites/ACME/home.html and
      * /<context>/cms/##mode##/##lang##/sites/ACME/home.html are both recognized.
-     *
+     * <p/>
      * If any link is invalid, a ConstraintViolationException is thrown.
-     *
+     * <p/>
      * Add jmix:referencesInField mixin type to the parent node and j:referenceInField with the list of references
      * contained in the value.
      *
@@ -189,12 +188,12 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     public Value beforeSetValue(final JCRNodeWrapper node, String name, final ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
         // if the node is a translated node, then take the parent to have the references
-        JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION)?node.getParent():node;
+        JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION) ? node.getParent() : node;
         if (definition.isInternationalized()) {
             Locale locale = node.getSession().getLocale();
-            if(locale==null) {
+            if (locale == null) {
                 // This might happen under publication
-                if(node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                if (node.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                     name += "_" + node.getProperty("jcr:language").getString();
                 }
             } else {
@@ -205,7 +204,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         final Map<String, Long> refs = new HashMap<String, Long>();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Intercept setValue for "+node.getPath()+"/"+name);
+            logger.debug("Intercept setValue for " + node.getPath() + "/" + name);
         }
 
         if (nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
@@ -247,7 +246,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 nodeWithReferences.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("New references : "+newRefs);
+                logger.debug("New references : " + newRefs);
             }
             NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
@@ -257,10 +256,10 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 }
             }
 
-            for (Map.Entry<String,Long> entry : newRefs.entrySet()) {
+            for (Map.Entry<String, Long> entry : newRefs.entrySet()) {
                 if (!refs.containsKey(entry.getKey())) {
                     JCRNodeWrapper ref = nodeWithReferences.addNode("j:referenceInField_" + name + "_" + entry.getValue(), "jnt:referenceInField");
-                    ref.setProperty("j:fieldName",name);
+                    ref.setProperty("j:fieldName", name);
                     ref.setProperty("j:reference", entry.getKey());
                 }
             }
@@ -286,10 +285,8 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      * @param definition
      * @param originalValues Original value  @return Value to set, or null   @throws ValueFormatException
      * @throws javax.jcr.version.VersionException
-     *
      * @throws javax.jcr.lock.LockException
      * @throws javax.jcr.nodetype.ConstraintViolationException
-     *
      */
     public Value[] beforeSetValues(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition, Value[] originalValues) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         Value[] res = new Value[originalValues.length];
@@ -319,7 +316,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Intercept getValue for "+property.getPath());
+            logger.debug("Intercept getValue for " + property.getPath());
         }
 
         final Map<Long, String> refs = new HashMap<Long, String>();
@@ -401,7 +398,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     private String replaceRefsByPlaceholders(final String originalValue, final Map<String, Long> newRefs, final Map<String, Long> oldRefs, String workspace, final Locale locale, final JCRNodeWrapper node, final ExtendedPropertyDefinition definition) throws RepositoryException {
 
         if (logger.isDebugEnabled()) {
-            logger.debug("Before replaceRefsByPlaceholders : "+originalValue);
+            logger.debug("Before replaceRefsByPlaceholders : " + originalValue);
         }
 
         String pathPart = originalValue;
@@ -414,7 +411,11 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             // Remove CMS context part
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
+<<<<<<< .working
                 throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
+=======
+                throw new ConstraintViolationException("Invalid link " + pathPart);
+>>>>>>> .merge-right.r50126
             }
             pathPart = m.group(5);
             isCmsContext = true;
@@ -445,7 +446,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                                 }
                                 currentPath = currentPath.substring(0, i);
                             } else {
-                                throw new PathNotFoundException("not found in "+path);
+                                throw new PathNotFoundException("not found in " + path);
                             }
                             try {
                                 reference = session.getNode(JCRContentUtils.escapeNodePath(currentPath));
@@ -458,13 +459,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     } else {
                         // retrieve path
                         while (true) {
-                            if (StringUtils.contains(currentPath,'/')) {
-                                currentPath = StringUtils.substringAfter(currentPath,"/");
+                            if (StringUtils.contains(currentPath, '/')) {
+                                currentPath = StringUtils.substringAfter(currentPath, "/");
                             } else {
-                                throw new PathNotFoundException("not found in "+path);
+                                throw new PathNotFoundException("not found in " + path);
                             }
                             try {
-                                reference = session.getNode(JCRContentUtils.escapeNodePath("/"+currentPath));
+                                reference = session.getNode(JCRContentUtils.escapeNodePath("/" + currentPath));
                                 break;
                             } catch (PathNotFoundException e) {
                                 // continue
@@ -494,7 +495,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                 }
                 value = WebUtils.urlDecode(value).replace(path, link);
                 if (logger.isDebugEnabled()) {
-                    logger.debug("After replaceRefsByPlaceholders : "+value);
+                    logger.debug("After replaceRefsByPlaceholders : " + value);
                 }
                 return value;
             }
@@ -502,11 +503,11 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
 
-    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName,final Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
+    private String replacePlaceholdersByRefs(final String originalValue, final Map<Long, String> refs, final String workspaceName, final Locale locale, final JCRNodeWrapper parent) throws RepositoryException {
 
         String pathPart = originalValue;
         if (logger.isDebugEnabled()) {
-            logger.debug("Before replacePlaceholdersByRefs : "+originalValue);
+            logger.debug("Before replacePlaceholdersByRefs : " + originalValue);
         }
         final boolean isCmsContext;
 
@@ -518,7 +519,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             // Remove CMS context part
             Matcher m = cmsPatternWithContextPlaceholder.matcher(pathPart);
             if (!m.matches()) {
-                logger.error("Cannot match URL : "+pathPart);
+                logger.error("Cannot match URL : " + pathPart);
                 return originalValue;
             }
             pathPart = m.group(5);
@@ -556,29 +557,13 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                     }
                     nodePath = Text.escapePath(node.getPath());
                     value = originalValue.replace(path, nodePath + ext);
-                    JCRSiteNode site = node.getResolveSite();
-                    if (!site.getLanguagesAsLocales().contains(locale)) {
-                        value = ContextPlaceholdersReplacer.LANG_PATTERN.matcher(value).replaceAll(site.getDefaultLanguage());
-                    }
-                    String serverPlaceHolder = "";
-                    if (site != null) {
-                        JCRSiteNode currentSite = parent.getResolveSite();
-                        String serverName = site.getServerName();
-                        if (!Url.isLocalhost(serverName) && serverName != null && currentSite != null && !serverName.equals(currentSite.getServerName())) {
-                            serverPlaceHolder = "{server:" + serverName + "}";
-                        }
-                    }
                     if (isCmsContext) {
                         value = CMS_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(cmsContext);
-                        value = value.replace("/" + session.getWorkspace().getName(), "/" + serverPlaceHolder + workspaceName);
                     } else {
-                        StringBuilder builder = new StringBuilder(dmsContext);
-                        builder.append(serverPlaceHolder);
-                        builder.append(workspaceName).append(nodePath).append(ext);
-                        value = builder.toString();
+                        value = DOC_CONTEXT_PLACEHOLDER_PATTERN.matcher(value).replaceAll(dmsContext);
                     }
                     if (logger.isDebugEnabled()) {
-                        logger.debug("After replacePlaceholdersByRefs : "+value);
+                        logger.debug("After replacePlaceholdersByRefs : " + value);
                     }
                 } catch (Exception e) {
                     logger.error("Exception when transforming placeholder for " + parent.getPath() + " -> " + path, e);

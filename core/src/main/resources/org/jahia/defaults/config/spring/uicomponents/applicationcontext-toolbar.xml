@@ -1266,7 +1266,7 @@
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
                 <property name="nodeTypes" value="jnt:navMenuText"/>
-                <property name="parentTypes" value="jnt:page"/>
+                <property name="parentTypes" value="jnt:page jnt:navMenuText"/>
             </bean>
         </property>
         <property name="titleKey" value="label.newNavMenuText"/>

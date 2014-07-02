@@ -411,11 +411,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             // Remove CMS context part
             Matcher m = cmsPattern.matcher(pathPart);
             if (!m.matches()) {
-<<<<<<< .working
                 throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + pathPart, definition.isInternationalized() ? locale : null,definition);
-=======
-                throw new ConstraintViolationException("Invalid link " + pathPart);
->>>>>>> .merge-right.r50126
             }
             pathPart = m.group(5);
             isCmsContext = true;

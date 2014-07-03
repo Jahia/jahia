@@ -74,6 +74,15 @@ package org.jahia.services.render;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
+<<<<<<< .working
+=======
+import org.jahia.services.cache.Cache;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.utils.Url;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+>>>>>>> .merge-right.r50144
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaNotFoundException;
@@ -178,12 +187,14 @@ public class URLResolver {
         this.workspace = workspace;
 
         this.urlPathInfo = normalizeUrlPathInfo(pathInfo);
-        
-        Date date = getVersionDate(request);
-        String versionLabel = getVersionLabel(request);
-        setVersionDate(date);
-        setVersionLabel(versionLabel);
-        
+
+        if (JahiaUserManagerService.isNotGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
+            Date date = getVersionDate(request);
+            String versionLabel = getVersionLabel(request);
+            setVersionDate(date);
+            setVersionLabel(versionLabel);
+        }
+
         if (urlPathInfo != null) {
             servletPart = StringUtils.substring(getUrlPathInfo(), 1,
                     StringUtils.indexOf(getUrlPathInfo(), "/", 1));

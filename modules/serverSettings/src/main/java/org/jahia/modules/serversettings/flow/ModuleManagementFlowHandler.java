@@ -145,6 +145,9 @@ public class ModuleManagementFlowHandler implements Serializable {
     @Autowired
     private transient LicenseCheckerService licenseCheckerService;
 
+    @Autowired
+    private transient SettingsBean settingsBean;
+
     private String moduleName;
 
     public boolean isInModule(RenderContext renderContext) {
@@ -288,7 +291,7 @@ public class ModuleManagementFlowHandler implements Serializable {
             Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
             JahiaTemplatesPackage currentVersion = templateManagerService.getTemplatePackageRegistry().lookupById(bundle.getSymbolicName());
             if (allVersions.size() == 1 ||
-                    ((SettingsBean.getInstance().isDevelopmentMode() && currentVersion != null && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
+                    ((settingsBean.isDevelopmentMode() && currentVersion != null && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
                 bundle.start();
                 context.addMessage(new MessageBuilder().source("moduleFile")
                         .code("serverSettings.manageModules.install.uploadedAndStarted")

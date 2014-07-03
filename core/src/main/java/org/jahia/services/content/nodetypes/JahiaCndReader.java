@@ -284,6 +284,8 @@ public class JahiaCndReader {
             return SelectorType.COLOR;
         } else if (tokenEquals(token, Lexer.CHECKBOX)) {
             return SelectorType.CHECKBOX;
+        } else if (tokenEquals(token, Lexer.TAG)) {
+            return SelectorType.TAG;
         } else {
             return -1;
         }

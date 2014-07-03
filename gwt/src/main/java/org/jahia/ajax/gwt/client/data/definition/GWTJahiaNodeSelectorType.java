@@ -90,4 +90,5 @@ public class GWTJahiaNodeSelectorType {
     public static final int CATEGORY = 13;
     public static final int CHOICELIST = 14;
     public static final int CRON = 15;
+    public static final int TAG = 16;
 }

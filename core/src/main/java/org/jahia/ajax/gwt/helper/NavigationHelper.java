@@ -486,37 +486,6 @@ public class NavigationHelper {
     }
 
     /**
-     * Get tag node
-     *
-     * @param name
-     * @param site
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTJahiaNode getTagNode(String name, JCRSiteNode site) throws GWTJahiaServiceException {
-        try {
-            JCRNodeWrapper node = site.getNode("tags");
-            if (name == null) {
-                return getGWTJahiaNode(node);
-            }
-            if (node.hasNode(name)) {
-                return getGWTJahiaNode(node.getNode(name));
-            }
-            return null;
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException("Cannot retrieve tag node " + name + ". Cause: " + e.getLocalizedMessage(), e);
-        }
-    }
-
-    public JCRNodeWrapper getTagsNode(JCRSiteNode site) throws GWTJahiaServiceException {
-        try {
-            return site.getNode("tags");
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException("Cannot retrieve tags node. Cause: " + e.getLocalizedMessage(), e);
-        }
-    }
-
-    /**
      * Return a node if existing exception otherwise
      *
      *

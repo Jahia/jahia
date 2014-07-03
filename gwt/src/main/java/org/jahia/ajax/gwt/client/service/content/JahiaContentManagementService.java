@@ -311,8 +311,6 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaNodeType> getSubNodeTypes(List<String> names) throws GWTJahiaServiceException;
 
-    GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException;
-
     /**
      * Retrieves a list of URL mapping objects for current node and locale.
      *
@@ -505,6 +503,8 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException;
 
     List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
+
+    List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

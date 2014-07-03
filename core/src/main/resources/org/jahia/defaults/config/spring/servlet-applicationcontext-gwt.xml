@@ -58,6 +58,7 @@
         <property name="translationHelper" ref="TranslationHelper"/>
         <property name="stubHelper" ref="StubHelper"/>
         <property name="moduleHelper" ref="ModuleHelper"/>
+        <property name="tagHelper" ref="TagHelper"/>
     </bean>
 
     <bean name="toolbarServiceController" parent="abstractServiceController">

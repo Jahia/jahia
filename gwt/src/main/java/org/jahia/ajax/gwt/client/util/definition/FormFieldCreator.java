@@ -101,9 +101,9 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
-import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+import org.jahia.ajax.gwt.client.widget.form.*;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
+import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -310,6 +310,15 @@ public class FormFieldCreator {
                         emptyText = Messages.get("label.no.values");
                     }
 
+                    break;
+                case GWTJahiaNodeSelectorType.TAG:
+                    if((propDefinition.getRequiredType() == GWTJahiaNodePropertyType.STRING) && ((GWTJahiaPropertyDefinition) definition).isMultiple()){
+                        boolean autocompleteOnSiteTags = definition.getSelectorOptions().get("autocomplete") != null;
+                        String  separator = definition.getSelectorOptions().get("separator");
+                        field = new TagField(autocompleteOnSiteTags, separator);
+                    }else {
+                        return null;
+                    }
                     break;
                 default:
                     if (propDefinition.getRequiredType() == GWTJahiaNodePropertyType.REFERENCE ||

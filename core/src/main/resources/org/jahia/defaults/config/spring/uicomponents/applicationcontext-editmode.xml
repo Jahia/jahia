@@ -247,7 +247,6 @@
                                 <ref bean="Engine.Tab.Layout"/>
                                 <ref bean="Engine.Tab.Metadata"/>
                                 <ref bean="Engine.Tab.Seo"/>
-                                <ref bean="Engine.Tab.Tags"/>
                                 <ref bean="Engine.Tab.Categories"/>
                                 <ref bean="Engine.Tab.Options"/>
                                 <ref bean="Engine.Tab.LiveRoles"/>
@@ -853,7 +852,6 @@
                 <property name="excludedTypes">
                     <list>
                         <value>jmix:categorized</value>
-                        <value>jmix:tagged</value>
                     </list>
                 </property>
             </bean>
@@ -869,22 +867,6 @@
                 <property name="dataType">
                     <list>
                         <value>options</value>
-                    </list>
-                </property>
-            </bean>
-        </property>
-    </bean>
-
-    <bean id="Engine.Tab.Tags" class="org.jahia.services.uicomponents.bean.editmode.EngineTab">
-        <property name="id" value="tags"/>
-        <property name="titleKey" value="label.engineTab.tags"/>
-        <property name="requiredPermission" value="viewTagsTab"/>
-        <property name="tabItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.contentengine.TagsTabItem">
-                <property name="hideForTypes">
-                    <list>
-                        <value>jnt:category</value>
-                        <value>jnt:tag</value>
                     </list>
                 </property>
             </bean>

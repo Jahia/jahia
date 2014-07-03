@@ -70,6 +70,7 @@
  *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.tags;
+import javax.annotation.Nullable;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryManager;
@@ -101,10 +102,11 @@ public class TaggingService {
     private final static String J_TAG_LIST = "j:tagList";
 
     private final static Function<JCRValueWrapper, String> JCR_VALUE_WRAPPER_STRING_FUNCTION = new Function<JCRValueWrapper, String>() {
+        @Nullable
         @Override
-        public String apply(JCRValueWrapper input) {
+        public String apply(@Nullable JCRValueWrapper input) {
             try {
-                return input.getString();
+                return input != null ? input.getString() : null;
             } catch (RepositoryException e) {
                 return null;
             }
@@ -254,7 +256,7 @@ public class TaggingService {
 
     public List<String> tag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(nodePath);
-        List<String> currentTags = new ArrayList<String>();
+        List<String> currentTags;
         List<JCRValueWrapper> currentTagValues = new ArrayList<JCRValueWrapper>();
         List<String> addedTags = new ArrayList<String>();
         boolean updated = false;

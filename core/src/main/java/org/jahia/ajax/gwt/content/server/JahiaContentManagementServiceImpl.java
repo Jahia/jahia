@@ -183,6 +183,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private TranslationHelper translationHelper;
     private StubHelper stubHelper;
     private ModuleHelper moduleHelper;
+    private TagHelper tagHelper;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -289,7 +290,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.stubHelper = stubHelper;
     }
 
-// ------------------------ INTERFACE METHODS ------------------------
+    public void setTagHelper(TagHelper tagHelper) {
+        this.tagHelper = tagHelper;
+    }
+
+    // ------------------------ INTERFACE METHODS ------------------------
 
 
 // --------------------- Interface JahiaContentManagementServiceAsync ---------------------
@@ -473,25 +478,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      */
     public GWTJahiaNode getNode(String path) throws GWTJahiaServiceException {
         return navigation.getNode(path, null, retrieveCurrentSession(), getUILocale());
-    }
-
-    /**
-     * Get nodes tag by name
-     *
-     * @param tagName
-     * @param create
-     * @return
-     * @throws GWTJahiaServiceException
-     */
-    public GWTJahiaNode getTagNode(String tagName, boolean create) throws GWTJahiaServiceException {
-        final String s = tagName.trim();
-        GWTJahiaNode tagNode = navigation.getTagNode(s, getSite());
-        if (tagNode == null && create) {
-            return createNode(navigation.getTagsNode(getSite()).getPath(), s, "jnt:tag", null, null,
-                    new ArrayList<GWTJahiaNodeProperty>(), null, null, null, true);
-        } else {
-            return tagNode;
-        }
     }
 
 
@@ -2575,6 +2561,20 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         return nodes;
+    }
+
+    @Override
+    public List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException {
+        List<GWTJahiaValueDisplayBean> tags = new ArrayList<GWTJahiaValueDisplayBean>();
+        try {
+            Map<String, Long> tagsMap = tagHelper.getTags(prefix, startPath, minCount, limit, offset, sortByCount, retrieveCurrentSession());
+            for(String tagEntry : tagsMap.keySet()){
+                tags.add(new GWTJahiaValueDisplayBean(tagEntry, tagEntry));
+            }
+        }catch (RepositoryException e){
+            throw new GWTJahiaServiceException("Cannot get tags", e);
+        }
+        return tags;
     }
 
 

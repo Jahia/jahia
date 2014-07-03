@@ -252,8 +252,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void getSubNodeTypes(List<String> names, AsyncCallback<List<GWTJahiaNodeType>> async);
 
-    void getTagNode(String tagName, boolean create, AsyncCallback<GWTJahiaNode> async);
-
     /**
      * Retrieves list of URL mapping objects for current node and locale.
      *
@@ -430,4 +428,5 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
 
+    void getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount, AsyncCallback<List<GWTJahiaValueDisplayBean>> async);
 }

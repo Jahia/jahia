@@ -45,7 +45,7 @@
 [jmix:keywords] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = metadata
- - j:keywords (string) multiple
+ - j:keywords (string,tag) multiple
 
 [jmix:thumbnail] mixin
  + * (jnt:resource)
@@ -64,9 +64,9 @@
 
 [jmix:tagged] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
- itemtype = classification
+ itemtype = metadata
  // j:tags and j:newTag deprecated
- - j:tagList (string) facetable multiple
+ - j:tagList (string,tag[autocomplete,separator=',']) facetable multiple
  - j:tags (weakreference) multiple hidden
  - j:newTag (string) hidden indexed=no
 
@@ -233,7 +233,7 @@
 + * (jnt:category) version
 
 //---------------------------------------------------------
-// Tags
+// Tags (deprecated)
 //---------------------------------------------------------
 
 [jnt:tag] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:autoPublish

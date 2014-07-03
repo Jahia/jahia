@@ -37,6 +37,7 @@ public class TagComboBox extends ComboBox<GWTJahiaValueDisplayBean> {
             setQueryDelay(100);
         }else {
             // create an empty store
+            setHideTrigger(true);
             setDisplayField("display");
             final ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
             setStore(store);

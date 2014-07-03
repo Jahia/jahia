@@ -72,13 +72,11 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
-
 import difflib.DiffUtils;
 import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
-
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.io.Charsets;
@@ -132,7 +130,6 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -283,6 +280,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public JCRNodeWrapper checkoutModule(File moduleSources, String scmURI, String branchOrTag, String moduleId,
                                          String version, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleId, version, session);
+    }
+
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String srcModuleId, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, srcModuleId, dstPath, session);
     }
 
     public JCRNodeWrapper createModule(String moduleName, String artifactId, String groupId, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {

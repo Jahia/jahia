@@ -77,6 +77,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dom4j.DocumentException;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
@@ -102,9 +103,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.RepositoryException;
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -517,6 +516,57 @@ public class ModuleBuildHelper implements InitializingBean {
 
     public void setToolbarWarningsService(ToolbarWarningsService toolbarWarningsService) {
         this.toolbarWarningsService = toolbarWarningsService;
+    }
+
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI, String srcModuleId, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        if (StringUtils.isBlank(moduleName)) {
+            throw new RepositoryException("Cannot create module because no module name has been specified");
+        }
+        if (StringUtils.isBlank(artifactId)) {
+            artifactId = JCRContentUtils.generateNodeName(moduleName);
+        }
+        if (StringUtils.isBlank(groupId)) {
+            groupId = "org.jahia.modules";
+        }
+        if (templatePackageRegistry.containsId(artifactId)) {
+            throw new RepositoryException("Cannot create module " + artifactId + " because another module with the same artifactId exists");
+        }
+
+        if (StringUtils.isBlank(dstPath)) {
+            dstPath = SettingsBean.getInstance().getModulesSourcesDiskPath();
+        }
+        File parentDir = new File(dstPath);
+        if (!parentDir.exists() && !parentDir.mkdirs()) {
+            throw new IOException("Unable to create path for: " + parentDir);
+        }
+
+        File dstFolder = new File(parentDir, artifactId);
+        int i = 0;
+        while (dstFolder.exists()) {
+            dstFolder = new File(parentDir, artifactId + "_" + (++i));
+        }
+
+        File srcFolder;
+        boolean deleteSrcFolder = false;
+        if (srcPath == null) {
+            try {
+                srcFolder = scmHelper.checkoutTmpModule(srcModuleId, null, scmURI, null);
+            } catch (XmlPullParserException e) {
+                throw new IOException(e);
+            } catch (DocumentException e) {
+                throw new IOException(e);
+            }
+            deleteSrcFolder = true;
+        } else {
+            srcFolder = new File(srcPath);
+        }
+
+        FileUtils.copyDirectory(srcFolder, dstFolder);
+        if (deleteSrcFolder) {
+            FileUtils.deleteQuietly(srcFolder);
+        }
+
+        return compileAndDeploy(artifactId, dstFolder, session);
     }
 
     static class CompiledModuleInfo {

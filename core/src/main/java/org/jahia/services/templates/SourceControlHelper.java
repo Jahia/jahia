@@ -195,6 +195,13 @@ public class SourceControlHelper {
         return null;
     }
 
+    public File checkoutTmpModule(String moduleId, String version, String scmURI, String branchOrTag) throws IOException, XmlPullParserException, DocumentException {
+        File sources = ensureModuleSourceFolder(null);
+        sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag, false);
+        ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
+        return moduleInfo.path;
+    }
+
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
         if (!SettingsBean.getInstance().isDevelopmentMode()) {
             return false;

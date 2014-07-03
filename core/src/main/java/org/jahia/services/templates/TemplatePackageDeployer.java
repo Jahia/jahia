@@ -74,6 +74,7 @@ package org.jahia.services.templates;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ProvisionActivator;
@@ -322,7 +323,7 @@ public class TemplatePackageDeployer {
         if (pack.getSourcesFolder() != null) {
             v.setProperty("j:sourcesFolder",pack.getSourcesFolder().getPath());
         }
-        if (pack.getScmURI() != null && !"scm:dummy:uri".equals(pack.getScmURI())) {
+        if (pack.getScmURI() != null && !Constants.SCM_DUMMY_URI.equals(pack.getScmURI())) {
             try {
                 v.setProperty("j:scmURI",pack.getScmURI());
             } catch (Exception e) {

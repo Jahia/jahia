@@ -335,4 +335,5 @@ public class Constants {
             JCR_VERSIONHISTORY, JCR_PREDECESSORS, JCR_ISCHECKEDOUT));
 
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
+    public static final String SCM_DUMMY_URI = "scm:dummy:uri";
 }

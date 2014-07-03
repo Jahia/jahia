@@ -76,6 +76,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
+import org.apache.maven.model.Scm;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.DocumentException;
 import org.jahia.api.Constants;
@@ -565,6 +566,25 @@ public class ModuleBuildHelper implements InitializingBean {
         if (deleteSrcFolder) {
             FileUtils.deleteQuietly(srcFolder);
         }
+
+        // Update pom information
+        Model pom = null;
+        try {
+            pom = PomUtils.read(new File(dstFolder, "pom.xml"));
+        } catch (XmlPullParserException e) {
+            throw new IOException(e);
+        }
+        pom.setArtifactId(artifactId);
+        pom.setGroupId(groupId);
+        pom.setVersion("1.0-SNAPSHOT");
+        pom.setName(moduleName);
+        Scm scm = new Scm();
+        scm.setConnection(Constants.SCM_DUMMY_URI);
+        scm.setDeveloperConnection(Constants.SCM_DUMMY_URI);
+        pom.setScm(scm);
+        pom.setDistributionManagement(null);
+        pom.getProperties().remove("jahia-private-app-store");
+        PomUtils.write(pom, new File(dstFolder, "pom.xml"));
 
         return compileAndDeploy(artifactId, dstFolder, session);
     }

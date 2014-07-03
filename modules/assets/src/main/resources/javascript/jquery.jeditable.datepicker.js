@@ -54,7 +54,7 @@ $.editable.addInputType('datetimepicker', {
     plugin : function(settings, original) {
         var form = this;
         settings.onblur = null;
-        $("#datetimepicker_", this).datetime({dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'});
+        $("#datetimepicker_", this).datetimepicker({dateFormat: $.datepicker.ISO_8601, showButtonPanel: true, showOn:'focus'});
     }
 });
 

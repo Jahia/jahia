@@ -33,6 +33,14 @@
 <template:addResources type="javascript" resources="jquery.jeditable.ckeditor.js"/>
 <template:addResources type="javascript" resources="timepicker.js,jquery.jeditable.datepicker.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js"/>
+<c:set var="locale" value="${renderContext.mainResource.locale}"/>
+<c:if test="${locale != 'en_US'}">
+    <template:addResources type="javascript" resources="i18n/jquery.ui.datepicker-${locale.language}.js"/>
+    <c:if test="${not empty locale.country}">
+        <template:addResources type="javascript"
+                               resources="i18n/jquery.ui.datepicker-${locale.language}-${locale.country}.js"/>
+    </c:if>
+</c:if>
 <template:addResources type="javascript"
                        resources="jquery.treeview.min.js,jquery.treeview.async.jahia.js,jquery.fancybox.js"/>
 <template:addResources type="javascript" resources="jquery.jeditable.treeItemSelector.js"/>

@@ -71,6 +71,7 @@
  */
 package org.jahia.services.templates;
 
+import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.ArrayUtils;
@@ -104,6 +105,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.RepositoryException;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
@@ -586,6 +588,11 @@ public class ModuleBuildHelper implements InitializingBean {
         pom.getProperties().remove("jahia-private-app-store");
         PomUtils.write(pom, new File(dstFolder, "pom.xml"));
 
+        // Remove any SCM files
+        FileUtils.deleteQuietly(new File(dstFolder, ".git"));
+        FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
+        new SvnCleaner().clean(dstFolder);
+
         return compileAndDeploy(artifactId, dstFolder, session);
     }
 
@@ -611,5 +618,26 @@ public class ModuleBuildHelper implements InitializingBean {
         public String getVersion() {
             return version;
         }
+    }
+
+    static public class SvnCleaner extends DirectoryWalker {
+
+        public List<File> clean(File startDirectory) throws IOException {
+            ArrayList<File> results = new ArrayList<File>();
+            walk(startDirectory, results);
+            return results;
+        }
+
+        protected boolean handleDirectory(File directory, int depth, Collection results) {
+            if (".svn".equals(directory.getName())) {
+                FileUtils.deleteQuietly(directory);
+                results.add(directory);
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+
     }
 }

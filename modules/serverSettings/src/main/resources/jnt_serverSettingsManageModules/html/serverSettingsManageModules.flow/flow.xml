@@ -33,6 +33,7 @@
         </on-render>
 
         <transition on="downloadSources" to="downloadSources"/>
+        <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
         <transition on="undeployModule" to="undeployModule"/>
@@ -83,6 +84,7 @@
             <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
         </transition>
+        <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
         <transition on="viewDetails" to="detailedView"/>
         <transition on="enable" to="enableOnSite"/>
         <transition on="disable" to="disableFromSite"/>
@@ -107,6 +109,38 @@
     </action-state>
 
     <end-state id="sourcesDownloaded"/>
+
+    <view-state id="duplicateModuleForm">
+        <on-entry>
+            <evaluate expression="requestParameters.moduleName?:flowScope.moduleName" result="flowScope.moduleName"/>
+            <evaluate expression="requestParameters.moduleId?:flowScope.moduleId" result="flowScope.moduleId"/>
+            <evaluate expression="requestParameters.groupId?:flowScope.groupId" result="flowScope.groupId"/>
+            <evaluate expression="requestParameters.srcPath?:flowScope.srcPath" result="flowScope.srcPath"/>
+            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
+        </on-entry>
+        <transition on="duplicateModule" to="duplicateModule"/>
+        <transition on="cancelDuplicate" to="duplicateCanceled"/>
+    </view-state>
+
+    <action-state id="duplicateModule">
+        <on-entry>
+            <evaluate expression="requestParameters.newModuleName" result="flowScope.newModuleName"/>
+            <evaluate expression="requestParameters.newModuleId" result="flowScope.newModuleId"/>
+            <evaluate expression="requestParameters.newGroupId" result="flowScope.newGroupId"/>
+            <evaluate expression="requestParameters.newDstPath" result="flowScope.newDstPath"/>
+        </on-entry>
+        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.scmUri, flowScope.moduleId, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
+        <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
+            <set name="flashScope.error" value="rootCauseException"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
+        </transition>
+        <transition to="moduleDuplicated"/>
+    </action-state>
+
+    <view-state id="moduleDuplicated"/>
+
+    <end-state id="duplicateCanceled"/>
 
     <action-state id="startModule">
         <evaluate

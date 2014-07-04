@@ -604,7 +604,7 @@ public class PublicationTest {
     private int getStatusFor(List<PublicationInfo> infos, String uuid) {
         for (PublicationInfo info : infos) {
             int i = getStatusFor(info.getRoot(), uuid);
-            if (i > 0) {
+            if (i != 0) {
                 return i;
             }
         }
@@ -617,219 +617,47 @@ public class PublicationTest {
         }
         for (PublicationInfoNode node : info.getChildren()) {
             int i = getStatusFor(node, uuid);
-            if (i > 0) {
+            if (i != 0) {
                 return i;
             }
         }
         return 0;
     }
 
+    @Test
+    public void testDraftStatus() throws RepositoryException {
+        JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        editTextNode1.setProperty("j:isDraft",Boolean.TRUE);
+        englishEditSession.save();
+        getCleanSession();
+        HashSet<String> languages = new HashSet<String>(Arrays.asList("en"));
+        List<PublicationInfo> infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.DRAFT,getStatusFor(infos, editTextNode1.getIdentifier()));
+        // Publish content
+        jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
 
-//    @Test
-//    public void testCPagesWithSubPages() throws RepositoryException {
-//        JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
-//
-//        getCleanSession();
-//        JCRNodeWrapper englishEditSiteRootNode = englishEditSession.getNode(SITECONTENT_ROOT_NODE);
-//        JCRNodeWrapper englishEditSiteHomeNode = (JCRNodeWrapper) englishEditSiteRootNode.getNode("home");
-//        String englishEditSiteHomeNodeIdentifier = englishEditSiteHomeNode.getIdentifier();
-//
-//        // now let's setup the pages we will use.
-//
-//        JCRNodeWrapper englishEditPage1Node = englishEditSiteHomeNode.addNode("page1", "jnt:page");
-//        String englishEditPage1NodeIdentifier = englishEditPage1Node.getIdentifier();
-//        englishEditPage1Node.setProperty("jcr:title", "Page1");
-//        TestHelper.createList(englishEditPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        TestHelper.createList(englishEditPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        JCRNodeWrapper englishEditPage2Node = englishEditSiteHomeNode.addNode("page2", "jnt:page");
-//        englishEditPage2Node.setProperty("jcr:title", "Page2");
-//        TestHelper.createList(englishEditPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        TestHelper.createList(englishEditPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        JCRNodeWrapper englishEditPage3Node = englishEditSiteHomeNode.addNode("page3", "jnt:page");
-//        englishEditPage3Node.setProperty("jcr:title", "Page3");
-//        TestHelper.createList(englishEditPage3Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        TestHelper.createList(englishEditPage3Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//
-//        JCRNodeWrapper englishEditSubPage1Node = englishEditPage1Node.addNode("page1_subpage1", "jnt:page");
-//        englishEditSubPage1Node.setProperty("jcr:title", "SubPage1");
-//        TestHelper.createList(englishEditSubPage1Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        TestHelper.createList(englishEditSubPage1Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        JCRNodeWrapper englishEditSubPage2Node = englishEditPage1Node.addNode("page1_subpage2", "jnt:page");
-//        englishEditSubPage2Node.setProperty("jcr:title", "SubPage2");
-//        TestHelper.createList(englishEditSubPage2Node, "contentList0", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//        TestHelper.createList(englishEditSubPage2Node, "contentList1", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-//
-//        englishEditSession.save();
-//
-//        Set<String> languages = null;
-//        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        jcrService.publishByMainId(englishEditPage2Node.getIdentifier(), Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        jcrService.publishByMainId(englishEditSubPage1Node.getIdentifier(), Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//
-//        // Case 1 : let's check the existence of the node property value in the live workspace.
-//        getCleanSession();
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
-//                "Page 1 should have been published");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/contentList0",
-//                "ContentList0 on Page 1 should have been published");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/contentList0/contentList0_text0",
-//                "Text0 in ContentList0 on Page 1 should have been published");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1",
-//                "Sub Page 1 should have been published");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1/contentList1",
-//                "ContentList1 on Sub Page 1 should have been published");
-//        testNodeInWorkspace(englishLiveSession,
-//                SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1/contentList1/contentList1_text1",
-//                "Text1 in ContentList1 on Sub Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2/contentList1",
-//                "ContentList1 on Sub Page 2 should not have been published");
-//        testNodeNotInWorkspace(englishLiveSession,
-//                SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2/contentList1/contentList1_text1",
-//                "Text1 in ContentList1 on Sub Page 2 should not have been published");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page2",
-//                "Page 2 should have been published");
-//
-//        // Case 2 : now let's modify the node, republish and check.
-//        englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditPage1NodeIdentifier));
-//        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1/contentList0",
-//                SITECONTENT_ROOT_NODE + "/home/page1/contentList0_renamed");
-//        englishEditSession.save();
-//
-//        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//
-//        getCleanSession();
-//
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
-//                "Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/contentList0",
-//                "ContentList0 on Page 1 not be present anymore since we renamed it.");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/contentList0_renamed",
-//                "ContentList0_renamed on Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//
-//        // Case 3 : now let's unpublish the node and test it's presence in the live workspace.
-//        getCleanSession();
-//        jcrService.unpublish(Collections.singletonList(englishEditPage1NodeIdentifier), languages);
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
-//                "Page 1 should have been unpublished !");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1",
-//                "Sub Page 1 should not have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//
-//        // Case 4 : now let's republish the node and test it's presence in the live workspace.
-//        getCleanSession();
-//        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
-//                "Page 1 should have be published !");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1",
-//                "Sub Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//
-//        // Case 5 : let's rename the page and check it's been properly renamed in the live workspace.
-//        getCleanSession();
-//        englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier));
-//        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1", SITECONTENT_ROOT_NODE + "/home/page1_renamed");
-//        englishEditSession.save();
-//        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed",
-//                "Page 1 should have be published !");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed/page1_subpage1",
-//                "Sub Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1_renamed/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//
-//        // now let's move it back to continue the tests.
-//        getCleanSession();
-//        englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier));
-//        englishEditSession.move(SITECONTENT_ROOT_NODE + "/home/page1_renamed", SITECONTENT_ROOT_NODE + "/home/page1");
-//        englishEditSession.save();
-//        jcrService.publishByMainId(englishEditPage1NodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, false, null);
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1",
-//                "Page 1 should have be published !");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage1",
-//                "Sub Page 1 should have been published");
-//        testNodeNotInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page1/page1_subpage2",
-//                "Sub Page 2 should not have been published");
-//
-//        // Case 6 : now we must move the page inside the list of the parent page, and check that the move is properly propagated in live mode
-//        getCleanSession();
-//        englishEditSiteHomeNode = englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier);
-//        englishEditSession.checkout(englishEditSiteHomeNode);
-//        englishEditSiteHomeNode.orderBefore("page1", null); // this should put it at the end of the list.
-//        englishEditSession.save();
-//        testChildOrdering(englishEditSiteHomeNode, Constants.EDIT_WORKSPACE, "page2", "page3", "page1");
-//        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, true, null);
-//        JCRNodeWrapper englishLiveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
-//        testChildOrdering(englishLiveSiteHomeNode, Constants.LIVE_WORKSPACE, "page2", "page3", "page1");
-//
-//        // Case 7 : now let's move the page to another page
-//        getCleanSession();
-//        JCRNodeWrapper editPage1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page1");
-//        englishEditSession.checkout(englishEditSession.getNodeByIdentifier(englishEditSiteHomeNodeIdentifier));
-//        JCRNodeWrapper editPage2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");
-//        englishEditSession.checkout(editPage2);
-//        englishEditSession.checkout(
-//                editPage1); // we have to check it out because of a property being changed during move !
-//        englishEditSession.move(editPage1.getPath(), SITECONTENT_ROOT_NODE + "/home/page2/page1");
-//        editPage2.orderBefore("page1", "contentList1");
-//        englishEditSession.save();
-//        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, true, null);
-//        JCRNodeWrapper liveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
-//        JCRNodeWrapper livePage2 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");
-//        testChildOrdering(liveSiteHomeNode, Constants.LIVE_WORKSPACE, "page2", "page3");
-//        testChildOrdering(livePage2, Constants.LIVE_WORKSPACE, "contentList0", "page1", "contentList1");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page2/page1",
-//                "Page 1 was not properly moved below page 2 in the live workspace.");
-//
-//        // Case 8 : now let's move it to yet another list, modify it, then publish it.
-//        getCleanSession();
-//        editPage2 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");
-//        englishEditSession.checkout(editPage2);
-//        JCRNodeWrapper editPage3 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page3");
-//        englishEditSession.checkout(editPage3);
-//        editPage1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2/page1");
-//        englishEditSession.checkout(editPage1);
-//        englishEditSession.move(editPage1.getPath(), SITECONTENT_ROOT_NODE + "/home/page3/page1");
-//        editPage3.orderBefore("page1", "contentList1");
-//        editPage1 = englishEditSession.getNode(SITECONTENT_ROOT_NODE + "/home/page3/page1");
-//        editPage1.addNode("anotherList", "jnt:contentList");
-//        englishEditSession.save();
-//        jcrService.publishByMainId(englishEditSiteHomeNodeIdentifier, Constants.EDIT_WORKSPACE,
-//                Constants.LIVE_WORKSPACE, languages, true, null);
-//
-//        liveSiteHomeNode = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home");
-//        livePage2 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page2");
-//        JCRNodeWrapper livePage3 = englishLiveSession.getNode(SITECONTENT_ROOT_NODE + "/home/page3");
-//        testChildOrdering(liveSiteHomeNode, Constants.LIVE_WORKSPACE, "page2", "page3");
-//        testChildOrdering(livePage2, Constants.LIVE_WORKSPACE, "contentList0", "contentList1");
-//        testChildOrdering(livePage3, Constants.LIVE_WORKSPACE, "contentList0", "page1", "contentList1");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page3/page1",
-//                "Page 1 was not properly moved below page 3 in the live workspace.");
-//        testNodeInWorkspace(englishLiveSession, SITECONTENT_ROOT_NODE + "/home/page3/page1/anotherList",
-//                "New list on Page 1 was not found in the live workspace.");
-//
-//        // Case 9 : Let's move to yet another list, and then modify it's location in the list twice.
-//
-//        // Case 10 : Delete the node, publish it and check that it has disappeared in live mode.
-//
-//    }
+        getCleanSession();
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.DRAFT,getStatusFor(infos, editTextNode1.getIdentifier()));
+
+        editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
+        editTextNode1.setProperty("j:isDraft",Boolean.FALSE);
+        englishEditSession.save();
+
+        getCleanSession();
+        infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), languages, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
+
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+    }
 
     private void testNodeInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage)
             throws RepositoryException {

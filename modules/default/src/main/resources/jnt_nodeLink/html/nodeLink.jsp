@@ -9,7 +9,7 @@
 <c:set var="node" value="${reference.node}"/>
 <template:addCacheDependency uuid="${reference.string}"/>
 <c:if test="${not empty node}">
-<c:url var="link" value="${url.base}${node.path}.html"/>
+<c:url var="link" value="${renderContext.servletPath}/${currentResource.workspace}/{lang}${node.path}.html"/>
 </c:if>
 <c:if test="${not empty target.string}"><c:set var="target"> target="${target.string}"</c:set></c:if>
 <c:if test="${not empty description.string}"><c:set var="linkTitle"> title="${fn:escapeXml(description.string)}"</c:set></c:if>

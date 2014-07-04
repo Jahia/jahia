@@ -136,6 +136,7 @@
                             <input type="hidden" name="moduleName" value="${currentModule.name}"/>
                             <input type="hidden" name="moduleId" value="${currentModule.id}"/>
                             <input type="hidden" name="groupId" value="${currentModule.groupId}"/>
+                            <input type="hidden" name="version" value="${currentModule.version}"/>
                             <input type="hidden" name="srcPath" value="${currentModule.sourcesFolder.path}"/>
                             <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                 <i class="icon-share"></i>
@@ -149,6 +150,7 @@
                                 <input type="hidden" name="moduleName" value="${currentModule.name}"/>
                                 <input type="hidden" name="moduleId" value="${currentModule.id}"/>
                                 <input type="hidden" name="groupId" value="${currentModule.groupId}"/>
+                                <input type="hidden" name="version" value="${currentModule.version}"/>
                                 <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                                 <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                     <i class="icon-share"></i>
@@ -163,6 +165,7 @@
                                 <input type="hidden" name="moduleName" value="${defaultVersion.name}"/>
                                 <input type="hidden" name="moduleId" value="${defaultVersion.id}"/>
                                 <input type="hidden" name="groupId" value="${defaultVersion.groupId}"/>
+                                <input type="hidden" name="version" value="${defaultVersion.version}"/>
                                 <input type="hidden" name="scmUri" value="${defaultVersion.scmURI}"/>
                                 <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                     <i class="icon-share"></i>

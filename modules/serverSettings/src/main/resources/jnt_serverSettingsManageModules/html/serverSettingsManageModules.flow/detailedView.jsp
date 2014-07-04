@@ -195,6 +195,7 @@
                                 <input type="hidden" name="moduleName" value="${activeVersion.name}"/>
                                 <input type="hidden" name="moduleId" value="${activeVersion.id}"/>
                                 <input type="hidden" name="groupId" value="${activeVersion.groupId}"/>
+                                <input type="hidden" name="version" value="${activeVersion.version}"/>
                                 <input type="hidden" name="srcPath" value="${activeVersion.sourcesFolder.path}"/>
                                 <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                     <i class="icon-share"></i>
@@ -208,6 +209,7 @@
                                     <input type="hidden" name="moduleName" value="${activeVersion.name}"/>
                                     <input type="hidden" name="moduleId" value="${activeVersion.id}"/>
                                     <input type="hidden" name="groupId" value="${activeVersion.groupId}"/>
+                                    <input type="hidden" name="version" value="${activeVersion.version}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <button class="btn button-download" type="submit" name="_eventId_duplicateModuleForm">
                                         <i class="icon-share"></i>

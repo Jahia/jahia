@@ -71,9 +71,16 @@
  */
 package org.jahia.services.templates;
 
+import difflib.DiffUtils;
+import difflib.Patch;
+import difflib.PatchFailedException;
+import difflib.myers.Equalizer;
+import difflib.myers.MyersDiff;
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
@@ -88,9 +95,10 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.security.license.LicenseCheckException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
@@ -101,15 +109,19 @@ import org.osgi.framework.startlevel.BundleStartLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.xml.transform.TransformerException;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.nio.charset.Charset;
+import java.util.*;
 import java.util.jar.JarFile;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Utility class for module compilation and build.
@@ -119,6 +131,15 @@ import java.util.regex.Pattern;
 public class ModuleBuildHelper implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
+    private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
+        public boolean equals(Object o, Object o1) {
+            String s1 = (String) o;
+            String s2 = (String) o1;
+            return s1.trim().equals(s2.trim());
+        }
+    });
+    private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
+
     private String mavenExecutable;
     private String ignoreSnapshots;
     private boolean ignoreSnapshotsFlag;
@@ -521,7 +542,9 @@ public class ModuleBuildHelper implements InitializingBean {
         this.toolbarWarningsService = toolbarWarningsService;
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI, String srcModuleId, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI,
+                                                 String srcModuleId, String srcModuleVersion, String dstPath, JCRSessionWrapper session)
+            throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(moduleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
         }
@@ -578,7 +601,8 @@ public class ModuleBuildHelper implements InitializingBean {
         }
         pom.setArtifactId(artifactId);
         pom.setGroupId(groupId);
-        pom.setVersion("1.0-SNAPSHOT");
+        String dstVersion = "1.0-SNAPSHOT";
+        pom.setVersion(dstVersion);
         pom.setName(moduleName);
         Scm scm = new Scm();
         scm.setConnection(Constants.SCM_DUMMY_URI);
@@ -593,7 +617,224 @@ public class ModuleBuildHelper implements InitializingBean {
         FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
         new SvnCleaner().clean(dstFolder);
 
+        // Update import files
+        JahiaTemplatesPackage srcModule = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, new ModuleVersion(srcModuleVersion));
+        JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
+        JCRNodeWrapper dstModuleNode = session.getNode("/modules");
+        if (dstModuleNode.hasNode(artifactId)) {
+            dstModuleNode = dstModuleNode.getNode(artifactId);
+        } else {
+            dstModuleNode = dstModuleNode.addNode(artifactId, "jnt:module");
+        }
+        if (dstModuleNode.hasNode(dstVersion)) {
+            dstModuleNode = dstModuleNode.getNode(dstVersion);
+        } else {
+            dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
+        }
+        for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
+            if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
+                node.copy(dstModuleNode.getPath());
+            }
+        }
+        dstModuleNode.setProperty("j:title", moduleName);
+        List<Value> newValues = new ArrayList<Value>();
+        for (JCRValueWrapper value : srcModuleNode.getProperty("j:installedModules").getValues()) {
+            if (srcModuleId.equals(value.getString())) {
+                newValues.add(new ValueImpl(artifactId));
+            } else {
+                newValues.add(value);
+            }
+        }
+        dstModuleNode.setProperty("j:installedModules", newValues.toArray(new Value[newValues.size()]));
+        session.save();
+
+        FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModuleId));
+        try {
+            regenerateImportFile(session, new ArrayList<File>(), dstFolder, artifactId, artifactId + "/" + dstVersion);
+        } catch (SAXException e) {
+            throw new IOException("Unable to generate import files in " + dstFolder);
+        } catch (TransformerException e) {
+            throw new IOException("Unable to generate import files in " + dstFolder);
+        }
+
         return compileAndDeploy(artifactId, dstFolder, session);
+    }
+
+    public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,
+                                      String moduleId, String moduleIdWithVersion) throws RepositoryException, SAXException, IOException, TransformerException {
+        File f = File.createTempFile("import", null);
+
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
+        FileOutputStream out = new FileOutputStream(f);
+        try {
+            ImportExportBaseService.getInstance().exportZip(
+                    session.getNode("/modules/" + moduleIdWithVersion), session.getRootNode(), out,
+                    params);
+        } finally {
+            IOUtils.closeQuietly(out);
+        }
+
+        final String importFileBasePath = "content/modules/" + moduleId + "/";
+        String filesNodePath = "/modules/" + moduleIdWithVersion;
+        JCRNodeWrapper filesNode = null;
+        if (session.nodeExists(filesNodePath)) {
+            filesNode = session.getNode(filesNodePath);
+        }
+        // clean up files folder before unziping in it
+        File sourcesImportFolder = new File(sources, "src/main/import");
+        sourcesImportFolder.mkdirs();
+        File filesDirectory = new File(sourcesImportFolder.getPath() + "/" + importFileBasePath);
+        Collection<File> files = null;
+        if (filesDirectory.exists()) {
+            files = FileUtils.listFiles(filesDirectory, null, true);
+        } else {
+            files = new ArrayList<File>();
+        }
+        ZipInputStream zis = null;
+        try {
+            zis = new ZipInputStream(new FileInputStream(f));
+            ZipEntry zipentry;
+            while ((zipentry = zis.getNextEntry()) != null) {
+                if (!zipentry.isDirectory()) {
+                    try {
+                        String name = zipentry.getName();
+                        name = name.replace(moduleIdWithVersion, moduleId);
+                        File sourceFile = new File(sourcesImportFolder, name);
+                        boolean nodeMoreRecentThanSourceFile = true;
+                        if (sourceFile.exists() && name.startsWith(importFileBasePath)) {
+                            String relPath = name.substring(importFileBasePath.length());
+                            if (relPath.endsWith(sourceFile.getName() + "/" + sourceFile.getName())) {
+                                relPath = StringUtils.substringBeforeLast(relPath, "/");
+                            }
+                            if (filesNode != null && filesNode.hasNode(relPath)) {
+                                JCRNodeWrapper node = filesNode.getNode(relPath);
+                                if (node.hasProperty("jcr:lastModified")) {
+                                    nodeMoreRecentThanSourceFile = node.getProperty("jcr:lastModified").getDate().getTimeInMillis() > sourceFile.lastModified();
+                                }
+                            }
+                        }
+                        if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
+                            modifiedFiles.add(sourceFile);
+                        }
+                        files.remove(sourceFile);
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+            }
+            for (File file : files) {
+                try {
+                    deleteFileAndEmptyParents(file, sourcesImportFolder.getPath());
+                } catch (Exception e) {
+                    logger.error("Cannot delete file " + file, e);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Cannot patch import file", e);
+        } finally {
+            if (zis != null) {
+                IOUtils.closeQuietly(zis);
+            }
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
+        Charset transCodeTarget = null;
+        if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
+            transCodeTarget = Charsets.ISO_8859_1;
+        }
+
+        if (!target.exists()) {
+            if (!target.getParentFile().exists() && !target.getParentFile().mkdirs()) {
+                throw new IOException("Unable to create path for: " + target.getParentFile());
+            }
+            if (target.getParentFile().isFile()) {
+                target.getParentFile().delete();
+                target.getParentFile().mkdirs();
+            }
+            if (transCodeTarget != null) {
+                FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
+            } else {
+                FileOutputStream output = FileUtils.openOutputStream(target);
+                try {
+                    IOUtils.copy(source, output);
+                    output.close();
+                } finally {
+                    IOUtils.closeQuietly(output);
+                }
+            }
+            return true;
+        } else {
+            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
+            if (!isBinary(targetContent)) {
+                List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
+                if (transCodeTarget != null) {
+                    sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
+                }
+                Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
+                if (!patch.getDeltas().isEmpty()) {
+                    targetContent = (List<String>) patch.applyTo(targetContent);
+                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget.name() : "UTF-8", targetContent, "\n");
+                    return true;
+                }
+            } else {
+                byte[] sourceArray = IOUtils.toByteArray(source);
+                FileInputStream input = new FileInputStream(target);
+                FileOutputStream output = null;
+                try {
+                    byte[] targetArray = IOUtils.toByteArray(input);
+                    if (!Arrays.equals(sourceArray, targetArray)) {
+                        output = new FileOutputStream(target);
+                        IOUtils.write(sourceArray, output);
+                        return true;
+                    }
+                } finally {
+                    IOUtils.closeQuietly(input);
+                    IOUtils.closeQuietly(output);
+                }
+            }
+        }
+        return false;
+    }
+
+    private void deleteFileAndEmptyParents(File file, final String rootPath) throws IOException {
+        if (rootPath.equals(file.getPath())) {
+            return;
+        }
+        FileUtils.forceDelete(file);
+        File parentFile = file.getParentFile();
+        if (parentFile.listFiles((FileFilter) HiddenFileFilter.VISIBLE).length == 0) {
+            deleteFileAndEmptyParents(parentFile, rootPath);
+        }
+    }
+
+    private List<String> convertToNativeEncoding(List<String> sourceContent, Charset charset) throws UnsupportedEncodingException {
+        List<String> targetContent = new ArrayList<String>();
+        for (String s : sourceContent) {
+            Matcher m = UNICODE_PATTERN.matcher(s);
+            int start = 0;
+            while (m.find(start)) {
+                String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
+                if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
+                    s = m.replaceFirst(replacement);
+                }
+                start = m.start() + 1;
+                m = UNICODE_PATTERN.matcher(s);
+            }
+            targetContent.add(s);
+        }
+        return targetContent;
+    }
+
+    private boolean isBinary(List<String> text) {
+        for (String s : text) {
+            if (s.contains("\u0000")) {
+                return true;
+            }
+        }
+        return false;
     }
 
     static class CompiledModuleInfo {

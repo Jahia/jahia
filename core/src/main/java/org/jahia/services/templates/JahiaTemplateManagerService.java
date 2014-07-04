@@ -72,17 +72,10 @@
 package org.jahia.services.templates;
 
 import com.google.common.collect.ImmutableSet;
-import difflib.DiffUtils;
-import difflib.Patch;
-import difflib.PatchFailedException;
-import difflib.myers.Equalizer;
-import difflib.myers.MyersDiff;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.io.filefilter.HiddenFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
@@ -105,8 +98,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.BackgroundAction;
-import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -130,13 +121,10 @@ import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.xml.transform.TransformerException;
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /**
  * Template and template set deployment and management service.
@@ -155,14 +143,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public static final String MODULE_TYPE_TEMPLATES_SET = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_TEMPLATES_SET;
 
-    private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
-        public boolean equals(Object o, Object o1) {
-            String s1 = (String) o;
-            String s2 = (String) o1;
-            return s1.trim().equals(s2.trim());
-        }
-    });
-    
     public static final Comparator<JahiaTemplatesPackage> TEMPLATE_PACKAGE_NAME_COMPARATOR = new Comparator<JahiaTemplatesPackage>() {
         public int compare(JahiaTemplatesPackage o1, JahiaTemplatesPackage o2) {
             return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
@@ -170,8 +150,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     };
 
     private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
-
-    private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
@@ -282,8 +260,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleId, version, session);
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String srcModuleId, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
-        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, srcModuleId, dstPath, session);
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String srcModuleId, String srcModuleVersion, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, srcModuleId, srcModuleVersion, dstPath, session);
     }
 
     public JCRNodeWrapper createModule(String moduleName, String artifactId, String groupId, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
@@ -460,13 +438,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             logger.error("Cannot get SCM", e);
         }
 
-        // Handle import
-        File sourcesImportFolder = new File(sources, "src/main/import");
-
         JahiaTemplatesPackage aPackage = getTemplatePackageById(moduleId);
 
         try {
-            regenerateImportFileInternal(session, modifiedFiles, sourcesImportFolder, aPackage);
+            moduleBuildHelper.regenerateImportFile(session, modifiedFiles, sources, moduleId, aPackage.getIdWithVersion());
 
             if (scm != null) {
                 try {
@@ -490,95 +465,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return modifiedFiles;
     }
 
-    private void regenerateImportFileInternal(JCRSessionWrapper session, List<File> modifiedFiles, File sourcesImportFolder,
-                                              JahiaTemplatesPackage aPackage) throws FileNotFoundException, RepositoryException, SAXException,
-            IOException, TransformerException, PathNotFoundException {
-        File f = File.createTempFile("import", null);
-
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put(ImportExportService.XSL_PATH, SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/export/templatesCleanup.xsl");
-        FileOutputStream out = new FileOutputStream(f);
-        try {
-            ImportExportBaseService.getInstance().exportZip(
-                    session.getNode("/modules/" + aPackage.getIdWithVersion()), session.getRootNode(), out,
-                    params);
-        } finally {
-            IOUtils.closeQuietly(out);
-        }
-
-        final String importFileBasePath = "content/modules/" + aPackage.getId() + "/";
-        String filesNodePath = "/modules/" + aPackage.getIdWithVersion();
-        JCRNodeWrapper filesNode = null;
-        if (session.nodeExists(filesNodePath)) {
-            filesNode = session.getNode(filesNodePath);
-        }
-        // clean up files folder before unziping in it
-        File filesDirectory = new File(sourcesImportFolder.getPath() + "/" + importFileBasePath);
-        Collection<File> files = null;
-        if (filesDirectory.exists()) {
-            files = FileUtils.listFiles(filesDirectory, null, true);
-        } else {
-            files = new ArrayList<File>();
-        }
-        ZipInputStream zis = null;
-        try {
-            zis = new ZipInputStream(new FileInputStream(f));
-            ZipEntry zipentry;
-            while ((zipentry = zis.getNextEntry()) != null) {
-                if (!zipentry.isDirectory()) {
-                    try {
-                        String name = zipentry.getName();
-                        name = name.replace(aPackage.getIdWithVersion(), aPackage.getId());
-                        File sourceFile = new File(sourcesImportFolder, name);
-                        boolean nodeMoreRecentThanSourceFile = true;
-                        if (sourceFile.exists() && name.startsWith(importFileBasePath)) {
-                            String relPath = name.substring(importFileBasePath.length());
-                            if (relPath.endsWith(sourceFile.getName() + "/" + sourceFile.getName())) {
-                                relPath = StringUtils.substringBeforeLast(relPath, "/");
-                            }
-                            if (filesNode != null && filesNode.hasNode(relPath)) {
-                                JCRNodeWrapper node = filesNode.getNode(relPath);
-                                if (node.hasProperty("jcr:lastModified")) {
-                                    nodeMoreRecentThanSourceFile = node.getProperty("jcr:lastModified").getDate().getTimeInMillis() > sourceFile.lastModified();
-                                }
-                            }
-                        }
-                        if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
-                            modifiedFiles.add(sourceFile);
-                        }
-                        files.remove(sourceFile);
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-            }
-            for (File file : files) {
-                try {
-                    deleteFileAndEmptyParents(file, sourcesImportFolder.getPath());
-                } catch (Exception e) {
-                    logger.error("Cannot delete file " + file, e);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Cannot patch import file", e);
-        } finally {
-            if (zis != null) {
-                IOUtils.closeQuietly(zis);
-            }
-        }
-    }
-
-    private void deleteFileAndEmptyParents(File file, final String rootPath) throws IOException {
-        if (rootPath.equals(file.getPath())) {
-            return;
-        }
-        FileUtils.forceDelete(file);
-        File parentFile = file.getParentFile();
-        if (parentFile.listFiles((FileFilter) HiddenFileFilter.VISIBLE).length == 0) {
-            deleteFileAndEmptyParents(parentFile, rootPath);
-        }
-    }
-
     private void setDependenciesInPom(File sources, List<String> dependencies) {
         File pom = new File(sources, "pom.xml");
         try {
@@ -586,93 +472,6 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         } catch (Exception e) {
             logger.error("Unable to updated dependencies in pom file: " + pom, e);
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
-        Charset transCodeTarget = null;
-        if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
-            transCodeTarget = Charsets.ISO_8859_1;
-        }
-
-        if (!target.exists()) {
-            if (!target.getParentFile().exists() && !target.getParentFile().mkdirs()) {
-                throw new IOException("Unable to create path for: " + target.getParentFile());
-            }
-            if (target.getParentFile().isFile()) {
-                target.getParentFile().delete();
-                target.getParentFile().mkdirs();
-            }
-            if (transCodeTarget != null) {
-                FileUtils.writeLines(target, transCodeTarget.name(), convertToNativeEncoding(IOUtils.readLines(source, Charsets.UTF_8), transCodeTarget), "\n");
-            } else {
-                FileOutputStream output = FileUtils.openOutputStream(target);
-                try {
-                    IOUtils.copy(source, output);
-                    output.close();
-                } finally {
-                    IOUtils.closeQuietly(output);
-                }
-            }
-            return true;
-        } else {
-            List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
-            if (!isBinary(targetContent)) {
-                List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
-                if (transCodeTarget != null) {
-                    sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
-                }
-                Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
-                if (!patch.getDeltas().isEmpty()) {
-                    targetContent = (List<String>) patch.applyTo(targetContent);
-                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget.name() : "UTF-8", targetContent, "\n");
-                    return true;
-                }
-            } else {
-                byte[] sourceArray = IOUtils.toByteArray(source);
-                FileInputStream input = new FileInputStream(target);
-                FileOutputStream output = null;
-                try {
-                    byte[] targetArray = IOUtils.toByteArray(input);
-                    if (!Arrays.equals(sourceArray, targetArray)) {
-                        output = new FileOutputStream(target);
-                        IOUtils.write(sourceArray, output);
-                        return true;
-                    }
-                } finally {
-                    IOUtils.closeQuietly(input);
-                    IOUtils.closeQuietly(output);
-                }
-            }
-        }
-        return false;
-    }
-
-    private List<String> convertToNativeEncoding(List<String> sourceContent, Charset charset) throws UnsupportedEncodingException {
-        List<String> targetContent = new ArrayList<String>();
-        for (String s : sourceContent) {
-            Matcher m = UNICODE_PATTERN.matcher(s);
-            int start = 0;
-            while (m.find(start)) {
-                String replacement = new String(new byte[]{(byte) Integer.parseInt(m.group(1), 16), (byte) Integer.parseInt(m.group(2), 16)}, "UTF-16");
-                if (charset.decode(charset.encode(replacement)).toString().equals(replacement)) {
-                    s = m.replaceFirst(replacement);
-                }
-                start = m.start() + 1;
-                m = UNICODE_PATTERN.matcher(s);
-            }
-            targetContent.add(s);
-        }
-        return targetContent;
-    }
-
-    private boolean isBinary(List<String> text) {
-        for (String s : text) {
-            if (s.contains("\u0000")) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void updateDependencies(JahiaTemplatesPackage pack, List<String> depends) {

@@ -117,6 +117,7 @@
             <evaluate expression="requestParameters.groupId?:flowScope.groupId" result="flowScope.groupId"/>
             <evaluate expression="requestParameters.srcPath?:flowScope.srcPath" result="flowScope.srcPath"/>
             <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
         </on-entry>
         <transition on="duplicateModule" to="duplicateModule"/>
@@ -130,7 +131,7 @@
             <evaluate expression="requestParameters.newGroupId" result="flowScope.newGroupId"/>
             <evaluate expression="requestParameters.newDstPath" result="flowScope.newDstPath"/>
         </on-entry>
-        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.scmUri, flowScope.moduleId, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
+        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.scmUri, flowScope.moduleId, flowScope.version, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
         <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
             <set name="flashScope.error" value="rootCauseException"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

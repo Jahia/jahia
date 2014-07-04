@@ -78,29 +78,23 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Button Item for create and new
  */
-public class CreateAndNewButtonItem extends CreateButtonItem {
+public class CreateDraftButtonItem extends CreateButtonItem {
 
     @Override
     public Button create(final AbstractContentEngine engine) {
-        final Button button = new Button(Messages.get("properties.saveAndNew.label", "Save and new")) {
-            @Override
-            public void setEnabled(boolean enabled) {
-                int listLimit = ((CreateContentEngine)engine).getListLimit();
-                int childCount = ((CreateContentEngine)engine).getChildCount();
-                enabled &= (listLimit == -1 || childCount + 1 < listLimit);
-
-                super.setEnabled(enabled);
-            }
-        };
+        final Button button = new Button(Messages.get("properties.saveAndDraft.label", "Save as draft"));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                setDraftMode(engine, Boolean.FALSE);
-                save(engine, false, false);
+                setDraftMode(engine, Boolean.TRUE);
+                save(engine, true, false);
             }
         });
         return button;

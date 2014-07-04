@@ -83,6 +83,8 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
@@ -92,7 +94,9 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -106,6 +110,7 @@ public abstract class SaveButtonItem implements ButtonItem {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
+                setDraftMode(engine, Boolean.FALSE);
                 save(engine, true, false);
             }
         });
@@ -281,4 +286,16 @@ public abstract class SaveButtonItem implements ButtonItem {
         engine.setButtonsEnabled(true);
     }
 
+    protected void setDraftMode(AbstractContentEngine engine, Boolean value) {
+        if ((engine.getNode() != null && engine.getNode().isNodeType("jmix:lastPublished")) ||
+                ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished")) {
+            String selectedLanguage = engine.getSelectedLanguage();
+            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedI18NProperties().get(selectedLanguage);
+            if (gwtJahiaNodeProperties == null) {
+                gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>(1);
+                engine.getChangedI18NProperties().put(selectedLanguage, gwtJahiaNodeProperties);
+            }
+            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", value ? "true" : "false"));
+        }
+    }
 }

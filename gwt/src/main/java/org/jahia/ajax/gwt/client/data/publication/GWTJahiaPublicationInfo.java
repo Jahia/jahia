@@ -100,6 +100,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
+    public static final int DRAFT = -13;
 
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
@@ -115,6 +116,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
         statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
         statusToLabel.put(GWTJahiaPublicationInfo.DELETED,"deleted");
+        statusToLabel.put(GWTJahiaPublicationInfo.DRAFT,"draft");
     }
 
     public GWTJahiaPublicationInfo() {
@@ -253,7 +255,8 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return  !isLocked() &&
                 getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
-                getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID
+                getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID &&
+                getStatus() != GWTJahiaPublicationInfo.DRAFT
                 && !getIsNonRootMarkedForDeletion();
     }
 

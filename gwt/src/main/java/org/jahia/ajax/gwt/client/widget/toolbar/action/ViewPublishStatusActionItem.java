@@ -149,6 +149,9 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
                             infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                     "0.7");
+                        }  else if (info.getStatus() == GWTJahiaPublicationInfo.DRAFT) {
+                            infoLayers.addInfoLayer(module, status, "orange", "orange", removeListener, true,
+                                    "0.7");
                         }
                     }
                 }

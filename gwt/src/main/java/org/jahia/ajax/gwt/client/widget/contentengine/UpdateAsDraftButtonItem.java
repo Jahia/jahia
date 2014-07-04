@@ -71,39 +71,46 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.data.RpcMap;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
+
+import java.util.*;
 
 /**
- * Button Item for create and new
+ * Button Item for update - used for edit content.
  */
-public class CreateAndNewButtonItem extends CreateButtonItem {
+public class UpdateAsDraftButtonItem extends UpdateButtonItem {
 
     @Override
     public Button create(final AbstractContentEngine engine) {
-        final Button button = new Button(Messages.get("properties.saveAndNew.label", "Save and new")) {
-            @Override
-            public void setEnabled(boolean enabled) {
-                int listLimit = ((CreateContentEngine)engine).getListLimit();
-                int childCount = ((CreateContentEngine)engine).getChildCount();
-                enabled &= (listLimit == -1 || childCount + 1 < listLimit);
-
-                super.setEnabled(enabled);
-            }
-        };
+        final Button button = new Button(Messages.get("properties.saveAndDraft.label", "Save as draft"));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                setDraftMode(engine, Boolean.FALSE);
-                save(engine, false, false);
+                setDraftMode(engine, Boolean.TRUE);
+                save(engine, true, false);
             }
         });
         return button;
     }
-
 }

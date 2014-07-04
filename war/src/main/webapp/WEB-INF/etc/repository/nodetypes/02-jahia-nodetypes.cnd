@@ -55,6 +55,7 @@
   - j:published (boolean) = false hidden
   - j:lastPublished (date) protected onconflict=ignore
   - j:lastPublishedBy (string) protected nofulltext onconflict=ignore
+  - j:isDraft (boolean) = false i18n hidden nofulltext onconflict=ignore
 
 [jmix:originWS] mixin
   - j:originWS (string) protected nofulltext hidden

@@ -245,9 +245,9 @@ public class JCRPublicationService extends JahiaService {
         LinkedHashSet<String> allIds = new LinkedHashSet<String>();
 
         for (PublicationInfo publicationInfo : publicationInfos) {
-            allIds.addAll(publicationInfo.getAllUuids(false, false));
+            allIds.addAll(publicationInfo.getAllUuids(false, false, false));
             for (PublicationInfo subtree : publicationInfo.getAllReferences()) {
-                allIds.addAll(subtree.getAllUuids(false, false));
+                allIds.addAll(subtree.getAllUuids(false, false, false));
             }
         }
         publish(new ArrayList<String>(allIds), sourceWorkspace, destinationWorkspace, checkPermissions, comments);
@@ -1096,6 +1096,13 @@ public class JCRPublicationService extends JahiaService {
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
+                        if(child.getStatus()==PublicationInfo.DRAFT) {
+                            info.getChildren().clear();
+                            info.getReferences().clear();
+                            info.addChild(child);
+                            info.setStatus(PublicationInfo.DRAFT);
+                            break;
+                        }
                     }
                 } else {
                     boolean hasIndependantPublication = hasIndependantPublication(n);
@@ -1123,8 +1130,9 @@ public class JCRPublicationService extends JahiaService {
 
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
         int status;
-
-        if (!node.checkLanguageValidity(languages)) {
+        if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()){
+            status = PublicationInfo.DRAFT;
+        } else if (!node.checkLanguageValidity(languages)) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
             for (String language : languages) {
                 Locale locale = LanguageCodeConverters.getLocaleFromCode(language);

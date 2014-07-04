@@ -74,15 +74,6 @@ package org.jahia.services.render;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-<<<<<<< .working
-=======
-import org.jahia.services.cache.Cache;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
->>>>>>> .merge-right.r50144
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaNotFoundException;
@@ -93,6 +84,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;

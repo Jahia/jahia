@@ -95,7 +95,10 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.security.license.LicenseCheckException;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.ImportExportService;
@@ -592,72 +595,88 @@ public class ModuleBuildHelper implements InitializingBean {
             FileUtils.deleteQuietly(srcFolder);
         }
 
-        // Update pom information
-        Model pom = null;
         try {
-            pom = PomUtils.read(new File(dstFolder, "pom.xml"));
-        } catch (XmlPullParserException e) {
-            throw new IOException(e);
-        }
-        pom.setArtifactId(artifactId);
-        pom.setGroupId(groupId);
-        String dstVersion = "1.0-SNAPSHOT";
-        pom.setVersion(dstVersion);
-        pom.setName(moduleName);
-        Scm scm = new Scm();
-        scm.setConnection(Constants.SCM_DUMMY_URI);
-        scm.setDeveloperConnection(Constants.SCM_DUMMY_URI);
-        pom.setScm(scm);
-        pom.setDistributionManagement(null);
-        pom.getProperties().remove("jahia-private-app-store");
-        PomUtils.write(pom, new File(dstFolder, "pom.xml"));
-
-        // Remove any SCM files
-        FileUtils.deleteQuietly(new File(dstFolder, ".git"));
-        FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
-        new SvnCleaner().clean(dstFolder);
-
-        // Update import files
-        JahiaTemplatesPackage srcModule = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, new ModuleVersion(srcModuleVersion));
-        JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
-        JCRNodeWrapper dstModuleNode = session.getNode("/modules");
-        if (dstModuleNode.hasNode(artifactId)) {
-            dstModuleNode = dstModuleNode.getNode(artifactId);
-        } else {
-            dstModuleNode = dstModuleNode.addNode(artifactId, "jnt:module");
-        }
-        if (dstModuleNode.hasNode(dstVersion)) {
-            dstModuleNode = dstModuleNode.getNode(dstVersion);
-        } else {
-            dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
-        }
-        for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
-            if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
-                node.copy(dstModuleNode.getPath());
+            // Update pom information
+            Model pom = null;
+            try {
+                pom = PomUtils.read(new File(dstFolder, "pom.xml"));
+            } catch (XmlPullParserException e) {
+                throw new IOException(e);
             }
-        }
-        dstModuleNode.setProperty("j:title", moduleName);
-        List<Value> newValues = new ArrayList<Value>();
-        for (JCRValueWrapper value : srcModuleNode.getProperty("j:installedModules").getValues()) {
-            if (srcModuleId.equals(value.getString())) {
-                newValues.add(new ValueImpl(artifactId));
+            pom.setArtifactId(artifactId);
+            pom.setGroupId(groupId);
+            String dstVersion = "1.0-SNAPSHOT";
+            pom.setVersion(dstVersion);
+            pom.setName(moduleName);
+            Scm scm = new Scm();
+            scm.setConnection(Constants.SCM_DUMMY_URI);
+            scm.setDeveloperConnection(Constants.SCM_DUMMY_URI);
+            pom.setScm(scm);
+            pom.setDistributionManagement(null);
+            pom.getProperties().remove("jahia-private-app-store");
+            PomUtils.write(pom, new File(dstFolder, "pom.xml"));
+
+            // Remove any SCM files
+            FileUtils.deleteQuietly(new File(dstFolder, ".git"));
+            FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
+            new SvnCleaner().clean(dstFolder);
+
+            // Update import files
+            JahiaTemplatesPackage srcModule = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, new ModuleVersion(srcModuleVersion));
+            JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
+            JCRNodeWrapper dstModuleNode = session.getNode("/modules");
+            if (dstModuleNode.hasNode(artifactId)) {
+                dstModuleNode = dstModuleNode.getNode(artifactId);
             } else {
-                newValues.add(value);
+                dstModuleNode = dstModuleNode.addNode(artifactId, "jnt:module");
             }
-        }
-        dstModuleNode.setProperty("j:installedModules", newValues.toArray(new Value[newValues.size()]));
-        session.save();
+            if (dstModuleNode.hasNode(dstVersion)) {
+                dstModuleNode = dstModuleNode.getNode(dstVersion);
+            } else {
+                dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
+            }
+            for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
+                if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
+                    node.copy(dstModuleNode.getPath());
+                }
+            }
+            dstModuleNode.setProperty("j:title", moduleName);
+            if (srcModuleNode.hasProperty("j:installedModules")) {
+                List<Value> newValues = new ArrayList<Value>();
+                for (JCRValueWrapper value : srcModuleNode.getProperty("j:installedModules").getValues()) {
+                    if (srcModuleId.equals(value.getString())) {
+                        newValues.add(new ValueImpl(artifactId));
+                    } else {
+                        newValues.add(value);
+                    }
+                }
+                dstModuleNode.setProperty("j:installedModules", newValues.toArray(new Value[newValues.size()]));
+            }
+            session.save();
 
-        FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModuleId));
-        try {
-            regenerateImportFile(session, new ArrayList<File>(), dstFolder, artifactId, artifactId + "/" + dstVersion);
-        } catch (SAXException e) {
-            throw new IOException("Unable to generate import files in " + dstFolder);
-        } catch (TransformerException e) {
-            throw new IOException("Unable to generate import files in " + dstFolder);
-        }
+            FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModuleId));
+            try {
+                regenerateImportFile(session, new ArrayList<File>(), dstFolder, artifactId, artifactId + "/" + dstVersion);
+            } catch (SAXException e) {
+                throw new IOException("Unable to generate import files in " + dstFolder);
+            } catch (TransformerException e) {
+                throw new IOException("Unable to generate import files in " + dstFolder);
+            }
 
-        return compileAndDeploy(artifactId, dstFolder, session);
+            return compileAndDeploy(artifactId, dstFolder, session);
+        } catch (IOException e) {
+            FileUtils.deleteQuietly(dstFolder);
+            throw e;
+        } catch (RepositoryException e) {
+            FileUtils.deleteQuietly(dstFolder);
+            throw e;
+        } catch (BundleException e) {
+            FileUtils.deleteQuietly(dstFolder);
+            throw e;
+        } catch (RuntimeException e) {
+            FileUtils.deleteQuietly(dstFolder);
+            throw e;
+        }
     }
 
     public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,

@@ -1,7 +1,6 @@
 package org.jahia.modules.tags.actions;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -30,7 +29,7 @@ public class AddTag extends Action{
         JCRNodeWrapper node = resource.getNode();
 
         if(CollectionUtils.isNotEmpty(parameters.get("tag"))){
-            List<String> addedTags = taggingService.tag(node.getPath(), parameters.get("tag"), jcrSessionWrapper);
+            List<String> addedTags = taggingService.tag(node, parameters.get("tag"));
             jcrSessionWrapper.save();
 
             JSONObject result = new JSONObject();
@@ -39,7 +38,6 @@ public class AddTag extends Action{
             for (String addedTag : addedTags){
                 JSONObject addedTagJSON = new JSONObject();
                 addedTagJSON.put("name", addedTag);
-                addedTagJSON.put("escapedName", Text.escape(addedTag));
                 addedTagsJSON.put(addedTagJSON);
             }
             result.put("addedTags", addedTagsJSON);

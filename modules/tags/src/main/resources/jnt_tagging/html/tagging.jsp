@@ -74,7 +74,7 @@
                                         var tagDiv = $('<div></div>').attr('style', 'display:inline');
                                         var tagDisplay = $('<span class="taggeditem"></span>').text(result.addedTags[i].name);
                                         var tagLinkDelete = $('<a></a>').attr('onclick', 'deleteTag_${fn:replace(boundComponent.identifier, "-", "_")}(this); return false;').attr('class', 'delete').attr('href', '#');
-                                        tagLinkDelete.attr('data-tag', result.addedTags[i].escapedName);
+                                        tagLinkDelete.attr('data-tag', result.addedTags[i].name);
                                         tagContainer.append(tagDiv);
                                         if (separator.length > 0) {
                                             tagDiv.append(separator);

@@ -124,44 +124,17 @@ public class TaggingService {
     }
 
     /**
-     * Deletes the specified tag node using specified name for the current site.
-     *
-     * @param tag
-     *            the name of the tag to be deleted
-     * @param siteKey
-     *            the site key for the current site
-     * @return <code>true</code> if the tag node was successfully deleted;
-     *         <code>false</code> if the specified tag does not exist.
+     * @deprecated not relevant anymore, the tags are no longer nodes
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public boolean deleteTag(final String tag, final String siteKey) throws RepositoryException {
-        //TODO
-
-        /*return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                final String tagsPath = getTagsPath(siteKey);
-                JCRNodeWrapper tagNode = null;
-                try {
-                    tagNode = session.getNode(tagsPath + "/" + tag);
-                } catch (PathNotFoundException ex) {
-                    // no tag can be found
-                }
-                if (tagNode != null) {
-                    JCRNodeWrapper parent = tagNode.getParent();
-                    session.checkout(parent);
-                    session.checkout(tagNode);
-                    tagNode.remove();
-                    session.save();
-                }
-                return tagNode != null;
-            }
-        });*/
-        return true;
+        return false;
     }
 
     /**
-     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content
+     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content, Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
@@ -171,7 +144,7 @@ public class TaggingService {
     }
 
     /**
-     * @deprecated the tags are no longer nodes, there are stored directly on the content
+     * @deprecated the tags are no longer nodes, there are stored directly on the content, Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
@@ -181,20 +154,12 @@ public class TaggingService {
     }
 
     /**
-     * Returns the total number of tag references. Returns <code>-1</code> if
-     * the corresponding tag does not exist.
-     * 
-     * @param tag
-     *            the name of the tag to check references
-     * @param siteKey
-     *            the site key for the current site
-     * @return the total number of tag references. Returns <code>-1</code> if
-     *         the corresponding tag does not exist.
+     * @deprecated Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
+    @Deprecated
     public long getTagCount(final String tag, final String siteKey) throws RepositoryException {
-        //TODO
         return 0;
     }
 
@@ -223,39 +188,26 @@ public class TaggingService {
     }
 
     /**
-     * @deprecated Use {@link #tag(String, String)} instead
+     * @deprecated Use {@link #tag(org.jahia.services.content.JCRNodeWrapper, String)} instead
      * @throws RepositoryException
      *             in case of errors
      */
     @Deprecated
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists)
             throws RepositoryException {
-        tag(nodePath, tag);
-        return true;
+        return false;
     }
 
+    /**
+     * Tag the specific node
+     *
+     * @param node the node to tag
+     * @param tags the tag list to apply on the node
+     *
+     * @return the list of added tags
+     * @throws RepositoryException
+     */
     public List<String> tag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<String> addedTags = tag(node.getPath(), tags, session);
-                session.save();
-                return addedTags;
-            }
-        });
-    }
-
-    public List<String> tag(final String nodePath, final List<String> tags) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<String> addedTags = tag(nodePath, tags, session);
-                session.save();
-                return addedTags;
-            }
-        });
-    }
-
-    public List<String> tag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = session.getNode(nodePath);
         List<String> currentTags;
         List<JCRValueWrapper> currentTagValues = new ArrayList<JCRValueWrapper>();
         List<String> addedTags = new ArrayList<String>();
@@ -285,52 +237,56 @@ public class TaggingService {
         return addedTags;
     }
 
+    /**
+     * Tag the specific node
+     *
+     * @param nodePath the path of the node to tag
+     * @param tags the tag list to apply on the node
+     * @param session the session used to perform the operation
+     *
+     * @return the list of added tags
+     * @throws RepositoryException
+     */
+    public List<String> tag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
+        return tag(session.getNode(nodePath), tags);
+    }
+
+    /**
+     * Tag the specific node
+     *
+     * @param node the node to tag
+     * @param tag the tag to apply on the node
+     *
+     * @return the list of added tags
+     * @throws RepositoryException
+     */
     public List<String> tag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<String> addedTags = tag(node.getPath(), tag, session);
-                session.save();
-                return addedTags;
-            }
-        });
+        return tag(node, Lists.newArrayList(tag));
     }
 
-    public List<String> tag(final String nodePath, final String tag) throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<String> addedTags = tag(nodePath, tag, session);
-                session.save();
-                return addedTags;
-            }
-        });
-    }
-
+    /**
+     * Tag the specific node
+     *
+     * @param nodePath the path of the node to tag
+     * @param tag the tag to apply on the node
+     * @param session the session used to perform the operation
+     *
+     * @return the list of added tags
+     * @throws RepositoryException
+     */
     public List<String> tag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
-         return tag(nodePath, Lists.newArrayList(tag), session);
+         return tag(session.getNode(nodePath), Lists.newArrayList(tag));
     }
 
+    /**
+     * Untag the specific node
+     *
+     * @param node the node to untag
+     * @param tags the tag list to remove from the node
+     *
+     * @throws RepositoryException
+     */
     public void untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                untag(node.getPath(), tags, session);
-                session.save();
-                return null;
-            }
-        });
-    }
-
-    public void untag(final String nodePath, final List<String> tags) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                untag(nodePath, tags, session);
-                session.save();
-                return null;
-            }
-        });
-    }
-
-    public void untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper node = session.getNode(nodePath);
         ArrayList<String> currentTags = new ArrayList<String>();
         boolean updated = false;
         if(node.isNodeType(JMIX_TAGGED)){
@@ -354,30 +310,58 @@ public class TaggingService {
         }
     }
 
+    /**
+     * Untag the specific node
+     *
+     * @param nodePath the path of the node to untag
+     * @param tags the tag list to remove from the node
+     * @param session the session used to perform the operation
+     *
+     * @throws RepositoryException
+     */
+    public void untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
+        untag(session.getNode(nodePath), tags);
+    }
+
+    /**
+     * Untag the specific node
+     *
+     * @param node the node to untag
+     * @param tag the tag to remove from the node
+     *
+     * @throws RepositoryException
+     */
     public void untag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(node.getSession().getUser().getUsername(), node.getSession().getWorkspace().getName(),((JCRSessionWrapper)node.getSession()).getLocale(), new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                untag(node.getPath(), tag, session);
-                session.save();
-                return null;
-            }
-        });
+        untag(node, Lists.newArrayList(tag));
     }
 
-    public void untag(final String nodePath, final String tag) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                untag(nodePath, tag, session);
-                session.save();
-                return null;
-            }
-        });
-    }
-
+    /**
+     * Untag the specific node
+     *
+     * @param nodePath the path of the node to untag
+     * @param tag the tag to remove from the node
+     * @param session the session used to perform the operation
+     *
+     * @throws RepositoryException
+     */
     public void untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
-        untag(nodePath, Lists.newArrayList(tag), session);
+        untag(session.getNode(nodePath), Lists.newArrayList(tag));
     }
 
+    /**
+     * Search for tags
+     *
+     * @param prefix prefix used to search tags
+     * @param startPath where search the tags, default: /sites
+     * @param mincount min count of a tag to be return
+     * @param limit limit of result
+     * @param offset offset for pagers
+     * @param sortByCount
+     * @param sessionWrapper
+     *
+     * @return The map of matching tags, value and count
+     * @throws RepositoryException
+     */
     public Map<String, Long> searchTags(String prefix, String startPath, Long mincount, Long limit, Long offset,
                                         boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
         LinkedHashMap<String, Long> tagsMap = new LinkedHashMap<String, Long>();

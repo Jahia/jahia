@@ -50,7 +50,7 @@
                                 <span class="taggeditem">${fn:escapeXml(tag.string)}</span>
                                 <c:if test="${not nodeLocked}">
                                     <a class="delete" onclick="deleteTag_${fn:replace(boundComponent.identifier, "-", "_")} (this); return false;"
-                                       data-tag="${functions:escapePath(tag.string)}" href="#"></a>${!status.last ? separator : ''}
+                                       data-tag="${fn:escapeXml(tag.string)}" href="#"></a>${!status.last ? separator : ''}
                                 </c:if>
                             </div>
                         </c:forEach>

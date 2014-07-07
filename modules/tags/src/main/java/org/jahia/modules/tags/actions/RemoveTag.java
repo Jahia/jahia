@@ -72,7 +72,6 @@
 package org.jahia.modules.tags.actions;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.jackrabbit.util.Text;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -96,20 +95,10 @@ public class RemoveTag extends Action {
         JCRSessionWrapper jcrSessionWrapper = resource.getNode().getSession();
         JCRNodeWrapper node = resource.getNode();
         Map<String,String> res = new HashMap<String,String>();
-        boolean unescape = parameters.get("unescape") != null && parameters.get("unescape").size() > 0 ? Boolean.valueOf(parameters.get("unescape").get(0)) : false;
 
         if(CollectionUtils.isNotEmpty(parameters.get("tag"))){
-            if(unescape){
-                List<String> tags = new LinkedList<String>();
-                for (String tag : parameters.get("tag")){
-                    tags.add(Text.unescape(tag));
-                }
-                taggingService.untag(node.getPath(), tags, session);
-            }else {
-                taggingService.untag(node.getPath(), parameters.get("tag"), session);
-            }
+            taggingService.untag(node, parameters.get("tag"));
             jcrSessionWrapper.save();
-
             res.put("size", node.hasProperty("j:tagList") ? String.valueOf(node.getProperty("j:tagList").getValues().length) : "0");
         }
 

@@ -67,7 +67,7 @@
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = metadata
  // j:tags and j:newTag deprecated
- - j:tagList (string,tag[autocomplete,separator=',']) facetable multiple
+ - j:tagList (string,tag[autocomplete,separator=',']) facetable nofulltext multiple
  - j:tags (weakreference) multiple hidden
  - j:newTag (string) hidden indexed=no
 

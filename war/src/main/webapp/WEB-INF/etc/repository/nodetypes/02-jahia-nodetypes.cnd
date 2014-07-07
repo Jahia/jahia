@@ -883,7 +883,7 @@ extends = jnt:content
  + * (jnt:namespaceDefinition)
  + * (jnt:nodeType)
 
-[jnt:nodeType] > nt:base, mix:title orderable abstract
+[jnt:nodeType] > nt:base, mix:title, jmix:i18n orderable abstract
  - jcr:description (string,textarea) i18n itemtype = content
  + * (jnt:propertyDefinition) = jnt:propertyDefinition
  + * (jnt:childNodeDefinition) = jnt:childNodeDefinition
@@ -903,7 +903,7 @@ extends = jnt:content
  - j:primaryItemName (NAME,choicelist[nodes='.;jnt:itemDefinition;name'])
  - j:itemsType (STRING,choicelist) < 'content','metadata','layout','options'
 
-[jnt:itemDefinition] > mix:title abstract
+[jnt:itemDefinition] > mix:title, jmix:i18n abstract
  - jcr:title (STRING) i18n boost=2.0
 
 [jnt:propertyDefinition] > jnt:itemDefinition

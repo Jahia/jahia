@@ -63,8 +63,8 @@ public class AddTagContainer extends HorizontalPanel {
      */
     public class TagComboBox extends ComboBox<GWTJahiaValueDisplayBean> {
         public TagComboBox(boolean autoComplete) {
+            setDisplayField("display");
             if (autoComplete) {
-                setDisplayField("display");
                 final ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>(new BaseListLoader(
                         new RpcProxy<List<GWTJahiaValueDisplayBean>>() {
                             @Override
@@ -78,25 +78,23 @@ public class AddTagContainer extends HorizontalPanel {
                 setStore(store);
                 setTypeAhead(true);
                 setTypeAheadDelay(100);
-                setHideTrigger(true);
-                addKeyListener(new com.extjs.gxt.ui.client.event.KeyListener() {
-                    @Override
-                    public void componentKeyPress(ComponentEvent event) {
-                        if (event.getEvent().getKeyCode() == 13) {
-                            addTag();
-                        }
-                    }
-                });
                 setTriggerAction(TriggerAction.ALL);
                 setMinChars(2);
                 setQueryDelay(100);
             } else {
                 // create an empty store
-                setHideTrigger(true);
-                setDisplayField("display");
                 final ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                 setStore(store);
             }
+            setHideTrigger(true);
+            addKeyListener(new com.extjs.gxt.ui.client.event.KeyListener() {
+                @Override
+                public void componentKeyPress(ComponentEvent event) {
+                    if (event.getEvent().getKeyCode() == 13) {
+                        addTag();
+                    }
+                }
+            });
         }
     }
 }

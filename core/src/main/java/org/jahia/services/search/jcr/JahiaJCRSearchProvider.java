@@ -771,14 +771,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
                         && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
-                    try {
-                        JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(), params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
-                        if (tag != null) {
-                            addConstraint(textSearchConstraints, "or", getPropertyName(Constants.TAGS, xpath) + "=" + stringToJCRSearchExp(tag.getIdentifier()));
-                        }
-                    } catch (RepositoryException e) {
-                        logger.warn("Error resolving tag for search", e);
-                    }
+                    addConstraint(textSearchConstraints, "or", getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(textSearch.getTerm()));
                 }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, "and", "("

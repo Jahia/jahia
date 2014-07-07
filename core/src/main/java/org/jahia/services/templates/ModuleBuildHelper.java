@@ -663,6 +663,24 @@ public class ModuleBuildHelper implements InitializingBean {
                 throw new IOException("Unable to generate import files in " + dstFolder);
             }
 
+            // Rename resource bundle
+            File rbFolder = new File(dstFolder, "src/main/resources/resources");
+            if (rbFolder.exists()) {
+                Pattern rbPattern = Pattern.compile("(" + srcModuleId
+                        + "|" + StringUtils.replace(srcModule.getName(), " ", "")
+                        + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2}(-[A-Z]{2})?)?.properties");
+                for (File f : rbFolder.listFiles()) {
+                    Matcher m = rbPattern.matcher(f.getName());
+                    if (m.matches()) {
+                        if (m.group(2) == null) {
+                            f.renameTo(new File(rbFolder, artifactId + ".properties"));
+                        } else {
+                            f.renameTo(new File(rbFolder, artifactId + m.group(2) + ".properties"));
+                        }
+                    }
+                }
+            }
+
             return compileAndDeploy(artifactId, dstFolder, session);
         } catch (IOException e) {
             FileUtils.deleteQuietly(dstFolder);
@@ -680,7 +698,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,
-                                      String moduleId, String moduleIdWithVersion) throws RepositoryException, SAXException, IOException, TransformerException {
+                                     String moduleId, String moduleIdWithVersion) throws RepositoryException, SAXException, IOException, TransformerException {
         File f = File.createTempFile("import", null);
 
         Map<String, Object> params = new HashMap<String, Object>();

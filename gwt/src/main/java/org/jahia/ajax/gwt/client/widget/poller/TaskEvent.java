@@ -74,17 +74,12 @@ package org.jahia.ajax.gwt.client.widget.poller;
 import java.io.Serializable;
 
 import org.atmosphere.gwt20.client.managed.RPCEvent;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
-import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryProcess;
 
 public class TaskEvent extends RPCEvent implements Serializable {
     private static final long serialVersionUID = 7742645002324255207L;
     private Integer numberOfTasks;
-    private GWTJahiaWorkflowTask newTask;
-    private GWTJahiaWorkflowHistoryProcess endedWorkflow;
-
-    public TaskEvent() {
-    }
+    private String newTask;
+    private String endedWorkflow;
 
     public Integer getNumberOfTasks() {
         return numberOfTasks;
@@ -94,20 +89,20 @@ public class TaskEvent extends RPCEvent implements Serializable {
         this.numberOfTasks = numberOfTasks;
     }
 
-    public GWTJahiaWorkflowTask getNewTask() {
+    public String getNewTask() {
         return newTask;
     }
 
-    public void setNewTask(GWTJahiaWorkflowTask newTask) {
-        this.newTask = newTask;
+    public void setNewTask(String newTaskDisplayName) {
+        this.newTask = newTaskDisplayName;
     }
 
-    public GWTJahiaWorkflowHistoryProcess getEndedWorkflow() {
+    public String getEndedWorkflow() {
         return endedWorkflow;
     }
 
-    public void setEndedWorkflow(GWTJahiaWorkflowHistoryProcess endedWorkflow) {
-        this.endedWorkflow = endedWorkflow;
+    public void setEndedWorkflow(String endedWorkflowDisplayName) {
+        this.endedWorkflow = endedWorkflowDisplayName;
     }
 }
 

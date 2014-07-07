@@ -664,7 +664,7 @@ public class WorkflowHelper {
                     preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                 }
                 workflow = service.getHistoryWorkflow(workflow.getProcessId(), workflow.getProvider(), preferredLocale);
-                taskEvent.setEndedWorkflow(getGWTJahiaHistoryProcess(workflow));
+                taskEvent.setEndedWorkflow((StringUtils.defaultString(workflow.getDisplayName(), workflow.getName())));
 
                 broadcaster.broadcast(taskEvent);
             }
@@ -706,7 +706,7 @@ public class WorkflowHelper {
                                         preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                                     }
                                     task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
-                                    taskEvent.setNewTask(getGWTJahiaWorkflowTask(task));
+                                    taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                                 }
                                 taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser));
                                 if (!newTask && user.equals(task.getAssignee())) {

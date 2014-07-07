@@ -105,9 +105,8 @@ public class ReleaseModuleActionItem extends BaseActionItem {
                     public void onApplicationFailure(Throwable caught) {
                         linker.loaded();
                         MessageBox.alert(
-                                Messages.get("label.error", "Error"),
-                                Messages.get("label.releaseModule.failure", "Module release failed") + ":\n"
-                                        + caught.getMessage(), null);
+                                Messages.get("label.releaseModule.failure", "Module release failed") ,
+                                Messages.get(caught.getMessage()), null);
                     }
 
                     public void onSuccess(RpcMap result) {

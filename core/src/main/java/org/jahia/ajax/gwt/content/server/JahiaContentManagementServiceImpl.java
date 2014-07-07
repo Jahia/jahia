@@ -1558,7 +1558,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             noChanges = !moduleHelper.saveAndCommitModule(moduleId, message, retrieveCurrentSession(null));
         } catch (Exception e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.synchronize.sources", getUILocale(), ":\\n" + e.getLocalizedMessage()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.synchronize.sources", getUILocale(), "\n" + e.getLocalizedMessage()));
         }
 
         if (noChanges) {
@@ -1666,7 +1666,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final String nextVersion = releaseInfo.getNextVersion();
             logger.error("Error during releasing version " + nextVersion + " of module " + moduleId, e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.release.module", getUILocale(), nextVersion,
-                    moduleId, e.getLocalizedMessage()));
+                    moduleId, "\n" + e.getLocalizedMessage()));
         }
     }
 

@@ -71,15 +71,22 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.button.ToolButton;
-import com.extjs.gxt.ui.client.event.*;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
-import com.google.gwt.user.client.ui.HTML;
-import com.google.gwt.user.client.DOM;
 import com.allen_sauer.gwt.log.client.Log;
+import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Window;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ToolButton;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.URL;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: rfelden
@@ -87,13 +94,13 @@ import org.jahia.ajax.gwt.client.util.URL;
  */
 public class ImagePopup extends Window {
 
-    public ImagePopup(final GWTJahiaNode n) {
-        super() ;
+    public ImagePopup(final GWTJahiaNode n, final Linker linker) {
+        super();
 
         int w = Integer.parseInt((String) n.get("j:width"));
         int h = Integer.parseInt((String) n.get("j:height"));
-        final float ratio = Float.valueOf(w+18)/Float.valueOf(h+34) ;
-        Log.debug("ratio: " + ratio) ;
+        final float ratio = Float.valueOf(w + 18) / Float.valueOf(h + 34);
+        Log.debug("ratio: " + ratio);
         if (w > 800) {
             h = h * 800 / w;
             w = 800;
@@ -105,39 +112,57 @@ public class ImagePopup extends Window {
 
         //setLayout(new FitLayout()) ;
         final HTML img = new HTML("<img src=\"" + URL.appendTimestamp(n.getUrl()) + "\" width=\"" + w +
-                "\" height=\"" + h + "\" alt=\"" + SafeHtmlUtils.htmlEscape(n.getName()) + "\" />") ;
+                "\" height=\"" + h + "\" alt=\"" + SafeHtmlUtils.htmlEscape(n.getName()) + "\" />");
         img.setSize(String.valueOf(w) + "px", String.valueOf(h) + "px");
 
         setSize(w + 18, h + 34);
-        add(img) ;
+        add(img);
         setModal(true);
         setHeaderVisible(true);
         setAutoHide(false);
         setId("JahiaGxtImagePopup");
+        if (linker instanceof ManagerLinker && ((ManagerLinker) linker).getBottomRightObject() instanceof PickedContentView) {
+            Button saveButton = new Button(Messages.get("label.save"));
+            saveButton.addSelectionListener(new SelectionListener<ButtonEvent>() {
+                @Override
+                public void componentSelected(ButtonEvent ce) {
+                    BottomRightComponent buttonBar = ((ManagerLinker) linker).getBottomRightObject();
+                    if (buttonBar instanceof PickedContentView) {
+                        List<GWTJahiaNode> sel = new ArrayList<GWTJahiaNode>();
+                        sel.add(n);
+                        ((PickedContentView) buttonBar).setSelection(sel);
+                        ((PickedContentView) buttonBar).getSaveButton().fireEvent(Events.Select);
+                        hide();
+                    }
+                }
+            });
+            getHeader().addTool(saveButton);
+        }
+
         getHeader().addTool(new ToolButton("x-tool-refresh", new SelectionListener<IconButtonEvent>() {
             public void componentSelected(IconButtonEvent event) { // TODO improve ratio button
-                double expectedHeight = Math.floor((getWidth())/ratio) ;
+                double expectedHeight = Math.floor((getWidth()) / ratio);
                 if (expectedHeight > getHeight()) {
                     setHeight(Double.valueOf(expectedHeight).intValue());
                 }
-                double expectedWidth = Math.floor((getHeight())*ratio) ;
+                double expectedWidth = Math.floor((getHeight()) * ratio);
                 if (expectedWidth > getWidth()) {
-                    setWidth(Double.valueOf(expectedWidth).intValue()) ;
+                    setWidth(Double.valueOf(expectedWidth).intValue());
                 }
-                fireEvent(Events.Resize) ;
+                fireEvent(Events.Resize);
             }
         }));
 
         addListener(Events.Resize, new Listener<WindowEvent>() {
             public void handleEvent(WindowEvent event) {
-                DOM.getChild(img.getElement(), 0).setAttribute("width", String.valueOf(getWidth()-18));
-                DOM.getChild(img.getElement(), 0).setAttribute("height", String.valueOf(getHeight()-34));
+                DOM.getChild(img.getElement(), 0).setAttribute("width", String.valueOf(getWidth() - 18));
+                DOM.getChild(img.getElement(), 0).setAttribute("height", String.valueOf(getHeight() - 34));
             }
         });
     }
 
-    public static void popImage(GWTJahiaNode n) {
-        new ImagePopup(n).show();
+    public static void popImage(GWTJahiaNode n, Linker linker) {
+        new ImagePopup(n, linker).show();
     }
 
 }

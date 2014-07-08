@@ -87,11 +87,13 @@ import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.toolbar.*;
+import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTColumn;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.List;
 
@@ -201,10 +203,16 @@ public class ThumbView extends AbstractView {
                 List<GWTJahiaNode> selection = (List<GWTJahiaNode>) getLinker().getTableSelection();
                 if (selection != null && selection.size() > 0) {
                     GWTJahiaNode selected = selection.get(0);
+                    BottomRightComponent buttonBar = getLinker().getBottomRightObject();
+                    if (buttonBar instanceof PickedContentView) {
+                        ((PickedContentView) buttonBar).setSelection(selection);
+                        ((PickedContentView) buttonBar).getSaveButton().fireEvent(Events.Select);
+                        return;
+                    }
                     if (selected.isFile()) {
                         if (config.isEnableFileDoubleClick()) {
                             if (selected.isDisplayable()) {
-                                ImagePopup.popImage(selected);
+                                ImagePopup.popImage(selected, getLinker());
                             } else {
                                 ContentActions.download(getLinker());
                             }

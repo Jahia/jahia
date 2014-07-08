@@ -86,7 +86,7 @@ import java.util.List;
 public class PreviewActionItem extends BaseActionItem  {
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        ImagePopup.popImage(lh.getSingleSelection());
+        ImagePopup.popImage(lh.getSingleSelection(), linker);
     }
 
     public void handleNewLinkerSelection() {

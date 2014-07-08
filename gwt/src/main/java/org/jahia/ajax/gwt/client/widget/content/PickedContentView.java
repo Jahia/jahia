@@ -382,6 +382,10 @@ public class PickedContentView extends BottomRightComponent {
         this.saveButton = saveButton;
     }
 
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
     public native String getThumbsListTemplate() /*-{
           return ['<tpl for=".">',
                 '<div class="thumb-wrap" id="{name}">',

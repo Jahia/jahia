@@ -104,6 +104,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.NodeColumnConfigList;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.*;
 
@@ -156,9 +157,15 @@ public class TableView extends AbstractView {
                 if (sel != null && sel.size() == 1) {
                     GWTJahiaNode el = sel.get(0);
                     if (el.isFile()) {
+                        BottomRightComponent buttonBar = getLinker().getBottomRightObject();
+                        if (buttonBar instanceof PickedContentView) {
+                            ((PickedContentView) buttonBar).setSelection(sel);
+                            ((PickedContentView) buttonBar).getSaveButton().fireEvent(Events.Select);
+                            return;
+                        }
                         if (config.isEnableFileDoubleClick()) {
                             if (el.isDisplayable()) {
-                                ImagePopup.popImage(el);
+                                ImagePopup.popImage(el, getLinker());
                             } else {
                                 ContentActions.download(getLinker());
                             }

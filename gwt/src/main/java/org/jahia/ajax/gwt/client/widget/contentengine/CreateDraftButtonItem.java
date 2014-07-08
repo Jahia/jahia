@@ -97,6 +97,9 @@ public class CreateDraftButtonItem extends CreateButtonItem {
                 save(engine, true, false);
             }
         });
+        if(!isNodeOfJmixLastPublishedType(engine)) {
+            button.setVisible(false);
+        }
         return button;
     }
 

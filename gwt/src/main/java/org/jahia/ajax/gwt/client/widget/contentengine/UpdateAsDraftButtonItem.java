@@ -111,6 +111,9 @@ public class UpdateAsDraftButtonItem extends UpdateButtonItem {
                 save(engine, true, false);
             }
         });
+        if(!isNodeOfJmixLastPublishedType(engine)) {
+            button.setVisible(false);
+        }
         return button;
     }
 }

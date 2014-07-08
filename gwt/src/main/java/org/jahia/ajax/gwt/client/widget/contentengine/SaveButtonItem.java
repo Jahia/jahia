@@ -287,8 +287,7 @@ public abstract class SaveButtonItem implements ButtonItem {
     }
 
     protected void setDraftMode(AbstractContentEngine engine, Boolean value) {
-        if ((engine.getNode() != null && engine.getNode().isNodeType("jmix:lastPublished")) ||
-                ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished")) {
+        if (isNodeOfJmixLastPublishedType(engine)) {
             String selectedLanguage = engine.getSelectedLanguage();
             List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedI18NProperties().get(selectedLanguage);
             if (gwtJahiaNodeProperties == null) {
@@ -297,5 +296,10 @@ public abstract class SaveButtonItem implements ButtonItem {
             }
             gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", value ? "true" : "false"));
         }
+    }
+
+    protected boolean isNodeOfJmixLastPublishedType(AbstractContentEngine engine) {
+        return (engine.getNode() != null && engine.getNode().isNodeType("jmix:lastPublished")) ||
+           ((engine instanceof CreateContentEngine) && ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished"));
     }
 }

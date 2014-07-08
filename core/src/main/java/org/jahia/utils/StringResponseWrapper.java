@@ -185,4 +185,10 @@ public class StringResponseWrapper extends HttpServletResponseWrapper {
     public void sendRedirect(String location) throws IOException {
         this.redirect = location;
     }
+    
+    @Override
+    public void flushBuffer() throws IOException {
+        sos.flush();
+        sw.flush();
+    }
 }

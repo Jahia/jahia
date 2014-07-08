@@ -324,6 +324,18 @@
                 <bean class="org.jahia.services.content.interceptor.URLInterceptor" parent="abstractRichTextPropertyInterceptor">
                     <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                 </bean>
+                <bean class="org.jahia.services.content.interceptor.TagInterceptor">
+                    <property name="nodeTypes">
+                        <list>
+                            <value>jmix:tagged</value>
+                        </list>
+                    </property>
+                    <property name="propertyNames">
+                        <list>
+                            <value>j:tagList</value>
+                        </list>
+                    </property>
+                </bean>
             </list>
         </property>
     </bean>

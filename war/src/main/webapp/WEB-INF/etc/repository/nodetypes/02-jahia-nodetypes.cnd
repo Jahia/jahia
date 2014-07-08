@@ -45,7 +45,7 @@
 [jmix:keywords] mixin
  extends = nt:hierarchyNode, jnt:content, jnt:page
  itemtype = metadata
- - j:keywords (string,tag) multiple
+ - j:keywords (string) multiple
 
 [jmix:thumbnail] mixin
  + * (jnt:resource)

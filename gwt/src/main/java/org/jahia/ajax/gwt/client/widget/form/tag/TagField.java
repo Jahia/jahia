@@ -85,7 +85,7 @@ public class TagField extends MultiField<List<String>> {
 
     private void addSplitedTag(String tag){
         if(tag != null && tag.trim().length() > 0){
-            tag = tag.trim();
+            tag = tag.trim().toLowerCase();
             boolean exist = false;
             for (Component tagComponent : displayTagContainer.getItems()){
                 if(tagComponent instanceof TagButton && tag.equals(((TagButton) tagComponent).getTagField().getValue())){

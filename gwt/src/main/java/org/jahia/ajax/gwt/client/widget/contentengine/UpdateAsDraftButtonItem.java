@@ -72,8 +72,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.data.RpcMap;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -111,9 +110,15 @@ public class UpdateAsDraftButtonItem extends UpdateButtonItem {
                 save(engine, true, false);
             }
         });
-        if(!isNodeOfJmixLastPublishedType(engine)) {
-            button.setVisible(false);
-        }
+        button.setVisible(false);
+        button.addListener(Events.Enable,new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                if(isNodeOfJmixLastPublishedType(engine)) {
+                    button.setVisible(true);
+                }
+            }
+        });
         return button;
     }
 }

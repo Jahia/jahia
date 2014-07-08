@@ -6,6 +6,7 @@
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="query" uri="http://www.jahia.org/tags/queryLib" %>
 <%@ taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
+<%@ taglib prefix="uiComponents" uri="http://www.jahia.org/tags/uiComponentsLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="out" type="java.io.PrintWriter"--%>
 <%--@elvariable id="script" type="org.jahia.services.render.scripting.Script"--%>
@@ -19,6 +20,7 @@
 <template:addResources type="css" resources="jqcloud.css"/>
 <template:addResources type="javascript" resources="jquery.min.js,jqcloud.js"/>
 <c:set var="edit" value="${renderContext.editMode}" />
+<c:set var="boundComponent" value="${uiComponents:getBindedComponent(currentNode, renderContext, 'j:bindedComponent')}"/>
 
 <c:set var="usageThreshold" value="${not empty currentNode.properties['j:usageThreshold'] ? currentNode.properties['j:usageThreshold'].string : 1}"/>
 <c:set var="numberOfTagsLimit" value="${not empty currentNode.properties['limit'] ? currentNode.properties['limit'].string : 50}"/>
@@ -31,7 +33,7 @@
 
     <query:definition var="listQuery" scope="request">
         <query:selector nodeTypeName="nt:base"/>
-        <query:descendantNode path="${currentNode.properties['relative'].boolean ? renderContext.mainResource.node.path : renderContext.site.path}"/>
+        <query:descendantNode path="${currentNode.properties['relative'].boolean ? boundComponent.path : renderContext.site.path}"/>
         <query:column columnName="rep:facet(nodetype=jmix:tagged&key=j:tagList&facet.mincount=${usageThreshold}&facet.limit=${numberOfTagsLimit}&facet.sort=true)" propertyName="j:tagList"/>
     </query:definition>
     <jcr:jqom var="result" qomBeanName="listQuery" scope="request"/>

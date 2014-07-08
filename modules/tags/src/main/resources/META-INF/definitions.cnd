@@ -3,7 +3,7 @@
 
 [jmix:tagsContent] > jmix:droppableContent, jmix:accessControllableContent  mixin
 
-[jnt:tagCloud] > jnt:content, mix:title, jmix:tagsContent
+[jnt:tagCloud] > jnt:content, mix:title, jmix:tagsContent, jmix:bindedComponent
  - j:usageThreshold (long) = 1 indexed=no
  - limit (long) = 50 indexed=no
  - resultPage (weakreference) indexed=no < jnt:page

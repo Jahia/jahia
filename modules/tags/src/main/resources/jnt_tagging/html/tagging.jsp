@@ -50,18 +50,18 @@
             var separator = ',';
             var $this = $(inputSelector);
             if ($this.val().length > 0) {
-                var tagContainer = jQuery('#jahia-tags-${boundComponent.identifier}');
-                if (tagContainer.length > 0 && tagContainer.find("span:contains('" + $this.val() + "')").length == 0) {
-                    var options = {
-                        url: "<c:url value="${url.base}${boundComponent.path}"/>.addTag.do",
-                        type: "POST",
-                        dataType: "json",
-                        data: {tag: $this.val().split(',')},
-                        traditional: true
-                    };
-                    $.ajax(options)
-                            .done(function (result) {
-                                if (result.addedTags && result.addedTags.length > 0) {
+                var options = {
+                    url: "<c:url value="${url.base}${boundComponent.path}"/>.addTag.do",
+                    type: "POST",
+                    dataType: "json",
+                    data: {tag: $this.val().split(',')},
+                    traditional: true
+                };
+                $.ajax(options)
+                        .done(function (result) {
+                            var tagContainer = jQuery('#jahia-tags-${boundComponent.identifier}');
+                            if (result.addedTags && result.addedTags.length > 0) {
+                                if (tagContainer.length > 0) {
                                     for (var i = 0; i < result.addedTags.length; i++) {
                                         var $noTaggedItem = $(".notaggeditem${boundComponent.identifier}");
                                         if ($noTaggedItem.length > 0 && $noTaggedItem.is(":visible")) {
@@ -81,11 +81,12 @@
                                         }
                                         tagDiv.append(tagDisplay);
                                         tagDiv.append(tagLinkDelete);
-                                        $this.val("");
                                     }
                                 }
-                            });
-                }
+                                $this.val("");
+                            }
+                        });
+
             }
             return false;
         }

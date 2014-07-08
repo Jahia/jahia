@@ -650,17 +650,23 @@ public class UIConfigHelper {
                     defaultLocation = defaultLocation.replace("$user",jahiaUser.getLocalPath());
                 }
                 gwtConfig.setDefaultLocation(defaultLocation);
-                JCRNodeWrapper contextNode;
-                JCRSiteNode site;
-                if(config.getSitesLocation().equals("/sites/systemsite")) {
-                    contextNode = session.getNode("/sites/systemsite");
-                    site = contextNode.getResolveSite();
-                } else if (contextPath == null ) {
+                JCRNodeWrapper contextNode = null;
+                JCRSiteNode site = null;
+                if (contextPath == null ) {
                     int nodeNameIndex = StringUtils.indexOf(defaultLocation,".",StringUtils.lastIndexOf(defaultLocation,"/"));
-                    contextNode = session.getNode(StringUtils.substring(defaultLocation,0,nodeNameIndex));
-                    site = contextNode.getResolveSite();
+                    contextPath = StringUtils.substring(defaultLocation,0,nodeNameIndex);
+                    if (session.nodeExists(contextPath)) {
+                        contextNode = session.getNode(contextPath);
+                        site = contextNode.getResolveSite();
+                    }
                 } else {
-                    contextNode = session.getNode(contextPath);
+                    if (session.nodeExists(contextPath)) {
+                        contextNode = session.getNode(contextPath);
+                        site = contextNode.getResolveSite();
+                    }
+                }
+                if (site == null) {
+                    contextNode = session.getNode("/sites/systemsite");
                     site = contextNode.getResolveSite();
                 }
 

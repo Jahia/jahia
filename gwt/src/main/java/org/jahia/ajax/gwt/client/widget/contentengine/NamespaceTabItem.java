@@ -76,13 +76,11 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * Definition Tab Item
@@ -132,26 +130,25 @@ public class NamespaceTabItem extends ContentTabItem {
             }
 
             String nodeName = engine.getNodeName();
-            if (nodeName != null) {
-                if (nodeName.equals("primary-nodetype")) {
-                    nodeName = "jnt:newNodeType";
-                } else if (nodeName.equals("mixin-nodetype")) {
-                    nodeName = "jmix:newMixin";
-                }
+            if (nodeName != null && !nodeName.equals("primary-nodetype") && !nodeName.equals("mixin-nodetype")) {
+                nameText.setValue(nodeName);
             }
-
-            nameText.setValue(nodeName);
         }
     }
 
     private class NameField extends MultiField<String> {
         private transient SimpleComboBox<String> namespaces;
-        private transient TextField<String> name;
+        private transient TextField<String> localName;
 
         public NameField() {
-            namespaces = new SimpleComboBox<String>();
+            localName = new TextField<String>();
+            namespaces = new SimpleComboBox<String>() {
+                @Override
+                public void markInvalid(String msg) {
+                    localName.markInvalid(msg);
+                }
+            };
             namespaces.setTriggerAction(ComboBox.TriggerAction.ALL);
-            name = new TextField<String>();
             JahiaContentManagementService.App.getInstance().getNamespaces(
                     new AsyncCallback<List<String>>() {
                         @Override
@@ -167,20 +164,21 @@ public class NamespaceTabItem extends ContentTabItem {
                     }
             );
             add(namespaces);
-            add(name);
-            name.setValidator(new Validator() {
+            add(localName);
+            localName.setValidator(new Validator() {
                 @Override
                 public String validate(Field<?> field, String value) {
                     return value == null || !value.matches("[A-Za-z0-9_]+") ? Messages.get(
                             "label.error.invalidNodeTypeName", "The entered node type name is not valid."
-                                    + " The value should match the following pattern: [A-Za-z0-9_]+") : null;
+                                    + " The value should match the following pattern: [A-Za-z0-9_]+"
+                    ) : null;
                 }
             });
         }
 
         @Override
         public String getValue() {
-            return namespaces.getSimpleValue() == null || namespaces.getSimpleValue().trim().equals("")?name.getValue():namespaces.getSimpleValue() + ":" + name.getValue();
+            return namespaces.getSimpleValue() == null || namespaces.getSimpleValue().trim().equals("") ? localName.getValue() : namespaces.getSimpleValue() + ":" + localName.getValue();
         }
 
         @Override
@@ -190,18 +188,19 @@ public class NamespaceTabItem extends ContentTabItem {
                 namespaces.add(s[0]);
                 namespaces.setSimpleValue(s[0]);
                 namespaces.select(namespaces.getStore().findModel(s[0]));
-                name.setValue(s[1]);
+                localName.setValue(s[1]);
             } else {
-                name.setValue(value);
+                localName.setValue(value);
             }
         }
 
         public void setMaxLength(int maxLength) {
-            name.setMaxLength(maxLength);
+            localName.setMaxLength(maxLength);
         }
 
         public void setAllowBlank(boolean allowBlank) {
-            name.setAllowBlank(allowBlank);
+            namespaces.setAllowBlank(allowBlank);
+            localName.setAllowBlank(allowBlank);
         }
     }
 }

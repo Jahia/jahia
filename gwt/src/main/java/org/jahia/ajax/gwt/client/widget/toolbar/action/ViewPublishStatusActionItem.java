@@ -127,13 +127,8 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                                     "0.7");
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             lastUnpublished = node.getPath();
-                            if (info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
-                                infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
+                            infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
                                         "0.7");
-                            } else {
-                                infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
-                                        "0.7");
-                            }
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.MODIFIED) {
                             infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                     "0.7");
@@ -150,7 +145,8 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                             infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
                                     "0.7");
                         }  else if (info.getStatus() == GWTJahiaPublicationInfo.DRAFT) {
-                            infoLayers.addInfoLayer(module, status, "orange", "orange", removeListener, true,
+                            lastUnpublished = node.getPath();
+                            infoLayers.addInfoLayer(module, status, "dimgray", "dimgray", removeListener, false,
                                     "0.7");
                         }
                     }

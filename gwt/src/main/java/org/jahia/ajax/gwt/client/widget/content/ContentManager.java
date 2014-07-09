@@ -74,6 +74,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -115,6 +116,15 @@ public class ContentManager extends TriPanelBrowserLayout {
         Component leftTreeComponent = null;
         BottomRightComponent bottomTabs = null;
         Component bottomTabsComponent = null;
+
+        if(selectedPaths.isEmpty()){
+            // Try to retrieve the last opened item for this config
+            Storage storage = Storage.getLocalStorageIfSupported();
+            String lastpath = storage != null ? storage.getItem("lastSavedPath_" + getLinker().getConfig().getName() + "_" + JahiaGWTParameters.getSiteKey()) : null;
+            if(lastpath != null && lastpath.length() > 0){
+                selectedPaths.add(lastpath);
+            }
+        }
 
         if (!config.isHideLeftPanel()) {
             leftTree = new ContentRepositoryTabs(config, selectedPaths);

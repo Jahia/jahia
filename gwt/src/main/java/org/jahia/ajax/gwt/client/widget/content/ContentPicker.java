@@ -76,6 +76,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.widget.button.Button;
+import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
@@ -121,6 +122,15 @@ public class ContentPicker extends TriPanelBrowserLayout {
         for (GWTJahiaNode node : selectedNodes) {
             final String path = node.getPath();
             selectedPaths.add(path.substring(0, path.lastIndexOf("/")));
+        }
+
+        if(selectedPaths.isEmpty()){
+            // Try to retrieve the last opened item for this config
+            Storage storage = Storage.getLocalStorageIfSupported();
+            String lastpath = storage != null ? storage.getItem("lastSavedPath_" + getLinker().getConfig().getName() + "_" + JahiaGWTParameters.getSiteKey()) : null;
+            if(lastpath != null && lastpath.length() > 0){
+                selectedPaths.add(lastpath);
+            }
         }
         // construction of the UI components
         final LeftComponent tree = new ContentRepositoryTabs(config, selectedPaths);

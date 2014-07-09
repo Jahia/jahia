@@ -73,6 +73,7 @@ package org.jahia.ajax.gwt.client.widget.content;
 
 import com.extjs.gxt.ui.client.event.DNDListener;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -418,6 +419,10 @@ public class ManagerLinker implements Linker {
     public void syncSelectionContext(int context) {
         if (getTreeSelection() instanceof GWTJahiaNode) {
             selectionContext.setMainNode((GWTJahiaNode) getTreeSelection());
+
+            // Store the last path used for this config to be able to reopen it
+            Storage storage = Storage.getLocalStorageIfSupported();
+            storage.setItem("lastSavedPath_" + getConfig().getName() + "_" + JahiaGWTParameters.getSiteKey(), ((GWTJahiaNode) getTreeSelection()).getPath());
         }
         List<GWTJahiaNode> list = null;
         if ( getTableSelection() != null) {

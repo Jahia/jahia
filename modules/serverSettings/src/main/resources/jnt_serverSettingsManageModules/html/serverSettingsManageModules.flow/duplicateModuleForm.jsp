@@ -40,9 +40,13 @@
             <i class="icon-chevron-right icon-white"></i>
             &nbsp;<fmt:message key='label.next'/>
         </button>
-        <button class="btn" type="submit" name="_eventId_cancelDuplicate">
+        <button class="btn" type="button" onclick="$('#${currentNode.identifier}CancelForm').submit()">
             <i class="icon-ban-circle"></i>
             &nbsp;<fmt:message key='label.cancel' />
         </button>
     </div>
+</form>
+
+<form id="${currentNode.identifier}CancelForm" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+    <input type="hidden" name="_eventId" value="cancelDuplicate" />
 </form>

@@ -10,6 +10,15 @@
 <template:addResources type="inlinejavascript">
     <script type="text/javascript">
         $(document).ready(function() {
+            if (typeof(Storage) !== "undefined") {
+                $(window.parent).unload(function() {
+                    var path = window.parent.sessionStorage.getItem("adminmode_path");
+                    var index = path.indexOf("?");
+                    if (index > -1) {
+                        window.parent.sessionStorage.setItem("adminmode_path", path.substring(0, index));
+                    }
+                });
+            }
             window.parent.location.assign("${urlToStudio}");
         });
     </script>

@@ -35,6 +35,11 @@
         <label for="newDstPath"><fmt:message key='label.sources.folder'/></label>
         <input type="text" id="newDstPath" name="newDstPath" placeholder="${dstPath}" value="${newDstPath}" />
     </fieldset>
+    <c:if test="${containsNodetypes}">
+        <div class="alert alert-error">
+            <fmt:message key="serverSettings.manageModules.duplicateModule.uninstallSrcModuleWarning" />
+        </div>
+    </c:if>
     <div>
         <button class="btn btn-primary" type="submit" name="_eventId_duplicateModule">
             <i class="icon-chevron-right icon-white"></i>

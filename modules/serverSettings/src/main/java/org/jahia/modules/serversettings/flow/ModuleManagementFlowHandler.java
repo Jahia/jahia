@@ -75,6 +75,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
+import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModulesPackage;
@@ -95,7 +96,6 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
-import org.jahia.commons.Version;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -775,5 +775,9 @@ public class ModuleManagementFlowHandler implements Serializable {
             requestContext.getExternalContext().getSessionMap().remove("adminModuleTableUUID");
             requestContext.getExternalContext().getSessionMap().remove("forgeModuleTableUUID");
         }
+    }
+
+    public boolean containsNodetypes(String moduleId) {
+        return NodeTypeRegistry.getInstance().getNodeTypes(moduleId).hasNext();
     }
 }

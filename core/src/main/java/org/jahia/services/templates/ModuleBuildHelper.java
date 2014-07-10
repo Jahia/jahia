@@ -546,7 +546,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI,
-                                                 String srcModuleId, String srcModuleVersion, String dstPath, JCRSessionWrapper session)
+                                                 String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(moduleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
@@ -678,6 +678,19 @@ public class ModuleBuildHelper implements InitializingBean {
                             f.renameTo(new File(rbFolder, artifactId + m.group(2) + ".properties"));
                         }
                     }
+                }
+            }
+
+            if (uninstallSrcModule) {
+                Set<ModuleVersion> availableVersionsForModule = templatePackageRegistry.getAvailableVersionsForModule(srcModuleId);
+                ModuleVersion[] versions = availableVersionsForModule.toArray(new ModuleVersion[availableVersionsForModule.size()]);
+                for (int j = 0; j < versions.length; j++) {
+                    Bundle bundle = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, versions[j]).getBundle();
+                    int state = bundle.getState();
+                    if (state == Bundle.ACTIVE || state == Bundle.STARTING) {
+                        bundle.stop();
+                    }
+                    bundle.uninstall();
                 }
             }
 

@@ -3638,6 +3638,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             objectNode.setProperty(MARKED_FOR_DELETION_MESSAGE, comment);
         }
 
+        // check for draft
+        if (hasProperty("j:isDraft") && getProperty("j:isDraft").getBoolean()) {
+            setProperty("j:isDraft", false);
+        }
+
         // mark all child nodes as deleted
         markNodesForDeletion(this);
 
@@ -3655,7 +3660,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private static void markNodesForDeletion(JCRNodeWrapper node) throws RepositoryException {
         for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
+
             JCRNodeWrapper child = (JCRNodeWrapper) iterator.nextNode();
+            if (child.hasProperty("j:isDraft") && child.getProperty("j:isDraft").getBoolean()) {
+                child.setProperty("j:isDraft", false);
+            }
+
             if (child.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 continue;
             }

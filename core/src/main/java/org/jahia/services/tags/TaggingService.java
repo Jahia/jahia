@@ -223,8 +223,8 @@ public class TaggingService {
         }
         currentTags = new ArrayList<String>(Collections2.transform(currentTagValues, JCR_VALUE_WRAPPER_STRING_FUNCTION));
         for (String tag : tags) {
-            if (StringUtils.isNotEmpty(tag.trim()) && !currentTags.contains(tag)) {
-                String cleanedTag = tag.trim().toLowerCase();
+            String cleanedTag = tag.trim().toLowerCase();
+            if (StringUtils.isNotEmpty(cleanedTag) && !currentTags.contains(cleanedTag)) {
                 currentTags.add(cleanedTag);
                 addedTags.add(cleanedTag);
                 updated = true;

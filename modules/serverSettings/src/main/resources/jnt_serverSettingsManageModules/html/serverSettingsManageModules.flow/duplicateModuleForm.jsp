@@ -35,9 +35,11 @@
         <label for="newDstPath"><fmt:message key='label.sources.folder'/></label>
         <input type="text" id="newDstPath" name="newDstPath" placeholder="${dstPath}" value="${newDstPath}" />
     </fieldset>
-    <c:if test="${containsNodetypes}">
+    <c:if test="${not empty moduleNodetypes}">
         <div class="alert alert-error">
-            <fmt:message key="serverSettings.manageModules.duplicateModule.uninstallSrcModuleWarning" />
+            <fmt:message key="serverSettings.manageModules.duplicateModule.uninstallSrcModuleWarning">
+                <fmt:param value="${fn:join(moduleNodetypes, ', ')}" />
+            </fmt:message>
         </div>
     </c:if>
     <div>

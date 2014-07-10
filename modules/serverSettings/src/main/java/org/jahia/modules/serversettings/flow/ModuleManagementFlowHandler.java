@@ -777,7 +777,12 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
-    public boolean containsNodetypes(String moduleId) {
-        return NodeTypeRegistry.getInstance().getNodeTypes(moduleId).hasNext();
+    public String[] getModuleNodetypes(String moduleId) {
+        ArrayList<String> typeNames = new ArrayList<String>();
+        NodeTypeRegistry.JahiaNodeTypeIterator it = NodeTypeRegistry.getInstance().getNodeTypes(moduleId);
+        while (it.hasNext()) {
+            typeNames.add(it.nextNodeType().getName());
+        }
+        return typeNames.toArray(new String[typeNames.size()]);
     }
 }

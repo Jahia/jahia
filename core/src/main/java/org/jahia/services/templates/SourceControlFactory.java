@@ -74,6 +74,7 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -130,6 +131,29 @@ public class SourceControlFactory {
             }
         }
         return scm;
+    }
+
+    /**
+     * List all available tags on distant repository
+     * @param scmURI the remote SCM repository URI (of the trunk for SVN)
+     * @return a map tag/uri
+     * @throws IOException
+     */
+    public Map<String, String> listTags(String scmURI) throws IOException {
+        if (scmURI.startsWith("scm:")) {
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
+            SourceControlManagement scm = null;
+            if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
+                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
+            } else if (scmProvider.equals("svn") && sourceControlExecutables.containsKey("svn")) {
+                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
+            } else {
+                throw new IOException("Unknown repository type");
+            }
+            return scm.getTagInfos(scmUrl);
+        }
+        return null;
     }
 
     /**

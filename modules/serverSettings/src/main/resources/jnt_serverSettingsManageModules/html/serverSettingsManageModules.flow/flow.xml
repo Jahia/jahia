@@ -120,6 +120,7 @@
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
             <evaluate expression="flowHandler.getModuleNodetypes(flowScope.moduleId)" result="flowScope.moduleNodetypes"/>
+            <evaluate expression="flowScope.srcPath != null ? null : JahiaTemplateManagerService.listTags(flowScope.scmUri)" result="flowScope.tagInfos"/>
         </on-entry>
         <transition on="duplicateModule" to="duplicateModule"/>
         <transition on="cancelDuplicate" to="duplicateCanceled"/>
@@ -131,8 +132,10 @@
             <evaluate expression="requestParameters.newModuleId" result="flowScope.newModuleId"/>
             <evaluate expression="requestParameters.newGroupId" result="flowScope.newGroupId"/>
             <evaluate expression="requestParameters.newDstPath" result="flowScope.newDstPath"/>
+            <evaluate expression="flowScope.srcPath != null ? flowScope.scmUri : requestParameters.newScmUri" result="flowScope.newScmUri"/>
+            <evaluate expression="requestParameters.scmTag" result="flowScope.scmTag"/>
         </on-entry>
-        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.scmUri, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
+        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.newScmUri, flowScope.scmTag, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
         <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
             <set name="flashScope.error" value="rootCauseException"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

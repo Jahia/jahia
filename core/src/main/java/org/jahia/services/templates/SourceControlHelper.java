@@ -74,10 +74,7 @@ package org.jahia.services.templates;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 
@@ -328,6 +325,10 @@ public class SourceControlHelper {
         session.save();
         scm.add(new File(sources, "pom.xml"));
         scm.commit("Initial commit");
+    }
+
+    public Map<String, String> listTags(String scmURI) throws IOException {
+        return sourceControlFactory.listTags(scmURI);
     }
 
     private void setSCMConfigInPom(File sources, String uri) {

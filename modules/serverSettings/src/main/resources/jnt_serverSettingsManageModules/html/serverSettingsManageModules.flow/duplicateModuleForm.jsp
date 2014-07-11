@@ -10,6 +10,22 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+<c:if test="${not empty tagInfos}">
+    <fmt:message key="serverSettings.manageModules.duplicateModule.scm.master" var="scmMaster"/>
+    <template:addResources type="inlinejavascript">
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $("#newScmUri").change(function() {
+                    var selectedTag = $(this).find('option:selected').text();
+                    if (selectedTag == "${scmMaster}") {
+                        selectedTag = "";
+                    }
+                    $('#scmTag').val(selectedTag);
+                });
+            });
+        </script>
+    </template:addResources>
+</c:if>
 <h2>
     <fmt:message key='serverSettings.manageModules.duplicateModule' />
 </h2>
@@ -19,6 +35,17 @@
 
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <fieldset>
+        <c:if test="${not empty tagInfos}">
+            <label for="newScmUri"><fmt:message key="serverSettings.manageModules.duplicateModule.scm.tag" /></label>
+            <input type="hidden" id="scmTag" name="scmTag" value="${not empty scmTag ? scmTag : ''}"/>
+            <select name="newScmUri" id="newScmUri">
+                <option value="${scmUri}" ${(empty newScmUri or scmUri eq newScmUri) and empty scmTag ? 'selected' : ''}>${scmMaster}</option>
+                <c:forEach var="tagInfo" items="${tagInfos}">
+                    <option value="${tagInfo.value}" ${tagInfo.value eq newScmUri and tagInfo.key eq scmTag ? 'selected' : ''}>${tagInfo.key}</option>
+                </c:forEach>
+            </select>
+        </c:if>
+
         <fmt:message key='label.moduleName.copy' var="moduleNameCopy">
             <fmt:param value="${moduleName}"/>
         </fmt:message>

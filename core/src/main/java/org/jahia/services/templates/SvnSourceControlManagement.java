@@ -183,7 +183,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     @Override
     protected void getFromSCM(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri ,workingDirectory.getName()});
+        ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri, workingDirectory.getName()});
         if (r.exitValue > 0) {
             throw new IOException(r.err);
         }
@@ -294,5 +294,19 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         } finally {
             invalidateStatusCache();
         }
+    }
+
+    @Override
+    public Map<String, String> getTagInfos(String uri) throws IOException {
+        String base = StringUtils.substringBeforeLast(uri, "/trunk") + "/tags/";
+        String path = StringUtils.substringAfterLast(uri, "/trunk/");
+        Map<String, String> tagInfos = new LinkedHashMap<String, String>();
+        ExecutionResult result = executeCommand(executable, new String[]{"list", base});
+        List<String> lines = readLines(result.out);
+        Collections.reverse(lines);
+        for (String line : lines) {
+            tagInfos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
+        }
+        return tagInfos;
     }
 }

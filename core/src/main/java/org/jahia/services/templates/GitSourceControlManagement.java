@@ -71,6 +71,7 @@
  */
 package org.jahia.services.templates;
 
+import com.ctc.wstx.util.StringUtil;
 import net.sf.saxon.type.StringConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -427,5 +428,20 @@ public class GitSourceControlManagement extends SourceControlManagement {
         }
 
         return out.toString();
+    }
+
+    @Override
+    public Map<String, String> getTagInfos(String uri) throws IOException {
+        Map<String, String> tagInfos = new LinkedHashMap<String, String>();
+        ExecutionResult result = executeCommand(executable, new String[]{"ls-remote", "--tags", uri});
+        List<String> lines = readLines(result.out);
+        Collections.reverse(lines);
+        for (String line : lines) {
+            String tag = StringUtils.substringAfter(line, "refs/tags/");
+            if (!tag.endsWith("^{}")) {
+                tagInfos.put(tag, "scm:git:" + uri);
+            }
+        }
+        return tagInfos;
     }
 }

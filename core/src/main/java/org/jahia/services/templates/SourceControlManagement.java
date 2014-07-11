@@ -73,6 +73,7 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.util.Arrays;
 import java.util.List;
@@ -320,4 +321,12 @@ public abstract class SourceControlManagement {
      *             in case of SCM errors
      */
     public abstract String update() throws IOException;
+
+    /**
+     * List all available tags on distant repository
+     * @param uri the remote SCM repository URI (of the trunk for SVN)
+     * @return a map tag/uri
+     * @throws IOException
+     */
+    public abstract Map<String, String> getTagInfos(String uri) throws IOException;
 }

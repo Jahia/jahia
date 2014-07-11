@@ -260,8 +260,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleId, version, session);
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
-        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, srcModuleId, srcModuleVersion, uninstallSrcModule, dstPath, session);
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String branchOrTag, String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, branchOrTag, srcModuleId, srcModuleVersion, uninstallSrcModule, dstPath, session);
     }
 
     public JCRNodeWrapper createModule(String moduleName, String artifactId, String groupId, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
@@ -323,6 +323,9 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         scmHelper.sendToSourceControl(moduleId, scmURI, scmType, session);
     }
 
+    public Map<String, String> listTags(String scmURI) throws IOException {
+        return scmHelper.listTags(scmURI);
+    }
 
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
         return scmHelper.checkValidSources(pack, sources);

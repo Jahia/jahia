@@ -545,7 +545,7 @@ public class ModuleBuildHelper implements InitializingBean {
         this.toolbarWarningsService = toolbarWarningsService;
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI,
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI, String branchOrTag,
                                                  String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(moduleName)) {
@@ -579,7 +579,7 @@ public class ModuleBuildHelper implements InitializingBean {
         boolean deleteSrcFolder = false;
         if (srcPath == null) {
             try {
-                srcFolder = scmHelper.checkoutTmpModule(srcModuleId, null, scmURI, null);
+                srcFolder = scmHelper.checkoutTmpModule(srcModuleId, null, scmURI, branchOrTag);
             } catch (XmlPullParserException e) {
                 throw new IOException(e);
             } catch (DocumentException e) {

@@ -100,7 +100,7 @@ import org.jahia.test.bin.BaseTestController;
  */
 public class JahiaTestCase {
 
-    private final static String PORT = "9090";
+    private final static String PORT = "6060";
     
     private final static String BASE_URL = "http://localhost:" + PORT;
 

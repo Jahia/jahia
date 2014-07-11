@@ -300,6 +300,15 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
                                                             boolean checkForUnpublication) throws GWTJahiaServiceException;
 
+    /**
+     * Get the publication status information for a particular path.
+     *
+     * @param uuids                 uuids to get publication info from
+     * @param checkForUnpublication
+     * @param async                 Local implementation of callback to react on return for asynchronous call to getPublicationInfo
+     */
+    List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, Set<String> languages) throws GWTJahiaServiceException;
+
     GWTRenderResult getRenderedContent(String path, String workspace, String locale, String template, String configuration, Map<String, List<String>> contextParams, boolean editMode,
                                        String configName, String channelIdentifier, String channelVariant) throws GWTJahiaServiceException;
 

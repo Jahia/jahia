@@ -86,6 +86,7 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -93,8 +94,10 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem;
 
 import java.util.*;
@@ -123,9 +126,11 @@ public class WorkflowActionDialog extends LayoutContainer {
     private PropertiesEditor propertiesEditor;
     private ButtonBar buttonsBar;
 
+    private GWTJahiaLanguage language = null;
+
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition workflow,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, title);
+        this(linker, container, title,null);
         this.nodePath = nodePath;
         initStartWorkflowDialog(workflow);
         if (custom != null) {
@@ -135,7 +140,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, (workflow.getVariables().get("jcr:title") != null && workflow.getVariables().get("jcr:title").getValues().size() == 1) ? workflow.getVariables().get("jcr:title").getValues().get(0).getString() : null);
+        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null);
         this.workflow = workflow;
         initExecuteActionDialog(task);
         if (custom != null) {
@@ -143,7 +148,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         }
     }
 
-    private WorkflowActionDialog(Linker linker, EngineContainer container, String title) {
+    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language) {
         super();
         contentManagement = JahiaContentManagementService.App.getInstance();
         this.linker = linker;
@@ -158,7 +163,26 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem();
 
         this.container = container;
-        container.setEngine(this, title, buttonsBar, this.linker);
+        String languageImage = "";
+        if(language!=null) {
+            for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
+                if(jahiaLanguage.getLanguage().equals(language)) {
+                    this.language = jahiaLanguage;
+                    languageImage = "<img src=\""+jahiaLanguage.getImage()+"\"/>&nbsp;";
+                }
+            }
+        }
+        container.setEngine(this, languageImage+this.title, buttonsBar, this.linker);
+    }
+
+    public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition workflow,
+                                final Linker linker, CustomWorkflow custom, EngineContainer container, String language) {
+        this(linker, container, title, language);
+        this.nodePath = nodePath;
+        initStartWorkflowDialog(workflow);
+        if (custom != null) {
+            custom.initStartWorkflowDialog(workflow, this);
+        }
     }
 
     public EngineContainer getContainer() {
@@ -176,8 +200,13 @@ public class WorkflowActionDialog extends LayoutContainer {
     public void initStartWorkflowDialog(final GWTJahiaWorkflowDefinition workflowDefinition) {
         Map<String, GWTJahiaNodeProperty> variables = new HashMap<String, GWTJahiaNodeProperty>();
         if (title != null) {
-            variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
-                    new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
+            if(language!=null){
+                variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
+                        new GWTJahiaNodePropertyValue(language.getDisplayName() + " - " + title, GWTJahiaNodePropertyType.STRING)));
+            } else {
+                variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
+                        new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
+            }
         }
         initTabs(workflowDefinition.getFormResourceName(), variables);
         Button button = generateStartWorkflowButton(workflowDefinition);
@@ -185,7 +214,11 @@ public class WorkflowActionDialog extends LayoutContainer {
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                container.closeEngine();
+                if(container instanceof EngineCards) {
+                    ((EngineCards) container).closeAllEngines();
+                } else {
+                    container.closeEngine();
+                }
             }
         });
         buttonsBar.add(cancel);
@@ -201,7 +234,11 @@ public class WorkflowActionDialog extends LayoutContainer {
 
         Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                container.closeEngine();
+                if(container instanceof EngineCards) {
+                    ((EngineCards) container).closeAllEngines();
+                } else {
+                    container.closeEngine();
+                }
             }
         });
         buttonsBar.add(cancel);

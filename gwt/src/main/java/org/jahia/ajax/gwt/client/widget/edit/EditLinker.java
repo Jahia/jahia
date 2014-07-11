@@ -579,9 +579,7 @@ public class EditLinker implements Linker {
         return result;
     }
 
-    /**
-     * if true, the side panel will not be refreshed
-     * used when switching mode to avoid reloading it twice
-     */
-
+    public Widget getMainAreaComponent() {
+        return mainAreaComponent;
+    }
 }

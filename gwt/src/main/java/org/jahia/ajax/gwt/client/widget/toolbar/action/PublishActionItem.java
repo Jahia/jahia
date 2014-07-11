@@ -76,9 +76,11 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -90,10 +92,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * User: toto
@@ -133,6 +132,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     protected transient String workflowType = "publish";
     protected transient boolean checkForUnpublication = false;
     protected transient boolean allSubTree = false;
+    protected transient boolean allLanguages = false;
 
     public void handleNewLinkerSelection() {
         setEnabled(false);
@@ -201,17 +201,28 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 uuids.add(ctx.getSingleSelection().getUUID());
             }
             linker.loading(Messages.get("label.gettingPublicationInfo", "Getting publication information"));
-            JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
+            BaseAsyncCallback<List<GWTJahiaPublicationInfo>> asyncCallback = new BaseAsyncCallback<List<GWTJahiaPublicationInfo>>() {
                 public void onApplicationFailure(Throwable caught) {
                     linker.loaded();
-                    com.google.gwt.user.client.Window.alert("Cannot get status: " + caught.getMessage());
+                    Window.alert("Cannot get status: " + caught.getMessage());
                 }
 
                 public void onSuccess(List<GWTJahiaPublicationInfo> result) {
                     linker.loaded();
                     callback(result);
                 }
-            });
+            };
+            if(!allLanguages) {
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
+            } else {
+                Set<String> languages = new HashSet<String>();
+                for (GWTJahiaLanguage gwtJahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
+                    if(gwtJahiaLanguage.isActive()) {
+                        languages.add(gwtJahiaLanguage.getLanguage());
+                    }
+                }
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, languages, asyncCallback);
+            }
         }
     }
 
@@ -231,7 +242,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             result.removeAll(unpublishable);
 
             if (unpublishable.isEmpty()) {
-                PublicationWorkflow.create(result, linker, checkForUnpublication);
+                PublicationWorkflow.create(result, linker, checkForUnpublication, allLanguages);
             } else {
                 StringBuilder message = new StringBuilder();
 
@@ -265,7 +276,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                PublicationWorkflow.create(result, linker, checkForUnpublication);
+                                PublicationWorkflow.create(result, linker, checkForUnpublication, allLanguages);
                             }
                         }
                     });

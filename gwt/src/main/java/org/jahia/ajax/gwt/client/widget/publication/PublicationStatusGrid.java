@@ -132,6 +132,15 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
 //        configs.add(checkboxConfig);
 
         ColumnConfig column = new ColumnConfig("title", Messages.get("label.path"), 450);
+        column.setRenderer(new TreeGridCellRenderer<GWTJahiaPublicationInfo>(){
+            @Override
+            public Object render(GWTJahiaPublicationInfo model, String property, ColumnData config, int rowIndex, int colIndex, ListStore<GWTJahiaPublicationInfo> store, Grid<GWTJahiaPublicationInfo> grid) {
+                if(model.getWorkflowTitle()!=null) {
+                    return model.getWorkflowTitle();
+                }
+                return model.getTitle();
+            }
+        });
         configs.add(column);
         column = new ColumnConfig("nodetype", Messages.get("label.nodetype"), 150);
         configs.add(column);

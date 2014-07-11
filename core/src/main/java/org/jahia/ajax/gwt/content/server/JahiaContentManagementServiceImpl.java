@@ -1448,6 +1448,25 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return all;
     }
 
+    /**
+     * Get the publication status information for multiple pathes.
+     *
+     * @param uuids                 path to get publication info from
+     * @param checkForUnpublication
+     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws GWTJahiaServiceException
+     */
+    public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
+                                                            boolean checkForUnpublication, Set<String> languages)
+            throws GWTJahiaServiceException {
+        final JCRSessionWrapper session = retrieveCurrentSession();
+        List<GWTJahiaPublicationInfo> all = publication
+                .getFullPublicationInfos(uuids, languages, session, allSubTree,
+                        checkForUnpublication);
+
+        return all;
+    }
+
 
     /**
      * Get worflow info by path

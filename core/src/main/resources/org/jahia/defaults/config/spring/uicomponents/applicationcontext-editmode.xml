@@ -71,7 +71,9 @@
                             <property name="items">
                                 <list>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishSite"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.ViewPublishStatus"/>
@@ -225,7 +227,9 @@
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Publish"/>
+                        <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                         <ref bean="Toolbar.Item.PublishAll"/>
+                        <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                         <ref bean="Toolbar.Item.Unpublish"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                         <ref bean="Toolbar.Item.GoToViewDefinition"/>

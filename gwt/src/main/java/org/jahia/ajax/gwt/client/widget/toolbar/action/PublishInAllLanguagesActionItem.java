@@ -69,78 +69,51 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.ajax.gwt.client.widget.contentengine;
+package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
-import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
-
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 /**
- * The edit engine window widget.
+ * 
  * User: toto
- * Date: Aug 2, 2010
- * Time: 3:55:13 PM
+ * Date: Sep 25, 2009
+ * Time: 6:58:56 PM
  */
-public class EngineWindow extends Window implements EngineContainer {
+@SuppressWarnings("serial")
+public class PublishInAllLanguagesActionItem extends PublishActionItem {
 
-    public EngineWindow() {
-        setId("JahiaGxtEngineWindow");
-        setSize(750, 480);
-        setBodyBorder(false);
-        setClosable(true);
-        setResizable(true);
-        setModal(true);
-        setMaximizable(true);
-        setLayout(new FitLayout());
+    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
+        allLanguages = true;
+        super.init(gwtToolbarItem, linker);
     }
 
-    public ContentPanel getPanel() {
-        return this;
-    }
-
-    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
-        removeAll();
-        add(component);
-        setHeadingHtml(header);
-        if (buttonsBar != null) {
-            setBottomComponent(buttonsBar);
-        }
-
-		if (!(linker instanceof ManagerLinker)) {
-			EditLinker editLinker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
-            if(GXT.isIE) {
-                // resize to fit main module area
-                MainModule main = editLinker.getMainModule();
-                setSize(main.getOffsetWidth(), main.getOffsetHeight());
-                setPosition(main.getAbsoluteLeft(), main.getAbsoluteTop());
-                setBorders(false);
-            } else if(editLinker.getMainAreaComponent()!=null) {
-                setContainer(editLinker.getMainAreaComponent().getElement());
+    public void handleNewLinkerSelection() {
+        setEnabled(false);
+        LinkerSelectionContext ctx = linker.getSelectionContext();
+        if (ctx.getMultipleSelection() != null
+                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
+            if (!isChildOfMarkedForDeletion(ctx)) {
+                setEnabled(true);
+                updateTitle(Messages.get("label.publish.all.selected.items.all.languages","Publish all under selected items in all languages"));
             }
-		}
-    }
-
-    public void showEngine() {
-        show();
-        if(!GXT.isIE) {
-            maximize();
+        } else {
+            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                setEnabled(true);
+                if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                    if(gwtJahiaNode.isFile()) {
+                        setEnabled(false);
+                    }
+                } else {
+                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                            Messages.get("label.publish.selected.item.all.languages", "all languages"));
+                }
+            }
         }
-    }
-
-    public void closeEngine() {
-        hide();
-    }
-
-    protected void doFocus() {
-        // windows hack
     }
 }

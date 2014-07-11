@@ -680,6 +680,22 @@
         <property name="icon" value="publishAll"/>
     </bean>
 
+    <bean id="Toolbar.Item.PublishAllInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllInAllLanguagesActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publishall"/>
+        <property name="icon" value="publishAll"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishInAllLanguagesActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publish"/>
+        <property name="icon" value="publish"/>
+    </bean>
+
     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem"/>

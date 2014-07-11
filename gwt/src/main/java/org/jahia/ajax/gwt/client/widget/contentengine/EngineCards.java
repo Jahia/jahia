@@ -79,6 +79,7 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.ListView;
+import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
@@ -111,6 +112,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     private List<String> headers = new ArrayList<String>();
     private List<ButtonBar> bars = new ArrayList<ButtonBar>();
     private List<List<Component>> barItems = new ArrayList<List<Component>>();
+    private List<Button> globalButtons = new ArrayList<Button>();
     private ButtonBar bar;
     private int i = 0;
 
@@ -203,7 +205,27 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         for (Component component : items) {
             bar.add(component);
         }
+        for (Button globalButton : globalButtons) {
+            bar.insert(globalButton, bar.getItemCount()-1);
+        }
     }
 
+    public void addGlobalButton(Button button) {
+        globalButtons.add(button);
+    }
 
+    public Component getCurrentComponent(){
+        return components.get(i);
+    }
+
+    public void closeAllEngines() {
+        components.clear();
+        headers.clear();
+        bars.clear();
+        barItems.clear();
+        list.getStore().removeAll();
+
+        mainContainer.closeEngine();
+
+    }
 }

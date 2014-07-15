@@ -604,6 +604,9 @@ public class ModuleBuildHelper implements InitializingBean {
             } catch (XmlPullParserException e) {
                 throw new IOException(e);
             }
+            if (!"bundle".equals(pom.getPackaging())) {
+                throw new IOException("This module is not compatible with the current version of Jahia.");
+            }
             pom.setArtifactId(artifactId);
             pom.setGroupId(groupId);
             String dstVersion = "1.0-SNAPSHOT";

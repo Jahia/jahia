@@ -83,7 +83,6 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -218,23 +217,30 @@ public class SimpleModule extends Module {
         }
 
         HTML overlayLabel = null;
+        String styleName = "";
+        String opacity = "";
         if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
             overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
+            styleName = "deleted-overlay";
+            opacity = "0.4";
         } else if (node.getInvalidLanguages() != null && node.getInvalidLanguages().contains(getMainModule().getEditLinker().getLocale())) {
             overlayLabel = new HTML(Messages.get("label.validLanguages.overlay",
                     "Not visible content"));
+            styleName = "deleted-overlay";
+            opacity = "0.4";
+        } else if (node.get("j:isDraft") != null && Boolean.valueOf(node.get("j:isDraft").toString())) {
+            overlayLabel = new HTML(Messages.get("label.draft", "Draft"));
+            styleName = "draft-overlay";
+            opacity = "0.5";
         }
 
         if (overlayLabel != null) {
             setStyleAttribute("position", "relative");
-
             insert(overlayLabel, 0);
-            overlayLabel.addStyleName("deleted-overlay");
+            overlayLabel.addStyleName(styleName);
             overlayLabel.setHeight(Integer.toString(html.getOffsetHeight()) + "px");
             overlayLabel.setWidth(Integer.toString(html.getOffsetWidth()) + "px");
-
-            DOM.setStyleAttribute(html.getElement(), "opacity", "0.4");
-
+            DOM.setStyleAttribute(html.getElement(), "opacity", opacity);
             layout();
         }
 

@@ -868,6 +868,14 @@ class NodeHelper {
             logger.error("Cannot get repository infos", e);
         }
         n.set("supportsPublication", Boolean.valueOf(supportsPublication));
+        // Add draft infos
+        try {
+            if (node.hasProperty("j:isDraft")) {
+                n.set("j:isDraft", node.getProperty("j:isDraft").getBoolean());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot get repository infos", e);
+        }
     }
 
     private void populateSubnodesConstraintsInfo(GWTJahiaNode n, JCRNodeWrapper node) {

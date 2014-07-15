@@ -190,7 +190,7 @@
                     </c:if>
 
                     <c:choose>
-                        <c:when test="${not empty activeVersion.sourcesFolder}">
+                        <c:when test="${not empty activeVersion.sourcesFolder and not isMandatoryDependency}">
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
                                 <input type="hidden" name="moduleName" value="${activeVersion.name}"/>
                                 <input type="hidden" name="moduleId" value="${activeVersion.id}"/>
@@ -203,7 +203,7 @@
                                 </button>
                             </form>
                         </c:when>
-                        <c:when test="${not empty activeVersion.scmURI}">
+                        <c:when test="${not empty activeVersion.scmURI and sourcesDownloadable}">
                             <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="moduleName" value="${activeVersion.name}"/>

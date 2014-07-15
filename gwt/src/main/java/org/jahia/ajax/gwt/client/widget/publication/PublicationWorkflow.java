@@ -93,6 +93,8 @@ import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineCards;
@@ -192,8 +194,8 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     public Button getStartWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ": " +
-                                         wf.getDisplayName());
+        final Button button = new Button(Messages.get("label.workflow.start", "Start selected workflow"));
+        button.setIcon(ToolbarIconProvider.getInstance().getIcon("publication/oneWF"));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -245,9 +247,9 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     public Button getBypassWorkflowButton(final GWTJahiaWorkflowDefinition wf, final WorkflowActionDialog dialog) {
-        final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
-
         if (!publicationInfos.isEmpty() && publicationInfos.get(0).isAllowedToPublishWithoutWorkflow()) {
+            final Button button = new Button(Messages.get("label.bypassWorkflow", "Bypass selected workflow"));
+            button.setIcon(ToolbarIconProvider.getInstance().getIcon("publication/oneWF"));
             button.addSelectionListener(new SelectionListener<ButtonEvent>() {
 
                 @Override
@@ -366,7 +368,8 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     private static Button getBypassInAllLanguagesButton(final EngineCards cards, final List<GWTJahiaPublicationInfo> all) {
-        final Button button = new Button(Messages.get("label.bypassWorkflow.all", "Bypass workflow in all languages"));
+        final Button button = new Button(Messages.get("label.bypassWorkflow.all", "Bypass workflow"));
+        button.setIcon(ToolbarIconProvider.getInstance().getIcon("publication/multipleWF"));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
@@ -398,10 +401,10 @@ public class PublicationWorkflow implements CustomWorkflow {
         return button;
     }
 
-    private static Button getStartWorkflowInAllLanguagesButton(final EngineCards cards, final List<GWTJahiaPublicationInfo> all, Map<String, GWTJahiaWorkflowDefinition> result) {
+    private static Button getStartWorkflowInAllLanguagesButton(final EngineCards cards, final List<GWTJahiaPublicationInfo> all, final Map<String, GWTJahiaWorkflowDefinition> result) {
         final GWTJahiaWorkflowDefinition wf = result.entrySet().iterator().next().getValue();
-        final Button button = new Button(Messages.get("label.workflow.start.all", "Start Workflow in all languages ") + ": " +
-                wf.getDisplayName());
+        final Button button = new Button(Messages.get("label.workflow.start.all", "Start workflow(s) for all languages"));
+        button.setIcon(ToolbarIconProvider.getInstance().getIcon("publication/multipleWF"));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {
@@ -426,30 +429,68 @@ public class PublicationWorkflow implements CustomWorkflow {
                         "message.workflow.starting", "Starting publication workflow"));
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
-
-                final HashMap<String, Object> map = new HashMap<String, Object>();
-                map.put("customWorkflowInfo", new PublicationWorkflow(all));
-
-                JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(all), wf, nodeProperties,
-                        dialog.getComments(), map, new BaseAsyncCallback() {
-                            public void onApplicationFailure(Throwable caught) {
-                                WorkInProgressActionItem.removeStatus(status);
-                                Log.error(Messages.get("label.workflow.cannotStart", "Cannot start workflow"), caught);
-                                com.google.gwt.user.client.Window.alert(Messages.get("label.workflow.cannotStart", "Cannot start workflow") + caught.getMessage());
-                            }
-
-                            public void onSuccess(Object result) {
-                                Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
-                                        "message.workflow.started", "Workflow started"));
-                                WorkInProgressActionItem.removeStatus(status);
-                                Map<String, Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_MAIN, true);
-                                data.put("event", "workflowStarted");
-                                dialog.getLinker().refresh(data);
-                                cards.closeAllEngines();
+                if (result.size()>1) {
+                    final int[] nbWF = {result.size()};
+                    // We have more than one workflow
+                    for (Map.Entry<String, GWTJahiaWorkflowDefinition> entry : result.entrySet()) {
+                        List<GWTJahiaPublicationInfo> thisWFInfo = new ArrayList<GWTJahiaPublicationInfo>();
+                        for (GWTJahiaPublicationInfo publicationInfo : all) {
+                            if(publicationInfo.getWorkflowDefinition().equals(entry.getKey())){
+                                thisWFInfo.add(publicationInfo);
                             }
                         }
-                );
+                        all.removeAll(thisWFInfo);
+                        final HashMap<String, Object> map = new HashMap<String, Object>();
+                        map.put("customWorkflowInfo", new PublicationWorkflow(thisWFInfo));
+
+                        JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), entry.getValue(), nodeProperties,
+                                dialog.getComments(), map, new BaseAsyncCallback() {
+                                    public void onApplicationFailure(Throwable caught) {
+                                        WorkInProgressActionItem.removeStatus(status);
+                                        Log.error(Messages.get("label.workflow.cannotStart", "Cannot start workflow"), caught);
+                                        com.google.gwt.user.client.Window.alert(Messages.get("label.workflow.cannotStart", "Cannot start workflow") + caught.getMessage());
+                                    }
+
+                                    public void onSuccess(Object result) {
+                                        Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
+                                                "message.workflow.started", "Workflow started"));
+                                        Map<String, Object> data = new HashMap<String, Object>();
+                                        data.put(Linker.REFRESH_MAIN, true);
+                                        data.put("event", "workflowStarted");
+                                        nbWF[0]--;
+                                        if(nbWF[0]==0) {
+                                            WorkInProgressActionItem.removeStatus(status);
+                                            dialog.getLinker().refresh(data);
+                                            cards.closeAllEngines();
+                                        }
+                                    }
+                                }
+                        );
+                    }
+                } else {
+                    final HashMap<String, Object> map = new HashMap<String, Object>();
+                    map.put("customWorkflowInfo", new PublicationWorkflow(all));
+                    JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(all), wf, nodeProperties,
+                            dialog.getComments(), map, new BaseAsyncCallback() {
+                                public void onApplicationFailure(Throwable caught) {
+                                    WorkInProgressActionItem.removeStatus(status);
+                                    Log.error(Messages.get("label.workflow.cannotStart", "Cannot start workflow"), caught);
+                                    com.google.gwt.user.client.Window.alert(Messages.get("label.workflow.cannotStart", "Cannot start workflow") + caught.getMessage());
+                                }
+
+                                public void onSuccess(Object result) {
+                                    Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
+                                            "message.workflow.started", "Workflow started"));
+                                    WorkInProgressActionItem.removeStatus(status);
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_MAIN, true);
+                                    data.put("event", "workflowStarted");
+                                    dialog.getLinker().refresh(data);
+                                    cards.closeAllEngines();
+                                }
+                            }
+                    );
+                }
             }
         });
         return button;

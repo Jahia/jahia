@@ -595,6 +595,7 @@ public class ModuleBuildHelper implements InitializingBean {
             FileUtils.deleteQuietly(srcFolder);
         }
 
+        CompiledModuleInfo compiledModuleInfo;
         try {
             // Update pom information
             Model pom = null;
@@ -681,6 +682,8 @@ public class ModuleBuildHelper implements InitializingBean {
                 }
             }
 
+            compiledModuleInfo = compileModule(dstFolder);
+
             if (uninstallSrcModule) {
                 Set<ModuleVersion> availableVersionsForModule = templatePackageRegistry.getAvailableVersionsForModule(srcModuleId);
                 ModuleVersion[] versions = availableVersionsForModule.toArray(new ModuleVersion[availableVersionsForModule.size()]);
@@ -694,7 +697,6 @@ public class ModuleBuildHelper implements InitializingBean {
                 }
             }
 
-            return compileAndDeploy(artifactId, dstFolder, session);
         } catch (IOException e) {
             FileUtils.deleteQuietly(dstFolder);
             throw e;
@@ -708,6 +710,30 @@ public class ModuleBuildHelper implements InitializingBean {
             FileUtils.deleteQuietly(dstFolder);
             throw e;
         }
+
+        FileInputStream is = new FileInputStream(compiledModuleInfo.getFile());
+        Bundle bundle;
+        try {
+            bundle = FrameworkService.getBundleContext().installBundle(compiledModuleInfo.getFile().toURI().toString(), is);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
+        } finally {
+            IOUtils.closeQuietly(is);
+        }
+        JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
+        if (pkg == null) {
+            FileUtils.deleteQuietly(dstFolder);
+            throw new IOException("Cannot deploy module");
+        }
+        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_PARSED) {
+            throw new BundleException("Missing dependency : " + pkg.getState().getDetails().toString());
+        }
+        bundle.start();
+        if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
+            throw new BundleException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
+        }
+
+        return templatePackageRegistry.lookupByIdAndVersion(compiledModuleInfo.getModuleName(), new ModuleVersion(
+                compiledModuleInfo.getVersion()));
     }
 
     public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,

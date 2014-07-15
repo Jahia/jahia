@@ -190,6 +190,12 @@
                     </c:if>
 
                     <c:choose>
+                        <c:when test="${not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies}">
+                            <button class="btn btn-block button-download" disabled>
+                                <i class="icon-share"></i>
+                                &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>
+                            </button>
+                        </c:when>
                         <c:when test="${not empty activeVersion.sourcesFolder and not isMandatoryDependency}">
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
                                 <input type="hidden" name="moduleName" value="${activeVersion.name}"/>

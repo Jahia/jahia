@@ -136,6 +136,10 @@
             <evaluate expression="requestParameters.scmTag" result="flowScope.scmTag"/>
         </on-entry>
         <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.newScmUri, flowScope.scmTag, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
+        <transition on-exception="org.osgi.framework.BundleException" to="view">
+            <set name="flashScope.error" value="rootCauseException"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
+        </transition>
         <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
             <set name="flashScope.error" value="rootCauseException"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

@@ -27,6 +27,9 @@
 <fmt:message key="serverSettings.manageModules.checkForUpdates" var="i18nRefreshModules" />
 <fmt:message var="lastUpdateTooltip" key="serverSettings.manageModules.lastUpdate"/>
 <h2><fmt:message key="serverSettings.manageModules"/></h2>
+<c:if test="${not empty error}">
+    <div class="alert alert-error">${error}</div>
+</c:if>
 
 <c:set var="moduleTableId" value="module_table_${adminModuleTableUUID}"/>
 

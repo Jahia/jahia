@@ -731,6 +731,9 @@ public class ModuleBuildHelper implements InitializingBean {
             throw new BundleException("Missing dependency : " + pkg.getState().getDetails().toString());
         }
         bundle.start();
+        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_STARTED) {
+            throw new BundleException("Missing dependency : " + pkg.getState().getDetails().toString());
+        }
         if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
             throw new BundleException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
         }

@@ -150,6 +150,14 @@
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 
+    <bean id="previewDraftFilter" class="org.jahia.services.render.filter.PreviewDraftFilter">
+        <property name="priority" value="17" />
+        <property name="description" value="Display live content for draft items"/>
+        <property name="applyOnNodeTypes" value="jmix:lastPublished" />
+        <property name="applyOnModes" value="preview,live"/>
+        <property name="applyOnConfigurations" value="module" />
+    </bean>
+
     <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
         <property name="priority" value="10"/>
         <property name="description" value="Filters out content in preview mode that is marked for deletion"/>

@@ -75,9 +75,7 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.Window;
-import com.google.gwt.user.client.ui.HorizontalPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -109,8 +107,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
      *
      * @param selection the current selection context
      * @return <code>true</code> if the selected item (single-selection case) is locked by the marked for deletion operation on its parent.
-     *         In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
-     *         not in marked for deletion state this method returns false.
+     * In a multi-selection mode, the condition should be fulfilled for all selected items. If at least one of the selected items is
+     * not in marked for deletion state this method returns false.
      */
     public static boolean isChildOfMarkedForDeletion(LinkerSelectionContext selection) {
         if (selection.getMultipleSelection().size() == 0) {
@@ -145,7 +143,9 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             }
         } else {
             GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-            if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+            if (isDraft(gwtJahiaNode)) {
+                setEnabled(false);
+            } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                 setEnabled(true);
 
                 if (checkForUnpublication) {
@@ -172,6 +172,10 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             }
         }
+    }
+
+    protected boolean isDraft(GWTJahiaNode gwtJahiaNode) {
+        return gwtJahiaNode != null && gwtJahiaNode.get("j:isDraft") != null && Boolean.parseBoolean(gwtJahiaNode.get("j:isDraft").toString());
     }
 
     /**
@@ -212,12 +216,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     callback(result);
                 }
             };
-            if(!allLanguages) {
+            if (!allLanguages) {
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
             } else {
                 Set<String> languages = new HashSet<String>();
                 for (GWTJahiaLanguage gwtJahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
-                    if(gwtJahiaLanguage.isActive()) {
+                    if (gwtJahiaLanguage.isActive()) {
                         languages.add(gwtJahiaLanguage.getLanguage());
                     }
                 }
@@ -252,7 +256,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     if (!unpublishableMap.containsKey(status)) {
                         unpublishableMap.put(status, new ArrayList<String>());
                     }
-                    unpublishableMap.get(status).add(info.getTitle() + " ("+info.getPath()+")");
+                    unpublishableMap.get(status).add(info.getTitle() + " (" + info.getPath() + ")");
                 }
 
                 for (Map.Entry<Integer, List<String>> entry : unpublishableMap.entrySet()) {

@@ -146,7 +146,7 @@
                 ${fn:escapeXml(activeVersion.provider)}
             </td>
             <c:if test="${developmentMode}">
-                <c:set value="${not isStudio && functions:contains(systemSiteRequiredModules, activeVersion.id)}" var="isMandatoryDependency"/>
+                <c:set value="${functions:contains(systemSiteRequiredModules, activeVersion.id)}" var="isMandatoryDependency"/>
                 <c:set value="${activeVersion.sourcesDownloadable and not isMandatoryDependency}" var="sourcesDownloadable"/>
                 <td>
                     <c:if test="${not isStudio and moduleStates[activeVersion.id][activeVersion.version].installed}">
@@ -190,7 +190,7 @@
                     </c:if>
 
                     <c:choose>
-                        <c:when test="${not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies}">
+                        <c:when test="${not isMandatoryDependency and (not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies or (functions:contains(modulesWithNodetypes, activeVersion.id) and (not empty sitesTemplates[activeVersion.id] or not empty sitesDirect[activeVersion.id] or not empty sitesTransitive[activeVersion.id])))}">
                             <button class="btn btn-block button-download" disabled>
                                 <i class="icon-share"></i>
                                 &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>

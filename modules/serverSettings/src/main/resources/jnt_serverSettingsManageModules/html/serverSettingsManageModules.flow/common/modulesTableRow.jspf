@@ -131,7 +131,7 @@
                 </c:choose>
 
                 <c:choose>
-                    <c:when test="${not empty moduleState.unresolvedDependencies}">
+                    <c:when test="${not isMandatoryDependency and (not empty moduleState.unresolvedDependencies or (functions:contains(modulesWithNodetypes, entry.key) and (not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key])))}">
                         <button class="btn btn-block button-download" disabled>
                             <i class="icon-share"></i>
                             &nbsp;${i18nDuplicateModule}

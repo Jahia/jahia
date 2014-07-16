@@ -190,11 +190,11 @@
                     </c:if>
 
                     <c:choose>
-                        <c:when test="${not isMandatoryDependency and (not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies or (functions:contains(modulesWithNodetypes, activeVersion.id) and (not empty sitesTemplates[activeVersion.id] or not empty sitesDirect[activeVersion.id] or not empty sitesTransitive[activeVersion.id])))}">
-                            <button class="btn btn-block button-download" disabled>
-                                <i class="icon-share"></i>
-                                &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>
-                            </button>
+                        <c:when test="${not isMandatoryDependency and (not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies or  not empty sitesTemplates[activeVersion.id] or not empty sitesDirect[activeVersion.id] or not empty sitesTransitive[activeVersion.id])}">
+                            <%--<button class="btn btn-block button-download" disabled>--%>
+                                <%--<i class="icon-share"></i>--%>
+                                <%--&nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>--%>
+                            <%--</button>--%>
                         </c:when>
                         <c:when test="${not empty activeVersion.sourcesFolder and not isMandatoryDependency}">
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">

@@ -131,11 +131,11 @@
                 </c:choose>
 
                 <c:choose>
-                    <c:when test="${not isMandatoryDependency and (not empty moduleState.unresolvedDependencies or (functions:contains(modulesWithNodetypes, entry.key) and (not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key])))}">
-                        <button class="btn btn-block button-download" disabled>
-                            <i class="icon-share"></i>
-                            &nbsp;${i18nDuplicateModule}
-                        </button>
+                    <c:when test="${not isMandatoryDependency and (not empty moduleState.unresolvedDependencies or not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key])}">
+                        <%--<button class="btn btn-block button-download" disabled>--%>
+                            <%--<i class="icon-share"></i>--%>
+                            <%--&nbsp;${i18nDuplicateModule}--%>
+                        <%--</button>--%>
                     </c:when>
                     <c:when test="${not empty currentModule.sourcesFolder and not isMandatoryDependency}">
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
@@ -144,6 +144,19 @@
                             <input type="hidden" name="groupId" value="${currentModule.groupId}"/>
                             <input type="hidden" name="version" value="${currentModule.version}"/>
                             <input type="hidden" name="srcPath" value="${currentModule.sourcesFolder.path}"/>
+                            <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
+                                <i class="icon-share"></i>
+                                &nbsp;${i18nDuplicateModule}
+                            </button>
+                        </form>
+                    </c:when>
+                    <c:when test="${not empty defaultVersion.sourcesFolder and not isMandatoryDependency}">
+                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
+                            <input type="hidden" name="moduleName" value="${defaultVersion.name}"/>
+                            <input type="hidden" name="moduleId" value="${defaultVersion.id}"/>
+                            <input type="hidden" name="groupId" value="${defaultVersion.groupId}"/>
+                            <input type="hidden" name="version" value="${defaultVersion.version}"/>
+                            <input type="hidden" name="srcPath" value="${defaultVersion.sourcesFolder.path}"/>
                             <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                 <i class="icon-share"></i>
                                 &nbsp;${i18nDuplicateModule}

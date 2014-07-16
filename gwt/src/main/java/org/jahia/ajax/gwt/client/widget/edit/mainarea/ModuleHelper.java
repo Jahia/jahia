@@ -184,6 +184,7 @@ public class ModuleHelper {
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));
                 mainModule.setNodeTypes(nodetypes);
                 mainModule.setReferenceTypes(DOM.getElementAttribute(divElement, "referencetypes"));
+                mainModule.setMainModuleElement(divElement);
             } else if ("linkedContentInfo".equals(jahiatype)) {
                 String linkedNode = DOM.getElementAttribute(divElement, "linkedNode");
                 String node = DOM.getElementAttribute(divElement, "node");

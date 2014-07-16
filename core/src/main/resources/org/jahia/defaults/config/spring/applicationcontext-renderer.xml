@@ -170,19 +170,6 @@
         </property>
     </bean>
 
-    <bean id="markedForDeletionEditModeFilter" class="org.jahia.services.render.filter.MarkedForDeletionEditModeFilter">
-        <property name="priority" value="17"/>
-        <property name="description" value="Adds overlays for modules in edit mode that are marked for deletion"/>
-        <property name="applyOnModes" value="edit"/>
-        <property name="applyOnConfigurations" value="gwt"/>
-        <property name="template">
-            <value><![CDATA[<div class="ext-el-mask" style="display: block;"></div>
-                <div class="ext-el-mask-msg" style="display: block; margin-left:47%; margin-top: 30%;">
-                <div style="cursor: default; font-weight: bold; color: red; text-transform: uppercase;">{0}</div>
-                </div>{1}]]></value>
-        </property>
-    </bean>
-
     <bean
             class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">
         <property name="priority" value="20"/>
@@ -431,7 +418,7 @@
         <entry key="vcf" value="text/vcard; charset=UTF-8"/>
         <entry key="xml" value="text/xml; charset=UTF-8"/>
     </util:map>
-    
+
     <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry"/>
 
 </beans>

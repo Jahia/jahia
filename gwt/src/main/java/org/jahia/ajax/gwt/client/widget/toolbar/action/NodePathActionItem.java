@@ -73,9 +73,11 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Text;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**
  * Displays the currently selected node path in the main module toolbar.
@@ -96,7 +98,16 @@ public class NodePathActionItem extends BaseActionItem {
         if (path.startsWith("/sites/"+node.getSiteKey())) {
             path = path.substring(node.getSiteKey().length()+8);
         }
+        text.setStyleAttribute("color","");
         text.setText(" " + Messages.get("label.currentPagePath", "Current page path") + ": " + path);
         text.addStyleName("x-current-page-path");
+        if (linker instanceof EditLinker) {
+            MainModule mainModule = ((EditLinker) linker).getMainModule();
+            HTML overlayLabel = mainModule.getOverlayLabel();
+            if (overlayLabel != null) {
+                text.setStyleAttribute("color", mainModule.getOverlayColorText());
+                text.setText(text.getText() + " (" + overlayLabel.getText() + ")");
+            }
+        }
     }
 }

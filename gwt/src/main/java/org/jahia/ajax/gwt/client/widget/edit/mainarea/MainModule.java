@@ -80,6 +80,7 @@ import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.layout.*;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
@@ -87,6 +88,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.IFrameElement;
+import com.google.gwt.dom.client.Node;
 import com.google.gwt.dom.client.NodeList;
 import com.google.gwt.http.client.URL;
 import com.google.gwt.storage.client.Storage;
@@ -94,6 +96,7 @@ import com.google.gwt.user.client.*;
 import com.google.gwt.user.client.EventListener;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
+import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -138,6 +141,7 @@ public class MainModule extends Module {
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
     protected EditFrame frame;
+    private Element mainModuleElement;
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;
@@ -762,9 +766,20 @@ public class MainModule extends Module {
         this.referenceTypes = referenceTypes;
     }
 
+    public void setMainModuleElement(Element mainModuleElement) {
+        this.mainModuleElement = mainModuleElement;
+    }
+
     @Override
     public void setNode(GWTJahiaNode node) {
-        this.node = node;
+        mainModule = this;
+        super.setNode(node);
+        if (node.getNodeTypes().contains("jmix:markedForDeletion")) {
+            overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
+            overlayLabel.setStyleName("deleted-overlay");
+            overlayColorText = "#f00";
+            opacity = "0.4";
+        }
         if (node.isShared()) {
             this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"),
                     Messages.get("info_sharednode", "This is a shared node")));
@@ -784,6 +799,15 @@ public class MainModule extends Module {
         editLinker.handleNewMainNodeLoaded();
         if (head != null && head instanceof ToolbarHeader) {
             ((ToolbarHeader) head).handleNewMainNodeLoaded(node);
+        }
+        if (overlayLabel != null) {
+            DOM.setStyleAttribute(mainModuleElement,"position","relative");
+            mainModuleElement.getParentElement().insertFirst(overlayLabel.getElement());
+            overlayLabel.setHeight("100%");
+            overlayLabel.setWidth("100%");
+
+            DOM.setStyleAttribute(mainModuleElement, "opacity", opacity);
+            layout();
         }
     }
 

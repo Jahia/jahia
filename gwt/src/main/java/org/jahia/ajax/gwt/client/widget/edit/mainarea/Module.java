@@ -78,6 +78,7 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.util.List;
 import java.util.Map;
@@ -108,6 +109,10 @@ public abstract class Module extends LayoutContainer {
     protected Header head;
     protected int childCount = 0;
     protected int visibleChildCount = 0;
+    protected HTML overlayLabel = null;
+    protected String opacity = "";
+    protected String overlayColorText = "";
+
 
     public Module() {
         super();
@@ -243,6 +248,14 @@ public abstract class Module extends LayoutContainer {
         return selectable;
     }
 
+    public String getOverlayColorText() {
+        return overlayColorText;
+    }
+
+    public HTML getOverlayLabel() {
+        return overlayLabel;
+    }
+
     public String getPath() {
         return path;
     }
@@ -253,6 +266,26 @@ public abstract class Module extends LayoutContainer {
 
     public void setNode(GWTJahiaNode node) {
         this.node = node;
+        overlayLabel = null;
+        overlayColorText = "";
+        opacity = "";
+        if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
+            overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
+            overlayLabel.setStyleName("deleted-overlay");
+            overlayColorText = "#f00";
+            opacity = "0.4";
+        } else if (node.getInvalidLanguages() != null && node.getInvalidLanguages().contains(getMainModule().getEditLinker().getLocale())) {
+            overlayLabel = new HTML(Messages.get("label.validLanguages.overlay",
+                    "Not visible content"));
+            overlayLabel.setStyleName("deleted-overlay");
+            opacity = "0.4";
+            overlayColorText = "#f00";
+        } else if (node.get("j:isDraft") != null && Boolean.valueOf(node.get("j:isDraft").toString())) {
+            overlayLabel = new HTML(Messages.get("label.draft", "Draft"));
+            overlayLabel.setStyleName("draft-overlay");
+            opacity = "0.6";
+            overlayColorText = "#39f";
+        }
     }
 
     public MainModule getMainModule() {

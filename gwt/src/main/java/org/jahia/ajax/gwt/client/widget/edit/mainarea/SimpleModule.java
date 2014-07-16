@@ -75,7 +75,10 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.DropTarget;
 import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Header;
+import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.Text;
 import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.tips.ToolTipConfig;
 import com.google.gwt.user.client.DOM;
@@ -207,41 +210,28 @@ public class SimpleModule extends Module {
     public void setNode(GWTJahiaNode node) {
         super.setNode(node);
 
+
+        if (node.isShared()) {
+            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
+        }
         if (head != null && addIconInHeader) {
             GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(node.getNodeTypes().get(0));
             head.setIcon(ContentModelIconProvider.getInstance().getIcon(nodeType));
         }
 
-        if (node.isShared()) {
-            this.setToolTip(new ToolTipConfig(Messages.get("info_important", "Important"), Messages.get("info_sharednode", "This is a shared node")));
-        }
-
-        HTML overlayLabel = null;
-        String styleName = "";
-        String opacity = "";
-        if (node.getNodeTypes().contains("jmix:markedForDeletionRoot")) {
-            overlayLabel = new HTML(Messages.get("label.deleted", "Deleted"));
-            styleName = "deleted-overlay";
-            opacity = "0.4";
-        } else if (node.getInvalidLanguages() != null && node.getInvalidLanguages().contains(getMainModule().getEditLinker().getLocale())) {
-            overlayLabel = new HTML(Messages.get("label.validLanguages.overlay",
-                    "Not visible content"));
-            styleName = "deleted-overlay";
-            opacity = "0.4";
-        } else if (node.get("j:isDraft") != null && Boolean.valueOf(node.get("j:isDraft").toString())) {
-            overlayLabel = new HTML(Messages.get("label.draft", "Draft"));
-            styleName = "draft-overlay";
-            opacity = "0.5";
-        }
-
         if (overlayLabel != null) {
             setStyleAttribute("position", "relative");
             insert(overlayLabel, 0);
-            overlayLabel.addStyleName(styleName);
             overlayLabel.setHeight(Integer.toString(html.getOffsetHeight()) + "px");
             overlayLabel.setWidth(Integer.toString(html.getOffsetWidth()) + "px");
             DOM.setStyleAttribute(html.getElement(), "opacity", opacity);
             layout();
+            if (head != null)  {
+                Component headerHtml = new Text(overlayLabel.getText());
+                headerHtml.setStyleAttribute("color",overlayColorText);
+                headerHtml.setStyleAttribute("font-weight","bold");
+                head.addTool(headerHtml);
+            }
         }
 
         if (bindable) {

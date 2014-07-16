@@ -545,20 +545,20 @@ public class ModuleBuildHelper implements InitializingBean {
         this.toolbarWarningsService = toolbarWarningsService;
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String artifactId, String groupId, String srcPath, String scmURI, String branchOrTag,
+    public JahiaTemplatesPackage duplicateModule(String dstModuleName, String dstModuleId, String dstGroupId, String srcPath, String scmURI, String branchOrTag,
                                                  String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
-        if (StringUtils.isBlank(moduleName)) {
+        if (StringUtils.isBlank(dstModuleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
         }
-        if (StringUtils.isBlank(artifactId)) {
-            artifactId = JCRContentUtils.generateNodeName(moduleName);
+        if (StringUtils.isBlank(dstModuleId)) {
+            dstModuleId = JCRContentUtils.generateNodeName(dstModuleName);
         }
-        if (StringUtils.isBlank(groupId)) {
-            groupId = "org.jahia.modules";
+        if (StringUtils.isBlank(dstGroupId)) {
+            dstGroupId = "org.jahia.modules";
         }
-        if (templatePackageRegistry.containsId(artifactId)) {
-            throw new RepositoryException("Cannot create module " + artifactId + " because another module with the same artifactId exists");
+        if (templatePackageRegistry.containsId(dstModuleId)) {
+            throw new RepositoryException("Cannot create module " + dstModuleId + " because another module with the same artifactId exists");
         }
 
         if (StringUtils.isBlank(dstPath)) {
@@ -569,10 +569,10 @@ public class ModuleBuildHelper implements InitializingBean {
             throw new IOException("Unable to create path for: " + parentDir);
         }
 
-        File dstFolder = new File(parentDir, artifactId);
+        File dstFolder = new File(parentDir, dstModuleId);
         int i = 0;
         while (dstFolder.exists()) {
-            dstFolder = new File(parentDir, artifactId + "_" + (++i));
+            dstFolder = new File(parentDir, dstModuleId + "_" + (++i));
         }
 
         File srcFolder;
@@ -597,107 +597,20 @@ public class ModuleBuildHelper implements InitializingBean {
 
         CompiledModuleInfo compiledModuleInfo;
         try {
-            // Update pom information
-            Model pom = null;
-            try {
-                pom = PomUtils.read(new File(dstFolder, "pom.xml"));
-            } catch (XmlPullParserException e) {
-                throw new IOException(e);
-            }
-            if (!"bundle".equals(pom.getPackaging())) {
-                throw new IOException("This module is not compatible with the current version of Jahia.");
-            }
-            pom.setArtifactId(artifactId);
-            pom.setGroupId(groupId);
             String dstVersion = "1.0-SNAPSHOT";
-            pom.setVersion(dstVersion);
-            pom.setName(moduleName);
-            Scm scm = new Scm();
-            scm.setConnection(Constants.SCM_DUMMY_URI);
-            scm.setDeveloperConnection(Constants.SCM_DUMMY_URI);
-            pom.setScm(scm);
-            pom.setDistributionManagement(null);
-            pom.getProperties().remove("jahia-private-app-store");
-            PomUtils.write(pom, new File(dstFolder, "pom.xml"));
+            updateDuplicatedPom(dstModuleName, dstModuleId, dstGroupId, dstVersion, dstFolder);
 
-            // Remove any SCM files
-            FileUtils.deleteQuietly(new File(dstFolder, ".git"));
-            FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
-            new SvnCleaner().clean(dstFolder);
+            cleanScmFiles(dstFolder);
 
-            // Update import files
             JahiaTemplatesPackage srcModule = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, new ModuleVersion(srcModuleVersion));
-            JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
-            JCRNodeWrapper dstModuleNode = session.getNode("/modules");
-            if (dstModuleNode.hasNode(artifactId)) {
-                dstModuleNode = dstModuleNode.getNode(artifactId);
-            } else {
-                dstModuleNode = dstModuleNode.addNode(artifactId, "jnt:module");
-            }
-            if (dstModuleNode.hasNode(dstVersion)) {
-                dstModuleNode = dstModuleNode.getNode(dstVersion);
-            } else {
-                dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
-            }
-            for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
-                if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
-                    node.copy(dstModuleNode.getPath());
-                }
-            }
-            dstModuleNode.setProperty("j:title", moduleName);
-            if (srcModuleNode.hasProperty("j:installedModules")) {
-                List<Value> newValues = new ArrayList<Value>();
-                for (JCRValueWrapper value : srcModuleNode.getProperty("j:installedModules").getValues()) {
-                    if (srcModuleId.equals(value.getString())) {
-                        newValues.add(new ValueImpl(artifactId));
-                    } else {
-                        newValues.add(value);
-                    }
-                }
-                dstModuleNode.setProperty("j:installedModules", newValues.toArray(new Value[newValues.size()]));
-            }
-            session.save();
+            updateDuplicatedImportFiles(srcModule, dstModuleName, dstModuleId, dstVersion, dstFolder, session);
 
-            FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModuleId));
-            try {
-                regenerateImportFile(session, new ArrayList<File>(), dstFolder, artifactId, artifactId + "/" + dstVersion);
-            } catch (SAXException e) {
-                throw new IOException("Unable to generate import files in " + dstFolder);
-            } catch (TransformerException e) {
-                throw new IOException("Unable to generate import files in " + dstFolder);
-            }
-
-            // Rename resource bundle
-            File rbFolder = new File(dstFolder, "src/main/resources/resources");
-            if (rbFolder.exists()) {
-                Pattern rbPattern = Pattern.compile("(" + srcModuleId
-                        + "|" + StringUtils.replace(srcModule.getName(), " ", "")
-                        + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2}(-[A-Z]{2})?)?.properties");
-                for (File f : rbFolder.listFiles()) {
-                    Matcher m = rbPattern.matcher(f.getName());
-                    if (m.matches()) {
-                        if (m.group(2) == null) {
-                            f.renameTo(new File(rbFolder, artifactId + ".properties"));
-                        } else {
-                            f.renameTo(new File(rbFolder, artifactId + m.group(2) + ".properties"));
-                        }
-                    }
-                }
-            }
+            renameDuplicatedResourceBundle(srcModule, dstModuleId, dstFolder);
 
             compiledModuleInfo = compileModule(dstFolder);
 
             if (uninstallSrcModule) {
-                Set<ModuleVersion> availableVersionsForModule = templatePackageRegistry.getAvailableVersionsForModule(srcModuleId);
-                ModuleVersion[] versions = availableVersionsForModule.toArray(new ModuleVersion[availableVersionsForModule.size()]);
-                for (int j = 0; j < versions.length; j++) {
-                    Bundle bundle = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, versions[j]).getBundle();
-                    int state = bundle.getState();
-                    if (state == Bundle.ACTIVE || state == Bundle.STARTING) {
-                        bundle.stop();
-                    }
-                    bundle.uninstall();
-                }
+                undeployAllModuleVersions(srcModuleId);
             }
 
         } catch (IOException e) {
@@ -740,6 +653,109 @@ public class ModuleBuildHelper implements InitializingBean {
 
         return templatePackageRegistry.lookupByIdAndVersion(compiledModuleInfo.getModuleName(), new ModuleVersion(
                 compiledModuleInfo.getVersion()));
+    }
+
+    private void undeployAllModuleVersions(String srcModuleId) throws BundleException {
+        Set<ModuleVersion> availableVersionsForModule = templatePackageRegistry.getAvailableVersionsForModule(srcModuleId);
+        ModuleVersion[] versions = availableVersionsForModule.toArray(new ModuleVersion[availableVersionsForModule.size()]);
+        for (int j = 0; j < versions.length; j++) {
+            Bundle bundle = templatePackageRegistry.lookupByIdAndVersion(srcModuleId, versions[j]).getBundle();
+            int state = bundle.getState();
+            if (state == Bundle.ACTIVE || state == Bundle.STARTING) {
+                bundle.stop();
+            }
+            bundle.uninstall();
+        }
+    }
+
+    private void renameDuplicatedResourceBundle(JahiaTemplatesPackage srcModule, String dstModuleId, File dstFolder) {
+        File rbFolder = new File(dstFolder, "src/main/resources/resources");
+        if (rbFolder.exists()) {
+            Pattern rbPattern = Pattern.compile("(" + srcModule.getId()
+                    + "|" + StringUtils.replace(srcModule.getName(), " ", "")
+                    + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2}(-[A-Z]{2})?)?.properties");
+            for (File f : rbFolder.listFiles()) {
+                Matcher m = rbPattern.matcher(f.getName());
+                if (m.matches()) {
+                    if (m.group(2) == null) {
+                        f.renameTo(new File(rbFolder, dstModuleId + ".properties"));
+                    } else {
+                        f.renameTo(new File(rbFolder, dstModuleId + m.group(2) + ".properties"));
+                    }
+                }
+            }
+        }
+    }
+
+    private void updateDuplicatedImportFiles(JahiaTemplatesPackage srcModule, String dstModuleName, String dstModuleId, String dstVersion, File dstFolder, JCRSessionWrapper session) throws RepositoryException, IOException {
+        JCRNodeWrapper srcModuleNode = session.getNode("/modules/" + srcModule.getIdWithVersion());
+        JCRNodeWrapper dstModuleNode = session.getNode("/modules");
+        if (dstModuleNode.hasNode(dstModuleId)) {
+            dstModuleNode = dstModuleNode.getNode(dstModuleId);
+        } else {
+            dstModuleNode = dstModuleNode.addNode(dstModuleId, "jnt:module");
+        }
+        if (dstModuleNode.hasNode(dstVersion)) {
+            dstModuleNode = dstModuleNode.getNode(dstVersion);
+        } else {
+            dstModuleNode = dstModuleNode.addNode(dstVersion, "jnt:moduleVersion");
+        }
+        for (JCRNodeWrapper node : srcModuleNode.getNodes()) {
+            if (!node.isNodeType("jnt:moduleVersionFolder") && !node.isNodeType("jnt:versionInfo")) {
+                node.copy(dstModuleNode.getPath());
+            }
+        }
+        dstModuleNode.setProperty("j:title", dstModuleName);
+        if (srcModuleNode.hasProperty("j:installedModules")) {
+            List<Value> newValues = new ArrayList<Value>();
+            for (JCRValueWrapper value : srcModuleNode.getProperty("j:installedModules").getValues()) {
+                if (srcModule.getId().equals(value.getString())) {
+                    newValues.add(new ValueImpl(dstModuleId));
+                } else {
+                    newValues.add(value);
+                }
+            }
+            dstModuleNode.setProperty("j:installedModules", newValues.toArray(new Value[newValues.size()]));
+        }
+        session.save();
+
+        FileUtils.deleteQuietly(new File(dstFolder, "src/main/import/content/modules/" + srcModule.getId()));
+        try {
+            regenerateImportFile(session, new ArrayList<File>(), dstFolder, dstModuleId, dstModuleId + "/" + dstVersion);
+        } catch (SAXException e) {
+            throw new IOException("Unable to generate import files in " + dstFolder);
+        } catch (TransformerException e) {
+            throw new IOException("Unable to generate import files in " + dstFolder);
+        }
+    }
+
+    private void cleanScmFiles(File dstFolder) throws IOException {
+        FileUtils.deleteQuietly(new File(dstFolder, ".git"));
+        FileUtils.deleteQuietly(new File(dstFolder, ".gitignore"));
+        new SvnCleaner().clean(dstFolder);
+    }
+
+    private void updateDuplicatedPom(String moduleName, String artifactId, String groupId, String dstVersion, File dstFolder) throws IOException {
+        Model pom = null;
+        try {
+            pom = PomUtils.read(new File(dstFolder, "pom.xml"));
+        } catch (XmlPullParserException e) {
+            throw new IOException(e);
+        }
+        if (!"bundle".equals(pom.getPackaging())) {
+            throw new IOException("This module is not compatible with the current version of Jahia.");
+        }
+        pom.setArtifactId(artifactId);
+        pom.setGroupId(groupId);
+        pom.setVersion(dstVersion);
+        pom.setName(moduleName);
+        Scm scm = new Scm();
+        scm.setConnection(Constants.SCM_DUMMY_URI);
+        scm.setDeveloperConnection(Constants.SCM_DUMMY_URI);
+        pom.setScm(scm);
+        pom.setDistributionManagement(null);
+        pom.getProperties().remove("jahia-private-app-store");
+        PomUtils.write(pom, new File(dstFolder, "pom.xml"));
     }
 
     public void regenerateImportFile(JCRSessionWrapper session, List<File> modifiedFiles, File sources,

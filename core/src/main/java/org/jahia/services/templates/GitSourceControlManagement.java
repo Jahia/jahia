@@ -71,11 +71,8 @@
  */
 package org.jahia.services.templates;
 
-import com.ctc.wstx.util.StringUtil;
-import net.sf.saxon.type.StringConverter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

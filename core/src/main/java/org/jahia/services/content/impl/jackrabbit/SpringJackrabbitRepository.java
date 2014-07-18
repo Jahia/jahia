@@ -163,6 +163,9 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
 
 
     public void start() throws RepositoryException, IOException {
+    	if (homeDir == null) {
+    		homeDir = settings.getRepositoryHomeResource();
+    	}
         String targetRepositoryConfig = System
                 .getProperty("jahia.jackrabbit.targetRepositoryConfig");
         if (settings.isProcessingServer()

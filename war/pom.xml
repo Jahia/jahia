@@ -219,136 +219,6 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <id>generate-ddl</id>
-            <activation>
-                <property>
-                    <name>jahia.generate.ddl</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <phase>process-resources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.jahia.server</groupId>
-                                            <artifactId>jahia-impl</artifactId>
-                                            <version>${project.version}</version>
-                                            <type>jar</type>
-                                            <overWrite>false</overWrite>
-                                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
-                                            <includes>org/jahia/hibernate/model/JahiaDbTest.class,org/jahia/services/history/HistoryEntry.class,org/jahia/services/content/nodetypes/NodeTypesDBProvider.class</includes>
-                                        </artifactItem>
-                                    </artifactItems>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>de.juplo</groupId>
-                        <artifactId>hibernate4-maven-plugin</artifactId>
-                        <configuration>
-                            <outputDirectory>${project.build.directory}/hibernate-entities</outputDirectory>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>ddl-derby</id>
-                                <goals>
-                                    <goal>export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jahia-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>ddl-mysql</id>
-                                <goals>
-                                    <goal>export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jahia-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>ddl-postgresql</id>
-                                <goals>
-                                    <goal>export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jahia-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>generate-jbpm-ddl</id>
-            <activation>
-                <property>
-                    <name>jahia.generate.jbpm.ddl</name>
-                    <value>true</value>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>jahia-hibernate-maven-plugin</artifactId>
-                        <configuration>
-                            <persistenceFileName>jahia-persistence.xml</persistenceFileName>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>ddl-derby</id>
-                                <goals>
-                                    <goal>jpa-schema-export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.derby}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/derby/jbpm-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>ddl-mysql</id>
-                                <goals>
-                                    <goal>jpa-schema-export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.mysql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/mysql/jbpm-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>ddl-postgresql</id>
-                                <goals>
-                                    <goal>jpa-schema-export</goal>
-                                </goals>
-                                <configuration>
-                                    <hibernateDialect>${hibernateDialect.postgresql}</hibernateDialect>
-                                    <outputFile>${basedir}/src/main/webapp/WEB-INF/var/db/sql/schema/postgresql/jbpm-schema.sql</outputFile>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>                
-                </plugins>
-            </build>
-        </profile>
     </profiles>
 
     <dependencies>
@@ -377,8 +247,8 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- Jahia Modules -->
         <dependency>
+<<<<<<< .working
             <groupId>org.jahia.modules</groupId>
             <artifactId>assets</artifactId>
             <version>7.1.0.0-SNAPSHOT</version>
@@ -530,6 +400,8 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+=======
+>>>>>>> .merge-right.r50243
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
@@ -992,20 +864,6 @@
                             </outputDirectory>
                         </configuration>
                     </execution>
-                    <!--<execution>-->
-                    <!--<id>copy-watched-bundles</id>-->
-                    <!--<goals>-->
-                    <!--<goal>copy</goal>-->
-                    <!--</goals>-->
-                    <!--<configuration>-->
-                    <!--<artifactItems>-->
-                    <!--</artifactItems>-->
-                    <!--<stripVersion>false</stripVersion>-->
-                    <!--<outputDirectory>-->
-                    <!--${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles-->
-                    <!--</outputDirectory>-->
-                    <!--</configuration>-->
-                    <!--</execution>-->
                 </executions>
             </plugin>
             <plugin>
@@ -1046,14 +904,6 @@
                 <configuration>
                     <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
-                        <resource>
-                            <directory>${pom.basedir}/src/main/webapp/WEB-INF/var/db</directory>
-                            <filtering>true</filtering>
-                            <includes>
-                                <include>*.script</include>
-                            </includes>
-                            <targetPath>WEB-INF/var/db</targetPath>
-                        </resource>
                         <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
                             <targetPath>WEB-INF/classes</targetPath>
@@ -1138,13 +988,6 @@
                         <phase>prepare-package</phase>
                     </execution>
                     <execution>
-                        <id>copy-templates</id>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>copy-templates</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>native2ascii</id>
                         <goals>
                             <goal>native2ascii</goal>
@@ -1168,16 +1011,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-core</artifactId>
-                        <version>${hibernate.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.hibernate</groupId>
-                        <artifactId>hibernate-tools</artifactId>
-                        <version>3.2.3.GA</version>
-                    </dependency>
                     <dependency>
                         <groupId>org.slf4j</groupId>
                         <artifactId>slf4j-log4j12</artifactId>
@@ -1234,26 +1067,6 @@
                             </tasks>
                         </configuration>
                     </execution>
-                    <!--
-                    <execution>
-                        <id>merge-css</id>
-                        <phase>process-classes</phase>
-                        <configuration>
-                            <tasks>
-                                <concat destfile="${project.build.directory}/${project.build.finalName}/gwt/resources/css/gwt.css" fixlastline="yes">
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-ext-all.css" erroronmissingdir="false" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/xtheme-jahia.css" erroronmissingdir="false" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/edit.css" erroronmissingdir="false" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/jahia-gwt-engines.css" erroronmissingdir="false" />
-                                    <fileset file="${project.build.directory}/${project.build.finalName}/gwt/resources/css/diff.css" erroronmissingdir="false" />
-                                </concat>
-                            </tasks>
-                        </configuration>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                    </execution>
-                    -->
                 </executions>
             </plugin>
             <plugin>

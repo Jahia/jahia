@@ -121,7 +121,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
                             File deploymentsFolder = earFolder.getParentFile();
                             if (deploymentsFolder != null && "deployments".equals(deploymentsFolder.getName())) {
                                 File standaloneFolder = deploymentsFolder.getParentFile();
-                                if (standaloneFolder.exists()) {
+                                if (standaloneFolder != null) {
                                     File log = new File(standaloneFolder, "log");
                                     if (log.isDirectory() && log.canWrite()) {
                                         logDir = log.getAbsolutePath();

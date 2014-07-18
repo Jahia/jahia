@@ -89,8 +89,6 @@
 
 package org.jahia.bin;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.JarURLConnection;
@@ -101,6 +99,7 @@ import java.util.Locale;
 
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.commons.Version;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.settings.SettingsBean;
@@ -267,7 +266,7 @@ public final class Jahia {
         InputStream in = null;
         String txt;
         try {
-            in = new FileInputStream(new File(SettingsBean.getInstance().getJahiaHomeDiskPath() + "/LICENSE"));
+            in = JahiaContextLoaderListener.getServletContext().getResourceAsStream("/LICENSE");
             txt = IOUtils.toString(in);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);

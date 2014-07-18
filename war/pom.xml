@@ -765,14 +765,6 @@
                     <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
                     <webResources>
                         <resource>
-                            <directory>${pom.basedir}/src/main/webapp/WEB-INF/var/db</directory>
-                            <filtering>true</filtering>
-                            <includes>
-                                <include>*.script</include>
-                            </includes>
-                            <targetPath>WEB-INF/var/db</targetPath>
-                        </resource>
-                        <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>

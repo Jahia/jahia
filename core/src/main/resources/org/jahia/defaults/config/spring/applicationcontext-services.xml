@@ -203,8 +203,7 @@
 
 	<bean id="SearchService" class="org.jahia.services.search.SearchServiceImpl"
 		parent="jahiaServiceTemplate" factory-method="getInstance">
-		<property name="searchProvider"
-			ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider" />
+		<property name="defaultSearchProvider" ref="org.jahia.services.search.jcr.JahiaJCRSearchProvider" />
 	</bean>
 
     <bean id="org.jahia.services.search.jcr.JahiaJCRSearchProvider"
@@ -216,6 +215,7 @@
                 <value>jnt:ace</value>
             </set>
         </property>
+        <property name="name" value="default jahia JCR search provider"/>
     </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>

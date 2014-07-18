@@ -71,12 +71,16 @@
  */
 package org.jahia.services.search;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.search.exception.InvalidSearchProviderException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -85,8 +89,9 @@ import java.util.Map;
  * @author Benjamin Papez
  */
 public class SearchServiceImpl extends SearchService {
-
-    private SearchProvider searchProvider;
+    private List<SearchProvider> availableSearchProviders = new ArrayList<SearchProvider>();
+    private SearchProvider selectedSearchProvider;
+    private SearchProvider defaultSearchProvider;
 
     /**
      * Returns the unique instance of this service.
@@ -108,17 +113,6 @@ public class SearchServiceImpl extends SearchService {
         return getProvider().search(criteria, context);
     }
 
-    public static void executeURLModificationRules(
-            Hit<?> searchHit, RenderContext context) {
-        Map<String, Object> globals = new HashMap<String, Object>();
-        globals.put("renderContext", context);
-        globals.put("urlService", SearchURLService.getInstance());
-        RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(searchHit,
-                globals);
-        return;
-    }
-
-
     @Override
     public void start() throws JahiaInitializationException {
         // do nothing
@@ -134,20 +128,86 @@ public class SearchServiceImpl extends SearchService {
         return getProvider().suggest(originalQuery, context, maxTermsToSuggest);
     }
 
+    public static void executeURLModificationRules(
+            Hit<?> searchHit, RenderContext context) {
+        Map<String, Object> globals = new HashMap<String, Object>();
+        globals.put("renderContext", context);
+        globals.put("urlService", SearchURLService.getInstance());
+        RulesListener.getInstance(context.getMainResource().getWorkspace()).executeRules(searchHit,
+                globals);
+        return;
+    }
+
     /**
      * Returns an instance of the search provider for handling query requests.
      *
      * @return an instance of the search provider for handling query requests
      */
     protected SearchProvider getProvider() {
-        // TODO add logic to pick the right search provider
-        return searchProvider;
+        return selectedSearchProvider != null ? selectedSearchProvider : defaultSearchProvider;
     }
 
-    /**
-     * @param searchProvider the searchProvider to set
-     */
-    public void setSearchProvider(SearchProvider searchProvider) {
-        this.searchProvider = searchProvider;
+    private SearchProvider getProvider(String name) {
+        if(availableSearchProviders != null){
+            for(SearchProvider searchProvider : availableSearchProviders){
+                if(searchProvider.getName().equals(name)){
+                    return searchProvider;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void registerSearchProvider(SearchProvider searchProvider) throws InvalidSearchProviderException {
+        if(searchProvider != null && StringUtils.isNotEmpty(searchProvider.getName())){
+            if(getProvider(searchProvider.getName()) == null){
+                availableSearchProviders.add(searchProvider);
+            }else {
+                throw new InvalidSearchProviderException("Unable to register search provider with the name \"" + searchProvider.getName() + "\", search provider with this name already exist");
+            }
+        }else {
+            throw new InvalidSearchProviderException("Search provider need to be not null and named");
+        }
+    }
+
+    public void unregisterSearchProvider(SearchProvider searchProvider) throws InvalidSearchProviderException {
+        if(searchProvider != null && StringUtils.isNotEmpty(searchProvider.getName())){
+            SearchProvider retreivedSearchProvider = getProvider(searchProvider.getName());
+            if(retreivedSearchProvider != null){
+                //if current selected provider is the one to unregistered fallback to default provider
+                if(selectedSearchProvider != null && selectedSearchProvider.getName().equals(retreivedSearchProvider.getName())){
+                    selectedSearchProvider = defaultSearchProvider;
+                }
+
+                availableSearchProviders.remove(retreivedSearchProvider);
+            }else {
+                throw new InvalidSearchProviderException("Unable to unregistered Search provider with the name \"" + searchProvider.getName() + "\", no search provider found");
+            }
+        }else {
+            throw new InvalidSearchProviderException("Search provider need to be not null and named");
+        }
+    }
+
+    public void setDefaultSearchProvider(SearchProvider defaultSearchProvider) {
+        this.defaultSearchProvider = defaultSearchProvider;
+    }
+
+    public SearchProvider getDefaultSearchProvider() {
+        return defaultSearchProvider;
+    }
+
+    public boolean selectSearchProvider(String name) {
+        if(StringUtils.isNotEmpty(name)){
+            SearchProvider searchProvider = getProvider(name);
+            if(searchProvider != null){
+                selectedSearchProvider = searchProvider;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public SearchProvider getSelectedSearchProvider() {
+        return selectedSearchProvider;
     }
 }

@@ -102,6 +102,8 @@ import org.jahia.services.render.filter.RenderServiceAware;
 import org.jahia.services.render.filter.cache.CacheKeyPartGenerator;
 import org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator;
 import org.jahia.services.render.webflow.BundleFlowRegistry;
+import org.jahia.services.search.SearchProvider;
+import org.jahia.services.search.SearchServiceImpl;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.services.workflow.WorkflowService;
@@ -682,6 +684,8 @@ public class TemplatePackageRegistry {
 
         private CompositeFilter compositeFilter;
 
+        private SearchServiceImpl searchService;
+
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
@@ -823,6 +827,14 @@ public class TemplatePackageRegistry {
                     compositeFilter.unregisterFilter((AbstractServletFilter) bean);
                 } catch (Exception e) {
                     logger.error("Cannot register servlet filter", e);
+                }
+            }
+
+            if (bean instanceof SearchProvider) {
+                try {
+                    searchService.unregisterSearchProvider((SearchProvider) bean);
+                } catch (Exception e) {
+                    logger.error("Cannot unregistered search provider", e);
                 }
             }
 
@@ -989,6 +1001,14 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean instanceof SearchProvider) {
+                try {
+                    searchService.registerSearchProvider((SearchProvider) bean);
+                } catch (Exception e) {
+                    logger.error("Cannot register search provider", e);
+                }
+            }
+
             return bean;
         }
 
@@ -1076,6 +1096,10 @@ public class TemplatePackageRegistry {
 
         public void setCompositeFilter(CompositeFilter compositeFilter) {
             this.compositeFilter = compositeFilter;
+        }
+
+        public void setSearchService(SearchServiceImpl searchService) {
+            this.searchService = searchService;
         }
     }
 }

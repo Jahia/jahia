@@ -19,6 +19,7 @@
         <property name="visibilityService" ref="visibilityService"/>
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="compositeFilter" ref="CompositeFilter"/>
+        <property name="searchService" ref="SearchService"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"

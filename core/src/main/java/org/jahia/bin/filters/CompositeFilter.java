@@ -71,8 +71,6 @@
  */
 package org.jahia.bin.filters;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;

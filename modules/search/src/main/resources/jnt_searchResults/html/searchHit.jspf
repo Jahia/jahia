@@ -3,10 +3,14 @@
 <div class="resultslistDesc">${hit.excerpt}</div>
 <div class="resultsListFileType">${hit.contentType}</div>
 <div class="resultsListDate"><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
-<div class="resultsListUsages">
-    <c:forEach items="${hit.usages}" var="usage" varStatus="loopStatus">
-        <c:if test="${loopStatus.first}"><fmt:message key="search.results.usages"/>:&nbsp;</c:if>
-        <c:if test="${not loopStatus.first}">,&nbsp;</c:if>
-        <a href="${usage.link}">${fn:escapeXml(usage.title)}</a>
-    </c:forEach>
-</div>
+
+<c:catch var="exception">${hit.usages}</c:catch>
+<c:if test="${empty exception}">
+    <div class="resultsListUsages">
+        <c:forEach items="${hit.usages}" var="usage" varStatus="loopStatus">
+            <c:if test="${loopStatus.first}"><fmt:message key="search.results.usages"/>:&nbsp;</c:if>
+            <c:if test="${not loopStatus.first}">,&nbsp;</c:if>
+            <a href="${usage.link}">${fn:escapeXml(usage.title)}</a>
+        </c:forEach>
+    </div>
+</c:if>

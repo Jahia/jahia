@@ -135,6 +135,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     private TaggingService taggingService = null;
 
+    private String name;
+
     private Set<String> typesToHideFromSearchResults;
 
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
@@ -1175,5 +1177,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     public void setTypesToHideFromSearchResults(Set<String> typesToHideFromSearchResults) {
         this.typesToHideFromSearchResults = typesToHideFromSearchResults;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

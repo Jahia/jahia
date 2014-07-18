@@ -106,4 +106,6 @@ public interface SearchProvider {
      *         is returned.
      */
     public abstract Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest);
+
+    public String getName();
 }

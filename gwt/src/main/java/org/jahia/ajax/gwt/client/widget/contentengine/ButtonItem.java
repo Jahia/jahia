@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 
 import java.io.Serializable;
@@ -87,6 +88,6 @@ public interface ButtonItem extends Serializable {
      * @param engine engine where to create the button
      * @return {@link Button} to create
      */
-    Button create(final AbstractContentEngine engine);
+    BoxComponent create(final AbstractContentEngine engine);
 
 }

@@ -76,6 +76,7 @@ import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -83,7 +84,6 @@ import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -104,13 +104,14 @@ import java.util.Map;
  */
 public abstract class SaveButtonItem implements ButtonItem {
 
-    public Button create(final AbstractContentEngine engine) {
+    private static transient boolean isDraft;
+
+    public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                setDraftMode(engine, Boolean.FALSE);
                 save(engine, true, false);
             }
         });
@@ -118,6 +119,7 @@ public abstract class SaveButtonItem implements ButtonItem {
     }
 
     protected void save(final AbstractContentEngine engine, final boolean closeAfterSave, boolean skipValidation) {
+        setDraftMode(engine,isDraft);
         engine.mask(Messages.get("label.saving", "Saving..."), "x-mask-loading");
         engine.setButtonsEnabled(false);
 
@@ -301,5 +303,9 @@ public abstract class SaveButtonItem implements ButtonItem {
     protected boolean isNodeOfJmixLastPublishedType(AbstractContentEngine engine) {
         return (engine.getNode() != null && engine.getNode().isNodeType("jmix:lastPublished")) ||
            ((engine instanceof CreateContentEngine) && ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished"));
+    }
+
+    public void setDraft(boolean isDraft) {
+        this.isDraft = isDraft;
     }
 }

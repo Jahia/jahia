@@ -74,13 +74,15 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.FormButtonBinding;
+import com.extjs.gxt.ui.client.widget.form.FormPanel;
+import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -97,7 +99,7 @@ public class CreateResourceButtonItem extends SaveButtonItem {
 
     private String fileExtension;
 
-    public Button create(final AbstractContentEngine engine) {
+    public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save", "Save"));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -184,8 +186,9 @@ public class CreateResourceButtonItem extends SaveButtonItem {
         }
         JahiaContentManagementService.App.getInstance().createNode(parentPath, nodeName, engine.getType().getName(), null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert(Messages.get("label.error.processingRequestError","An error occurred while processing your request"), throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null);
             }
+
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
                 engine.close();

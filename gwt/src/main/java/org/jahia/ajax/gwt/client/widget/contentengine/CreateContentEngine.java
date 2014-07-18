@@ -72,9 +72,11 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -90,7 +92,10 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: toto
@@ -103,7 +108,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
-    private List<Button> saveButtons = new ArrayList<Button>();
+    private List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
 
     private int childCount;
     private int listLimit;
@@ -164,7 +169,7 @@ public class CreateContentEngine extends AbstractContentEngine {
      */
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getCreationButtons()) {
-            Button button = buttonItem.create(this);
+            BoxComponent button = buttonItem.create(this);
             saveButtons.add(button);
             buttonBar.add(button);
         }
@@ -244,7 +249,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
     
     public void setButtonsEnabled(final boolean enabled) {
-        for (Button button : saveButtons) {
+        for (BoxComponent button : saveButtons) {
             button.setEnabled(enabled);
         }
     }

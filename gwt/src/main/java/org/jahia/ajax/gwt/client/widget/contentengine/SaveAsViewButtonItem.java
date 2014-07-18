@@ -106,9 +106,9 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
     public static final int INDEX_OF_FILE_TYPE = 8;
     public static final int INDEX_OF_FILE_NAME = 10;
     public static final int INDEX_OF_TEMPLATE_TYPE = 9;
-    public static final String VIEWS_SOURCE_PATH="/sources/src/main/resources";
+    public static final String VIEWS_SOURCE_PATH = "/sources/src/main/resources";
 
-    public Button create(final AbstractContentEngine engine) {
+    public com.extjs.gxt.ui.client.widget.BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.saveAs", "Save as ..."));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -150,7 +150,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     }
 
                 } else {
-                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve","An issue occurred when trying to resolve {0}",new Object[] {node.getPath()}), null);
+                    MessageBox.alert(Messages.get("label.error", "Error"), Messages.getWithArgs("label.issueOccursTryingResolve", "An issue occurred when trying to resolve {0}", new Object[]{node.getPath()}), null);
                     return;
                 }
                 final String modulePath = "/modules/" + filePath[INDEX_OF_MODULE_NAME];
@@ -174,7 +174,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
                     for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
                         dependenciesCombo.add(n.getName());
                     }
-                    dependenciesCombo.getStore().sort("value",Style.SortDir.ASC);
+                    dependenciesCombo.getStore().sort("value", Style.SortDir.ASC);
                     dependenciesCombo.setSimpleValue(moduleName);
                     f.add(dependenciesCombo);
                 }
@@ -289,8 +289,9 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
 
         JahiaContentManagementService.App.getInstance().createNode(modulePath, viewName, "jnt:viewFile", null, engine.getAcl(), properties, engine.changedI18NProperties, null, parentNodesType, false, new AsyncCallback<GWTJahiaNode>() {
             public void onFailure(Throwable throwable) {
-                MessageBox.alert(Messages.get("label.error.processingRequestError","An error occurred while processing your request"), throwable.getMessage(), null);
+                MessageBox.alert(Messages.get("label.error.processingRequestError", "An error occurred while processing your request"), throwable.getMessage(), null);
             }
+
             public void onSuccess(GWTJahiaNode gwtJahiaNode) {
                 Linker linker = engine.getLinker();
                 engine.close();

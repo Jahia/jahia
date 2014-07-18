@@ -73,6 +73,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
@@ -82,7 +83,7 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
  */
 public class CancelButtonItem implements ButtonItem {
 
-    public Button create(final AbstractContentEngine engine) {
+    public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.cancel", "Cancel"));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonCancel());

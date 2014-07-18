@@ -71,15 +71,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Button Item for create and new
@@ -87,20 +84,27 @@ import java.util.List;
 public class CreateDraftButtonItem extends CreateButtonItem {
 
     @Override
-    public Button create(final AbstractContentEngine engine) {
-        final Button button = new Button(Messages.get("properties.saveAndDraft.label", "Save as draft"));
-        button.setHeight(BUTTON_HEIGHT);
-        button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
-        button.addSelectionListener(new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                setDraftMode(engine, Boolean.TRUE);
-                save(engine, true, false);
+    public BoxComponent create(final AbstractContentEngine engine) {
+        final CheckBox checkbox = new CheckBox();
+
+        // when the engine is open the content is always set as Draft
+        checkbox.setValue(true);
+        setDraft(true);
+
+        // uncomment this if you want to change this behavior
+        // and set checkbox state to the stored value
+       //GWTJahiaNode selection = engine.getLinker().getSelectionContext().getSingleSelection();
+        //checkbox.setValue(selection.get("j:isDraft") != null && Boolean.valueOf(selection.get("j:isDraft").toString()));
+
+        checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
+                setDraft(checkbox.getValue());
             }
         });
-        if(!isNodeOfJmixLastPublishedType(engine)) {
-            button.setVisible(false);
-        }
-        return button;
+        checkbox.setBoxLabel(Messages.get("label.saveAtWork", "Save as working"));
+        checkbox.setToolTip(Messages.get("label.saveAtWork.information", "If checked, this content will ne be part of publication process"));
+
+        return checkbox;
     }
 
 }

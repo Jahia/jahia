@@ -73,8 +73,8 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.button.Button;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
@@ -84,12 +84,12 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 public class CreateAndNewButtonItem extends CreateButtonItem {
 
     @Override
-    public Button create(final AbstractContentEngine engine) {
+    public BoxComponent create(final AbstractContentEngine engine) {
         final Button button = new Button(Messages.get("properties.saveAndNew.label", "Save and new")) {
             @Override
             public void setEnabled(boolean enabled) {
-                int listLimit = ((CreateContentEngine)engine).getListLimit();
-                int childCount = ((CreateContentEngine)engine).getChildCount();
+                int listLimit = ((CreateContentEngine) engine).getListLimit();
+                int childCount = ((CreateContentEngine) engine).getChildCount();
                 enabled &= (listLimit == -1 || childCount + 1 < listLimit);
 
                 super.setEnabled(enabled);

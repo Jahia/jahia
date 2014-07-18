@@ -264,15 +264,15 @@
                         </property>
                         <property name="creationButtons">
                             <list>
-                                <ref bean="Engine.Button.Create"/>
                                 <ref bean="Engine.Button.CreateAsDraft"/>
+                                <ref bean="Engine.Button.Create"/>
                                 <ref bean="Engine.Button.CreateAndNew"/>
                             </list>
                         </property>
                         <property name="editionButtons">
                             <list>
+                                <ref bean="Engine.Button.CreateAsDraft"/>
                                 <ref bean="Engine.Button.Update"/>
-                                <ref bean="Engine.Button.UpdateAsDraft"/>
                             </list>
                         </property>
                         <property name="commonButtons">
@@ -1092,8 +1092,6 @@
     <bean id="Engine.Button.CreateAsDraft" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateDraftButtonItem" />
 
     <bean id="Engine.Button.Update" class="org.jahia.ajax.gwt.client.widget.contentengine.UpdateButtonItem" />
-
-    <bean id="Engine.Button.UpdateAsDraft" class="org.jahia.ajax.gwt.client.widget.contentengine.UpdateAsDraftButtonItem" />
 
     <bean id="Engine.Button.Cancel" class="org.jahia.ajax.gwt.client.widget.contentengine.CancelButtonItem" />
 

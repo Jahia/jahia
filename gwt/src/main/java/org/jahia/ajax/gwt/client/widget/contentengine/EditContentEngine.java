@@ -75,9 +75,9 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.TabItem;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.event.logical.shared.CloseEvent;
 import com.google.gwt.event.logical.shared.CloseHandler;
 import com.google.gwt.event.shared.HandlerRegistration;
@@ -111,7 +111,7 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
     private HandlerRegistration handlerRegistration;
 
-    private List<Button> saveButtons = new ArrayList<Button>();
+    private List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
 
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
@@ -179,7 +179,7 @@ public class EditContentEngine extends AbstractContentEngine {
      */
     protected void initFooter() {
         for (ButtonItem buttonItem : config.getEditionButtons()) {
-            Button button = buttonItem.create(this);
+            BoxComponent button = buttonItem.create(this);
             saveButtons.add(button);
             buttonBar.add(button);
         }
@@ -341,7 +341,7 @@ public class EditContentEngine extends AbstractContentEngine {
 
 
     public void setButtonsEnabled(final boolean enabled) {
-        for (Button button : saveButtons) {
+        for (BoxComponent button : saveButtons) {
             button.setEnabled(enabled);
         }
     }

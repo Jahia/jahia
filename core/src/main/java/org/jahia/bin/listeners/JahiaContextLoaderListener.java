@@ -164,7 +164,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @SuppressWarnings("unchecked")
     private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
 
-	private static String webAppRoot;
+    private static String webAppRoot;
 
     public boolean isEventInterceptorActivated(String interceptorName) {
         if (jahiaContextListenersConfiguration == null) {
@@ -191,8 +191,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         
         Jahia.setContextPath(servletContext.getContextPath());
         
-		initWebAppRoot();
-		
+        initWebAppRoot();
+        
         if (System.getProperty("jahia.config") == null) {
             System.setProperty("jahia.config", "");
         }
@@ -306,35 +306,35 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
-	private void initWebAppRoot() {
-		webAppRoot = servletContext.getRealPath("/");
-		if (webAppRoot != null
-				&& webAppRoot.length() > 1
-				&& webAppRoot.charAt(webAppRoot.length() - 1) == File.separatorChar) {
-			webAppRoot = webAppRoot.substring(0, webAppRoot.length() - 1);
-		}
-		try {
-			System.setProperty("jahiaWebAppRoot", webAppRoot);
-		} catch (SecurityException se) {
-			logger.error(
-					"System property jahiaWebAppRoot was NOT set to "
-							+ webAppRoot
-							+ " successfully ! Please check app server security manager policies to allow this.",
-					se);
-		}
-		// let's try to read it to make sure it was set properly as this is
-		// critical for Jahia startup and may fail on some application servers
-		// that have SecurityManager permissions set.
-		if (System.getProperty("jahiaWebAppRoot") != null
-				&& System.getProperty("jahiaWebAppRoot").equals(webAppRoot)) {
-			logger.info("System property jahiaWebAppRoot set to " + webAppRoot
-					+ " successfully.");
-		} else {
-			logger.error("System property jahiaWebAppRoot was NOT set to "
-					+ webAppRoot
-					+ " successfully ! Please check app server security manager policies to allow this.");
-		}
-	}
+    private void initWebAppRoot() {
+        webAppRoot = servletContext.getRealPath("/");
+        if (webAppRoot != null
+                && webAppRoot.length() > 1
+                && webAppRoot.charAt(webAppRoot.length() - 1) == File.separatorChar) {
+            webAppRoot = webAppRoot.substring(0, webAppRoot.length() - 1);
+        }
+        try {
+            System.setProperty("jahiaWebAppRoot", webAppRoot);
+        } catch (SecurityException se) {
+            logger.error(
+                    "System property jahiaWebAppRoot was NOT set to "
+                            + webAppRoot
+                            + " successfully ! Please check app server security manager policies to allow this.",
+                    se);
+        }
+        // let's try to read it to make sure it was set properly as this is
+        // critical for Jahia startup and may fail on some application servers
+        // that have SecurityManager permissions set.
+        if (System.getProperty("jahiaWebAppRoot") != null
+                && System.getProperty("jahiaWebAppRoot").equals(webAppRoot)) {
+            logger.info("System property jahiaWebAppRoot set to " + webAppRoot
+                    + " successfully.");
+        } else {
+            logger.error("System property jahiaWebAppRoot was NOT set to "
+                    + webAppRoot
+                    + " successfully ! Please check app server security manager policies to allow this.");
+        }
+    }
 
     private void initJahiaAfterInitializationServices() throws JahiaInitializationException {
         try {
@@ -798,7 +798,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         return running;
     }
 
-	public static String getWebAppRoot() {
-		return webAppRoot;
-	}
+    public static String getWebAppRoot() {
+        return webAppRoot;
+    }
 }

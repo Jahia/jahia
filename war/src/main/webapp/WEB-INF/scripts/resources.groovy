@@ -66,6 +66,15 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
           }
           println "</script>";
         break;
+      case "html" :
+          type.value.eachWithIndex { html, i ->
+            condition = html.value.get("condition");
+            if (condition != null) println("<!--["+condition+"]>");
+            rel = html.value.get("rel");
+            println "<link id=\"staticAssetHTML${i}\" rel=\"${rel!=null?rel:"import"}\" href=\"${html.key}\" />";
+            if (condition != null) println("<![endif]-->");
+          }
+          break;
       default:
         type.value.each { inline ->  
           condition = inline.value != null ? inline.value.get("condition") : null;

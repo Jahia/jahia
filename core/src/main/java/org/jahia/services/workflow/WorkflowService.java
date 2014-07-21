@@ -440,6 +440,7 @@ public class WorkflowService implements BeanPostProcessor {
                 permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
             }
 
+<<<<<<< .working
             Map<String, List<String[]>> m = node.getAclEntries();
             principals = new LinkedList<JahiaPrincipal>();
             JahiaUserManagerService userService = ServicesRegistry.getInstance()
@@ -460,6 +461,34 @@ public class WorkflowService implements BeanPostProcessor {
                         } else if (principal.charAt(0) == 'g') {
                             if (site == null) {
                                 site = node.getResolveSite();
+=======
+                    for (Map.Entry<String, List<String[]>> entry : m.entrySet()) {
+                        for (String[] strings : entry.getValue()) {
+                            if (strings[1].equals("GRANT")) {
+                                if (s.contains(strings[2])) {
+                                    String principal = entry.getKey();
+                                    final String principalName = principal.substring(2);
+                                    if (principal.charAt(0) == 'u') {
+                                        JahiaUser jahiaUser = userService.lookupUser(principalName);
+                                        principals.add(jahiaUser);
+                                    } else if (principal.charAt(0) == 'g') {
+                                        if (site == null) {
+                                            site = node.getResolveSite();
+                                        }
+                                        JahiaGroup group = groupService.lookupGroup(site.getID(),
+                                                principalName);
+                                        if (group == null) {
+                                            group = groupService.lookupGroup(0, principalName);
+                                        }
+                                        if (group != null) {
+                                            logger.debug("group "+group.getGroupKey()+" is granted");
+                                            principals.add(group);
+                                        } else {
+                                            logger.debug("Can't find group "+principalName+" on site "+site.getSiteKey() +"("+site.getID()+"). Group is not granted");
+                                        }
+                                    }
+                                }
+>>>>>>> .merge-right.r50260
                             }
                             JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
                                     principalName);

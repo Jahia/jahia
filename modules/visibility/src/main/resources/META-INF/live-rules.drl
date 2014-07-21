@@ -84,3 +84,12 @@ rule "Flush caches when a jnt:condition is suppressed"
     	Log "Visibility settings were changed (condition node deleted). Flushing caches on node " + node.getPath()
         Execute the action "flushVisibilityOnDelete" now on the parent
 end
+
+rule "Flush cache for forceMatchAllConditions is changed" 
+    salience 25 
+    when 
+        A property j:forceMatchAllConditions has been set on a node 
+             - the node has the type jnt:conditionalVisibility 
+    then 
+        Execute the action "forceMatchAllConditionsVisibilityAction" now on the node 
+end

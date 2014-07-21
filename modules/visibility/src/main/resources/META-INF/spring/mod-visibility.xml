@@ -34,6 +34,12 @@
         <property name="levelsUp" value="1"/>
     </bean>
 
+	<bean parent="abstractFlushCacheOnNodeBackgroundAction">
+        <property name="name" value="forceMatchAllConditionsVisibilityAction"/>
+        <property name="startLevel" value="0"/>
+        <property name="levelsUp" value="1"/>
+    </bean>
+	
     <bean class="org.jahia.modules.visibility.conditions.StartEndDateConditionRuleImpl">
         <property name="associatedNodeType" value="jnt:startEndDateCondition"/>
         <property name="requiredFieldNamesForTemplate">

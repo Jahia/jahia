@@ -283,6 +283,8 @@
  - j:to (string) indexed=no
  - j:notificationLevel (string,choicelist[resourceBundle]) = 'Disabled' indexed=no < 'Disabled','Standard','Wary','Paranoid'
 
+[jnt:searchServerSettings] > nt:base
+ - j:provider (string) indexed=no
 
 [jnt:forgeServerSettings] > nt:base
  - j:url (string) indexed=no

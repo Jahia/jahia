@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flow xmlns="http://www.springframework.org/schema/webflow"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.springframework.org/schema/webflow
+                          http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
+
+    <on-start>
+        <evaluate expression="SearchService.settings" result="flowScope.searchSettings"/>
+    </on-start>
+
+    <view-state id="showSearchSettings" model="searchSettings">
+        <on-render>
+            <evaluate expression="SearchService.availableProviders" result="requestScope.availableProviders"/>
+        </on-render>
+        <transition on="submit" to="showSearchSettings">
+            <evaluate expression="SearchService.store(searchSettings)"/>
+            <set name="flowScope.settingsUpdated" value="true" type="java.lang.Boolean"/>
+        </transition>
+    </view-state>
+</flow>

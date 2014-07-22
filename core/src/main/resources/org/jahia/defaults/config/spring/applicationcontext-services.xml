@@ -215,7 +215,7 @@
                 <value>jnt:ace</value>
             </set>
         </property>
-        <property name="name" value="default jahia JCR search provider"/>
+        <property name="name" value="Default JCR search provider"/>
     </bean>
 
     <bean id="org.jahia.services.seo.jcr.VanityUrlManager" class="org.jahia.services.seo.jcr.VanityUrlManager"/>

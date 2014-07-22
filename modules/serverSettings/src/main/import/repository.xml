@@ -252,6 +252,24 @@
                                     <db-settings jcr:primaryType="jnt:serverSettingsDBSettings"/>
                                 </pagecontent>
                             </dbSettings>
+                            <search-settings j:applyOn="jnt:globalSettings"
+                                   j:defaultTemplate="false"
+                                   j:hiddenTemplate="false"
+                                   j:view="serverSettings"
+                                   jcr:primaryType="jnt:contentTemplate">
+                                <j:translation_en j:isDraft="false"
+                                       jcr:language="en"
+                                       jcr:primaryType="jnt:translation"
+                                       jcr:title="Search settings"/>
+                                <pagecontent jcr:primaryType="jnt:contentList">
+                                    <search-settings jcr:primaryType="jnt:serverSettingsSearchConfig">
+                                        <j:translation_en j:isDraft="false"
+                                             jcr:language="en"
+                                             jcr:primaryType="jnt:translation"
+                                             jcr:title="search settings"/>
+                            </search-settings>
+                                </pagecontent>
+                            </search-settings>
                         </configurations>
                         <system-components j:hiddenTemplate="false"
                                   j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/system_components.png"

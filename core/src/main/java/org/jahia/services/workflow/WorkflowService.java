@@ -440,7 +440,6 @@ public class WorkflowService implements BeanPostProcessor {
                 permPath = permPath.contains("/") ? StringUtils.substringBeforeLast(permPath, "/") : "";
             }
 
-<<<<<<< .working
             Map<String, List<String[]>> m = node.getAclEntries();
             principals = new LinkedList<JahiaPrincipal>();
             JahiaUserManagerService userService = ServicesRegistry.getInstance()

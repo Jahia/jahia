@@ -73,37 +73,35 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
-import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
-import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
-import com.google.gwt.dom.client.EventTarget;
-import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
+import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
+import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 /**
- * 
  * User: toto
  * Date: Nov 16, 2010
  * Time: 2:11:21 PM
- * 
  */
 public class EngineCards extends LayoutContainer implements EngineContainer {
-    private Linker linker;
     private EngineContainer mainContainer;
     private LayoutContainer cardsContainer;
     private Grid<BaseModelData> list;
@@ -121,10 +119,30 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         setId("JahiaGxtEngineCards");
 
         final ListStore<BaseModelData> store = new ListStore<BaseModelData>();
-        ColumnModel header = new ColumnModel(Arrays.asList(new ColumnConfig("header", Messages.get("label.workflow.multipleWorkflowsToStart","Warning : There are multiple workflow involved in this action"), 300)));
+        ColumnConfig lang = new ColumnConfig("lang", 50);
+        ColumnConfig title = new ColumnConfig("header", 800);
+        ColumnConfig actions = new ColumnConfig("action", 200);
+        actions.setRenderer(new GridCellRenderer() {
+            @Override
+            public Object render(final ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
+                ButtonBar bb = new ButtonBar();
+                final WorkflowActionDialog dialog = model.get("wfDialog");
+                CustomWorkflow customWorkflow = dialog.getCustomWorkflow();
+                if (customWorkflow instanceof PublicationWorkflow) {
+                    PublicationWorkflow publicationWorkflow = (PublicationWorkflow) customWorkflow;
+                    bb.add(publicationWorkflow.getStartWorkflowButton(dialog.getWfDefinition(), dialog));
+                    if (!publicationWorkflow.getPublicationInfos().isEmpty() && publicationWorkflow.getPublicationInfos().get(0).isAllowedToPublishWithoutWorkflow()) {
+                        bb.add(publicationWorkflow.getBypassWorkflowButton(dialog.getWfDefinition(), dialog));
+                    }
+                }
+                return bb;
+            }
+        });
+        ColumnModel header = new ColumnModel(Arrays.asList(lang, title, actions));
 
         list = new Grid<BaseModelData>(store, header);
         list.setAutoExpandColumn("header");
+        list.setHideHeaders(true);
         list.setAutoExpandMax(1200);
         list.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<BaseModelData>() {
             @Override
@@ -132,7 +150,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
                 updateView();
             }
         });
-
         BorderLayoutData data = new BorderLayoutData(Style.LayoutRegion.NORTH, 150);
         data.setCollapsible(true);
         data.setSplit(true);
@@ -143,23 +160,29 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         cardsContainer = new LayoutContainer(new CardLayout());
         add(cardsContainer, new BorderLayoutData(Style.LayoutRegion.CENTER));
 
-        this.linker = linker;
         this.mainContainer = mainContainer;
         this.bar = new ButtonBar();
         this.bar.setAlignment(Style.HorizontalAlignment.CENTER);
-        mainContainer.setEngine(this, "", bar, linker);
+        mainContainer.setEngine(this, "", bar, null, linker);
     }
 
     public ContentPanel getPanel() {
         return mainContainer.getPanel();
     }
 
-    public void setEngine(Component component, String header, ButtonBar buttonsBar, Linker linker) {
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, Linker linker) {
         components.add(component);
         bars.add(buttonsBar);
         headers.add(header);
         BaseModelData data = new BaseModelData();
         data.set("header", header);
+        if (component instanceof WorkflowActionDialog) {
+            WorkflowActionDialog wfDialog = (WorkflowActionDialog) component;
+            if (language != null) {
+                data.set("lang", "<img src=\"" + language.getImage() + "\"/>&nbsp;");
+            }
+            data.set("wfDialog", wfDialog);
+        }
         list.getStore().add(data);
         cardsContainer.add(component);
     }
@@ -167,9 +190,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     public void showEngine() {
         for (ButtonBar buttonBar : bars) {
             barItems.add(new ArrayList<Component>(buttonBar.getItems()));
-        }
-        if (components.size() == 1) {
-            list.setVisible(false);
         }
         list.getSelectionModel().select(0, false);
         mainContainer.showEngine();
@@ -198,7 +218,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         }
         i = list.getStore().indexOf(list.getSelectionModel().getSelectedItem());
 
-        ((CardLayout)cardsContainer.getLayout()).setActiveItem(components.get(i));
+        ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(i));
         mainContainer.getPanel().setHeadingHtml(headers.get(i));
         bar.removeAll();
         List<Component> items = barItems.get(i);
@@ -206,7 +226,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
             bar.add(component);
         }
         for (Button globalButton : globalButtons) {
-            bar.insert(globalButton, bar.getItemCount()-1);
+            bar.insert(globalButton, bar.getItemCount() - 1);
         }
     }
 
@@ -214,7 +234,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         globalButtons.add(button);
     }
 
-    public Component getCurrentComponent(){
+    public Component getCurrentComponent() {
         return components.get(i);
     }
 

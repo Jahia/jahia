@@ -135,7 +135,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected String heading;
     protected EngineContainer container;
     protected GWTJahiaNodeACL acl;
-    protected Map<String,Set<String>> referencesWarnings;
+    protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
 
     // general properties
@@ -161,7 +161,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         buttonBar = new ButtonBar();
         buttonBar.addStyleName("JahiaEditEngineButtonBar");
 
-        container.setEngine(this, heading, buttonBar, this.getLinker());
+        container.setEngine(this, heading, buttonBar, null, this.getLinker());
 
         // init language switcher
         initLanguageSwitcher();
@@ -206,7 +206,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                if(!event.getSelectedItem().getPropertyNames().contains("active") || event.getSelectedItem().isActive()) {
+                if (!event.getSelectedItem().getPropertyNames().contains("active") || event.getSelectedItem().isActive()) {
                     GWTJahiaLanguage previous = language;
                     language = event.getSelectedItem();
                     onLanguageChange(previous);
@@ -226,6 +226,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     /**
      * Called when a new language has been selected
+     *
      * @param previous
      */
     protected void onLanguageChange(GWTJahiaLanguage previous) {
@@ -271,9 +272,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             if (currentTabItem != null && currentTabItem instanceof EditEngineTabItem) {
                 EditEngineTabItem engineTabItem = (EditEngineTabItem) currentTabItem;
 
-                if (!((AsyncTabItem)currentTab).isProcessed()) {
+                if (!((AsyncTabItem) currentTab).isProcessed()) {
                     boolean isNewPropertiesEditor = false;
-                
+
                     if (engineTabItem instanceof PropertiesTabItem) {
                         isNewPropertiesEditor = (((PropertiesTabItem) engineTabItem).getPropertiesEditorByLang(getSelectedLanguage()) == null);
                     }
@@ -329,7 +330,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             }
         }
     }
-    
+
     protected void initChoiceListInitializer(final Field<?> dependentField, final String propertyId,
                                              final PropertiesEditor pe, final List<String> dependentProperties) {
         if (dependentField instanceof DualListField<?>) {
@@ -348,9 +349,9 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
             });
         }
     }
-    
+
     protected void refillDependantListWidgetOn(final Field<?> dependentField, final String propertyId,
-            final List<String> dependentProperties) {
+                                               final List<String> dependentProperties) {
         final String nodeTypeName = propertyId.substring(0, propertyId.indexOf('.'));
         final String propertyName = propertyId.substring(propertyId.indexOf('.') + 1);
         Map<String, List<GWTJahiaNodePropertyValue>> dependentValues = new HashMap<String, List<GWTJahiaNodePropertyValue>>();
@@ -386,7 +387,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                     if (pe != null) {
                                         for (Field<?> field : pe.getFields()) {
                                             if (field instanceof PropertiesEditor.PropertyAdapterField) {
-                                                field = ((PropertiesEditor.PropertyAdapterField)field).getField();
+                                                field = ((PropertiesEditor.PropertyAdapterField) field).getField();
                                             }
                                             if (propertyName.equals(field.getName())) {
                                                 if (field instanceof DualListField<?>) {
@@ -399,7 +400,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                         }
                                                     }
                                                     dualListField.getToField().getListView().refresh();
-                                                    
+
                                                     store = dualListField.getFromField().getStore();
                                                     store.removeAll();
                                                     store.add(result.getDisplayValues());
@@ -408,17 +409,17 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                                                     ComboBox<GWTJahiaValueDisplayBean> comboBox = (ComboBox<GWTJahiaValueDisplayBean>) field;
                                                     if (comboBox.getValue() != null
                                                             && !result
-                                                                    .getDisplayValues()
-                                                                    .contains(
-                                                                            comboBox.getValue())) {
-                                                    	try {
-                                                           comboBox.clear();
-                                                    	}catch(Exception ex) {
-                                                    		/*
-                                                    		 * it could happen that the combobox is empty and so exception is thrown
+                                                            .getDisplayValues()
+                                                            .contains(
+                                                                    comboBox.getValue())) {
+                                                        try {
+                                                            comboBox.clear();
+                                                        } catch (Exception ex) {
+                                                            /*
+                                                             * it could happen that the combobox is empty and so exception is thrown
                                                     		 * and combobox isn't reinitialized
                                                     		 */
-                                                    	}
+                                                        }
                                                     }
                                                     ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>();
                                                     store.add(result.getDisplayValues());
@@ -435,7 +436,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
                     public void onApplicationFailure(Throwable caught) {
                         Log.error("Unable to load avalibale mixin", caught);
                     }
-                });
+                }
+        );
 
     }
 
@@ -537,6 +539,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     /**
      * Get the language switcher combo box associated with this engine.
+     *
      * @return the language switcher combo box instance.
      */
     public ComboBox<GWTJahiaLanguage> getLanguageSwitcher() {

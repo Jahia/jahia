@@ -74,11 +74,7 @@ package org.jahia.ajax.gwt.client.widget.trash;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.BaseListLoader;
-import com.extjs.gxt.ui.client.data.ListLoadResult;
-import com.extjs.gxt.ui.client.data.ListLoader;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.*;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
@@ -111,8 +107,9 @@ import java.util.List;
  * Trash board - display all deleted nodes in a grid, allows to undelete and preview information about each of them
  */
 public class TrashboardEngine extends LayoutContainer {
-    
+
     private static final List<String> FIELDS;
+
     static {
         FIELDS = new ArrayList<String>(GWTJahiaNode.DEFAULT_FIELDS);
         FIELDS.add("j:deletionUser");
@@ -132,18 +129,18 @@ public class TrashboardEngine extends LayoutContainer {
         this.container = container;
         init();
 
-        container.setEngine(this, Messages.get("label.trashboard", "Trash Board"), bar, this.linker);
+        container.setEngine(this, Messages.get("label.trashboard", "Trash Board"), bar, null, this.linker);
     }
 
     private void init() {
         setLayout(new FitLayout());
-        
+
 
         // data proxy
         RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> callback) {
-                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot]",-1, null, null, null,
+                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot]", -1, null, null, null,
                         FIELDS, true, callback);
             }
         };
@@ -154,7 +151,7 @@ public class TrashboardEngine extends LayoutContainer {
 
         ArrayList<ColumnConfig> columns = new ArrayList<ColumnConfig>();
 
-        ColumnConfig  column = new ColumnConfig("icon", "", 40);
+        ColumnConfig column = new ColumnConfig("icon", "", 40);
         column.setResizable(false);
         column.setSortable(false);
         column.setMenuDisabled(true);
@@ -177,29 +174,30 @@ public class TrashboardEngine extends LayoutContainer {
                 Button button = new Button(Messages.get("label.undelete", "Undelete"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
-                       MessageBox.confirm(
-                               Messages.get("label.information", "Information"),
-                               Messages.getWithArgs(
-                                                "message.undelete.confirm",
-                                                "Do you really want to undelete the selected resource {0}?",
-                                                new String[] { ((GWTJahiaNode)gwtJahiaNode).getDisplayName() }),
-                               new Listener<MessageBoxEvent>() {
-                                   public void handleEvent(MessageBoxEvent be) {
-                                       if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                           service.undeletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
-                                               @Override
-                                               public void onApplicationFailure(Throwable throwable) {
-                                                   Log.error(throwable.getMessage(), throwable);
-                                                   MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                                               }
+                        MessageBox.confirm(
+                                Messages.get("label.information", "Information"),
+                                Messages.getWithArgs(
+                                        "message.undelete.confirm",
+                                        "Do you really want to undelete the selected resource {0}?",
+                                        new String[]{((GWTJahiaNode) gwtJahiaNode).getDisplayName()}),
+                                new Listener<MessageBoxEvent>() {
+                                    public void handleEvent(MessageBoxEvent be) {
+                                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                                            service.undeletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
+                                                @Override
+                                                public void onApplicationFailure(Throwable throwable) {
+                                                    Log.error(throwable.getMessage(), throwable);
+                                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                                }
 
-                                               public void onSuccess(Object result) {
-                                                   deletedNodes.remove(gwtJahiaNode);
-                                               }
-                                           });
-                                       }
-                                   }
-                               });
+                                                public void onSuccess(Object result) {
+                                                    deletedNodes.remove(gwtJahiaNode);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                        );
                     }
                 });
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.restore());
@@ -218,34 +216,36 @@ public class TrashboardEngine extends LayoutContainer {
                 Button button = new Button(Messages.get("label.delete", "Delete"), new SelectionListener<ButtonEvent>() {
                     @Override
                     public void componentSelected(ButtonEvent buttonEvent) {
-                       MessageBox.confirm(
-                               Messages.get("label.warning", "Warning"),
-                               Messages.getWithArgs(
-                                       "message.remove.single.confirm",
-                                       "Do you really want to remove the selected resource {0}?",
-                                       new String[]{gwtJahiaNode.getDisplayName()})
-                                       +
-                               Messages.get("message.remove.warning",
-                                       "<br/><span style=\"font-style:bold;color:red;\">" +
-                               "Warning: this will erase the content definitively" +
-                                               " from the repository.</span>"),
-                               new Listener<MessageBoxEvent>() {
-                                   public void handleEvent(MessageBoxEvent be) {
-                                       if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                           service.deletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
-                                               @Override
-                                               public void onApplicationFailure(Throwable throwable) {
-                                                   Log.error(throwable.getMessage(), throwable);
-                                                   MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
-                                               }
+                        MessageBox.confirm(
+                                Messages.get("label.warning", "Warning"),
+                                Messages.getWithArgs(
+                                        "message.remove.single.confirm",
+                                        "Do you really want to remove the selected resource {0}?",
+                                        new String[]{gwtJahiaNode.getDisplayName()})
+                                        +
+                                        Messages.get("message.remove.warning",
+                                                "<br/><span style=\"font-style:bold;color:red;\">" +
+                                                        "Warning: this will erase the content definitively" +
+                                                        " from the repository.</span>"
+                                        ),
+                                new Listener<MessageBoxEvent>() {
+                                    public void handleEvent(MessageBoxEvent be) {
+                                        if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
+                                            service.deletePaths(Arrays.asList(gwtJahiaNode.getPath()), new BaseAsyncCallback() {
+                                                @Override
+                                                public void onApplicationFailure(Throwable throwable) {
+                                                    Log.error(throwable.getMessage(), throwable);
+                                                    MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
+                                                }
 
-                                               public void onSuccess(Object result) {
-                                                   deletedNodes.remove(gwtJahiaNode);
-                                               }
-                                           });
-                                       }
-                                   }
-                               });
+                                                public void onSuccess(Object result) {
+                                                    deletedNodes.remove(gwtJahiaNode);
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                        );
                     }
                 });
                 button.setIcon(StandardIconsProvider.STANDARD_ICONS.delete());
@@ -287,7 +287,7 @@ public class TrashboardEngine extends LayoutContainer {
             }
         });
         bar.add(cancel);
-        
+
         loader.load();
     }
 }

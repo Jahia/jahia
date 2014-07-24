@@ -138,7 +138,7 @@ public class PublicationStatusWindow extends LayoutContainer {
         bar.add(cancel);
 
         this.container = container;
-        container.setEngine(this, "Publish", bar, linker);
+        container.setEngine(this, "Publish", bar, null, linker);
     }
 
     private class ButtonEventSelectionListener extends SelectionListener<ButtonEvent> {
@@ -157,7 +157,7 @@ public class PublicationStatusWindow extends LayoutContainer {
             container.closeEngine();
             if (unpublish) {
                 final String status = Messages.get("label.publication.unpublished.task", "Unpublishing content");
-                Info.display(status,status);
+                Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
                 JahiaContentManagementService.App.getInstance()
                         .unpublish(uuids, new BaseAsyncCallback() {
@@ -178,7 +178,7 @@ public class PublicationStatusWindow extends LayoutContainer {
                         });
             } else {
                 final String status = Messages.get("label.publication.task", "Publishing content");
-                Info.display(status,status);
+                Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
                 JahiaContentManagementService.App.getInstance()
                         .publish(uuids, null, null, new BaseAsyncCallback() {

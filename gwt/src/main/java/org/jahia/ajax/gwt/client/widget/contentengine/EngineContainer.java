@@ -74,19 +74,18 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- * 
  * User: toto
  * Date: Aug 2, 2010
  * Time: 4:06:57 PM
- * 
  */
 public interface EngineContainer {
     public ContentPanel getPanel();
 
-    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker);
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, final Linker linker);
 
     public void showEngine();
 

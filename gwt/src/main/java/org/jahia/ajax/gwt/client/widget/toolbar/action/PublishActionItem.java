@@ -246,7 +246,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             result.removeAll(unpublishable);
 
             if (unpublishable.isEmpty()) {
-                PublicationWorkflow.create(result, linker, checkForUnpublication, allLanguages);
+                PublicationWorkflow.create(result, linker, checkForUnpublication);
             } else {
                 StringBuilder message = new StringBuilder();
 
@@ -280,7 +280,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     MessageBox.confirm(Messages.get("label.publish", "Publication"), message.toString(), new Listener<MessageBoxEvent>() {
                         public void handleEvent(MessageBoxEvent be) {
                             if (be.getButtonClicked().getItemId().equalsIgnoreCase(Dialog.YES)) {
-                                PublicationWorkflow.create(result, linker, checkForUnpublication, allLanguages);
+                                PublicationWorkflow.create(result, linker, checkForUnpublication);
                             }
                         }
                     });

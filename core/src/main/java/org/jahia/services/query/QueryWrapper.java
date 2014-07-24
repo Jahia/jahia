@@ -168,6 +168,7 @@ public class QueryWrapper implements Query {
 
     /**
      * Get the query for a specific provider
+     *
      * @param jcrStoreProvider
      * @return
      * @throws RepositoryException
@@ -203,7 +204,7 @@ public class QueryWrapper implements Query {
                     return null;
                 }
             }
-            if (query != null) {
+            if (query != null && query instanceof QueryObjectModel) {
                 if (Query.JCR_SQL2.equals(language)) {
                     QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
                     Constraint constraint;
@@ -226,11 +227,11 @@ public class QueryWrapper implements Query {
 
     private Constraint filterMountPoints(Constraint constraint, Source source, QueryObjectModelFactory f) throws RepositoryException {
         if (source instanceof Selector) {
-            Constraint c = f.not(f.propertyExistence(((Selector) source).getSelectorName(),"j:isExternalProviderRoot"));
+            Constraint c = f.not(f.propertyExistence(((Selector) source).getSelectorName(), "j:isExternalProviderRoot"));
             if (constraint == null) {
                 return c;
             } else {
-                return f.and(c,constraint);
+                return f.and(c, constraint);
             }
         } else if (source instanceof Join) {
             constraint = filterMountPoints(constraint, ((Join) source).getLeft(), f);
@@ -241,31 +242,31 @@ public class QueryWrapper implements Query {
 
     private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
         if (constraint instanceof ChildNode) {
-            String root = ((ChildNode)constraint).getParentPath();
+            String root = ((ChildNode) constraint).getParentPath();
             String rootWithSlash = root.endsWith("/") ? root : root + "/";
-            String rootNoSlash = root.endsWith("/") ? root.substring(0,root.length()-1) : root;
+            String rootNoSlash = root.endsWith("/") ? root.substring(0, root.length() - 1) : root;
             if (mountPoint.equals(rootNoSlash)) {
                 // Path constraint is the mount point -> create new constraint on root child nodes only
-                return f.childNode(((ChildNode)constraint).getSelectorName(), "/");
+                return f.childNode(((ChildNode) constraint).getSelectorName(), "/");
             }
             if (mountPoint.startsWith(rootWithSlash)) {
-                if (root.equals(StringUtils.substringBeforeLast(mountPoint,"/"))) {
+                if (root.equals(StringUtils.substringBeforeLast(mountPoint, "/"))) {
                     // Asked for root node
-                    return f.sameNode(((ChildNode)constraint).getSelectorName(), "/");
+                    return f.sameNode(((ChildNode) constraint).getSelectorName(), "/");
                 }
                 // Mount point in under path constraint -> do not search
                 throw new ConstraintViolationException();
             }
             if (rootWithSlash.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
-                return f.childNode(((ChildNode)constraint).getSelectorName(), rootNoSlash.substring(mountPoint.length()));
+                return f.childNode(((ChildNode) constraint).getSelectorName(), rootNoSlash.substring(mountPoint.length()));
             }
             // Path constraint incompatible with mount point
             throw new ConstraintViolationException();
         } else if (constraint instanceof DescendantNode) {
-            String root = ((DescendantNode)constraint).getAncestorPath();
+            String root = ((DescendantNode) constraint).getAncestorPath();
             String rootWithSlash = root.endsWith("/") ? root : root + "/";
-            String rootNoSlash = root.endsWith("/") ? root.substring(0,root.length()-1) : root;
+            String rootNoSlash = root.endsWith("/") ? root.substring(0, root.length() - 1) : root;
             if (mountPoint.startsWith(rootWithSlash) || mountPoint.equals(rootNoSlash)) {
                 // Mount point in under path constraint -> remove constraint
                 return null;
@@ -285,7 +286,7 @@ public class QueryWrapper implements Query {
             if (c2 == null) {
                 return c1;
             }
-            return f.and(c1,c2);
+            return f.and(c1, c2);
         } else if (constraint instanceof Or) {
             Constraint c1 = null;
             try {

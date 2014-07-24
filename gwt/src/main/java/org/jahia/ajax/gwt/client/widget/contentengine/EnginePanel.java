@@ -73,16 +73,15 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.ModalPanel;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
-
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.ModalPanel;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.google.gwt.user.client.Element;
 
 /**
  * Represents the edit engine panel.
@@ -91,7 +90,7 @@ import com.google.gwt.user.client.Element;
  * Time: 4:04:33 PM
  */
 public class EnginePanel extends ContentPanel implements EngineContainer {
-	
+
     private EditLinker linker;
     private ModalPanel modalPanel;
 
@@ -105,11 +104,11 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
         return this;
     }
 
-    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, final Linker linker) {
         this.linker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
         removeAll();
         add(component);
-        head.setStyleAttribute("height","20px");
+        head.setStyleAttribute("height", "20px");
         setHeadingHtml(header);
         if (buttonsBar != null) {
             setBottomComponent(buttonsBar);
@@ -117,7 +116,7 @@ public class EnginePanel extends ContentPanel implements EngineContainer {
     }
 
     public void showEngine() {
-    	linker.replaceMainAreaComponent(this);
+        linker.replaceMainAreaComponent(this);
     }
 
     public void closeEngine() {

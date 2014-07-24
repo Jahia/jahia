@@ -71,18 +71,18 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.ContentPanel;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem.SidePanelLinker;
-
-import com.extjs.gxt.ui.client.GXT;
-import com.extjs.gxt.ui.client.widget.ContentPanel;
-import com.extjs.gxt.ui.client.widget.Window;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
 /**
  * The edit engine window widget.
@@ -107,7 +107,7 @@ public class EngineWindow extends Window implements EngineContainer {
         return this;
     }
 
-    public void setEngine(Component component, String header, ButtonBar buttonsBar, final Linker linker) {
+    public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, final Linker linker) {
         removeAll();
         add(component);
         setHeadingHtml(header);
@@ -115,23 +115,23 @@ public class EngineWindow extends Window implements EngineContainer {
             setBottomComponent(buttonsBar);
         }
 
-		if (!(linker instanceof ManagerLinker)) {
-			EditLinker editLinker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
-            if(GXT.isIE) {
+        if (!(linker instanceof ManagerLinker)) {
+            EditLinker editLinker = linker instanceof EditLinker ? (EditLinker) linker : ((SidePanelLinker) linker).getEditLinker();
+            if (GXT.isIE) {
                 // resize to fit main module area
                 MainModule main = editLinker.getMainModule();
                 setSize(main.getOffsetWidth(), main.getOffsetHeight());
                 setPosition(main.getAbsoluteLeft(), main.getAbsoluteTop());
                 setBorders(false);
-            } else if(editLinker.getMainAreaComponent()!=null) {
+            } else if (editLinker.getMainAreaComponent() != null) {
                 setContainer(editLinker.getMainAreaComponent().getElement());
             }
-		}
+        }
     }
 
     public void showEngine() {
         show();
-        if(!GXT.isIE) {
+        if (!GXT.isIE) {
             maximize();
         }
     }

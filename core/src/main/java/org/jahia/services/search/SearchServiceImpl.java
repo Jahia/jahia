@@ -217,6 +217,11 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
         if(searchProvider != null && StringUtils.isNotEmpty(searchProvider.getName())){
             if(getProvider(searchProvider.getName()) == null){
                 availableSearchProviders.add(searchProvider);
+
+                // reselect provider
+                if(searchProvider.getName().equals(settings.getCurrentProvider())){
+                    selectedSearchProvider = searchProvider;
+                }
             }else {
                 throw new InvalidSearchProviderException("Unable to register search provider with the name \"" + searchProvider.getName() + "\", search provider with this name already exist");
             }

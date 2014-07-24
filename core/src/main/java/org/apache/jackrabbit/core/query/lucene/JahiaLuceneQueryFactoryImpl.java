@@ -462,10 +462,9 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             } else {
                 canRead = aclChecked;
             }
-            if (!canRead) {
-                return false;
-            }
-        } return canRead;
+            break;
+        } 
+        return canRead;
     }
 
     /**

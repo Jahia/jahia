@@ -258,11 +258,10 @@ public class PrincipalViewHelper implements Serializable {
             String value = null;
             try {
                 value = jahiaUser.getProperty("j:firstName").getString();
-                if (StringUtils.isNotEmpty(value)) {
-                    fullName.append(value);
-                }
+                fullName.append(value);
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                value = "";
+                fullName.append(value);
             }
             try {
                 value = jahiaUser.getProperty("j:lastName").getString();
@@ -273,7 +272,8 @@ public class PrincipalViewHelper implements Serializable {
                     fullName.append(value);
                 }
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                value = "";
+                fullName.append(value);
             }
 
             return fullName.length() == 0 ? getDisplayName(jahiaUser) : fullName.toString();

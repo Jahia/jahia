@@ -165,19 +165,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                 jcrSessionWrapper.checkout(startNode);
                                 if (i == (length - 1)) {
                                     JCRNodeWrapper userNode = startNode.addNode(name, Constants.JAHIANT_USER);
-                                    if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                        String skeletons = usersFolderNode.getProperty(
-                                                "j:usersFolderSkeleton").getString();
-                                        try {
-                                            JCRContentUtils.importSkeletons(skeletons,
-                                                    startNode.getPath() + "/" + jcrUsernamePath[i], jcrSessionWrapper);
-                                        } catch (Exception importEx) {
-                                            logger.error("Unable to import data using user skeletons " + skeletons,
-                                                    importEx);
-                                            throw new RepositoryException(
-                                                    "Could not create user due to some import issues", importEx);
-                                        }
-                                    }
                                     userNode.grantRoles("u:" + name, Collections.singleton("owner"));
                                     String l_password;
                                     if (!password.startsWith("SHA-1:")) {

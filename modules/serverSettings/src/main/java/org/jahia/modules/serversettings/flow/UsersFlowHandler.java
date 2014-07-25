@@ -124,7 +124,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("j:firstName");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         try {
             propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName").getString());
@@ -132,7 +132,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("j:lastName");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         propertiesToPopulate.setUsername(jahiaUser.getName());
         propertiesToPopulate.setUserKey(jahiaUser.getPath());
@@ -142,7 +142,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("j:email");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         try {
             propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization").getString());
@@ -150,7 +150,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("j:organization");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
 
         try {
@@ -160,7 +160,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("emailNotificationsDisabled");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser.getJahiaUser()));
 //        if (props.isReadOnly("preferredLanguage")) {
@@ -172,7 +172,7 @@ public class UsersFlowHandler implements Serializable {
 //                readOnlyProperties.add("j:accountLocked");
 //            }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            logger.debug(e.getMessage(), e);
         }
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));

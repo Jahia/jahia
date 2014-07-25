@@ -283,7 +283,7 @@ public class User {
         return new PrincipalViewHelper(fieldsToDisplay.split(";")).getPrincipalTextOption(principal);
     }
     
-    public static Boolean isReadOnlyProvider(Principal p) {
+    public static Boolean isReadOnlyProvider(JCRNodeWrapper principal) {
         return false;
     }
 }

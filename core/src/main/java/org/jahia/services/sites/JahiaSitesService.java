@@ -467,7 +467,7 @@ public class JahiaSitesService extends JahiaService {
                                 false);
                     }
                     // atach site privileged group to server privileged
-                    privGroup.addMember(sitePrivGroup);
+                    privGroup.addMember(sitePrivGroup,session);
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         siteNode.grantRoles("g:" + sitePrivGroup.getPath(), Collections.singleton("privileged"));

@@ -132,7 +132,8 @@ public class JahiaTemplateManagerServiceTest {
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
         if (site != null) {
             JCRGroupNode group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
-            group.addMember(user);
+            group.addMember(user,group.getSession());
+            group.getSession().save();
         }
     }
 

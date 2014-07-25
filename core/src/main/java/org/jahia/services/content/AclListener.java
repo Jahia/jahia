@@ -319,7 +319,7 @@ public class AclListener extends DefaultEventListener {
                             continue;
                         }
                         logger.info(principal + " need privileged access");
-                        priv.addMember(p);
+                        priv.addMember(p,systemSession);
                     }
                 }
             }
@@ -429,10 +429,15 @@ public class AclListener extends DefaultEventListener {
 
     private JCRNodeWrapper getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
         JCRNodeWrapper p = null;
+        String principalName = principal.substring(2);
         if (principal.startsWith("u:")) {
-            p = userService.lookupUser(principal.substring(2));
-        } else if (principal.length() > 2) {
-            p = groupService.lookupGroup(site, principal.substring(2));
+            p = userService.lookupUser(principalName);
+        } else if (principal.startsWith("g:")) {
+            if(principalName.startsWith("/")) {
+                p = groupService.lookupGroup(principalName);
+            } else {
+                p = groupService.lookupGroup(site, principalName);
+            }
         }
         return p;
     }
@@ -542,7 +547,8 @@ public class AclListener extends DefaultEventListener {
             refAce.setProperty("j:roles", new String[]{role});
             refAce.setProperty("j:externalPermissionsName", externalPermissions.getName());
             refAce.setProperty("j:protected", true);
-            refAce.setProperty("j:sourceAce", new Value[]{session.getValueFactory().createValue(ace, true)});
+            refAce.setProperty("j:sourceAce",
+ new Value[]{session.getValueFactory().createValue(ace, true)});
         } else {
             JCRNodeWrapper refAce = acl.getNode(n);
             if (refAce.hasProperty("j:sourceAce")) {

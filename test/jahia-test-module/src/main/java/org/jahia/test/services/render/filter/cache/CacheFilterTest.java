@@ -362,12 +362,12 @@ public class CacheFilterTest extends JahiaTestCase {
         final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false);
         final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false);
         // Associate each user to two group
-        groupA.addMember(userAB);
-        groupA.addMember(userAC);
-        groupB.addMember(userAB);
-        groupB.addMember(userBC);
-        groupC.addMember(userAC);
-        groupC.addMember(userBC);
+        groupA.addMember(userAB,session);
+        groupA.addMember(userAC,session);
+        groupB.addMember(userAB,session);
+        groupB.addMember(userBC,session);
+        groupC.addMember(userAC,session);
+        groupC.addMember(userBC,session);
         // Create three content
         JCRNodeWrapper shared = site.getNode("home");
         if (shared.hasNode("testAclContent")) {

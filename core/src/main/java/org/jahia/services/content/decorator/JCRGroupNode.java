@@ -74,7 +74,9 @@ package org.jahia.services.content.decorator;
 import com.google.common.primitives.Ints;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.*;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -88,6 +90,8 @@ import java.util.Set;
  * A JCR group node decorator
  */
 public class JCRGroupNode extends JCRNodeDecorator {
+
+    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupNode.class);
 
     public static final String J_HIDDEN = "j:hidden";
 
@@ -103,8 +107,20 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     }
 
-    public void addMember(JCRNodeWrapper groupNode) {
-
+    public void addMember(JCRNodeWrapper principal, JCRSessionWrapper jcrSessionWrapper) {
+        try {
+            JCRNodeWrapper member = null;
+            if(principal.isNodeType("jnt:user")) {
+                member = jcrSessionWrapper.getNode(getPath()+"/j:members").addNode(principal.getName(), "jnt:member");
+            } else if (principal.isNodeType("jnt:group")){
+                member = jcrSessionWrapper.getNode(getPath() + "/j:members").addNode(principal.getPath().replaceAll("/", "_"), "jnt:member");
+            }
+            if(member!=null) {
+                member.setProperty("j:member", principal);
+            }
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
+        }
     }
 
     public List<JCRNodeWrapper> getMembers() {
@@ -127,7 +143,7 @@ public class JCRGroupNode extends JCRNodeDecorator {
                     isMemberB |= ((JCRGroupNode)node1).isMember(principal);
                 }
                 else {
-                    isMemberB |= (jcrNodeWrapper.getName().equals(principal.getName()));
+                    isMemberB |= (node1.getName().equals(principal.getName()));
                 }
             }
             return isMemberB;
@@ -154,5 +170,14 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     public void addMembers(Collection<JCRNodeWrapper> candidates) {
 
+    }
+
+    public void addMember(JCRNodeWrapper principal) {
+        try {
+            addMember(principal,getSession());
+            getSession().save();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 }

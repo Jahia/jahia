@@ -140,12 +140,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false);
             final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false);
             // Associate each user to two group
-            groupA.addMember(userAB);
-            groupA.addMember(userAC);
-            groupB.addMember(userAB);
-            groupB.addMember(userBC);
-            groupC.addMember(userAC);
-            groupC.addMember(userBC);
+            groupA.addMember(userAB,session);
+            groupA.addMember(userAC,session);
+            groupB.addMember(userAB,session);
+            groupB.addMember(userBC,session);
+            groupC.addMember(userAC,session);
+            groupC.addMember(userBC,session);
 
             InputStream importStream = CacheFilterHttpTest.class.getClassLoader().getResourceAsStream("imports/cachetest-site.xml");
             session.importXML(SITECONTENT_ROOT_NODE, importStream,

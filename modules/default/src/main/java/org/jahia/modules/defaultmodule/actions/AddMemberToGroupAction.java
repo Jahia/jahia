@@ -134,7 +134,7 @@ public class AddMemberToGroupAction extends Action {
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaUser)) {
-                targetJahiaGroup.addMember(jahiaUser);
+                targetJahiaGroup.addMember(jahiaUser,session);
             }
         } else if (parameters.get("groupKey") != null) {
             String groupKey = parameters.get("groupKey").get(0);
@@ -144,11 +144,12 @@ public class AddMemberToGroupAction extends Action {
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaGroup)) {
-                targetJahiaGroup.addMember(jahiaGroup);
+                targetJahiaGroup.addMember(jahiaGroup,session);
             }
         } else {
             return ActionResult.BAD_REQUEST;
         }
+        session.save();
         return ActionResult.OK_JSON;
     }
 }

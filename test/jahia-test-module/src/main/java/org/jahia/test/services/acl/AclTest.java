@@ -178,11 +178,12 @@ public class AclTest {
         group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false);
         group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false);
 
-        group1.addMember(user1);
-        group1.addMember(user2);
+        group1.addMember(user1,session);
+        group1.addMember(user2,session);
 
-        group2.addMember(user3);
-        group2.addMember(user4);
+        group2.addMember(user3,session);
+        group2.addMember(user4,session);
+        session.save();
     }
 
     @AfterClass

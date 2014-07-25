@@ -71,15 +71,88 @@
  */
 package org.jahia.services.content.decorator;
 
+import com.google.common.primitives.Ints;
+import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.*;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.security.Principal;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A JCR group node decorator
  */
 public class JCRGroupNode extends JCRNodeDecorator {
 
+    public static final String J_HIDDEN = "j:hidden";
+
     public JCRGroupNode(JCRNodeWrapper node) {
         super(node);
     }
 
+    public JahiaGroup getJahiaGroup() {
+        return null;
+    }
+
+    public void addMember(Principal user) {
+
+    }
+
+    public void addMember(JCRNodeWrapper groupNode) {
+
+    }
+
+    public List<JCRNodeWrapper> getMembers() {
+        return Collections.emptyList();
+    }
+
+    public void removeMembers() {
+
+    }
+
+    public boolean isMember(JCRNodeWrapper principal) {
+        if(JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath())) return true;
+        if(!JahiaUserManagerService.GUEST_USERNAME.equals(principal.getName()) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) return true;
+        try {
+            JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
+            boolean isMemberB = false;
+            for (JCRNodeWrapper jcrNodeWrapper : nodes) {
+                Node node1 = jcrNodeWrapper.getProperty("j:member").getNode();
+                if(node1.isNodeType("jnt:group")){
+                    isMemberB |= ((JCRGroupNode)node1).isMember(principal);
+                }
+                else {
+                    isMemberB |= (jcrNodeWrapper.getName().equals(principal.getName()));
+                }
+            }
+            return isMemberB;
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
+
+    public void removeMember(JCRNodeWrapper principal) {
+
+    }
+
+    public Set<JCRUserNode> getRecursiveUserMembers() {
+        return null;
+    }
+
+    public boolean isHidden() {
+        return false;
+    }
+
+    public boolean isMember(String userPath) {
+        return true;
+    }
+
+    public void addMembers(Collection<JCRNodeWrapper> candidates) {
+
+    }
 }

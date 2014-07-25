@@ -73,6 +73,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.usermanager.JahiaUser;
@@ -131,10 +132,10 @@ public class JCRUserPropertyModificationListener extends DefaultEventListener {
                             }
                         }
                         String username = StringUtils.substringAfterLast(StringUtils.substringBeforeLast(path,"/"), "/");
-                        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
+                        JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(
                                 username);
                         if (jahiaUser != null) {
-                            ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
+//                            ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
                         }
                     }
                     return null;

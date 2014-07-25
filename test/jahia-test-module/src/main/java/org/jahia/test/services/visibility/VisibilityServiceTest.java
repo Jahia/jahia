@@ -90,6 +90,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -130,11 +131,11 @@ public class VisibilityServiceTest extends JahiaTestCase {
         Properties properties = new Properties();
         properties.setProperty("j:firstName", "John");
         properties.setProperty("j:lastName", "Doe");
-        JahiaUser john = ServicesRegistry.getInstance().getJahiaUserManagerService()
+        JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .createUser(USERNAME, PASSWORD, properties);
         JCRSessionFactory.getInstance().getCurrentUserSession()
                 .getNode("/sites/" + site.getSiteKey())
-                .grantRoles("u:" + john.getUsername(), ImmutableSet.of("editor-in-chief"));
+                .grantRoles("u:" + john.getPath(), ImmutableSet.of("editor-in-chief"));
         JCRSessionFactory.getInstance().getCurrentUserSession().save();
     }
 
@@ -147,7 +148,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance()
                 .getJahiaUserManagerService();
-        userManagerService.deleteUser(userManagerService.lookupUser(USERNAME));
+        userManagerService.deleteUser(userManagerService.lookupUser(USERNAME).getPath());
         JCRSessionFactory.getInstance().getCurrentUserSession().save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }

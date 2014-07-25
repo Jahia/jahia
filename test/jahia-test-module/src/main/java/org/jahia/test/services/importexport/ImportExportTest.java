@@ -105,6 +105,7 @@ import javax.jcr.version.VersionException;
 import javax.xml.transform.TransformerException;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
@@ -394,10 +395,10 @@ public class ImportExportTest {
                         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
                         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-                        JahiaUser user1 = userManager.createUser("impexpuser", "password", new Properties());
+                        JCRUserNode user1 = userManager.createUser("impexpuser", "password", new Properties());
                         user1 = userManager.createUser("user1", "password", new Properties());
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user1.getUsername(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user1.getPath(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton
@@ -523,9 +524,9 @@ public class ImportExportTest {
                         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
                         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-                        JahiaUser user2 = userManager.createUser("impexpuserugc", "password", new Properties());
+                        JCRUserNode user2 = userManager.createUser("impexpuserugc", "password", new Properties());
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user2.getUsername(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user2.getPath(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton

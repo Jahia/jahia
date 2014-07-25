@@ -73,12 +73,16 @@ package org.jahia.services.usermanager;
 
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.utils.EncryptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 
+import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Properties;
@@ -94,9 +98,9 @@ import java.util.Set;
  * @author Khue NGuyen
  * @version 2.0
  */
-public abstract class JahiaUserManagerService extends JahiaService {
+public class JahiaUserManagerService extends JahiaService {
 
-    public static Logger LOGGER = LoggerFactory.getLogger(JahiaUserManagerService.class);
+    public static Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
 
     /**
      * Guest user unique identification name.
@@ -109,6 +113,7 @@ public abstract class JahiaUserManagerService extends JahiaService {
     public static final String COUNT_LIMIT = "countLimit";
 
     private JahiaUserSplittingRule userSplittingRule;
+    private JCRUserManagerProvider defaultProvider;
 // -------------------------- STATIC METHODS --------------------------
 
     //--------------------------------------------------------------------------
@@ -151,8 +156,12 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return <code>true</code> if the specified user is <code>null</code> or a
      *         guest user
      */
+    public static boolean isGuest(JCRUserNode user) {
+        return user == null || GUEST_USERNAME.equals(user.getName());
+    }
+
     public static boolean isGuest(JahiaUser user) {
-        return user == null || GUEST_USERNAME.equals(user.getUsername());
+        return user == null || GUEST_USERNAME.equals(user.getName());
     }
 
     /**
@@ -164,8 +173,25 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return <code>true</code> if the specified user is not <code>null</code>
      *         and is not a guest user
      */
+    public static boolean isNotGuest(String userPath) {
+        return userPath != null && !GUEST_USERNAME.equals(userPath);
+    }
+
+    public static boolean isNotGuest(JCRUserNode user) {
+        return user != null && !GUEST_USERNAME.equals(user.getName());
+    }
+
     public static boolean isNotGuest(JahiaUser user) {
-        return user != null && !GUEST_USERNAME.equals(user.getUsername());
+        return user != null && !GUEST_USERNAME.equals(user.getName());
+    }
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JahiaUserManagerService INSTANCE = new JahiaUserManagerService();
+    }
+
+    public static JahiaUserManagerService getInstance() {
+        return Holder.INSTANCE;
     }
 
 // -------------------------- OTHER METHODS --------------------------
@@ -179,8 +205,10 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @param password   User password
      * @param properties User additional parameters. If the user has no additional
      */
-    public abstract JahiaUser createUser(String name, String password,
-                                         Properties properties);
+    public JCRUserNode createUser(String name, String password,
+                                         Properties properties){
+        return defaultProvider.createUser(name, password, properties);
+    }
 
 
     //-------------------------------------------------------------------------
@@ -192,7 +220,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @param user reference on the user to be deleted.
      */
-    public abstract boolean deleteUser (JahiaUser user);
+    public boolean deleteUser (String userPath){
+        return defaultProvider.deleteUser(userPath);
+    }
 
 
     //-------------------------------------------------------------------------
@@ -201,25 +231,10 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @return Return the number of users in the system.
      */
-    public abstract int getNbUsers ()
-            throws JahiaException;
-
-    /**
-     * Returns a List of {@link JahiaUserManagerProvider} objects, describing the
-     * available user management providers
-     *
-     * @return result a List of {@link JahiaUserManagerProvider} objects that describe
-     *         the providers. This will never be null but may be empty if no providers
-     *         are available.
-     */
-    public abstract List<? extends JahiaUserManagerProvider> getProviderList ();
-
-    /**
-     * Returns a {@link JahiaUserManagerProvider} for the specified name.
-     *
-     * @return a {@link JahiaUserManagerProvider} for the specified name
-     */
-    public abstract JahiaUserManagerProvider getProvider(String name);
+    public int getNbUsers ()
+            throws JahiaException {
+        return defaultProvider.getNbUsers();
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -227,9 +242,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @return Return a List of strings holding the user identification key .
      */
-    public abstract List<String> getUserList ();
-
-    public abstract List<String> getUserList (String provider);
+    public List<String> getUserList (){
+        return defaultProvider.getUserList();
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -237,7 +252,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @return Return a List of strings holding the user identification names.
      */
-    public abstract List<String> getUsernameList();
+    public List<String> getUsernameList(){
+        return defaultProvider.getUsernameList();
+    }
 
 
     //-------------------------------------------------------------------------
@@ -247,7 +264,14 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public abstract JahiaUser lookupUserByKey(String userKey);
+    public JCRUserNode lookupUserByKey(String userKey) {
+        try {
+            return defaultProvider.lookupUserByKey(userKey);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
 
 
     //-------------------------------------------------------------------------
@@ -259,7 +283,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public abstract JahiaUser lookupUser(String name);
+    public JCRUserNode lookupUser(String name) {
+        return defaultProvider.lookupUser(name);
+    }
 
 
     /**
@@ -274,32 +300,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return List a List of JahiaUser elements that correspond to those
      *         search criterias
      */
-    public abstract Set<Principal> searchUsers (Properties searchCriterias);
-
-    /**
-     * Find users according to a table of name=value properties. If the left
-     * side value is "*" for a property then it will be tested against all the
-     * properties. ie *=test* will match every property that starts with "test"
-     *
-     * @param providerKey     key of the provider in which to search, may be
-     *                        obtained by calling getProviderList()
-     * @param searchCriterias a Properties object that contains search criterias
-     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
-     *                        null to search without criterias
-     *
-     * @return Set a set of JahiaUser elements that correspond to those
-     *         search criterias
-     */
-    public abstract Set<Principal> searchUsers (String providerKey, Properties searchCriterias);
-
-    /**
-     * This method indicates that any internal cache for a provider should be
-     * updated because the value has changed and needs to be transmitted to the
-     * other nodes in a clustering environment.
-     * @param jahiaUser JahiaGroup the group to be updated in the cache.
-     */
-    public abstract void updateCache(JahiaUser jahiaUser);
-
+    public Set<JCRUserNode> searchUsers (Properties searchCriterias){
+        return defaultProvider.searchUsers(searchCriterias);
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -311,7 +314,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
      */
-    public abstract boolean userExists(String name);
+    public boolean userExists(String name){
+        return defaultProvider.userExists(name);
+    }
 
     /**
      * Validates provided user name against a regular expression pattern, specified in the Jahia configuration.
@@ -320,17 +325,9 @@ public abstract class JahiaUserManagerService extends JahiaService {
      *            the user name to be validated
      * @return <code>true</code> if the specified user name matches the validation pattern
      */
-    public abstract boolean isUsernameSyntaxCorrect(String name);
-
-    /**
-     * Adds the specified user provider to the registry.
-     * 
-     * @param jahiaUserManagerProvider
-     *            an instance of the user provider to register
-     */
-    public abstract void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
-
-    public abstract void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider);
+    public boolean isUsernameSyntaxCorrect(String name){
+        return defaultProvider.isUsernameSyntaxCorrect(name);
+    }
 
     public void setUserSplittingRule(JahiaUserSplittingRule userSplittingRule) {
         this.userSplittingRule = userSplittingRule;
@@ -338,5 +335,19 @@ public abstract class JahiaUserManagerService extends JahiaService {
 
     public JahiaUserSplittingRule getUserSplittingRule() {
         return userSplittingRule;
+    }
+
+    @Override
+    public void start() throws JahiaInitializationException {
+
+    }
+
+    @Override
+    public void stop() throws JahiaException {
+
+    }
+
+    public void setDefaultProvider(JCRUserManagerProvider defaultProvider) {
+        this.defaultProvider = defaultProvider;
     }
 }

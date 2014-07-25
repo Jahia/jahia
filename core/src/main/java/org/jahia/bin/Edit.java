@@ -74,6 +74,7 @@ package org.jahia.bin;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
@@ -101,7 +102,7 @@ public class Edit extends Render {
     private boolean availableInDistantPublicationServerMode = true;
     private boolean forceUILocaleForJCRSession = false;
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         if ("contributemode".equals(editConfiguration.getName())) {

@@ -78,6 +78,8 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -103,13 +105,13 @@ public class AclTest {
 
     private final static String TESTSITE_NAME = "aclTestSite";
 
-    private static JahiaUser user1;
-    private static JahiaUser user2;
-    private static JahiaUser user3;
-    private static JahiaUser user4;
+    private static JCRUserNode user1;
+    private static JCRUserNode user2;
+    private static JCRUserNode user3;
+    private static JCRUserNode user4;
 
-    private static JahiaGroup group1;
-    private static JahiaGroup group2;
+    private static JCRGroupNode group1;
+    private static JCRGroupNode group2;
     public static final String HOMEPATH = "/sites/"+TESTSITE_NAME+"/home";
 
     public static JCRPublicationService jcrService;
@@ -192,10 +194,10 @@ public class AclTest {
             }
 
             JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            userManager.deleteUser(user1);
-            userManager.deleteUser(user2);
-            userManager.deleteUser(user3);
-            userManager.deleteUser(user4);
+            userManager.deleteUser(user1.getPath());
+            userManager.deleteUser(user2.getPath());
+            userManager.deleteUser(user3.getPath());
+            userManager.deleteUser(user4.getPath());
 
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);

@@ -74,6 +74,7 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
@@ -81,6 +82,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -92,6 +94,7 @@ import java.util.*;
  * Time: 2:47:08 PM
  */
 public class ContentHubHelper {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
@@ -155,16 +158,20 @@ public class ContentHubHelper {
         return results;
     }
 
-    public void storePasswordForProvider(JahiaUser user, String providerKey, String username, String password) {
-        if (username == null) {
-            user.removeProperty("storedUsername_" + providerKey);
-        } else {
-            user.setProperty("storedUsername_" + providerKey, username);
-        }
-        if (password == null) {
-            user.removeProperty("storedPassword_" + providerKey);
-        } else {
-            user.setProperty("storedPassword_" + providerKey, password);
+    public void storePasswordForProvider(JCRUserNode user, String providerKey, String username, String password) {
+        try {
+            if (username == null) {
+                user.getProperty("storedUsername_" + providerKey).remove();
+            } else {
+                user.setProperty("storedUsername_" + providerKey, username);
+            }
+            if (password == null) {
+                user.getProperty("storedPassword_" + providerKey).remove();
+            } else {
+                user.setProperty("storedPassword_" + providerKey, password);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 

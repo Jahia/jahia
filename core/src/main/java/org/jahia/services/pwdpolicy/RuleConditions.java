@@ -75,9 +75,11 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Includes a set of conditions for the Password Policy Service.
@@ -162,7 +164,11 @@ public final class RuleConditions {
                         "The user object is null. Unable to evaluate the condition");
             }
 
-            return ctx.getUser().getProperty(Constants.JCR_LASTLOGINDATE) != null;
+            try {
+                return ctx.getUser().getProperty(Constants.JCR_LASTLOGINDATE) != null;
+            } catch (RepositoryException e) {
+                return false;
+            }
         }
     }
 
@@ -268,10 +274,9 @@ public final class RuleConditions {
             boolean success = true;
 
             // we can only deal with the JCRUser
-            if (ctx.getUser() instanceof JCRUser) {
                 int checkedPasswordCount = getParameterIntValue(parameters, 0);
 
-                List<PasswordHistoryEntry> history = ((JCRUser) ctx.getUser()).getPasswordHistory();
+                List<PasswordHistoryEntry> history = (ctx.getUser()).getPasswordHistory();
                 if (!history.isEmpty()) {
 	                String encryptedPassword = JahiaUserManagerService.encryptPassword(ctx.getPassword());
 	                if (encryptedPassword != null) {
@@ -283,7 +288,6 @@ public final class RuleConditions {
 	                    }
 	                }
                 }
-            }
 
             return success;
         }
@@ -334,12 +338,10 @@ public final class RuleConditions {
                     + " are expected");
     }
 
-    private static long getLastPasswordChangeTimestamp(JahiaUser user) {
+    private static long getLastPasswordChangeTimestamp(JCRUserNode user) {
         long lastChangeTimestamp = 0;
         // we are only able to handle JahiaDBUser
-        if (user instanceof JCRUser) {
-            lastChangeTimestamp = ((JCRUser) user).getLastPasswordChangeTimestamp();
-        }
+            lastChangeTimestamp = user.getLastPasswordChangeTimestamp();
 
         return lastChangeTimestamp;
     }

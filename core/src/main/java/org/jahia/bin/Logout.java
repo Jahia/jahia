@@ -305,7 +305,7 @@ public class Logout implements Controller {
 
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRSessionFactory.getInstance()
-                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser());
 
         request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
         request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);
@@ -322,7 +322,7 @@ public class Logout implements Controller {
         // now let's destroy the cookie authentication if there was one
         // set for this user.
         JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-        String cookieAuthKey = JahiaUserManagerService.isNotGuest(curUser) ? curUser.getProperty(cookieAuthConfig.getUserPropertyName()) : null;
+        String cookieAuthKey = JahiaUserManagerService.isNotGuest(curUser.getLocalPath()) ? curUser.getProperty(cookieAuthConfig.getUserPropertyName()) : null;
         if (cookieAuthKey != null) {
             Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
             authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
@@ -330,7 +330,11 @@ public class Logout implements Controller {
             authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
             authCookie.setSecure(cookieAuthConfig.isSecure());
             response.addCookie(authCookie);
-            curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
+            try {
+                ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(curUser.getLocalPath()).getProperty(cookieAuthConfig.getUserPropertyName()).remove();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
     }
 

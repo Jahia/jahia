@@ -159,13 +159,13 @@ public class VFSContentStoreProviderTest {
         if (!dynamicMountDir.exists()) {
             dynamicMountDir.mkdir();
         }
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(null);
         unMountDynamicMountPoint(jahiaRootUser);
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(null);
         unMountDynamicMountPoint(jahiaRootUser);
         TestHelper.deleteSite(TESTSITE_NAME);
         try {
@@ -218,7 +218,7 @@ public class VFSContentStoreProviderTest {
     @Test
     public void testDynamicMount() throws Exception, GWTJahiaServiceException, RepositoryException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(null);
         GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());
         boolean mountNodeStillExists = true;
         try {
@@ -284,7 +284,7 @@ public class VFSContentStoreProviderTest {
     public void testReferencing() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext()
                 .getBean("ContentHubHelper");
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(null);
         try {
 
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -425,7 +425,7 @@ public class VFSContentStoreProviderTest {
     @Test
     public void testMarkForDeletion() throws Exception, RepositoryException, UnsupportedEncodingException {
         ContentHubHelper contentHubHelper = (ContentHubHelper) SpringContextSingleton.getInstance().getContext().getBean("ContentHubHelper");
-        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(0);
+        JahiaUser jahiaRootUser = JahiaAdminUser.getAdminUser(null);
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             GWTJahiaNodeProperty p = new GWTJahiaNodeProperty("j:rootPath","file://" + dynamicMountDir.getAbsolutePath());

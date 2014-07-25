@@ -93,7 +93,6 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ReferencesHelper;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
@@ -231,8 +230,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public JahiaUser getUser() {
-        return session.getUser();
+    public JCRUserNode getUser() {
+        try {
+            return (JCRUserNode) session.getUserNode();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
     }
 
     /**
@@ -538,13 +542,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
         if (aceg == null) {
-            aceg = acl.addNode("GRANT_" + JCRContentUtils.replaceColon(principalKey), "jnt:ace");
+            aceg = acl.addNode("GRANT_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/","_"), "jnt:ace");
             aceg.setProperty("j:principal", principalKey);
             aceg.setProperty("j:protected", false);
             aceg.setProperty("j:aceType", "GRANT");
         }
         if (aced == null) {
-            aced = acl.addNode("DENY_" + JCRContentUtils.replaceColon(principalKey), "jnt:ace");
+            aced = acl.addNode("DENY_" + JCRContentUtils.replaceColon(principalKey).replaceAll("/","_"), "jnt:ace");
             aced.setProperty("j:principal", principalKey);
             aced.setProperty("j:protected", false);
             aced.setProperty("j:aceType", "DENY");

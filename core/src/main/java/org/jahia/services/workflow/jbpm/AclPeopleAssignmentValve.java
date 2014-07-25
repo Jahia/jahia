@@ -118,7 +118,7 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
                     potentialOwners.add(new UserImpl(((JahiaUser) principal).getUserKey()));
                 }
             }
-            final GroupImpl admin = new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getGroupKey());
+            final GroupImpl admin = new GroupImpl(ServicesRegistry.getInstance().getJahiaGroupManagerService().getAdministratorGroup(null).getJahiaGroup().getGroupKey());
             potentialOwners.add(admin);
             peopleAssignments.getPotentialOwners().addAll(potentialOwners);
 

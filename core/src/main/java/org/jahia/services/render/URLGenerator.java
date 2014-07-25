@@ -79,6 +79,7 @@ import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -487,7 +488,7 @@ public class URLGenerator {
     public String getMyProfile() {
         if (myProfile == null) {
             JahiaUser user = context.getUser();
-            myProfile = (JahiaUserManagerService.isNotGuest(user) && user.isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) ? "/start" : "";
+            myProfile = (JahiaUserManagerService.isNotGuest(user) && user.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) ? "/start" : "";
         }
         return myProfile;
     }

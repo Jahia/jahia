@@ -74,6 +74,8 @@ package org.jahia.modules.defaultmodule.actions;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -117,7 +119,7 @@ public class AddPrincipalsInRolesAction extends Action {
             for (String principalKey : principals) {
                 if (principalKey.startsWith("u:")) {
                     String userKey = principalKey.substring("u:".length());
-                    JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
+                    JCRUserNode jahiaUser = jahiaUserManagerService.lookupUser(userKey);
                     if (jahiaUser == null) {
                         logger.warn("User " + userKey + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;
@@ -126,7 +128,7 @@ public class AddPrincipalsInRolesAction extends Action {
                     session.save();
                 } else if (principalKey.startsWith("g:")) {
                     String groupKey = principalKey.substring("g:".length());
-                    JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+                    JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
                     if (jahiaGroup == null) {
                         logger.warn("Group " + groupKey + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;

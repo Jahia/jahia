@@ -80,6 +80,8 @@ import org.jahia.modules.serversettings.users.management.CsvFile;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
@@ -93,6 +95,7 @@ import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
@@ -108,50 +111,72 @@ public class UsersFlowHandler implements Serializable {
     
     public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser jahiaUser = service.lookupUserByKey(userKey);
+        JCRUserNode jahiaUser = service.lookupUserByKey(userKey);
         if (propertiesToPopulate == null) {
             propertiesToPopulate = new UserProperties();
         }
-        
-        org.jahia.services.usermanager.UserProperties props = jahiaUser.getUserProperties();
+
         Set<String> readOnlyProperties = propertiesToPopulate.getReadOnlyProperties();
-        
-        propertiesToPopulate.setFirstName(jahiaUser.getProperty("j:firstName"));
-        if (props.isReadOnly("j:firstName")) {
-            readOnlyProperties.add("j:firstName");
+
+        try {
+            propertiesToPopulate.setFirstName(jahiaUser.getProperty("j:firstName").getString());
+//            if (props.isReadOnly("j:firstName")) {
+//                readOnlyProperties.add("j:firstName");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName"));
-        if (props.isReadOnly("j:lastName")) {
-            readOnlyProperties.add("j:lastName");
+        try {
+            propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName").getString());
+//            if (props.isReadOnly("j:lastName")) {
+//                readOnlyProperties.add("j:lastName");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        propertiesToPopulate.setUsername(jahiaUser.getUsername());
-        propertiesToPopulate.setUserKey(jahiaUser.getUserKey());
-        propertiesToPopulate.setEmail(jahiaUser.getProperty("j:email"));
-        if (props.isReadOnly("j:email")) {
-            readOnlyProperties.add("j:email");
+        propertiesToPopulate.setUsername(jahiaUser.getName());
+        propertiesToPopulate.setUserKey(jahiaUser.getPath());
+        try {
+            propertiesToPopulate.setEmail(jahiaUser.getProperty("j:email").getString());
+//            if (props.isReadOnly("j:email")) {
+//                readOnlyProperties.add("j:email");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization"));
-        if (props.isReadOnly("j:organization")) {
-            readOnlyProperties.add("j:organization");
+        try {
+            propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization").getString());
+//            if (props.isReadOnly("j:organization")) {
+//                readOnlyProperties.add("j:organization");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        propertiesToPopulate.setEmailNotificationsDisabled(Boolean.valueOf(jahiaUser
-                .getProperty("emailNotificationsDisabled")));
-        if (props.isReadOnly("emailNotificationsDisabled")) {
-            readOnlyProperties.add("emailNotificationsDisabled");
+
+        try {
+            propertiesToPopulate.setEmailNotificationsDisabled(jahiaUser
+                    .getProperty("emailNotificationsDisabled").getBoolean());
+//            if (props.isReadOnly("emailNotificationsDisabled")) {
+//                readOnlyProperties.add("emailNotificationsDisabled");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
-        if (props.isReadOnly("preferredLanguage")) {
-            readOnlyProperties.add("preferredLanguage");
-        }
-        propertiesToPopulate.setAccountLocked(Boolean.valueOf(jahiaUser.getProperty("j:accountLocked")));
-        if (props.isReadOnly("j:accountLocked")) {
-            readOnlyProperties.add("j:accountLocked");
+        propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser.getJahiaUser()));
+//        if (props.isReadOnly("preferredLanguage")) {
+//            readOnlyProperties.add("preferredLanguage");
+//        }
+        try {
+            propertiesToPopulate.setAccountLocked(jahiaUser.getProperty("j:accountLocked").getBoolean());
+//            if (props.isReadOnly("j:accountLocked")) {
+//                readOnlyProperties.add("j:accountLocked");
+//            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));
-        propertiesToPopulate.setLocalPath(jahiaUser.getLocalPath());
-        
-        propertiesToPopulate.setReadOnly(service.getProvider(jahiaUser.getProviderName()).isReadOnly());
+        propertiesToPopulate.setLocalPath(jahiaUser.getPath());
 
         return propertiesToPopulate;
     }
@@ -162,11 +187,11 @@ public class UsersFlowHandler implements Serializable {
 
     public boolean addUser(UserProperties userProperties, MessageContext context) {
         logger.info("Adding user");
-        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(
+        JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(
                 userProperties.getUsername(), userProperties.getPassword(), transformUserProperties(userProperties));
         if (user != null) {
             Locale locale = LocaleContextHolder.getLocale();
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.getInternal("label.user", locale) + " '" + user.getUsername() + "' "  + Messages.getInternal(
+            context.addMessage(new MessageBuilder().info().defaultText(Messages.getInternal("label.user", locale) + " '" + user.getName() + "' "  + Messages.getInternal(
                     "message.successfully.created", locale)).build());
             return true;
         } else {
@@ -217,7 +242,7 @@ public class UsersFlowHandler implements Serializable {
                 if (userManagerService.isUsernameSyntaxCorrect(userName)) {
                     PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
                     if (evalResult.isSuccess()) {
-                        JahiaUser jahiaUser = userManagerService.createUser(userName, password, properties);
+                        JCRUserNode jahiaUser = userManagerService.createUser(userName, password, properties);
                         if (jahiaUser != null) {
                             context.addMessage(new MessageBuilder().info().code(
                                     "serverSettings.users.bulk.user.creation.successful").arg(userName).build());
@@ -254,11 +279,7 @@ public class UsersFlowHandler implements Serializable {
         return !hasErrors;
     }
 
-    public List<? extends JahiaUserManagerProvider> getProvidersList() {
-        return userManagerService.getProviderList();
-    }
-
-    public Set<Principal> init() {
+    public Set<JCRUserNode> init() {
         return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
     }
 
@@ -280,14 +301,14 @@ public class UsersFlowHandler implements Serializable {
         return populateUser(selectedUser, null);
     }
 
-    public List<JahiaGroup> getUserMembership(String selectedUser) {
-        return new LinkedList<JahiaGroup>(User.getUserMembership(selectedUser).values());
+    public List<JCRGroupNode> getUserMembership(String selectedUser) {
+        return new LinkedList<JCRGroupNode>(User.getUserMembership(selectedUser).values());
     }
 
     public boolean removeUser(String userKey, MessageContext context) {
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
+        JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
         String displayName = PrincipalViewHelper.getDisplayName(jahiaUser);
-        if(userManagerService.deleteUser(jahiaUser)) {
+        if(userManagerService.deleteUser(jahiaUser.getPath())) {
             context.addMessage(new MessageBuilder().info().code(
                     "serverSettings.user.remove.successful").arg(displayName).build());
             return true;
@@ -298,13 +319,13 @@ public class UsersFlowHandler implements Serializable {
         }
     }
 
-    public Set<Principal> search(SearchCriteria searchCriteria) {
+    public Set<JCRUserNode> search(SearchCriteria searchCriteria) {
         String searchTerm = searchCriteria.getSearchString();
         if (StringUtils.isNotEmpty(searchTerm) && searchTerm.indexOf('*') == -1) {
             searchTerm += '*';
         }
         searchCriteria.setNumberOfRemovedJahiaAdministrators(0);
-        Set<Principal> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+        Set<JCRUserNode> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
                 searchTerm, searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                 searchCriteria.getProviders());
         int searchSize = searchResult.size();
@@ -325,18 +346,17 @@ public class UsersFlowHandler implements Serializable {
         this.userManagerService = userManagerService;
     }
 
-    private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JahiaUser jahiaUser) {
-        String oldPropertyValue = jahiaUser.getProperty(propertyName);
-        if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
-            if(!jahiaUser.setProperty(propertyName, propertyValue)){
-                context.addMessage(new MessageBuilder().error().source(source).code("serverSettings.user.edit.errors.property").arg(source).build());
+    private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JCRUserNode jahiaUser) {
+        try {
+            String oldPropertyValue = jahiaUser.getProperty(propertyName).getString();
+            if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
+                jahiaUser.setProperty(propertyName, propertyValue);
                 return true;
             }
-            return false;
-        } else {
-            // no changes needed
-            return false;
+        } catch (RepositoryException e) {
+            context.addMessage(new MessageBuilder().error().source(source).code("serverSettings.user.edit.errors.property").arg(source).build());
         }
+        return false;
     }
 
     private Properties transformUserProperties(UserProperties userProperties) {
@@ -353,7 +373,7 @@ public class UsersFlowHandler implements Serializable {
 
     public boolean updateUser(UserProperties userProperties, MessageContext context) {
         logger.info("Updating user");
-        JahiaUser jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
+        JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
         boolean hasErrors = false;
         Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
         if (jahiaUser != null) {
@@ -398,8 +418,8 @@ public class UsersFlowHandler implements Serializable {
         final String[] split = selectedUsers.split(",");
         Set<Principal> searchResult = new HashSet<Principal>();
         for (String userKey : split) {
-            JahiaUser jahiaUser = userManagerService.lookupUserByKey(userKey);
-            searchResult.add(jahiaUser);
+            JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
+            searchResult.add(jahiaUser.getJahiaUser());
         }
         return searchResult;
     }

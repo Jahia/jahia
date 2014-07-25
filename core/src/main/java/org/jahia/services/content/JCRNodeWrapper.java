@@ -135,7 +135,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return the user of the current <code>Session</code>
      */
-    JahiaUser getUser();
+    org.jahia.services.content.decorator.JCRUserNode getUser();
 
     /**
      * {@inheritDoc}

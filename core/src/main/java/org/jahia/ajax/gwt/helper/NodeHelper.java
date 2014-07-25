@@ -621,7 +621,7 @@ class NodeHelper {
     private void populateLocksInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         n.setLockable(node.isLockable());
         try {
-            String username = node.getSession().getUser().getUsername();
+            String username = node.getSession().getUser().getName();
             n.setLocked(JCRContentUtils.isLockedAndCannotBeEdited(node));
             Map<String, List<String>> infos = node.getLockInfos();
             Map<String, List<String>> results = new HashMap<String, List<String>>(infos.size());

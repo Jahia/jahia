@@ -153,7 +153,7 @@ public class TestHelper {
                                        String prepackedZIPFile, String siteZIPName, String[] modulesToDeploy) throws Exception {
         modulesToDeploy = (modulesToDeploy == null) ? new String[0] : modulesToDeploy;
 
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+        JahiaUser admin = JahiaAdminUser.getAdminUser(null);
 
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
         JahiaSite site = service.getSiteByKey(name);

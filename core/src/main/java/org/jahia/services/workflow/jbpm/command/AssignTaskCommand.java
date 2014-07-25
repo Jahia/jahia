@@ -118,7 +118,7 @@ public class AssignTaskCommand extends BaseCommand<List<WorkflowTask>> {
         }
         JahiaUser actualUser = null;
         if (task.getTaskData().getActualOwner() != null) {
-            actualUser = getUserManager().lookupUserByKey(task.getTaskData().getActualOwner().getId());
+            actualUser = getUserManager().lookupUserByKey(task.getTaskData().getActualOwner().getId()).getJahiaUser();
         }
         if (actualUser != null) {
             taskOutputParameters.put("currentUser", user.getUserKey());

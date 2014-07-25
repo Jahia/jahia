@@ -151,7 +151,7 @@ public class JCRPublicationService extends JahiaService {
     public void lockForPublication(final List<String> publicationInfo, final String workspace,
                                    final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(),
+                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getName(),
                         workspace, null, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 for (String id : publicationInfo) {
@@ -174,7 +174,7 @@ public class JCRPublicationService extends JahiaService {
     public void unlockForPublication(final List<String> publicationInfo, final String workspace,
                                      final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getUsername(),
+                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getName(),
                         workspace, null, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 for (String id : publicationInfo) {
@@ -472,12 +472,12 @@ public class JCRPublicationService extends JahiaService {
         if (!destinationSession.isSystem()) {
             final String nodePath = node.getPath();
             final String destinationWorkspace = destinationSession.getWorkspace().getName();
-            return JCRTemplate.getInstance().doExecute(true, node.getUser().getUsername(),
+            return JCRTemplate.getInstance().doExecute(true, node.getUser().getName(),
                     node.getSession().getWorkspace().getName(), null, new JCRCallback<CloneResult>() {
                         public CloneResult doInJCR(final JCRSessionWrapper sourceSession)
                                 throws RepositoryException {
                             return JCRTemplate.getInstance().doExecute(true,
-                                    node.getUser().getUsername(), destinationWorkspace,
+                                    node.getUser().getName(), destinationWorkspace,
                                     new JCRCallback<CloneResult>() {
                                         public CloneResult doInJCR(
                                                 final JCRSessionWrapper destinationSession)

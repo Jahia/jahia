@@ -71,25 +71,23 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO8601;
 import org.apache.jackrabbit.value.BinaryImpl;
-import org.jahia.services.content.LazyPropertyIterator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRPropertyWrapperImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
-import org.jahia.services.usermanager.JahiaExternalUser;
+import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.UserProperties;
-import org.jahia.services.usermanager.UserPropertyReadOnlyException;
-import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
@@ -112,210 +110,37 @@ import java.util.*;
  */
 public class JCRUserNode extends JCRNodeDecorator {
     private transient static Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
-    private JahiaUser user;
-    private Map<String, ExtendedPropertyDefinition> propertyDefinitionMap;
-    private Map<Integer, ExtendedPropertyDefinition> unstructuredPropertyDefinitions;
-
+    public static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
+    public static final String PROVIDER_NAME = "jcr";
+    public static final String J_DISPLAYABLE_NAME = "j:displayableName";
+    public static final String J_PASSWORD = "j:password";
+    public static final String J_EXTERNAL = "j:external";
+    public static final String J_EXTERNAL_SOURCE = "j:externalSource";
     public final List<String> publicProperties = Arrays.asList("j:external", "j:externalSource", "j:publicProperties");
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
         try {
             ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:user");
-            propertyDefinitionMap = type.getPropertyDefinitionsAsMap();
-            unstructuredPropertyDefinitions = type.getUnstructuredPropertyDefinitions();
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    @Override
-    public PropertyIterator getProperties() throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        return new LazyPropertyIterator(this, locale) {
-            @Override
-            protected PropertyIterator getPropertiesIterator() {
-                if (propertyIterator == null) {
-                    if (user == null) {
-                        user = lookupUser();
-                    }
-                    if (user == null || user instanceof JCRUser) {
-                        propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
-                    } else {
-                        try {
-                            propertyIterator = new UserPropertyIterator(node, new FilteredPropertyIterator(super.getPropertiesIterator()));
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot get user properties");
-                            propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
-                        }
-                    }
-                    propertyIterator = new FilteredPropertyIterator(super.getPropertiesIterator());
-                }
-                return propertyIterator;
-            }
-
-            @Override
-            protected PropertyIterator getI18NPropertyIterator() {
-                if (i18nPropertyIterator == null) {
-                return new FilteredPropertyIterator(super.getI18NPropertyIterator());
-                }
-                return i18nPropertyIterator;
-            }
-        };
-    }
-
-    @Override
-    public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-        if (JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
-            return super.getProperty(s);
-        }
-        if (!canGetProperty(s)) {
-            throw new PathNotFoundException(s);
-        }
-        if (user == null) {
-            user = lookupUser();
-        }
-        if (user == null || user instanceof JCRUser) {
-            return super.getProperty(s);
-        } else {
-            boolean isExternal = user instanceof JahiaExternalUser;
-            String property = isExternal ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
-            if (property == null && isExternal) {
-                property = user.getUserProperties().getProperty(s);
-            }
-            if (null == property) {
-                return super.getProperty(s);
-            }
-            return new JCRPropertyWrapperImpl(node, new JCRUserProperty(s, property), node.getSession(), node.getJCRProvider(),
-                    propertyDefinitionMap.get(s) != null ? propertyDefinitionMap.get(s) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
-        }
-    }
-
-    @Override
-    public boolean hasProperty(String s) throws RepositoryException {
-        if (user == null) {
-            user = lookupUser();
-        }
-        if (user == null || user instanceof JCRUser) {
-            boolean b = super.hasProperty(s);
-            return b && canGetProperty(s);
-        } else {
-            boolean isExternal = user instanceof JahiaExternalUser;
-            String property = isExternal ? ((JahiaExternalUser) user).getExternalProperties().getProperty(s) : user.getProperty(s);
-            if(property==null && isExternal) {
-                property = user.getUserProperties().getProperty(s);
-            }
-            if (property == null) {
-                // actually read the property on the corresponding JCR node
-                return super.hasProperty(s) && canGetProperty(s);
-            }
-            return null != property && canGetProperty(s);
-        }
-    }
-
-    @Override
-    @SuppressWarnings("rawtypes")
-    public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        if (user == null) {
-            user = lookupUser();
-        }
-        Set entries ;
-        if (user == null || user instanceof JCRUser) {
-            entries = super.getPropertiesAsString().entrySet();
-        } else {
-            entries = user.getProperties().entrySet();
-        }
-        Map<String, String> map = new HashMap<String, String>();
-        for (Iterator iterator = entries.iterator(); iterator.hasNext();) {
-            Map.Entry entry = (Map.Entry) iterator.next();
-            if (canGetProperty(entry.getKey().toString())) {
-                map.put(entry.getKey().toString(), entry.getValue() != null ? entry.getValue().toString() : null);
-            }
-        }
-        return map;
-    }
-
-    @Override
-    public String getPropertyAsString(String name) {
-        try {
-            if (JCRUser.J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) {
-                return super.getPropertyAsString(name);
-            }
-            if (!canGetProperty(name)) {
-                return null;
-            }
-            if (user == null) {
-                user = lookupUser();
-            }
-            if (user == null || user instanceof JCRUser) {
-                return super.getPropertyAsString(name);
-            } else {
-                String property = (user instanceof JahiaExternalUser) ? ((JahiaExternalUser) user).getExternalProperties().getProperty(
-                        name) : user.getProperty(name);
-                if (null == property) {
-                    return super.getPropertyAsString(name);
-                }
-                return property;
-            }
-        } catch (RepositoryException e) {
-            return null;
-        }
-    }
-
-    @Override
-    public JCRPropertyWrapper setProperty(String s, String value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        if (JCRUser.J_EXTERNAL.equals(s) || Constants.CHECKIN_DATE.equals(s)) {
-            return super.setProperty(s, value);
-        }
-        if (user == null) {
-            user = lookupUser();
-        }
-        if (user == null || user instanceof JCRUser) {
-            return super.setProperty(s, value);
-        } else {
-            if (user instanceof JahiaExternalUser
-                    && ((JahiaExternalUser) user).getExternalProperties().hasProperty(s)
-                    || !(user instanceof JahiaExternalUser) && user.getProperty(s) != null) {
-                throw new AccessDeniedException("Cannot update external property");
-            }
-            JCRPropertyWrapper prop = super.setProperty(s,value);
-            try {
-                user.getUserProperties().setProperty(s, value);
-            } catch (UserPropertyReadOnlyException e) {
-                logger.warn("Cannot set read-only property {} for user {}", s, user.getUserKey());
-
-            }
-            return prop;
-        }
-    }
-
     public boolean isPropertyEditable(String name) {
         try {
-            if (JCRUser.J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) {
-                return false;
-            }
-            if (!canGetProperty(name)) {
-                return false;
-            }
-            if (user == null) {
-                user = lookupUser();
-            }
-            if (user == null || user instanceof JCRUser) {
-                return true;
-            } else {
-                return user instanceof JahiaExternalUser &&
-                       !((JahiaExternalUser) user).getExternalProperties().hasProperty(name);
-            }
+            return !("j:external".equals(name) || Constants.CHECKIN_DATE.equals(name)) && canGetProperty(name);
         } catch (RepositoryException e) {
             return false;
         }
     }
 
     public boolean isRoot() {
-        if (user == null) {
-            user = lookupUser();
+        try {
+            return getIdentifier().equals(JCRUserNode.ROOT_USER_UUID);
+        } catch (RepositoryException e) {
+            return false;
         }
-        return user.isRoot();
     }
 
     private boolean canGetProperty(String s) throws RepositoryException {
@@ -330,6 +155,70 @@ public class JCRUserNode extends JCRNodeDecorator {
         for (Value value : values) {
             if (s.equals(value.getString())) {
                 return true;
+            }
+        }
+        return false;
+    }
+
+    public JahiaUser getJahiaUser() {
+        return new JahiaUser(getName(), getPath());
+    }
+
+    public boolean verifyPassword(String userPassword) {
+        try {
+            return StringUtils.isNotEmpty(userPassword) && JahiaUserManagerService.encryptPassword(userPassword).equals(getProperty(J_PASSWORD).getString());
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
+
+    public boolean setPassword(String pwd) {
+        try {
+            setProperty(J_PASSWORD, JahiaUserManagerService.encryptPassword(pwd));
+            return true;
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    public boolean isAccountLocked() {
+        return false;
+    }
+
+    public boolean isAdminMember(String siteKey) {
+        return isRoot() || isMemberOfGroup(siteKey, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+    }
+
+    public List<PasswordHistoryEntry> getPasswordHistory() {
+        return null;
+    }
+
+    public long getLastPasswordChangeTimestamp() {
+        return 0;
+    }
+
+    public boolean isMemberOfGroup(String siteKey, String name) {
+        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name)) {
+            return true;
+        }
+        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
+            return !JahiaUserManagerService.GUEST_USERNAME.equals(getName());
+        }
+        if (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) {
+            return true;
+        }
+        // Get the services registry
+        ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
+        if (servicesRegistry != null) {
+
+            // get the group management service
+            JahiaGroupManagerService groupService = servicesRegistry.getJahiaGroupManagerService();
+
+            // lookup the requested group
+            JCRGroupNode group = groupService.lookupGroup(siteKey, name);
+            if (group != null) {
+                return group.isMember(this);
             }
         }
         return false;
@@ -350,7 +239,7 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
 
         public void skip(long skipNum) {
-            for (int i=0; i<skipNum; i++) {
+            for (int i = 0; i < skipNum; i++) {
                 next();
             }
         }
@@ -394,7 +283,6 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public class UserPropertyIterator implements PropertyIterator {
         Map<String, Property> jcrProperties;
-        UserProperties externalProperties;
         private Set<String> stringPropertyNames;
         private Iterator<String> iterator;
         private int index = 0;
@@ -402,18 +290,12 @@ public class JCRUserNode extends JCRNodeDecorator {
 
         private UserPropertyIterator(JCRNodeWrapper node, PropertyIterator jcrPropertyIterator) throws RepositoryException {
             this.node = node;
-            externalProperties = user instanceof JahiaExternalUser ? ((JahiaExternalUser) user).getExternalProperties() : user.getUserProperties();
             jcrProperties = new HashMap<String, Property>();
-            while(jcrPropertyIterator.hasNext()) {
+            while (jcrPropertyIterator.hasNext()) {
                 Property prop = jcrPropertyIterator.nextProperty();
-                if (!externalProperties.hasProperty(prop.getName())) {
-                    jcrProperties.put(prop.getName(), prop);
-                }
+                jcrProperties.put(prop.getName(), prop);
             }
             stringPropertyNames = new HashSet<String>(jcrProperties.keySet());
-            for (Object key : externalProperties.getProperties().keySet()) {
-                stringPropertyNames.add(key.toString());
-            }
             iterator = stringPropertyNames.iterator();
         }
 
@@ -421,21 +303,12 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Returns the next <code>Property</code> in the iteration.
          *
          * @return the next <code>Property</code> in the iteration.
-         * @throws java.util.NoSuchElementException
-         *          if iteration has no more <code>Property</code>s.
+         * @throws java.util.NoSuchElementException if iteration has no more <code>Property</code>s.
          */
         public Property nextProperty() {
             String key = iterator.next();
             index++;
-            if (externalProperties.hasProperty(key)) {
-                String value = externalProperties.getProperty(key);
-                try {
-                    return new JCRPropertyWrapperImpl(node, new JCRUserProperty(key, value), node.getSession(), node.getJCRProvider(),
-                            propertyDefinitionMap.get(key) != null ? propertyDefinitionMap.get(key) : unstructuredPropertyDefinitions.get(PropertyType.STRING));
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            } else if (jcrProperties.containsKey(key)) {
+            if (jcrProperties.containsKey(key)) {
                 return jcrProperties.get(key);
             }
             throw new NoSuchElementException();
@@ -445,8 +318,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Skip a number of elements in the iterator.
          *
          * @param skipNum the non-negative number of elements to skip
-         * @throws java.util.NoSuchElementException
-         *          if skipped past the last element in the iterator.
+         * @throws java.util.NoSuchElementException if skipped past the last element in the iterator.
          */
         public void skip(long skipNum) {
             if (skipNum < stringPropertyNames.size()) {
@@ -503,8 +375,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Returns the next element in the iteration.
          *
          * @return the next element in the iteration.
-         * @throws java.util.NoSuchElementException
-         *          iteration has no more elements.
+         * @throws java.util.NoSuchElementException iteration has no more elements.
          */
         public Object next() {
             return nextProperty();
@@ -561,18 +432,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Implementations may differ on when this validation is performed.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(Value value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -603,18 +472,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Implementations may differ on when this validation is performed.
          *
          * @param values The new values to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified values
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified values
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(Value[] values)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -627,18 +494,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>String</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(String value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -651,18 +516,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * values are specified as a <code>String[]</code>.
          *
          * @param values The new values to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified values
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified values
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(String[] values)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -678,18 +541,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * because of an exception.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          * @deprecated As of JCR 2.0, {@link #setValue(javax.jcr.Binary)} should be used instead.
          */
         public void setValue(InputStream value)
@@ -703,18 +564,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>Binary</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          * @since JCR 2.0
          */
         public void setValue(Binary value)
@@ -728,18 +587,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>long</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(long value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -752,18 +609,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>double</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(double value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -776,18 +631,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>BigDecimal</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property or is actually a subclass of <code>BigDecimal</code>.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property or is actually a subclass of <code>BigDecimal</code>.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          * @since JCR 2.0
          */
         public void setValue(BigDecimal value)
@@ -801,18 +654,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>Calendar</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(Calendar value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -825,18 +676,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * value is specified as a <code>boolean</code>.
          *
          * @param value The new value to set the property to.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(boolean value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -851,18 +700,16 @@ public class JCRUserNode extends JCRNodeDecorator {
          * <code>ValueFormatException</code> is thrown.
          *
          * @param value The node to which this REFERENCE property will refer.
-         * @throws javax.jcr.ValueFormatException if the type or format of the specified value
-         *                                        is incompatible with the type of this property.
-         * @throws javax.jcr.version.VersionException
-         *                                        if this property belongs to a node that is versionable and checked-in
-         *                                        or is non-versionable but whose nearest versionable ancestor is checked-in and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException   if a lock prevents the setting of the value and this
-         *                                        implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                        if the change would violate a node-type or other constraint
-         *                                        and this implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.RepositoryException  if another error occurs.
+         * @throws javax.jcr.ValueFormatException                  if the type or format of the specified value
+         *                                                         is incompatible with the type of this property.
+         * @throws javax.jcr.version.VersionException              if this property belongs to a node that is versionable and checked-in
+         *                                                         or is non-versionable but whose nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the setting of the value and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if the change would violate a node-type or other constraint
+         *                                                         and this implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          */
         public void setValue(Node value)
                 throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
@@ -1107,13 +954,12 @@ public class JCRUserNode extends JCRNodeDecorator {
          * <code>ValueFormatException</code>.
          *
          * @return the referenced Node
-         * @throws javax.jcr.ValueFormatException if this property cannot be converted to a referring type (<code>REFERENCE</code>,
-         *                                        <code>WEAKREFERENCE</code> or PATH), if the property is multi-valued or if this property is a referring type
-         *                                        but is currently part of the frozen state of a version in version storage.
-         * @throws javax.jcr.ItemNotFoundException
-         *                                        If this property is of type <code>PATH</code> and no node accessible by the current <code>Session</code> exists
-         *                                        in this workspace at the specified path.
-         * @throws javax.jcr.RepositoryException  if another error occurs
+         * @throws javax.jcr.ValueFormatException  if this property cannot be converted to a referring type (<code>REFERENCE</code>,
+         *                                         <code>WEAKREFERENCE</code> or PATH), if the property is multi-valued or if this property is a referring type
+         *                                         but is currently part of the frozen state of a version in version storage.
+         * @throws javax.jcr.ItemNotFoundException If this property is of type <code>PATH</code> and no node accessible by the current <code>Session</code> exists
+         *                                         in this workspace at the specified path.
+         * @throws javax.jcr.RepositoryException   if another error occurs
          */
         public Node getNode() throws ItemNotFoundException, ValueFormatException, RepositoryException {
             throw new ValueFormatException();
@@ -1139,12 +985,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * <code>ValueFormatException</code>.
          *
          * @return the referenced property
-         * @throws javax.jcr.ValueFormatException if this property cannot be converted to a <code>PATH</code>, if the property is multi-valued or if this property is a referring type
-         *                                        but is currently part of the frozen state of a version in version storage.
-         * @throws javax.jcr.ItemNotFoundException
-         *                                        If this property is of type <code>PATH</code> and no property accessible by the current <code>Session</code> exists
-         *                                        in this workspace at the specified path.
-         * @throws javax.jcr.RepositoryException  if another error occurs
+         * @throws javax.jcr.ValueFormatException  if this property cannot be converted to a <code>PATH</code>, if the property is multi-valued or if this property is a referring type
+         *                                         but is currently part of the frozen state of a version in version storage.
+         * @throws javax.jcr.ItemNotFoundException If this property is of type <code>PATH</code> and no property accessible by the current <code>Session</code> exists
+         *                                         in this workspace at the specified path.
+         * @throws javax.jcr.RepositoryException   if another error occurs
          * @since JCR 2.0
          */
         public Property getProperty() throws ItemNotFoundException, ValueFormatException, RepositoryException {
@@ -1258,7 +1103,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * <p/>
          *
          * @return the (or a) name of this <code>Item</code> or an empty string
-         *         if this <code>Item</code> is the root node.
+         * if this <code>Item</code> is the root node.
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public String getName() throws RepositoryException {
@@ -1287,15 +1132,13 @@ public class JCRUserNode extends JCRNodeDecorator {
          * @param depth An integer, 0 &lt;= <i>depth</i> &lt;= <i>n</i> where <i>n</i> is the depth
          *              of <i>this</i> <code>Item</code>.
          * @return The ancestor of this
-         *         <code>Item</code> at the specified <code>depth</code>.
-         * @throws javax.jcr.ItemNotFoundException
-         *                                       if <i>depth</i> &lt; 0 or
-         *                                       <i>depth</i> &gt; <i>n</i> where <i>n</i> is the is the depth of
-         *                                       this item.
-         * @throws javax.jcr.AccessDeniedException
-         *                                       if the current session does not have
-         *                                       sufficient access rights to retrieve the specified node.
-         * @throws javax.jcr.RepositoryException if another error occurs.
+         * <code>Item</code> at the specified <code>depth</code>.
+         * @throws javax.jcr.ItemNotFoundException if <i>depth</i> &lt; 0 or
+         *                                         <i>depth</i> &gt; <i>n</i> where <i>n</i> is the is the depth of
+         *                                         this item.
+         * @throws javax.jcr.AccessDeniedException if the current session does not have
+         *                                         sufficient access rights to retrieve the specified node.
+         * @throws javax.jcr.RepositoryException   if another error occurs.
          */
         public Item getAncestor(int depth) throws ItemNotFoundException, AccessDeniedException, RepositoryException {
             throw new AccessDeniedException();
@@ -1305,13 +1148,11 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Returns the parent of this <code>Item</code>.
          *
          * @return The parent of this <code>Item</code>.
-         * @throws javax.jcr.ItemNotFoundException
-         *                                       if there is no parent.  This only happens
-         *                                       if this item is the root node of a workspace.
-         * @throws javax.jcr.AccessDeniedException
-         *                                       if the current session does not have
-         *                                       sufficient access rights to retrieve the parent of this item.
-         * @throws javax.jcr.RepositoryException if another error occurs.
+         * @throws javax.jcr.ItemNotFoundException if there is no parent.  This only happens
+         *                                         if this item is the root node of a workspace.
+         * @throws javax.jcr.AccessDeniedException if the current session does not have
+         *                                         sufficient access rights to retrieve the parent of this item.
+         * @throws javax.jcr.RepositoryException   if another error occurs.
          */
         public Node getParent() throws ItemNotFoundException, AccessDeniedException, RepositoryException {
             return node;
@@ -1345,7 +1186,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * <code>Session</code> object.
          *
          * @return the <code>Session</code> through which this <code>Item</code> was
-         *         acquired.
+         * acquired.
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public Session getSession() throws RepositoryException {
@@ -1359,7 +1200,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          * Returns <code>false</code> if this <code>Item</code> is a <code>Property</code>.
          *
          * @return <code>true</code> if this <code>Item</code> is a
-         *         <code>Node</code>, <code>false</code> if it is a <code>Property</code>.
+         * <code>Node</code>, <code>false</code> if it is a <code>Property</code>.
          */
         public boolean isNode() {
             return false;
@@ -1435,7 +1276,7 @@ public class JCRUserNode extends JCRNodeDecorator {
          *
          * @param otherItem the <code>Item</code> object to be tested for identity with this <code>Item</code>.
          * @return <code>true</code> if this <code>Item</code> object and <code>otherItem</code> represent the same actual repository
-         *         item; <code>false</code> otherwise.
+         * item; <code>false</code> otherwise.
          * @throws javax.jcr.RepositoryException if an error occurs.
          */
         public boolean isSame(Item otherItem) throws RepositoryException {
@@ -1508,42 +1349,36 @@ public class JCRUserNode extends JCRNodeDecorator {
          * A <code>RepositoryException</code> will be thrown if another error
          * occurs.
          *
-         * @throws javax.jcr.AccessDeniedException
-         *                                       if any of the changes to be persisted would violate
-         *                                       the access privileges of the this <code>Session</code>. Also thrown if  any of the
-         *                                       changes to be persisted would cause the removal of a node that is currently
-         *                                       referenced by a <code>REFERENCE</code> property that this Session
-         *                                       <i>does not</i> have read access to.
-         * @throws javax.jcr.ItemExistsException if any of the changes
-         *                                       to be persisted would be prevented by the presence of an already existing
-         *                                       item in the workspace.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                       if any of the changes to be persisted would
-         *                                       violate a node type or restriction. Additionally, a repository may use this
-         *                                       exception to enforce implementation- or configuration-dependent restrictions.
-         * @throws javax.jcr.InvalidItemStateException
-         *                                       if any of the
-         *                                       changes to be persisted conflicts with a change already persisted
-         *                                       through another session and the implementation is such that this
-         *                                       conflict can only be detected at <code>save</code>-time and therefore was not
-         *                                       detected earlier, at change-time.
-         * @throws javax.jcr.ReferentialIntegrityException
-         *                                       if any of the
-         *                                       changes to be persisted would cause the removal of a node that is currently
-         *                                       referenced by a <code>REFERENCE</code> property that this <code>Session</code>
-         *                                       has read access to.
-         * @throws javax.jcr.version.VersionException
-         *                                       if the <code>save</code> would make a result in
-         *                                       a change to persistent storage that would violate the read-only status of a
-         *                                       checked-in node.
-         * @throws javax.jcr.lock.LockException  if the <code>save</code> would result in a
-         *                                       change to persistent storage that would violate a lock.
-         * @throws javax.jcr.nodetype.NoSuchNodeTypeException
-         *                                       if the <code>save</code> would result in the
-         *                                       addition of a node with an unrecognized node type.
-         * @throws javax.jcr.RepositoryException if another error occurs.
+         * @throws javax.jcr.AccessDeniedException                 if any of the changes to be persisted would violate
+         *                                                         the access privileges of the this <code>Session</code>. Also thrown if  any of the
+         *                                                         changes to be persisted would cause the removal of a node that is currently
+         *                                                         referenced by a <code>REFERENCE</code> property that this Session
+         *                                                         <i>does not</i> have read access to.
+         * @throws javax.jcr.ItemExistsException                   if any of the changes
+         *                                                         to be persisted would be prevented by the presence of an already existing
+         *                                                         item in the workspace.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if any of the changes to be persisted would
+         *                                                         violate a node type or restriction. Additionally, a repository may use this
+         *                                                         exception to enforce implementation- or configuration-dependent restrictions.
+         * @throws javax.jcr.InvalidItemStateException             if any of the
+         *                                                         changes to be persisted conflicts with a change already persisted
+         *                                                         through another session and the implementation is such that this
+         *                                                         conflict can only be detected at <code>save</code>-time and therefore was not
+         *                                                         detected earlier, at change-time.
+         * @throws javax.jcr.ReferentialIntegrityException         if any of the
+         *                                                         changes to be persisted would cause the removal of a node that is currently
+         *                                                         referenced by a <code>REFERENCE</code> property that this <code>Session</code>
+         *                                                         has read access to.
+         * @throws javax.jcr.version.VersionException              if the <code>save</code> would make a result in
+         *                                                         a change to persistent storage that would violate the read-only status of a
+         *                                                         checked-in node.
+         * @throws javax.jcr.lock.LockException                    if the <code>save</code> would result in a
+         *                                                         change to persistent storage that would violate a lock.
+         * @throws javax.jcr.nodetype.NoSuchNodeTypeException      if the <code>save</code> would result in the
+         *                                                         addition of a node with an unrecognized node type.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          * @deprecated As of JCR 2.0, {@link javax.jcr.Session#save()} should
-         *             be used instead.
+         * be used instead.
          */
         public void save()
                 throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException, ReferentialIntegrityException, VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
@@ -1566,11 +1401,10 @@ public class JCRUserNode extends JCRNodeDecorator {
          * workspace item that has been removed (either by this session or another).
          *
          * @param keepChanges a boolean
-         * @throws javax.jcr.InvalidItemStateException
-         *                                       if this
-         *                                       <code>Item</code> object represents a workspace item that has been
-         *                                       removed (either by this session or another).
-         * @throws javax.jcr.RepositoryException if another error occurs.
+         * @throws javax.jcr.InvalidItemStateException if this
+         *                                             <code>Item</code> object represents a workspace item that has been
+         *                                             removed (either by this session or another).
+         * @throws javax.jcr.RepositoryException       if another error occurs.
          */
         public void refresh(boolean keepChanges) throws InvalidItemStateException, RepositoryException {
 
@@ -1612,22 +1446,19 @@ public class JCRUserNode extends JCRNodeDecorator {
          * A <code>LockException</code> will be thrown either immediately or on <code>save</code>
          * if a lock prevents the removal of this item. Implementations may differ on when this validation is performed.
          *
-         * @throws javax.jcr.version.VersionException
-         *                                       if the parent node of this item is versionable and checked-in
-         *                                       or is non-versionable but its nearest versionable ancestor is checked-in and this
-         *                                       implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.lock.LockException  if a lock prevents the removal of this item and this
-         *                                       implementation performs this validation immediately instead of waiting until <code>save</code>.
-         * @throws javax.jcr.nodetype.ConstraintViolationException
-         *                                       if removing the specified item would violate a node type or
-         *                                       implementation-specific constraint and this implementation performs this validation immediately
-         *                                       instead of waiting until <code>save</code>.
-         * @throws javax.jcr.AccessDeniedException
-         *                                       if this item or an item in its subtree is currently the target of a <code>REFERENCE</code>
-         *                                       property located in this workspace but outside this item's subtree and the current <code>Session</code>
-         *                                       <i>does not</i> have read access to that <code>REFERENCE</code> property or if the current <code>Session</code>
-         *                                       does not have sufficient privileges to remove the item.
-         * @throws javax.jcr.RepositoryException if another error occurs.
+         * @throws javax.jcr.version.VersionException              if the parent node of this item is versionable and checked-in
+         *                                                         or is non-versionable but its nearest versionable ancestor is checked-in and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.lock.LockException                    if a lock prevents the removal of this item and this
+         *                                                         implementation performs this validation immediately instead of waiting until <code>save</code>.
+         * @throws javax.jcr.nodetype.ConstraintViolationException if removing the specified item would violate a node type or
+         *                                                         implementation-specific constraint and this implementation performs this validation immediately
+         *                                                         instead of waiting until <code>save</code>.
+         * @throws javax.jcr.AccessDeniedException                 if this item or an item in its subtree is currently the target of a <code>REFERENCE</code>
+         *                                                         property located in this workspace but outside this item's subtree and the current <code>Session</code>
+         *                                                         <i>does not</i> have read access to that <code>REFERENCE</code> property or if the current <code>Session</code>
+         *                                                         does not have sufficient privileges to remove the item.
+         * @throws javax.jcr.RepositoryException                   if another error occurs.
          * @see javax.jcr.Session#removeItem(String)
          */
         public void remove()
@@ -1637,7 +1468,7 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     }
 
-    protected JahiaUser lookupUser() {
+    protected JCRUserNode lookupUser() {
         return ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .lookupUser(node.getName());
     }

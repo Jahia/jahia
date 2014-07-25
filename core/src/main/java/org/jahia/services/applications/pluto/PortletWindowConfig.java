@@ -95,7 +95,11 @@ public class PortletWindowConfig {
 
     public static String fromId(JCRPortletNode nodeWrapper) {
         try {
-            EntryPointInstance entryPointInstance = new EntryPointInstance(nodeWrapper.getUUID(), nodeWrapper.getContextName(), nodeWrapper.getDefinitionName(), nodeWrapper.getName());
+            final String contextName = nodeWrapper.getContextName();
+            if(contextName==null) {
+                return null;
+            }
+            EntryPointInstance entryPointInstance = new EntryPointInstance(nodeWrapper.getUUID(), contextName, nodeWrapper.getDefinitionName(), nodeWrapper.getName());
             return fromId(entryPointInstance);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

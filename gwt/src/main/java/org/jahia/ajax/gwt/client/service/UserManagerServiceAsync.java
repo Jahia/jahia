@@ -92,7 +92,7 @@ public interface UserManagerServiceAsync {
 
     void searchUsersInContext (String match, int offset, int limit, String context, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> async);
 
-    void searchGroups(String match, int offset, int limit, List<Integer> siteIds, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> async);
+    void searchGroups(String match, int offset, int limit, List<String> siteIds, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> async);
 
     void searchGroupsInContext (String match, int offset, int limit, String context, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> async);
 

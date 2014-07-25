@@ -71,6 +71,7 @@
  */
 package org.jahia.taglibs;
 
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.api.Constants;

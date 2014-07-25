@@ -71,25 +71,23 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Jahia service for managing and enforcing the password policy.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JahiaPasswordPolicyService extends JahiaService {
@@ -100,7 +98,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Returns an instance of this service.
-     * 
+     *
      * @return an instance of this service
      */
     public static JahiaPasswordPolicyService getInstance() {
@@ -117,22 +115,17 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Enforce the password policy for the specified user if applicable.
-     * 
-     * @param user
-     *            the current user
-     * @param username
-     *            the name of the user
-     * @param password
-     *            the new user password in clear text
-     * @param isUserInitiated
-     *            set to <code>true</code> if the change in the password is
-     *            initiated by the user and not via administration interface.
-     * @param onlyPeriodicalRules
-     *            if only to evaluate periodical rules (on login)
+     *
+     * @param user                the current user
+     * @param username            the name of the user
+     * @param password            the new user password in clear text
+     * @param isUserInitiated     set to <code>true</code> if the change in the password is
+     *                            initiated by the user and not via administration interface.
+     * @param onlyPeriodicalRules if only to evaluate periodical rules (on login)
      * @return the evaluation result
      */
-    private PolicyEnforcementResult enforcePolicy(JahiaUser user, String username, String password,
-            boolean isUserInitiated, boolean onlyPeriodicalRules) {
+    private PolicyEnforcementResult enforcePolicy(JCRUserNode user, String username, String password,
+                                                  boolean isUserInitiated, boolean onlyPeriodicalRules) {
 
         PolicyEnforcementResult evaluationResult = PolicyEnforcementResult.SUCCESS;
         if (user == null && isPolicyEnforcementEnabled() || isPolicyEnabled(user)) {
@@ -140,13 +133,14 @@ public class JahiaPasswordPolicyService extends JahiaService {
             if (policy != null) {
                 evaluationResult = PolicyEvaluator.evaluate(policy,
                         user != null ? new EvaluationContext(user, password, isUserInitiated)
-                                : new EvaluationContext(username, password), onlyPeriodicalRules);
+                                : new EvaluationContext(username, password), onlyPeriodicalRules
+                );
 
             } else {
                 logger.warn("Unable to get the default password policy. Skipping policy enforcement");
             }
         } else if (logger.isDebugEnabled()) {
-            logger.debug("Policy enforcement not enabled for user " + user.getUsername()
+            logger.debug("Policy enforcement not enabled for user " + user.getName()
                     + ". Skipping password policy enforcement.");
         }
 
@@ -156,39 +150,34 @@ public class JahiaPasswordPolicyService extends JahiaService {
     /**
      * Enforce the password policy for the specified user if applicable during
      * on user login.
-     * 
-     * @param user
-     *            the current user
+     *
+     * @param user the current user
      * @return the evaluation result
      */
-    public PolicyEnforcementResult enforcePolicyOnLogin(JahiaUser user) {
+    public PolicyEnforcementResult enforcePolicyOnLogin(JCRUserNode user) {
         return enforcePolicy(user, null, null, false, true);
     }
 
     /**
      * Enforce the password policy for the specified user if applicable during
      * the password change.
-     * 
-     * @param user
-     *            the current user
-     * @param password
-     *            the new user password in clear text
-     * @param isUserInitiated
-     *            set to <code>true</code> if the change in the password is
-     *            initiated by the user and not via administration interface.
+     *
+     * @param user            the current user
+     * @param password        the new user password in clear text
+     * @param isUserInitiated set to <code>true</code> if the change in the password is
+     *                        initiated by the user and not via administration interface.
      * @return the evaluation result
      */
-    public PolicyEnforcementResult enforcePolicyOnPasswordChange(JahiaUser user, String password,
-            boolean isUserInitiated) {
+    public PolicyEnforcementResult enforcePolicyOnPasswordChange(JCRUserNode user, String password,
+                                                                 boolean isUserInitiated) {
 
         return enforcePolicy(user, null, password, isUserInitiated, false);
     }
 
     /**
      * Enforce the password policy for the newly created user.
-     * 
-     * @param password
-     *            the new user password in clear text
+     *
+     * @param password the new user password in clear text
      * @return the evaluation result
      */
     public PolicyEnforcementResult enforcePolicyOnUserCreate(String username, String password) {
@@ -218,7 +207,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Checks, if the global password policy enforcement is enabled.
-     * 
+     *
      * @return <code>true</code>, if the password policy should be enforced
      */
     public boolean isPolicyEnforcementEnabled() {
@@ -228,13 +217,12 @@ public class JahiaPasswordPolicyService extends JahiaService {
     /**
      * Checks, if the password policy should be enforced for the specified user
      * (existing user).
-     * 
-     * @param user
-     *            the user, to perform the check for
+     *
+     * @param user the user, to perform the check for
      * @return <code>true</code>, if the password policy should be enforced for
-     *         the specified user (existing user)
+     * the specified user (existing user)
      */
-    public boolean isPolicyEnabled(JahiaUser user) {
+    public boolean isPolicyEnabled(JCRUserNode user) {
         if (user == null) {
             throw new IllegalArgumentException("The specified user is null");
         }
@@ -244,9 +232,8 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Sets the default password policy object.
-     * 
-     * @param defaultPasswordPolicy
-     *            the default password policy
+     *
+     * @param defaultPasswordPolicy the default password policy
      */
     public void setDefaultPasswordPolicy(JahiaPasswordPolicy defaultPasswordPolicy) {
         this.defaultPasswordPolicy = defaultPasswordPolicy;
@@ -254,9 +241,8 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Sets the reference to the manager service.
-     * 
-     * @param mgr
-     *            the manager service instance
+     *
+     * @param mgr the manager service instance
      */
     public void setPasswordPolicyManager(JahiaPasswordPolicyManager mgr) {
         policyMgr = mgr;
@@ -282,10 +268,9 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Persists the changes made to the password policy.
-     * 
-     * @param policy
-     *            returns the same instance of password policy with the
-     *            persisted data.
+     *
+     * @param policy returns the same instance of password policy with the
+     *               persisted data.
      */
     public void updatePolicy(JahiaPasswordPolicy policy) {
         try {
@@ -297,27 +282,18 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Method to test if the user comes from a read-only provider.
-     * 
+     *
      * @return boolean {@code true} if the user comes from a read-only provider
      */
-    public boolean isPasswordReadOnly(JahiaUser user) {
-        boolean readOnly = true;
-        JahiaUserManagerProvider provider = userMgrService.getProvider(user.getProviderName());
-        if (provider != null) {
-            readOnly = provider.isReadOnly();
-        } else {
-            logger.warn("Unable to find a provider by name '" + user.getProviderName()
-                    + "' for the user " + user);
-        }
-
-        return readOnly;
+    public boolean isPasswordReadOnly(JCRUserNode user) {
+        //Todo add check again
+        return true;
     }
 
     /**
      * Injects an instance of the {@link JahiaUserManagerService}
-     * 
-     * @param userMgrService
-     *            an instance of the {@link JahiaUserManagerService}
+     *
+     * @param userMgrService an instance of the {@link JahiaUserManagerService}
      */
     public void setUserManagerService(JahiaUserManagerService userMgrService) {
         this.userMgrService = userMgrService;
@@ -326,21 +302,19 @@ public class JahiaPasswordPolicyService extends JahiaService {
     /**
      * Returns the (encrypted) password history map, sorted by change date
      * descending, i.e. the newer passwords are at the top of the list.
-     * 
+     *
      * @return the (encrypted) password history list, sorted by change date
-     *         descending, i.e. the newer passwords are at the top of the list
+     * descending, i.e. the newer passwords are at the top of the list
      */
     public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user) {
-        List<PasswordHistoryEntry> passwordHistory = Collections.emptyList();
-        if (user instanceof JCRUser) {
-            try {
-                passwordHistory = policyMgr.getPasswordHistory(user);
-            } catch (RepositoryException e) {
-                passwordHistory = Collections.emptyList();
-                logger.error(
-                        "Error while retrieving a password history for user: " + user.getUsername(),
-                        e);
-            }
+        List<PasswordHistoryEntry> passwordHistory;
+        try {
+            passwordHistory = policyMgr.getPasswordHistory(user);
+        } catch (RepositoryException e) {
+            passwordHistory = Collections.emptyList();
+            logger.error(
+                    "Error while retrieving a password history for user: " + user.getUsername(),
+                    e);
         }
 
         return passwordHistory;
@@ -348,19 +322,15 @@ public class JahiaPasswordPolicyService extends JahiaService {
 
     /**
      * Stores the current user's password into password history.
-     * 
-     * @param user
-     *            the user to store password history for
+     *
+     * @param user the user to store password history for
      */
-    public void storePasswordHistory(final JahiaUser user) {
-        if (user instanceof JCRUser) {
-            try {
-                policyMgr.storePasswordHistory(user);
-            } catch (RepositoryException e) {
-                logger.error(
-                        "Error while storing a password history for user: " + user.getUsername(), e);
-            }
-            userMgrService.updateCache(user);
+    public void storePasswordHistory(final JCRUserNode user) {
+        try {
+            policyMgr.storePasswordHistory(user);
+        } catch (RepositoryException e) {
+            logger.error(
+                    "Error while storing a password history for user: " + user.getName(), e);
         }
     }
 

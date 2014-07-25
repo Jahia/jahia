@@ -187,7 +187,7 @@ public class ModuleHelper {
     public void deployModule(final String moduleName, final String sitePath, JCRSessionWrapper currentUserSession)
             throws GWTJahiaServiceException {
         try {
-            templateManagerService.installModule(moduleName, sitePath, currentUserSession.getUser().getUsername());
+            templateManagerService.installModule(moduleName, sitePath, currentUserSession.getUser().getName());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException("Cannot deploy module " + moduleName + ". Cause: " + e.getLocalizedMessage(), e);
@@ -289,7 +289,7 @@ public class ModuleHelper {
             return null;
         }
 
-        JCRNodeWrapper privateFolder = session.getNode(session.getUser().getLocalPath() + "/files/private");
+        JCRNodeWrapper privateFolder = session.getNode(session.getUserNode().getPath() + "/files/private");
 
         if (!privateFolder.hasNode("modules")) {
             session.checkout(privateFolder);

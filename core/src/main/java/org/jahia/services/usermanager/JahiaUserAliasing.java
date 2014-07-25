@@ -82,13 +82,14 @@ import java.util.Properties;
  * Date: 31 juil. 2008
  * Time: 10:33:07
  */
-public class JahiaUserAliasing implements JahiaUser {
+public class JahiaUserAliasing extends JahiaUser {
 
     private static final long serialVersionUID = -5602404144755780086L;
     
     private JahiaUser user;
 
     public JahiaUserAliasing(JahiaUser user) {
+        super(user.getName(),user.getLocalPath());
         this.user = user;
     }
 
@@ -108,36 +109,12 @@ public class JahiaUserAliasing implements JahiaUser {
         return user.getProperties();
     }
 
-    public UserProperties getUserProperties() {
-        return user.getUserProperties();
-    }
-
     public String getProperty(String key) {
         return user.getProperty(key);
     }
 
-    public UserProperty getUserProperty(String key) {
-        return user.getUserProperty(key);
-    }
-
-    public boolean removeProperty(String key) {
-        return user.removeProperty(key);
-    }
-
-    public boolean setProperty(String key, String value) {
-        return user.setProperty(key,value);
-    }
-
-    public boolean setPassword(String password) {
-        return user.setPassword(password);
-    }
-
-    public boolean isMemberOfGroup(int siteID, String name) {
-        return user.isMemberOfGroup(siteID,name);
-    }
-
-    public boolean isAdminMember(int siteID) {
-        return user.isAdminMember(siteID);
+    public boolean isMemberOfGroup(String siteKey, String name) {
+        return user.isMemberOfGroup(siteKey,name);
     }
 
     public boolean isRoot() {
@@ -157,7 +134,7 @@ public class JahiaUserAliasing implements JahiaUser {
     }
 
     /**
-     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * Get the path of this user in the local store. For example for LDAP user this will return the path of
      * the user in the JCR with all necessary encoding.
      *
      * @return String representation of the name of the provider of this user

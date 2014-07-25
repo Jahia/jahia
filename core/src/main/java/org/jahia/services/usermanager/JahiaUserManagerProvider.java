@@ -72,11 +72,14 @@
 package org.jahia.services.usermanager;
 
 import org.jahia.services.JahiaService;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
@@ -150,16 +153,10 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
 
     @Override
     public void afterPropertiesSet() {
-        if (userManagerService != null) {
-            userManagerService.registerProvider(this);
-        }
     }
 
     @Override
     public void destroy() throws Exception {
-        if (userManagerService != null) {
-            userManagerService.unregisterProvider(this);
-        }
     }
 
     /**
@@ -168,7 +165,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @param password User password
      */
-    public abstract JahiaUser createUser(String name, String password,
+    public abstract JCRUserNode createUser(String name, String password,
                                          Properties properties);
 
     /**
@@ -179,7 +176,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @param user reference on the user to be deleted.
      */
-    public abstract boolean deleteUser(JahiaUser user);
+    public abstract boolean deleteUser(String userPath);
 
 
     /**
@@ -211,7 +208,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @param userPassword the password of the user
      * @return boolean true if the login succeeded, false otherwise
      */
-    public abstract boolean login(String userKey, String userPassword);
+    public abstract boolean login(String userKey, String userPassword) throws RepositoryException;
 
     /**
      * Validates provided user name against a regular expression pattern,
@@ -243,7 +240,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public abstract JahiaUser lookupUserByKey(String userKey);
+    public abstract JCRUserNode lookupUserByKey(String userKey) throws RepositoryException;
 
     /**
      * Load all the user data and attributes. On success a reference on the user
@@ -251,7 +248,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public abstract JahiaUser lookupUser(String name);
+    public abstract JCRUserNode lookupUser(String name) throws RepositoryException;
 
     /**
      * Find users according to a table of name=value properties. If the left
@@ -264,16 +261,7 @@ public abstract class JahiaUserManagerProvider extends JahiaService implements I
      * @return Set a set of JahiaUser elements that correspond to those
      * search criterias
      */
-    public abstract Set<JahiaUser> searchUsers(Properties searchCriterias);
-
-    /**
-     * This method indicates that any internal cache for a provider should be
-     * updated because the value has changed and needs to be transmitted to the
-     * other nodes in a clustering environment.
-     *
-     * @param jahiaUser JahiaUser the group to be updated in the cache.
-     */
-    public abstract void updateCache(JahiaUser jahiaUser);
+    public abstract Set<JCRUserNode> searchUsers(Properties searchCriterias);
 
     /**
      * This function checks into the system if the username has already been

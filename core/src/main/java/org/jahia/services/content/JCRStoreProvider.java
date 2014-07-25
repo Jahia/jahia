@@ -93,9 +93,7 @@ import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.LuceneUtils;
@@ -717,7 +715,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     credentials = JahiaLoginModule.getCredentials(guestUser);
                 }
             } else if ("storedPasswords".equals(authenticationType)) {
-                JahiaUser user = userManagerService.lookupUser(username);
+                JahiaUser user = userManagerService.lookupUser(username).getJahiaUser();
                 if (user.getProperty("storedUsername_" + getKey()) != null) {
                     username = user.getProperty("storedUsername_" + getKey());
                 }
@@ -877,8 +875,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                                     }
                                 }
 
-                                userNode.setProperty(JCRUser.J_EXTERNAL, true);
-                                userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());
+                                /*userNode.setProperty(JCRUser.J_EXTERNAL, true);
+                                userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());*/
                                 ValueFactory valueFactory = session.getValueFactory();
                                 List<Value> properties = new ArrayList<Value>();
                                 for (Object o : jahiaUser.getProperties().keySet()) {
@@ -913,10 +911,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      */
     public void deployExternalGroup(JahiaGroup group) {
         Properties properties = new Properties();
-        properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
-        properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());
+        /*properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
+        properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());*/
         JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
-        if (groupManager.lookupExternalGroup(group.getName()) == null) {
+        try {
+            groupManager.lookupExternalGroup(group.getName());
+        } catch (RepositoryException e) {
             groupManagerService.createGroup(null, group.getName(), properties, true);
         }
     }

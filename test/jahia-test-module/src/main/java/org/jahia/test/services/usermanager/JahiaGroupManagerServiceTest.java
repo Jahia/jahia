@@ -72,7 +72,10 @@
 package org.jahia.test.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -97,8 +100,8 @@ public class JahiaGroupManagerServiceTest {
     private static JahiaUserManagerService userManager;
     private static JahiaGroupManagerService groupManager;
 
-    private static JahiaUser user1;
-    private static JahiaUser user2;
+    private static JCRUserNode user1;
+    private static JCRUserNode user2;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -114,8 +117,8 @@ public class JahiaGroupManagerServiceTest {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        userManager.deleteUser(user1);
-        userManager.deleteUser(user2);
+        userManager.deleteUser(user1.getPath());
+        userManager.deleteUser(user2.getPath());
     }
 
 
@@ -126,32 +129,32 @@ public class JahiaGroupManagerServiceTest {
     @After
     public void tearDown() throws Exception {
         JCRSessionFactory.getInstance().closeAllSessions();
-        JahiaGroup group = groupManager.lookupGroup(0, "test-group1");
+        JCRGroupNode group = groupManager.lookupGroup(null, "test-group1");
         if (group != null) {
-            groupManager.deleteGroup(group);
+            groupManager.deleteGroup(group.getPath());
         }
 
-        group = groupManager.lookupGroup(0, "test-group2");
+        group = groupManager.lookupGroup(null, "test-group2");
         if (group != null) {
-            groupManager.deleteGroup(group);
+            groupManager.deleteGroup(group.getPath());
         }
 
-        group = groupManager.lookupGroup(0, "test-user1");
+        group = groupManager.lookupGroup(null, "test-user1");
         if (group != null) {
-            groupManager.deleteGroup(group);
+            groupManager.deleteGroup(group.getPath());
         }
     }
 
     @Test
     public void testGroupDelete() {
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
+        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
         group2.addMember(user2);
         group2.addMember(group1);
 
-        groupManager.deleteGroup(group2);
-        groupManager.deleteGroup(group1);
+        groupManager.deleteGroup(group2.getPath());
+        groupManager.deleteGroup(group1.getPath());
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
@@ -164,45 +167,45 @@ public class JahiaGroupManagerServiceTest {
     @Test
     public void testGroupMembership() {
 
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup group2 = groupManager.createGroup(0, "test-group2", new Properties(), false);
+        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
         group2.addMember(user2);
         group2.addMember(group1);
 
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
-                user1.isMemberOfGroup(0, "test-group2"));
-        List<String> user1GroupMembership = groupManager.getUserMembership(user1);
+                user1.isMemberOfGroup(null, "test-group2"));
+        List<String> user1GroupMembership = groupManager.getUserMembership(user1.getPath());
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
                 user1GroupMembership.contains("test-group2:0"));
 
         group1.removeMember(user1);
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
-                user1.isMemberOfGroup(0, "test-group2"));
-        user1GroupMembership = groupManager.getUserMembership(user1);
+                user1.isMemberOfGroup(null, "test-group2"));
+        user1GroupMembership = groupManager.getUserMembership(user1.getPath());
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
                 user1GroupMembership.contains("test-group2:0"));
 
-        groupManager.deleteGroup(group2);
-        groupManager.deleteGroup(group1);
+        groupManager.deleteGroup(group2.getPath());
+        groupManager.deleteGroup(group1.getPath());
 
     }
 
     @Test
     public void testSameNameUserAndGroup() {
 
-        JahiaGroup group1 = groupManager.createGroup(0, "test-group1", new Properties(), false);
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
         group1.addMember(user1);
-        JahiaGroup user1Group = groupManager.createGroup(0, "test-user1", new Properties(), false);
+        JCRGroupNode user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false);
         group1.addMember(user1Group);
 
         group1 = groupManager.lookupGroup("test-group1:0");
-        Collection<Principal> members = group1.getMembers();
+        Collection<JCRNodeWrapper> members = group1.getMembers();
 
         assertTrue("Test group 1 should contain user called 'test-user1'", members.contains(user1));
         assertTrue("Test group 1 should contain group called 'test-user1'", members.contains(user1Group));
 
-        groupManager.deleteGroup(user1Group);
-        groupManager.deleteGroup(group1);
+        groupManager.deleteGroup(user1Group.getPath());
+        groupManager.deleteGroup(group1.getPath());
     }
 }

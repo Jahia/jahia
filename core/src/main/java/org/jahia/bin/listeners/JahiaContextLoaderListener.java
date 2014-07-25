@@ -338,7 +338,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private void initJahiaAfterInitializationServices() throws JahiaInitializationException {
         try {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
 
             // initializing core services
             for (JahiaAfterInitializationService service : SpringContextSingleton.getInstance().getContext()

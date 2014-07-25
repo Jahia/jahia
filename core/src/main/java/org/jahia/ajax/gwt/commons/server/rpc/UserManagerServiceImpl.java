@@ -73,7 +73,11 @@ package org.jahia.ajax.gwt.commons.server.rpc;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
@@ -86,7 +90,7 @@ import org.jahia.services.usermanager.*;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 
-import java.security.Principal;
+import javax.jcr.PropertyIterator;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -135,22 +139,22 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
             Properties criterias = new Properties();
             criterias.setProperty("*", match);
 
-            Set<Principal> users;
+            Set<JCRUserNode> users;
             List<GWTJahiaUser> result = new ArrayList<GWTJahiaUser>();
             users = userManagerService.searchUsers(criterias);
             if (users != null) {
                 Iterator<?> iterator = users.iterator();
-                JahiaUser user;
+                JCRUserNode user;
                 GWTJahiaUser data;
                 while (iterator.hasNext()) {
-                    user = (JahiaUser) iterator.next();
+                    user = (JCRUserNode) iterator.next();
                     String userName = PrincipalViewHelper.getDisplayName(user, getUILocale());
-                    data = new GWTJahiaUser(user.getUsername(), user.getUserKey(), userName);
-                    Properties p = user.getProperties();
-                    for (Object o : p.keySet()) {
-                        data.set((String) o, p.get(o));
+                    data = new GWTJahiaUser(user.getName(), user.getPath(), userName);
+                    PropertyIterator p = user.getProperties();
+                    while(p.hasNext()){
+                        javax.jcr.Property property = p.nextProperty();
+                        data.set(property.getName(),property.getValue().getString());
                     }
-                    data.setProvider(user.getProviderName());
                     result.add(data);
                 }
             }
@@ -172,43 +176,34 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
         return null;
     }
 
-    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds) {
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<String> siteIds) {
         try {
-            List<Integer> sites = siteIds;
+            List<String> sites = siteIds;
             if (sites == null || sites.size() == 0) {
-                sites = new ArrayList<Integer>();
-                sites.add(getSite().getID());
+                sites = new ArrayList<String>();
+                sites.add(getSite().getSiteKey());
             }
 
             List<GWTJahiaGroup> result = new ArrayList<GWTJahiaGroup>();
-            Set<JahiaGroup> groups = new HashSet<JahiaGroup>();
+            Set<JCRGroupNode> groups = new HashSet<JCRGroupNode>();
 
-            for (Integer siteId : sites) {
+            for (String siteId : sites) {
                 Properties criterias = new Properties();
                 criterias.setProperty("groupname", match);
-                Set<JahiaGroup> siteGroups = groupManagerService.searchGroups(siteId, criterias);
+                Set<JCRGroupNode> siteGroups = groupManagerService.searchGroups(siteId, criterias);
                 if (siteGroups != null) {
                     groups.addAll(siteGroups);
                 }
             }
             
             GWTJahiaGroup data;
-            Map<Integer, JahiaSite> siteMap = new HashMap<Integer, JahiaSite>(sites.size());
-            for (JahiaGroup group : groups) {
+            for (JCRGroupNode group : groups) {
                 if (group.isHidden()) {
                     continue;
                 }
-                data = new GWTJahiaGroup(group.getGroupname(), group.getGroupKey(), PrincipalViewHelper.getDisplayName(group, getUILocale()));
-                Integer siteId = group.getSiteID();
-                if (siteId > 0) {
-                    JahiaSite jahiaSite = siteMap.containsKey(siteId) ? siteMap.get(siteId) : sitesService
-                            .getSite(siteId);
-                    if (jahiaSite != null) {
-                        data.setSiteName(jahiaSite.getTitle());
-                    }
-                }
-                data.setSiteId(siteId);
-                data.setProvider(group.getProviderName());
+                data = new GWTJahiaGroup(group.getName(), group.getPath(), PrincipalViewHelper.getDisplayName(group, getUILocale()));
+
+                        data.setSiteName(group.getResolveSite().getTitle());
                 result.add(data);
             }
             
@@ -234,7 +229,7 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
 
     public String[] getFormattedPrincipal(String userkey, char type, String[] textpattern) {
         PrincipalViewHelper pvh = new PrincipalViewHelper(textpattern);
-        Principal p;
+        JCRNodeWrapper p;
 
         if (type == 'u') {
             p = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userkey);
@@ -277,20 +272,20 @@ public class UserManagerServiceImpl extends JahiaRemoteService implements UserMa
 
     public BasePagingLoadResult<GWTJahiaGroup> searchGroupsInContext(String match, int offset, int limit, String context) {
         if (context != null) {
-            List<Integer> list = new ArrayList<Integer>();;
+            List<String> list = new ArrayList<String>();;
 
-            list.add(0);
+            list.add("");
             if (context.equals("currentSite")) {
                 JCRSiteNode site = getSite();
                 if (site != null) {
-                    list.add(site.getID());
+                    list.add(site.getSiteKey());
                 }
             } else if (context.startsWith("site:")) {
                 String sitekey = context.substring(5);
                 try {
                     JahiaSite site = sitesService.getSiteByKey(sitekey);
                     if (site != null ) {
-                        list.add(site.getID());
+                        list.add(site.getSiteKey());
                     }
                 } catch (JahiaException e) {
                     logger.error(e.getMessage(), e);

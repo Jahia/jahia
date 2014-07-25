@@ -90,7 +90,7 @@ public class SearchCriteria implements Serializable {
 
     private String searchString;
 
-    private int siteId;
+    private String siteKey;
 
     private String storedOn;
 
@@ -98,9 +98,9 @@ public class SearchCriteria implements Serializable {
         super();
     }
 
-    public SearchCriteria(int siteId) {
+    public SearchCriteria(String siteKey) {
         this();
-        this.siteId = siteId;
+        this.siteKey = siteKey;
     }
 
     public String[] getProperties() {
@@ -119,8 +119,8 @@ public class SearchCriteria implements Serializable {
         return searchString;
     }
 
-    public int getSiteId() {
-        return siteId;
+    public String getSiteKey() {
+        return siteKey;
     }
 
     public String getStoredOn() {
@@ -143,8 +143,8 @@ public class SearchCriteria implements Serializable {
         this.searchString = searchString;
     }
 
-    public void setSiteId(int siteId) {
-        this.siteId = siteId;
+    public void setSiteKey(String siteKey) {
+        this.siteKey = siteKey;
     }
 
     public void setStoredOn(String storedOn) {

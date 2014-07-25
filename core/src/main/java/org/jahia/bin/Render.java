@@ -86,6 +86,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -268,8 +269,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
     }
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
-        RenderContext context = new RenderContext(req, resp, user);
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
+        RenderContext context = new RenderContext(req, resp, user.getJahiaUser());
         context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, req.getPathInfo().indexOf("/", 1)));
         return context;
     }
@@ -755,14 +756,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
 
             RenderContext renderContext =
-                    createRenderContext(req, resp, jcrSessionFactory.getCurrentUser());
+                    createRenderContext(req, resp, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jcrSessionFactory.getCurrentUser().getName()));
             renderContext.setWorkspace(urlResolver.getWorkspace());
 
             urlResolver.setRenderContext(renderContext);
             req.getSession().setAttribute(Constants.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
             if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
-                jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)));
+                jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)).getJahiaUser());
             }
 
             // check permission

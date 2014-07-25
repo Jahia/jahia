@@ -73,12 +73,15 @@ package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Element;
 import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
@@ -92,9 +95,7 @@ import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaAdminUser;
@@ -164,7 +165,7 @@ public class CacheFilterTest extends JahiaTestCase {
     @Test
     public void testCacheFilter() throws Exception {
 
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+        JahiaUser admin = JahiaAdminUser.getAdminUser(null);
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
@@ -210,7 +211,7 @@ public class CacheFilterTest extends JahiaTestCase {
         assertNotNull("Html Cache does not contains our html rendering", element);
         assertTrue("Content Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result));
     }
-    
+
     @Test
     public void testFixForEmptyCacheBug() throws Exception {
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
@@ -281,7 +282,7 @@ public class CacheFilterTest extends JahiaTestCase {
     
     @Test
     public void testDependencies() throws Exception {
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+        JahiaUser admin = JahiaAdminUser.getAdminUser(null);
 
         RenderFilter outFilter = new AbstractFilter() {
             @Override
@@ -352,14 +353,14 @@ public class CacheFilterTest extends JahiaTestCase {
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+TESTSITE_NAME);
         // Create three users
         final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-        final JCRUser userAB = userManagerProvider.createUser("userAB", "password", new Properties());
-        final JCRUser userAC = userManagerProvider.createUser("userAC", "password", new Properties());
-        final JCRUser userBC = userManagerProvider.createUser("userBC", "password", new Properties());
+        final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties());
+        final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties());
+        final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties());
         // Create three groups
         final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
-        final JCRGroup groupA = groupManagerProvider.createGroup(site.getID(), "groupA", new Properties(), false);
-        final JCRGroup groupB = groupManagerProvider.createGroup(site.getID(), "groupB", new Properties(), false);
-        final JCRGroup groupC = groupManagerProvider.createGroup(site.getID(), "groupC", new Properties(), false);
+        final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false);
+        final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false);
+        final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false);
         // Associate each user to two group
         groupA.addMember(userAB);
         groupA.addMember(userAC);
@@ -385,11 +386,11 @@ public class CacheFilterTest extends JahiaTestCase {
         contentC.setProperty("body","Content__C__");
         // Set acls for each content
         contentA.setAclInheritanceBreak(true);
-        contentA.grantRoles("g:" + groupA.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        contentA.grantRoles("g:" + groupA.getName(), new LinkedHashSet<String>(Arrays.asList("reader")));
         contentB.setAclInheritanceBreak(true);
-        contentB.grantRoles("g:" + groupB.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        contentB.grantRoles("g:" + groupB.getName(), new LinkedHashSet<String>(Arrays.asList("reader")));
         contentC.setAclInheritanceBreak(true);
-        contentC.grantRoles("g:" + groupC.getGroupname(), new LinkedHashSet<String>(Arrays.asList("reader")));
+        contentC.grantRoles("g:" + groupC.getName(), new LinkedHashSet<String>(Arrays.asList("reader")));
         session.save();
 
         // Publish all

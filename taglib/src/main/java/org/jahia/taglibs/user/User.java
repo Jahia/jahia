@@ -76,6 +76,7 @@ import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
@@ -100,7 +101,7 @@ public class User {
     public static Boolean memberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            final int siteID = retrieveSiteId(renderContext);
+            final String siteID = retrieveSiteId(renderContext);
             final String[] groupArray = StringUtils.split(groups, ',');
             for (String aGroupArray : groupArray) {
                 final String groupName = aGroupArray.trim();
@@ -115,7 +116,7 @@ public class User {
     public static Boolean notMemberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            final int siteID = retrieveSiteId(renderContext);
+            final String siteID = retrieveSiteId(renderContext);
             final String[] groupArray = StringUtils.split(groups, ',');
             for (String aGroupArray : groupArray) {
                 String groupName = aGroupArray.trim();
@@ -127,14 +128,14 @@ public class User {
         return true;
     }
     
-    public static Collection<Principal> getMembers(String group, RenderContext renderContext) {
+    public static Collection<JCRNodeWrapper> getMembers(String group, RenderContext renderContext) {
         return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group).getMembers();
     }
 
-    private static int retrieveSiteId(RenderContext renderContext) {
-        int siteId = 0;
+    private static String retrieveSiteId(RenderContext renderContext) {
+        String siteId = null;
         if (renderContext != null && renderContext.getSite() != null) {
-            siteId = renderContext.getSite().getID();
+            siteId = renderContext.getSite().getSiteKey();
         }
         return siteId;
     }
@@ -146,7 +147,7 @@ public class User {
      * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
      * @throws IllegalArgumentException in case the specified user key is <code>null</code>
      */
-    public static JahiaUser lookupUser(String user) throws IllegalArgumentException {
+    public static JCRUserNode lookupUser(String user) throws IllegalArgumentException {
         if (user == null) {
             throw new IllegalArgumentException("Specified user key is null");
         }
@@ -155,23 +156,22 @@ public class User {
                 .getJahiaUserManagerService().lookupUser(user);
     }
 
-    public static Map<String, JahiaGroup> getUserMembership(String username) {
-        Map<String, JahiaGroup> map = new LinkedHashMap<String, JahiaGroup>();
-        final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+    public static Map<String, JCRGroupNode> getUserMembership(String username) {
+        Map<String, JCRGroupNode> map = new LinkedHashMap<String, JCRGroupNode>();
+        final JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getUserMembership(
-                jahiaUser);
+        final List<String> userMembership = managerService.getUserMembership(jahiaUser.getPath());
         for (String groupName : userMembership) {
             if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
-                final JahiaGroup group = managerService.lookupGroup(groupName);
+                final JCRGroupNode group = managerService.lookupGroup(groupName);
                 map.put(groupName,group);
             }
         }
         return map;
     }
 
-    public static Map<String, JahiaGroup> getUserMembership(JCRNodeWrapper user) {
+    public static Map<String, JCRGroupNode> getUserMembership(JCRNodeWrapper user) {
         return getUserMembership(user.getName());
     }
 
@@ -208,9 +208,9 @@ public class User {
                         // that group
                         if (candidate.startsWith("g:")) {
                             final String groupName = candidate.substring(2);
-                            JahiaGroup candidateGroup = managerService.lookupGroup(groupName);
+                            JCRGroupNode candidateGroup = managerService.lookupGroup(groupName);
                             if (candidateGroup != null) {
-                                if (candidateGroup.isMember(user)) {
+                                if (candidateGroup.isMember(user.getLocalPath())) {
                                     return true;
                                 }
                             } else {
@@ -254,7 +254,7 @@ public class User {
         return name.toString();
     }
 
-    public static Set<JahiaUser> searchUsers(Map<String, String> criterias) {
+    public static Set<JCRUserNode> searchUsers(Map<String, String> criterias) {
         Properties searchCriterias = new Properties();
         if (criterias == null || criterias.isEmpty()) {
             searchCriterias.setProperty("*", "*");
@@ -265,11 +265,9 @@ public class User {
         }
 
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        List<? extends JahiaUserManagerProvider> providerList = userManagerService.getProviderList();
-        Set<JahiaUser> searchResults = new HashSet<JahiaUser>();
-        for (JahiaUserManagerProvider provider : providerList) {
-            searchResults.addAll(provider.searchUsers(searchCriterias));
-        }
+
+        Set<JCRUserNode> searchResults = new HashSet<JCRUserNode>();
+        searchResults.addAll(userManagerService.searchUsers(searchCriterias));
         return searchResults;
     }
 
@@ -277,24 +275,15 @@ public class User {
         return userNode.isPropertyEditable(name);
     }
 
-    public static String formatUserValueOption(Principal principal) {
+    public static String formatUserValueOption(JCRNodeWrapper principal) {
         return new PrincipalViewHelper(new String[]{"Name,30","Properties,30"}).getPrincipalValueOption(principal);
     }
 
-    public static String formatUserTextOption(Principal principal,String fieldsToDisplay) {
+    public static String formatUserTextOption(JCRNodeWrapper principal,String fieldsToDisplay) {
         return new PrincipalViewHelper(fieldsToDisplay.split(";")).getPrincipalTextOption(principal);
     }
     
     public static Boolean isReadOnlyProvider(Principal p) {
-        boolean readOnly = false;
-        if (p instanceof JahiaGroup) {
-            readOnly = JahiaGroupManagerRoutingService.getInstance().getProvider(((JahiaGroup) p).getProviderName())
-                    .isReadOnly();
-        } else if (p instanceof JahiaUser) {
-            readOnly = JahiaUserManagerRoutingService.getInstance().getProvider(((JahiaUser) p).getProviderName())
-                    .isReadOnly();
-        }
-
-        return readOnly;
+        return false;
     }
 }

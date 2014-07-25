@@ -75,6 +75,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.internal.task.api.UserGroupCallback;
 
+import javax.jcr.RepositoryException;
+import java.util.Collections;
 import java.util.List;
 
 public class JahiaUserGroupCallback implements UserGroupCallback {
@@ -92,16 +94,16 @@ public class JahiaUserGroupCallback implements UserGroupCallback {
 
     @Override
     public boolean existsUser(String userId) {
-        return userService.lookupUserByKey(userId) != null;
+        return userService.userExists(userId);
     }
 
     @Override
     public boolean existsGroup(String groupId) {
-        return groupService.lookupGroup(groupId) != null;
+        return groupService.groupExists(groupId);
     }
 
     @Override
     public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
-        return groupService.getUserMembership(userService.lookupUserByKey(userId));
+        return groupService.getUserMembership(userId);
     }
 }

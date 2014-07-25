@@ -148,9 +148,13 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
         PortalURL portalURL = portalEnv.getRequestedPortalURL();
         
         // Create the portlet window to render.
-        PortletWindow window = new PortletWindowImpl(null,windowConfig, portalURL);
+        try {
+            PortletWindow window = new PortletWindowImpl(null,windowConfig, portalURL);
 
-        return window;
+            return window;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -173,7 +177,7 @@ public class ApplicationsManagerPlutoProvider implements ApplicationsManagerProv
                 result.add(portletEntryPointDefinition);
             }
         } catch (PortletContainerException e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
         }
 
         return result;

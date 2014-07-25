@@ -75,6 +75,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -309,10 +310,10 @@ public class AclListener extends DefaultEventListener {
 
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
-                final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        Principal p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
                         if (priv.isMember(p)) {
                             continue;
@@ -325,10 +326,10 @@ public class AclListener extends DefaultEventListener {
 
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
-                final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        Principal p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
                         if (!priv.isMember(p)) {
                             continue;
@@ -426,8 +427,8 @@ public class AclListener extends DefaultEventListener {
         return null;
     }
 
-    private Principal getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
-        Principal p = null;
+    private JCRNodeWrapper getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
+        JCRNodeWrapper p = null;
         if (principal.startsWith("u:")) {
             p = userService.lookupUser(principal.substring(2));
         } else if (principal.length() > 2) {

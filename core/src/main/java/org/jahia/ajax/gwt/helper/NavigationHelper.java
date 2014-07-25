@@ -441,7 +441,7 @@ public class NavigationHelper {
                 });
             }
             if (path.contains("$user")) {
-                path = path.replace("$user", currentUserSession.getUser().getLocalPath());
+                path = path.replace("$user", currentUserSession.getUserNode().getPath());
                 displayName = Messages.getInternal("label.personalFolder", uiLocale, "label.personalFolder");
             }
             if (path.startsWith("/")) {

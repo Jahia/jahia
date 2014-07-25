@@ -137,18 +137,18 @@ public class TasksForNodeTag extends AbstractJahiaTag {
             }
             if(logger.isDebugEnabled()){
                 if(tasks.isEmpty()){
-                    logger.debug("Could not find any tasks for user "+getUser().getUsername()+" on node : " +node.getPath());
+                    logger.debug("Could not find any tasks for user "+getUser().getName()+" on node : " +node.getPath());
                 } else {
-                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getUsername()+" on node : " +node.getPath());
+                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getName()+" on node : " +node.getPath());
                 }
             }
         } else if (user != null) {
             tasks = WorkflowService.getInstance().getTasksForUser(user, locale != null ? locale : getUILocale());
             if(logger.isDebugEnabled()){
                 if(tasks.isEmpty()){
-                    logger.debug("Could not find any tasks for user "+getUser().getUsername());
+                    logger.debug("Could not find any tasks for user "+getUser().getName());
                 } else {
-                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getUsername());
+                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getName());
                 }
             }
         }

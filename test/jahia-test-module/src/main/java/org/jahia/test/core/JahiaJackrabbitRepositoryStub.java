@@ -78,6 +78,8 @@ import org.apache.jackrabbit.test.RepositoryStub;
 import org.apache.jackrabbit.test.RepositoryStubException;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -188,11 +190,11 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
     }
 
     private void prepareTestContent(Session session) throws RepositoryException, IOException, org.jahia.services.content.nodetypes.ParseException {
-        JahiaUser readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
+        JCRUserNode readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
             readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
-            ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readonly.getUserID(), Collections.singleton("privileged"));
-            JahiaGroup usersGroup = JCRGroupManagerProvider.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
+            ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readOnlyUser.getPath(), Collections.singleton("privileged"));
+            JCRGroupNode usersGroup = JCRGroupManagerProvider.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
             usersGroup.addMember(readOnlyUser);
         }
         

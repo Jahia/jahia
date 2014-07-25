@@ -109,7 +109,9 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
@@ -118,9 +120,7 @@ import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -556,7 +556,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void storePasswordForProvider(String providerKey, String username, String password) {
-        contentHub.storePasswordForProvider(getUser(), providerKey, username, password);
+        contentHub.storePasswordForProvider(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(getUser().getLocalPath()), providerKey, username, password);
     }
 
     public Map<String, String> getStoredPasswordsProviders() {
@@ -2545,19 +2545,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         for (String key : userKeys) {
-            final JahiaUser principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(key);
-            try {
-                JCRUser jcrUser;
-                if (principal instanceof JCRUser) {
-                    jcrUser = (JCRUser) principal;
-                } else {
-                    JCRTemplate.getInstance().getProvider("/").deployExternalUser(principal);
-                    jcrUser = JCRUserManagerProvider.getInstance().lookupExternalUser(principal);
-                }
-                nodes.add(navigation.getGWTJahiaNode(jcrUser.getNode(retrieveCurrentSession()), GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException("Cannot get user node " + principal, e);
-            }
+            final JCRUserNode principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(key);
+            nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
         }
         return nodes;
     }
@@ -2565,19 +2554,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         for (String key : groupKeys) {
-            final JahiaGroup principal = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(key);
-            try {
-                JCRGroup jcrGroup;
-                if (principal instanceof JCRGroup) {
-                    jcrGroup = (JCRGroup) principal;
-                } else {
-                    JCRTemplate.getInstance().getProvider("/").deployExternalGroup(principal);
-                    jcrGroup = JCRGroupManagerProvider.getInstance().lookupExternalGroup(principal.getName());
-                }
-                nodes.add(navigation.getGWTJahiaNode(jcrGroup.getNode(retrieveCurrentSession()), GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException("Cannot get user node " + principal, e);
-            }
+            final JCRGroupNode principal = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(key);
+            nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
         }
         return nodes;
     }

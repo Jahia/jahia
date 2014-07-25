@@ -86,7 +86,9 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -625,7 +627,7 @@ public class Service extends JahiaService {
 
         boolean resetUser = false;
         if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
             resetUser = true;
         }
 
@@ -677,7 +679,7 @@ public class Service extends JahiaService {
     }
 
     public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
-        JahiaUser user = userManagerService.lookupUser(username);
+        JCRUserNode user = userManagerService.lookupUser(username);
         if (user != null) {
             passwordPolicyService.storePasswordHistory(user);
         } else {
@@ -761,7 +763,7 @@ public class Service extends JahiaService {
     }
 
     public void flushGroupCaches() {
-        groupManagerService.flushCache();
+        //groupManagerService.flushCache();
     }
 
     public void flushGroupCaches(NodeFact node) {
@@ -771,10 +773,8 @@ public class Service extends JahiaService {
                 n = n.getParent();
             }
             if (n != null && n.getResolveSite() != null) {
-                final JahiaGroup jahiaGroup = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
-                if (jahiaGroup != null) {
-                    groupManagerService.updateCache(jahiaGroup);
-                }
+                final JCRGroupNode groupNode = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
+                    //groupManagerService.updateCache(jahiaGroup);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -862,7 +862,7 @@ public class Service extends JahiaService {
 
             boolean resetUser = false;
             if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
                 resetUser = true;
             }
 

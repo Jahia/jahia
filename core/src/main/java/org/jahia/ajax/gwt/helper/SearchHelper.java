@@ -232,9 +232,9 @@ public class SearchHelper {
         List<GWTJahiaNode> result = new ArrayList<GWTJahiaNode>();
         JCRNodeWrapper user;
         try {
-            user = jcrService.getUserFolder(currentUserSession.getUser());
+            user = currentUserSession.getUserNode();
         } catch (Exception e) {
-            logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
+            logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getName());
             return result;
         }
         try {
@@ -266,9 +266,9 @@ public class SearchHelper {
             Query q = createQuery(searchString, currentUserSession);
             JCRNodeWrapper user;
             try {
-                user = jcrService.getUserFolder(currentUserSession.getUser());
+                user = currentUserSession.getUserNode();
             } catch (Exception e) {
-                logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getUsername());
+                logger.error("no user folder for site " + site.getSiteKey() + " and user " + currentUserSession.getUser().getName());
                 throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.no.user.folder.to.store.query",uiLocale));
             }
 
@@ -316,7 +316,7 @@ public class SearchHelper {
 
             JCRNodeWrapper parent = null;
             if (path == null) {
-                parent = jcrService.getUserFolder(session.getUser());
+                parent = session.getUserNode();
             } else {
                 parent = session.getNode(path);
             }

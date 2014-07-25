@@ -73,14 +73,15 @@ package org.jahia.services.usermanager.jcr;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerProvider;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -111,19 +112,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
     private static final String ROOT_PWD_RESET_FILE_PATH = "/WEB-INF/etc/config/" + ROOT_PWD_RESET_FILE;
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRUserManagerProvider.class);
     private transient JCRTemplate jcrTemplate;
+    private transient JCRSessionFactory jcrSessionFactory;
     private static JCRUserManagerProvider mUserManagerService;
-    private transient CacheService cacheService;
-    private transient Cache<String, JCRUser> cache;
-    private static transient Map<String, String> mappingOfProperties;
     private ServletContext servletContext;
 
-    static {
-        mappingOfProperties = new HashMap<String, String>(3);
-        mappingOfProperties.put("lastname", "j:lastName");
-        mappingOfProperties.put("firstname", "j:firstName");
-        mappingOfProperties.put("organization", "j:organization");
-        mappingOfProperties.put("email", "j:email");
-    }
 
     /**
      * Create an new instance of the User Manager Service if the instance do not
@@ -142,8 +134,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         this.jcrTemplate = jcrTemplate;
     }
 
-    public void setCacheService(CacheService cacheService) {
-        this.cacheService = cacheService;
+    public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
+        this.jcrSessionFactory = jcrSessionFactory;
     }
 
     /**
@@ -154,10 +146,10 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @param password   User password
      * @param properties user properties
      */
-    public JCRUser createUser(final String name, final String password, final Properties properties) {
+    public JCRUserNode createUser(final String name, final String password, final Properties properties) {
         try {
-            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUser>() {
-                public JCRUser doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
+            return jcrTemplate.doExecuteWithSystemSession(new JCRCallback<JCRUserNode>() {
+                public JCRUserNode doInJCR(JCRSessionWrapper jcrSessionWrapper) throws RepositoryException {
                     String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(
                             ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
                                     name), "/"
@@ -195,17 +187,14 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                                         l_password = password.substring(6);
                                     }
 
-                                    userNode.setProperty(JCRUser.J_PASSWORD, l_password);
-                                    userNode.setProperty(JCRUser.J_EXTERNAL, false);
+                                    userNode.setProperty(JCRUserNode.J_PASSWORD, l_password);
+                                    userNode.setProperty(JCRUserNode.J_EXTERNAL, false);
                                     for (Map.Entry<Object, Object> entry : properties.entrySet()) {
                                         String key = (String) entry.getKey();
-                                        if (mappingOfProperties.containsKey(key)) {
-                                            key = mappingOfProperties.get(key);
-                                        }
                                         userNode.setProperty(key, (String) entry.getValue());
                                     }
                                     jcrSessionWrapper.save();
-                                    return new JCRUser(userNode.getIdentifier());
+                                    return (JCRUserNode) userNode;
                                 } else {
                                     // Simply create a folder
                                     startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
@@ -216,7 +205,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                             }
                         }
                     }
-                    return new JCRUser(startNode.getIdentifier());
+                    return (JCRUserNode) startNode;
                 }
             });
         } catch (RepositoryException e) {
@@ -233,61 +222,52 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      *
      * @param user reference on the user to be deleted.
      */
-    public boolean deleteUser(JahiaUser user) {
-        if (user instanceof JCRUser) {
-            final JCRUser jcrUser = (JCRUser) user;
-            final String name = jcrUser.getName();
-            try {
-                JCRCallback<Boolean> deleteCallcback = new JCRCallback<Boolean>() {
-                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Node node = null;
-                        try {
-                            node = jcrUser.getNode(session);
-                        } catch (ItemNotFoundException e) {
-                            // the user deletion in live is automated with jmix:autoPublish
-                            return true;
-                        }
-                        if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
-                            return false;
-                        }
-                        String query = "SELECT * FROM [jnt:ace] as ace where ace.[j:principal]='u:" + jcrUser.getName() + "'";
-                        Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-                        QueryResult qr = q.execute();
-                        NodeIterator nodeIterator = qr.getNodes();
-                        while (nodeIterator.hasNext()) {
-                            Node next = nodeIterator.nextNode();
-                            session.checkout(next.getParent());
-                            session.checkout(next);
-                            next.remove();
-                        }
-
-                        PropertyIterator pi = node.getWeakReferences("j:member");
-                        while (pi.hasNext()) {
-                            JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) pi.next();
-                            propertyWrapper.getParent().remove();
-                        }
-
-                        JCRGroupManagerProvider.getInstance().flushCache();
-
-                        session.checkout(node.getParent());
-                        session.checkout(node);
-                        node.remove();
-                        session.save();
+    public boolean deleteUser(final String userPath) {
+        try {
+            JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    Node node;
+                    try {
+                        node = session.getNode(userPath);
+                    } catch (ItemNotFoundException e) {
+                        // the user deletion in live is automated with jmix:autoPublish
                         return true;
                     }
-                };
-                jcrTemplate.doExecuteWithSystemSession(deleteCallcback);
-                // Now let's delete the live workspace user
-                jcrTemplate.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallcback);
-            } catch (RepositoryException e) {
-                logger.error("Error while deleting user", e);
-                return false;
-            } finally {
-                updateCache(name);
-            }
-            return true;
+                    if (node.isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
+                        return false;
+                    }
+                    String query = "SELECT * FROM [jnt:ace] as ace where ace.[j:principal]='u:" + node.getName() + "'";
+                    Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+                    QueryResult qr = q.execute();
+                    NodeIterator nodeIterator = qr.getNodes();
+                    while (nodeIterator.hasNext()) {
+                        Node next = nodeIterator.nextNode();
+                        session.checkout(next.getParent());
+                        session.checkout(next);
+                        next.remove();
+                    }
+
+                    PropertyIterator pi = node.getWeakReferences("j:member");
+                    while (pi.hasNext()) {
+                        JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) pi.next();
+                        propertyWrapper.getParent().remove();
+                    }
+
+                    session.checkout(node.getParent());
+                    session.checkout(node);
+                    node.remove();
+                    session.save();
+                    return true;
+                }
+            };
+            jcrTemplate.doExecuteWithSystemSession(deleteCallback);
+            // Now let's delete the live workspace user
+            jcrTemplate.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback);
+        } catch (RepositoryException e) {
+            logger.error("Error while deleting user", e);
+            return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -365,7 +345,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @param userPassword the password of the user
      * @return boolean true if the login succeeded, false otherwise
      */
-    public boolean login(String userKey, String userPassword) {
+    public boolean login(String userKey, String userPassword) throws RepositoryException {
         return lookupUser(userKey).verifyPassword(userPassword);
     }
 
@@ -375,7 +355,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      *
      * @return a reference on a new created jahiaUser object.
      */
-    public JCRUser lookupUserByKey(String userKey) {
+    public JCRUserNode lookupUserByKey(String userKey) throws RepositoryException {
         if (!userKey.startsWith("{")) {
             logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead for parameter=[" + userKey + "]... ");
             return lookupUser(userKey);
@@ -389,44 +369,28 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public JCRUser lookupUser(final String name) {
+    public JCRUserNode lookupUser(final String name) {
         if (StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
             return null;
         }
         try {
-            JCRUser user = cache.get(name);
-            if (user != null) {
-                return user.isExternal() ? null : user;
-            }
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-            Node userNode = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(name));
-            if (!userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                user = new JCRUser(userNode.getIdentifier());
-                cache.put(name, user);
-                return user;
-            }
-            return null;
-        } catch (PathNotFoundException pnfe) {
-            // This is expected in the case the user doesn't exist in the repository. We will simply return null.
+            JCRNodeIteratorWrapper users = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2).execute().getNodes();
+//        Node userNode = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(name));
+            if (!users.hasNext()) return null;
+            return (JCRUserNode) users.nextNode();
         } catch (RepositoryException e) {
-            logger.error("Error while looking up user by name " + name, e);
+            return null;
         }
-        return null;
     }
 
-    public JCRUser lookupExternalUser(final JahiaUser jahiaUser) {
+    public JCRUserNode lookupExternalUser(final JahiaUser jahiaUser) {
         try {
-            JCRUser user = cache.get(jahiaUser.getName());
-            if (user != null) {
-                return user;
-            }
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             Node userNode = session.getNode(jahiaUser.getLocalPath());
-            if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                user = new JCRUser(userNode.getIdentifier(), true);
-                cache.put(jahiaUser.getName(), user);
-                return user;
+            if (userNode.getProperty(JCRUserNode.J_EXTERNAL).getBoolean()) {
+                return (JCRUserNode) userNode;
             }
             return null;
         } catch (PathNotFoundException pnfe) {
@@ -437,18 +401,12 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         return null;
     }
 
-    public JCRUser lookupExternalUser(final String username) {
+    public JCRUserNode lookupExternalUser(final String username) {
         try {
-            JCRUser user = cache.get(username);
-            if (user != null) {
-                return user;
-            }
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             Node userNode = session.getNode(ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(username));
-            if (userNode.getProperty(JCRUser.J_EXTERNAL).getBoolean()) {
-                user = new JCRUser(userNode.getIdentifier(), true);
-                cache.put(username, user);
-                return user;
+            if (userNode.getProperty(JCRUserNode.J_EXTERNAL).getBoolean()) {
+                return (JCRUserNode) userNode;
             }
             return null;
         } catch (PathNotFoundException pnfe) {
@@ -471,7 +429,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return Set a set of JahiaUser elements that correspond to those
      * search criteria
      */
-    public Set<JahiaUser> searchUsers(final Properties searchCriterias) {
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias) {
         return searchUsers(searchCriterias, false, null);
     }
 
@@ -488,18 +446,18 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return Set a set of JahiaUser elements that correspond to those
      * search criteria
      */
-    public Set<JahiaUser> searchUsers(final Properties searchCriterias, final Boolean external, final String providerKey) {
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final Boolean external, final String providerKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             int limit = 0;
-            Set<JahiaUser> users = new HashSet<JahiaUser>();
+            Set<JCRUserNode> users = new HashSet<JCRUserNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(128);
                 if (external != null) {
-                    query.append("u.[" + JCRUser.J_EXTERNAL + "] = '").append(external).append("'");
+                    query.append("u.[" + JCRUserNode.J_EXTERNAL + "] = '").append(external).append("'");
                 }
                 if (providerKey != null) {
-                    query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUser.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
+                    query.append(query.length() > 0 ? " AND " : "").append(" u.[" + JCRUserNode.J_EXTERNAL_SOURCE + "] = '").append(providerKey).append("'");
                 }
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     Properties filters = (Properties) searchCriterias.clone();
@@ -572,37 +530,15 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
                     Node usersFolderNode = ni.nextNode();
-                    users.add(new JCRUser(usersFolderNode.getIdentifier()));
+                    users.add((JCRUserNode) usersFolderNode);
                 }
             }
 
             return users;
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
-            return new HashSet<JahiaUser>();
+            return new HashSet<JCRUserNode>();
         }
-    }
-
-    /**
-     * This method indicates that any internal cache for a provider should be
-     * updated because the value has changed and needs to be transmitted to the
-     * other nodes in a clustering environment.
-     *
-     * @param jahiaUser JahiaUser the user to be updated in the cache.
-     */
-    public void updateCache(JahiaUser jahiaUser) {
-        updateCache(jahiaUser.getName());
-    }
-
-    /**
-     * This method indicates that any internal cache for a provider should be
-     * updated because the value has changed and needs to be transmitted to the
-     * other nodes in a clustering environment.
-     *
-     * @param name the name of the user to be updated in the cache
-     */
-    public void updateCache(String name) {
-        cache.remove(name);
     }
 
     /**
@@ -616,7 +552,7 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "' AND u.[" + JCRUser.J_EXTERNAL + "] = 'false'";
+                String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u WHERE u.[j:nodename] = '" + name + "' AND u.[" + JCRUserNode.J_EXTERNAL + "] = 'false'";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
@@ -630,9 +566,6 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
     }
 
     public void start() throws JahiaInitializationException {
-        if (cacheService != null) {
-            cache = cacheService.getCache("JCRUserCache", true);
-        }
     }
 
     private void checkRootUserPwd() {
@@ -683,8 +616,13 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      *
      * @return the system root user (not cached)
      */
-    public JCRUser lookupRootUser() {
-        return new JCRUser(JCRUser.ROOT_USER_UUID);
+    public JCRUserNode lookupRootUser() {
+        try {
+            return (JCRUserNode) jcrSessionFactory.login(JahiaLoginModule.getSystemCredentials()).getNodeByIdentifier(JCRUserNode.ROOT_USER_UUID);
+        } catch (RepositoryException e1) {
+            logger.error(e1.getMessage(), e1);
+        }
+        return null;
     }
 
     @Override

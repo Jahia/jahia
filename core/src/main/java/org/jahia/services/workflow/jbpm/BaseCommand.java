@@ -354,7 +354,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
         workflowTask.setProcessId(Long.toString(task.getTaskData().getProcessInstanceId()));
         if (task.getTaskData().getActualOwner() != null) {
             workflowTask.setAssignee(
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().getId()));
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(task.getTaskData().getActualOwner().getId()).getJahiaUser());
         }
         workflowTask.setId(Long.toString(task.getId()));
         Set<String> connectionIds = getTaskOutcomes(taskNodeInstance.getNode());
@@ -367,13 +367,13 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
                     Group group = (Group) organizationalEntity;
                     participations
                             .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
-                                    groupManager.lookupGroup(group.getId())));
+                                    groupManager.lookupGroup(group.getId()).getJahiaGroup()));
                 } else {
                     if (organizationalEntity instanceof User) {
                         User user = (User) organizationalEntity;
                         participations
                                 .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
-                                        userManager.lookupUserByKey(user.getId())));
+                                        userManager.lookupUserByKey(user.getId()).getJahiaUser()));
                     }
                 }
             }
@@ -505,7 +505,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
                     return true;
                 }
             } else if (potentialOwner instanceof Group) {
-                if (groupManager.getUserMembership(user).contains(potentialOwner.getId())) {
+                if (groupManager.getUserMembership(user.getLocalPath()).contains(potentialOwner.getId())) {
                     return true;
                 }
             }

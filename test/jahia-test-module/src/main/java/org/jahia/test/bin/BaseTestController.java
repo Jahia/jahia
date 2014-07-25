@@ -121,7 +121,7 @@ public abstract class BaseTestController implements Controller {
         if (request.getMethod().equalsIgnoreCase("get")) {
             // set root as the current user
             JahiaUser oldUser = JCRSessionFactory.getInstance().getCurrentUser();
-            JCRSessionFactory.getInstance().setCurrentUser(JahiaAdminUser.getAdminUser(0));
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaAdminUser.getAdminUser(null));
 
             // set English as session locale
             Locale oldLocale = (Locale) request.getSession(true).getAttribute(Constants.SESSION_LOCALE);

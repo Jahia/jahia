@@ -155,7 +155,7 @@ public class WorkflowHelper {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
                                     if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
-                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey()))) {
+                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getName()))) {
                                         gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                         break;
                                     }
@@ -364,7 +364,7 @@ public class WorkflowHelper {
             workflowComment.setComment(comment.getComment());
             workflowComment.setTime(comment.getTime());
             final JahiaUser user =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(comment.getUser());
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(comment.getUser()).getJahiaUser();
             if (user != null) {
                 workflowComment.setUser(user.getName());
             } else {
@@ -395,7 +395,7 @@ public class WorkflowHelper {
         String username = "";
         if (userKey != null) {
             final JahiaUser jahiaUser =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
+                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getJahiaUser();
             if (jahiaUser != null) {
                 username = jahiaUser.getName();
             } else {
@@ -654,7 +654,7 @@ public class WorkflowHelper {
 
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
-            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser());
+            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser()).getJahiaUser();
             final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
             Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {

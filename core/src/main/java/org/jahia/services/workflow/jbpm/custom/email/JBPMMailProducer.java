@@ -77,6 +77,8 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
@@ -96,7 +98,9 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.activation.URLDataSource;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.ValueFormatException;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -340,18 +344,26 @@ public class JBPMMailProducer {
 
     private Address[] getAddresses(Group group) {
         List<Address> addresses = new ArrayList<Address>();
-        JahiaGroup jahiaGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group.getId());
+        JCRGroupNode jahiaGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group.getId());
         if (jahiaGroup == null) {
             return new Address[0];
         }
-        Set<Principal> recursiveUsers = jahiaGroup.getRecursiveUserMembers();
-        for (Principal principal : recursiveUsers) {
-            JahiaUser jahiaUser = (JahiaUser) principal;
+        Set<JCRUserNode> recursiveUsers = jahiaGroup.getRecursiveUserMembers();
+        for (JCRUserNode user : recursiveUsers) {
             Address address = null;
             try {
-                address = getAddress(jahiaUser.getProperty("firstName"), jahiaUser.getProperty("lastName"), jahiaUser.getProperty("email"));
+                address = getAddress(user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(), user.getProperty("j:email").getString());
             } catch (UnsupportedEncodingException e) {
-                logger.error("Error while trying to get email address for user " + jahiaUser, e);
+                logger.error("Error while trying to get email address for user " + user, e);
+                address = null;
+            } catch (PathNotFoundException e) {
+                logger.error("Error while trying to get email address for user " + user, e);
+                address = null;
+            } catch (ValueFormatException e) {
+                logger.error("Error while trying to get email address for user " + user, e);
+                address = null;
+            } catch (RepositoryException e) {
+                logger.error("Error while trying to get email address for user " + user, e);
                 address = null;
             }
             if (address != null) {
@@ -466,9 +478,9 @@ public class JBPMMailProducer {
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
-        JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
+        JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
         if (vars.containsKey("currentUser")) {
-            JahiaUser currentUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("currentUser"));
+            JCRUserNode currentUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("currentUser"));
             bindings.put("currentUser", currentUser);
         } else {
             bindings.put("currentUser", jahiaUser);

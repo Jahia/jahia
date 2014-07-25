@@ -72,6 +72,7 @@
 package org.jahia.services.pwdpolicy;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
@@ -83,7 +84,7 @@ class EvaluationContext {
 
 	private String password;
 
-	private JahiaUser user;
+	private JCRUserNode user;
 
 	private boolean userInitiated;
 
@@ -100,12 +101,12 @@ class EvaluationContext {
 	 *            set to <code>true</code> if the operation was initiated by
 	 *            the user and not via administration interface
 	 */
-	public EvaluationContext(JahiaUser user, String password,
+	public EvaluationContext(JCRUserNode user, String password,
 	        boolean isUserInitiated) {
 		super();
 		this.user = user;
 		if (user != null) {
-			this.username = user.getUsername(); 
+			this.username = user.getName();
 		}
 		this.password = password;
 		this.userInitiated = isUserInitiated;
@@ -138,7 +139,7 @@ class EvaluationContext {
 	 * 
 	 * @return the user
 	 */
-	public JahiaUser getUser() {
+	public JCRUserNode getUser() {
 		return user;
 	}
 

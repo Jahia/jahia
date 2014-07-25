@@ -75,6 +75,7 @@ import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 
@@ -105,10 +106,9 @@ public class SessionAuthValveImpl extends BaseAuthValve {
             jahiaUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         }
         if (jahiaUser != null) {
-            jahiaUser =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(jahiaUser.getUserKey());
+            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jahiaUser.getName()).getJahiaUser();
         }
-        if (JahiaUserManagerService.isGuest(jahiaUser)) {
+        if (jahiaUser==null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);
         } else {
             authContext.getSessionFactory().setCurrentUser(jahiaUser);

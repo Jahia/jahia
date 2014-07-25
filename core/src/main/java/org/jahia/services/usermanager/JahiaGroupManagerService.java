@@ -74,18 +74,22 @@
 
 package org.jahia.services.usermanager;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
+import java.util.*;
 
 import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
-import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
 
 
-public abstract class JahiaGroupManagerService extends JahiaService {
+public class JahiaGroupManagerService extends JahiaService {
+
+    private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerService.class);
 
     public static final String USERS_GROUPNAME = "users";
     public static final String ADMINISTRATORS_GROUPNAME = "administrators";
@@ -93,10 +97,23 @@ public abstract class JahiaGroupManagerService extends JahiaService {
     public static final String SITE_PRIVILEGED_GROUPNAME = "site-privileged";
     public static final String SITE_ADMINISTRATORS_GROUPNAME = "site-administrators";
     public static final String GUEST_GROUPNAME = "guest";
+    public static final String GUEST_GROUPPATH = "/groups/"+GUEST_GROUPNAME;
+    public static final String USERS_GROUPPATH = "/groups/"+USERS_GROUPNAME;
     
     public static final Set<String> POWERFUL_GROUPS = new HashSet<String>(Arrays.asList(
             ADMINISTRATORS_GROUPNAME, SITE_ADMINISTRATORS_GROUPNAME, PRIVILEGED_GROUPNAME,
             SITE_PRIVILEGED_GROUPNAME));
+    private JCRGroupManagerProvider defaultProvider;
+    private List<String> jahiaJcrEnforcedGroups;
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final JahiaGroupManagerService INSTANCE = new JahiaGroupManagerService();
+    }
+
+    public static JahiaGroupManagerService getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * Create a new group in the system.
@@ -105,19 +122,9 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return a reference on a group object on success, or if the groupname
      *         already exists or another error occured, null is returned.
      */
-    public abstract JahiaGroup createGroup(String siteKey, String name, Properties properties, boolean hidden);
-
-    /**
-     * Create a new group in the system.
-     *
-     * @param hidden
-     * @return a reference on a group object on success, or if the groupname
-     *         already exists or another error occured, null is returned.
-     * @deprecated
-     */
-    @Deprecated
-    public abstract JahiaGroup createGroup(int siteID, String name, Properties properties, boolean hidden);
-
+    public JCRGroupNode createGroup(String siteKey, String name, Properties properties, boolean hidden){
+        return defaultProvider.createGroup(siteKey, name, properties, hidden);
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -128,33 +135,18 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @return Return true on success, or false on any failure.
      */
-    public abstract boolean deleteGroup (JahiaGroup group);
+    public boolean deleteGroup (String groupPath){
+        return defaultProvider.deleteGroup(groupPath);
+    }
     //-------------------------------------------------------------------------
-    /**
-     * Get all JahiaSite objects where the user has an access.
-     *
-     * @param JahiaUser user, the user you want to get his access grantes sites list.
-     *
-     * @return Return a List containing all JahiaSite objects where the user has an access.
-     *
-     * @author Alexandre Kraft
-     */
-    public abstract List<JahiaSite> getAdminGrantedSites (JahiaUser user) throws JahiaException;
-
 
     //-------------------------------------------------------------------------
     /**
      *
      */
-    public abstract JahiaGroup getAdministratorGroup (String siteKey);
-
-    //-------------------------------------------------------------------------
-    /**
-     *
-     * @deprecated
-     */
-    @Deprecated
-    public abstract JahiaGroup getAdministratorGroup (int siteID);
+    public JCRGroupNode getAdministratorGroup (String siteKey) throws RepositoryException {
+        return defaultProvider.getAmdinistratorGroup(siteKey);
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -167,30 +159,13 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @auhtor NK
      */
-    public abstract List<String> getGroupList ();
+    public List<String> getGroupList (){
+        return defaultProvider.getGroupList();
+    }
 
-    //-------------------------------------------------------------------------
-    /**
-     * Return a <code>List</code) of <code>String</code> representing all the
-     * groups of a site.
-     *
-     * @param int the site id
-     *
-     * @return Return a List of identifier of all groups of this site.
-     */
-    public abstract List<String> getGroupList (String siteKey);
-
-    /**
-     * Return a <code>List</code) of <code>String</code> representing all the
-     * groups of a site.
-     *
-     * @param int the site id
-     *
-     * @return Return a List of identifier of all groups of this site.
-     * @deprecated
-     */
-    @Deprecated
-    public abstract List<String> getGroupList (int siteID);
+    public List<String> getGroupList (String siteKey){
+        return defaultProvider.getGroupList(siteKey);
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -199,52 +174,9 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *
      * @return Return a List of strings containing all the group names.
      */
-    public abstract List<String> getGroupnameList ();
-
-    //-------------------------------------------------------------------------
-    /**
-     * Return a <code>List</code) of <code>String</code> representing all the
-     * group names of a site.
-     *
-     * @param int the site id
-     *
-     * @return Return a List of strings containing all the group names.
-     */
-    public abstract List<String> getGroupnameList (String siteKey);
-
-    /**
-     * Return a <code>List</code) of <code>String</code> representing all the
-     * group names of a site.
-     *
-     * @param int the site id
-     *
-     * @return Return a List of strings containing all the group names.
-     * @deprecated
-     */
-    @Deprecated
-    public abstract List<String> getGroupnameList (int siteID);
-
-
-    //-------------------------------------------------------------------------
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * Returns a List of GroupManagerProviderBean object describing the
-     * available group management providers
-     *
-     * @return result a List of GroupManagerProviderBean objects that describe
-     *         the providers. This will never be null but may be empty if no providers
-     *         are available.
-     */
-    public abstract List<? extends JahiaGroupManagerProvider> getProviderList ();
-
-    /**
-     * Returns a {@link JahiaGroupManagerProvider} for the specified name.
-     *
-     * @return a {@link JahiaGroupManagerProvider} for the specified name
-     */
-    public abstract JahiaGroupManagerProvider getProvider(String name);
+    public List<String> getGroupnameList (){
+        return defaultProvider.getGroupnameList();
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -255,8 +187,14 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return Return a List of strings holding all the group names to
      *         which the user as access.
      */
-    public abstract List<String> getUserMembership (JahiaUser user);
-
+    public List<String> getUserMembership (String userPath) {
+        try {
+            return defaultProvider.getUserMembership(userPath);
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return Collections.emptyList();
+        }
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -269,22 +207,25 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return Return true if the specified username has not been assigned yet,
      *         return false on any failure.
      */
-    public abstract boolean groupExists (String siteKey, String name);
+    public boolean groupExists (String siteKey, String name){
+        try {
+            return defaultProvider.lookupGroup(getGroupPath(siteKey, name))!=null;
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
 
-    /**
-     * This function checks on a gived site if the groupname has already been
-     * assigned to another group.
-     *
-     * @param int       siteID the site id
-     * @param groupname String representing the unique group name.
-     *
-     * @return Return true if the specified username has not been assigned yet,
-     *         return false on any failure.
-     * @deprecated
-     */
-    @Deprecated
-    public abstract boolean groupExists (int siteID, String name);
+    public boolean groupExists (String groupPath){
+        try {
+            return defaultProvider.lookupGroup(groupPath)!=null;
+        } catch (RepositoryException e) {
+            return false;
+        }
+    }
 
+    private String getGroupPath(String siteKey, String name) {
+        return (siteKey == null ? "/groups" : "/sites/" + siteKey + "/groups") + "/" + name;
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -295,10 +236,15 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @param String groupID Group's unique identification id.
      *
      * @return Return a reference on a the specified group name. Return null
-     *         if the group doesn't exist or when any error occured.
+     *         if the group doesn't exist or when any error occurred.
      */
-    public abstract JahiaGroup lookupGroup (String groupID);
-
+    public JCRGroupNode lookupGroup (String groupPath) {
+        try {
+            return defaultProvider.lookupGroup(groupPath);
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
 
     //-------------------------------------------------------------------------
     /**
@@ -312,33 +258,13 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return Return a reference on a the specified group name. Return null
      *         if the group doesn't exist or when any error occured.
      */
-    public abstract JahiaGroup lookupGroup (String siteKey, String name);
-
-    /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
-     * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
-     *
-     * @param int       siteID the site id
-     * @param groupname Group's unique identification name.
-     *
-     * @return Return a reference on a the specified group name. Return null
-     *         if the group doesn't exist or when any error occured.
-     * @deprecated
-     */
-    @Deprecated
-    public abstract JahiaGroup lookupGroup (int siteID, String name);
-
-
-    //-------------------------------------------------------------------------
-    /**
-     * Remove the specified user from all the membership lists of all the groups.
-     *
-     * @param user Reference on an existing user.
-     *
-     * @return Return true on success, or false on any failure.
-     */
-    public abstract boolean removeUserFromAllGroups (JahiaUser user);
+    public JCRGroupNode lookupGroup (String siteKey, String name){
+        try {
+            return defaultProvider.lookupGroup(getGroupPath(siteKey, name));
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
 
     /**
      * Find groups according to a table of name=value properties. If the left
@@ -353,71 +279,9 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      * @return List a List of JahiaGroup elements that correspond to those
      *         search criterias
      */
-    public abstract Set<JahiaGroup> searchGroups (String siteKey, Properties searchCriterias);
-
-    /**
-     * Find groups according to a table of name=value properties. If the left
-     * side value is "*" for a property then it will be tested against all the
-     * properties. ie *=test* will match every property that starts with "test"
-     *
-     * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
-     *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
-     *                        null to search without criterias
-     *
-     * @return List a List of JahiaGroup elements that correspond to those
-     *         search criterias
-     * @deprecated
-     */
-    @Deprecated
-    public abstract Set<JahiaGroup> searchGroups (int siteID, Properties searchCriterias);
-
-    /**
-     * Find groups according to a table of name=value properties. If the left
-     * side value is "*" for a property then it will be tested against all the
-     * properties. ie *=test* will match every property that starts with "test"
-     *
-     * @param providerKey     key of the provider in which to search, may be
-     *                        obtained by calling getProviderList()
-     * @param siteKey         site identifier
-     * @param searchCriterias a Properties object that contains search criterias
-     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
-     *                        null to search without criterias
-     *
-     * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criterias
-     */
-    public abstract Set<JahiaGroup> searchGroups (String providerKey, String siteKey,
-                                      Properties searchCriterias);
-
-    /**
-     * Find groups according to a table of name=value properties. If the left
-     * side value is "*" for a property then it will be tested against all the
-     * properties. ie *=test* will match every property that starts with "test"
-     *
-     * @param providerKey     key of the provider in which to search, may be
-     *                        obtained by calling getProviderList()
-     * @param siteID          site identifier
-     * @param searchCriterias a Properties object that contains search criterias
-     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
-     *                        null to search without criterias
-     *
-     * @return Set a set of JahiaGroup elements that correspond to those
-     *         search criterias
-     * @deprecated
-     */
-    @Deprecated
-    public abstract Set<JahiaGroup> searchGroups (String providerKey, int siteID,
-                                      Properties searchCriterias);
-
-
-    /**
-     * This method indicates that any internal cache for a provider should be
-     * updated because the value has changed and needs to be transmitted to the
-     * other nodes in a clustering environment.
-     * @param jahiaGroup JahiaGroup the group to be updated in the cache.
-     */
-    public abstract void updateCache(JahiaGroup jahiaGroup);
+    public Set<JCRGroupNode> searchGroups (String siteKey, Properties searchCriterias){
+        return defaultProvider.searchGroups(siteKey, searchCriterias);
+    }
     
     /**
      * Validates provided group name against a regular expression pattern, specified in the Jahia configuration.
@@ -426,26 +290,29 @@ public abstract class JahiaGroupManagerService extends JahiaService {
      *            the group name to be validated
      * @return <code>true</code> if the specified group name matches the validation pattern
      */
-    public abstract boolean isGroupNameSyntaxCorrect(String name);
+    public boolean isGroupNameSyntaxCorrect(String name){
+        return defaultProvider.isGroupNameSyntaxCorrect(name);
+    }
 
-    /**
-     * Adds the specified group provider to the registry.
-     * 
-     * @param jahiaGroupManagerProvider
-     *            an instance of the group provider to register
-     */
-    public abstract void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
+    public void setDefaultProvider(JCRGroupManagerProvider defaultProvider) {
+        this.defaultProvider = defaultProvider;
+    }
 
-    /**
-     * Removes the specified group provider from the registry.
-     * 
-     * @param jahiaGroupManagerProvider
-     *            an instance of the group provider to unregister
-     */
-    public abstract void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider);
+    public void setJahiaJcrEnforcedGroups(List<String> jahiaJcrEnforcedGroups) {
+        this.jahiaJcrEnforcedGroups = jahiaJcrEnforcedGroups;
+    }
 
-    /**
-     * Flushes group manager provider caches.
-     */
-    public abstract void flushCache();
+    public List getJahiaJcrEnforcedGroups() {
+        return jahiaJcrEnforcedGroups;
+    }
+
+    @Override
+    public void start() throws JahiaInitializationException {
+
+    }
+
+    @Override
+    public void stop() throws JahiaException {
+
+    }
 }

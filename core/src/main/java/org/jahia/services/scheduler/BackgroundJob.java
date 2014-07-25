@@ -128,7 +128,7 @@ public abstract class BackgroundJob implements StatefulJob {
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         if (currentUser != null) {
-            jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
+            jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getName());
         }
         jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory
                 .getCurrentLocale().toString() : null);
@@ -149,7 +149,7 @@ public abstract class BackgroundJob implements StatefulJob {
         try {
         	String userKey = data.getString(JOB_USERKEY);
         	if ((userKey!= null) && (!userKey.equals(JahiaLoginModule.SYSTEM))) {
-	            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY));
+	            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY)).getJahiaUser();
 	            if (user != null) {
 	            	sessionFactory.setCurrentUser(user);
 	            	logger.debug("Executing job as user {}", userKey);

@@ -73,6 +73,7 @@ package org.jahia.taglibs.utility.session;
 
 import java.io.IOException;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -106,7 +107,7 @@ public class UserPropertyTag extends AbstractJahiaTag {
             if (propertyName != null) {
                 buff.append(renderContext.getUser().getProperty(propertyName));
             } else {
-                buff.append(renderContext.getUser().getUsername());
+                buff.append(renderContext.getUser().getName());
             }
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("</div>");

@@ -144,7 +144,7 @@ public class WrapperFilterTest extends JahiaTestCase {
     @Test
     public void testFullpageWrapper() throws Exception {
 
-        JahiaUser admin = JahiaAdminUser.getAdminUser(0);
+        JahiaUser admin = JahiaAdminUser.getAdminUser(null);
 
         RenderContext context = new RenderContext(getRequest(), getResponse(), admin);
         context.setSite(site);

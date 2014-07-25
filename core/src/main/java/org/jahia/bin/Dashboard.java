@@ -76,6 +76,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 import org.jahia.services.usermanager.JahiaUser;
@@ -99,7 +100,7 @@ public class Dashboard extends Render {
 
     private EditConfiguration editConfiguration;
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         context.setEditModeConfig(editConfiguration);
@@ -119,8 +120,8 @@ public class Dashboard extends Render {
         }
         try {
             final String nodePath = node.getPath();
-            if (!nodePath.startsWith("/modules") && !nodePath.startsWith(node.getSession().getUser().getLocalPath())) {
-                logger.error("User : "+node.getSession().getUser().getUsername()+"tried to access the dashboard "+ nodePath);
+            if (!nodePath.startsWith("/modules") && !nodePath.startsWith(node.getSession().getUserNode().getPath())) {
+                logger.error("User : "+node.getSession().getUser().getName()+"tried to access the dashboard "+ nodePath);
                 return false;
             }
             // the site cannot be resolved

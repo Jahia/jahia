@@ -135,14 +135,14 @@
                 <tr class="gradeA">
                     <td>${key}</td>
                     <% String attribute = (String) pageContext.getAttribute("key");
-                        final Element element1 = cache.getQuiet(attribute);
-                        if (element1 != null && element1.getValue() != null) {
+                        final Element element = cache.getQuiet(attribute);
+                        if (element != null && element.getObjectValue() != null) {
                     %>
 
                     <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(
-                            element1.getExpirationTime()))%>
+                            element.getExpirationTime()))%>
                     </td>
-                    <% String content = (String) ((CacheEntry) element1.getValue()).getObject();
+                    <% String content = (String) ((CacheEntry) element.getObjectValue()).getObject();
                         cacheSize += content != null ? content.length() : 0;
                     %>
                     <td>
@@ -159,7 +159,8 @@
                                 </c:url>
                                 <a href="${detailsUrl}" target="_blank">view</a>
                                 <a href="${flushUrl}">flush</a>
-                                <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ", "&nbsp;") %>]
+                                <br/>[<%= FileUtils.byteCountToDisplaySize(content.length()).replace(" ", "&nbsp;") %>]<br/>
+                                <%=((CacheEntry) element.getObjectValue()).getExtendedProperties().get("allPaths")%>
                             </div>
                         </c:if>
                     </td>

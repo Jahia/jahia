@@ -157,9 +157,9 @@ public class RolesHandler implements Serializable {
         this.nodePath = nodePath;
     }
 
-    public Map<JCRNodeWrapper, List<Principal>> getRoles() throws Exception {
+    public Map<JCRNodeWrapper, List<JCRNodeWrapper>> getRoles() throws Exception {
         Map<String, JCRNodeWrapper> rolesFromName = new HashMap<String, JCRNodeWrapper>();
-        Map<JCRNodeWrapper, List<Principal>> result = new TreeMap<JCRNodeWrapper, List<Principal>>(new Comparator<JCRNodeWrapper>() {
+        Map<JCRNodeWrapper, List<JCRNodeWrapper>> result = new TreeMap<JCRNodeWrapper, List<JCRNodeWrapper>>(new Comparator<JCRNodeWrapper>() {
             @Override
             public int compare(JCRNodeWrapper jcrNodeWrapper, JCRNodeWrapper jcrNodeWrapper2) {
                 return jcrNodeWrapper.getDisplayableName().compareTo(jcrNodeWrapper2.getDisplayableName());
@@ -185,15 +185,11 @@ public class RolesHandler implements Serializable {
         Map<String, List<String[]>> acl = node.getAclEntries();
 
         for (Map.Entry<String, List<String[]>> entry : acl.entrySet()) {
-            Principal p;
+            JCRNodeWrapper p;
             if (entry.getKey().startsWith("u:")) {
                 p = userManagerService.lookupUser(entry.getKey().substring(2));
             } else if (entry.getKey().startsWith("g:")) {
-                p = groupManagerService.lookupGroup(0, entry.getKey().substring(2));
-                if (p == null && nodePath.startsWith("/sites/")) {
-                    int siteID = node.getResolveSite().getID();
-                    p = groupManagerService.lookupGroup(siteID, entry.getKey().substring(2));
-                }
+                p = groupManagerService.lookupGroup(entry.getKey().substring(2));
                 if (p == null) {
                     continue;
                 }
@@ -216,11 +212,11 @@ public class RolesHandler implements Serializable {
         return result;
     }
 
-    private void getRoles(Query q, Map<String, JCRNodeWrapper> rolesFromName, Map<JCRNodeWrapper, List<Principal>> m) throws RepositoryException {
+    private void getRoles(Query q, Map<String, JCRNodeWrapper> rolesFromName, Map<JCRNodeWrapper, List<JCRNodeWrapper>> m) throws RepositoryException {
         NodeIterator ni = q.execute().getNodes();
         while (ni.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) ni.next();
-            m.put(next, new ArrayList<Principal>());
+            m.put(next, new ArrayList<JCRNodeWrapper>());
             rolesFromName.put(next.getName(), next);
         }
     }
@@ -247,9 +243,9 @@ public class RolesHandler implements Serializable {
         fallbackLocale = node.getSession().getFallbackLocale();
     }
 
-    public List<Principal> getRoleMembers() throws Exception {
-        Map<JCRNodeWrapper, List<Principal>> r = getRoles();
-        return r.size() > 0 ? r.entrySet().iterator().next().getValue() : new ArrayList<Principal>();
+    public List<JCRNodeWrapper> getRoleMembers() throws Exception {
+        Map<JCRNodeWrapper, List<JCRNodeWrapper>> r = getRoles();
+        return r.size() > 0 ? r.entrySet().iterator().next().getValue() : new ArrayList<JCRNodeWrapper>();
     }
 
     public void grantRole(String[] principals, MessageContext messageContext) throws Exception {
@@ -302,15 +298,13 @@ public class RolesHandler implements Serializable {
      * @return an empty (newly initialized) search criteria bean
      */
     public SearchCriteria initCriteria(RequestContext ctx) {
-        return new SearchCriteria(0);
+        return new SearchCriteria(null);
     }
 
 
     public Map<String, ? extends JahiaGroupManagerProvider> getProviders() {
         Map<String, JahiaGroupManagerProvider> providers = new LinkedHashMap<String, JahiaGroupManagerProvider>();
-        for (JahiaGroupManagerProvider p : groupManagerService.getProviderList()) {
-            providers.put(p.getKey(), p);
-        }
+
         return providers;
     }
 
@@ -320,25 +314,18 @@ public class RolesHandler implements Serializable {
      * @param searchCriteria current search criteria
      * @return the list of groups, matching the specified search criteria
      */
-    public Set<Principal> searchNewMembers(SearchCriteria searchCriteria) throws RepositoryException {
+    public Set<JCRNodeWrapper> searchNewMembers(SearchCriteria searchCriteria) throws RepositoryException {
         long timer = System.currentTimeMillis();
 
-        Set<Principal> searchResult;
+        Set<JCRNodeWrapper> searchResult;
         if (searchType.equals("users")) {
-            searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
-                    searchCriteria.getProviders());
+                    searchCriteria.getProviders()));
         } else {
-            final JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale, fallbackLocale);
-            searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), 0,
+            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), null,
                     searchCriteria.getSearchString(), searchCriteria.getProperties(),
-                    searchCriteria.getStoredOn(), searchCriteria.getProviders());
-            if (nodePath.startsWith("/sites/")) {
-                int siteID = s.getNode(nodePath).getResolveSite().getID();
-                searchResult.addAll(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), siteID,
-                        searchCriteria.getSearchString(), searchCriteria.getProperties(),
-                        searchCriteria.getStoredOn(), searchCriteria.getProviders()));
-            }
+                    searchCriteria.getStoredOn(), searchCriteria.getProviders()));
         }
 
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);

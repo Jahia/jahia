@@ -73,7 +73,6 @@
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 
 import javax.jcr.Node;
 import java.util.*;
@@ -84,16 +83,26 @@ import java.security.Principal;
  * 
  * @author Thomas Draier
  */
-public class UsersGroup extends JCRGroup {
+public class UsersGroup extends JahiaGroup {
     private static final long serialVersionUID = 8220270074777283565L;
 
     public UsersGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
-        super(nodeWrapper, siteID);
     }
 
     @Override
     public Enumeration<Principal> members() {
         return new Vector<Principal>(getRecursiveUserMembers()).elements();
+    }
+
+    /**
+     * Returns members of this group. If members were not loaded before,
+     * forces loading.
+     *
+     * @return members of this group
+     */
+    @Override
+    protected Set<Principal> getMembersMap() {
+        return null;
     }
 
     @Override
@@ -105,16 +114,39 @@ public class UsersGroup extends JCRGroup {
                 .getJahiaUserManagerService();
         List<String> l = jahiaUserManagerService.getUserList();
         for (String s : l) {
-            userList.add(jahiaUserManagerService.lookupUserByKey(s));
+            userList.add(jahiaUserManagerService.lookupUserByKey(s).getJahiaUser());
         }
         JahiaUser guest = jahiaUserManagerService
-                .lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+                .lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser();
         userList.remove(guest);
         if (userList != null) {
             users.addAll(userList);
         }
         // should we list ldap users here ?
         return users;
+    }
+
+    /**
+     * Get grp's properties list.
+     *
+     * @return Return a reference on the grp's properties list, or null if no
+     * property is present.
+     */
+    @Override
+    public Properties getProperties() {
+        return null;
+    }
+
+    /**
+     * Retrieve the requested grp property.
+     *
+     * @param key Property's name.
+     * @return Return the property's value of the specified key, or null if the
+     * property does not exist.
+     */
+    @Override
+    public String getProperty(String key) {
+        return null;
     }
 
     @Override
@@ -127,13 +159,38 @@ public class UsersGroup extends JCRGroup {
         return false;
     }
 
+    /**
+     * Returns a string representation of this group.
+     *
+     * @return A string representation of this group.
+     */
+    @Override
+    public String toString() {
+        return null;
+    }
+
+    /**
+     * Get the name of the provider of this group.
+     *
+     * @return String representation of the name of the provider of this group
+     */
+    @Override
+    public String getProviderName() {
+        return null;
+    }
+
     @Override
     public boolean isMember(Principal principal) {
         return principal != null && !principal.getName().equals(JahiaUserManagerService.GUEST_USERNAME);
     }
 
+    /**
+     * Returns a hashcode for this principal.
+     *
+     * @return A hashcode for this principal.
+     */
     @Override
-    public void addMembers(Collection<Principal> principals) {
-        // do nothing
+    public int hashCode() {
+        return 0;
     }
 }

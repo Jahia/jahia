@@ -94,8 +94,11 @@
 package org.jahia.services.usermanager;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.security.acl.Group;
 import java.util.*;
@@ -119,11 +122,13 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Fulco Houkes
  * @version 2.2
  */
-public abstract class JahiaGroup implements JahiaPrincipal, Group {
+public class JahiaGroup implements JahiaPrincipal, Group {
 
     private static final long serialVersionUID = 3192050315335252786L;
-
-    /** Group unique identification name */
+    private transient static Logger logger = LoggerFactory.getLogger(JahiaGroup.class);
+    /**
+     * Group unique identification name
+     */
     protected String mGroupname;
 
     /**
@@ -134,71 +139,37 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     protected boolean hidden = false;
 
-    /** The site id */
-    protected int mSiteID;
-
     protected boolean preloadedGroups;
 
     protected Map<String, Boolean> membership = new ConcurrentHashMap<String, Boolean>();
-    
-    /** Map holding all the group members. */
+
+    /**
+     * Map holding all the group members.
+     */
     protected Set<Principal> mMembers;
+    private String siteKey;
 
     /**
      * Get grp's properties list.
      *
      * @return Return a reference on the grp's properties list, or null if no
-     *         property is present.
+     * property is present.
      */
-    public abstract Properties getProperties ();
+    public Properties getProperties(){
+        return new Properties();
+    }
 
 
     /**
      * Retrieve the requested grp property.
      *
      * @param key Property's name.
-     *
      * @return Return the property's value of the specified key, or null if the
-     *         property does not exist.
+     * property does not exist.
      */
-    public abstract String getProperty (String key);
-
-
-    /**
-     * Remove the specified property from the properties list.
-     *
-     * @param key Property's name.
-     */
-    public abstract boolean removeProperty (String key);
-
-
-    /**
-     * Add (or update if not already in the property list) a property key-value
-     * pair in the grp's properties list.
-     *
-     * @param key   Property's name.
-     * @param value Property's value.
-     */
-    public abstract boolean setProperty (String key, String value);
-
-
-    /**
-     * Adds the specified member to the group.
-     *
-     * @param principal The principal to add to this group.
-     *
-     * @return Return true if the member was successfully added, false if the
-     *         principal was already a member.
-     */
-    public abstract boolean addMember (Principal principal);
-
-    /**
-     * Adds the specified members to the group.
-     *
-     * @param principals The principals to add to this group.
-     *
-     */
-    public abstract void addMembers(final Collection<Principal> principals);
+    public String getProperty(String key){
+        return "";
+    }
 
     /**
      * Compares this principal to the specified object. Returns true if the object
@@ -206,14 +177,13 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * interface.
      *
      * @param another Principal to compare with.
-     *
      * @return Return true if the principal passed in is the same as that
-     *         encapsulated by this principal, and false otherwise.
+     * encapsulated by this principal, and false otherwise.
      */
     public boolean equals(Object another) {
-        
+
         if (this == another) return true;
-        
+
         if (another != null && this.getClass() == another.getClass()) {
             return (mGroupKey.equals(((JahiaGroup) another).getGroupKey()));
         }
@@ -226,7 +196,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return REturn the unique group identification key.
      */
-    public String getGroupKey () {
+    public String getGroupKey() {
         return mGroupKey;
     }
 
@@ -236,7 +206,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return The unique identifier of this group.
      */
-    public String getName () {
+    public String getName() {
         return mGroupname;
     }
 
@@ -246,18 +216,8 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return The name of this group.
      */
-    public String getGroupname () {
+    public String getGroupname() {
         return mGroupname;
-    }
-
-
-    /**
-     * Returns the site id.
-     *
-     * @return int the siteID.
-     */
-    public int getSiteID () {
-        return mSiteID;
     }
 
 
@@ -266,8 +226,36 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return A hashcode for this principal.
      */
-    public abstract int hashCode ();
+    @Override
+    public int hashCode() {
+        int result = mGroupname.hashCode();
+        result = 31 * result + mGroupKey.hashCode();
+        return result;
+    }
 
+    /**
+     * Adds the specified member to the group.
+     *
+     * @param user the principal to add to this group.
+     * @return true if the member was successfully added,
+     * false if the principal was already a member.
+     */
+    @Override
+    public boolean addMember(Principal user) {
+        return false;
+    }
+
+    /**
+     * Removes the specified member from the group.
+     *
+     * @param user the principal to remove from this group.
+     * @return true if the principal was removed, or
+     * false if the principal was not a member.
+     */
+    @Override
+    public boolean removeMember(Principal user) {
+        return false;
+    }
 
     /**
      * Returns true if the passed principal is a member of the group. This method
@@ -276,10 +264,9 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * Note this method does not load automatically all members of the group if they were not preloaded before.
      *
      * @param principal The principal whose membership is to be checked.
-     *
      * @return Return true if the principal is a member of this group, false otherwise.
      */
-    public boolean isMember (Principal principal) {
+    public boolean isMember(Principal principal) {
         if (principal == null) {
             return false;
         }
@@ -289,7 +276,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
         if (isMember != null) {
             return isMember;
         }
-        
+
         boolean result = false;
         if (mMembers != null) {
             // For each member check if it's the member we are looking for,
@@ -300,15 +287,15 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
                 if (member != null) {
                     // check if the member is the one we are looking for
                     String mname = JahiaUserManagerService.getKey(member);
-                    if (mname .equals (principalKey) ||
-                        (principalIsGuest && mname.startsWith(JahiaUserManagerService.GUEST_USERNAME+":"))) {
+                    if (mname.equals(principalKey) ||
+                            (principalIsGuest && mname.startsWith(JahiaUserManagerService.GUEST_USERNAME + ":"))) {
                         result = true;
                     } else {
-    
+
                         // if the member is a group look for the principal in this
                         // group. Groups are already loaded.
                         if (member instanceof Group) {
-                            result = ((Group) member).isMember (principal);
+                            result = ((Group) member).isMember(principal);
                         }
                     }
                     if (result) {
@@ -317,12 +304,12 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
                 }
             }
         }
-        
+       /*
         if (!result) {
-            /** @todo this is a temporary solution until we have implicit
-             *  group implementation. Then we will have guest_provider, users_provider
-             *  groups that are contained within the global users and guest groups
-             */
+            *//** @todo this is a temporary solution until we have implicit
+         *  group implementation. Then we will have guest_provider, users_provider
+         *  groups that are contained within the global users and guest groups
+         *//*
             // let's now check if we are in the special case of guest and users
             // for external sources users
             // user could be external database user, let's look him up...
@@ -336,7 +323,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
                     }
                 }
             }
-        }
+        }*/
 
         return result;
     }
@@ -350,7 +337,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      *
      * @return An Iterator of the group members.
      */
-    public Enumeration<Principal> members () {
+    public Enumeration<Principal> members() {
         return new Vector<Principal>(getMembersMap()).elements();
     }
 
@@ -361,20 +348,22 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
     /**
      * Returns members of this group. If members were not loaded before,
      * forces loading.
-     * 
+     *
      * @return members of this group
      */
-    protected abstract Set<Principal> getMembersMap();
+    protected Set<Principal> getMembersMap(){
+        return Collections.emptySet();
+    }
 
     /**
      * This method returns ONLY a list of users. All sub groups are expanded
      * to return only the full list of members.
      *
      * @return Set a set of JahiaUsers that are all the implicit and explicit
-     *         users in this group
+     * users in this group
      */
-    public Set<Principal> getRecursiveUserMembers () {
-        Set<Principal> users = new HashSet<Principal> ();
+    public Set<Principal> getRecursiveUserMembers() {
+        Set<Principal> users = new HashSet<Principal>();
 
         /** @todo this is a temporary solution until we have implicit
          *  group implementation. Then we will have guest_provider, users_provider
@@ -383,29 +372,27 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
         // let's now check if we are in the special case of guest and users
         // for external sources users
         // user could be external database user, let's look him up...
-        if ((JahiaGroupManagerService.GUEST_GROUPNAME.equals (mGroupname)) ||
-                (JahiaGroupManagerService.USERS_GROUPNAME.equals (mGroupname))) {
+        if ((JahiaGroupManagerService.GUEST_GROUPNAME.equals(mGroupname)) ||
+                (JahiaGroupManagerService.USERS_GROUPNAME.equals(mGroupname))) {
             List<Principal> userList = new LinkedList<Principal>();
             JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance()
                     .getJahiaUserManagerService();
             List<String> l = jahiaUserManagerService.getUserList();
             for (String s : l) {
-                userList.add(jahiaUserManagerService.lookupUserByKey(s));
+                userList.add(jahiaUserManagerService.lookupUserByKey(s).getJahiaUser());
             }
-            if (userList != null) {
-                users.addAll(userList);
-            }
+            users.addAll(userList);
             // now we still need to get the list of users coming that don't
             // belong to any site and that may come from an LDAP repository.
             List<String> userKeyList = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserList();
             if (userKeyList != null) {
                 for (String curUserKey : userKeyList) {
-                    JahiaUser curUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(curUserKey);
-                    if (!(curUser instanceof JCRUser) && (!users.contains(curUser))) {
+                    JCRUserNode curUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(curUserKey);
+                    if ((!users.contains(curUser.getJahiaUser()))) {
                         // this should add all users that don't come from
                         // the database provider and that aren't root.
-                    users.add (curUser);
-                }
+                        users.add(curUser.getJahiaUser());
+                    }
                 }
                 return users;
             }
@@ -419,9 +406,9 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
             // group. Groups are already loaded.
             if (curMember instanceof JahiaGroup) {
                 JahiaGroup groupMember = (JahiaGroup) curMember;
-                users.addAll (groupMember.getRecursiveUserMembers ());
+                users.addAll(groupMember.getRecursiveUserMembers());
             } else {
-                users.add (curMember);
+                users.add(curMember);
             }
         }
 
@@ -430,43 +417,18 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
 
     /**
-     * Removes the specified member from the group.
-     *
-     * @param principal The principal to remove from this group.
-     *
-     * @return Return true if the principal was removed, or false if the
-     *         principal was not a member.
-     */
-    public abstract boolean removeMember (Principal principal);
-
-
-    /**
-     * Removes all members from the group.
-     *
-     * @return Return false on error
-     */
-    public boolean removeMembers () {
-        for (Principal aMember : getMembersMap()) {
-            removeMember (aMember);
-        }
-        return true;
-    }
-
-
-    /**
      * Returns a string representation of this group.
      *
      * @return A string representation of this group.
      */
-    public abstract String toString ();
-
-    /**
-     * Get the name of the provider of this group.
-     *
-     * @return String representation of the name of the provider of this group
-     */
-    public abstract String getProviderName ();
-
+    @Override
+    public String toString() {
+        final StringBuilder sb = new StringBuilder("JahiaGroup{");
+        sb.append("mGroupname='").append(mGroupname).append('\'');
+        sb.append(", mGroupKey='").append(mGroupKey).append('\'');
+        sb.append('}');
+        return sb.toString();
+    }
 
     public boolean isPreloadedGroups() {
         return preloadedGroups;
@@ -478,5 +440,30 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
+    }
+
+    /**
+     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * the user in the JCR with all necessary encoding.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    @Override
+    public String getLocalPath() {
+        return null;
+    }
+
+    /**
+     * Get the providerName of this user.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    @Override
+    public String getProviderName() {
+        return null;
+    }
+
+    public String getSiteKey() {
+        return siteKey;
     }
 }

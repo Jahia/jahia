@@ -79,7 +79,9 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -124,12 +126,12 @@ public class JahiaTemplateManagerServiceTest {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-        JahiaUser user = userManager.createUser("user1", "password", new Properties());
+        JCRUserNode user = userManager.createUser("user1", "password", new Properties());
 
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
         if (site != null) {
-            JahiaGroup group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
+            JCRGroupNode group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
             group.addMember(user);
         }
     }

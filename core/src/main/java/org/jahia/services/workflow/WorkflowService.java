@@ -455,23 +455,17 @@ public class WorkflowService implements BeanPostProcessor {
                         String principal = entry.getKey();
                         final String principalName = principal.substring(2);
                         if (principal.charAt(0) == 'u') {
-                            JahiaUser jahiaUser = userService.lookupUser(principalName);
+                            JahiaUser jahiaUser = userService.lookupUser(principalName).getJahiaUser();
                             principals.add(jahiaUser);
                         } else if (principal.charAt(0) == 'g') {
                             if (site == null) {
                                 site = node.getResolveSite();
                             }
-                            JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
-                                    principalName);
-                            if (group == null) {
-                                group = groupService.lookupGroup(null, principalName);
-                            }
-                            if (group != null) {
-                                logger.debug("group "+group.getGroupKey()+" is granted");
+                            JahiaGroup group;
+                            group = groupService.lookupGroup(site.getSiteKey(),
+                                    principalName).getJahiaGroup();
+                            logger.debug("group "+group.getGroupKey()+" is granted");
                                 principals.add(group);
-                            } else {
-                                logger.debug("Can't find group "+principalName+" on site "+site.getSiteKey() +"("+site.getID()+"). Group is not granted");
-                            }
                         }
                     }
                 }
@@ -588,7 +582,7 @@ public class WorkflowService implements BeanPostProcessor {
                                   Map<String, Object> args, List<String> comments) throws RepositoryException, SchedulerException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("StartProcess", StartProcessJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put(BackgroundJob.JOB_USERKEY, session.getUser().getUserKey());
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, session.getUserNode().getName());
         jobDataMap.put(BackgroundJob.JOB_CURRENT_LOCALE, session.getLocale().toString());
         jobDataMap.put(StartProcessJob.NODE_IDS, nodeIds);
         jobDataMap.put(StartProcessJob.PROVIDER, provider);
@@ -617,9 +611,9 @@ public class WorkflowService implements BeanPostProcessor {
         newArgs.put("workspace", session.getWorkspace().getName());
         newArgs.put("locale", session.getLocale());
         newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
-        newArgs.put("user", session.getUser() != null ? session.getUser().getUserKey() : null);
+        newArgs.put("user", session.getUser() != null ? session.getUser().getName() : null);
         if (comments != null && comments.size() > 0) {
-            addCommentsToVariables(newArgs, comments, session.getUser().getUserKey());
+            addCommentsToVariables(newArgs, comments, session.getUser().getName());
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {
@@ -734,7 +728,7 @@ public class WorkflowService implements BeanPostProcessor {
     public void assignAndCompleteTaskAsJob(String taskId, String provider, String outcome, Map<String, Object> args, JahiaUser user) throws RepositoryException, SchedulerException {
         JobDetail jobDetail = BackgroundJob.createJahiaJob("AssignAndCompleteTask", AssignAndCompleteTaskJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
-        jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getUserKey());
+        jobDataMap.put(BackgroundJob.JOB_USERKEY, user.getName());
         jobDataMap.put(AssignAndCompleteTaskJob.TASK_ID, taskId);
         jobDataMap.put(AssignAndCompleteTaskJob.PROVIDER, provider);
         jobDataMap.put(AssignAndCompleteTaskJob.OUTCOME, outcome);

@@ -572,7 +572,7 @@ public class RenderService {
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
-            if (!renderContext.getUser().isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+            if (!renderContext.getUser().isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                 return invert;
             }
         }

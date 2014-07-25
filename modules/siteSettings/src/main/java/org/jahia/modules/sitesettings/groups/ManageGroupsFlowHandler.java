@@ -87,10 +87,10 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -129,7 +129,7 @@ public class ManageGroupsFlowHandler implements Serializable {
     @SuppressWarnings("deprecation")
     public boolean addGroup(GroupModel group, MessageContext context) {
         Locale locale = LocaleContextHolder.getLocale();
-        if (groupManagerService.createGroup(group.getSiteId(), group.getGroupname(), null, false) != null) {
+        if (groupManagerService.createGroup(group.getSiteKey(), group.getGroupname(), null, false) != null) {
             context.addMessage(new MessageBuilder()
                     .info()
                     .defaultText(
@@ -160,19 +160,19 @@ public class ManageGroupsFlowHandler implements Serializable {
         if (members.length == 0) {
             return;
         }
-        JahiaGroup group = lookupGroup(groupKey);
-        logger.info("Adding members {} to group {}", members, group.getGroupKey());
+        JCRGroupNode group = lookupGroup(groupKey);
+        logger.info("Adding members {} to group {}", members, group.getPath());
         long timer = System.currentTimeMillis();
-        List<Principal> candidates = new LinkedList<Principal>();
+        List<JCRNodeWrapper> candidates = new LinkedList<JCRNodeWrapper>();
         for (String member : members) {
-            Principal principal = lookupMember(member);
+            JCRNodeWrapper principal = lookupMember(member);
             if (principal == null) {
                 logger.warn("Unable to lookup principal for key {}", member);
                 continue;
             }
 
             // do not add group to itself and check if the principal is not yet a member of the group
-            if (!group.equals(principal) && !group.isMember(principal) && (!(principal instanceof JahiaGroup) || !((JahiaGroup)principal).isMember(group))) {
+            if (!group.equals(principal) && !group.isMember(principal) && (!(principal instanceof JCRGroupNode) || !((JCRGroupNode)principal).isMember(group))) {
                 candidates.add(principal);
             }
         }
@@ -180,14 +180,14 @@ public class ManageGroupsFlowHandler implements Serializable {
         if (candidates.size() > 0) {
             group.addMembers(candidates);
             logger.info("Added {} member(s) to group {} in {} ms",
-                    new Object[] { candidates.size(), group.getGroupKey(), System.currentTimeMillis() - timer });
+                    new Object[] { candidates.size(), group.getPath(), System.currentTimeMillis() - timer });
         }
 
         Locale locale = LocaleContextHolder.getLocale();
         context.addMessage(new MessageBuilder()
                 .info()
                 .defaultText(
-                        Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
+                        Messages.getInternal("label.group", locale) + " '" + group.getName() + "' "
                                 + Messages.getInternal("message.successfully.updated", locale)).build());
     }
 
@@ -203,7 +203,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return <code>true</code> if the group was successfully copied; <code>false</code> otherwise
      */
     public void copyGroup(String selectedGroupKey, GroupModel newGroup, MessageContext context) {
-        JahiaGroup selectedGroup = lookupGroup(selectedGroupKey);
+        JCRGroupNode selectedGroup = lookupGroup(selectedGroupKey);
         Locale locale = LocaleContextHolder.getLocale();
         if (selectedGroup == null) {
             context.addMessage(new MessageBuilder()
@@ -216,7 +216,7 @@ public class ManageGroupsFlowHandler implements Serializable {
         }
         // create new group
         @SuppressWarnings("deprecation")
-        JahiaGroup grp = groupManagerService.createGroup(newGroup.getSiteId(), newGroup.getGroupname(), null, false);
+        JCRGroupNode grp = groupManagerService.createGroup(newGroup.getSiteKey(), newGroup.getGroupname(), null, false);
         if (grp == null) {
             context.addMessage(new MessageBuilder()
                     .error()
@@ -231,7 +231,7 @@ public class ManageGroupsFlowHandler implements Serializable {
                             Messages.getInternal("label.group", locale) + " '" + newGroup.getGroupname() + "' "
                                     + Messages.getInternal("message.successfully.created", locale)).build());
             // copy membership
-            Collection<Principal> members = selectedGroup.getMembers();
+            Collection<JCRNodeWrapper> members = selectedGroup.getMembers();
             if (members.size() > 0) {
                 grp.addMembers(members);
             }
@@ -245,14 +245,11 @@ public class ManageGroupsFlowHandler implements Serializable {
      */
     public Map<String, ? extends JahiaGroupManagerProvider> getProviders() {
         Map<String, JahiaGroupManagerProvider> providers = new LinkedHashMap<String, JahiaGroupManagerProvider>();
-        for (JahiaGroupManagerProvider p : groupManagerService.getProviderList()) {
-            providers.put(p.getKey(), p);
-        }
         return providers;
     }
 
-    private int getSiteId(RequestContext ctx) {
-        return ((RenderContext) ctx.getExternalContext().getRequestMap().get("renderContext")).getSite().getID();
+    private String getSiteKey(RequestContext ctx) {
+        return ((RenderContext) ctx.getExternalContext().getRequestMap().get("renderContext")).getSite().getSiteKey();
     }
 
     /**
@@ -268,8 +265,8 @@ public class ManageGroupsFlowHandler implements Serializable {
         }
         Set<String> systemGroups = new HashSet<String>();
         for (Object p : groups) {
-            if (p instanceof JCRGroup && isReadOnly((JahiaGroup) p)) {
-                systemGroups.add(((JahiaGroup) p).getGroupKey());
+            if (p instanceof JCRGroupNode && isReadOnly((JCRGroupNode) p)) {
+                systemGroups.add(((JCRGroupNode) p).getPath());
             }
         }
 
@@ -282,7 +279,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return an empty (newly initialized) search criteria bean
      */
     public SearchCriteria initCriteria(RequestContext ctx) {
-        return new SearchCriteria(getSiteId(ctx));
+        return new SearchCriteria(getSiteKey(ctx));
     }
 
     /**
@@ -291,20 +288,14 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return an empty (newly initialized) group bean
      */
     public GroupModel initGroup(RequestContext ctx) {
-        return new GroupModel(getSiteId(ctx));
+        return new GroupModel(getSiteKey(ctx));
     }
 
-    private boolean isReadOnly(JahiaGroup grp) {
-        if (groupManagerService.getProvider(grp.getProviderName()).isReadOnly()) {
-            return true;
-        }
-        if (grp instanceof JCRGroup) {
-            try {
-                return ((JCRGroup) grp).getNode(JCRSessionFactory.getInstance().getCurrentUserSession()).isNodeType(
-                        "jmix:systemNode");
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+    private boolean isReadOnly(JCRGroupNode grp) {
+        try {
+            return grp.isNodeType("jmix:systemNode");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         return false;
     }
@@ -316,7 +307,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the group key
      * @return up the specified group by key
      */
-    public JahiaGroup lookupGroup(String selectedGroup) {
+    public JCRGroupNode lookupGroup(String selectedGroup) {
         return selectedGroup != null ? groupManagerService.lookupGroup(selectedGroup) : null;
     }
 
@@ -327,10 +318,10 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the principal key
      * @return the principal object for the specified key
      */
-    private Principal lookupMember(String memberKey) {
-        Principal p = null;
+    private JCRNodeWrapper lookupMember(String memberKey) {
+        JCRNodeWrapper p = null;
         if (memberKey.startsWith("u:")) {
-            p = userManagerService.lookupUserByKey(StringUtils.substringAfter(memberKey, ":"));
+            p = userManagerService.lookupUser(StringUtils.substringAfter(memberKey, ":"));
         } else if (memberKey.startsWith("g:")) {
             p = groupManagerService.lookupGroup(StringUtils.substringAfter(memberKey, ":"));
         } else {
@@ -349,7 +340,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the message context object
      */
     public void removeGroup(String selectedGroup, MessageContext context) {
-        JahiaGroup grp = lookupGroup(selectedGroup);
+        JCRGroupNode grp = lookupGroup(selectedGroup);
         if (isReadOnly(grp)) {
             context.addMessage(new MessageBuilder()
                     .error()
@@ -360,18 +351,18 @@ public class ManageGroupsFlowHandler implements Serializable {
             return;
         } else {
             Locale locale = LocaleContextHolder.getLocale();
-            if (groupManagerService.deleteGroup(grp)) {
+            if (groupManagerService.deleteGroup(grp.getPath())) {
                 context.addMessage(new MessageBuilder()
                         .info()
                         .defaultText(
-                                Messages.getInternal("label.group", locale) + " '" + grp.getGroupname() + "' "
+                                Messages.getInternal("label.group", locale) + " '" + grp.getName() + "' "
                                         + Messages.getInternal("message.successfully.removed", locale)).build());
             } else {
                 context.addMessage(new MessageBuilder()
                         .error()
                         .defaultText(
                                 Messages.getWithArgs("resources.JahiaSiteSettings",
-                                        "siteSettings.groups.errors.remove.failed", locale, grp.getGroupname()))
+                                        "siteSettings.groups.errors.remove.failed", locale, grp.getName()))
                         .build());
             }
         }
@@ -391,12 +382,12 @@ public class ManageGroupsFlowHandler implements Serializable {
         if (members == null || members.length == 0) {
             return;
         }
-        JahiaGroup group = lookupGroup(groupKey);
-        logger.info("Removing members {} from group {}", members, group.getGroupKey());
+        JCRGroupNode group = lookupGroup(groupKey);
+        logger.info("Removing members {} from group {}", members, group.getPath());
         long timer = System.currentTimeMillis();
         int countRemoved = 0;
         for (String member : members) {
-            Principal principal = lookupMember(member);
+            JCRNodeWrapper principal = lookupMember(member);
             if (principal == null) {
                 logger.warn("Unable to lookup principal for key {}", member);
                 continue;
@@ -409,7 +400,7 @@ public class ManageGroupsFlowHandler implements Serializable {
             }
         }
 
-        logger.info("Removed {} member(s) from group {} in {} ms", new Object[] { countRemoved, group.getGroupKey(),
+        logger.info("Removed {} member(s) from group {} in {} ms", new Object[] { countRemoved, group.getPath(),
                 System.currentTimeMillis() - timer });
 
         Locale locale = LocaleContextHolder.getLocale();
@@ -417,7 +408,7 @@ public class ManageGroupsFlowHandler implements Serializable {
         context.addMessage(new MessageBuilder()
                 .info()
                 .defaultText(
-                        Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
+                        Messages.getInternal("label.group", locale) + " '" + group.getName() + "' "
                                 + Messages.getInternal("message.successfully.updated", locale)).build());
         }
     }
@@ -429,15 +420,15 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            current search criteria
      * @return the list of groups, matching the specified search criteria
      */
-    public Set<Principal> search(SearchCriteria searchCriteria) {
+    public Set<JCRNodeWrapper> search(SearchCriteria searchCriteria) {
         String searchTerm = searchCriteria.getSearchString();
         if (StringUtils.isNotEmpty(searchTerm) && searchTerm.indexOf('*') == -1) {
             searchTerm += '*';
         }
         long timer = System.currentTimeMillis();
-        Set<Principal> searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
-                searchCriteria.getSiteId(), searchTerm, searchCriteria.getProperties(),
-                searchCriteria.getStoredOn(), searchCriteria.getProviders());
+        Set<JCRNodeWrapper> searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
+                searchCriteria.getSiteKey(), searchTerm, searchCriteria.getProperties(),
+                searchCriteria.getStoredOn(), searchCriteria.getProviders()));
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
         return searchResult;
     }
@@ -449,19 +440,19 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            current search criteria
      * @return the list of groups, matching the specified search criteria
      */
-    public Set<Principal> searchNewMembers(SearchCriteria searchCriteria) {
+    public Set<JCRNodeWrapper> searchNewMembers(SearchCriteria searchCriteria) {
         long timer = System.currentTimeMillis();
 
-        Set<Principal> searchResult;
+        Set<JCRNodeWrapper> searchResult;
         boolean searchForUsers = searchType.equals("users");
         if (searchForUsers) {
-            searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
-                    searchCriteria.getProviders());
+                    searchCriteria.getProviders()));
         } else {
-            searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
-                    searchCriteria.getSiteId(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
-                    searchCriteria.getStoredOn(), searchCriteria.getProviders());
+            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
+                    searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
+                    searchCriteria.getStoredOn(), searchCriteria.getProviders()));
         }
 
         logger.info("Found {} {} in {} ms", new Object[] { searchResult.size(), searchForUsers ? "users" : "groups",

@@ -79,12 +79,16 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletRequest;
 import java.io.Serializable;
 import java.lang.reflect.Method;
@@ -133,7 +137,7 @@ public class PrincipalViewHelper implements Serializable {
 
     private static transient final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrincipalViewHelper.class);
     
-    private static transient final Comparator<Principal> PRINCIPAL_COMPARATOR = new PrincipalComparator();
+    private static transient final Comparator<JCRNodeWrapper> PRINCIPAL_COMPARATOR = new PrincipalComparator();
 
     private Map<Principal, Integer[]> perms;
     private Set<Principal> inheritance;
@@ -194,7 +198,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param p The principal (user or group) to format
      * @return The principal formated
      */
-    public String getPrincipalTextOption(Principal p) {
+    public String getPrincipalTextOption(JCRNodeWrapper p) {
         final StringBuilder authUserText = new StringBuilder();
         for (int i = 0; i < selectBoxFieldsMethod.size(); i++) {
             final Method m = (Method) selectBoxFieldsMethod.get(i);
@@ -224,7 +228,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param p The principal (user or group) to format
      * @return The user/group key depending from principal type.
      */
-    public String getPrincipalValueOption(Principal p) {
+    public String getPrincipalValueOption(JCRNodeWrapper p) {
         final StringBuilder buff = new StringBuilder();
         if (p == null) {
             return "null";
@@ -245,22 +249,31 @@ public class PrincipalViewHelper implements Serializable {
      * @return
      * @see org.jahia.data.viewhelper.principal.PrincipalViewHelper#getDisplayName(java.security.Principal)
      */
-    public static String getFullName(Principal p) {
-        if (p instanceof JahiaGroup) {
+    public static String getFullName(JCRNodeWrapper p) {
+        if (p instanceof JCRGroupNode) {
             return getDisplayName(p);
-        } else if (p instanceof JahiaUser) {
-            JahiaUser jahiaUser = (JahiaUser) p;
+        } else if (p instanceof JCRUserNode) {
+            JCRUserNode jahiaUser = (JCRUserNode) p;
             StringBuilder fullName = new StringBuilder();
-            String value = jahiaUser.getProperty("j:firstName");
-            if (StringUtils.isNotEmpty(value)) {
-                fullName.append(value);
-            }
-            value = jahiaUser.getProperty("j:lastName");
-            if (StringUtils.isNotEmpty(value)) {
-                if (fullName.length() > 0) {
-                    fullName.append(" ");
+            String value = null;
+            try {
+                value = jahiaUser.getProperty("j:firstName").getString();
+                if (StringUtils.isNotEmpty(value)) {
+                    fullName.append(value);
                 }
-                fullName.append(value);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+            try {
+                value = jahiaUser.getProperty("j:lastName").getString();
+                if (StringUtils.isNotEmpty(value)) {
+                    if (fullName.length() > 0) {
+                        fullName.append(" ");
+                    }
+                    fullName.append(value);
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
 
             return fullName.length() == 0 ? getDisplayName(jahiaUser) : fullName.toString();
@@ -274,7 +287,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param p the principal for which to build the displayable name
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
-    public static String getDisplayName(Principal p) {
+    public static String getDisplayName(JCRNodeWrapper p) {
         return getDisplayName(p, null);
     }
     
@@ -284,15 +297,15 @@ public class PrincipalViewHelper implements Serializable {
      * @param locale the locale to use for looking up resource bundle values 
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
-    public static String getDisplayName(Principal p, Locale locale) {
-        if (p instanceof JahiaUser) {
-            JahiaUser jahiaUser = (JahiaUser) p;
-            String userName = jahiaUser.getUsername();
+    public static String getDisplayName(JCRNodeWrapper p, Locale locale) {
+        if (p instanceof JCRUserNode) {
+            JCRUserNode jahiaUser = (JCRUserNode) p;
+            String userName = jahiaUser.getName();
             userName = getUserDisplayName(userName, locale);
             return userName;
-        } else if (p instanceof JahiaGroup) {
-            JahiaGroup jahiaGroup = (JahiaGroup) p;
-            String groupName = jahiaGroup.getGroupname();
+        } else if (p instanceof JCRGroupNode) {
+            JCRGroupNode jahiaGroup = (JCRGroupNode) p;
+            String groupName = jahiaGroup.getName();
             groupName = getGroupDisplayName(groupName, locale);
             return groupName;
         } else {
@@ -355,9 +368,9 @@ public class PrincipalViewHelper implements Serializable {
      * @param size The principal string size that should be displayed.
      * @return The displayable principal string.
      */
-    public static String getName(Principal p, Integer size) {
+    public static String getName(JCRNodeWrapper p, Integer size) {
         String displayName = getDisplayName(p);
-        return adjustStringSize(displayName, size.intValue());
+        return adjustStringSize(displayName, size);
     }
 
     /**
@@ -368,27 +381,12 @@ public class PrincipalViewHelper implements Serializable {
      * @return The displayable provider string.
      */
     public static String getProvider(Principal p, Integer size) {
-        if (p instanceof JahiaUser) {
-            return adjustStringSize(((JahiaUser) p).getProviderName(), size.intValue());
-        } else {
-            return adjustStringSize(((JahiaGroup) p).getProviderName(), size.intValue());
+        if (p instanceof JahiaPrincipal) {
+            return adjustStringSize(((JahiaPrincipal) p).getProviderName(), size);
         }
+        return null;
     }
 
-    /**
-     * Construct a displayable site ID string
-     *
-     * @param p    The principal object
-     * @param size The provider string size that should be displayed.
-     * @return The displayable id string.
-     */
-    public static String getSiteID(Principal p, Integer size) {
-        if (p instanceof JahiaUser) {
-            return StringUtils.repeat(" ", size);
-        } else {
-            return adjustStringSize(Integer.toString(((JahiaGroup) p).getSiteID()), size.intValue());
-        }
-    }
 
     /**
      * Construct a displayable site key string
@@ -398,24 +396,14 @@ public class PrincipalViewHelper implements Serializable {
      * @return The displayable site key string
      */
     public static String getSiteKey(Principal p, Integer size) {
-        int siteID = -1;
-        if (p instanceof JahiaUser) {
-            siteID = 0;
-        } else {
-            siteID = ((JahiaGroup) p).getSiteID();
+        String siteKey = null;
+        if (p instanceof JahiaGroup) {
+            siteKey = ((JahiaGroup) p).getSiteKey();
         }
-        if (siteID == 0) {
-            return adjustStringSize("server", size.intValue());
+        if (siteKey == null) {
+            return adjustStringSize("server", size);
         }
-        if (siteID > 0) {
-            try {
-                JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                return adjustStringSize(jahiaSite.getSiteKey(), size.intValue());
-            } catch (JahiaException je) {
-                logger.error("Error while retrieving site id=" + siteID, je);
-            }
-        }
-        return adjustStringSize("unknown", size.intValue());
+        return adjustStringSize(siteKey, size);
     }
 
     /**
@@ -426,26 +414,23 @@ public class PrincipalViewHelper implements Serializable {
      * @return The displayable site title string
      */
     public static String getSiteTitle(Principal p, Integer size) {
-        int siteID = -1;
-        if (p instanceof JahiaUser) {
-            siteID = 0;
-        } else {
-            siteID = ((JahiaGroup) p).getSiteID();
+        String siteKey = null;
+        if (p instanceof JahiaGroup) {
+            siteKey = ((JahiaGroup) p).getSiteKey();
         }
-        if (siteID == 0) {
-            return adjustStringSize("server", size.intValue());
+        if (siteKey == null) {
+            return adjustStringSize("server", size);
         }
-        if (siteID > 0) {
-            try {
-                JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteID);
-                if (jahiaSite != null) {
-                    return adjustStringSize(jahiaSite.getTitle(), size.intValue());
-                }
-            } catch (JahiaException je) {
-                logger.error("Error while retrieving site id=" + siteID, je);
+
+        try {
+            JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteKey);
+            if (jahiaSite != null) {
+                return adjustStringSize(jahiaSite.getTitle(), size);
             }
+        } catch (JahiaException je) {
+            logger.error("Error while retrieving site key=" + siteKey, je);
         }
-        return adjustStringSize("unknown", size.intValue());
+        return adjustStringSize("unknown", size);
     }
 
     /**
@@ -483,17 +468,27 @@ public class PrincipalViewHelper implements Serializable {
      * @param size The size the properties should be displayed
      * @return The displayable properties.
      */
-    public static String getProperties(Principal p, Integer size) {
+    public static String getProperties(JCRNodeWrapper p, Integer size) {
         final StringBuilder properties = new StringBuilder();
-        if (p instanceof JahiaUser) {
-            final JahiaUser user = (JahiaUser) p;
+        if (p instanceof JCRUserNode) {
+            final JCRUserNode user = (JCRUserNode) p;
             // Find a displayable user property
-            if (user.getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)) {
+            if (user.getName().equals(JahiaUserManagerService.GUEST_USERNAME)) {
                 properties.append(getI18n("org.jahia.engines.users.guest.label", "guest"));
                 return adjustStringSize(properties.toString(), size);
             } else {
-                final String firstname = user.getProperty("j:firstName");
-                final String lastname = user.getProperty("j:lastName");
+                String firstname = null;
+                try {
+                    firstname = user.getProperty("j:firstName").getString();
+                } catch (RepositoryException e) {
+                    logger.debug(e.getMessage(), e);
+                }
+                String lastname = null;
+                try {
+                    lastname = user.getProperty("j:lastName").getString();
+                } catch (RepositoryException e) {
+                    logger.debug(e.getMessage(), e);
+                }
                 if (lastname != null && !"".equals(lastname.trim())) {
                     properties.append(lastname);
                     if (size == -1 || lastname.length() < size) {
@@ -504,9 +499,12 @@ public class PrincipalViewHelper implements Serializable {
                     properties.append(firstname);
                 }
                 if ("".equals(properties.toString())) {
-                    String email = user.getProperty("j:email");
-                    if (email != null) {
+                    String email = null;
+                    try {
+                        email = user.getProperty("j:email").getString();
                         properties.append(email);
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
                     }
                 }
                 return adjustStringSize(properties.toString(), size);
@@ -518,26 +516,25 @@ public class PrincipalViewHelper implements Serializable {
             properties.append(getI18n("org.jahia.engines.groups.guest.label", "guest"));
             return adjustStringSize(properties.toString(), size);
         } else {
-            final JahiaGroup group = (JahiaGroup) p;
+            final JCRGroupNode group = (JCRGroupNode) p;
             // Find some group members for properties
-            final Iterator<?> grpMembers = group.isPreloadedGroups() ? new EnumerationIterator(group.members()) : null;
+            final List<JCRNodeWrapper> grpMembers = group.getMembers();
             final StringBuilder members = new StringBuilder().append("(");
             if (grpMembers != null) {
-                while (grpMembers.hasNext()) {
-                    final Object obj = grpMembers.next();
-                    members.append(getDisplayName((Principal)obj));
-                    if (size != -1 && members.length() > size.intValue()) {
-                        break;
-                    }
-                    if (grpMembers.hasNext()) {
+                for (JCRNodeWrapper member : grpMembers) {
+                    if (members.length()>1) {
                         members.append(", ");
+                    }
+                    members.append(getDisplayName(member));
+                    if (size != -1 && members.length() > size) {
+                        break;
                     }
                 }
             } else {
                 members.append("...");
             }
             members.append(")");
-            return adjustStringSize(members.toString(), size.intValue());
+            return adjustStringSize(members.toString(), size);
         }
     }
 
@@ -607,7 +604,7 @@ public class PrincipalViewHelper implements Serializable {
      *                - providers
      * @return a Properties object that contain the search criterium
      */
-    public static Set<Principal> getSearchResult(ServletRequest request) {
+    public static Set<JCRUserNode> getSearchResult(ServletRequest request) {
 
         String searchString = request.getParameter("searchString");
         final String searchIn = request.getParameter("searchIn");
@@ -618,11 +615,11 @@ public class PrincipalViewHelper implements Serializable {
         return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set<Principal> getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn,
+    public static Set<JCRUserNode> getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn,
                                       String[] providers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
-        final Set<Principal> searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
+        final Set<JCRUserNode> searchResults = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
         if(countLimit > 0) {
            logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
@@ -648,14 +645,6 @@ public class PrincipalViewHelper implements Serializable {
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaUserManagerService.
                         searchUsers(searchParameters));
-            } else {
-                for (final String curServer : providers) {
-                    final Set<Principal> curSearchResults = jahiaUserManagerService.
-                            searchUsers(curServer, searchParameters);
-                    if (curSearchResults != null) {
-                        searchResults.addAll(curSearchResults);
-                    }
-                }
             }
         }
         
@@ -674,10 +663,10 @@ public class PrincipalViewHelper implements Serializable {
      *                - properties
      *                - storedOn
      *                - providers
-     * @param siteID  The site ID containing the principal to search
+     * @param siteKey  The site ID containing the principal to search
      * @return a Properties object that contain the search criterium
      */
-    public static Set<Principal> getGroupSearchResult(ServletRequest request, int siteID) {
+    public static Set<JCRGroupNode> getGroupSearchResult(ServletRequest request, String siteKey) {
 
         String searchString = request.getParameter("searchString");
         final String searchIn = request.getParameter("searchIn");
@@ -685,20 +674,20 @@ public class PrincipalViewHelper implements Serializable {
         final String storedOn = request.getParameter("storedOn");
         final String[] providers = request.getParameterValues("providers");
 
-        return getGroupSearchResult(searchIn, siteID, searchString, searchInProps, storedOn, providers);
+        return getGroupSearchResult(searchIn, siteKey, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set<Principal> getGroupSearchResult(String searchIn, int siteID, String searchString, String[] searchInProps,
+    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps,
                                            String storedOn, String[] providers) {
         JahiaGroupManagerService jahiaGroupManagerService =
                 ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final Properties searchParameters = new Properties();
-        final Set<Principal> searchResults = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
+        final Set<JCRGroupNode> searchResults = new TreeSet<JCRGroupNode>(PRINCIPAL_COMPARATOR);
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
             searchResults.addAll(jahiaGroupManagerService.
-                    searchGroups(siteID, searchParameters));
+                    searchGroups(null, searchParameters));
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -713,16 +702,7 @@ public class PrincipalViewHelper implements Serializable {
             }
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaGroupManagerService.
-                        searchGroups(siteID, searchParameters));
-            } else {
-                for (int i = 0; i < providers.length; i++) {
-                    final String curServer = providers[i];
-                    final Set<JahiaGroup> curSearchResults = jahiaGroupManagerService.
-                            searchGroups(curServer, siteID, searchParameters);
-                    if (curSearchResults != null) {
-                        searchResults.addAll(curSearchResults);
-                    }
-                }
+                        searchGroups(null, searchParameters));
             }
         }
         return searchResults;
@@ -737,33 +717,22 @@ public class PrincipalViewHelper implements Serializable {
      *              from
      * @return a set of users without the Jahia Administrators
      */
-    public static Set<Principal> removeJahiaAdministrators(Set<Principal> users) {
-        final Set<Principal> usersWithoutJahiaAdmin = new TreeSet<Principal>(PRINCIPAL_COMPARATOR);
+    public static Set<JCRUserNode> removeJahiaAdministrators(Set<JCRUserNode> users) {
+        final Set<JCRUserNode> usersWithoutJahiaAdmin = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         usersWithoutJahiaAdmin.addAll(users);
-        final JahiaGroup jahiaAdminGroup = ServicesRegistry.getInstance().
-                getJahiaGroupManagerService().getAdministratorGroup(null);
-        final Iterator<?> memberEnum = new EnumerationIterator(jahiaAdminGroup.members());
-        while (memberEnum.hasNext()) {
-            final Object curMemberObject = memberEnum.next();
-            if (curMemberObject instanceof JahiaUser) {
-                usersWithoutJahiaAdmin.remove(curMemberObject);
+        try {
+            final JCRGroupNode jahiaAdminGroup = ServicesRegistry.getInstance().
+                    getJahiaGroupManagerService().getAdministratorGroup(null);
+            List<JCRNodeWrapper> members = jahiaAdminGroup.getMembers();
+            for (JCRNodeWrapper member : members) {
+                if (member instanceof JCRUserNode) {
+                    usersWithoutJahiaAdmin.remove(member);
+                }
             }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
         return usersWithoutJahiaAdmin;
-    }
-
-    public static Set<JahiaGroup> getUserGroupMembership(JahiaUser usr, int site) {
-        Set<JahiaGroup> groups = new HashSet<JahiaGroup>();
-        JahiaGroupManagerService jahiaGroupManagerService =
-                ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        List<String> v = jahiaGroupManagerService.getUserMembership(usr);
-        for (String gname : v) {
-            JahiaGroup g = jahiaGroupManagerService.lookupGroup(gname);
-            if (g != null && (g.getSiteID() == site || g.getSiteID() == 0)) {
-                groups.add(g);
-            }
-        }
-        return groups;
     }
     
     private static String getI18n(String key, String defaultValue) {
@@ -798,10 +767,10 @@ public class PrincipalViewHelper implements Serializable {
         }
     }
 
-    private static class PrincipalComparator implements Comparator<Principal>,Serializable {
+    private static class PrincipalComparator implements Comparator<JCRNodeWrapper>,Serializable {
         private static final long serialVersionUID = 7942666955260548143L;
 
-        public int compare(Principal o1, Principal o2) {
+        public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
             if(o1 == o2) { return 0; }
             if(o1 == null || o1.getName() == null) { return 1; }
             if(o2 == null || o2.getName() == null) { return -1; }

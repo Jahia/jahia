@@ -72,7 +72,6 @@
 package org.jahia.ajax.gwt.client.service;
 
 import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
@@ -119,7 +118,7 @@ public interface UserManagerService extends RemoteService  {
 
     public BasePagingLoadResult<GWTJahiaUser> searchUsers (String match, int offset, int limit, List<Integer> siteIds);
 
-    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<Integer> siteIds);
+    public BasePagingLoadResult<GWTJahiaGroup> searchGroups(String match, int offset, int limit, List<String> siteIds);
 
     public BasePagingLoadResult<GWTJahiaUser> searchUsersInContext (String match, int offset, int limit, String context);
 

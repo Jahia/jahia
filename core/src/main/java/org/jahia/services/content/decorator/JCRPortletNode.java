@@ -106,6 +106,17 @@ public class JCRPortletNode extends JCRNodeDecorator {
         String context;
         try {
             context = getProperty("j:applicationRef").getNode().getProperty("j:context").getString();
+            if (context.startsWith("$context")) {
+                context = Jahia.getContextPath() + context.substring("$context".length());
+            }
+            try {
+                final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(context);
+                if(applicationByContext==null) {
+                    context = null;
+                }
+            } catch (JahiaException e) {
+                context = null;
+            }
         } catch (RepositoryException e) {
             // Is it an old portlet instance ?
             final String[] strings = Patterns.EXCLAMATION_MARK.split(getProperty("j:application").getString());

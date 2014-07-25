@@ -77,16 +77,22 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.taglibs.user.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 
+import javax.jcr.RepositoryException;
+
 public class AdminPropertiesHandler implements Serializable {
     private static final long serialVersionUID = -1665000223980422529L;
-
+    private transient static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
     private AdminProperties adminProperties;
 
     public AdminProperties getAdminProperties() {
@@ -97,45 +103,69 @@ public class AdminPropertiesHandler implements Serializable {
      * first method call in the flow. It instantiates and populates the AdminProperties bean
      */
     public void init() {
-        JCRUser rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
+        JCRUserNode rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
         adminProperties = new AdminProperties();
-        UsersFlowHandler.populateUser(rootNode.getUserKey(), adminProperties);
+        UsersFlowHandler.populateUser(rootNode.getPath(), adminProperties);
     }
 
     /**
      * save the bean in the JCR
      */
     public void save(MessageContext messages) {
-        JCRUser rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
+        JCRUserNode rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
         if (!StringUtils.isEmpty(adminProperties.getPassword())) {
             rootNode.setPassword(adminProperties.getPassword());
         }
-        if (!StringUtils.equals(rootNode.getProperty("j:lastName"), adminProperties.getLastName())) {
-            rootNode.setProperty("j:lastName", adminProperties.getLastName());
+        try {
+            if (!StringUtils.equals(rootNode.getProperty("j:lastName").getString(), adminProperties.getLastName())) {
+                rootNode.setProperty("j:lastName", adminProperties.getLastName());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        if (!StringUtils.equals(rootNode.getProperty("j:firstName"), adminProperties.getFirstName())) {
-            rootNode.setProperty("j:firstName", adminProperties.getFirstName());
+        try {
+            if (!StringUtils.equals(rootNode.getProperty("j:firstName").getString(), adminProperties.getFirstName())) {
+                rootNode.setProperty("j:firstName", adminProperties.getFirstName());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        if (!StringUtils.equals(rootNode.getProperty("j:organization"), adminProperties.getOrganization())) {
-            rootNode.setProperty("j:organization", adminProperties.getOrganization());
+        try {
+            if (!StringUtils.equals(rootNode.getProperty("j:organization").getString(), adminProperties.getOrganization())) {
+                rootNode.setProperty("j:organization", adminProperties.getOrganization());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        if (!StringUtils.equals(rootNode.getProperty("emailNotificationsDisabled"), adminProperties
-                .getEmailNotificationsDisabled().toString())) {
-            rootNode.setProperty("emailNotificationsDisabled",
-                    Boolean.toString(adminProperties.getEmailNotificationsDisabled()));
+        try {
+            if (!StringUtils.equals(rootNode.getProperty("emailNotificationsDisabled").getString(), adminProperties
+                    .getEmailNotificationsDisabled().toString())) {
+                rootNode.setProperty("emailNotificationsDisabled",
+                        Boolean.toString(adminProperties.getEmailNotificationsDisabled()));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        if (!StringUtils.equals(rootNode.getProperty("j:email"), adminProperties.getEmail())) {
-            rootNode.setProperty("j:email", adminProperties.getEmail());
+        try {
+            if (!StringUtils.equals(rootNode.getProperty("j:email").getString(), adminProperties.getEmail())) {
+                rootNode.setProperty("j:email", adminProperties.getEmail());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
-        String lang = adminProperties.getPreferredLanguage().toString();
-        if (!StringUtils.equals(rootNode.getProperty("preferredLanguage"), lang)) {
-            rootNode.setProperty("preferredLanguage", lang);
+        try {
+            String lang = adminProperties.getPreferredLanguage().toString();
+            if (!StringUtils.equals(rootNode.getProperty("preferredLanguage").getString(), lang)) {
+                rootNode.setProperty("preferredLanguage", lang);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
 
         messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
     }
-    public List<JahiaGroup> getUserMembership() {
-        return new LinkedList<JahiaGroup>(User.getUserMembership(JCRUserManagerProvider.getInstance().lookupRootUser().getUsername()).values());
+    public List<JCRGroupNode> getUserMembership() {
+        return new LinkedList<JCRGroupNode>(User.getUserMembership(JCRUserManagerProvider.getInstance().lookupRootUser().getName()).values());
     }
 
 }

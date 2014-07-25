@@ -126,7 +126,6 @@
                     <bean class="org.jahia.bin.FindUsersAndGroups">
                         <property name="jahiaUserManagerService" ref="JahiaUserManagerService"/>
                         <property name="jahiaGroupManagerService" ref="JahiaGroupManagerService"/>
-                        <property name="jahiaSitesService" ref="JahiaSitesService"/>
                         <property name="requireAuthenticatedUser" value="true"/>
                         <property name="hardLimit" value="20"/>
                     </bean>

@@ -81,6 +81,7 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.PaginatedList;
@@ -503,13 +504,9 @@ public class SubscriptionService {
                 boolean registered = true;
                 if (StringUtils.isNotEmpty(username)) {
                     // registered Jahia user is provided
-                    JahiaUser user = username.charAt(0) == '{' ? userManagerService.lookupUserByKey(username) :
+                    JCRUserNode user = username.charAt(0) == '{' ? userManagerService.lookupUserByKey(username) :
                             userManagerService.lookupUser(username);
-                    if (user != null) {
-                        if (username.charAt(0) != '{') {
-                            username = "{" + user.getProviderName() + "}" + username;
-                        }
-                    } else {
+                    if (user == null) {
                         logger.warn("No user can be found for the specified username '" + username +
                                 "'. Skipping subscription: " + StringUtils.join(nextLine, separator));
                         continue;
@@ -728,11 +725,11 @@ public class SubscriptionService {
         if (provider != null) {
             // registered user
             String key = "{" + provider + "}" + subscriber.getSubscriber();
-            JahiaUser user = userManagerService.lookupUserByKey(key);
+            JCRUserNode user = userManagerService.lookupUserByKey(key);
             if (user != null) {
-                subscriber.setFirstName(user.getProperty(J_FIRST_NAME));
-                subscriber.setLastName(user.getProperty(J_LAST_NAME));
-                subscriber.setEmail(user.getProperty(J_EMAIL));
+                subscriber.setFirstName(user.getProperty(J_FIRST_NAME).getString());
+                subscriber.setLastName(user.getProperty(J_LAST_NAME).getString());
+                subscriber.setEmail(user.getProperty(J_EMAIL).getString());
             } else {
                 logger.warn("Unable to find user for key {}", key);
             }

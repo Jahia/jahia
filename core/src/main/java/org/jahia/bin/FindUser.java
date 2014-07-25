@@ -84,6 +84,7 @@ import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
@@ -137,7 +138,7 @@ public class FindUser extends BaseFindController {
             }
         }
 
-        Set<Principal> result = !badQuery ? search(queryTerm, request) : Collections.<Principal>emptySet();
+        Set<JCRNodeWrapper> result = !badQuery ? search(queryTerm, request) : Collections.<JCRNodeWrapper>emptySet();
         JCRNodeWrapper jcrNodeWrapper = null;
         String roles = null;
         if (!result.isEmpty()) {
@@ -154,18 +155,18 @@ public class FindUser extends BaseFindController {
         writeResults(result, request, response, jcrNodeWrapper, roles);
     }
 
-    protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
-        return searchUsers(queryTerm);
+    protected Set<JCRNodeWrapper> search(String queryTerm, HttpServletRequest request) {
+        return new HashSet<JCRNodeWrapper>(searchUsers(queryTerm));
     }
 
-    protected Set<Principal> searchUsers(String queryTerm) {
+    protected Set<JCRUserNode> searchUsers(String queryTerm) {
         Properties searchCriterias = buildSearchCriteria(queryTerm);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Performing user search using criteria: {}", searchCriterias);
         }
 
-        Set<Principal> result = userService.searchUsers(searchCriterias);
+        Set<JCRUserNode> result = userService.searchUsers(searchCriterias);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching users", result.size());
@@ -209,7 +210,7 @@ public class FindUser extends BaseFindController {
         return toJSON((JahiaUser) principal);
     }
 
-    protected void writeResults(Set<Principal> users, HttpServletRequest request, HttpServletResponse response,
+    protected void writeResults(Set<JCRNodeWrapper> users, HttpServletRequest request, HttpServletResponse response,
                                 JCRNodeWrapper jcrNodeWrapper, String roles) throws IOException, JSONException {
 
         response.setContentType("application/json; charset=UTF-8");
@@ -222,16 +223,16 @@ public class FindUser extends BaseFindController {
             rolesForNode = JCRContentUtils.getRolesForNode(jcrNodeWrapper, true, true, roles, 0, false);
         }
 
-        for (Principal user : users) {
+        for (JCRNodeWrapper user : users) {
             if (jcrNodeWrapper != null && roles != null) {
                 for (Map<String, Object> stringObjectMap : rolesForNode) {
                     if (stringObjectMap.get("principalType").equals("user") && stringObjectMap.get("principal").equals(user)) {
-                        jsonResults.add(toJSON(user));
+                        jsonResults.add(toJSON(((JCRUserNode)user).getJahiaUser()));
                         count++;
                     }
                 }
             } else {
-                jsonResults.add(toJSON(user));
+                jsonResults.add(toJSON(((JCRUserNode)user).getJahiaUser()));
                 count++;
             }
             if (count >= hardLimit) {

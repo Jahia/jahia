@@ -106,7 +106,7 @@ public class JCRSQLTag extends AbstractJCRTag {
         try {
             if (isUseRootUser()) {
                 userToReset = JCRSessionFactory.getInstance().getCurrentUser();
-                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
             }
             result = executeQuery(getJCRSession());
 

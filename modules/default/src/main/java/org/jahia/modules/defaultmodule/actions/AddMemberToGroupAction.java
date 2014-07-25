@@ -74,6 +74,8 @@ package org.jahia.modules.defaultmodule.actions;
 import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
@@ -122,13 +124,13 @@ public class AddMemberToGroupAction extends Action {
             // path to general group is /groups/groupName
             groupName = splitGroupPath[2];
         }
-        JahiaGroup targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, groupName);
+        JCRGroupNode targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, groupName);
 
         if (parameters.get("userKey") != null) {
             String userKey = parameters.get("userKey").get(0);
-            JahiaUser jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
+            JCRUserNode jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
             if (jahiaUser == null) {
-                logger.warn("User " + userKey + " could not be found, will not add as member of group " + targetJahiaGroup.getGroupKey());
+                logger.warn("User " + userKey + " could not be found, will not add as member of group " + targetJahiaGroup.getPath());
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaUser)) {
@@ -136,9 +138,9 @@ public class AddMemberToGroupAction extends Action {
             }
         } else if (parameters.get("groupKey") != null) {
             String groupKey = parameters.get("groupKey").get(0);
-            JahiaGroup jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+            JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
             if (jahiaGroup == null) {
-                logger.warn("Group " + groupKey + " could not be found, will not add as member of group " + targetJahiaGroup.getGroupKey());
+                logger.warn("Group " + groupKey + " could not be found, will not add as member of group " + targetJahiaGroup.getPath());
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaGroup)) {

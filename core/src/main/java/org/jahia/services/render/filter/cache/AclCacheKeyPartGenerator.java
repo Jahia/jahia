@@ -79,6 +79,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.sites.JahiaSitesService;
@@ -231,7 +233,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         if (keyPart.equals(PER_USER)) {
-            keyPart = renderContext.getUser().getUsername();
+            keyPart = renderContext.getUser().getName();
         } else {
             String[] paths = keyPart.split(",");
             SortedSet<String> aclKeys = new TreeSet<String>();
@@ -240,7 +242,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     if (s.equals(MR_ACL)) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false));
                     } else if (s.equals(LOGGED_USER)) {
-                        aclKeys.add(Boolean.toString(renderContext.getUser().getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)));
+                        aclKeys.add(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
                     } else if (s.startsWith("*")) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, URLDecoder.decode(s.substring(1), "UTF-8"), renderContext.getUser(), new HashSet<String>(), true));
                     } else {
@@ -270,13 +272,13 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-        l.add(getPrincipalAcl("u:" + principal.getName(), 0));
+        l.add(getPrincipalAcl("u:" + principal.getName()));
 
-        List<String> groups = groupManagerService.getUserMembership(principal);
+        List<String> groups = groupManagerService.getUserMembership(principal.getName());
 
         for (String group : groups) {
-            JahiaGroup g = groupManagerService.lookupGroup(group);
-            l.add(getPrincipalAcl("g:" + g.getName(), g.getSiteID()));
+            JCRGroupNode g = groupManagerService.lookupGroup(group);
+            l.add(getPrincipalAcl("g:" + g.getPath()));
         }
 
         Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
@@ -330,23 +332,22 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
-    private Map<String, Set<String>> getPrincipalAcl(final String key, final int siteId) throws RepositoryException {
-        final String cacheKey = key + ":" + siteId;
-        Element element = cache.get(cacheKey);
+    private Map<String, Set<String>> getPrincipalAcl(final String key) throws RepositoryException {
+        Element element = cache.get(key);
         if (element == null) {
-            Semaphore semaphore = processings.get(cacheKey);
+            Semaphore semaphore = processings.get(key);
             if(semaphore==null) {
                 semaphore = new Semaphore(1);
-                processings.putIfAbsent(cacheKey, semaphore);
+                processings.putIfAbsent(key, semaphore);
             }
             try {
                 semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
-                element = cache.get(cacheKey);
+                element = cache.get(key);
                 if (element != null) {
                     return (Map<String, Set<String>>) element.getObjectValue();
                 }
 
-                logger.debug("Getting ACL for " + cacheKey);
+                logger.debug("Getting ACL for " + key);
                 long l = System.currentTimeMillis();
 
                 Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
@@ -363,13 +364,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
-                            if (key.startsWith("g:") && siteId != node.getResolveSite().getID() && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteId != 0)) {
+                            if (key.startsWith("g:")) {
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();
-                            if (path.startsWith("/sites/")) {
-
-                            }
                             Set<String> foundRoles = new HashSet<String>();
                             boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
                             Value[] roles = node.getProperty(Constants.J_ROLES).getValues();
@@ -402,10 +400,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         return mapGranted;
                     }
                 });
-                element = new Element(cacheKey, map);
+                element = new Element(key, map);
                 element.setEternal(true);
                 cache.put(element);
-                logger.debug("Getting ACL for " + cacheKey + " took " + (System.currentTimeMillis() - l) + "ms");
+                logger.debug("Getting ACL for " + key + " took " + (System.currentTimeMillis() - l) + "ms");
             } catch (InterruptedException e) {
                 logger.debug(e.getMessage(), e);
             } finally {

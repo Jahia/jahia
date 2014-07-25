@@ -83,4 +83,18 @@ import java.security.Principal;
  */
 public interface JahiaPrincipal extends Principal, Serializable {
 
+    /**
+     * Get the path of this user in the local store. For example for LDAP user this will return the path of
+     * the user in the JCR with all necessary encoding.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    String getLocalPath();
+
+    /**
+     * Get the providerName of this user.
+     *
+     * @return String representation of the name of the provider of this user
+     */
+    String getProviderName();
 }

@@ -77,6 +77,7 @@ import org.jahia.engines.EngineMessage;
 import org.jahia.engines.EngineMessages;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.render.RenderContext;
@@ -122,7 +123,7 @@ public class ChangePasswordAction extends Action {
                 }
                 else{
                     JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
-                    JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
+                    JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
 
                     PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
                     if (!evalResult.isSuccess()) {

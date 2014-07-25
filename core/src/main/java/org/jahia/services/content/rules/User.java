@@ -130,9 +130,9 @@ public class User {
         JahiaGroupManagerService grpManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         JahiaUser jahiaUser = getJahiaUser();
         if (jahiaUser != null) {
-            List<String> groups = grpManager.getUserMembership(jahiaUser);
+            List<String> groups = grpManager.getUserMembership(jahiaUser.getLocalPath());
             for (String groupname : groups) {
-                JahiaGroup group = grpManager.lookupGroup(groupname);
+                JahiaGroup group = grpManager.lookupGroup(groupname).getJahiaGroup();
                 r.add(new Group(group));
             }
         }
@@ -142,7 +142,7 @@ public class User {
     public JahiaUser getJahiaUser() {
         if (user == null && username != null) {
             if (!username.equals(JahiaLoginModule.SYSTEM) && !username.equals(JahiaLoginModule.GUEST)) {
-                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username).getJahiaUser();
             }
         }
         return user;

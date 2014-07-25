@@ -71,6 +71,8 @@
  */
 package org.jahia.services.tasks;
 
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.JAHIANT_TASK;
@@ -167,28 +169,28 @@ public class TaskService {
      * @param siteId the site ID of the group
      * @throws RepositoryException in case of an error
      */
-    public void createTaskForGroup(final Task task, String forGroup, final int siteId) throws RepositoryException {
-        JahiaGroup group = groupManager.lookupGroup(siteId, forGroup);
+    public void createTaskForGroup(final Task task, String forGroup, final String siteKey) throws RepositoryException {
+        JCRGroupNode group = groupManager.lookupGroup(siteKey, forGroup);
         if (group == null) {
-            logger.warn("Group with the name '" + forGroup + "' is not found in site with ID '" + siteId
+            logger.warn("Group with the name '" + forGroup + "' is not found in site with ID '" + siteKey
                     + "'. Skipping creating tasks.");
             return;
         }
-        final Set<Principal> members = group.getRecursiveUserMembers();
+        final Set<JCRUserNode> members = group.getRecursiveUserMembers();
         if (logger.isDebugEnabled()) {
             if (members.isEmpty()) {
-                logger.warn("Group with the name '" + forGroup + "' in site with ID '" + siteId
+                logger.warn("Group with the name '" + forGroup + "' in site with ID '" + siteKey
                         + "' has not members. Skipping creating tasks.");
             } else {
                 logger.warn("Creating task for " + members.size() + " members of the group '" + forGroup
-                        + "' in site with ID '" + siteId + "'.");
+                        + "' in site with ID '" + siteKey + "'.");
             }
         }
         if (!members.isEmpty()) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (Principal principal : members) {
-                        createTask(task, principal.getName(), session);
+                    for (JCRNodeWrapper principal : members) {
+                        createTask(task, principal.getPath(), session);
                     }
 
                     session.save();

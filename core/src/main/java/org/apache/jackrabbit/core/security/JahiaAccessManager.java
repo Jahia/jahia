@@ -102,6 +102,8 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
@@ -183,7 +185,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
-    private JahiaUser jahiaUser;
+    private JCRUserNode jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
@@ -533,7 +535,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(), 0)) {
+                if (isAdmin(jahiaPrincipal.getName(), null)) {
                     pathPermissionCache.put(cacheKey, true);
                     return true;
                 }
@@ -955,7 +957,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        if (isAdmin(jahiaPrincipal.getName(), 0)) {
+        if (isAdmin(jahiaPrincipal.getName(), null)) {
             return getSupportedPrivileges(absPath);
         }
 
@@ -983,15 +985,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         isAliased = aliased;
     }
 
-    public boolean isAdmin(String username, int siteId) {
+    public boolean isAdmin(String username, String siteKey) {
         if (isAdmin == null) {
             // optimize away guest, we assume he can never be site administrator.
             if (JahiaLoginModule.GUEST.equals(username)) {
                 return false;
             }
-            JahiaUser user = userService.lookupUser(username);
+            JCRUserNode user = userService.lookupUser(username);
             if (user != null) {
-                return isAdmin = user.isAdminMember(siteId);
+                return isAdmin = user.isAdminMember(siteKey);
             }
             return isAdmin = false;
         }
@@ -1000,16 +1002,21 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     private boolean isUserMemberOf(String groupname, String site) {
-        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
+        if (JahiaGroupManagerService.GUEST_GROUPPATH.equals(groupname)) {
             return true;
         }
-        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
+        if (JahiaGroupManagerService.USERS_GROUPPATH.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
             return true;
         }
 
-        JahiaGroup group = groupService.lookupGroup(site, groupname);
+        JCRGroupNode group;
+        if(groupname.startsWith("/")){
+            group = groupService.lookupGroup(groupname);
+        } else {
+            group = groupService.lookupGroup(site,groupname);
+        }
         if (group == null) {
-            group = groupService.lookupGroup(null, groupname);
+            group = groupService.lookupGroup(null, groupname.startsWith("/")?StringUtils.substringAfterLast(groupname,"/"):groupname);
         }
         return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
     }

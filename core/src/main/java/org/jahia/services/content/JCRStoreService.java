@@ -259,12 +259,6 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
-    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
-        JCRStoreProvider provider = sessionFactory.getMountPoints().get("/");
-        provider.deployExternalUser(jahiaUser);
-        ServicesRegistry.getInstance().getJahiaUserManagerService().updateCache(jahiaUser);
-    }
-
     public Map<String, Class<? extends JCRNodeDecorator>> getDecorators() {
         return decorators;
     }

@@ -82,6 +82,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
@@ -216,7 +217,7 @@ public class WebprojectHandler implements Serializable {
 
                         if (bean.isCreateAdmin()) {
                             UserProperties admin = bean.getAdminProperties();
-                            JahiaUser adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
+                            JCRUserNode adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
                                     admin.getUserProperties());
                             groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
                         }

@@ -87,8 +87,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.bin.BaseTestController;
@@ -126,6 +128,10 @@ public class JahiaTestCase {
 
     protected static final JahiaUser getUser() {
         return JCRSessionFactory.getInstance().getCurrentUser();
+    }
+
+    protected static final JCRUserNode getUserNode(JahiaUser admin) {
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(admin.getLocalPath());
     }
 
     protected static void publishAll(String nodeIdentifier) throws RepositoryException {

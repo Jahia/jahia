@@ -101,7 +101,8 @@ public class ProviderClassLoaderAwareCacheEntry extends ClassLoaderAwareCacheEnt
 
     @Override
     protected ClassLoader getClassLoaderToUse() {
-        return JCRGroupManagerProvider.getInstance().getChainedClassloader();
+//        return JCRGroupManagerProvider.getInstance().getChainedClassloader();
+        return null;
     }
 
 }

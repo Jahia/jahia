@@ -111,7 +111,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
@@ -284,7 +284,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     try {
-                        JCRUser user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                        JahiaUser user = JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser();
                         JCRSessionFactory.getInstance().setCurrentUser(user);
                         JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

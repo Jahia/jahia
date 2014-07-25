@@ -72,6 +72,8 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -83,6 +85,7 @@ import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.IOException;
@@ -107,9 +110,9 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
 
     public List<Group> findGroupsByUser(String userId) {
         List<Group> results = new ArrayList<Group>();
-        JahiaUser user = this.userService.lookupUserByKey(userId);
+        JCRUserNode user = this.userService.lookupUserByKey(userId);
         if (user != null) {
-            List<String> l = groupService.getUserMembership(user);
+            List<String> l = groupService.getUserMembership(user.getPath());
             for (String groupKey : l) {
                 Group groupById = getGroupById(groupKey);
                 if (groupById != null) {
@@ -145,8 +148,12 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<String> userKeyList = userService.getUserList();
         List<User> results = new ArrayList<User>();
         for (String userKey : userKeyList) {
-            JahiaUser jahiaUser = userService.lookupUserByKey(userKey);
-            results.add(new UserImpl(jahiaUser.getUserKey(), jahiaUser.getProperty("firstName"), jahiaUser.getProperty("lastName"), jahiaUser.getProperty("email")));
+            JCRUserNode jahiaUser = userService.lookupUserByKey(userKey);
+            try {
+                results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser.getProperty("lastName").getString(), jahiaUser.getProperty("email").getString()));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return results;
     }
@@ -156,8 +163,8 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<Group> results = new ArrayList<Group>();
         List<String> groupKeyList = groupService.getGroupList();
         for (String groupKey : groupKeyList) {
-            JahiaGroup jahiaGroup = groupService.lookupGroup(groupKey);
-            results.add(new GroupImpl(jahiaGroup.getGroupKey(), jahiaGroup.getName(), "jahia"));
+            JCRGroupNode jahiaGroup = groupService.lookupGroup(groupKey);
+            results.add(new GroupImpl(jahiaGroup.getPath(), jahiaGroup.getName(), "jahia"));
         }
         return results;
     }
@@ -165,11 +172,14 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
     @Override
     public User getUserById(String userId) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = service.lookupUserByKey(userId);
+        JCRUserNode user = service.lookupUserByKey(userId);
         if (user != null) {
-            Properties properties = user.getProperties();
-            return new UserImpl(userId, properties.getProperty("j:firstName"), properties.getProperty("j:lastName"),
-                    properties.getProperty("j:email"));
+            try {
+                return new UserImpl(userId, user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(),
+                        user.getProperty("j:email").getString());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
         return null;
     }
@@ -177,7 +187,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
     @Override
     public Group getGroupById(String groupId) {
         JahiaGroupManagerService service = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        JahiaGroup group = service.lookupGroup(groupId);
+        JCRGroupNode group = service.lookupGroup(groupId);
         if (group != null) {
             return new GroupImpl(groupId, group.getName(), "jahia");
         }

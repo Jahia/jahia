@@ -125,7 +125,7 @@ public class JcrSessionFilter implements Filter {
 
             if (sessionFactory.getCurrentUser() == null) {
                 sessionFactory
-                        .setCurrentUser(userManagerService.lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+                        .setCurrentUser(userManagerService.lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser());
             } else {
                 ((HttpServletRequest)servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
             }

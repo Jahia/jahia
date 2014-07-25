@@ -76,6 +76,7 @@ import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
@@ -153,7 +154,7 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
 
-                    JahiaUser user = null;
+                    JCRUserNode user = null;
                     if (userService != null) {
                         user = userService.lookupUser(name);
                     } else {
@@ -163,7 +164,7 @@ public class JahiaLoginModule implements LoginModule {
 
                     if ((token != null) || user.verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));
-                        if (user.isAdminMember(0)) {
+                        if (user.isAdminMember(null)) {
                             principals.add(new AdminPrincipal(name));
                         }
                     }

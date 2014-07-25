@@ -81,6 +81,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaUser;
@@ -171,7 +172,7 @@ public class UserProperties implements Serializable {
                         .code("serverSettings.user.errors.password.not.matching")
                         .build());
             } else {
-                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService()
+                JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService()
                         .lookupUserByKey(userKey);
                 PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(jahiaUser,
                         password, true);

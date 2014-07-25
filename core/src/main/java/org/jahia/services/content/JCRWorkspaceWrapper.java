@@ -223,8 +223,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                         String sourceParentPath = StringUtils.substringBeforeLast(sourcePath,"/");
                         if (parentNode.getPath().equals(sourceParentPath)) {
                             // rename case
-                            JCRNodeWrapper userFolder = session.getNode(JCRStoreService.getInstance().getUserFolder(
-                                    session.getUser()).getPath());
+                            JCRNodeWrapper userFolder = session.getUserNode();
                             if (!userFolder.hasNode("tmp")) {
                                 if (!userFolder.isCheckedOut()) {
                                     session.checkout(userFolder);
@@ -254,7 +253,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                         sourceNode.removeShare();
                         if (parentNode.isNodeType("mix:lastModified")) {
                             parentNode.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
-                            parentNode.setProperty(Constants.JCR_LASTMODIFIEDBY, session.getUser().getUsername());
+                            parentNode.setProperty(Constants.JCR_LASTMODIFIEDBY, session.getUser().getName());
                         }
 
                         if (!sessionMove) {
@@ -266,7 +265,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                 if (sessionMove) {
                     callback.doInJCR(session);
                 } else {
-                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getUsername(), getName(), session.getLocale(), new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getName(), getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             return JCRObservationManager.doWorkspaceWriteCall(session, JCRObservationManager.WORKSPACE_MOVE, callback);
                         }

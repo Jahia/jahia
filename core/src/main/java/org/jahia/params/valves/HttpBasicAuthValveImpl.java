@@ -113,7 +113,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                 String user = cred.substring(0,colonInd);
                 String pass = cred.substring(colonInd+1);
 
-                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user).getJahiaUser();
                 if (jahiaUser != null) {
                     if (jahiaUser.verifyPassword(pass)) {
                         if (logger.isDebugEnabled()) {

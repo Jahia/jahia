@@ -72,6 +72,7 @@
 package org.jahia.services.importexport;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -80,6 +81,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +100,7 @@ public class UsersImportHandler extends DefaultHandler {
     private JahiaSite site;
     private List<String[]> uuidProps = new ArrayList<String[]>();
 
-    private JahiaGroup currentGroup = null;
+    private JCRGroupNode currentGroup = null;
     private boolean member = false;
 
     public UsersImportHandler(JahiaSite site) {
@@ -133,7 +135,7 @@ public class UsersImportHandler extends DefaultHandler {
                     }
                 }
                 if (name != null && pass != null) {
-                    if (u.lookupUser(name) == null) {
+                    if (!u.userExists(name)) {
                         u.createUser(name, pass, p);
                     }
                 }
@@ -153,9 +155,6 @@ public class UsersImportHandler extends DefaultHandler {
                 }
                 if (name != null) {
                     currentGroup = g.lookupGroup(site.getSiteKey(), name);
-                    if (currentGroup == null) {
-                        currentGroup = g.createGroup(site.getSiteKey(), name, p, false);
-                    }
                 }
             }
         } else {
@@ -163,9 +162,9 @@ public class UsersImportHandler extends DefaultHandler {
             Principal p = null;
             String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
             if (localName.equals("user")) {
-                p = u.lookupUser(name);
+                p = u.lookupUser(name).getJahiaUser();
             } else if (localName.equals("group")) {
-                p = g.lookupGroup(site.getSiteKey(), name);
+                p = g.lookupGroup(site.getSiteKey(), name).getJahiaGroup();
             }
             if (p != null && !currentGroup.getMembers().contains(p)) {
                 currentGroup.addMember(p);

@@ -73,7 +73,6 @@ package org.jahia.test.services.render.filter.cache;
 
 import net.sf.ehcache.Element;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.channels.Channel;
@@ -93,9 +92,9 @@ import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaAdminUser;
@@ -357,17 +356,17 @@ public class CacheFilterTest extends JahiaTestCase {
         final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties());
         final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties());
         // Create three groups
-        final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
-        final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false);
-        final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false);
-        final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false);
+        final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
+        final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false, session);
+        final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false, session);
+        final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false, session);
         // Associate each user to two group
-        groupA.addMember(userAB,session);
-        groupA.addMember(userAC,session);
-        groupB.addMember(userAB,session);
-        groupB.addMember(userBC,session);
-        groupC.addMember(userAC,session);
-        groupC.addMember(userBC,session);
+        groupA.addMember(userAB);
+        groupA.addMember(userAC);
+        groupB.addMember(userAB);
+        groupB.addMember(userBC);
+        groupC.addMember(userAC);
+        groupC.addMember(userBC);
         // Create three content
         JCRNodeWrapper shared = site.getNode("home");
         if (shared.hasNode("testAclContent")) {

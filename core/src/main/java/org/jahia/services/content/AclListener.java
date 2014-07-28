@@ -78,7 +78,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -90,7 +89,6 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -319,7 +317,7 @@ public class AclListener extends DefaultEventListener {
                             continue;
                         }
                         logger.info(principal + " need privileged access");
-                        priv.addMember(p,systemSession);
+                        priv.addMember(p);
                     }
                 }
             }

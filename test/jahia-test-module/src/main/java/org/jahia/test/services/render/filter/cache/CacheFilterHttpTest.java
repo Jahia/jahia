@@ -91,7 +91,7 @@ import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -135,17 +135,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties());
 
             // Create three groups
-            final JCRGroupManagerProvider groupManagerProvider = JCRGroupManagerProvider.getInstance();
-            final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false);
-            final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false);
-            final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false);
+            final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
+            final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false, session);
+            final JCRGroupNode groupB = groupManagerProvider.createGroup(site.getSiteKey(), "groupB", new Properties(), false, session);
+            final JCRGroupNode groupC = groupManagerProvider.createGroup(site.getSiteKey(), "groupC", new Properties(), false, session);
             // Associate each user to two group
-            groupA.addMember(userAB,session);
-            groupA.addMember(userAC,session);
-            groupB.addMember(userAB,session);
-            groupB.addMember(userBC,session);
-            groupC.addMember(userAC,session);
-            groupC.addMember(userBC,session);
+            groupA.addMember(userAB);
+            groupA.addMember(userAC);
+            groupB.addMember(userAB);
+            groupB.addMember(userBC);
+            groupC.addMember(userAC);
+            groupC.addMember(userBC);
 
             InputStream importStream = CacheFilterHttpTest.class.getClassLoader().getResourceAsStream("imports/cachetest-site.xml");
             session.importXML(SITECONTENT_ROOT_NODE, importStream,

@@ -81,9 +81,7 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 import org.jahia.test.services.content.*;
@@ -178,11 +176,11 @@ public class AclTest {
         group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
         group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
 
-        group1.addMember(user1,session);
-        group1.addMember(user2,session);
+        group1.addMember(user1);
+        group1.addMember(user2);
 
-        group2.addMember(user3,session);
-        group2.addMember(user4,session);
+        group2.addMember(user3);
+        group2.addMember(user4);
         session.save();
     }
 

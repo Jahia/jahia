@@ -174,30 +174,18 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public void addMembers(final Collection<JCRNodeWrapper> members) {
-        try {
-            for (JCRNodeWrapper candidate : members) {
-                addMember(candidate, getSession());
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+        for (JCRNodeWrapper candidate : members) {
+            addMember(candidate);
         }
     }
 
-    public void addMember(final JCRNodeWrapper principal) {
-        try {
-            addMember(principal,getSession());
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    public void addMember(JCRNodeWrapper principal, JCRSessionWrapper jcrSessionWrapper) {
+    public void addMember(JCRNodeWrapper principal) {
         try {
             JCRNodeWrapper member = null;
             if(principal.isNodeType("jnt:user")) {
-                member = jcrSessionWrapper.getNode(getPath()+"/j:members").addNode(principal.getName(), "jnt:member");
+                member = getNode("j:members").addNode(principal.getName(), "jnt:member");
             } else if (principal.isNodeType("jnt:group")){
-                member = jcrSessionWrapper.getNode(getPath() + "/j:members").addNode(principal.getPath().replaceAll("/", "_"), "jnt:member");
+                member = getNode("j:members").addNode(principal.getPath().replaceAll("/", "_"), "jnt:member");
             }
             if(member!=null) {
                 member.setProperty("j:member", principal.getIdentifier());

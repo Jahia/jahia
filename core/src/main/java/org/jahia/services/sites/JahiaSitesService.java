@@ -453,7 +453,7 @@ public class JahiaSitesService extends JahiaService {
 
                     // attach superadmin user (current) to administrators group...
                     if (currentUser != null) {
-                        adminGroup.addMember(session.getNode(currentUser.getLocalPath()), session);
+                        adminGroup.addMember(session.getNode(currentUser.getLocalPath()));
                     }
 
                     JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
@@ -463,7 +463,7 @@ public class JahiaSitesService extends JahiaService {
                                 false, session);
                     }
                     // atach site privileged group to server privileged
-                    privGroup.addMember(sitePrivGroup,session);
+                    privGroup.addMember(sitePrivGroup);
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
                         siteNode.grantRoles("g:" + sitePrivGroup.getPath(), Collections.singleton("privileged"));

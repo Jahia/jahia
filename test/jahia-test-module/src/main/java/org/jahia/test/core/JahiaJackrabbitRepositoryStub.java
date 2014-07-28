@@ -192,7 +192,7 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
             readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
             ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readOnlyUser.getPath(), Collections.singleton("privileged"));
             JCRGroupNode usersGroup = JahiaGroupManagerService.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
-            usersGroup.addMember(readOnlyUser,(JCRSessionWrapper) session);
+            usersGroup.addMember(readOnlyUser);
             session.save();
         }
         

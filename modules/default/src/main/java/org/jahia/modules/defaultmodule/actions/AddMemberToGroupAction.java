@@ -79,9 +79,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 
@@ -134,7 +132,7 @@ public class AddMemberToGroupAction extends Action {
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaUser)) {
-                targetJahiaGroup.addMember(jahiaUser,session);
+                targetJahiaGroup.addMember(jahiaUser);
             }
         } else if (parameters.get("groupKey") != null) {
             String groupKey = parameters.get("groupKey").get(0);
@@ -144,7 +142,7 @@ public class AddMemberToGroupAction extends Action {
                 return ActionResult.BAD_REQUEST;
             }
             if (!targetJahiaGroup.isMember(jahiaGroup)) {
-                targetJahiaGroup.addMember(jahiaGroup,session);
+                targetJahiaGroup.addMember(jahiaGroup);
             }
         } else {
             return ActionResult.BAD_REQUEST;

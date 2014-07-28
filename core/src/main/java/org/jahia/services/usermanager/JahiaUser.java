@@ -71,10 +71,7 @@
  */
 package org.jahia.services.usermanager;
 
-import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
-
 import java.io.Serializable;
-import java.util.List;
 import java.util.Properties;
 
 /**
@@ -87,13 +84,12 @@ import java.util.Properties;
  * @author Fulco Houkes
  * @author Khue Nguyen
  */
-public class JahiaUser implements JahiaPrincipal,Serializable {
+public class JahiaUser implements JahiaPrincipal, Serializable {
 
     private final String name;
     private final String path;
 
     public JahiaUser(String name, String path) {
-
         this.name = name;
         this.path = path;
     }
@@ -117,65 +113,6 @@ public class JahiaUser implements JahiaPrincipal,Serializable {
     }
 
     /**
-     * Get user's properties list.
-     * The properties here should not be modified, as the modifications will
-     * not be serialized. Use the setProperty() method to modify a user's
-     * properties.
-     *
-     * @return Return a reference on the user's properties list, or null if no
-     * property is present.
-     */
-    public Properties getProperties() {
-        return null;
-    }
-
-    /**
-     * Retrieve the requested user property.
-     *
-     * @param key Property's name.
-     * @return Return the property's value of the specified key, or null if the
-     * property does not exist.
-     */
-    public String getProperty(String key) {
-        return null;
-    }
-
-
-    /**
-     * Test if the user is member of the specified group.
-     *
-     * @param name   Groupname.
-     * @param siteID the site id
-     * @return Return true if the user is member of the specified group, or
-     * false on any error.
-     */
-    public boolean isMemberOfGroup(String siteKey, String name) {
-        return true;
-    }
-
-    /**
-     * Test if the user is the root user
-     *
-     * @return Return true if the user is the root user
-     * false on any error.
-     */
-    public boolean isRoot() {
-        return true;
-    }
-
-    /**
-     * Verify if the passed in password is the same as the encapsulated by this
-     * user.
-     *
-     * @param password String representation of an non-encrypted password.
-     * @return Return true if the passed in password is the same as the
-     * encapsulated password in this user, and return false on any error.
-     */
-    public boolean verifyPassword(String password) {
-        return true;
-    }
-
-    /**
      * Get the name of the provider of this user.
      *
      * @return String representation of the name of the provider of this user
@@ -183,16 +120,6 @@ public class JahiaUser implements JahiaPrincipal,Serializable {
     public String getProviderName() {
         return null;
     }
-
-    /**
-     * Checks if the account is locked
-     *
-     * @return true if the account is locked
-     */
-    public boolean isAccountLocked() {
-        return false;
-    }
-
 
     /**
      * Returns the name of this principal.
@@ -205,7 +132,7 @@ public class JahiaUser implements JahiaPrincipal,Serializable {
     }
 
     /**
-     * Get the path of this user in the local store. For examle for LDAP user this will return the path of
+     * Get the path of this user in the local store. For example for LDAP user this will return the path of
      * the user in the JCR with all necessary encoding.
      *
      * @return String representation of the name of the provider of this user

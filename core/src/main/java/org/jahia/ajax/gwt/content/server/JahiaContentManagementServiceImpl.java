@@ -514,7 +514,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
         try {
-            return portlet.searchPortlets(match, getRemoteJahiaUser(), getLocale(), retrieveCurrentSession(), getUILocale());
+            return portlet.searchPortlets(match, getLocale(), retrieveCurrentSession(), getUILocale());
         } catch (Exception e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.search.portlets", getUILocale(), e.getLocalizedMessage()));
         }
@@ -635,7 +635,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
         final GWTJahiaGetPropertiesResult result = new GWTJahiaGetPropertiesResult(nodeTypes, props);
         result.setNode(node);
-        result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+        result.setAvailabledLanguages(languages.getLanguages(getSite(), getLocale()));
         result.setCurrentLocale(languages.getCurrentLang(getLocale()));
         return result;
     }
@@ -652,7 +652,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         JCRSessionWrapper s = retrieveCurrentSession();
         try {
-            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), s, getLocale());
+            properties.saveProperties(nodes, newProps, removedTypes, s, getLocale());
             retrieveCurrentSession().save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
@@ -676,7 +676,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         JCRSessionWrapper session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale));
         try {
-            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), session, getUILocale());
+            properties.saveProperties(nodes, newProps, removedTypes, session, getUILocale());
             session.validate();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             if (e instanceof CompositeConstraintViolationException) {
@@ -881,7 +881,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             try {
                 result.put(GWTJahiaNode.SITE_LANGUAGES,
                         languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()),
-                                getUser(), getLocale())
+                                getLocale())
                 );
                 if (needPermissionReload) {
                     // need to load the permissions
@@ -981,7 +981,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
                     JCRSessionWrapper langSession = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
                     if (properties != null) {
-                        this.properties.saveProperties(nodes, properties, null, getRemoteJahiaUser(), langSession, getUILocale());
+                        this.properties.saveProperties(nodes, properties, null, langSession, getUILocale());
                         langSession.validate();
                     }
                 }
@@ -1747,7 +1747,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper parent = sessionWrapper.getNode(parentpath);
 
             GWTJahiaCreateEngineInitBean result = new GWTJahiaCreateEngineInitBean();
-            result.setLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setLanguages(languages.getLanguages(getSite(), getLocale()));
             String defaultLanguage = parent.getResolveSite().getDefaultLanguage();
             if (defaultLanguage == null) {
                 defaultLanguage = sessionWrapper.getRootNode().getResolveSite().getDefaultLanguage();
@@ -1819,7 +1819,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final GWTJahiaEditEngineInitBean result = new GWTJahiaEditEngineInitBean(nodeTypes, props);
             result.setNode(node);
             result.hasOrderableChildNodes(nodeWrapper.getPrimaryNodeType().hasOrderableChildNodes());
-            result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setAvailabledLanguages(languages.getLanguages(getSite(), getLocale()));
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
 
             String defaultLanguage = nodeWrapper.getResolveSite().getDefaultLanguage();
@@ -2003,7 +2003,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
             final GWTJahiaEditEngineInitBean result =
                     new GWTJahiaEditEngineInitBean(nodeTypes, new HashMap<String, GWTJahiaNodeProperty>());
-            result.setAvailabledLanguages(languages.getLanguages(getSite(), getRemoteJahiaUser(), getLocale()));
+            result.setAvailabledLanguages(languages.getLanguages(getSite(), getLocale()));
             result.setCurrentLocale(languages.getCurrentLang(getLocale()));
             result.setMixin(gwtMixin);
             result.setInitializersValues(contentDefinition.getAllChoiceListInitializersValues(allTypes,

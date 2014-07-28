@@ -79,10 +79,10 @@ import java.util.Locale;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -111,9 +111,9 @@ public final class UserPreferencesHelper {
      * @return <code>true</code> if the user has explicitly disabled e-mail
      *         notification in the profile
      */
-    public static boolean areEmailNotificationsDisabled(JahiaUser user) {
+    public static boolean areEmailNotificationsDisabled(JCRUserNode user) {
         String emailNotificationsDisabled = user
-                .getProperty("emailNotificationsDisabled");
+                .getPropertyAsString("emailNotificationsDisabled");
         return (emailNotificationsDisabled != null && "true"
                 .equals(emailNotificationsDisabled));
     }
@@ -125,8 +125,8 @@ public final class UserPreferencesHelper {
      *            the user to retrieve the e-mail address
      * @return user's e-mail address or <code>null</code> if it is not provided
      */
-    public static String getEmailAddress(JahiaUser user) {
-        String email = user != null ? user.getProperty("j:email") : null;
+    public static String getEmailAddress(JCRUserNode user) {
+        String email = user != null ? user.getPropertyAsString("j:email") : null;
     
         return StringUtils.isNotBlank(email) ? email : null;
     }
@@ -140,8 +140,8 @@ public final class UserPreferencesHelper {
      * @return the first name for the specified user or <code>null</code> if it
      *         is not provided or empty
      */
-    public static String getFirstName(JahiaUser user) {
-        String name = user != null ? user.getProperty("j:firstName") : null;
+    public static String getFirstName(JCRUserNode user) {
+        String name = user != null ? user.getPropertyAsString("j:firstName") : null;
     
         return !StringUtils.isBlank(name) ? name : null;
     }
@@ -155,7 +155,7 @@ public final class UserPreferencesHelper {
      * @return the first + last name of the specified user or <code>null</code>
      *         if none is not provided or both are empty
      */
-    public static String getFullName(JahiaUser user) {
+    public static String getFullName(JCRUserNode user) {
         String name = null;
     
         if (user != null) {
@@ -168,7 +168,7 @@ public final class UserPreferencesHelper {
             }
         }
     
-        return name != null ? name : user.getUsername();
+        return name != null ? name : user.getName();
     }
 
     /**
@@ -180,8 +180,8 @@ public final class UserPreferencesHelper {
      * @return the last name for the specified user or <code>null</code> if it
      *         is not provided or empty
      */
-    public static String getLastName(JahiaUser user) {
-        String name = user != null ? user.getProperty("j:lastName") : null;
+    public static String getLastName(JCRUserNode user) {
+        String name = user != null ? user.getPropertyAsString("j:lastName") : null;
     
         return !StringUtils.isBlank(name) ? name : null;
     }
@@ -193,7 +193,7 @@ public final class UserPreferencesHelper {
      *            the user to retrieve the personal name
      * @return the e-mail address with the personal name of the specified user
      */
-    public static String getPersonalizedEmailAddress(JahiaUser user) {
+    public static String getPersonalizedEmailAddress(JCRUserNode user) {
         return getPersonalizedEmailAddress(getEmailAddress(user), user);
     }
 
@@ -207,7 +207,7 @@ public final class UserPreferencesHelper {
      * @return the e-mail address with the personal name of the specified user
      */
     public static String getPersonalizedEmailAddress(String email,
-            JahiaUser user) {
+            JCRUserNode user) {
         if (email == null || email.contains("<")) {
             return email;
         }
@@ -243,12 +243,12 @@ public final class UserPreferencesHelper {
      * @return the full user name (first name + last name) or the username if
      *         the full name data is not provided
      */
-    public static String getPersonalName(JahiaUser user) {
+    public static String getPersonalName(JCRUserNode user) {
         String name = null;
     
         if (user != null) {
             name = getFullName(user);
-            name = name != null ? name : user.getUsername();
+            name = name != null ? name : user.getName();
         }
     
         return name;
@@ -263,7 +263,7 @@ public final class UserPreferencesHelper {
      * @return the preferred locale of the specified user or the first one from
      *         the list of available locales
      */
-    public static Locale getPreferredLocale(JahiaUser user) {
+    public static Locale getPreferredLocale(JCRUserNode user) {
         return getPreferredLocale(user, (Locale) null);
     }
 
@@ -277,9 +277,9 @@ public final class UserPreferencesHelper {
      * @return the preferred locale of the specified user or the first one from
      *         the list of available locales
      */
-    public static Locale getPreferredLocale(JahiaUser user, Locale fallback) {
+    public static Locale getPreferredLocale(JCRUserNode user, Locale fallback) {
         //String propValue = getPreference("preferredLanguage", user);
-        String propValue = user != null ? user.getProperty("preferredLanguage") : null;
+        String propValue = user != null ? user.getPropertyAsString("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
 
@@ -297,9 +297,9 @@ public final class UserPreferencesHelper {
      * @return the preferred locale of the specified user or the first one from
      *         the list of available locales
      */
-    public static Locale getPreferredLocale(JahiaUser user, JahiaSite site) {
+    public static Locale getPreferredLocale(JCRUserNode user, JahiaSite site) {
         //String propValue = getPreference("preferredLanguage", user);
-        String propValue = user != null ? user.getProperty("preferredLanguage") : null;
+        String propValue = user != null ? user.getPropertyAsString("preferredLanguage") : null;
         Locale locale = propValue != null ? LanguageCodeConverters
                 .languageCodeToLocale(propValue) : null;
     

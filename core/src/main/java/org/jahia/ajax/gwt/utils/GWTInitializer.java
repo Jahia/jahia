@@ -81,11 +81,13 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.notification.ToolbarWarningsService;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
@@ -128,12 +130,16 @@ public class GWTInitializer {
 
     public static String generateInitializerStructure(HttpServletRequest request, HttpSession session, Locale locale, Locale uilocale) {
         StringBuilder buf = new StringBuilder();
-
+        JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         if (uilocale == null) {
             Locale sessionLocale = (Locale) session.getAttribute(Constants.SESSION_UI_LOCALE);
+            JCRUserNode userNode = null;
+            if (user != null) {
+                userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
+            }
             uilocale = sessionLocale != null ?
-                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(Constants.SESSION_USER), sessionLocale) :
-                    UserPreferencesHelper.getPreferredLocale((JahiaUser) session.getAttribute(Constants.SESSION_USER), LanguageCodeConverters.resolveLocaleForGuest(request));
+                    UserPreferencesHelper.getPreferredLocale(userNode, sessionLocale) :
+                    UserPreferencesHelper.getPreferredLocale(userNode, LanguageCodeConverters.resolveLocaleForGuest(request));
         }
         if (locale == null) {
             String language = request.getParameter("lang");
@@ -168,7 +174,6 @@ public class GWTInitializer {
         if (devMode) {
             params.put(JahiaGWTParameters.MODULES_SOURCES_DISK_PATH, StringEscapeUtils.escapeJavaScript(SettingsBean.getInstance().getModulesSourcesDiskPath()));
         }
-        JahiaUser user = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         if (user != null) {
             String name = user.getUsername();
             int index = name.indexOf(":");

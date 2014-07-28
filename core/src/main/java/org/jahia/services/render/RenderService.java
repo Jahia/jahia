@@ -84,6 +84,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.query.QueryWrapper;
@@ -95,6 +96,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,22 +135,9 @@ public class RenderService {
 
     private CacheImplementation<String, List<String>> templatesCache;
 
-    private AclCacheKeyPartGenerator aclCacheKeyPartGenerator;
-
-    public void setAclCacheKeyPartGenerator(AclCacheKeyPartGenerator aclCacheKeyPartGenerator) {
-        this.aclCacheKeyPartGenerator = aclCacheKeyPartGenerator;
-    }
-
     private ChannelService channelService;
 
-    public void setChannelService(ChannelService channelService) {
-        this.channelService = channelService;
-    }
-
-    @SuppressWarnings("unchecked")
-    public void setCacheProvider(CacheProvider cacheProvider) {
-        templatesCache = (CacheImplementation<String, List<String>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
-    }
+    private JahiaUserManagerService userManagerService;
 
     public static class RenderServiceBeanPostProcessor implements BeanPostProcessor {
         public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
@@ -572,7 +561,8 @@ public class RenderService {
             }
         }
         if (templateNode.hasProperty("j:requirePrivilegedUser") && templateNode.getProperty("j:requirePrivilegedUser").getBoolean()) {
-            if (!renderContext.getUser().isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+            JCRUserNode userNode = userManagerService.lookupUserByKey(renderContext.getUser().getUserKey());
+            if (userNode != null && !userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                 return invert;
             }
         }
@@ -583,5 +573,17 @@ public class RenderService {
         templatesCache.flushAll(true);
     }
 
+    @SuppressWarnings("unchecked")
+    public void setCacheProvider(CacheProvider cacheProvider) {
+        templatesCache = (CacheImplementation<String, List<String>>) cacheProvider.newCacheImplementation(RENDER_SERVICE_TEMPLATES_CACHE);
+    }
+
+    public void setChannelService(ChannelService channelService) {
+        this.channelService = channelService;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
 
 }

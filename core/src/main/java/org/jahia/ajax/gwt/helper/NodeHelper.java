@@ -832,8 +832,7 @@ class NodeHelper {
 
     private void populateSiteLanguages(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
-            n.set(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages(node.getResolveSite(), node
-                    .getSession().getUser(), node.getSession().getLocale()));
+            n.set(GWTJahiaNode.SITE_LANGUAGES, languages.getLanguages(node.getResolveSite(), node.getSession().getLocale()));
             n.set(GWTJahiaNode.SITE_MANDATORY_LANGUAGES, new ArrayList<String>(node
                     .getResolveSite().getMandatoryLanguages()));
         } catch (RepositoryException e) {

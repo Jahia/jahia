@@ -115,7 +115,8 @@ public class ChangePasswordAction extends Action {
                 json.put("focusField","password");
             } else {
                 String oldPassword = req.getParameter("oldpassword").trim();
-                if(!getCurrentUser().verifyPassword(oldPassword))
+                JCRUserNode user = (JCRUserNode) resource.getNode();
+                if(!user.verifyPassword(oldPassword))
                 {
                     String userMessage = Messages.get("resources.userDashboard","mySettings.errors.oldPassword.matching", renderContext.getUILocale());
                     json.put("errorMessage",userMessage);
@@ -123,7 +124,6 @@ public class ChangePasswordAction extends Action {
                 }
                 else{
                     JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
-                    JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(resource.getNode().getName());
 
                     PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(user, passwd, true);
                     if (!evalResult.isSuccess()) {

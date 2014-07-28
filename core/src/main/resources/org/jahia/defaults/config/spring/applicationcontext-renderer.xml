@@ -25,9 +25,9 @@
                 <ref bean="BundleScriptResolver"/>
             </list>
         </property>
-        <property name="aclCacheKeyPartGenerator" ref="aclCacheKeyPartGenerator"/>
         <property name="cacheProvider" ref="ehCacheProvider"/>
         <property name="channelService" ref="ChannelService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
     <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver">
@@ -237,6 +237,7 @@
     <bean class="org.jahia.services.render.filter.TemplatePermissionCheckFilter">
         <property name="priority" value="28"/>
         <property name="description" value="Handles permissions set on the template"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
     <bean class="org.jahia.services.render.filter.ForceUILocaleFilter">
         <property name="priority" value="29"/>

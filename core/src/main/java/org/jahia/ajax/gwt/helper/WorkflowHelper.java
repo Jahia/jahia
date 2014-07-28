@@ -92,10 +92,12 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
@@ -116,10 +118,7 @@ public class WorkflowHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowHelper.class);
 
     private WorkflowService service;
-
-    public void setService(WorkflowService service) {
-        this.service = service;
-    }
+    private JahiaUserManagerService userManagerService;
 
     public void start() {
         service.addWorkflowListener(new PollingWorkflowListener());
@@ -654,7 +653,7 @@ public class WorkflowHelper {
 
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
-            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser()).getJahiaUser();
+            JCRUserNode user = userManagerService.lookupUserByKey(workflow.getUser());
             final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
             Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {
@@ -701,7 +700,7 @@ public class WorkflowHelper {
                             try {
                                 JahiaUser jahiaUser = (JahiaUser) user;
                                 if (newTask) {
-                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
+                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(userManagerService.lookupUserByKey(jahiaUser.getUserKey()));
                                     if (preferredLocale == null) {
                                         preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                                     }
@@ -722,6 +721,14 @@ public class WorkflowHelper {
             }
         }
 
+    }
+
+    public void setService(WorkflowService service) {
+        this.service = service;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 
 }

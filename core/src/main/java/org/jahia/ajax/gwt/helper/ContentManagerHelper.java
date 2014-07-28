@@ -550,7 +550,7 @@ public class ContentManagerHelper {
             JCRNodeWrapper nodeToDelete = null;
             try {
                 nodeToDelete = currentUserSession.getNode(path);
-                if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
+                if (!currentUserSession.getUserNode().isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
                     if (nodeToDelete.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT) && nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                         nodeToDelete.unmarkForDeletion();
                     } else {
@@ -990,7 +990,7 @@ public class ContentManagerHelper {
 
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
-            if (currentUserSession.getUser().isRoot()) {
+            if (currentUserSession.getUserNode().isRoot()) {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
                 logger.error("Error when clearing all locks on node " + path);
@@ -1170,7 +1170,7 @@ public class ContentManagerHelper {
         try {
             referencedNode = currentUserSession.getNode(path);
             if (referencedNode != null) {
-                if (!user.isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
+                if (!currentUserSession.getUserNode().isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
                     missedPaths.add(referencedNode.getPath() + " - locked by " + referencedNode.getLockOwner());
                 }
                 if (!referencedNode.hasPermission(Privilege.JCR_REMOVE_NODE)) {

@@ -18,6 +18,7 @@
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="definitionHelper" ref="ContentDefinitionHelper"/>
         <property name="contentManager" ref="ContentManagerHelper"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
     <bean name="ContentManagerHelper" class="org.jahia.ajax.gwt.helper.ContentManagerHelper">
@@ -78,6 +79,7 @@
 
     <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper" init-method="start">
         <property name="service" ref="workflowService"/>
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper">

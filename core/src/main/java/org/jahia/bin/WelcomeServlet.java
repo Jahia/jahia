@@ -97,6 +97,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -151,10 +152,11 @@ public class WelcomeServlet extends HttpServlet {
 
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-        if (JahiaUserManagerService.isNotGuest(user) && user.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+        JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
+        if (JahiaUserManagerService.isNotGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
-            String language = resolveLanguage(request, site, user);
+            String language = resolveLanguage(request, site, userNode);
             redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() +
                      DASHBOARD_HOME, response);
         } else {
@@ -184,9 +186,10 @@ public class WelcomeServlet extends HttpServlet {
         String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
         final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
+        JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
         String redirect = null;
         String pathInfo = request.getPathInfo();
-        String language = resolveLanguage(request, site, user);
+        String language = resolveLanguage(request, site, userNode);
 
         String defaultLocation = null;
         String mapping = null;
@@ -279,7 +282,7 @@ public class WelcomeServlet extends HttpServlet {
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
     
-    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JahiaUser user)
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user)
             throws JahiaException {
         final List<Locale> newLocaleList = new ArrayList<Locale>();
         List<Locale> siteLanguages = Collections.emptyList();

@@ -278,7 +278,8 @@ public class RenderContext {
         if (uiLocale == null) {
             Locale locale = null;
             if (JahiaUserManagerService.isNotGuest(getUser())) {
-                locale = UserPreferencesHelper.getPreferredLocale(getUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
+                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(getUser().getUserKey());
+                locale = UserPreferencesHelper.getPreferredLocale(userNode, LanguageCodeConverters.resolveLocaleForGuest(request));
             }
             if (locale == null && mainResource != null) {
                 locale = getMainResourceLocale();

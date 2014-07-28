@@ -83,6 +83,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.JahiaCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -713,13 +714,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     credentials = JahiaLoginModule.getCredentials(guestUser);
                 }
             } else if ("storedPasswords".equals(authenticationType)) {
-                JahiaUser user = userManagerService.lookupUser(username).getJahiaUser();
-                if (user.getProperty("storedUsername_" + getKey()) != null) {
-                    username = user.getProperty("storedUsername_" + getKey());
-                }
-                String pass = user.getProperty("storedPassword_" + getKey());
-                if (pass != null) {
-                    credentials = new SimpleCredentials(username, pass.toCharArray());
+                JCRUserNode user = userManagerService.lookupUser(username);
+                username = user.getPropertyAsString("storedUsername_" + getKey());
+                JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
+                if (passProp != null) {
+                    credentials = new SimpleCredentials(username, passProp.getString().toCharArray());
                 } else {
                     if (guestPassword != null) {
                         credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
@@ -844,63 +843,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         return;
     }
-
-    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
-        String username = jahiaUser.getUsername();
-        JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
-        try {
-            String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(jahiaUser.getLocalPath(), "/"));
-            try {
-                Node startNode = session.getNode("/" + jcrUsernamePath[0]);
-                Node usersFolderNode = startNode;
-                int length = jcrUsernamePath.length;
-                for (int i = 1; i < length; i++) {
-                    try {
-                        startNode = startNode.getNode(jcrUsernamePath[i]);
-                    } catch (PathNotFoundException e) {
-                        try {
-                            if (i == (length - 1)) {
-                                Node userNode = startNode.addNode(jcrUsernamePath[i], Constants.JAHIANT_USER);
-                                if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                    String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
-                                    try {
-                                        JCRContentUtils.importSkeletons(skeletons,
-                                                startNode.getPath() + "/" + jcrUsernamePath[i], session,
-                                                new HashMap<String, String>());
-                                    } catch (Exception importEx) {
-                                        logger.error("Unable to import data using user skeletons " + skeletons,
-                                                importEx);
-                                    }
-                                }
-
-                                /*userNode.setProperty(JCRUser.J_EXTERNAL, true);
-                                userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());*/
-                                ValueFactory valueFactory = session.getValueFactory();
-                                List<Value> properties = new ArrayList<Value>();
-                                for (Object o : jahiaUser.getProperties().keySet()) {
-                                    properties.add(valueFactory.createValue((String) o));
-                                }
-                                userNode.setProperty("j:publicProperties", properties.toArray(new Value[properties.size()]));
-
-                                ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
-                            } else {
-                                // Simply create a folder
-                                startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
-                            }
-                            session.save();
-                        } catch (RepositoryException e1) {
-                            logger.error("Cannot save", e1);
-                        }
-                    }
-                }
-            } catch (PathNotFoundException e) {
-            }
-        } finally {
-            session.logout();
-        }
-    }
-
-
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());

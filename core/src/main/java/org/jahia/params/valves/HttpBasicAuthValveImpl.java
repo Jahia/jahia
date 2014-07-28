@@ -72,6 +72,8 @@
  package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.pipelines.PipelineException;
@@ -88,6 +90,7 @@ import javax.servlet.http.HttpServletRequest;
 public class HttpBasicAuthValveImpl extends BaseAuthValve {
     private static final transient Logger logger = LoggerFactory
             .getLogger(HttpBasicAuthValveImpl.class);
+    private JahiaUserManagerService userManagerService;
 
     public HttpBasicAuthValveImpl() {
     }
@@ -113,17 +116,17 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                 String user = cred.substring(0,colonInd);
                 String pass = cred.substring(colonInd+1);
 
-                JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user).getJahiaUser();
-                if (jahiaUser != null) {
-                    if (jahiaUser.verifyPassword(pass)) {
+                JCRUserNode jcrUserNode = userManagerService.lookupUser(user);
+                if (jcrUserNode != null) {
+                    if (jcrUserNode.verifyPassword(pass)) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("User " + user + " authenticated.");
                         }
-                        if (jahiaUser.isAccountLocked()) {
+                        if (jcrUserNode.isAccountLocked()) {
                             logger.debug("Login failed. Account is locked for user " + user);
                             return;
                         }
-                        authContext.getSessionFactory().setCurrentUser(jahiaUser);
+                        authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
                         return;
                     } else {
                         logger.debug("User found but incorrect password : " + user);
@@ -140,4 +143,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
         valveContext.invokeNext(context);
     }
 
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
 }

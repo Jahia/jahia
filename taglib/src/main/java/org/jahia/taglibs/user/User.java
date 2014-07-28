@@ -101,12 +101,15 @@ public class User {
     public static Boolean memberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            final String siteID = retrieveSiteId(renderContext);
-            final String[] groupArray = StringUtils.split(groups, ',');
-            for (String aGroupArray : groupArray) {
-                final String groupName = aGroupArray.trim();
-                if (currentUser.isMemberOfGroup(siteID, groupName)) {
-                    return true;
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(currentUser.getUserKey());
+            if (userNode != null) {
+                final String siteID = retrieveSiteId(renderContext);
+                final String[] groupArray = StringUtils.split(groups, ',');
+                for (String aGroupArray : groupArray) {
+                    final String groupName = aGroupArray.trim();
+                    if (userNode.isMemberOfGroup(siteID, groupName)) {
+                        return true;
+                    }
                 }
             }
         }
@@ -116,12 +119,15 @@ public class User {
     public static Boolean notMemberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            final String siteID = retrieveSiteId(renderContext);
-            final String[] groupArray = StringUtils.split(groups, ',');
-            for (String aGroupArray : groupArray) {
-                String groupName = aGroupArray.trim();
-                if (currentUser.isMemberOfGroup(siteID, groupName)) {
-                    return false;
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(currentUser.getUserKey());
+            if (userNode != null) {
+                final String siteID = retrieveSiteId(renderContext);
+                final String[] groupArray = StringUtils.split(groups, ',');
+                for (String aGroupArray : groupArray) {
+                    String groupName = aGroupArray.trim();
+                    if (userNode.isMemberOfGroup(siteID, groupName)) {
+                        return false;
+                    }
                 }
             }
         }

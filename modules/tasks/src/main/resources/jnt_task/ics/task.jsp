@@ -9,16 +9,17 @@
 <%@ page import="org.jahia.services.usermanager.JahiaUserManagerService"%>
 <%@ page import="java.util.HashMap" %>
 <%@ page import="javax.jcr.RepositoryException" %>
+<%@ page import="org.jahia.services.content.decorator.JCRUserNode" %>
 <%!
     String getUserContentLine(String userKey, String contentLineName) throws RepositoryException {
         if (userKey != null && !"".equals(userKey)) {
             JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            JahiaUser user = userService.lookupUserByKey(userKey);
-            String email = user.getProperty("j:email");
+            JCRUserNode user = userService.lookupUserByKey(userKey);
+            String email = user.getPropertyAsString("j:email");
             if (email != null && !"".equals(email)) {
                 String contentLine = contentLineName;
-                String firstName = user.getProperty("j:firstName");
-                String lastName = user.getProperty("j:lastName");
+                String firstName = user.getPropertyAsString("j:firstName");
+                String lastName = user.getPropertyAsString("j:lastName");
                 boolean hasFirstName = firstName != null && !"".equals(firstName);
                 boolean hasLastName = lastName != null && !"".equals(lastName);
                 if (hasFirstName || hasLastName) {

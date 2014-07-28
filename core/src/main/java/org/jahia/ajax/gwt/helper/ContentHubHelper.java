@@ -81,6 +81,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
@@ -99,6 +100,7 @@ public class ContentHubHelper {
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
     private ContentManagerHelper contentManager;
+    private JahiaUserManagerService userManagerService;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -150,9 +152,12 @@ public class ContentHubHelper {
     public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
-        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
-            if ("storedPasswords".equals(provider.getAuthenticationType())) {
-                results.put(provider.getKey(), user.getProperty("storedUsername_" + provider.getKey()));
+        JCRUserNode userNode = userManagerService.lookupUserByKey(user.getUserKey());
+        if (userNode != null) {
+            for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+                if ("storedPasswords".equals(provider.getAuthenticationType())) {
+                    results.put(provider.getKey(), userNode.getPropertyAsString("storedUsername_" + provider.getKey()));
+                }
             }
         }
         return results;
@@ -185,5 +190,9 @@ public class ContentHubHelper {
 
     public void setContentManager(ContentManagerHelper contentManager) {
         this.contentManager = contentManager;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

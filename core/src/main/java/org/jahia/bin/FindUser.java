@@ -197,10 +197,13 @@ public class FindUser extends BaseFindController {
         json.put("userKey", user.getUserKey());
         json.put("username", user.getUsername());
 
-        for (String key : displayProperties) {
-            String value = user.getProperty(key);
-            if (value != null) {
-                json.put(key, value);
+        JCRUserNode userNode = userService.lookupUserByKey(user.getUserKey());
+        if (userNode != null) {
+            for (String key : displayProperties) {
+                String value = userNode.getPropertyAsString(key);
+                if (value != null) {
+                    json.put(key, value);
+                }
             }
         }
         return json;

@@ -108,6 +108,7 @@ import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 public class Logout implements Controller {
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final transient Logger logger = LoggerFactory.getLogger(Logout.class);
+    private JahiaUserManagerService userManagerService;
 
     public static String getLogoutServletPath() {
         // TODO move this into configuration
@@ -322,19 +323,23 @@ public class Logout implements Controller {
         // now let's destroy the cookie authentication if there was one
         // set for this user.
         JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-        String cookieAuthKey = JahiaUserManagerService.isNotGuest(curUser.getLocalPath()) ? curUser.getProperty(cookieAuthConfig.getUserPropertyName()) : null;
-        if (cookieAuthKey != null) {
-            Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-            authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
-            authCookie.setMaxAge(0); // means we want it deleted now !
-            authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-            authCookie.setSecure(cookieAuthConfig.isSecure());
-            response.addCookie(authCookie);
-            try {
-                ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(curUser.getLocalPath()).getProperty(cookieAuthConfig.getUserPropertyName()).remove();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+        JCRPropertyWrapper cookieAuthKey = null;
+        try {
+            if (JahiaUserManagerService.isNotGuest(curUser.getLocalPath())) {
+                cookieAuthKey = userManagerService.lookupUserByKey(curUser.getUserKey()).getProperty(cookieAuthConfig.getUserPropertyName());
             }
+            if (cookieAuthKey != null) {
+                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());
+                authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
+                authCookie.setMaxAge(0); // means we want it deleted now !
+                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                authCookie.setSecure(cookieAuthConfig.isSecure());
+                response.addCookie(authCookie);
+                cookieAuthKey.remove();
+                cookieAuthKey.getSession().save();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -385,6 +390,10 @@ public class Logout implements Controller {
 
     public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
         this.urlRewriteService = urlRewriteService;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 
     private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {

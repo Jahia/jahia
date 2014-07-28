@@ -162,7 +162,7 @@ public class UsersFlowHandler implements Serializable {
         } catch (RepositoryException e) {
             logger.debug(e.getMessage(), e);
         }
-        propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser.getJahiaUser()));
+        propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
 //        if (props.isReadOnly("preferredLanguage")) {
 //            readOnlyProperties.add("preferredLanguage");
 //        }

@@ -274,7 +274,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
         l.add(getPrincipalAcl("u:" + principal.getName()));
 
-        List<String> groups = groupManagerService.getUserMembership(principal.getName());
+        List<String> groups = groupManagerService.getUserMembership(principal.getUserKey());
 
         for (String group : groups) {
             JCRGroupNode g = groupManagerService.lookupGroup(group);

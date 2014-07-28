@@ -74,6 +74,7 @@ package org.jahia.test.services.usermanager;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -130,31 +131,40 @@ public class JahiaGroupManagerServiceTest {
     public void tearDown() throws Exception {
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRGroupNode group = groupManager.lookupGroup(null, "test-group1");
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         if (group != null) {
-            groupManager.deleteGroup(group.getPath());
+            groupManager.deleteGroup(group.getPath(), session);
         }
 
         group = groupManager.lookupGroup(null, "test-group2");
         if (group != null) {
-            groupManager.deleteGroup(group.getPath());
+            groupManager.deleteGroup(group.getPath(), session);
         }
 
         group = groupManager.lookupGroup(null, "test-user1");
         if (group != null) {
-            groupManager.deleteGroup(group.getPath());
+            groupManager.deleteGroup(group.getPath(), session);
         }
+        session.save();
+        JCRSessionFactory.getInstance().closeAllSessions();
     }
 
     @Test
-    public void testGroupDelete() {
-        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
+    public void testGroupDelete() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);
-        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
+        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false, session);
         group2.addMember(user2);
         group2.addMember(group1);
 
-        groupManager.deleteGroup(group2.getPath());
-        groupManager.deleteGroup(group1.getPath());
+        session.save();
+
+        groupManager.deleteGroup(group2.getPath(), session);
+        groupManager.deleteGroup(group1.getPath(), session);
+
+        session.save();
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
@@ -162,16 +172,19 @@ public class JahiaGroupManagerServiceTest {
         assertNull("Group 1 should have been deleted but is still available !", group1);
         group2 = groupManager.lookupGroup("test-group2:0");
         assertNull("Group 1 should have been deleted but is still available !", group2);
+
     }
 
     @Test
-    public void testGroupMembership() {
+    public void testGroupMembership() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
-        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);
-        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false);
+        JCRGroupNode group2 = groupManager.createGroup(null, "test-group2", new Properties(), false, session);
         group2.addMember(user2);
         group2.addMember(group1);
+        session.save();
 
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
                 user1.isMemberOfGroup(null, "test-group2"));
@@ -186,26 +199,31 @@ public class JahiaGroupManagerServiceTest {
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
                 user1GroupMembership.contains("test-group2:0"));
 
-        groupManager.deleteGroup(group2.getPath());
-        groupManager.deleteGroup(group1.getPath());
+        groupManager.deleteGroup(group2.getPath(), session);
+        groupManager.deleteGroup(group1.getPath(), session);
+
+        session.save();
 
     }
 
     @Test
-    public void testSameNameUserAndGroup() {
+    public void testSameNameUserAndGroup() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
-        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false);
+        JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);
-        JCRGroupNode user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false);
+        JCRGroupNode user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false, session);
         group1.addMember(user1Group);
-
+        session.save();
         group1 = groupManager.lookupGroup("test-group1:0");
         Collection<JCRNodeWrapper> members = group1.getMembers();
 
         assertTrue("Test group 1 should contain user called 'test-user1'", members.contains(user1));
         assertTrue("Test group 1 should contain group called 'test-user1'", members.contains(user1Group));
 
-        groupManager.deleteGroup(user1Group.getPath());
-        groupManager.deleteGroup(group1.getPath());
+        groupManager.deleteGroup(user1Group.getPath(), session);
+        groupManager.deleteGroup(group1.getPath(), session);
+
+        session.save();
     }
 }

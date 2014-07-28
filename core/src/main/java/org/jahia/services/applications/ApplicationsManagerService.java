@@ -181,30 +181,7 @@ public abstract class ApplicationsManagerService extends JahiaService {
 
     //--------------------------------------------------------------------------
 
-    /**
-     * delete groups associated with an application.
-     * When deleting an Application definition, should call this method to
-     * remove unused groups
-     */
-    public abstract void deleteApplicationGroups(ApplicationBean app)
-            throws JahiaException;
-
     //--------------------------------------------------------------------------
-
-    /**
-     * create groups for each context, that is for each field id
-     */
-    public abstract void createApplicationGroups(EntryPointInstance entryPointInstance)
-            throws JahiaException;
-
-    //--------------------------------------------------------------------------
-
-    /**
-     * delete groups associated with a gived context, that is attached to a field id
-     * and all its members
-     */
-    public abstract void deleteApplicationGroups(EntryPointInstance entryPointInstance)
-            throws JahiaException;
 
     //--------------------------------------------------------------------------
 
@@ -234,7 +211,6 @@ public abstract class ApplicationsManagerService extends JahiaService {
      * creates the entry in the database.
      *
      * @param entryPointDefinition EntryPointDefinition
-     * @param s
      * @throws JahiaException
      * @returns the created instance for the entry point definition.
      */

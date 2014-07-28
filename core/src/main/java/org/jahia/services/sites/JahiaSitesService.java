@@ -86,16 +86,13 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -105,7 +102,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * Jahia Multi Sites Management Service
@@ -445,26 +441,26 @@ public class JahiaSitesService extends JahiaService {
 
                     JCRGroupNode privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
                     if (privGroup == null) {
-                        privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true);
+                        privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true, session);
                     }
 
                     JCRGroupNode adminGroup = jgms.lookupGroup(site.getSiteKey(),
                             JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
                     if (adminGroup == null) {
                         adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null,
-                                false);
+                                false, session);
                     }
 
                     // attach superadmin user (current) to administrators group...
                     if (currentUser != null) {
-                        adminGroup.addMember(currentUser);
+                        adminGroup.addMember(session.getNode(currentUser.getLocalPath()), session);
                     }
 
                     JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
                             JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
                     if (sitePrivGroup == null) {
                         sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
-                                false);
+                                false, session);
                     }
                     // atach site privileged group to server privileged
                     privGroup.addMember(sitePrivGroup,session);
@@ -592,12 +588,6 @@ public class JahiaSitesService extends JahiaService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
-        JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton
-                .getInstance().getContext().getBean("JCRGroupManagerProvider");
-        List<String> groups = groupManager.getGroupList(site.getSiteKey());
-        for (String group : groups) {
-            groupService.deleteGroup(site.getJCRLocalPath()+"/groups/"+group);
-        }
         try {
             final String siteKey = site.getSiteKey();
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {

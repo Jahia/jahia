@@ -71,15 +71,10 @@
  */
 package org.jahia.modules.defaultmodule;
 
-import org.jahia.ajax.gwt.helper.PublicationHelper;
 import org.jahia.api.Constants;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaGroupManagerProvider;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.usermanager.SearchCriteria;
@@ -95,11 +90,7 @@ import javax.jcr.Value;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import java.io.Serializable;
-import java.security.Principal;
 import java.util.*;
-
-import static org.jahia.api.Constants.EDIT_WORKSPACE;
-import static org.jahia.api.Constants.LIVE_WORKSPACE;
 
 public class RolesHandler implements Serializable {
     private static final long serialVersionUID = 2485636561921483297L;
@@ -302,8 +293,8 @@ public class RolesHandler implements Serializable {
     }
 
 
-    public Map<String, ? extends JahiaGroupManagerProvider> getProviders() {
-        Map<String, JahiaGroupManagerProvider> providers = new LinkedHashMap<String, JahiaGroupManagerProvider>();
+    public Map<String, JCRStoreProvider> getProviders() {
+        Map<String, JCRStoreProvider> providers = new LinkedHashMap<String, JCRStoreProvider>();
 
         return providers;
     }

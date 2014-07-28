@@ -71,16 +71,14 @@
  */
 package org.jahia.services.content.decorator;
 
-import com.google.common.primitives.Ints;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeIteratorWrapper;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.content.*;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
-import org.w3c.dom.traversal.NodeIterator;
 
-import javax.imageio.spi.ServiceRegistry;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.security.Principal;
@@ -108,28 +106,12 @@ public class JCRGroupNode extends JCRNodeDecorator {
         return null;
     }
 
-    public void addMember(Principal principal) {
-        if (principal instanceof JahiaUser) {
-            addMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(((JahiaUser) principal).getLocalPath()));
-        } else if (principal instanceof JahiaGroup) {
-            addMember(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(((JahiaGroup) principal).getLocalPath()));
-        }
+    public String getGroupKey() {
+        return getPath();
     }
 
-    public void addMember(JCRNodeWrapper principal, JCRSessionWrapper jcrSessionWrapper) {
-        try {
-            JCRNodeWrapper member = null;
-            if(principal.isNodeType("jnt:user")) {
-                member = jcrSessionWrapper.getNode(getPath()+"/j:members").addNode(principal.getName(), "jnt:member");
-            } else if (principal.isNodeType("jnt:group")){
-                member = jcrSessionWrapper.getNode(getPath() + "/j:members").addNode(principal.getPath().replaceAll("/", "_"), "jnt:member");
-            }
-            if(member!=null) {
-                member.setProperty("j:member", principal);
-            }
-        } catch (RepositoryException e) {
-            logger.warn(e.getMessage(), e);
-        }
+    public String getProviderName() {
+        return getProvider().getKey();
     }
 
     public List<JCRNodeWrapper> getMembers() {
@@ -146,8 +128,19 @@ public class JCRGroupNode extends JCRNodeDecorator {
         return result;
     }
 
-    public void removeMembers() {
+    public Set<JCRUserNode> getRecursiveUserMembers() {
+        Set<JCRUserNode> result = new HashSet<JCRUserNode>();
 
+        List<JCRNodeWrapper> members = getMembers();
+        for (JCRNodeWrapper member : members) {
+            if (member instanceof JCRUserNode) {
+                result.add((JCRUserNode) member);
+            } else if (member instanceof JCRGroupNode) {
+                result.addAll(((JCRGroupNode)member).getRecursiveUserMembers());
+            }
+        }
+
+        return result;
     }
 
     public boolean isMember(JCRNodeWrapper principal) {
@@ -172,6 +165,48 @@ public class JCRGroupNode extends JCRNodeDecorator {
         }
     }
 
+    public void addMember(Principal principal) {
+        if (principal instanceof JahiaUser) {
+            addMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(((JahiaUser) principal).getLocalPath()));
+        } else if (principal instanceof JahiaGroup) {
+            addMember(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(((JahiaGroup) principal).getLocalPath()));
+        }
+    }
+
+    public void addMembers(final Collection<JCRNodeWrapper> members) {
+        try {
+            for (JCRNodeWrapper candidate : members) {
+                addMember(candidate, getSession());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void addMember(final JCRNodeWrapper principal) {
+        try {
+            addMember(principal,getSession());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void addMember(JCRNodeWrapper principal, JCRSessionWrapper jcrSessionWrapper) {
+        try {
+            JCRNodeWrapper member = null;
+            if(principal.isNodeType("jnt:user")) {
+                member = jcrSessionWrapper.getNode(getPath()+"/j:members").addNode(principal.getName(), "jnt:member");
+            } else if (principal.isNodeType("jnt:group")){
+                member = jcrSessionWrapper.getNode(getPath() + "/j:members").addNode(principal.getPath().replaceAll("/", "_"), "jnt:member");
+            }
+            if(member!=null) {
+                member.setProperty("j:member", principal.getIdentifier());
+            }
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
+        }
+    }
+
     public void removeMember(JCRNodeWrapper principal) {
         try {
             JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
@@ -188,19 +223,8 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     }
 
-    public Set<JCRUserNode> getRecursiveUserMembers() {
-        Set<JCRUserNode> result = new HashSet<JCRUserNode>();
+    public void removeMembers() {
 
-        List<JCRNodeWrapper> members = getMembers();
-        for (JCRNodeWrapper member : members) {
-            if (member instanceof JCRUserNode) {
-                result.add((JCRUserNode) member);
-            } else if (member instanceof JCRGroupNode) {
-                result.addAll(((JCRGroupNode)member).getRecursiveUserMembers());
-            }
-        }
-
-        return result;
     }
 
     public boolean isHidden() {
@@ -211,18 +235,4 @@ public class JCRGroupNode extends JCRNodeDecorator {
         return isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath));
     }
 
-    public void addMembers(Collection<JCRNodeWrapper> members) {
-        for (JCRNodeWrapper candidate : members) {
-            addMember(candidate);
-        }
-    }
-
-    public void addMember(JCRNodeWrapper principal) {
-        try {
-            addMember(principal,getSession());
-            getSession().save();
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
 }

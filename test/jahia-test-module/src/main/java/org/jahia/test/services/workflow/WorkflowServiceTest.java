@@ -330,11 +330,11 @@ public class WorkflowServiceTest {
 //            properties.setProperty("j:email", "johnsmoe@localhost.com");
             johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties).getJahiaUser();
         }
-        JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true);
+        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true, session);
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
     }

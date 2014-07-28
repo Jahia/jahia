@@ -687,7 +687,7 @@ public class PrincipalViewHelper implements Serializable {
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
             searchResults.addAll(jahiaGroupManagerService.
-                    searchGroups(null, searchParameters));
+                    searchGroups(siteKey, searchParameters));
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -702,7 +702,7 @@ public class PrincipalViewHelper implements Serializable {
             }
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaGroupManagerService.
-                        searchGroups(null, searchParameters));
+                        searchGroups(siteKey, searchParameters));
             }
         }
         return searchResults;

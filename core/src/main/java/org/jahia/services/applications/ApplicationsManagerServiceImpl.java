@@ -92,9 +92,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
@@ -653,77 +651,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             logger.error(e.getMessage(), e);
         }
         applicationCache.flush();
-    }
-
-    /**
-     * delete groups associated with an application.
-     * When deleting an Application definition, should call this method to
-     * remove unused groups
-     */
-    public void deleteApplicationGroups(ApplicationBean app) throws JahiaException {
-
-        checkIsLoaded();
-
-        List<String> vec = groupManagerService.getGroupnameList();
-
-        if (app != null && vec != null) {
-
-            String appID = app.getID();
-            String grpName;
-            String pattern = appID + "_";
-            for (String aVec : vec) {
-                grpName = aVec;
-                if (grpName.startsWith(pattern)) {
-                    if (groupManagerService.groupExists(grpName)) {
-                        groupManagerService.deleteGroup(grpName);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * create groups for each context, that is for each field id
-     */
-    public void createApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
-        // update roles
-        final String context = entryPointInstance.getContextName();
-        WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
-
-        Iterator<String> updatedRoles = appContext.getRoles().iterator();
-        String groupName;
-        String role;
-        while (updatedRoles.hasNext()) {
-            role = updatedRoles.next();
-            groupName = entryPointInstance.getID() + "_" + role;
-            groupManagerService.createGroup(null, groupName, null, true); // Hollis all app role groups are of site 0 !!!
-        }
-
-    }
-
-    /**
-     * delete groups associated with a given context, that is attached to a field id
-     * and all its members
-     */
-    public void deleteApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
-        final String context = entryPointInstance.getContextName();
-
-        WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
-
-        Iterator<String> roles = appContext.getRoles().iterator();
-        String groupName;
-        String role;
-        while (roles.hasNext()) {
-            role = roles.next();
-            groupName = new StringBuffer().append(entryPointInstance.getID()).append("_").append(role).toString();
-            JCRGroupNode grp = groupManagerService.lookupGroup(groupName);
-            if (grp != null) {
-                // delete all members
-                grp.removeMembers();
-                groupManagerService.deleteGroup(groupName);
-            }
-        }
-
     }
 
     /**

@@ -81,7 +81,6 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -89,11 +88,9 @@ import org.jahia.services.content.nodetypes.JahiaCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.LuceneUtils;
@@ -172,6 +169,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private boolean providesDynamicMountPoints;
 
+    private Boolean readOnly = null;
     private Boolean versioningAvailable = null;
     private Boolean lockingAvailable = null;
     private Boolean searchAvailable = null;
@@ -902,24 +900,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    /**
-     * Create an entry in the JCR for an external group.
-     *
-     * @param group the unique name for the group
-     * @return a reference on a group object on success, or if the group name
-     * already exists or another error occurred, null is returned.
-     */
-    public void deployExternalGroup(JahiaGroup group) {
-        Properties properties = new Properties();
-        /*properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
-        properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());*/
-        JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
-        try {
-            groupManager.lookupExternalGroup(group.getName());
-        } catch (RepositoryException e) {
-            groupManagerService.createGroup(null, group.getName(), properties, true);
-        }
-    }
 
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
@@ -1059,6 +1039,27 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public void setProvidesDynamicMountPoints(boolean providesDynamicMountPoints) {
         this.providesDynamicMountPoints = providesDynamicMountPoints;
+    }
+
+    public boolean isReadOnly() {
+        if (readOnly != null) {
+            return readOnly;
+        }
+        Repository repository = getRepository();
+        Value writeableValue = repository.getDescriptorValue(Repository.WRITE_SUPPORTED);
+        if (writeableValue == null) {
+            readOnly = Boolean.FALSE;
+            return false;
+        }
+        try {
+            readOnly = !writeableValue.getBoolean();
+        } catch (RepositoryException e) {
+            logger.warn("Error while trying to check for writeable support", e);
+            readOnly = Boolean.FALSE;
+            return false;
+        }
+        return readOnly;
+
     }
 
     public boolean isVersioningAvailable() {

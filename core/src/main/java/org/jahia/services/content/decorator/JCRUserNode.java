@@ -127,6 +127,18 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
     }
 
+    public JahiaUser getJahiaUser() {
+        return new JahiaUser(getName(), getPath());
+    }
+
+    public String getUserKey() {
+        return getPath();
+    }
+
+    public String getProviderName() {
+        return getProvider().getKey();
+    }
+
     public boolean isPropertyEditable(String name) {
         try {
             return !("j:external".equals(name) || Constants.CHECKIN_DATE.equals(name)) && canGetProperty(name);
@@ -158,10 +170,6 @@ public class JCRUserNode extends JCRNodeDecorator {
             }
         }
         return false;
-    }
-
-    public JahiaUser getJahiaUser() {
-        return new JahiaUser(getName(), getPath());
     }
 
     public boolean verifyPassword(String userPassword) {

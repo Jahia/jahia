@@ -87,7 +87,7 @@ import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
@@ -127,23 +127,30 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return <code>true</code> if the group was successfully added; <code>false</code> otherwise
      */
     @SuppressWarnings("deprecation")
-    public boolean addGroup(GroupModel group, MessageContext context) {
-        Locale locale = LocaleContextHolder.getLocale();
-        if (groupManagerService.createGroup(group.getSiteKey(), group.getGroupname(), null, false) != null) {
-            context.addMessage(new MessageBuilder()
-                    .info()
-                    .defaultText(
-                            Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
-                                    + Messages.getInternal("message.successfully.created", locale)).build());
-            return true;
-        } else {
-            context.addMessage(new MessageBuilder()
-                    .error()
-                    .defaultText(
-                            Messages.getWithArgs("resources.JahiaSiteSettings",
-                                    "siteSettings.groups.errors.create.failed", locale, group.getGroupname())).build());
-            return false;
-        }
+    public boolean addGroup(final GroupModel group, final MessageContext context) throws RepositoryException {
+        final Locale locale = LocaleContextHolder.getLocale();
+
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                if (groupManagerService.createGroup(group.getSiteKey(), group.getGroupname(), null, false, session) != null) {
+                    session.save();
+                    context.addMessage(new MessageBuilder()
+                            .info()
+                            .defaultText(
+                                    Messages.getInternal("label.group", locale) + " '" + group.getGroupname() + "' "
+                                            + Messages.getInternal("message.successfully.created", locale)).build());
+                    return true;
+                } else {
+                    context.addMessage(new MessageBuilder()
+                            .error()
+                            .defaultText(
+                                    Messages.getWithArgs("resources.JahiaSiteSettings",
+                                            "siteSettings.groups.errors.create.failed", locale, group.getGroupname())).build());
+                    return false;
+                }
+            }
+        });
     }
 
     /**
@@ -183,6 +190,13 @@ public class ManageGroupsFlowHandler implements Serializable {
                     new Object[] { candidates.size(), group.getPath(), System.currentTimeMillis() - timer });
         }
 
+        try {
+            group.getSession().save();
+        } catch (RepositoryException e) {
+            logger.error("Cannot save",e);
+        }
+
+
         Locale locale = LocaleContextHolder.getLocale();
         context.addMessage(new MessageBuilder()
                 .info()
@@ -202,9 +216,9 @@ public class ManageGroupsFlowHandler implements Serializable {
      *            the message context object
      * @return <code>true</code> if the group was successfully copied; <code>false</code> otherwise
      */
-    public void copyGroup(String selectedGroupKey, GroupModel newGroup, MessageContext context) {
-        JCRGroupNode selectedGroup = lookupGroup(selectedGroupKey);
-        Locale locale = LocaleContextHolder.getLocale();
+    public void copyGroup(final String selectedGroupKey, final GroupModel newGroup, final MessageContext context) throws RepositoryException {
+        final JCRGroupNode selectedGroup = lookupGroup(selectedGroupKey);
+        final Locale locale = LocaleContextHolder.getLocale();
         if (selectedGroup == null) {
             context.addMessage(new MessageBuilder()
                     .error()
@@ -215,27 +229,34 @@ public class ManageGroupsFlowHandler implements Serializable {
             return;
         }
         // create new group
-        @SuppressWarnings("deprecation")
-        JCRGroupNode grp = groupManagerService.createGroup(newGroup.getSiteKey(), newGroup.getGroupname(), null, false);
-        if (grp == null) {
-            context.addMessage(new MessageBuilder()
-                    .error()
-                    .defaultText(
-                            Messages.getWithArgs("resources.JahiaSiteSettings",
-                                    "siteSettings.groups.errors.create.failed", locale, newGroup.getGroupname()))
-                    .build());
-        } else {
-            context.addMessage(new MessageBuilder()
-                    .info()
-                    .defaultText(
-                            Messages.getInternal("label.group", locale) + " '" + newGroup.getGroupname() + "' "
-                                    + Messages.getInternal("message.successfully.created", locale)).build());
-            // copy membership
-            Collection<JCRNodeWrapper> members = selectedGroup.getMembers();
-            if (members.size() > 0) {
-                grp.addMembers(members);
+
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRGroupNode grp = groupManagerService.createGroup(newGroup.getSiteKey(), newGroup.getGroupname(), null, false, session);
+                if (grp == null) {
+                    context.addMessage(new MessageBuilder()
+                            .error()
+                            .defaultText(
+                                    Messages.getWithArgs("resources.JahiaSiteSettings",
+                                            "siteSettings.groups.errors.create.failed", locale, newGroup.getGroupname()))
+                            .build());
+                } else {
+                    context.addMessage(new MessageBuilder()
+                            .info()
+                            .defaultText(
+                                    Messages.getInternal("label.group", locale) + " '" + newGroup.getGroupname() + "' "
+                                            + Messages.getInternal("message.successfully.created", locale)).build());
+                    // copy membership
+                    Collection<JCRNodeWrapper> members = selectedGroup.getMembers();
+                    if (members.size() > 0) {
+                        grp.addMembers(members);
+                    }
+                    session.save();
+                }
+                return null;
             }
-        }
+        });
     }
 
     /**
@@ -243,8 +264,10 @@ public class ManageGroupsFlowHandler implements Serializable {
      * 
      * @return a map of all group providers currently registered
      */
-    public Map<String, ? extends JahiaGroupManagerProvider> getProviders() {
-        Map<String, JahiaGroupManagerProvider> providers = new LinkedHashMap<String, JahiaGroupManagerProvider>();
+    public Map<String, ? extends JCRStoreProvider> getProviders() {
+        Map<String, JCRStoreProvider> providers = new LinkedHashMap<String, JCRStoreProvider>();
+        final JCRStoreProvider provider = JCRSessionFactory.getInstance().getMountPoints().get("/");
+        providers.put(provider.getKey(), provider);
         return providers;
     }
 
@@ -321,7 +344,7 @@ public class ManageGroupsFlowHandler implements Serializable {
     private JCRNodeWrapper lookupMember(String memberKey) {
         JCRNodeWrapper p = null;
         if (memberKey.startsWith("u:")) {
-            p = userManagerService.lookupUser(StringUtils.substringAfter(memberKey, ":"));
+            p = userManagerService.lookupUserByKey(StringUtils.substringAfter(memberKey, ":"));
         } else if (memberKey.startsWith("g:")) {
             p = groupManagerService.lookupGroup(StringUtils.substringAfter(memberKey, ":"));
         } else {
@@ -339,8 +362,8 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @param context
      *            the message context object
      */
-    public void removeGroup(String selectedGroup, MessageContext context) {
-        JCRGroupNode grp = lookupGroup(selectedGroup);
+    public void removeGroup(final String selectedGroup, final MessageContext context) throws RepositoryException {
+        final JCRGroupNode grp = lookupGroup(selectedGroup);
         if (isReadOnly(grp)) {
             context.addMessage(new MessageBuilder()
                     .error()
@@ -350,21 +373,29 @@ public class ManageGroupsFlowHandler implements Serializable {
 
             return;
         } else {
-            Locale locale = LocaleContextHolder.getLocale();
-            if (groupManagerService.deleteGroup(grp.getPath())) {
-                context.addMessage(new MessageBuilder()
-                        .info()
-                        .defaultText(
-                                Messages.getInternal("label.group", locale) + " '" + grp.getName() + "' "
-                                        + Messages.getInternal("message.successfully.removed", locale)).build());
-            } else {
-                context.addMessage(new MessageBuilder()
-                        .error()
-                        .defaultText(
-                                Messages.getWithArgs("resources.JahiaSiteSettings",
-                                        "siteSettings.groups.errors.remove.failed", locale, grp.getName()))
-                        .build());
-            }
+            final Locale locale = LocaleContextHolder.getLocale();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final String name = grp.getName();
+                    if (groupManagerService.deleteGroup(grp.getPath(), session)) {
+                        context.addMessage(new MessageBuilder()
+                                .info()
+                                .defaultText(
+                                        Messages.getInternal("label.group", locale) + " '" + name + "' "
+                                                + Messages.getInternal("message.successfully.removed", locale)).build());
+                        session.save();
+                    } else {
+                        context.addMessage(new MessageBuilder()
+                                .error()
+                                .defaultText(
+                                        Messages.getWithArgs("resources.JahiaSiteSettings",
+                                                "siteSettings.groups.errors.remove.failed", locale, name))
+                                .build());
+                    }
+                    return null;
+                }
+            });
         }
     }
 
@@ -398,6 +429,12 @@ public class ManageGroupsFlowHandler implements Serializable {
                 group.removeMember(principal);
                 countRemoved++;
             }
+        }
+
+        try {
+            group.getSession().save();
+        } catch (RepositoryException e) {
+            logger.error("Cannot save",e);
         }
 
         logger.info("Removed {} member(s) from group {} in {} ms", new Object[] { countRemoved, group.getPath(),

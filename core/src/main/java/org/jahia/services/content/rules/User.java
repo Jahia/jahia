@@ -73,14 +73,12 @@ package org.jahia.services.content.rules;
 
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
  * 
@@ -91,9 +89,9 @@ import java.util.Properties;
  */
 public class User {
     private String username;
-    private JahiaUser user;
+    private JCRUserNode user;
 
-    public User(JahiaUser user) {
+    public User(JCRUserNode user) {
         this.user = user;
     }
 
@@ -106,20 +104,23 @@ public class User {
             return username;
         }
         if (user != null) {
-            return user.getUsername();
+            return user.getName();
         }
         return null;
     }
 
     public List<UserProperty> getProperties() {
         List<UserProperty> r = new ArrayList<UserProperty>();
-        JahiaUser jahiaUser = getJahiaUser();
+        JCRUserNode jahiaUser = getUserNode();
         if (jahiaUser != null) {
-            Properties p = jahiaUser.getProperties();
-            for (Iterator<?> iterator = p.keySet().iterator(); iterator.hasNext();) {
-                String s = (String) iterator.next();
-                String v = p.getProperty(s);
-                r.add(new UserProperty(this, s,v));
+            Map<String, String> p = null;
+            try {
+                p = jahiaUser.getPropertiesAsString();
+                for (Map.Entry<String, String> entry : p.entrySet()) {
+                    r.add(new UserProperty(this, entry.getKey(), entry.getValue()));
+                }
+            } catch (RepositoryException e) {
+                e.printStackTrace();
             }
         }
         return r;
@@ -128,21 +129,21 @@ public class User {
     public List<Group> getGroups() {
         List<Group> r = new ArrayList<Group>();
         JahiaGroupManagerService grpManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        JahiaUser jahiaUser = getJahiaUser();
+        JCRUserNode jahiaUser = getUserNode();
         if (jahiaUser != null) {
-            List<String> groups = grpManager.getUserMembership(jahiaUser.getLocalPath());
+            List<String> groups = grpManager.getUserMembership(jahiaUser.getPath());
             for (String groupname : groups) {
-                JahiaGroup group = grpManager.lookupGroup(groupname).getJahiaGroup();
+                JCRGroupNode group = grpManager.lookupGroup(groupname);
                 r.add(new Group(group));
             }
         }
         return r;
     }
 
-    public JahiaUser getJahiaUser() {
+    public JCRUserNode getUserNode() {
         if (user == null && username != null) {
             if (!username.equals(JahiaLoginModule.SYSTEM) && !username.equals(JahiaLoginModule.GUEST)) {
-                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username).getJahiaUser();
+                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
             }
         }
         return user;

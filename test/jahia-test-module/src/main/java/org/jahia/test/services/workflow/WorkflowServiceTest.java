@@ -80,6 +80,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -109,7 +110,6 @@ public class WorkflowServiceTest {
     private static JahiaSite site;
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
-    private static JahiaGroup group;
     private static final long MILLIS = 1000l;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
@@ -330,12 +330,12 @@ public class WorkflowServiceTest {
 //            properties.setProperty("j:email", "johnsmoe@localhost.com");
             johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties).getJahiaUser();
         }
-        group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true).getJahiaGroup();
+        JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true);
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getGroupname(), ImmutableSet.of("editor-in-chief"));
+        session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
     }
 

@@ -72,19 +72,19 @@
 package org.jahia.services.content.decorator;
 
 import com.google.common.primitives.Ints;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
+import org.w3c.dom.traversal.NodeIterator;
 
+import javax.imageio.spi.ServiceRegistry;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A JCR group node decorator
@@ -100,11 +100,20 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public JahiaGroup getJahiaGroup() {
+        try {
+            return new JahiaGroup(getName(), getPath(), getResolveSite().getName());
+        } catch (RepositoryException e) {
+            logger.error("Cannot get group",e);
+        }
         return null;
     }
 
-    public void addMember(Principal user) {
-
+    public void addMember(Principal principal) {
+        if (principal instanceof JahiaUser) {
+            addMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(((JahiaUser) principal).getLocalPath()));
+        } else if (principal instanceof JahiaGroup) {
+            addMember(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(((JahiaGroup) principal).getLocalPath()));
+        }
     }
 
     public void addMember(JCRNodeWrapper principal, JCRSessionWrapper jcrSessionWrapper) {
@@ -124,7 +133,17 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public List<JCRNodeWrapper> getMembers() {
-        return Collections.emptyList();
+        List<JCRNodeWrapper> result = null;
+        try {
+            result = new ArrayList<JCRNodeWrapper>();
+            JCRNodeIteratorWrapper ni = getNode("j:members").getNodes();
+            for (JCRNodeWrapper wrapper : ni) {
+                result.add(wrapper.getProperty("j:member").getValue().getNode());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group members",e);
+        }
+        return result;
     }
 
     public void removeMembers() {
@@ -148,16 +167,40 @@ public class JCRGroupNode extends JCRNodeDecorator {
             }
             return isMemberB;
         } catch (RepositoryException e) {
+            logger.error("Cannot read group members",e);
             return false;
         }
     }
 
     public void removeMember(JCRNodeWrapper principal) {
+        try {
+            JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
+            for (JCRNodeWrapper jcrNodeWrapper : nodes) {
+                String node1 = jcrNodeWrapper.getProperty("j:member").getString();
+                if (node1.equals(principal.getIdentifier())) {
+                    jcrNodeWrapper.remove();
+                    return;
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group members",e);
+        }
 
     }
 
     public Set<JCRUserNode> getRecursiveUserMembers() {
-        return null;
+        Set<JCRUserNode> result = new HashSet<JCRUserNode>();
+
+        List<JCRNodeWrapper> members = getMembers();
+        for (JCRNodeWrapper member : members) {
+            if (member instanceof JCRUserNode) {
+                result.add((JCRUserNode) member);
+            } else if (member instanceof JCRGroupNode) {
+                result.addAll(((JCRGroupNode)member).getRecursiveUserMembers());
+            }
+        }
+
+        return result;
     }
 
     public boolean isHidden() {
@@ -165,11 +208,13 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public boolean isMember(String userPath) {
-        return true;
+        return isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath));
     }
 
-    public void addMembers(Collection<JCRNodeWrapper> candidates) {
-
+    public void addMembers(Collection<JCRNodeWrapper> members) {
+        for (JCRNodeWrapper candidate : members) {
+            addMember(candidate);
+        }
     }
 
     public void addMember(JCRNodeWrapper principal) {

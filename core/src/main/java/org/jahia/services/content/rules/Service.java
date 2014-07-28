@@ -73,7 +73,6 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.drools.core.FactException;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -99,7 +98,6 @@ import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -208,7 +206,7 @@ public class Service extends JahiaService {
                 logger.info("Import site " + uri);
                 //String sitename = st.nextToken() + "_" + st.nextToken();
 
-                if (!user.getJahiaUser().isRoot()) {
+                if (!user.getUserNode().isRoot()) {
                     return;
                 }
 
@@ -220,7 +218,7 @@ public class Service extends JahiaService {
 
         } else if (name.endsWith(".zip")) {
             try {
-                processFileImport(prepareFileImports(node, node.getName()), user.getJahiaUser());
+                processFileImport(prepareFileImports(node, node.getName()), user.getUserNode().getJahiaUser());
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             } catch (ServletException e) {

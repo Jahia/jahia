@@ -343,11 +343,8 @@ public class JCRUserManagerProvider extends JahiaUserManagerProvider implements 
      * @return a reference on a new created jahiaUser object.
      */
     public JCRUserNode lookupUserByKey(String userKey) throws RepositoryException {
-        if (!userKey.startsWith("{")) {
-            logger.warn("Expected userKey with provider prefix {jcr}, defaulting to looking up by name instead for parameter=[" + userKey + "]... ");
-            return lookupUser(userKey);
-        }
-        return lookupUser(StringUtils.substringAfter(userKey, "}"));
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+        return (JCRUserNode) session.getNode(userKey);
     }
 
     /**

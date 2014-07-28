@@ -80,7 +80,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.mail.MailService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -160,7 +159,7 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user.getJahiaUser().getLocalPath());
+        JCRUserNode userNode = user.getUserNode();
         if (userNode!=null && userNode.hasProperty("j:email")) {
             String toMail = userNode.getProperty("j:email").getString();
             Locale locale = getLocale(userNode);
@@ -174,7 +173,7 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user.getJahiaUser().getLocalPath());
+        JCRUserNode userNode = user.getUserNode();
         if (userNode!=null && userNode.hasProperty("j:email")) {
             String toMail = userNode.getProperty("j:email").getString();
             Locale locale = getLocale(userNode);

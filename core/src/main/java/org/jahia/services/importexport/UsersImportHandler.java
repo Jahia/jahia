@@ -72,6 +72,7 @@
 package org.jahia.services.importexport;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -159,12 +160,12 @@ public class UsersImportHandler extends DefaultHandler {
             }
         } else {
             member = true;
-            Principal p = null;
+            JCRNodeWrapper p = null;
             String name = attributes.getValue(ImportExportBaseService.JAHIA_URI, "name");
             if (localName.equals("user")) {
-                p = u.lookupUser(name).getJahiaUser();
+                p = u.lookupUser(name);
             } else if (localName.equals("group")) {
-                p = g.lookupGroup(site.getSiteKey(), name).getJahiaGroup();
+                p = g.lookupGroup(site.getSiteKey(), name);
             }
             if (p != null && !currentGroup.getMembers().contains(p)) {
                 currentGroup.addMember(p);

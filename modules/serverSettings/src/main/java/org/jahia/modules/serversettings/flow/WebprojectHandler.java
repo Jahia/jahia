@@ -218,7 +218,7 @@ public class WebprojectHandler implements Serializable {
                         if (bean.isCreateAdmin()) {
                             UserProperties admin = bean.getAdminProperties();
                             JCRUserNode adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
-                                    admin.getUserProperties());
+                                    admin.getUserProperties(), session);
                             groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
                             session.save();
                         }
@@ -683,6 +683,8 @@ public class WebprojectHandler implements Serializable {
             if (infos.isSelected() && infos.getImportFileName().equals("users.xml")) {
                 try {
                     importExportBaseService.importUsers(file);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
                 } catch (IOException e) {
                     logger.error(e.getMessage(), e);
                 } finally {

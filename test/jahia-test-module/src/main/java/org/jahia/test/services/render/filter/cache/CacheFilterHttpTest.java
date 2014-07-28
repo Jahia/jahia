@@ -92,7 +92,7 @@ import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.junit.*;
@@ -129,10 +129,10 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule("jahia-test-module", SITECONTENT_ROOT_NODE, session.getUser().getName());
 
-            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-            final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties());
-            final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties());
-            final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties());
+            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
+            final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties(), session);
+            final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties(), session);
+            final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties(), session);
 
             // Create three groups
             final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
@@ -166,10 +166,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public static void oneTimeTearDown() throws Exception {
         try {
             TestHelper.deleteSite(TESTSITE_NAME);
-            final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath());
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath());
-            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath());
+            final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
+            session.save();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
         }

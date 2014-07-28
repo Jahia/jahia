@@ -82,7 +82,6 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -140,9 +139,9 @@ public class WorkflowServiceTest {
             logger.warn("Exception during test tearDown", ex);
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        userManagerService.deleteUser(userManagerService.lookupUser("johndoe").getPath());
-        userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe").getPath());
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        userManagerService.deleteUser(userManagerService.lookupUser("johndoe").getPath(), session);
+        userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe").getPath(), session);
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }
@@ -317,20 +316,22 @@ public class WorkflowServiceTest {
         johndoe = userManagerService.lookupUser("johndoe").getJahiaUser();
         johnsmoe = userManagerService.lookupUser("johnsmoe").getJahiaUser();
         Properties properties = new Properties();
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
         if (johndoe == null) {
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Doe");
 //            properties.setProperty("j:email", "johndoe@localhost.com");
-            johndoe = userManagerService.createUser("johndoe", "johndoe", properties).getJahiaUser();
+            johndoe = userManagerService.createUser("johndoe", "johndoe", properties, session).getJahiaUser();
         }
         if (johnsmoe == null) {
             properties = new Properties();
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Smoe");
 //            properties.setProperty("j:email", "johnsmoe@localhost.com");
-            johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties).getJahiaUser();
+            johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties, session).getJahiaUser();
         }
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true, session);
         group.addMember(johndoe);
         group.addMember(johnsmoe);

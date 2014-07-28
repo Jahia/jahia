@@ -5,7 +5,6 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean id="JahiaUserManagerService" class="org.jahia.services.usermanager.JahiaUserManagerService" parent="jahiaServiceTemplate" factory-method="getInstance">
-    	<property name="defaultProvider" ref="JCRUserManagerProvider"/>
         <property name="userSplittingRule">
             <bean class="org.jahia.services.usermanager.DefaultJahiaUserSplittingRuleImpl">
                 <property name="usersRootNode" value="/users"/>
@@ -20,17 +19,4 @@
         </property>
     </bean>
 
-	<bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">
-		<property name="userManagerService" ref="JahiaUserManagerService"/>
-	</bean>
-	
-    <bean id="JCRUserManagerProvider" class="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="key" value="jcr"/>
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-        <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
-    
 </beans>

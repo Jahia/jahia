@@ -81,7 +81,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Repository;
@@ -187,9 +187,9 @@ public class JahiaJackrabbitRepositoryStub extends RepositoryStub {
     }
 
     private void prepareTestContent(Session session) throws RepositoryException, IOException, org.jahia.services.content.nodetypes.ParseException {
-        JCRUserNode readOnlyUser = JCRUserManagerProvider.getInstance().lookupUser(readonly.getUserID());
+        JCRUserNode readOnlyUser = JahiaUserManagerService.getInstance().lookupUser(readonly.getUserID());
         if (readOnlyUser == null) {
-            readOnlyUser = JCRUserManagerProvider.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties());
+            readOnlyUser = JahiaUserManagerService.getInstance().createUser(readonly.getUserID(), new String(readonly.getPassword()), new Properties(), (JCRSessionWrapper) session);
             ((JCRSessionWrapper)session).getRootNode().grantRoles("u:"+readOnlyUser.getPath(), Collections.singleton("privileged"));
             JCRGroupNode usersGroup = JahiaGroupManagerService.getInstance().lookupGroup(JahiaGroupManagerService.USERS_GROUPNAME);
             usersGroup.addMember(readOnlyUser);

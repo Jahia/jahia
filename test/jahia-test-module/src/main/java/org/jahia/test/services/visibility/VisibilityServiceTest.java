@@ -71,19 +71,7 @@
  */
 package org.jahia.test.services.visibility;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.text.ParseException;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-
+import com.google.common.collect.ImmutableSet;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -92,20 +80,19 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.visibility.VisibilityService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
+import javax.jcr.RepositoryException;
+import java.text.ParseException;
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * User: loom
@@ -131,12 +118,11 @@ public class VisibilityServiceTest extends JahiaTestCase {
         Properties properties = new Properties();
         properties.setProperty("j:firstName", "John");
         properties.setProperty("j:lastName", "Doe");
-        JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .createUser(USERNAME, PASSWORD, properties);
-        JCRSessionFactory.getInstance().getCurrentUserSession()
-                .getNode("/sites/" + site.getSiteKey())
-                .grantRoles("u:" + john.getPath(), ImmutableSet.of("editor-in-chief"));
-        JCRSessionFactory.getInstance().getCurrentUserSession().save();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
+        JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(USERNAME, PASSWORD, properties, session);
+        session.getNode("/sites/" + site.getSiteKey()).grantRoles("u:" + john.getPath(), ImmutableSet.of("editor-in-chief"));
+        session.save();
     }
 
     @AfterClass
@@ -148,8 +134,9 @@ public class VisibilityServiceTest extends JahiaTestCase {
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance()
                 .getJahiaUserManagerService();
-        userManagerService.deleteUser(userManagerService.lookupUser(USERNAME).getPath());
-        JCRSessionFactory.getInstance().getCurrentUserSession().save();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        userManagerService.deleteUser(userManagerService.lookupUser(USERNAME).getPath(), session);
+        session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }
 

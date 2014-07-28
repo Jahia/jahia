@@ -325,7 +325,7 @@ public class Logout implements Controller {
         JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
         JCRPropertyWrapper cookieAuthKey = null;
         try {
-            if (JahiaUserManagerService.isNotGuest(curUser.getLocalPath())) {
+            if (!JahiaUserManagerService.isGuest(curUser)) {
                 cookieAuthKey = userManagerService.lookupUserByKey(curUser.getUserKey()).getProperty(cookieAuthConfig.getUserPropertyName());
             }
             if (cookieAuthKey != null) {

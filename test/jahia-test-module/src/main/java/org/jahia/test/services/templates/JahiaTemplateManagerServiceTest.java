@@ -121,7 +121,10 @@ public class JahiaTemplateManagerServiceTest {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-        JCRUserNode user = userManager.createUser("user1", "password", new Properties());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRUserNode user = userManager.createUser("user1", "password", new Properties(), session);
+
+        session.save();
 
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);

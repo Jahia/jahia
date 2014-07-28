@@ -115,12 +115,11 @@ public class JahiaGroupManagerService extends JahiaService {
         static final Pattern INSTANCE = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString("userManagementGroupNamePattern"));
     }
 
-    protected static Pattern getGroupNamePattern() {
+    private static Pattern getGroupNamePattern() {
         return PatternHolder.INSTANCE;
     }
 
     private JahiaUserManagerService userManagerService;
-    private JCRTemplate jcrTemplate;
     private List<String> jahiaJcrEnforcedGroups;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -134,10 +133,6 @@ public class JahiaGroupManagerService extends JahiaService {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
-    }
-
-    public void setJcrTemplate(JCRTemplate jcrTemplate) {
-        this.jcrTemplate = jcrTemplate;
     }
 
     public void setJahiaJcrEnforcedGroups(List<String> jahiaJcrEnforcedGroups) {
@@ -415,7 +410,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * which the user as access.
      */
     public List<String> getUserMembership(String userPath) {
-        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath);
+        JCRUserNode userNode = userManagerService.lookupUserByKey(userPath);
         if (userNode != null) {
             try {
 

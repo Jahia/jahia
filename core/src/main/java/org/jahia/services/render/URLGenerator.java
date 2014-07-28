@@ -489,7 +489,7 @@ public class URLGenerator {
         if (myProfile == null) {
             JahiaUser user = context.getUser();
             JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
-            myProfile = (JahiaUserManagerService.isNotGuest(user) && userNode != null && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) ? "/start" : "";
+            myProfile = (!JahiaUserManagerService.isGuest(user) && userNode != null && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) ? "/start" : "";
         }
         return myProfile;
     }

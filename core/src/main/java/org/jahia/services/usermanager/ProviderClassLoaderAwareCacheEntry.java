@@ -69,7 +69,7 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.services.usermanager.jcr;
+package org.jahia.services.usermanager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

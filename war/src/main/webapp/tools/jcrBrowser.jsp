@@ -2,7 +2,6 @@
         %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <%@page import="javax.jcr.nodetype.PropertyDefinition"%>
-<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider"%>
 <%@page import="javax.jcr.version.Version" %>
 <%@page import="org.apache.commons.lang.StringUtils" %>
 <%@page import="javax.jcr.version.VersionIterator" %>
@@ -13,6 +12,7 @@
 <%@ page import="javax.jcr.nodetype.NodeType" %>
 <%@ page import="javax.jcr.nodetype.NodeTypeIterator" %>
 <%@ page import="javax.jcr.*" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
@@ -97,7 +97,7 @@
 %>
 <%
     long timer = System.currentTimeMillis();
-    JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
+    JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
 
     Session jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 

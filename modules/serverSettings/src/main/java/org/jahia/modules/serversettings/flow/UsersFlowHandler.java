@@ -72,7 +72,6 @@
 package org.jahia.modules.serversettings.flow;
 
 import au.com.bytecode.opencsv.CSVReader;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
@@ -80,12 +79,15 @@ import org.jahia.modules.serversettings.users.management.CsvFile;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.taglibs.user.User;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -108,7 +110,7 @@ import java.util.*;
 public class UsersFlowHandler implements Serializable {
     private static Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
     private static final long serialVersionUID = -7240178997123886031L;
-    
+
     public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JCRUserNode jahiaUser = service.lookupUserByKey(userKey);
@@ -180,25 +182,31 @@ public class UsersFlowHandler implements Serializable {
 
         return propertiesToPopulate;
     }
-    
+
     private transient JahiaPasswordPolicyService pwdPolicyService;
 
     private transient JahiaUserManagerService userManagerService;
 
-    public boolean addUser(UserProperties userProperties, MessageContext context) {
+    public boolean addUser(final UserProperties userProperties, final MessageContext context) throws RepositoryException {
         logger.info("Adding user");
-        JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(
-                userProperties.getUsername(), userProperties.getPassword(), transformUserProperties(userProperties));
-        if (user != null) {
-            Locale locale = LocaleContextHolder.getLocale();
-            context.addMessage(new MessageBuilder().info().defaultText(Messages.getInternal("label.user", locale) + " '" + user.getName() + "' "  + Messages.getInternal(
-                    "message.successfully.created", locale)).build());
-            return true;
-        } else {
-            context.addMessage(new MessageBuilder().error().code(
-                    "serverSettings.user.create.unsuccessful").build());
-            return false;
-        }
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(
+                        userProperties.getUsername(), userProperties.getPassword(), transformUserProperties(userProperties), session);
+                if (user != null) {
+                    session.save();
+                    Locale locale = LocaleContextHolder.getLocale();
+                    context.addMessage(new MessageBuilder().info().defaultText(Messages.getInternal("label.user", locale) + " '" + user.getName() + "' " + Messages.getInternal(
+                            "message.successfully.created", locale)).build());
+                    return true;
+                } else {
+                    context.addMessage(new MessageBuilder().error().code(
+                            "serverSettings.user.create.unsuccessful").build());
+                    return false;
+                }
+            }
+        });
     }
 
     private Properties buildProperties(List<String> headerElementList, List<String> lineElementList) {
@@ -213,66 +221,74 @@ public class UsersFlowHandler implements Serializable {
         return result;
     }
 
-    public boolean bulkAddUser(CsvFile csvFile, MessageContext context) {
+    public boolean bulkAddUser(final CsvFile csvFile, final MessageContext context) throws RepositoryException {
         logger.info("Bulk adding users");
-        long timer = 0;
-        boolean hasErrors = false;
-        CSVReader csvReader = null;
-        try {
-            timer = System.currentTimeMillis();
-            csvReader = new CSVReader(new InputStreamReader(csvFile.getCsvFile().getInputStream(), "UTF-8"),
-                    csvFile.getCsvSeparator().charAt(0));
-            // the first line contains the column names;
-            String[] headerElements = csvReader.readNext();
-            List<String> headerElementList = Arrays.asList(headerElements);
-            int userNamePos = headerElementList.indexOf("j:nodename");
-            int passwordPos = headerElementList.indexOf("j:password");
-            if ((userNamePos < 0) || (passwordPos < 0)) {
-                context.addMessage(new MessageBuilder().error().code(
-                        "serverSettings.users.bulk.errors.missing.mandatory").args(new String[] {"j:nodename","j:password"}).build());
-                return false;
-            }
-            String[] lineElements = null;
 
-            while ((lineElements = csvReader.readNext()) != null) {
-                List<String> lineElementList = Arrays.asList(lineElements);
-                Properties properties = buildProperties(headerElementList, lineElementList);
-                String userName = lineElementList.get(userNamePos);
-                String password = lineElementList.get(passwordPos);
-                if (userManagerService.isUsernameSyntaxCorrect(userName)) {
-                    PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
-                    if (evalResult.isSuccess()) {
-                        JCRUserNode jahiaUser = userManagerService.createUser(userName, password, properties);
-                        if (jahiaUser != null) {
-                            context.addMessage(new MessageBuilder().info().code(
-                                    "serverSettings.users.bulk.user.creation.successful").arg(userName).build());
+        long timer = System.currentTimeMillis();
+        boolean hasErrors = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                CSVReader csvReader = null;
+                boolean hasErrors = false;
+                try {
+
+                    csvReader = new CSVReader(new InputStreamReader(csvFile.getCsvFile().getInputStream(), "UTF-8"),
+                            csvFile.getCsvSeparator().charAt(0));
+                    // the first line contains the column names;
+                    String[] headerElements = csvReader.readNext();
+                    List<String> headerElementList = Arrays.asList(headerElements);
+                    int userNamePos = headerElementList.indexOf("j:nodename");
+                    int passwordPos = headerElementList.indexOf("j:password");
+                    if ((userNamePos < 0) || (passwordPos < 0)) {
+                        context.addMessage(new MessageBuilder().error().code(
+                                "serverSettings.users.bulk.errors.missing.mandatory").args(new String[]{"j:nodename", "j:password"}).build());
+                        return false;
+                    }
+
+                    String[] lineElements = null;
+                    while ((lineElements = csvReader.readNext()) != null) {
+                        List<String> lineElementList = Arrays.asList(lineElements);
+                        Properties properties = buildProperties(headerElementList, lineElementList);
+                        String userName = lineElementList.get(userNamePos);
+                        String password = lineElementList.get(passwordPos);
+                        if (userManagerService.isUsernameSyntaxCorrect(userName)) {
+                            PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(userName, password);
+                            if (evalResult.isSuccess()) {
+                                JCRUserNode jahiaUser = userManagerService.createUser(userName, password, properties, session);
+                                if (jahiaUser != null) {
+                                    context.addMessage(new MessageBuilder().info().code(
+                                            "serverSettings.users.bulk.user.creation.successful").arg(userName).build());
+                                } else {
+                                    context.addMessage(new MessageBuilder().error().code(
+                                            "serverSettings.users.bulk.errors.user.creation.failed").arg(userName).build());
+                                    hasErrors = true;
+                                }
+                            } else {
+                                StringBuilder result = new StringBuilder("<ul>");
+                                for (String msg : evalResult.getTextMessages()) {
+                                    result.append("<li>").append(msg).append("</li>");
+                                }
+                                result.append("</ul>");
+                                context.addMessage(new MessageBuilder().error().code(
+                                        "serverSettings.users.bulk.errors.user.skipped.password").args(new String[]{userName, result.toString()}).build());
+                                hasErrors = true;
+                            }
                         } else {
                             context.addMessage(new MessageBuilder().error().code(
-                                    "serverSettings.users.bulk.errors.user.creation.failed").arg(userName).build());
+                                    "serverSettings.users.bulk.errors.user.skipped").arg(userName).build());
                             hasErrors = true;
                         }
-                    } else {
-                        StringBuilder result = new StringBuilder("<ul>");
-                        for (String msg : evalResult.getTextMessages()) {
-                            result.append("<li>").append(msg).append("</li>");
-                        }
-                        result.append("</ul>");
-                        context.addMessage(new MessageBuilder().error().code(
-                                "serverSettings.users.bulk.errors.user.skipped.password").args(new String[] {userName, result.toString()}).build());
-                        hasErrors = true;
                     }
-                } else {
-                    context.addMessage(new MessageBuilder().error().code(
-                            "serverSettings.users.bulk.errors.user.skipped").arg(userName).build());
-                    hasErrors=true;
+                    session.save();
+                } catch (IOException e) {
+                    logger.error(e.getMessage(), e);
+                } finally {
+                    IOUtils.closeQuietly(csvReader);
                 }
-            }
-        } catch (IOException e) {
-            logger.error(e.getMessage(), e);
-        } finally {
-            IOUtils.closeQuietly(csvReader);
-        }
 
+                return hasErrors;
+            }
+        });
 
         logger.info("Batch user create took " + (System.currentTimeMillis() - timer) + " ms");
         csvFile.setCsvFile(null);
@@ -296,7 +312,7 @@ public class UsersFlowHandler implements Serializable {
     public UserProperties initUser() {
         return new UserProperties();
     }
-    
+
     public UserProperties populateUser(String selectedUser) {
         return populateUser(selectedUser, null);
     }
@@ -305,18 +321,24 @@ public class UsersFlowHandler implements Serializable {
         return new LinkedList<JCRGroupNode>(User.getUserMembership(selectedUser).values());
     }
 
-    public boolean removeUser(String userKey, MessageContext context) {
-        JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
-        String displayName = PrincipalViewHelper.getDisplayName(jahiaUser);
-        if(userManagerService.deleteUser(jahiaUser.getPath())) {
-            context.addMessage(new MessageBuilder().info().code(
-                    "serverSettings.user.remove.successful").arg(displayName).build());
-            return true;
-        } else {
-            context.addMessage(new MessageBuilder().error().code(
-                    "serverSettings.user.remove.unsuccessful").arg(displayName).build());
-            return false;
-        }
+    public boolean removeUser(final String userKey, final MessageContext context) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
+                String displayName = PrincipalViewHelper.getDisplayName(jahiaUser);
+                if (userManagerService.deleteUser(jahiaUser.getPath(), session)) {
+                    context.addMessage(new MessageBuilder().info().code(
+                            "serverSettings.user.remove.successful").arg(displayName).build());
+                    session.save();
+                    return true;
+                } else {
+                    context.addMessage(new MessageBuilder().error().code(
+                            "serverSettings.user.remove.unsuccessful").arg(displayName).build());
+                    return false;
+                }
+            }
+        });
     }
 
     public Set<JCRUserNode> search(SearchCriteria searchCriteria) {
@@ -330,8 +352,8 @@ public class UsersFlowHandler implements Serializable {
                 searchCriteria.getProviders());
         int searchSize = searchResult.size();
         searchResult = PrincipalViewHelper.removeJahiaAdministrators(searchResult);
-        if (searchResult.size()!=searchSize) {
-            searchCriteria.setNumberOfRemovedJahiaAdministrators(searchSize-searchResult.size());
+        if (searchResult.size() != searchSize) {
+            searchCriteria.setNumberOfRemovedJahiaAdministrators(searchSize - searchResult.size());
         }
         return searchResult;
     }
@@ -346,17 +368,17 @@ public class UsersFlowHandler implements Serializable {
         this.userManagerService = userManagerService;
     }
 
-    private boolean setUserProperty(String propertyName, String propertyValue,String source, MessageContext context, JCRUserNode jahiaUser) {
+    private boolean setUserProperty(String propertyName, String propertyValue, String source, MessageContext context, JCRUserNode jahiaUser) {
         try {
             String oldPropertyValue = jahiaUser.getProperty(propertyName).getString();
             if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
                 jahiaUser.setProperty(propertyName, propertyValue);
-                return true;
             }
         } catch (RepositoryException e) {
             context.addMessage(new MessageBuilder().error().source(source).code("serverSettings.user.edit.errors.property").arg(source).build());
+            return false;
         }
-        return false;
+        return true;
     }
 
     private Properties transformUserProperties(UserProperties userProperties) {
@@ -378,28 +400,28 @@ public class UsersFlowHandler implements Serializable {
         Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
         if (jahiaUser != null) {
             if (!readOnlyProps.contains("j:firstName")) {
-                hasErrors |= setUserProperty("j:firstName", userProperties.getFirstName(),"firstName", context, jahiaUser);
+                hasErrors |= !setUserProperty("j:firstName", userProperties.getFirstName(), "firstName", context, jahiaUser);
             }
             if (!readOnlyProps.contains("j:lastName")) {
-                hasErrors |= setUserProperty("j:lastName", userProperties.getLastName(),"lastName", context, jahiaUser);
+                hasErrors |= !setUserProperty("j:lastName", userProperties.getLastName(), "lastName", context, jahiaUser);
             }
             if (!readOnlyProps.contains("j:email")) {
-                hasErrors |= setUserProperty("j:email", userProperties.getEmail(),"email", context, jahiaUser);
+                hasErrors |= !setUserProperty("j:email", userProperties.getEmail(), "email", context, jahiaUser);
             }
             if (!readOnlyProps.contains("j:organization")) {
-                hasErrors |= setUserProperty("j:organization", userProperties.getOrganization(),"organization", context, jahiaUser);
+                hasErrors |= !setUserProperty("j:organization", userProperties.getOrganization(), "organization", context, jahiaUser);
             }
             if (!readOnlyProps.contains("emailNotificationsDisabled")) {
-                hasErrors |= setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(),"emailNotifications", context, jahiaUser);
+                hasErrors |= !setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(), "emailNotifications", context, jahiaUser);
             }
             if (!readOnlyProps.contains("j:accountLocked")) {
-                hasErrors |= setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(),"accountLocked", context, jahiaUser);
+                hasErrors |= !setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(), "accountLocked", context, jahiaUser);
             }
             if (!readOnlyProps.contains("preferredLanguage")) {
-                hasErrors |= setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(),"preferredLanguage", context, jahiaUser);
+                hasErrors |= !setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(), "preferredLanguage", context, jahiaUser);
             }
             if (!userProperties.isReadOnly() && StringUtils.isNotBlank(userProperties.getPassword())) {
-                if(jahiaUser.setPassword(userProperties.getPassword())) {
+                if (jahiaUser.setPassword(userProperties.getPassword())) {
                     context.addMessage(new MessageBuilder().info().code(
                             "serverSettings.user.edit.password.changed").build());
                 } else {
@@ -407,9 +429,15 @@ public class UsersFlowHandler implements Serializable {
                     hasErrors = true;
                 }
             }
-        }
-        if(!hasErrors) {
-            context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
+            if (!hasErrors) {
+                try {
+                    jahiaUser.getSession().save();
+                    context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
+                } catch (RepositoryException e) {
+                    logger.error("Cannot save user properties",e);
+                }
+
+            }
         }
         return !hasErrors;
     }
@@ -424,9 +452,15 @@ public class UsersFlowHandler implements Serializable {
         return searchResult;
     }
 
-    public void bulkDeleteUser(List<String> selectedUser, MessageContext messageContext) {
-        for (String userKey : selectedUser) {
-            removeUser(userKey, messageContext);
-        }
+    public void bulkDeleteUser(final List<String> selectedUser, final MessageContext messageContext) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                for (String userKey : selectedUser) {
+                    removeUser(userKey, messageContext);
+                }
+                return null;
+            }
+        });
     }
 }

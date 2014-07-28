@@ -329,7 +329,7 @@ public class AclListener extends DefaultEventListener {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
-                        if (!priv.isMember(p)) {
+                        if (p == null || !priv.isMember(p)) {
                             continue;
                         }
 

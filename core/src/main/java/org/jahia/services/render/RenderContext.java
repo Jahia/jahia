@@ -239,7 +239,7 @@ public class RenderContext {
     }
 
     public boolean isLoggedIn() {
-        return JahiaUserManagerService.isNotGuest(getUser());
+        return !JahiaUserManagerService.isGuest(getUser());
     }
 
     public Map<String, Map<String, Integer>> getTemplatesCacheExpiration() {
@@ -277,7 +277,7 @@ public class RenderContext {
     public Locale getUILocale() {
         if (uiLocale == null) {
             Locale locale = null;
-            if (JahiaUserManagerService.isNotGuest(getUser())) {
+            if (!JahiaUserManagerService.isGuest(getUser())) {
                 JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(getUser().getUserKey());
                 locale = UserPreferencesHelper.getPreferredLocale(userNode, LanguageCodeConverters.resolveLocaleForGuest(request));
             }

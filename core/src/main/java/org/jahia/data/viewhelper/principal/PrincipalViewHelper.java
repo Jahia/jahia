@@ -139,9 +139,6 @@ public class PrincipalViewHelper implements Serializable {
     
     private static transient final Comparator<JCRNodeWrapper> PRINCIPAL_COMPARATOR = new PrincipalComparator();
 
-    private Map<Principal, Integer[]> perms;
-    private Set<Principal> inheritance;
-
     private static Set<String> selectBoxFieldsHeading = new HashSet<String>();
     private List<Integer> selectBoxFieldsSize = new ArrayList<Integer>();
     private List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
@@ -183,7 +180,7 @@ public class PrincipalViewHelper implements Serializable {
                 }
                 try {
                     selectBoxFieldsMethod.add(PrincipalViewHelper.class.getMethod("get" + fieldToDisplay,
-                            new Class[]{Principal.class, Integer.class}));
+                            new Class[]{JCRNodeWrapper.class, Integer.class}));
                 } catch (java.lang.NoSuchMethodException nsme) {
                     logger.error("Internal class error ! Please check Jahia code", nsme);
                 }
@@ -233,10 +230,12 @@ public class PrincipalViewHelper implements Serializable {
         if (p == null) {
             return "null";
         }
-        if (p instanceof JahiaUser) {
-            return buff.append("u").append(((JahiaUser) p).getUserKey()).toString();
+        if (p instanceof JCRUserNode) {
+            return buff.append("u").append(((JCRUserNode) p).getUserKey()).toString();
+        } else if (p instanceof JCRGroupNode) {
+            return buff.append("g").append(((JCRGroupNode) p).getGroupKey()).toString();
         } else {
-            return buff.append("g").append(((JahiaGroup) p).getGroupKey()).toString();
+            return "";
         }
     }
 
@@ -380,9 +379,11 @@ public class PrincipalViewHelper implements Serializable {
      * @param size The provider string size that should be displayed.
      * @return The displayable provider string.
      */
-    public static String getProvider(Principal p, Integer size) {
-        if (p instanceof JahiaPrincipal) {
-            return adjustStringSize(((JahiaPrincipal) p).getProviderName(), size);
+    public static String getProvider(JCRNodeWrapper p, Integer size) {
+        if (p instanceof JCRUserNode) {
+            return adjustStringSize(((JCRUserNode) p).getProviderName(), size);
+        } else if (p instanceof JCRGroupNode) {
+            return adjustStringSize(((JCRGroupNode) p).getProviderName(), size);
         }
         return null;
     }
@@ -395,10 +396,10 @@ public class PrincipalViewHelper implements Serializable {
      * @param size The provider string size that should be displayed.
      * @return The displayable site key string
      */
-    public static String getSiteKey(Principal p, Integer size) {
+    public static String getSiteKey(JCRNodeWrapper p, Integer size) throws RepositoryException {
         String siteKey = null;
-        if (p instanceof JahiaGroup) {
-            siteKey = ((JahiaGroup) p).getSiteKey();
+        if (p instanceof JCRGroupNode) {
+            siteKey = p.getResolveSite().getSiteKey();
         }
         if (siteKey == null) {
             return adjustStringSize("server", size);
@@ -413,24 +414,15 @@ public class PrincipalViewHelper implements Serializable {
      * @param size The provider string size that should be displayed.
      * @return The displayable site title string
      */
-    public static String getSiteTitle(Principal p, Integer size) {
+    public static String getSiteTitle(JCRNodeWrapper p, Integer size) throws RepositoryException {
         String siteKey = null;
-        if (p instanceof JahiaGroup) {
-            siteKey = ((JahiaGroup) p).getSiteKey();
+        if (p instanceof JCRGroupNode) {
+            siteKey = p.getResolveSite().getTitle();
         }
         if (siteKey == null) {
             return adjustStringSize("server", size);
         }
-
-        try {
-            JahiaSite jahiaSite = ServicesRegistry.getInstance().getJahiaSitesService().getSite(siteKey);
-            if (jahiaSite != null) {
-                return adjustStringSize(jahiaSite.getTitle(), size);
-            }
-        } catch (JahiaException je) {
-            logger.error("Error while retrieving site key=" + siteKey, je);
-        }
-        return adjustStringSize("unknown", size);
+        return adjustStringSize(siteKey, size);
     }
 
     /**
@@ -440,8 +432,12 @@ public class PrincipalViewHelper implements Serializable {
      * @param size For method call compatibility
      * @return The principal type
      */
-    public static String getPrincipal(Principal p, Integer size) {
-        return getPrincipalType(p) == 'u' ? "u" : "g";
+    public static String getPrincipal(JCRNodeWrapper p, Integer size) {
+        if (p instanceof JCRUserNode) {
+            return "u";
+        } else {
+            return "g";
+        }
     }
 
     /**
@@ -536,59 +532,6 @@ public class PrincipalViewHelper implements Serializable {
             members.append(")");
             return adjustStringSize(members.toString(), size);
         }
-    }
-
-    /**
-     * Translate the ACL entry permissions setting to a string.
-     *
-     * @param p the user/group which have permissions
-     * @return a string permissions.
-     */
-    public String getPermissions(Principal p, Integer size) {
-        if (size == -1) {
-            size = 3;
-        }
-        final Integer permissions = ((Integer[]) perms.get(p))[0];
-
-        final StringBuilder permStr = new StringBuilder();
-
-        final boolean inherited = (permissions.intValue() >> 3 & 1) != 0;
-        final boolean linked = (permissions.intValue() >> 4 & 1) != 0;
-        char[] perms = {'R', 'W', 'A'};
-        for (int i = 0; i < size; i++) {
-            permStr.append((permissions.intValue() >> i & 1) != 0 ? perms[i] : "-");
-        }
-        for (int i = size; i < 3; i++) {
-            permStr.append(" ");
-        }
-        if (linked) {
-            permStr.append("+");
-        } else if (inherited) {
-            permStr.append("*");
-        } else {
-            permStr.append("&nbsp;");
-        }
-
-        return permStr.toString();
-    }
-
-    /**
-     *
-     */
-    public void setPermissions(Map<Principal, Integer[]> perms) {
-        this.perms = perms;
-    }
-
-    public String getInheritance(Principal p, Integer size) {
-        if (inheritance.contains(p)) {
-            return "*&nbsp;";
-        } else {
-            return "&nbsp;&nbsp;";
-        }
-    }
-
-    public void setInheritance(Set<Principal> inheritance) {
-        this.inheritance = inheritance;
     }
 
     /**

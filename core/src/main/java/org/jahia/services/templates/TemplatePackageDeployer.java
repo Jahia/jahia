@@ -82,7 +82,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -93,7 +93,6 @@ import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -182,7 +181,7 @@ public class TemplatePackageDeployer {
                 } else if (imp.toLowerCase().contains("/importsite")) {
                     JCRUserNode user = null;
                     try {
-                        user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                        user = JahiaUserManagerService.getInstance().lookupRootUser();
                         JCRSessionFactory.getInstance().setCurrentUser(user.getJahiaUser());
                         importExportService.importSiteZip(importFile, session);
                     } finally {

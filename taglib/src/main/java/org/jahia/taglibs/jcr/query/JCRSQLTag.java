@@ -71,6 +71,14 @@
  */
 package org.jahia.taglibs.jcr.query;
 
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
+import org.slf4j.Logger;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
@@ -78,14 +86,6 @@ import javax.jcr.query.QueryResult;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
-
-import org.slf4j.Logger;
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 /**
  * Tag implementation for exposing a result of SQL-2 JCR query into the template scope.
@@ -106,7 +106,7 @@ public class JCRSQLTag extends AbstractJCRTag {
         try {
             if (isUseRootUser()) {
                 userToReset = JCRSessionFactory.getInstance().getCurrentUser();
-                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
+                JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             }
             result = executeQuery(getJCRSession());
 

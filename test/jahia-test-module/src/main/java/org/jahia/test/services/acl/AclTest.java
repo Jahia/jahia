@@ -165,10 +165,10 @@ public class AclTest {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-        user1 = userManager.createUser("user1", "password", new Properties());
-        user2 = userManager.createUser("user2", "password", new Properties());
-        user3 = userManager.createUser("user3", "password", new Properties());
-        user4 = userManager.createUser("user4", "password", new Properties());
+        user1 = userManager.createUser("user1", "password", new Properties(), session);
+        user2 = userManager.createUser("user2", "password", new Properties(), session);
+        user3 = userManager.createUser("user3", "password", new Properties(), session);
+        user4 = userManager.createUser("user4", "password", new Properties(), session);
 
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
@@ -193,10 +193,10 @@ public class AclTest {
             }
 
             JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            userManager.deleteUser(user1.getPath());
-            userManager.deleteUser(user2.getPath());
-            userManager.deleteUser(user3.getPath());
-            userManager.deleteUser(user4.getPath());
+            userManager.deleteUser(user1.getPath(), session);
+            userManager.deleteUser(user2.getPath(), session);
+            userManager.deleteUser(user3.getPath(), session);
+            userManager.deleteUser(user4.getPath(), session);
 
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);

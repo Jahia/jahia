@@ -153,7 +153,7 @@ public class WelcomeServlet extends HttpServlet {
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
         JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
-        if (JahiaUserManagerService.isNotGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+        if (!JahiaUserManagerService.isGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
             String language = resolveLanguage(request, site, userNode);

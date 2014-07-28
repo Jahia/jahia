@@ -77,14 +77,11 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.junit.*;
 import org.slf4j.Logger;
 
-import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Properties;
@@ -111,15 +108,20 @@ public class JahiaGroupManagerServiceTest {
         groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
 
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
         // now let's create some users and groups.
-        user1 = userManager.createUser("test-user1", "password", new Properties());
-        user2 = userManager.createUser("test-user2", "password", new Properties());
+        user1 = userManager.createUser("test-user1", "password", new Properties(), session);
+        user2 = userManager.createUser("test-user2", "password", new Properties(), session);
+        session.save();
     }
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        userManager.deleteUser(user1.getPath());
-        userManager.deleteUser(user2.getPath());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        userManager.deleteUser(user1.getPath(), session);
+        userManager.deleteUser(user2.getPath(), session);
+        session.save();
     }
 
 

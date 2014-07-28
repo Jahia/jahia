@@ -8,7 +8,6 @@
 <%@page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@page import="org.jahia.services.content.JCRSessionWrapper" %>
 <%@page import="org.jahia.services.history.NodeVersionHistoryHelper" %>
-<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
 <%@page import="org.jahia.utils.LanguageCodeConverters" %>
 <%@page import="javax.jcr.ItemNotFoundException" %>
 <%@page import="javax.jcr.Node" %>
@@ -22,6 +21,7 @@
 <%@page import="java.io.StringWriter" %>
 <%@page import="java.util.Locale" %>
 <%@ page import="org.apache.jackrabbit.core.query.lucene.join.JoinRow" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="facet" uri="http://www.jahia.org/tags/facetLib" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
@@ -147,7 +147,7 @@
     </form>
 </fieldset>
 <%
-    JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
+    JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
     JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"), currentLocale, Locale.ENGLISH);
 %>
 <c:if test="${param.action == 'delete' && not empty param.target}">

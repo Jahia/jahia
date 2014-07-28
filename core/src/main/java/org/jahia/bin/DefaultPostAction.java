@@ -210,7 +210,7 @@ public class DefaultPostAction extends Action {
             }
 
             final String nodeId = newNode.getIdentifier();
-            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && JahiaUserManagerService.isNotGuest(session.getUser())) {
+            if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && !JahiaUserManagerService.isGuest(session.getUser())) {
                 JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getName(),session.getWorkspace().getName(),new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper rootSession) throws RepositoryException {
                         JCRNodeWrapper createdNode = rootSession.getNodeByUUID(nodeId);

@@ -72,7 +72,6 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -81,8 +80,10 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.services.workflow.*;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowTask;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.utils.Patterns;
 import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;

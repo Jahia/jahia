@@ -101,7 +101,6 @@ import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -414,7 +413,7 @@ public class Service extends JahiaService {
     }
 
     private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
-            throws IOException, ServletException, JahiaException {
+            throws IOException, RepositoryException, ServletException, JahiaException {
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
@@ -625,7 +624,7 @@ public class Service extends JahiaService {
 
         boolean resetUser = false;
         if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             resetUser = true;
         }
 
@@ -860,7 +859,7 @@ public class Service extends JahiaService {
 
             boolean resetUser = false;
             if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser().getJahiaUser());
+                JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
                 resetUser = true;
             }
 

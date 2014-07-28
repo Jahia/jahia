@@ -230,20 +230,20 @@
                         <tr class="sortable-row">
                             <td>${loopStatus.count}</td>
                             <td>
-                                <input type="checkbox" name="userCheckbox" value="${fn:escapeXml(curUser.name)}" class="userCheckbox">
+                                <input type="checkbox" name="userCheckbox" value="${fn:escapeXml(curUser.path)}" class="userCheckbox">
                             </td>
-                            <td><a href="#" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.name)}')">${user:displayName(curUser)}</a></td>
+                            <td><a href="#" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.path)}')">${user:displayName(curUser)}</a></td>
                             <td>${user:fullName(curUser)}</td>
                             <c:if test="${multipleProvidersAvailable}">
                                 <fmt:message var="i18nProviderLabel" key="providers.${curUser.providerName}.label"/>
                                 <td>${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curUser.providerName : i18nProviderLabel)}</td>
                             </c:if>
                             <td>
-                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.name)}')">
+                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.path)}')">
                                     <i class="icon-edit"></i>
                                 </a>
                                 <c:if test="${curUser.name != 'guest' && !user:isReadOnlyProvider(curUser)}">
-                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="doUserAction('removeUser', '${fn:escapeXml(curUser.name)}')">
+                                <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="doUserAction('removeUser', '${fn:escapeXml(curUser.path)}')">
                                     <i class="icon-remove icon-white"></i>
                                 </a>
                                 </c:if>

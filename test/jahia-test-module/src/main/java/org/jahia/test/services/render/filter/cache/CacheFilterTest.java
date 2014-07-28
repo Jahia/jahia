@@ -95,7 +95,6 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
@@ -351,10 +350,10 @@ public class CacheFilterTest extends JahiaTestCase {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/"+TESTSITE_NAME);
         // Create three users
-        final JCRUserManagerProvider userManagerProvider = JCRUserManagerProvider.getInstance();
-        final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties());
-        final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties());
-        final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties());
+        final JahiaUserManagerService userManagerProvider = JahiaUserManagerService.getInstance();
+        final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties(), session);
+        final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties(), session);
+        final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties(), session);
         // Create three groups
         final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
         final JCRGroupNode groupA = groupManagerProvider.createGroup(site.getSiteKey(), "groupA", new Properties(), false, session);

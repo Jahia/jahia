@@ -1,20 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
         %><?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<%@page import="org.apache.jackrabbit.core.id.NodeId"%>
-<%@ page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
+<%@page import="org.apache.commons.lang.StringUtils"%>
+<%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
+<%@ page import="org.hibernate.ScrollableResults" %>
+<%@ page import="org.hibernate.StatelessSession" %>
+<%@ page import="org.jahia.services.SpringContextSingleton" %>
+<%@ page import="org.jahia.services.content.*" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
+<%@ page import="org.jahia.settings.SettingsBean" %>
 <%@ page import="javax.jcr.*" %>
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="java.io.*" %>
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
-<%@ page import="org.apache.commons.lang.StringUtils" %>
-<%@ page import="org.jahia.settings.SettingsBean" %>
-<%@ page import="org.jahia.services.SpringContextSingleton" %>
-<%@ page import="org.hibernate.*" %>
-<%@ page import="javax.jcr.Session" %>
-<%@ page import="org.jahia.services.content.*" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -294,7 +294,7 @@
         long totalTime;
         printTestName(out, "Java Content Repository");
         try {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 
             JCRWorkspaceWrapper workspaceWrapper = sessionWrapper.getWorkspace();
@@ -325,7 +325,7 @@
         long totalTime;
         printTestName(out, "Java Content Repository Write");
         try {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession((String) pageContext.getAttribute("workspace"));
 
             JCRWorkspaceWrapper workspaceWrapper = sessionWrapper.getWorkspace();

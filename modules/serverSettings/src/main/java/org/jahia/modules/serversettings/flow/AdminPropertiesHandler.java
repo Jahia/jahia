@@ -71,17 +71,12 @@
  */
 package org.jahia.modules.serversettings.flow;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.modules.serversettings.users.admin.AdminProperties;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.taglibs.user.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,6 +84,9 @@ import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 
 import javax.jcr.RepositoryException;
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 public class AdminPropertiesHandler implements Serializable {
     private static final long serialVersionUID = -1665000223980422529L;
@@ -103,7 +101,7 @@ public class AdminPropertiesHandler implements Serializable {
      * first method call in the flow. It instantiates and populates the AdminProperties bean
      */
     public void init() {
-        JCRUserNode rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
+        JCRUserNode rootNode = JahiaUserManagerService.getInstance().lookupRootUser();
         adminProperties = new AdminProperties();
         UsersFlowHandler.populateUser(rootNode.getPath(), adminProperties);
     }
@@ -112,7 +110,7 @@ public class AdminPropertiesHandler implements Serializable {
      * save the bean in the JCR
      */
     public void save(MessageContext messages) {
-        JCRUserNode rootNode = JCRUserManagerProvider.getInstance().lookupRootUser();
+        JCRUserNode rootNode = JahiaUserManagerService.getInstance().lookupRootUser();
         if (!StringUtils.isEmpty(adminProperties.getPassword())) {
             rootNode.setPassword(adminProperties.getPassword());
         }
@@ -165,7 +163,7 @@ public class AdminPropertiesHandler implements Serializable {
         messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
     }
     public List<JCRGroupNode> getUserMembership() {
-        return new LinkedList<JCRGroupNode>(User.getUserMembership(JCRUserManagerProvider.getInstance().lookupRootUser().getName()).values());
+        return new LinkedList<JCRGroupNode>(User.getUserMembership(JahiaUserManagerService.getInstance().lookupRootUser().getName()).values());
     }
 
 }

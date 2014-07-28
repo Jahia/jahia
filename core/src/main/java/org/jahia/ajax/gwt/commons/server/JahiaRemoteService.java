@@ -218,7 +218,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         Locale sessionLocale = (Locale) getSession().getAttribute(Constants.SESSION_UI_LOCALE);
         Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), LanguageCodeConverters.resolveLocaleForGuest(request));
         if (locale == null) {
-            if(JahiaUserManagerService.isNotGuest(getRemoteJahiaUser().getLocalPath())) {
+            if(!JahiaUserManagerService.isGuest(getRemoteJahiaUser())) {
                 locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode());
             }
             if (locale == null) {

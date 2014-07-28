@@ -73,17 +73,15 @@ package org.jahia.services.importexport;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.jcr.RepositoryException;
-import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
@@ -104,13 +102,17 @@ public class UsersImportHandler extends DefaultHandler {
     private JCRGroupNode currentGroup = null;
     private boolean member = false;
 
-    public UsersImportHandler(JahiaSite site) {
+    private JCRSessionWrapper session;
+
+    public UsersImportHandler(JahiaSite site, JCRSessionWrapper session) {
         this.site = site;
+        this.session = session;
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
     }
 
-    public UsersImportHandler() {
+    public UsersImportHandler(JCRSessionWrapper session) {
+        this.session = session;
         u = ServicesRegistry.getInstance().getJahiaUserManagerService();
         g = ServicesRegistry.getInstance().getJahiaGroupManagerService();
     }
@@ -137,7 +139,7 @@ public class UsersImportHandler extends DefaultHandler {
                 }
                 if (name != null && pass != null) {
                     if (!u.userExists(name)) {
-                        u.createUser(name, pass, p);
+                        u.createUser(name, pass, p, session);
                     }
                 }
             } else if (localName.equals("group")) {

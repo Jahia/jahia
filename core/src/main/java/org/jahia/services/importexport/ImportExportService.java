@@ -354,18 +354,5 @@ public interface ImportExportService {
      * @return a list of tuples &lt;username, password, homePage&gt; for the imported users 
      * @throws IOException in case of a reading/parsing error
      */
-    List<String[]> importUsers(File file) throws IOException;
-
-    /**
-     * Performs a batch import of users from the provided file
-     * 
-     * @param file
-     *            a file to read user data from
-     * @param site
-     *            site to use for group resolution
-     * @return a list of tuples &lt;username, password, homePage&gt; for the imported users
-     * @throws IOException
-     *             in case of a reading/parsing error
-     */
-    List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException ;
+    List<String[]> importUsers(File file) throws IOException, RepositoryException;
 }

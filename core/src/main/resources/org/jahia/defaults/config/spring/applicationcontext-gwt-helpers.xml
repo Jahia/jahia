@@ -49,6 +49,7 @@
                 <entry key="/contents" value="jnt:contentFolder"/>
                 <entry key="/files" value="jnt:folder"/>
                 <entry key="/files/private" value="jnt:folder"/>
+                <entry key="/portlets" value="jnt:portletFolder"/>
             </map>
         </property>
         <property name="nodeHelper">

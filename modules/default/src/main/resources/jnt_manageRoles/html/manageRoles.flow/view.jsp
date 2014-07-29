@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="user" uri="http://www.jahia.org/tags/user" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 
 <h2>
     ${currentNode.properties['jcr:title'].string}
@@ -47,7 +48,7 @@
                     </thead>
                     <tbody>
                     <c:forEach items="${entry.value}" var="member" varStatus="loopStatus">
-                        <c:set var="principalType" value="${user:principalType(member)}"/>
+                        <c:set var="principalType" value="${jcr:isNodeType(member,'jnt:user')?'u':'g'}"/>
                         <c:set var="principalIcon" value="${principalType == 'u' ? 'icon-user-small' : 'icon-group-small'}"/>
                         <c:set var="principalKey" value="${principalType}:${member.name}"/>
                         <tr>

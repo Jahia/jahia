@@ -74,6 +74,8 @@ package org.jahia.services.scheduler;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
@@ -128,7 +130,7 @@ public abstract class BackgroundJob implements StatefulJob {
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         JahiaUser currentUser = sessionFactory.getCurrentUser();
         if (currentUser != null) {
-            jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getName());
+            jobDataMap.put(JOB_USERKEY, sessionFactory.getCurrentUser().getUserKey());
         }
         jobDataMap.put(JOB_CURRENT_LOCALE, sessionFactory.getCurrentLocale() != null ? sessionFactory
                 .getCurrentLocale().toString() : null);
@@ -148,10 +150,10 @@ public abstract class BackgroundJob implements StatefulJob {
         final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         try {
         	String userKey = data.getString(JOB_USERKEY);
-        	if ((userKey!= null) && (!userKey.equals(JahiaLoginModule.SYSTEM))) {
-	            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) data.get(JOB_USERKEY)).getJahiaUser();
-	            if (user != null) {
-	            	sessionFactory.setCurrentUser(user);
+        	if (userKey != null && !userKey.equals(JahiaLoginModule.SYSTEM)) {
+                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(userKey);
+                if (userNode != null) {
+                    sessionFactory.setCurrentUser(userNode.getJahiaUser());
 	            	logger.debug("Executing job as user {}", userKey);
 	            } else {
 	            	logger.warn("Unable to lookup job user for key {}", userKey);

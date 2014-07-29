@@ -152,7 +152,7 @@ public class WelcomeServlet extends HttpServlet {
 
     protected void userRedirect(HttpServletRequest request, HttpServletResponse response, ServletContext context) throws Exception {
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-        JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
+        JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey()) : null;
         if (!JahiaUserManagerService.isGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
@@ -186,7 +186,7 @@ public class WelcomeServlet extends HttpServlet {
         String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
         final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
         JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
-        JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
+        JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey()) : null;
         String redirect = null;
         String pathInfo = request.getPathInfo();
         String language = resolveLanguage(request, site, userNode);

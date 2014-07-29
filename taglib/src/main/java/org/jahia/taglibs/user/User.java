@@ -157,7 +157,7 @@ public class User {
         if (user == null) {
             throw new IllegalArgumentException("Specified user key is null");
         }
-        return user.startsWith("{") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
+        return user.startsWith("/") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
                 .lookupUserByKey(user) : ServicesRegistry.getInstance()
                 .getJahiaUserManagerService().lookupUser(user);
     }

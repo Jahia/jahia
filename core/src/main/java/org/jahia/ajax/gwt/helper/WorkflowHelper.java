@@ -399,12 +399,11 @@ public class WorkflowHelper {
     private String getUsername(String userKey) {
         String username = "";
         if (userKey != null) {
-            final JahiaUser jahiaUser =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getJahiaUser();
+            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getJahiaUser();
             if (jahiaUser != null) {
                 username = jahiaUser.getName();
             } else {
-                username = StringUtils.substringAfter(userKey, "}");
+                username = StringUtils.substringAfterLast(userKey, "/");
             }
         }
         return username;

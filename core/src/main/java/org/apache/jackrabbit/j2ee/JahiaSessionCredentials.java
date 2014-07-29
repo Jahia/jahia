@@ -96,15 +96,8 @@ public class JahiaSessionCredentials extends BasicCredentialsProvider {
     public Credentials getCredentials(HttpServletRequest request) throws LoginException, ServletException {
         Principal jahiaUser = (Principal) request.getSession(true).getAttribute("org.jahia.usermanager.jahiauser");
         if (jahiaUser != null) {
-            String n = jahiaUser.getName();
-            // principal.getName should return username, but returns userkey now
-            if (n.startsWith("{")) {
-                n = n.substring(n.indexOf('}')+1);
-            } else if (n.contains(":")) {
-                n = n.substring(0, n.indexOf(':'));
-            }
             request.setAttribute("isGuest", Boolean.FALSE);
-            return JahiaLoginModule.getCredentials(n);
+            return JahiaLoginModule.getCredentials(jahiaUser.getName());
         } else {
             SimpleCredentials c = (SimpleCredentials) super.getCredentials(request);
 

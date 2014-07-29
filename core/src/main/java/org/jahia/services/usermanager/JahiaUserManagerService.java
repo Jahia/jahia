@@ -289,9 +289,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 while (rows.hasNext()) {
                     Row usersFolderNode = rows.nextRow();
                     if (usersFolderNode.getNode() != null) {
-                        String userName = "{jcr}" + usersFolderNode.getNode().getName();
-                        if (!users.contains(userName)) {
-                            users.add(userName);
+                        String userPath = usersFolderNode.getPath();
+                        if (!users.contains(userPath)) {
+                            users.add(userPath);
                         }
                     }
                 }

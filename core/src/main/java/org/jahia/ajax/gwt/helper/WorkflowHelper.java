@@ -92,12 +92,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
@@ -119,6 +117,7 @@ public class WorkflowHelper {
 
     private WorkflowService service;
     private JahiaUserManagerService userManagerService;
+    private JahiaGroupManagerService groupManagerService;
 
     public void start() {
         service.addWorkflowListener(new PollingWorkflowListener());
@@ -153,8 +152,15 @@ public class WorkflowHelper {
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                    if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
-                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getName()))) {
+                                    if (principal instanceof JahiaGroup) {
+                                        JCRGroupNode groupNode = groupManagerService.lookupGroup(((JahiaGroup) principal).getGroupKey());
+                                        JCRUserNode userNode = userManagerService.lookupUserByKey(session.getUser().getUserKey());
+                                        if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
+                                            gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
+                                            break;
+                                        }
+                                    }
+                                    if (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey())) {
                                         gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                         break;
                                     }
@@ -683,24 +689,30 @@ public class WorkflowHelper {
             final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
             if (broadcasterFactory != null) {
 
-                Set<Principal> users = new HashSet<Principal>();
+                Set<JCRUserNode> users = new HashSet<JCRUserNode>();
                 for (WorkflowParticipation workflowParticipation : task.getParticipations()) {
                     JahiaPrincipal p = workflowParticipation.getJahiaPrincipal();
                     if (p instanceof JahiaUser) {
-                        users.add(p);
+                        JCRUserNode u = userManagerService.lookupUserByKey(((JahiaUser) p).getUserKey());
+                        if (u != null) {
+                            users.add(u);
+                        }
                     } else if (p instanceof JahiaGroup) {
-                        users.addAll(((JahiaGroup) p).getRecursiveUserMembers());
+                        JCRGroupNode g = groupManagerService.lookupGroup(((JahiaGroup) p).getGroupKey());
+                        if (g != null) {
+                            users.addAll(g.getRecursiveUserMembers());
+                        }
                     }
                 }
-                for (Principal user : users) {
+                for (JCRUserNode user : users) {
                     if (user != null) {
                         Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
                         if (broadcaster != null) {
                             TaskEvent taskEvent = new TaskEvent();
                             try {
-                                JahiaUser jahiaUser = (JahiaUser) user;
+                                JahiaUser jahiaUser = user.getJahiaUser();
                                 if (newTask) {
-                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(userManagerService.lookupUserByKey(jahiaUser.getUserKey()));
+                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
                                     if (preferredLocale == null) {
                                         preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                                     }
@@ -708,7 +720,7 @@ public class WorkflowHelper {
                                     taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                                 }
                                 taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser));
-                                if (!newTask && user.equals(task.getAssignee())) {
+                                if (!newTask && jahiaUser.equals(task.getAssignee())) {
                                     taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
                                 }
                             } catch (GWTJahiaServiceException e) {
@@ -731,4 +743,7 @@ public class WorkflowHelper {
         this.userManagerService = userManagerService;
     }
 
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
 }

@@ -1616,9 +1616,9 @@ public final class JCRContentUtils implements ServletContextAware {
             List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
             for (Map<String, Object> result : results) {
                 if (result.get("principalType").equals("group")) {
-                    JahiaGroup g = (JahiaGroup) result.get("principal");
-                    Set<Principal> principals = g.getRecursiveUserMembers();
-                    for (Principal user : principals) {
+                    JCRGroupNode g = (JCRGroupNode) result.get("principal");
+                    Set<JCRUserNode> principals = g.getRecursiveUserMembers();
+                    for (JCRUserNode user : principals) {
                         Map<String, Object> m = new HashMap<String, Object>(result);
                         m.put("principalType", "user");
                         m.put("principal", user);

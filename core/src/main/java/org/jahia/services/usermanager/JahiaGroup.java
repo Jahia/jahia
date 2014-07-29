@@ -136,8 +136,6 @@ public class JahiaGroup implements JahiaPrincipal, Group {
      */
     protected String path;
 
-    protected boolean hidden = false;
-
     private String siteKey;
 
     public JahiaGroup(String name, String path, String siteKey) {
@@ -226,18 +224,6 @@ public class JahiaGroup implements JahiaPrincipal, Group {
     }
 
     /**
-     * This method returns ONLY a list of users. All sub groups are expanded
-     * to return only the full list of members.
-     *
-     * @return Set a set of JahiaUsers that are all the implicit and explicit
-     * users in this group
-     */
-    public Set<Principal> getRecursiveUserMembers() {
-        throw new UnsupportedOperationException();
-    }
-
-
-    /**
      * Returns a string representation of this group.
      *
      * @return A string representation of this group.
@@ -247,17 +233,8 @@ public class JahiaGroup implements JahiaPrincipal, Group {
         return "JahiaGroup{" +
                 "name='" + name + '\'' +
                 ", path='" + path + '\'' +
-                ", hidden=" + hidden +
                 ", siteKey='" + siteKey + '\'' +
                 '}';
-    }
-
-    public boolean isHidden() {
-        return hidden;
-    }
-
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
     }
 
     /**
@@ -292,7 +269,6 @@ public class JahiaGroup implements JahiaPrincipal, Group {
 
         JahiaGroup that = (JahiaGroup) o;
 
-        if (hidden != that.hidden) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (path != null ? !path.equals(that.path) : that.path != null) return false;
         if (siteKey != null ? !siteKey.equals(that.siteKey) : that.siteKey != null) return false;
@@ -304,7 +280,6 @@ public class JahiaGroup implements JahiaPrincipal, Group {
     public int hashCode() {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (path != null ? path.hashCode() : 0);
-        result = 31 * result + (hidden ? 1 : 0);
         result = 31 * result + (siteKey != null ? siteKey.hashCode() : 0);
         return result;
     }

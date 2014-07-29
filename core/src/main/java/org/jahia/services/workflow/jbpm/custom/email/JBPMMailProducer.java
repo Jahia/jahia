@@ -80,6 +80,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
@@ -132,6 +133,7 @@ public class JBPMMailProducer {
 
     private MailTemplateRegistry mailTemplateRegistry;
     private TaskIdentityService taskIdentityService;
+    private JahiaGroupManagerService groupManagerService;
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;
@@ -290,8 +292,11 @@ public class JBPMMailProducer {
                         if (principal instanceof JahiaUser) {
                             users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
                         } else if (principal instanceof JahiaGroup) {
-                            for (Principal user : ((JahiaGroup) principal).getRecursiveUserMembers()) {
-                                users.add(taskIdentityService.getUserById(((JahiaUser)user).getUserKey()));
+                            JCRGroupNode groupNode = groupManagerService.lookupGroup(((JahiaGroup) principal).getGroupKey());
+                            if (groupNode != null) {
+                                for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {
+                                    users.add(taskIdentityService.getUserById(user.getPath()));
+                                }
                             }
                         }
                     }
@@ -585,6 +590,10 @@ public class JBPMMailProducer {
 
         int sepIndex = path.lastIndexOf('/');
         return sepIndex != -1 ? path.substring(sepIndex + 1) : null;
+    }
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
     }
 
     public class MyBindings extends SimpleBindings {

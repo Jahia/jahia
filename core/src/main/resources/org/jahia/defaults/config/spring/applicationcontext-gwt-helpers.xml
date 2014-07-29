@@ -80,6 +80,7 @@
     <bean name="WorkflowHelper" class="org.jahia.ajax.gwt.helper.WorkflowHelper" init-method="start">
         <property name="service" ref="workflowService"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
     </bean>
 
     <bean name="SearchHelper" class="org.jahia.ajax.gwt.helper.SearchHelper">

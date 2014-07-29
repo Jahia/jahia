@@ -73,9 +73,9 @@ package org.jahia.taglibs.workflow;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.*;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
@@ -123,8 +123,15 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                         if (participations != null) {
                             for (WorkflowParticipation participation : participations) {
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
-                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey()))) {
+                                if (principal instanceof JahiaGroup) {
+                                    JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroup(((JahiaGroup) principal).getGroupKey());
+                                    JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(getUser().getUserKey());
+                                    if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
+                                        tasks.add(workflowTask);
+                                        break;
+                                    }
+                                }
+                                if (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey())) {
                                     tasks.add(workflowTask);
                                     break;
                                 }

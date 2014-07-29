@@ -104,7 +104,6 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.SourceControlManagement;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
@@ -686,8 +685,12 @@ public class ContentManagerHelper {
             if (results.isSuccessful()) {
                 try {
                     // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = session.getNode(
-                            session.getUserNode().getPath() + "/files/private");
+                    JCRNodeWrapper privateFilesFolder = navigation.getDefaultUserFolder(session, "/files/private");
+                    if (privateFilesFolder.isNew()) {
+                        privateFilesFolder.grantRoles("u:"+session.getUser().getName(), Collections.singleton("owner"));
+                        privateFilesFolder.setAclInheritanceBreak(true);
+                        session.save();
+                    }
                     String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);

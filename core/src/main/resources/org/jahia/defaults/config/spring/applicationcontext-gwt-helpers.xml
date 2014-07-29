@@ -44,6 +44,13 @@
         		<value>jnt:workflowTask.*</value>
         	</set>
         </property>
+        <property name="defaultUserFolderTypes">
+            <map>
+                <entry key="/contents" value="jnt:contentFolder"/>
+                <entry key="/files" value="jnt:folder"/>
+                <entry key="/files/private" value="jnt:folder"/>
+            </map>
+        </property>
         <property name="nodeHelper">
             <bean class="org.jahia.ajax.gwt.helper.NodeHelper">
                 <property name="sessionFactory" ref="jcrSessionFactory"/>

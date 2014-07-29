@@ -86,6 +86,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.*;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -326,7 +327,11 @@ public class Logout implements Controller {
         JCRPropertyWrapper cookieAuthKey = null;
         try {
             if (!JahiaUserManagerService.isGuest(curUser)) {
-                cookieAuthKey = userManagerService.lookupUserByKey(curUser.getUserKey()).getProperty(cookieAuthConfig.getUserPropertyName());
+                JCRUserNode userNode = userManagerService.lookupUserByKey(curUser.getUserKey());
+                String userPropertyName = cookieAuthConfig.getUserPropertyName();
+                if (userNode != null && userNode.hasProperty(userPropertyName)) {
+                    cookieAuthKey = userNode.getProperty(userPropertyName);
+                }
             }
             if (cookieAuthKey != null) {
                 Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());

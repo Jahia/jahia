@@ -72,6 +72,7 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreSorter;
@@ -86,6 +87,7 @@ import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTRenderResult;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -101,7 +103,10 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * Side panel tab item for browsing the content repository.
@@ -112,7 +117,7 @@ import java.util.*;
 @SuppressWarnings("serial")
 class LastContentBrowseTabItem extends SidePanelTabItem {
     protected String search;
-    protected int limit;
+    protected int limit = -1;
     private String cssWrapper;
 
     protected transient LayoutContainer contentContainer;
@@ -126,7 +131,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         tab.addListener(Events.Select, new Listener<BaseEvent>() {
             public void handleEvent(BaseEvent be) {
                 fillStore();
-                tab.removeListener(Events.Select,this);
+                tab.removeListener(Events.Select, this);
             }
         });
         VBoxLayout l = new VBoxLayout();
@@ -142,7 +147,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                 if (o1 instanceof String && o2 instanceof String) {
                     String s1 = (String) o1;
                     String s2 = (String) o2;
-                    return Collator.getInstance().localeCompare(s1,s2);
+                    return Collator.getInstance().localeCompare(s1, s2);
                 } else if (o1 instanceof Comparable && o2 instanceof Comparable) {
                     return ((Comparable) o1).compareTo(o2);
                 }
@@ -165,7 +170,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         col.setRenderer(NodeColumnConfigList.NAME_RENDERER);
         displayColumns.add(col);
         col = new ColumnConfig("jcr:lastModified", Messages.get("label.lastModif"),
-                                                     100);
+                100);
         col.setDateTimeFormat(DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_SHORT));
         displayColumns.add(col);
         grid = new Grid<GWTJahiaNode>(contentStore, new ColumnModel(displayColumns));
@@ -186,7 +191,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                             evt.getSelectedItem().getPath(), null, editLinker.getLocale(),
                             "default", "preview", null, true, "editmode",
                             editLinker.getActiveChannelIdentifier(), null, new BaseAsyncCallback<GWTRenderResult>() {
-    
+
                                 public void onSuccess(GWTRenderResult gwtRenderResult) {
                                     previewLayoutContainer.removeAll();
                                     previewLayoutContainer.add(new HTML(gwtRenderResult.getResult()));
@@ -208,6 +213,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
                             public void onFailure(Throwable caught) {
                                 // Do nothing
                             }
+
                             public void onSuccess(GWTJahiaNodeType result) {
                                 if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
                                     EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
@@ -227,7 +233,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         tab.add(contentContainer, contentVBoxData);
         contentVBoxData.setFlex(1);
         tab.add(previewLayoutContainer, contentVBoxData);
-        
+
         tab.setId("JahiaGxtLastContentBrowseTab");
         return tab;
     }
@@ -242,7 +248,7 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
     }
 
     private void fillStore() {
-        contentContainer.mask(Messages.get("label.loading","Loading..."), "x-mask-loading");
+        contentContainer.mask(Messages.get("label.loading", "Loading..."), "x-mask-loading");
         contentStore.setFiresEvents(false);
         if (previewLayoutContainer != null) {
             previewLayoutContainer.removeAll();
@@ -251,14 +257,22 @@ class LastContentBrowseTabItem extends SidePanelTabItem {
         contentStore.removeAll();
         contentStore.setFiresEvents(true);
         JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
-        async.searchSQL(search, limit,
-                        JCRClientUtils.CONTENT_NODETYPES, null, null, Arrays.asList(GWTJahiaNode.ICON,"jcr:lastModified",GWTJahiaNode.PERMISSIONS),false, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                    public void onSuccess(List<GWTJahiaNode> gwtJahiaNodes) {
-                        contentStore.add(gwtJahiaNodes);
-                        contentContainer.layout(true);
-                        contentContainer.unmask();
-                    }
-                });
+        String searchString = search;
+
+        if (searchString.contains("$site") && JahiaGWTParameters.getSiteNode() != null) {
+            searchString = searchString.replace("$site", JahiaGWTParameters.getSiteNode().getPath());
+        }
+        if (searchString.contains("$systemsite")) {
+            searchString = searchString.replace("$systemsite", "/sites/systemsite");
+        }
+
+        async.searchSQL(searchString, limit, 0, JCRClientUtils.CONTENT_NODETYPES, Arrays.asList(GWTJahiaNode.ICON, "jcr:lastModified", GWTJahiaNode.PERMISSIONS), false, new BaseAsyncCallback<PagingLoadResult<GWTJahiaNode>>() {
+            public void onSuccess(PagingLoadResult<GWTJahiaNode> gwtJahiaNodes) {
+                contentStore.add(gwtJahiaNodes.getData());
+                contentContainer.layout(true);
+                contentContainer.unmask();
+            }
+        });
     }
 
     @Override

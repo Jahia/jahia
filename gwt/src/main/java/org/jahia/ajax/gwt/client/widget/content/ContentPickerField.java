@@ -84,8 +84,6 @@ import com.extjs.gxt.ui.client.widget.form.TwinTriggerField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -176,9 +174,9 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
         }
 
         if (configuration.equals("userpicker")) {
-            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_USERS, JahiaGWTParameters.getSiteNode().getName(), !multiple);
         } else if (configuration.equals("usergrouppicker")) {
-            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_TABS, "site:" + JahiaGWTParameters.getSiteNode().getName(), !multiple);
+            new UserGroupSelect(new UserPickerAdder(), UserGroupSelect.VIEW_TABS, JahiaGWTParameters.getSiteNode().getName(), !multiple);
         } else {
             JahiaContentManagementService.App.getInstance()
                     .getManagerConfiguration(configuration, null, new BaseAsyncCallback<GWTManagerConfiguration>() {
@@ -264,49 +262,10 @@ public class ContentPickerField extends TwinTriggerField<List<GWTJahiaNode>> {
 
     private class UserPickerAdder implements UserGroupAdder {
         @Override
-        public void addUsers(List<GWTJahiaUser> users) {
-            List<String> l = new ArrayList<String>();
-            for (GWTJahiaUser user : users) {
-                l.add(user.getKey());
-            }
-            mask();
-            JahiaContentManagementService.App.getInstance().getNodesForUsers(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                @Override
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error("Error while loading users", throwable);
-                    unmask();
-                }
-
-                @Override
-                public void onSuccess(List<GWTJahiaNode> result) {
-                    setValue(result);
-                    unmask();
-                }
-            });
+        public void addUsersGroups(List<GWTJahiaNode> users) {
+            setValue(users);
         }
 
-        @Override
-        public void addGroups(List<GWTJahiaGroup> groups) {
-            List<String> l = new ArrayList<String>();
-            for (GWTJahiaGroup group : groups) {
-                l.add(group.getKey());
-            }
-            mask();
-            JahiaContentManagementService.App.getInstance().getNodesForGroups(l, new BaseAsyncCallback<List<GWTJahiaNode>>() {
-                @Override
-                public void onApplicationFailure(Throwable throwable) {
-                    Log.error("Error while loading groups", throwable);
-                    unmask();
-                }
-
-                @Override
-                public void onSuccess(List<GWTJahiaNode> result) {
-                    setValue(result);
-                    unmask();
-                }
-            });
-
-        }
     }
 
 }

@@ -108,7 +108,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final String SIZE = "size";
     public static final String NODE_TYPES = "nodeTypes";
     public static final String INHERITED_NODE_TYPES = "inheritedNodeTypes";
-    public static final String ACL_CONTEXT = "aclContext";
     public static final String PROVIDER_KEY = "providerKey";
     public static final String PREVIEW = "preview";
     public static final String THUMBNAILS = "thumbnails";
@@ -147,11 +146,16 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     public static final List<String> DEFAULT_SITE_FIELDS =
             Arrays.asList("j:moduleType", "j:installedModules", "j:templatesSet", "j:dependencies","j:languages", "j:defaultLanguage", HOMEPAGE_PATH, SITE_LANGUAGES, "j:versionInfo", PERMISSIONS, LOCKS_INFO,"j:resolvedDependencies");
 
+    public static final List<String> DEFAULT_USER_FIELDS =
+            Arrays.asList("j:firstName", "j:lastName");
+    public static final List<String> DEFAULT_GROUP_FIELDS =
+            Arrays.asList("j:firstName", "j:lastName");
+
     public static final List<String> DEFAULT_SITEMAP_FIELDS = Arrays.asList("j:versionInfo", EDIT_MODE_BLOCKED);
 
     public static final List<String> RESERVED_FIELDS =
             Arrays.asList(TAGS, NAME, PATH, ICON, LOCKED, LOCKABLE, PERMISSIONS, DELETEABLE, UUID, DISPLAY_NAME, FILE,
-                    SIZE, NODE_TYPES, INHERITED_NODE_TYPES, ACL_CONTEXT, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
+                    SIZE, NODE_TYPES, INHERITED_NODE_TYPES, PROVIDER_KEY, PREVIEW, THUMBNAILS, SITE_UUID,
                     CURRENT_VERSION, VERSIONS, CHILDREN_INFO, COUNT, AVAILABLE_WORKKFLOWS,DEFAULT_LANGUAGE,HOMEPAGE_PATH,
                     LOCKS_INFO, VISIBILITY_INFO, PUBLICATION_INFO, PUBLICATION_INFOS, QUICK_PUBLICATION_INFO, WORKFLOW_INFO, WORKFLOW_INFOS, PRIMARY_TYPE_LABEL,
                     SITE_LANGUAGES, SUBNODES_CONSTRAINTS_INFO, "j:versionInfo", RESOURCE_BUNDLE,"j:resolvedDependencies", "j:isDynamicMountPoint",
@@ -344,14 +348,6 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
 
     public List<String> getInheritedNodeTypes() {
         return get(INHERITED_NODE_TYPES);
-    }
-
-    public void setAclContext(String aclContext) {
-        set(ACL_CONTEXT, aclContext);
-    }
-
-    public String getAclContext() {
-        return get(ACL_CONTEXT);
     }
 
     public void setIcon(String icon) {

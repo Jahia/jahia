@@ -71,10 +71,7 @@
  */
 package org.jahia.ajax.gwt.content.server;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.RpcMap;
+import com.extjs.gxt.ui.client.data.*;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
@@ -106,6 +103,7 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -153,6 +151,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private static final transient Logger logger = LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
+    private static final Pattern NBSP_PATTERN = Pattern.compile("&nbsp;");
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -497,10 +496,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return search.search(searchString, limit, nodeTypes, mimeTypes, filters, getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
     }
 
-    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                        List<String> filters, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> gwtJahiaNodes = search.searchSQL(searchString, limit, nodeTypes, mimeTypes, filters, fields,
-                getSite().getSiteKey().equals("systemsite") ? null : getSite(), retrieveCurrentSession());
+    public PagingLoadResult<GWTJahiaNode> searchSQL(String searchString, int limit, int offset, List<String> nodeTypes,
+                                                    List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException {
+        List<GWTJahiaNode> gwtJahiaNodes = search.searchSQL(searchString, limit, offset, nodeTypes, null, null, fields, retrieveCurrentSession());
+        int total = gwtJahiaNodes.size();
+        if (limit >= 0) {
+            try {
+                Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
+                total = (int) q.execute().getNodes().getSize();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
         if (sortOnDisplayName) {
             final Collator collator = Collator.getInstance(retrieveCurrentSession().getLocale());
             Collections.sort(gwtJahiaNodes, new Comparator<GWTJahiaNode>() {
@@ -509,7 +516,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
             });
         }
-        return gwtJahiaNodes;
+       return new BasePagingLoadResult<GWTJahiaNode>(gwtJahiaNodes, offset, total);
     }
 
     public List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException {
@@ -2614,5 +2621,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return result;
     }
 
+    public String[] getFormattedPrincipal(String userkey, char type, String[] textpattern) {
+        PrincipalViewHelper pvh = new PrincipalViewHelper(textpattern);
+        JCRNodeWrapper p;
+
+        if (type == 'u') {
+            p = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userkey);
+        } else {
+            p = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(userkey);
+        }
+
+        String principalTextOption = pvh.getPrincipalTextOption(p);
+        principalTextOption = NBSP_PATTERN.matcher(principalTextOption).replaceAll(" ");
+        return new String[]{principalTextOption, pvh.getPrincipalValueOption(p)};
+    }
 
 }

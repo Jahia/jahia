@@ -72,7 +72,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
+import com.extjs.gxt.ui.client.data.BasePagingLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadConfig;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
 import com.extjs.gxt.ui.client.event.SelectionChangedListener;
@@ -95,11 +98,8 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaBasicDataBean;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.UserManagerService;
-import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
@@ -117,7 +117,7 @@ import java.util.Map;
 public class CustomizedPreviewActionItem extends BaseActionItem {
     private transient SearchField userSearchField;
     private transient String lastUserSearchValue;
-    private transient Grid<GWTJahiaUser> userGrid;
+    private transient Grid<GWTJahiaNode> userGrid;
     private transient String defaultWindowOptions = "resizable=yes,scrollbars=yes";
 
     @Override
@@ -133,25 +133,33 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         window.setButtonAlign(Style.HorizontalAlignment.CENTER);
         window.setBodyBorder(false);
 
-        final UserManagerServiceAsync service = UserManagerService.App.getInstance();
         // data proxy
-        RpcProxy<BasePagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaUser>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> callback) {
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
                 if (userSearchField != null) {
-                    String newSearch = userSearchField.getText();
-                    String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
+                    String newSearch = userSearchField.getText().trim().replace("'","''");
+
+                    String path = "/users";
+                    String query = "select * from [jnt:user] as u where isdescendantnode(u,'"+path+"') ";
+                    if (newSearch.length() > 0) {
+                        query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
+                    }
+                    query += " ORDER BY u.[j:nodename]";
+
                     // reset offset to 0 if the search value has changed
                     int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
-                    service.searchUsersInContext(searchQuery, offset,
-                            ((PagingLoadConfig) pageLoaderConfig).getLimit(), "currentSite",
-                            callback);
+
+                    final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                    
+                    service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_FIELDS, false, callback);
+
                     // remember last searched value
                     lastUserSearchValue = newSearch;
                 }
             }
         };
-        final BasePagingLoader<PagingLoadResult<GWTJahiaUser>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(
+        final BasePagingLoader<PagingLoadResult<GWTJahiaNode>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(
                 proxy);
         userSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
@@ -168,7 +176,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         HorizontalPanel panel = new HorizontalPanel();
         panel.add(userSearchField);
 
-        ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
+        ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
         columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 150));
@@ -184,7 +192,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         toolBar.bind(loader);
         toolBar.setBorders(false);
         toolBar.setWidth(480);
-        userGrid = new Grid<GWTJahiaUser>(store, cm);
+        userGrid = new Grid<GWTJahiaNode>(store, cm);
         userGrid.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         userGrid.setLoadMask(true);
         userGrid.setBorders(false);
@@ -288,11 +296,11 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                     JahiaContentManagementService.App.getInstance().getNodeURL(null, path, null, null, "default",
                             locale, new BaseAsyncCallback<String>() {
                         public void onSuccess(String url) {
-                            GWTJahiaUser selectedItem = userGrid.getSelectionModel().getSelectedItem();
+                            GWTJahiaNode selectedItem = userGrid.getSelectionModel().getSelectedItem();
                             String alias = null;
                             List<String> urlParameters = new ArrayList<String>();
                             if(selectedItem!=null) {
-                                alias = "alias="+selectedItem.getUsername();
+                                alias = "alias="+selectedItem.getName();
                                 urlParameters.add(alias);
                             }
                             String previewDate= null;

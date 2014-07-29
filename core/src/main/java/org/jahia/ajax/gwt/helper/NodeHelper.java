@@ -84,9 +84,12 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -216,7 +219,7 @@ class NodeHelper {
             logger.debug("Unable to get uuid for node " + node.getName(), e);
         }
 
-        populateNames(n, node);
+        populateNames(n, node, uiLocale);
         populateDescription(n, node);
         n.setPath(node.getPath());
         n.setUrl(node.getUrl());
@@ -657,12 +660,14 @@ class NodeHelper {
         }
     }
 
-    private void populateNames(GWTJahiaNode n, JCRNodeWrapper node) {
+    private void populateNames(GWTJahiaNode n, JCRNodeWrapper node, Locale uiLocale) {
         n.setName(JCRContentUtils.unescapeLocalNodeName(node.getName()));
         try {
             if (node.getPath().equals("/")) {
                 n.setDisplayName("root");
                 n.setName("root");
+            } else if (node instanceof JCRUserNode || node instanceof JCRGroupNode) {
+                n.setDisplayName(PrincipalViewHelper.getDisplayName(node, uiLocale));
             } else {
                 n.setDisplayName(WordUtils.abbreviate(
                         JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()), 70, 90,
@@ -815,15 +820,10 @@ class NodeHelper {
     private void populateSiteInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
             JCRSiteNode site = node.getResolveSite();
-            if (site != null) {
-                n.setSiteUUID(site.getUUID());
-                n.setAclContext("site:" + site.getName());
-                n.setSiteKey(site.getSiteKey());
-                if (site.getTemplatePackage() != null) {
-                    n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
-                }
-            } else {
-                n.setAclContext("sharedOnly");
+            n.setSiteUUID(site.getUUID());
+            n.setSiteKey(site.getSiteKey());
+            if (site.getTemplatePackage() != null) {
+                n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
             }
         } catch (RepositoryException e) {
             logger.error("Error when getting sitekey", e);

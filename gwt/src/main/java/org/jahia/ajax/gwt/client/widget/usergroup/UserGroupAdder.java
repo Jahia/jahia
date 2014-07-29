@@ -71,8 +71,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.usergroup;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.List;
 
@@ -84,8 +83,5 @@ import java.util.List;
  * 
  */
 public interface UserGroupAdder {
-    public void addUsers(List<GWTJahiaUser> users);
-
-    public void addGroups(List<GWTJahiaGroup> groups);
-
+    public void addUsersGroups(List<GWTJahiaNode> users);
 }

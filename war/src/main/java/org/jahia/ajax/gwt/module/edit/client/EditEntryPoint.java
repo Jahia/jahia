@@ -73,7 +73,6 @@ package org.jahia.ajax.gwt.module.edit.client;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -81,12 +80,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
@@ -165,9 +161,9 @@ public class EditEntryPoint extends CommonEntryPoint {
         if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
 
         new UserGroupSelect(new UserGroupAdder() {
-            public void addUsers(List<GWTJahiaUser> users) {
-                for (GWTJahiaUser user : users) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
+            public void addUsersGroups(List<GWTJahiaNode> users) {
+                for (GWTJahiaNode user : users) {
+                    JahiaContentManagementService.App.getInstance().getFormattedPrincipal(user.getPath(), user.isNodeType("jnt:user") ? 'u' : 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
                         public void onSuccess(String[] strings) {
                             add(strings[0], strings[1]);
                         }
@@ -175,16 +171,7 @@ public class EditEntryPoint extends CommonEntryPoint {
                 }
             }
 
-            public void addGroups(List<GWTJahiaGroup> groups) {
-                for (GWTJahiaGroup group : groups) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
-                        public void onSuccess(String[] strings) {
-                            add(strings[0], strings[1]);
-                        }
-                    });
-                }
-            }
-        }, viewMode, "currentSite");
+        }, viewMode, JahiaGWTParameters.getSiteKey());
     }
 
     /**

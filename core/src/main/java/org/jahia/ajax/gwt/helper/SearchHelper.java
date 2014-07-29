@@ -191,28 +191,21 @@ public class SearchHelper {
     /**
      * Search for searchString and filters in the name f the node
      *
-     *
-     * @param searchString
+     *  @param searchString
      * @param limit
+     * @param offset
      * @param nodeTypes
      * @param mimeTypes
      * @param filters
-     * @param site
-     * @param currentUserSession  @return
-     * @throws GWTJahiaServiceException
-     */
-    public List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes,
-                                        List<String> filters, List<String> fields, JCRSiteNode site, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
+     * @param currentUserSession  @return      @throws GWTJahiaServiceException
+     * */
+    public List<GWTJahiaNode> searchSQL(String searchString, int limit, int offset, List<String> nodeTypes, List<String> mimeTypes,
+                                        List<String> filters, List<String> fields, JCRSessionWrapper currentUserSession) throws GWTJahiaServiceException {
         try {
-            if(searchString.contains("$site") && site!=null) {
-                searchString = searchString.replace("$site", site.getPath());
-            }
-            if(searchString.contains("$systemsite") && site!=null) {
-                searchString = searchString.replace("$systemsite", JCRContentUtils.getSystemSitePath());
-            }
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(searchString,Query.JCR_SQL2);
             q.setLimit(limit);
-            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, (site != null ? Arrays.asList(site.getSiteKey()): null), false);
+            q.setOffset(offset);
+            return navigation.executeQuery(q, nodeTypes, mimeTypes, filters,fields, null, false);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

@@ -313,7 +313,7 @@ public class AclListener extends DefaultEventListener {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
-                        if (priv.isMember(p)) {
+                        if (p == null || priv.isMember(p)) {
                             continue;
                         }
                         logger.info(principal + " need privileged access");
@@ -433,10 +433,9 @@ public class AclListener extends DefaultEventListener {
         if (principal.startsWith("u:")) {
             p = userService.lookupUser(principalName);
         } else if (principal.startsWith("g:")) {
-            if(principalName.startsWith("/")) {
-                p = groupService.lookupGroup(principalName);
-            } else {
-                p = groupService.lookupGroup(site, principalName);
+            p = groupService.lookupGroup(site, principalName);
+            if (p == null) {
+                p = groupService.lookupGroup(null, principalName);
             }
         }
         return p;

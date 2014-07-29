@@ -148,21 +148,20 @@ public class JCRGroupNode extends JCRNodeDecorator {
         if(!JahiaUserManagerService.GUEST_USERNAME.equals(principal.getName()) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) return true;
         try {
             JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
-            boolean isMemberB = false;
             for (JCRNodeWrapper jcrNodeWrapper : nodes) {
                 Node node1 = jcrNodeWrapper.getProperty("j:member").getNode();
-                if(node1.isNodeType("jnt:group")){
-                    isMemberB |= ((JCRGroupNode)node1).isMember(principal);
-                }
-                else {
-                    isMemberB |= (node1.getName().equals(principal.getName()));
+                if (node1.getPath().equals(principal.getPath())) {
+                    return true;
+                } else if(node1.isNodeType("jnt:group")){
+                    if (((JCRGroupNode)node1).isMember(principal)) {
+                        return true;
+                    }
                 }
             }
-            return isMemberB;
         } catch (RepositoryException e) {
             logger.error("Cannot read group members",e);
-            return false;
         }
+        return false;
     }
 
     public void addMember(Principal principal) {

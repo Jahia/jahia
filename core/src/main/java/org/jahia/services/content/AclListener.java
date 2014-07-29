@@ -319,6 +319,7 @@ public class AclListener extends DefaultEventListener {
                         logger.info(principal + " need privileged access");
                         priv.addMember(p);
                     }
+                    priv.getSession().save();
                 }
             }
 

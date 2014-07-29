@@ -231,9 +231,4 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
         return false;
     }
-
-    protected JCRUserNode lookupUser() {
-        return ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUser(node.getName());
-    }
 }

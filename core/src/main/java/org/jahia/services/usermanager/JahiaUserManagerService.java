@@ -172,7 +172,21 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode lookupUserByKey(String userKey) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            return lookupUserByKey(userKey,JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Load all the user data and attributes. On success a reference on the user
+     * is returned, otherwise NULL is returned.
+     *
+     * @return Return a reference on a new created jahiaUser object.
+     */
+    public JCRUserNode lookupUserByKey(String userKey, JCRSessionWrapper session) {
+        try {
             return (JCRUserNode) session.getNode(userKey);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -188,12 +202,27 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created jahiaUser object.
      */
     public JCRUserNode lookupUser(String name) {
+        try {
+            return lookupUser(name,JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * Load all the user data and attributes. On success a reference on the user
+     * is returned, otherwise NULL is returned.
+     *
+     * @param name User's identification name.
+     * @return Return a reference on a new created jahiaUser object.
+     */
+    public JCRUserNode lookupUser(String name, JCRSessionWrapper session) {
         if (StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
             return null;
         }
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             JCRNodeIteratorWrapper users = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2).execute().getNodes();
             if (!users.hasNext()) return null;
             return (JCRUserNode) users.nextNode();
@@ -222,7 +251,21 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode lookupRootUser() {
         try {
-            return (JCRUserNode) JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getNodeByIdentifier(JCRUserNode.ROOT_USER_UUID);
+            return lookupRootUser(JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e1) {
+            logger.error(e1.getMessage(), e1);
+        }
+        return null;
+    }
+
+    /**
+     * Returns the system root user (not cached).
+     *
+     * @return the system root user (not cached)
+     */
+    public JCRUserNode lookupRootUser(JCRSessionWrapper session) {
+        try {
+            return (JCRUserNode) session.getNodeByIdentifier(JCRUserNode.ROOT_USER_UUID);
         } catch (RepositoryException e1) {
             logger.error(e1.getMessage(), e1);
         }
@@ -299,12 +342,31 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * search criterias
      */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias) {
-        return searchUsers(searchCriterias, null);
+        try {
+            return searchUsers(searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            logger.error("Error while searching for users", e);
+            return new HashSet<JCRUserNode>();
+        }
     }
 
-    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String providerKey) {
+    /**
+     * Find users according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
+     *                        null to search without criterias
+     * @return List a List of JahiaUser elements that correspond to those
+     * search criterias
+     */
+    public Set<JCRUserNode> searchUsers(Properties searchCriterias, JCRSessionWrapper session) {
+        return searchUsers(searchCriterias, null, session);
+    }
+
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String providerKey, JCRSessionWrapper session) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
             if (session.getWorkspace().getQueryManager() != null) {
@@ -560,10 +622,17 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     private void checkRootUserPwd() {
         try {
-            String pwd = getNewRootUserPwd();
+            final String pwd = getNewRootUserPwd();
             if (StringUtils.isNotEmpty(pwd)) {
                 logger.info("Resetting root user password");
-                lookupRootUser().setPassword(pwd);
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    @Override
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        lookupRootUser(session).setPassword(pwd);
+                        session.save();
+                        return null;
+                    }
+                });
                 logger.info("New root user password set.");
             }
         } catch (Exception e) {

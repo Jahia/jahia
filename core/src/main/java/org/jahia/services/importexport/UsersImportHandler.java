@@ -157,7 +157,7 @@ public class UsersImportHandler extends DefaultHandler {
                     }
                 }
                 if (name != null) {
-                    currentGroup = g.lookupGroup(site.getSiteKey(), name);
+                    currentGroup = g.lookupGroup(site.getSiteKey(), name, session);
                 }
             }
         } else {
@@ -167,7 +167,7 @@ public class UsersImportHandler extends DefaultHandler {
             if (localName.equals("user")) {
                 p = u.lookupUser(name);
             } else if (localName.equals("group")) {
-                p = g.lookupGroup(site.getSiteKey(), name);
+                p = g.lookupGroup(site.getSiteKey(), name, session);
             }
             if (p != null && !currentGroup.getMembers().contains(p)) {
                 currentGroup.addMember(p);

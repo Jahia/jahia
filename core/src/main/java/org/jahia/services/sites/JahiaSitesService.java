@@ -439,16 +439,14 @@ public class JahiaSitesService extends JahiaService {
                     siteNode.setMixLanguagesActive(false);
                     session.save();
 
-                    JCRGroupNode privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME);
+                    JCRGroupNode privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, session);
                     if (privGroup == null) {
                         privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true, session);
                     }
 
-                    JCRGroupNode adminGroup = jgms.lookupGroup(site.getSiteKey(),
-                            JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+                    JCRGroupNode adminGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
                     if (adminGroup == null) {
-                        adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null,
-                                false, session);
+                        adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null, false, session);
                     }
 
                     // attach superadmin user (current) to administrators group...
@@ -456,11 +454,9 @@ public class JahiaSitesService extends JahiaService {
                         adminGroup.addMember(session.getNode(currentUser.getLocalPath()));
                     }
 
-                    JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(),
-                            JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                    JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session);
                     if (sitePrivGroup == null) {
-                        sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null,
-                                false, session);
+                        sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null, false, session);
                     }
                     // atach site privileged group to server privileged
                     privGroup.addMember(sitePrivGroup);

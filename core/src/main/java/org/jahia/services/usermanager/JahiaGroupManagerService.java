@@ -69,15 +69,12 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-// NK - 18 Dec. 2001 :
-//   1. Added properties to group
 
 package org.jahia.services.usermanager;
 
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
@@ -160,14 +157,28 @@ public class JahiaGroupManagerService extends JahiaService {
      */
     public JCRGroupNode lookupGroup(String groupPath) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-            return (JCRGroupNode) session.getNode(groupPath);
+            return lookupGroup(groupPath, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
         } catch (RepositoryException e) {
             return null;
         }
     }
 
-    //-------------------------------------------------------------------------
+    /**
+     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Try to lookup the group into the cache, if it's not in the cache, then
+     * load it into the cahce from the database.
+     *
+     * @param groupPath  Group's path
+     * @return Return a reference on a the specified group name. Return null
+     * if the group doesn't exist or when any error occurred.
+     */
+    public JCRGroupNode lookupGroup(String groupPath, JCRSessionWrapper session) {
+        try {
+            return (JCRGroupNode) session.getNode(groupPath);
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
 
     /**
      * Lookup the group information from the underlaying system (DB, LDAP, ... )
@@ -181,12 +192,29 @@ public class JahiaGroupManagerService extends JahiaService {
      */
     public JCRGroupNode lookupGroup(String siteKey, String name) {
         try {
+            return lookupGroup(siteKey, name, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Try to lookup the group into the cache, if it's not in the cache, then
+     * load it into the cahce from the database.
+     *
+     * @param siteKey       siteKey the site id
+     * @param name Group's unique identification name.
+     * @return Return a reference on a the specified group name. Return null
+     * if the group doesn't exist or when any error occured.
+     */
+    public JCRGroupNode lookupGroup(String siteKey, String name, JCRSessionWrapper session) {
+        try {
             String query = "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
             if (siteKey != null) {
                 query += "and isdescendantnode(group,'/sites/" + siteKey + "/groups')";
             }
 
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
             QueryResult qr = q.execute();
             NodeIterator nodes = qr.getNodes();
@@ -229,6 +257,13 @@ public class JahiaGroupManagerService extends JahiaService {
      */
     public JCRGroupNode getAdministratorGroup(String siteKey) throws RepositoryException {
         return lookupGroup(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+    }
+
+    /**
+     * Get administrator or site administrator group
+     */
+    public JCRGroupNode getAdministratorGroup(String siteKey, JCRSessionWrapper session) throws RepositoryException {
+        return lookupGroup(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
     }
 
     /**
@@ -317,7 +352,6 @@ public class JahiaGroupManagerService extends JahiaService {
         }
     }
 
-
     /**
      * Find groups according to a table of name=value properties. If the left
      * side value is "*" for a property then it will be tested against all the
@@ -332,7 +366,26 @@ public class JahiaGroupManagerService extends JahiaService {
      */
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            return searchGroups(siteKey, searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Find groups according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param siteKey         site identifier
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
+     *                        null to search without criterias
+     * @return List a List of JahiaGroup elements that correspond to those
+     * search criterias
+     */
+    public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, JCRSessionWrapper session) {
+        try {
             Set<JCRGroupNode> users = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(

@@ -675,14 +675,21 @@ public class Service extends JahiaService {
         logger.info("All caches flushed.");
     }
 
-    public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
-        JCRUserNode user = userManagerService.lookupUser(username);
-        if (user != null) {
-            passwordPolicyService.storePasswordHistory(user);
-        } else {
-            logger.warn("Unlable to lookup user for name: " + username
-                    + ". Skip updating user password history.");
-        }
+    public void storeUserPasswordHistory(final String username, KnowledgeHelper drools) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRUserNode user = userManagerService.lookupUser(username, session);
+                if (user != null) {
+                    passwordPolicyService.storePasswordHistory(user);
+                } else {
+                    logger.warn("Unlable to lookup user for name: " + username
+                            + ". Skip updating user password history.");
+                }
+                session.save();
+                return null;
+            }
+        });
     }
 
     public void deployModule(String moduleId, AddedNodeFact site, KnowledgeHelper drools) {
@@ -770,7 +777,7 @@ public class Service extends JahiaService {
                 n = n.getParent();
             }
             if (n != null && n.getResolveSite() != null) {
-                final JCRGroupNode groupNode = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
+//                final JCRGroupNode groupNode = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
                     //groupManagerService.updateCache(jahiaGroup);
             }
         } catch (RepositoryException e) {

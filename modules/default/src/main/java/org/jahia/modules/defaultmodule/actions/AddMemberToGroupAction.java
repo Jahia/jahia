@@ -122,7 +122,7 @@ public class AddMemberToGroupAction extends Action {
             // path to general group is /groups/groupName
             groupName = splitGroupPath[2];
         }
-        JCRGroupNode targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, groupName);
+        JCRGroupNode targetJahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, groupName, session);
 
         if (parameters.get("userKey") != null) {
             String userKey = parameters.get("userKey").get(0);

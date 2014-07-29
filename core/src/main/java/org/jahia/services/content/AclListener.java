@@ -308,7 +308,7 @@ public class AclListener extends DefaultEventListener {
 
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
-                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
@@ -319,13 +319,12 @@ public class AclListener extends DefaultEventListener {
                         logger.info(principal + " need privileged access");
                         priv.addMember(p);
                     }
-                    priv.getSession().save();
                 }
             }
 
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
-                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
                         JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
@@ -364,6 +363,8 @@ public class AclListener extends DefaultEventListener {
                 }
             }
         }
+
+        systemSession.save();
     }
 
     private void handleAclModifications(JCRSessionWrapper session, JCRSessionWrapper defaultSession, Set<String> roles, JCRNodeWrapper ace, String principal, Map<String, Set<String>> privilegedAdded, Map<String, Set<String>> privilegedRemoved, Map<String, JCRNodeWrapper> roleNodes, boolean isNewAce, boolean publish) throws RepositoryException {

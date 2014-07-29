@@ -219,7 +219,7 @@ public class WebprojectHandler implements Serializable {
                             UserProperties admin = bean.getAdminProperties();
                             JCRUserNode adminSiteUser = userManagerService.createUser(admin.getUsername(), admin.getPassword(),
                                     admin.getUserProperties(), session);
-                            groupManagerService.getAdministratorGroup(site.getSiteKey()).addMember(adminSiteUser);
+                            groupManagerService.getAdministratorGroup(site.getSiteKey(), session).addMember(adminSiteUser);
                             session.save();
                         }
                     } catch (JahiaException e) {

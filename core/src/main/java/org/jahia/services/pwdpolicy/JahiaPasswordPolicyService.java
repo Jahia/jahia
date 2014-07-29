@@ -306,14 +306,14 @@ public class JahiaPasswordPolicyService extends JahiaService {
      * @return the (encrypted) password history list, sorted by change date
      * descending, i.e. the newer passwords are at the top of the list
      */
-    public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user) {
+    public List<PasswordHistoryEntry> getPasswordHistory(final JCRUserNode user) {
         List<PasswordHistoryEntry> passwordHistory;
         try {
             passwordHistory = policyMgr.getPasswordHistory(user);
         } catch (RepositoryException e) {
             passwordHistory = Collections.emptyList();
             logger.error(
-                    "Error while retrieving a password history for user: " + user.getUsername(),
+                    "Error while retrieving a password history for user: " + user.getName(),
                     e);
         }
 

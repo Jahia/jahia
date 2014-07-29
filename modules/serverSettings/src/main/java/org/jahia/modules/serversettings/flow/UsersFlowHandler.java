@@ -393,53 +393,58 @@ public class UsersFlowHandler implements Serializable {
         return properties;
     }
 
-    public boolean updateUser(UserProperties userProperties, MessageContext context) {
+    public boolean updateUser(final UserProperties userProperties, final MessageContext context) throws RepositoryException {
         logger.info("Updating user");
-        JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey());
-        boolean hasErrors = false;
-        Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
-        if (jahiaUser != null) {
-            if (!readOnlyProps.contains("j:firstName")) {
-                hasErrors |= !setUserProperty("j:firstName", userProperties.getFirstName(), "firstName", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("j:lastName")) {
-                hasErrors |= !setUserProperty("j:lastName", userProperties.getLastName(), "lastName", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("j:email")) {
-                hasErrors |= !setUserProperty("j:email", userProperties.getEmail(), "email", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("j:organization")) {
-                hasErrors |= !setUserProperty("j:organization", userProperties.getOrganization(), "organization", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("emailNotificationsDisabled")) {
-                hasErrors |= !setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(), "emailNotifications", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("j:accountLocked")) {
-                hasErrors |= !setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(), "accountLocked", context, jahiaUser);
-            }
-            if (!readOnlyProps.contains("preferredLanguage")) {
-                hasErrors |= !setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(), "preferredLanguage", context, jahiaUser);
-            }
-            if (!userProperties.isReadOnly() && StringUtils.isNotBlank(userProperties.getPassword())) {
-                if (jahiaUser.setPassword(userProperties.getPassword())) {
-                    context.addMessage(new MessageBuilder().info().code(
-                            "serverSettings.user.edit.password.changed").build());
-                } else {
-                    context.addMessage(new MessageBuilder().error().source("password").code("serverSettings.user.edit.errors.password").build());
-                    hasErrors = true;
-                }
-            }
-            if (!hasErrors) {
-                try {
-                    jahiaUser.getSession().save();
-                    context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
-                } catch (RepositoryException e) {
-                    logger.error("Cannot save user properties",e);
-                }
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+            @Override
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey(), session);
+                boolean hasErrors = false;
+                Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
+                if (jahiaUser != null) {
+                    if (!readOnlyProps.contains("j:firstName")) {
+                        hasErrors |= !setUserProperty("j:firstName", userProperties.getFirstName(), "firstName", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("j:lastName")) {
+                        hasErrors |= !setUserProperty("j:lastName", userProperties.getLastName(), "lastName", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("j:email")) {
+                        hasErrors |= !setUserProperty("j:email", userProperties.getEmail(), "email", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("j:organization")) {
+                        hasErrors |= !setUserProperty("j:organization", userProperties.getOrganization(), "organization", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("emailNotificationsDisabled")) {
+                        hasErrors |= !setUserProperty("emailNotificationsDisabled", userProperties.getEmailNotificationsDisabled().toString(), "emailNotifications", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("j:accountLocked")) {
+                        hasErrors |= !setUserProperty("j:accountLocked", userProperties.getAccountLocked().toString(), "accountLocked", context, jahiaUser);
+                    }
+                    if (!readOnlyProps.contains("preferredLanguage")) {
+                        hasErrors |= !setUserProperty("preferredLanguage", userProperties.getPreferredLanguage().toString(), "preferredLanguage", context, jahiaUser);
+                    }
+                    if (!userProperties.isReadOnly() && StringUtils.isNotBlank(userProperties.getPassword())) {
+                        if (jahiaUser.setPassword(userProperties.getPassword())) {
+                            context.addMessage(new MessageBuilder().info().code(
+                                    "serverSettings.user.edit.password.changed").build());
+                        } else {
+                            context.addMessage(new MessageBuilder().error().source("password").code("serverSettings.user.edit.errors.password").build());
+                            hasErrors = true;
+                        }
+                    }
+                    if (!hasErrors) {
+                        try {
+                            session.save();
+                            context.addMessage(new MessageBuilder().info().code("serverSettings.user.edit.successful").build());
+                        } catch (RepositoryException e) {
+                            logger.error("Cannot save user properties",e);
+                        }
 
+                    }
+                }
+                return !hasErrors;
             }
-        }
-        return !hasErrors;
+        });
     }
 
     public Set<Principal> populateUsers(String selectedUsers) {

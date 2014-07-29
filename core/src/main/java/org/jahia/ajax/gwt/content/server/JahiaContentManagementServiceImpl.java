@@ -552,8 +552,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return contentHub.getProviderFactoriesType(getUILocale());
     }
 
-    public void storePasswordForProvider(String providerKey, String username, String password) {
-        contentHub.storePasswordForProvider(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(getUser().getLocalPath()), providerKey, username, password);
+    public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException  {
+        try {
+            final JCRSessionWrapper session = retrieveCurrentSession();
+            contentHub.storePasswordForProvider(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(getUser().getLocalPath(), session), providerKey, username, password);
+            session.save();
+        } catch (RepositoryException e) {
+            logger.error("Cannot save user properties",e);
+            throw new GWTJahiaServiceException(e);
+        }
     }
 
     public Map<String, String> getStoredPasswordsProviders() {

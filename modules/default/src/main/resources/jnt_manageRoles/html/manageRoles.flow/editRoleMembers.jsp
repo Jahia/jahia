@@ -195,9 +195,7 @@
                 </tr>
             </c:when>
             <c:otherwise>
-                ${members}
                 <c:forEach items="${principals}" var="principal" end="${memberDisplayLimit - 1}" varStatus="loopStatus">
-                    ${principal}
                     <tr>
                         <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${principal.name}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
                         <td>

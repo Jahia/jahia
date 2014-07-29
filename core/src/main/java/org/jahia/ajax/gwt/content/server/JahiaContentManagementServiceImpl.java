@@ -2310,7 +2310,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             sites = ServicesRegistry.getInstance().getJahiaSitesService().getSitesNodeList();
             for (JCRSiteNode jahiaSite : sites) {
                 GWTJahiaSite gwtJahiaSite = new GWTJahiaSite();
-                gwtJahiaSite.setSiteId(jahiaSite.getID());
                 gwtJahiaSite.setSiteName(jahiaSite.getTitle());
                 gwtJahiaSite.setSiteKey(jahiaSite.getSiteKey());
                 gwtJahiaSite.setTemplateFolder(jahiaSite.getTemplateFolder());

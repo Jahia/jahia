@@ -128,7 +128,6 @@ public class PrincipalViewHelper implements Serializable {
     public static final String PRINCIPAL = "Principal";
     public static final String PERMISSIONS = "Permissions";
     public static final String PROVIDER = "Provider";
-    public static final String SITEID = "SiteID";
     public static final String SITEKEY = "SiteKey";
     public static final String SITETITLE = "SiteTitle";
     public static final String NAME = "Name";
@@ -147,7 +146,6 @@ public class PrincipalViewHelper implements Serializable {
         selectBoxFieldsHeading.add(PRINCIPAL);
         selectBoxFieldsHeading.add(PERMISSIONS);
         selectBoxFieldsHeading.add(PROVIDER);
-        selectBoxFieldsHeading.add(SITEID);
         selectBoxFieldsHeading.add(SITEKEY);
         selectBoxFieldsHeading.add(SITETITLE);
         selectBoxFieldsHeading.add(NAME);

@@ -272,21 +272,6 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
         return null;
     }
 
-    public int getID() {
-        if (id == -2) {
-            try {
-                id = (int) getProperty("j:siteId").getLong();
-            } catch (PathNotFoundException e) {
-                // ignore it as for template sets the ID is not present
-                id = 0;
-            } catch (RepositoryException e) {
-                logger.error("Cannot get site property", e);
-                id = -1;
-            }
-        }
-        return id;
-    }
-
     @SuppressWarnings("unchecked")
     public Set<String> getLanguages() {
         if (languages == null) {

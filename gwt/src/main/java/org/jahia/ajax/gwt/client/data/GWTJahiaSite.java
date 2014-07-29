@@ -86,14 +86,6 @@ import java.util.List;
 public class GWTJahiaSite extends BaseModelData implements Serializable {
     private List<String> installedModules;
 
-    public int getSiteId () {
-        return (Integer) get("siteId");
-    }
-
-    public void setSiteId (int siteId) {
-        set("siteId", Integer.valueOf(siteId));
-    }
-
     public String getSiteName () {
         return get("siteName");
     }

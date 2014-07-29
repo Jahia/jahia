@@ -345,14 +345,6 @@ public class JahiaSitesService extends JahiaService {
                 final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
                 final String templatePackage = templateSet.getId();
 
-                int id = 1;
-                List<JCRSiteNode> sites = getSitesNodeList(session);
-                for (JCRSiteNode jahiaSite : sites) {
-                    if (id <= jahiaSite.getID()) {
-                        id = jahiaSite.getID() + 1;
-                    }
-                }
-
                 Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
@@ -383,7 +375,6 @@ public class JahiaSitesService extends JahiaService {
                         siteNode.setProperty("j:title", title);
                         siteNode.setProperty("j:description", descr);
                         siteNode.setProperty("j:serverName", serverName);
-                        siteNode.setProperty("j:siteId", id);
                         siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
                         siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
                         siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
@@ -429,65 +420,60 @@ public class JahiaSitesService extends JahiaService {
             JCRSiteNode siteNode = (JCRSiteNode) session.getNode(site.getPath());
 
             // continue if the site is added correctly...
-            if (siteNode.getID() != -1) {
-                if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
-                    setDefaultSite(site, session);
-                }
-                if (!importingSystemSite) {
-                    JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-
-                    siteNode.setMixLanguagesActive(false);
-                    session.save();
-
-                    JCRGroupNode privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, session);
-                    if (privGroup == null) {
-                        privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true, session);
-                    }
-
-                    JCRGroupNode adminGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
-                    if (adminGroup == null) {
-                        adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null, false, session);
-                    }
-
-                    // attach superadmin user (current) to administrators group...
-                    if (currentUser != null) {
-                        adminGroup.addMember(session.getNode(currentUser.getLocalPath()));
-                    }
-
-                    JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session);
-                    if (sitePrivGroup == null) {
-                        sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null, false, session);
-                    }
-                    // atach site privileged group to server privileged
-                    privGroup.addMember(sitePrivGroup);
-
-                    if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
-                        siteNode.denyRoles("g:" + JahiaGroupManagerService.PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
-                    }
-                    siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
-                    session.save();
-                }
-                Resource initialZip = null;
-                if ("fileImport".equals(firstImport)) {
-                    initialZip = fileImport;
-                }
-
-                if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
-                    try {
-                        Map<Object, Object> importInfos = new HashMap<Object, Object>();
-                        importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath, legacyDefinitionsFilePath, session);
-                    } catch (RepositoryException e) {
-                        logger.warn("Error importing site ZIP", e);
-                    }
-                }
-
-                logger.debug("Site updated with Home Page");
-            } else {
-                removeSite(site);      // remove site because the process generate error(s)...
-                return null;
+            if (!site.isDefault() && !site.getSiteKey().equals(SYSTEM_SITE_KEY) && getNbSites() == 2) {
+                setDefaultSite(site, session);
             }
+            if (!importingSystemSite) {
+                JahiaGroupManagerService jgms = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+
+                siteNode.setMixLanguagesActive(false);
+                session.save();
+
+                JCRGroupNode privGroup = jgms.lookupGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, session);
+                if (privGroup == null) {
+                    privGroup = jgms.createGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME, null, true, session);
+                }
+
+                JCRGroupNode adminGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
+                if (adminGroup == null) {
+                    adminGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, null, false, session);
+                }
+
+                // attach superadmin user (current) to administrators group...
+                if (currentUser != null) {
+                    adminGroup.addMember(session.getNode(currentUser.getLocalPath()));
+                }
+
+                JCRGroupNode sitePrivGroup = jgms.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, session);
+                if (sitePrivGroup == null) {
+                    sitePrivGroup = jgms.createGroup(site.getSiteKey(), JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, null, false, session);
+                }
+                // atach site privileged group to server privileged
+                privGroup.addMember(sitePrivGroup);
+
+                if (!siteKey.equals(SYSTEM_SITE_KEY)) {
+                    siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
+                    siteNode.denyRoles("g:" + JahiaGroupManagerService.PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
+                }
+                siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
+                session.save();
+            }
+            Resource initialZip = null;
+            if ("fileImport".equals(firstImport)) {
+                initialZip = fileImport;
+            }
+
+            if ("importRepositoryFile".equals(firstImport) || (initialZip != null && initialZip.exists() && !"noImport".equals(firstImport))) {
+                try {
+                    Map<Object, Object> importInfos = new HashMap<Object, Object>();
+                    importInfos.put("originatingJahiaRelease", originatingJahiaRelease);
+                    ServicesRegistry.getInstance().getImportExportService().importSiteZip(initialZip, site, importInfos, legacyMappingFilePath, legacyDefinitionsFilePath, session);
+                } catch (RepositoryException e) {
+                    logger.warn("Error importing site ZIP", e);
+                }
+            }
+
+            logger.debug("Site updated with Home Page");
         } catch (RepositoryException e) {
             logger.warn("Error adding home node", e);
         }

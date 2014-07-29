@@ -257,7 +257,6 @@ public class Constants {
     public static final String ALT = "j:alt";
     public static final String TARGET = "j:target";
     public static final String AREA_NAME = "j:areaName";
-    public static final String SITEID = "j:siteId";
     public static final String SITETYPE = "j:moduleType";
 
     public static final String APPLY_ACL = "j:applyAcl";

@@ -283,20 +283,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
     }
 
-    private int getSiteId(String path) {
-        int siteId = 0;
-        if (path.startsWith("/sites/")) {
-            String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
-            try {
-                JahiaSite site = JahiaSitesService.getInstance().getSiteByKey(siteKey);
-                siteId = site != null ? site.getID() : 0;
-            } catch (JahiaException e) {
-                //
-            }
-        }
-        return siteId;
-    }
-
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propagateToOtherClusterNodes) {
         Element element = !flushed.contains(path) ? depCache.get(path) : null;
         if (element != null) {

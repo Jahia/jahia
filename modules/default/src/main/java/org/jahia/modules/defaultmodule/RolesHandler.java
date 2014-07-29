@@ -71,6 +71,7 @@
  */
 package org.jahia.modules.defaultmodule;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.*;
@@ -176,13 +177,16 @@ public class RolesHandler implements Serializable {
         Map<String, List<String[]>> acl = node.getAclEntries();
 
         for (Map.Entry<String, List<String[]>> entry : acl.entrySet()) {
-            JCRNodeWrapper p;
+            JCRNodeWrapper p = null;
             if (entry.getKey().startsWith("u:")) {
                 p = userManagerService.lookupUser(entry.getKey().substring(2));
             } else if (entry.getKey().startsWith("g:")) {
-                p = groupManagerService.lookupGroup(entry.getKey().substring(2));
+                if (nodePath.startsWith("/sites/")) {
+                    String siteKey = StringUtils.substringAfter(nodePath,"/sites/");
+                    p = groupManagerService.lookupGroup(siteKey, entry.getKey().substring(2));
+                }
                 if (p == null) {
-                    continue;
+                    p = groupManagerService.lookupGroup(null, entry.getKey().substring(2));
                 }
             } else {
                 continue;
@@ -314,7 +318,11 @@ public class RolesHandler implements Serializable {
                     searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders()));
         } else {
-            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), null,
+            String siteKey = null;
+            if (nodePath.startsWith("/sites/")) {
+                siteKey = StringUtils.substringAfter(nodePath, "/sites/");
+            }
+            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(), siteKey,
                     searchCriteria.getSearchString(), searchCriteria.getProperties(),
                     searchCriteria.getStoredOn(), searchCriteria.getProviders()));
         }

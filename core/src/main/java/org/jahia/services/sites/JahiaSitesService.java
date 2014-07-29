@@ -462,10 +462,10 @@ public class JahiaSitesService extends JahiaService {
                     privGroup.addMember(sitePrivGroup);
 
                     if (!siteKey.equals(SYSTEM_SITE_KEY)) {
-                        siteNode.grantRoles("g:" + sitePrivGroup.getPath(), Collections.singleton("privileged"));
-                        siteNode.denyRoles("g:" + privGroup.getPath(), Collections.singleton("privileged"));
+                        siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
+                        siteNode.denyRoles("g:" + JahiaGroupManagerService.PRIVILEGED_GROUPNAME, Collections.singleton("privileged"));
                     }
-                    siteNode.grantRoles("g:" + adminGroup.getPath(), Collections.singleton("site-administrator"));
+                    siteNode.grantRoles("g:" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, Collections.singleton("site-administrator"));
                     session.save();
                 }
                 Resource initialZip = null;

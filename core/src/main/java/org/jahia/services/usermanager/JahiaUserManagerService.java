@@ -71,6 +71,7 @@
  */
 package org.jahia.services.usermanager;
 
+import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.io.FileUtils;
@@ -138,7 +139,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private EhCacheProvider ehCacheProvider;
     private SelfPopulatingCache userPathByUserNameCache;
 
+    private int timeToLiveForEmptyPath = 600;
+
     private String rootUserName;
+
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -163,6 +167,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
         this.ehCacheProvider = ehCacheProvider;
+    }
+
+    public int getTimeToLiveForEmptyPath() {
+        return timeToLiveForEmptyPath;
+    }
+
+    public void setTimeToLiveForEmptyPath(int timeToLiveForEmptyPath) {
+        this.timeToLiveForEmptyPath = timeToLiveForEmptyPath;
     }
 
     @Override
@@ -261,12 +273,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private String internalGetUserPath(String name) throws RepositoryException {
-        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT * from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2);
-        NodeIterator it = query.execute().getNodes();
+        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2);
+        RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {
-            return "";
+            return null;
         }
-        return it.nextNode().getPath();
+        return it.nextRow().getPath();
     }
 
     /**
@@ -331,7 +343,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT * FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username)";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username)";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -722,8 +734,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            String name = (String) key;
-            return internalGetUserPath(name);
+            String path = internalGetUserPath((String) key);
+            if (path != null) {
+                return new Element(key, path);
+            } else {
+                return new Element(key, "", 0, timeToLiveForEmptyPath);
+            }
         }
     }
 

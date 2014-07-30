@@ -72,6 +72,7 @@
 
 package org.jahia.services.usermanager;
 
+import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.jahia.api.Constants;
@@ -242,17 +243,17 @@ public class JahiaGroupManagerService extends JahiaService {
     }
 
     public String internalGetGroupPath(String siteKey, String name) throws RepositoryException {
-        String query = "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
+        String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
         if (siteKey != null) {
             query += "and isdescendantnode(group,'/sites/" + siteKey + "/groups')";
         }
 
         Query q = JCRSessionFactory.getInstance().getCurrentSystemSession(null,null,null).getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-        NodeIterator it = q.execute().getNodes();
+        RowIterator it = q.execute().getRows();
         if (!it.hasNext()) {
-            return "";
+            return null;
         }
-        return it.nextNode().getPath();
+        return it.nextRow().getPath();
     }
 
 
@@ -294,13 +295,13 @@ public class JahiaGroupManagerService extends JahiaService {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> groups = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT [j:fullpath] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group ORDER BY group.[j:nodename]";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
                     Row groupsFolderNode = rows.nextRow();
-                    String groupName = groupsFolderNode.getValue("j:fullpath").getString();
+                    String groupName = groupsFolderNode.getPath();
                     if (!groups.contains(groupName)) {
                         groups.add(groupName);
                     }
@@ -319,13 +320,13 @@ public class JahiaGroupManagerService extends JahiaService {
             List<String> groups = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String groupPath = siteKey != null ? "/sites/" + siteKey + "/groups" :  "/groups";
-                String query = "SELECT [j:fullpath] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE isdescendantnode(group,'" + groupPath + "') ORDER BY group.[j:nodename]";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE isdescendantnode(group,'" + groupPath + "') ORDER BY group.[j:nodename]";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
                     Row groupsFolderNode = rows.nextRow();
-                    String groupName = groupsFolderNode.getValue("j:fullpath").getString();
+                    String groupName = groupsFolderNode.getPath();
                     if (!groups.contains(groupName)) {
                         groups.add(groupName);
                     }
@@ -671,7 +672,12 @@ public class JahiaGroupManagerService extends JahiaService {
         @Override
         public Object createEntry(final Object key) throws Exception {
             final GroupPathByGroupNameCacheKey c = (GroupPathByGroupNameCacheKey) key;
-            return internalGetGroupPath(c.siteKey, c.groupName);
+            String path = internalGetGroupPath(c.siteKey, c.groupName);
+            if (path != null) {
+                return new Element(key, path);
+            } else {
+                return new Element(key, "", 0, userManagerService.getTimeToLiveForEmptyPath());
+            }
         }
     }
 

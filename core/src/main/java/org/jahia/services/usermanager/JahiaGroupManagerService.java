@@ -75,6 +75,7 @@ package org.jahia.services.usermanager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -522,8 +523,8 @@ public class JahiaGroupManagerService extends JahiaService {
         while (weakReferences.hasNext()) {
             try {
                 Property property = weakReferences.nextProperty();
-                if (property.getPath().contains("j:members")) {
-                    JCRNodeWrapper group = (JCRNodeWrapper) property.getParent().getParent().getParent();
+                if (property.getPath().contains("/j:members/")) {
+                    JCRNodeWrapper group = (JCRNodeWrapper) property.getSession().getNode(StringUtils.substringBefore(property.getPath(), "/j:members/"));
                     if (group.isNodeType("jnt:group")) {
                         if (groups.add(group.getPath())) {
                             // recurse on the found group only we have not done it yet
@@ -628,6 +629,23 @@ public class JahiaGroupManagerService extends JahiaService {
                             + getGroupNamePattern().pattern());
         }
         return usernameCorrect;
+    }
+
+    public void membershipAdded(String memberPath) {
+        flushMembershipCache(memberPath);
+    }
+
+    public void membershipRemoved(String memberPath) {
+        flushMembershipCache(memberPath);
+    }
+
+    private void flushMembershipCache(String memberPath) {
+        final String key = StringUtils.substringAfter(memberPath, "/j:members/");
+        if (key.contains("/")) {
+            getMembershipCache().remove(key);
+        } else {
+            getMembershipCache().removeAll();
+        }
     }
 
     private static class GroupPathByGroupNameCacheKey implements Serializable {

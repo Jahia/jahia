@@ -85,7 +85,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -777,8 +776,11 @@ public class Service extends JahiaService {
                 n = n.getParent();
             }
             if (n != null && n.getResolveSite() != null) {
-//                final JCRGroupNode groupNode = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
-                    //groupManagerService.updateCache(jahiaGroup);
+                if (node instanceof  AddedNodeFact) {
+                    groupManagerService.membershipAdded(node.getPath());
+                } else if (node instanceof DeletedNodeFact) {
+                    groupManagerService.membershipRemoved(node.getPath());
+                }
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

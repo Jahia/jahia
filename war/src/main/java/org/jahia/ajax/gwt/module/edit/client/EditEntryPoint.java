@@ -131,7 +131,6 @@ public class EditEntryPoint extends CommonEntryPoint {
         }
     }
     private native void exposeFunctions() /*-{
-        $wnd.openUserGroupSelect = function (mode,id,pattern) { @org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::openUserGroupSelect(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode,id,pattern) };
         if (!$wnd.jahia) {
             $wnd.jahia = new Object();
         }
@@ -146,32 +145,6 @@ public class EditEntryPoint extends CommonEntryPoint {
      */
     static void alert(String title, String message) {
         MessageBox.alert(title != null ? title : "Info", message, null);
-    }
-
-
-    /**
-     * User/group picker
-     * @param mode
-     * @param id
-     * @param pattern
-     */
-    public static void openUserGroupSelect(final String mode, final String id, final String pattern) {
-        int viewMode = UserGroupSelect.VIEW_TABS;
-        if ("users".equals(mode)) viewMode = UserGroupSelect.VIEW_USERS;
-        if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
-
-        new UserGroupSelect(new UserGroupAdder() {
-            public void addUsersGroups(List<GWTJahiaNode> users) {
-                for (GWTJahiaNode user : users) {
-                    JahiaContentManagementService.App.getInstance().getFormattedPrincipal(user.getPath(), user.isNodeType("jnt:user") ? 'u' : 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
-                        public void onSuccess(String[] strings) {
-                            add(strings[0], strings[1]);
-                        }
-                    });
-                }
-            }
-
-        }, viewMode, JahiaGWTParameters.getSiteKey());
     }
 
     /**

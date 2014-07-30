@@ -91,7 +91,6 @@ import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.render.filter.RenderServiceAware;
-import org.jahia.services.render.filter.cache.AclCacheKeyPartGenerator;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptResolver;
 import org.jahia.services.templates.JahiaTemplateManagerService;

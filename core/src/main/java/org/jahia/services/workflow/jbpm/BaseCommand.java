@@ -505,7 +505,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
                     return true;
                 }
             } else if (potentialOwner instanceof Group) {
-                if (groupManager.getUserMembershipByPath(user.getLocalPath()).contains(potentialOwner.getId())) {
+                if (groupManager.getMembershipByPath(user.getLocalPath()).contains(potentialOwner.getId())) {
                     return true;
                 }
             }

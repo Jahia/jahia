@@ -79,7 +79,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.security.Principal;
 import java.util.*;
@@ -144,32 +143,13 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public boolean isMember(String userPath) {
-        return isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath));
+        return JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath()) ||
+                !JahiaUserManagerService.GUEST_USERPATH.equals(userPath) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath()) ||
+                JahiaGroupManagerService.getInstance().getMembershipByPath(userPath).contains(getPath());
     }
 
     public boolean isMember(JCRNodeWrapper principal) {
-        if(JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath())) {
-            return true;
-        }
-        if(!JahiaUserManagerService.GUEST_USERNAME.equals(principal.getName()) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) {
-            return true;
-        }
-        try {
-            JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
-            for (JCRNodeWrapper jcrNodeWrapper : nodes) {
-                Node node1 = jcrNodeWrapper.getProperty("j:member").getNode();
-                if (node1.getPath().equals(principal.getPath())) {
-                    return true;
-                } else if(node1.isNodeType("jnt:group")){
-                    if (((JCRGroupNode)node1).isMember(principal)) {
-                        return true;
-                    }
-                }
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot read group members",e);
-        }
-        return false;
+        return isMember(principal.getPath());
     }
 
     public void addMember(Principal principal) {

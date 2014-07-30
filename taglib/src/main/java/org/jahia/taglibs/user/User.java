@@ -165,7 +165,7 @@ public class User {
         Map<String, JCRGroupNode> map = new LinkedHashMap<String, JCRGroupNode>();
         final JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getUserMembershipByPath(jahiaUser.getPath());
+        final List<String> userMembership = managerService.getMembershipByPath(jahiaUser.getPath());
         for (String groupName : userMembership) {
             if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {

@@ -203,28 +203,9 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     public boolean isMemberOfGroup(String siteKey, String name) {
-        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(name)) {
-            return true;
-        }
-        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(name)) {
-            return !JahiaUserManagerService.GUEST_USERNAME.equals(getName());
-        }
-        if (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) {
-            return true;
-        }
-        // Get the services registry
-        ServicesRegistry servicesRegistry = ServicesRegistry.getInstance();
-        if (servicesRegistry != null) {
-
-            // get the group management service
-            JahiaGroupManagerService groupService = servicesRegistry.getJahiaGroupManagerService();
-
-            // lookup the requested group
-            JCRGroupNode group = groupService.lookupGroup(siteKey, name);
-            if (group != null) {
-                return group.isMember(this);
-            }
-        }
-        return false;
+        return JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) ||
+                JahiaGroupManagerService.USERS_GROUPNAME.equals(name) ||
+                (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) ||
+                JahiaGroupManagerService.getInstance().isMember(getName(), name, siteKey);
     }
 }

@@ -106,6 +106,6 @@ public class JahiaUserGroupCallback implements UserGroupCallback {
         if ("Administrator".equals(userId)) {
             return new ArrayList<String>();
         }
-        return groupService.getUserMembershipByPath(userId);
+        return groupService.getMembershipByPath(userId);
     }
 }

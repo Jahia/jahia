@@ -141,7 +141,7 @@ public final class CacheHelper {
         // Ehcaches
         for (CacheManager mgr : CacheManager.ALL_CACHE_MANAGERS) {
             for (String cacheName : mgr.getCacheNames()) {
-                Cache cache = mgr.getCache(cacheName);
+                Ehcache cache = mgr.getEhcache(cacheName);
                 if (cache != null) {
                     // flush
                     cache.removeAll(!propagateInCluster);

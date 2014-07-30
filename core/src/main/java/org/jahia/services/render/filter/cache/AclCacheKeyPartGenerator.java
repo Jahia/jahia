@@ -79,9 +79,9 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -270,13 +270,14 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-        l.add(getPrincipalAcl("u:" + principal.getName()));
+        l.add(getPrincipalAcl("u:" + principal.getName(), null));
 
-        List<String> groups = groupManagerService.getUserMembershipByPath(principal.getUserKey());
+        List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
 
         for (String group : groups) {
-            JCRGroupNode g = groupManagerService.lookupGroup(group);
-            l.add(getPrincipalAcl("g:" + g.getPath()));
+            String groupName = StringUtils.substringAfterLast(group, "/");
+            String siteName = group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null;
+            l.add(getPrincipalAcl("g:" + groupName, siteName));
         }
 
         Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
@@ -330,29 +331,30 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
-    private Map<String, Set<String>> getPrincipalAcl(final String key) throws RepositoryException {
-        Element element = cache.get(key);
+    private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+        final String cacheKey = aclKey + ":" + siteKey;
+        Element element = cache.get(cacheKey);
         if (element == null) {
-            Semaphore semaphore = processings.get(key);
+            Semaphore semaphore = processings.get(cacheKey);
             if(semaphore==null) {
                 semaphore = new Semaphore(1);
-                processings.putIfAbsent(key, semaphore);
+                processings.putIfAbsent(cacheKey, semaphore);
             }
             try {
                 semaphore.tryAcquire(500, TimeUnit.MILLISECONDS);
-                element = cache.get(key);
+                element = cache.get(cacheKey);
                 if (element != null) {
                     return (Map<String, Set<String>>) element.getObjectValue();
                 }
 
-                logger.debug("Getting ACL for " + key);
+                logger.debug("Getting ACL for " + cacheKey);
                 long l = System.currentTimeMillis();
 
                 Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
                     @SuppressWarnings("unchecked")
                     public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + key + "'",
+                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + aclKey + "'",
                                 Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();
@@ -362,7 +364,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
-                            if (key.startsWith("g:")) {
+                            if (aclKey.startsWith("g:") && !node.getResolveSite().getName().equals(siteKey) && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteKey != null)) {
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();
@@ -398,10 +400,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         return mapGranted;
                     }
                 });
-                element = new Element(key, map);
+                element = new Element(cacheKey, map);
                 element.setEternal(true);
                 cache.put(element);
-                logger.debug("Getting ACL for " + key + " took " + (System.currentTimeMillis() - l) + "ms");
+                logger.debug("Getting ACL for " + cacheKey + " took " + (System.currentTimeMillis() - l) + "ms");
             } catch (InterruptedException e) {
                 logger.debug(e.getMessage(), e);
             } finally {

@@ -121,6 +121,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * automatically for each anonymous session internally in Jahia.
      */
     public static final String GUEST_USERNAME = Constants.GUEST_USERNAME;
+    public static final String GUEST_USERPATH = "/users/" + Constants.GUEST_USERNAME;
 
     public static final String MULTI_CRITERIA_SEARCH_OPERATION = "multi_criteria_search_op";
     public static final String COUNT_LIMIT = "countLimit";

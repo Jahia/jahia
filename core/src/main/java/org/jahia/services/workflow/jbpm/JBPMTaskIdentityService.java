@@ -109,7 +109,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<Group> results = new ArrayList<Group>();
         JCRUserNode user = this.userService.lookupUserByKey(userId);
         if (user != null) {
-            List<String> l = groupService.getUserMembershipByPath(user.getPath());
+            List<String> l = groupService.getMembershipByPath(user.getPath());
             for (String groupKey : l) {
                 Group groupById = getGroupById(groupKey);
                 if (groupById != null) {

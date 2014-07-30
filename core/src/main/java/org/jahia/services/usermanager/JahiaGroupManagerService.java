@@ -520,7 +520,8 @@ public class JahiaGroupManagerService extends JahiaService {
     }
 
     public boolean isAdminMember(String username, String siteKey) {
-        return username.equals("root") || isMember(username, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, siteKey);
+        return username.equals(userManagerService.getRootUserName()) ||
+                isMember(username, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, siteKey);
     }
 
     private void recurseOnGroups(Set<String> groups, JCRNodeWrapper principal) throws RepositoryException, JahiaException {

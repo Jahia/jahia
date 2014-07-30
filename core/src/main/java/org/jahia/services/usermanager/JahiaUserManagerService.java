@@ -138,6 +138,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private EhCacheProvider ehCacheProvider;
     private SelfPopulatingCache userPathByUserNameCache;
 
+    private String rootUserName;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -278,6 +279,18 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public boolean userExists(String name) {
         return lookupUser(name) != null;
+    }
+
+    /**
+     * Returns the system root user name (cached)
+     *
+     * @return the system root user name (cached)
+     */
+    public String getRootUserName() {
+        if (rootUserName == null) {
+            rootUserName = lookupRootUser().getName();
+        }
+        return rootUserName;
     }
 
     /**

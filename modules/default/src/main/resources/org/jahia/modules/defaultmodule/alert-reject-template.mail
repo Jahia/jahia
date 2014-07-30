@@ -1,8 +1,8 @@
-to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
-subject: Publication workflow rejected by ${currentUser.getUsername()}
+to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
+subject: Publication workflow rejected by ${currentUser.getName()}
 text: Hi,
 
-The publication of the following items has been rejected on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getUsername()} :
+The publication of the following items has been rejected on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getName()} :
 #foreach( $node in $nodes )
 #if( $velocityCount <= 10)
     - ${node.getDisplayableName()}
@@ -13,7 +13,7 @@ html: Hi,
 <br>
 <br>
 <div>
-The publication of the following items has been rejected on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getUsername()} :
+The publication of the following items has been rejected on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getName()} :
 </div>
 <div>
     <ul>

@@ -1,8 +1,8 @@
-to: #if( $user.properties.get('j:email') ) ${user.properties.get('j:email')} #end
-subject: Publication refusée par ${currentUser.getUsername()}
+to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
+subject: Publication refusée par ${currentUser.getName()}
 text: Bonjour,
 
-La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
+La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getName()}
 #foreach( $node in $nodes )
 #if( $velocityCount <= 10)
     - ${node.getDisplayableName()}
@@ -13,7 +13,7 @@ html: Bonjour,
 <br>
 <br>
 <div>
-La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getUsername()}
+La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getName()}
 </div>
 <div>
     <ul>

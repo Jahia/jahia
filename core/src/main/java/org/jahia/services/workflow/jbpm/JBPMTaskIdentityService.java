@@ -174,12 +174,8 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JCRUserNode user = service.lookupUserByKey(userId);
         if (user != null) {
-            try {
-                return new UserImpl(userId, user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(),
-                        user.getProperty("j:email").getString());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            return new UserImpl(userId, user.getPropertyAsString("j:firstName"), user.getPropertyAsString("j:lastName"),
+                    user.getPropertyAsString("j:email"));
         }
         return null;
     }

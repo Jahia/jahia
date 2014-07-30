@@ -140,7 +140,7 @@ public class ModuleHelper {
 
         linkedContentInfo = new HashMap<String, List<String>>();
         linkedContentInfoType = new HashMap<String, String>();
-
+        final Map<String, List<SimpleModule>> simpleModules = new HashMap<String, List<SimpleModule>>();
         String mainPath = null;
         String mainTemplate = null;
 
@@ -160,8 +160,17 @@ public class ModuleHelper {
                     module = new ListModule(id, path, divElement, mainModule);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement, mainModule, false);
+                    addSimpleModule(simpleModules, path, (SimpleModule) module);
                 } else if (type.equals("existingNodeWithHeader")) {
+<<<<<<< .working
                     module = new SimpleModule(id, path, divElement, mainModule, true);
+=======
+                    module = new SimpleModule(id, path, divElement, m, true);
+                    addSimpleModule(simpleModules, path, (SimpleModule) module);
+                } else if (type.equals("bindedComponent")) {
+                    module = new BoundModule(id, path, divElement, m);
+>>>>>>> .merge-right.r50319
+                    addSimpleModule(simpleModules, path, (SimpleModule) module);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, divElement, mainModule);
                 }
@@ -239,6 +248,30 @@ public class ModuleHelper {
                                 if (parsed) {
                                     handleNodesAndTypesResult(result, mainModule, fmainPath, fmainTemplate);
                                 }
+<<<<<<< .working
+=======
+                                for (Module module : modules) {
+                                    module.onNodeTypesLoaded();
+                                }
+
+                                List<GWTJahiaNode> nodes = (List<GWTJahiaNode>) result.get("nodes");
+                                for (GWTJahiaNode gwtJahiaNode : nodes) {
+                                    final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
+                                    simpleModules.remove(gwtJahiaNode.getPath());
+                                    if (moduleList != null) {
+                                        for (Module module : moduleList) {
+                                            module.setNode(gwtJahiaNode);
+                                        }
+                                    }
+                                }
+                                for (Map.Entry<String, List<SimpleModule>> entry : simpleModules.entrySet()) {
+                                    for (SimpleModule simpleModule : entry.getValue()) {
+                                        simpleModule.removeAll();
+                                    }
+                                }
+                                m.getEditLinker().handleNewModuleSelection();
+                                m.refreshInfoLayer();
+>>>>>>> .merge-right.r50319
                             }
                             public void onApplicationFailure(Throwable caught) {
                                 Log.error("Unable to get node with publication info due to:", caught);
@@ -426,5 +459,12 @@ public class ModuleHelper {
 
     public static GWTJahiaNodeType getNodeType(String nodeType) {
         return nodeTypes.get(nodeType);
+    }
+
+    private static void addSimpleModule(Map<String, List<SimpleModule>> simpleModules, String path, SimpleModule simpleModule) {
+        if (!simpleModules.containsKey(path)) {
+            simpleModules.put(path,new ArrayList<SimpleModule>());
+        }
+        simpleModules.get(path).add(simpleModule);
     }
 }

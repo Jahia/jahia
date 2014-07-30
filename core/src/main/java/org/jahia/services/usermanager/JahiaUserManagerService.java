@@ -84,6 +84,7 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.query.QueryWrapper;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -243,13 +244,29 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             logger.error("Should not be looking for empty name user");
             return null;
         }
-        final String path = (String) getUserPathByUserNameCache().get(name).getObjectValue();
+        final String path = getUserPath(name);
         if (path == null) {
             return null;
         }
         return lookupUserByPath(path, session);
     }
 
+    public String getUserPath(String name) {
+        final String value = (String) getUserPathByUserNameCache().get(name).getObjectValue();
+        if (value.equals("")) {
+            return null;
+        }
+        return value;
+    }
+
+    private String internalGetUserPath(String name) throws RepositoryException {
+        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT * from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2);
+        NodeIterator it = query.execute().getNodes();
+        if (!it.hasNext()) {
+            return "";
+        }
+        return it.nextNode().getPath();
+    }
 
     /**
      * This function checks into the system if the username has already been
@@ -693,9 +710,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         @Override
         public Object createEntry(final Object key) throws Exception {
             String name = (String) key;
-            RowIterator it = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:fullpath] from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2).execute().getRows();
-            if (!it.hasNext()) return null;
-            return it.nextRow().getNode().getPath();
+            return internalGetUserPath(name);
         }
     }
 

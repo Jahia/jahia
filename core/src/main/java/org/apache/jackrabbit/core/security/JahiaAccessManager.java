@@ -102,15 +102,11 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.decorator.JCRGroupNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -604,15 +600,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            // Todo : optimize site resolution
-            String site = null;
-            if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH)) {
-                if (jcrPath.length() > JahiaSitesService.SITES_JCR_PATH.length() + 1) {
-                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
-                }
-            } else {
-                site = resolveSite(n);
-            }
+            String site = resolveSite(jcrPath);
 
 //            if (jahiaPrincipal != null) {
 //                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
@@ -630,14 +618,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return res;
     }
 
-    private String resolveSite(Node node) throws RepositoryException {
-        while (!node.isNodeType("jnt:virtualsite")) {
-            if (node.isNodeType("rep:root")) {
-                return null;
-            }
-            node = node.getParent();
+    private String resolveSite(String jcrPath) {
+        String site;
+        if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH + "/")) {
+            site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
+        } else {
+            site = JahiaSitesService.SYSTEM_SITE_KEY;
         }
-        return node.getName();
+        return site;
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
@@ -918,8 +906,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {
-            if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(principalName, site) || (globalGroupMembershipCheckActivated && isUserMemberOf(principalName, null))))) {
+            if (isUserMemberOf(principalName, site)) {
                 return true;
             }
         }
@@ -991,8 +978,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     private boolean isUserMemberOf(String groupname, String site) {
-        return (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) &&
-                (groupService.isMember(jahiaPrincipal.getName(), groupname, site));
+        return  (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) ||
+                (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname)) ||
+                (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), groupname, null)));
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
@@ -1001,7 +989,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Session s = getDefaultWorkspaceSecuritySession();
         Node n = s.getNode(absPath);
 
-        String site = resolveSite(n);
+        String site = resolveSite(n.getPath());
 
         try {
             while (true) {

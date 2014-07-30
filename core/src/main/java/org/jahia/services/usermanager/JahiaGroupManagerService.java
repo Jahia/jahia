@@ -91,6 +91,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+import java.io.Serializable;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -123,6 +124,7 @@ public class JahiaGroupManagerService extends JahiaService {
     private List<String> jahiaJcrEnforcedGroups;
 
     private EhCacheProvider ehCacheProvider;
+    private SelfPopulatingCache groupPathByGroupNameCache;
     private SelfPopulatingCache userMembershipCache;
 
 
@@ -224,24 +226,35 @@ public class JahiaGroupManagerService extends JahiaService {
      * if the group doesn't exist or when any error occured.
      */
     public JCRGroupNode lookupGroup(String siteKey, String name, JCRSessionWrapper session) {
-        try {
-            String query = "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
-            if (siteKey != null) {
-                query += "and isdescendantnode(group,'/sites/" + siteKey + "/groups')";
-            }
+        final String path = getGroupPath(siteKey, name);
+        if (path == null) {
+            return null;
+        }
+        return lookupGroupByPath(path, session);
+    }
 
-            Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
-            QueryResult qr = q.execute();
-            NodeIterator nodes = qr.getNodes();
-            if (nodes.hasNext()) {
-                return (JCRGroupNode) nodes.nextNode();
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot execute query",e);
+    public String getGroupPath(String siteKey, String name) {
+        final String value = (String) getGroupPathByGroupNameCache().get(new GroupPathByGroupNameCacheKey(siteKey, name)).getObjectValue();
+        if (value.equals("")) {
+            return null;
+        }
+        return value;
+    }
+
+    public String internalGetGroupPath(String siteKey, String name) throws RepositoryException {
+        String query = "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
+        if (siteKey != null) {
+            query += "and isdescendantnode(group,'/sites/" + siteKey + "/groups')";
         }
 
-        return null;
+        Query q = JCRSessionFactory.getInstance().getCurrentSystemSession(null,null,null).getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
+        NodeIterator it = q.execute().getNodes();
+        if (!it.hasNext()) {
+            return "";
+        }
+        return it.nextNode().getPath();
     }
+
 
     /**
      * This function checks on a gived site if the group name has already been
@@ -459,6 +472,15 @@ public class JahiaGroupManagerService extends JahiaService {
         }
     }
 
+    public List<String> getUserMembership(String userName) {
+        final String userPath = userManagerService.getUserPath(userName);
+        if (userPath == null) {
+            return null;
+        }
+        return getUserMembershipByPath(userPath);
+    }
+
+
     /**
      * Return the list of groups to which the specified user has access.
      *
@@ -466,11 +488,14 @@ public class JahiaGroupManagerService extends JahiaService {
      * @return Return a List of strings holding all the group names to
      * which the user as access.
      */
-    public List<String> getUserMembership(String userPath) {
-        JCRUserNode userNode = userManagerService.lookupUserByKey(userPath);
+    public List<String> getUserMembershipByPath(String userPath) {
+        return (List<String>) getUserMembershipCache().get(userPath).getObjectValue();
+    }
+
+    private List<String> internalGetUserMembershipByPath(String userPath) {
+        JCRUserNode userNode = userManagerService.lookupUserByPath(userPath);
         if (userNode != null) {
             try {
-
                 Set<String> groups = new LinkedHashSet<String>();
                 try {
                     recurseOnGroups(groups, userNode);
@@ -486,11 +511,12 @@ public class JahiaGroupManagerService extends JahiaService {
                 logger.error("Error retrieving membership for user " + userPath + ", will return empty list", e);
             }
         }
-        return new ArrayList<String>();
+        return null;
     }
 
     public boolean isMember(String username, String groupname, String siteKey) {
-        return (Boolean) getUserMembershipCache().get(new UsermembershipCacheKey(username, groupname, siteKey)).getObjectValue();
+        final List<String> userMembership = getUserMembership(username);
+        return userMembership != null && userMembership.contains(getGroupPath(siteKey, groupname));
     }
 
     public boolean isAdminMember(String username, String siteKey) {
@@ -602,22 +628,13 @@ public class JahiaGroupManagerService extends JahiaService {
         return usernameCorrect;
     }
 
-    private SelfPopulatingCache getUserMembershipCache() {
-        if (userMembershipCache == null) {
-            userMembershipCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.userMembershipCache", new UsermembershipCache());
-        }
-        return userMembershipCache;
-    }
+    private static class GroupPathByGroupNameCacheKey implements Serializable {
+        String siteKey;
+        String groupName;
 
-    class UsermembershipCacheKey {
-        String username;
-        String groupname;
-        String sitekey;
-
-        UsermembershipCacheKey(String username, String groupname, String sitekey) {
-            this.username = username;
-            this.groupname = groupname;
-            this.sitekey = sitekey;
+        private GroupPathByGroupNameCacheKey(String siteKey, String groupName) {
+            this.siteKey = siteKey;
+            this.groupName = groupName;
         }
 
         @Override
@@ -625,45 +642,49 @@ public class JahiaGroupManagerService extends JahiaService {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
 
-            UsermembershipCacheKey that = (UsermembershipCacheKey) o;
+            GroupPathByGroupNameCacheKey that = (GroupPathByGroupNameCacheKey) o;
 
-            if (!groupname.equals(that.groupname)) return false;
-            if (sitekey != null ? !sitekey.equals(that.sitekey) : that.sitekey != null) return false;
-            if (!username.equals(that.username)) return false;
+            if (!groupName.equals(that.groupName)) return false;
+            if (siteKey != null ? !siteKey.equals(that.siteKey) : that.siteKey != null) return false;
 
             return true;
         }
 
         @Override
         public int hashCode() {
-            int result = username.hashCode();
-            result = 31 * result + groupname.hashCode();
-            result = 31 * result + (sitekey != null ? sitekey.hashCode() : 0);
+            int result = siteKey != null ? siteKey.hashCode() : 0;
+            result = 31 * result + groupName.hashCode();
             return result;
         }
+    }
+
+    private SelfPopulatingCache getGroupPathByGroupNameCache() {
+        if (groupPathByGroupNameCache == null) {
+            groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new UserPathByUserNameCacheEntryFactory());
+        }
+        return groupPathByGroupNameCache;
+    }
+
+
+    class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+        @Override
+        public Object createEntry(final Object key) throws Exception {
+            final GroupPathByGroupNameCacheKey c = (GroupPathByGroupNameCacheKey) key;
+            return internalGetGroupPath(c.siteKey, c.groupName);
+        }
+    }
+
+    private SelfPopulatingCache getUserMembershipCache() {
+        if (userMembershipCache == null) {
+            userMembershipCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.userMembershipCache", new UsermembershipCache());
+        }
+        return userMembershipCache;
     }
 
     class UsermembershipCache implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            UsermembershipCacheKey cacheKey = (UsermembershipCacheKey) key;
-
-            if (GUEST_GROUPNAME.equals(cacheKey.groupname)) {
-                return true;
-            }
-            if (USERS_GROUPNAME.equals(cacheKey.groupname) && cacheKey.sitekey == null && !JahiaUserManagerService.GUEST_USERNAME.equals(cacheKey.username)) {
-                return true;
-            }
-
-            JCRGroupNode group = lookupGroup(cacheKey.sitekey, cacheKey.groupname);
-            if (group == null) {
-                group = lookupGroup(null, cacheKey.groupname);
-            }
-            if (group == null) {
-                return false;
-            }
-            JCRUserNode userNode = userManagerService.lookupUser(cacheKey.username);
-            return group.isMember(userNode);
+            return internalGetUserMembershipByPath((String) key);
         }
     }
 }

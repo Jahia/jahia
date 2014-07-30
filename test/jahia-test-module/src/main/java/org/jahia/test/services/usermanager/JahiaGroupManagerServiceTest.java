@@ -190,14 +190,14 @@ public class JahiaGroupManagerServiceTest {
 
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
                 user1.isMemberOfGroup(null, "test-group2"));
-        List<String> user1GroupMembership = groupManager.getUserMembership(user1.getPath());
+        List<String> user1GroupMembership = groupManager.getUserMembershipByPath(user1.getPath());
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
                 user1GroupMembership.contains("test-group2:0"));
 
         group1.removeMember(user1);
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
                 user1.isMemberOfGroup(null, "test-group2"));
-        user1GroupMembership = groupManager.getUserMembership(user1.getPath());
+        user1GroupMembership = groupManager.getUserMembershipByPath(user1.getPath());
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
                 user1GroupMembership.contains("test-group2:0"));
 

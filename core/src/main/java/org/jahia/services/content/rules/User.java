@@ -131,7 +131,7 @@ public class User {
         JahiaGroupManagerService grpManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         JCRUserNode jahiaUser = getUserNode();
         if (jahiaUser != null) {
-            List<String> groups = grpManager.getUserMembership(jahiaUser.getPath());
+            List<String> groups = grpManager.getUserMembershipByPath(jahiaUser.getPath());
             for (String groupname : groups) {
                 JCRGroupNode group = grpManager.lookupGroup(groupname);
                 r.add(new Group(group));

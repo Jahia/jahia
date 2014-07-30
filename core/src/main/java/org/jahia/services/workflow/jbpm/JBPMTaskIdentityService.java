@@ -74,9 +74,7 @@ package org.jahia.services.workflow.jbpm;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
@@ -93,7 +91,6 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 /**
  * Identity Manager for connecting jBPM to Jahia Users
@@ -112,7 +109,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<Group> results = new ArrayList<Group>();
         JCRUserNode user = this.userService.lookupUserByKey(userId);
         if (user != null) {
-            List<String> l = groupService.getUserMembership(user.getPath());
+            List<String> l = groupService.getUserMembershipByPath(user.getPath());
             for (String groupKey : l) {
                 Group groupById = getGroupById(groupKey);
                 if (groupById != null) {

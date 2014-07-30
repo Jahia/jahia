@@ -80,10 +80,8 @@ import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -274,7 +272,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
         l.add(getPrincipalAcl("u:" + principal.getName()));
 
-        List<String> groups = groupManagerService.getUserMembership(principal.getUserKey());
+        List<String> groups = groupManagerService.getUserMembershipByPath(principal.getUserKey());
 
         for (String group : groups) {
             JCRGroupNode g = groupManagerService.lookupGroup(group);

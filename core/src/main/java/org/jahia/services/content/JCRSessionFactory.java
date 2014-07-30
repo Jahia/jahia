@@ -221,7 +221,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
         if (s == null || !s.isLive()) {
             if (system) {
-                s = login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, fallbackLocale);
+                s = login(JahiaLoginModule.getSystemCredentials(), workspace, locale, fallbackLocale);
                 wsMap.put(key, s);
             } else {
                 if (!JahiaLoginModule.GUEST.equals(username)) {

@@ -77,12 +77,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>dummy-modules</artifactId>
-        <groupId>org.jahia.test</groupId>
-<<<<<<< .working
+        <groupId>org.jahia.test</groupId>        
         <version>7.1.0.0-SNAPSHOT</version>
-=======
-        <version>7.0.0.2-SNAPSHOT</version>
->>>>>>> .merge-right.r50305
     </parent>
     <groupId>org.jahia.test</groupId>
     <artifactId>dummy2</artifactId>

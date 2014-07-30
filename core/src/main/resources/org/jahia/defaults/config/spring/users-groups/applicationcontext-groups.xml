@@ -6,6 +6,7 @@
 
     <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="ehCacheProvider" ref="ehCacheProvider"/>
         <property name="jahiaJcrEnforcedGroups">
             <list value-type="java.lang.String">
                 <value>guest</value>

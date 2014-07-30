@@ -102,7 +102,7 @@ public class Edit extends Render {
     private boolean availableInDistantPublicationServerMode = true;
     private boolean forceUILocaleForJCRSession = false;
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         if ("contributemode".equals(editConfiguration.getName())) {

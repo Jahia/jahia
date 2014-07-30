@@ -77,6 +77,7 @@ import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 
@@ -110,8 +111,6 @@ public class JahiaLoginModule implements LoginModule {
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
     private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
 
-    private JahiaUserManagerService userService;
-
     private Subject subject;
     private Set<Principal> principals = new HashSet<Principal>();
     private CallbackHandler callbackHandler;
@@ -123,7 +122,6 @@ public class JahiaLoginModule implements LoginModule {
         this.callbackHandler = callbackHandler;
         this.sharedState = sharedState;
         this.options = options;
-        this.userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
     }
 
     public boolean login() throws LoginException {
@@ -155,17 +153,9 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
 
-                    JCRUserNode user = null;
-                    if (userService != null) {
-                        user = userService.lookupUser(name);
-                    } else {
-                        // this can happen if we are still starting up.
-                        user = JahiaUserManagerService.getInstance().lookupUser(name);
-                    }
-
-                    if ((token != null) || user.verifyPassword(key)) {
+                    if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(name).verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));
-                        if (user.isAdminMember(null)) {
+                        if (JahiaGroupManagerService.getInstance().isAdminMember(name, null)) {
                             principals.add(new AdminPrincipal(name));
                         }
                     }

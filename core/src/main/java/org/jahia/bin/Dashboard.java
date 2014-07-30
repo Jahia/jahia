@@ -100,7 +100,7 @@ public class Dashboard extends Render {
 
     private EditConfiguration editConfiguration;
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = super.createRenderContext(req, resp, user);
         context.setEditMode(true);
         context.setEditModeConfig(editConfiguration);

@@ -398,7 +398,7 @@ public class UsersFlowHandler implements Serializable {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userProperties.getUserKey(), session);
+                JCRUserNode jahiaUser = userManagerService.lookupUserByPath(userProperties.getUserKey(), session);
                 boolean hasErrors = false;
                 Set<String> readOnlyProps = userProperties.getReadOnlyProperties();
                 if (jahiaUser != null) {

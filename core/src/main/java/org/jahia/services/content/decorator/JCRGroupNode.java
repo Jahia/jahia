@@ -143,9 +143,17 @@ public class JCRGroupNode extends JCRNodeDecorator {
         return result;
     }
 
+    public boolean isMember(String userPath) {
+        return isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath));
+    }
+
     public boolean isMember(JCRNodeWrapper principal) {
-        if(JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath())) return true;
-        if(!JahiaUserManagerService.GUEST_USERNAME.equals(principal.getName()) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) return true;
+        if(JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath())) {
+            return true;
+        }
+        if(!JahiaUserManagerService.GUEST_USERNAME.equals(principal.getName()) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) {
+            return true;
+        }
         try {
             JCRNodeIteratorWrapper nodes = getNode("j:members").getNodes();
             for (JCRNodeWrapper jcrNodeWrapper : nodes) {
@@ -210,16 +218,13 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     }
 
-    public void removeMembers() {
-
-    }
-
     public boolean isHidden() {
-        return false;
-    }
-
-    public boolean isMember(String userPath) {
-        return isMember(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userPath));
+        try {
+            return hasProperty("j:hidden") && getProperty("j:hidden").getBoolean();
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group",e);
+            return false;
+        }
     }
 
 }

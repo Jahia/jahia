@@ -269,8 +269,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         }
     }
 
-    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JCRUserNode user) {
-        RenderContext context = new RenderContext(req, resp, user.getJahiaUser());
+    protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
+        RenderContext context = new RenderContext(req, resp, user);
         context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, req.getPathInfo().indexOf("/", 1)));
         return context;
     }
@@ -756,7 +756,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
 
             RenderContext renderContext =
-                    createRenderContext(req, resp, ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jcrSessionFactory.getCurrentUser().getName()));
+                    createRenderContext(req, resp, jcrSessionFactory.getCurrentUser());
             renderContext.setWorkspace(urlResolver.getWorkspace());
 
             urlResolver.setRenderContext(renderContext);

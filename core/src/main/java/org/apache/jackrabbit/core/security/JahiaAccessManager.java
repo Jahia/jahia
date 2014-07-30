@@ -185,7 +185,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
-    private JCRUserNode jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
@@ -318,12 +317,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-
-        if (!jahiaPrincipal.isSystem()) {
-            if (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) {
-                jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
-            }
-        }
 
         initialized = true;
     }
@@ -991,29 +984,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (JahiaLoginModule.GUEST.equals(username)) {
                 return false;
             }
-            JCRUserNode user = userService.lookupUser(username);
-            if (user != null) {
-                return isAdmin = user.isAdminMember(siteKey);
-            }
-            return isAdmin = false;
+            return isAdmin = groupService.isAdminMember(username,siteKey);
         }
         return isAdmin;
     }
 
 
     private boolean isUserMemberOf(String groupname, String site) {
-        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
-            return true;
-        }
-        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
-            return true;
-        }
-
-        JCRGroupNode group = groupService.lookupGroup(site, groupname);
-        if (group == null) {
-            group = groupService.lookupGroup(null, groupname);
-        }
-        return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
+        return (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) &&
+                (groupService.isMember(jahiaPrincipal.getName(), groupname, site));
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {

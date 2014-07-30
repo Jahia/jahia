@@ -194,10 +194,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         return false;
     }
 
-    public boolean isAdminMember(String siteKey) {
-        return isRoot() || isMemberOfGroup(siteKey, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
-    }
-
     public List<PasswordHistoryEntry> getPasswordHistory() {
         return null;
     }

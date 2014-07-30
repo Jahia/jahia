@@ -71,6 +71,8 @@
  */
 package org.jahia.services.usermanager;
 
+import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
+import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -79,6 +81,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
+import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.utils.EncryptionUtils;
@@ -96,7 +99,6 @@ import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -132,6 +134,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private JahiaUserSplittingRule userSplittingRule;
     private ServletContext servletContext;
 
+    private EhCacheProvider ehCacheProvider;
+    private SelfPopulatingCache userPathByUserNameCache;
+
+
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final JahiaUserManagerService INSTANCE = new JahiaUserManagerService();
@@ -153,6 +159,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         this.servletContext = servletContext;
     }
 
+    public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
+        this.ehCacheProvider = ehCacheProvider;
+    }
+
     @Override
     public void start() throws JahiaInitializationException {
 
@@ -169,10 +179,21 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * is returned, otherwise NULL is returned.
      *
      * @return Return a reference on a new created jahiaUser object.
+     * @deprecated use lookupUserByPath() instead
      */
     public JCRUserNode lookupUserByKey(String userKey) {
+        return lookupUserByPath(userKey);
+    }
+
+    /**
+     * Load all the user data and attributes. On success a reference on the user
+     * is returned, otherwise NULL is returned.
+     *
+     * @return Return a reference on a new created jahiaUser object.
+     */
+    public JCRUserNode lookupUserByPath(String path) {
         try {
-            return lookupUserByKey(userKey,JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            return lookupUserByPath(path, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -185,7 +206,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *
      * @return Return a reference on a new created jahiaUser object.
      */
-    public JCRUserNode lookupUserByKey(String userKey, JCRSessionWrapper session) {
+    public JCRUserNode lookupUserByPath(String userKey, JCRSessionWrapper session) {
         try {
             return (JCRUserNode) session.getNode(userKey);
         } catch (RepositoryException e) {
@@ -222,13 +243,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             logger.error("Should not be looking for empty name user");
             return null;
         }
-        try {
-            JCRNodeIteratorWrapper users = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2).execute().getNodes();
-            if (!users.hasNext()) return null;
-            return (JCRUserNode) users.nextNode();
-        } catch (RepositoryException e) {
+        final String path = (String) getUserPathByUserNameCache().get(name).getObjectValue();
+        if (path == null) {
             return null;
         }
+        return lookupUserByPath(path, session);
     }
 
 
@@ -662,6 +681,22 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return pwd != null ? StringUtils.chomp(pwd).trim() : null;
     }
 
+    private SelfPopulatingCache getUserPathByUserNameCache() {
+        if (userPathByUserNameCache == null) {
+            userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
+        }
+        return userPathByUserNameCache;
+    }
 
+
+    class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+        @Override
+        public Object createEntry(final Object key) throws Exception {
+            String name = (String) key;
+            RowIterator it = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:fullpath] from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2).execute().getRows();
+            if (!it.hasNext()) return null;
+            return it.nextRow().getNode().getPath();
+        }
+    }
 
 }

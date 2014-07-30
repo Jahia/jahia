@@ -294,7 +294,7 @@ public final class CacheHelper {
     }
 
     @SuppressWarnings("deprecation")
-    private static CacheInfo getCacheInfo(Cache cache, boolean withConfig, boolean withSizeInBytes) {
+    private static CacheInfo getCacheInfo(Ehcache cache, boolean withConfig, boolean withSizeInBytes) {
         CacheInfo info = new CacheInfo(cache);
         info.setName(cache.getName());
         if (withConfig) {
@@ -355,7 +355,7 @@ public final class CacheHelper {
         }
 
         for (String name : manager.getCacheNames()) {
-            Cache cache = manager.getCache(name);
+            Ehcache cache = manager.getEhcache(name);
             if (cache != null) {
                 CacheInfo cacheInfo = getCacheInfo(cache, withConfig, withSizeInBytes);
                 info.getCaches().put(name, cacheInfo);

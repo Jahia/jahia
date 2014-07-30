@@ -94,12 +94,12 @@ public class JahiaUserGroupCallback implements UserGroupCallback {
 
     @Override
     public boolean existsUser(String userId) {
-        return userService.userExists(userId);
+        return userService.lookupUserByKey(userId) != null;
     }
 
     @Override
     public boolean existsGroup(String groupId) {
-        return groupService.groupExists(groupId);
+        return groupService.lookupGroup(groupId) != null;
     }
 
     @Override

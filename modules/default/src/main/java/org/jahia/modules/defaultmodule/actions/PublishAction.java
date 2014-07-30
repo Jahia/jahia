@@ -125,7 +125,7 @@ public class PublishAction extends Action {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             List<String> uuidList = new ArrayList<String>(1);
             uuidList.add(resource.getNode().getIdentifier());
-            jobDataMap.put(BackgroundJob.JOB_USERKEY, renderContext.getUser().getName());
+            jobDataMap.put(BackgroundJob.JOB_USERKEY, renderContext.getUser().getUserKey());
             jobDataMap.put(BackgroundJob.JOB_SITEKEY, renderContext.getSite().getSiteKey());
             jobDataMap.put(PublicationJob.PUBLICATION_UUIDS, uuidList);
             jobDataMap.put(PublicationJob.SOURCE, Constants.EDIT_WORKSPACE);

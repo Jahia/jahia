@@ -91,6 +91,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,6 +302,25 @@ public class PropertiesHelper {
             setProperties(objectNode, newProps);
         }
     }
+
+    public void saveI18NDraftStatus(JCRNodeWrapper node, List<GWTJahiaNodeProperty> sharedProperties, Set<String> languages) throws RepositoryException {
+        if (node.hasTranslations()) {
+            GWTJahiaNodeProperty isDraft = null;
+            for (GWTJahiaNodeProperty property : sharedProperties) {
+                if (property.getName().equals("j:isDraft")) {
+                    isDraft = property;
+                    break;
+                }
+            }
+            if (isDraft != null) {
+                node.setProperty("j:isDraft",false);
+                for (String language : languages) {
+                    node.getI18N(LanguageCodeConverters.languageCodeToLocale(language)).setProperty("j:isDraft", isDraft.getValues().get(0).getBoolean());
+                }
+            }
+        }
+    }
+
 
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
         if (objectNode == null || newProps == null || newProps.isEmpty()) {

@@ -764,39 +764,28 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 node.setName(name);
                 node.setPath(nodeWrapper.getPath());
             }
-        } catch (RepositoryException e) {
-            logger.error("Error while saving node " + node.getPath(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.node", getUILocale(), node.getPath(), e.getLocalizedMessage()));
-        }
 
 //        setLock(Arrays.asList(node.getPath()), false);
-        Iterator<String> langCode = langCodeProperties.keySet().iterator();
+            Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
-        // save shared properties
-        saveProperties(Arrays.asList(node), sharedProperties, removedTypes, getLocale().toString());
-        if (!removedTypes.isEmpty()) {
-            try {
+            // save shared properties
+            saveProperties(Arrays.asList(node), sharedProperties, removedTypes, null);
+            if (!removedTypes.isEmpty()) {
                 for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
                     removedTypes.remove(mixin.getName());
                 }
-            } catch (LockException e) {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("could.not.be.accessed", getUILocale(), node.getDisplayName(), e.getLocalizedMessage()));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("could.not.be.accessed", getUILocale(), node.getDisplayName(), e.getLocalizedMessage()));
             }
-        }
 
-        // save properties per lang
-        while (langCode.hasNext()) {
-            String currentLangCode = langCode.next();
-            List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
-            saveProperties(Arrays.asList(node), props, removedTypes, currentLangCode);
-        }
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+                saveProperties(Arrays.asList(node), props, removedTypes, currentLangCode);
+            }
 
-        if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
-            try {
-                JCRNodeWrapper nodeWrapper = jcrSessionWrapper.getNodeByUUID(node.getUUID());
+            properties.saveI18NDraftStatus(nodeWrapper, sharedProperties, langCodeProperties.keySet());
+
+            if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
                 List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
                 if (!removedChildrenPaths.isEmpty()) {
                     deletePaths(removedChildrenPaths);
@@ -833,71 +822,69 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         nodeWrapper.orderBefore(newName, null);
                     }
                 }
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(e);
             }
-        }
-        // save acl
-        if (acl != null) {
-            contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
-        }
-        if (node.get("vanityMappings") != null) {
-            saveUrlMappings(node, (Map<String, List<GWTJahiaUrlMapping>>) node.get("vanityMappings"));
-        }
-        if (node.get("visibilityConditions") != null) {
-            List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
-            contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper, getUILocale());
-            try {
-                for (GWTJahiaNode condition : visibilityConditions) {
-                    if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
-                        publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
+            // save acl
+            if (acl != null) {
+                contentManager.setACL(node.getUUID(), acl, jcrSessionWrapper);
+            }
+            if (node.get("vanityMappings") != null) {
+                saveUrlMappings(node, (Map<String, List<GWTJahiaUrlMapping>>) node.get("vanityMappings"));
+            }
+            if (node.get("visibilityConditions") != null) {
+                List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
+                contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper, getUILocale());
+                try {
+                    for (GWTJahiaNode condition : visibilityConditions) {
+                        if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
+                            publication.publish(Arrays.asList(jcrSessionWrapper.getNode(condition.getPath()).getIdentifier()));
+                        }
                     }
+                    if (Boolean.TRUE.equals(node.get("conditions-published"))) {
+                        publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath() + "/" + VisibilityService.NODE_NAME).getIdentifier()));
+                    }
+                } catch (RepositoryException e) {
+                    throw new GWTJahiaServiceException(e);
                 }
-                if (Boolean.TRUE.equals(node.get("conditions-published"))) {
-                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath() + "/" + VisibilityService.NODE_NAME).getIdentifier()));
-                }
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(e);
             }
-        }
-        if (node.get("activeWorkflows") != null) {
-            workflow.updateWorkflowRules(node,
-                    (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
-        }
+            if (node.get("activeWorkflows") != null) {
+                workflow.updateWorkflowRules(node,
+                        (Set<GWTJahiaWorkflowDefinition>) node.get("activeWorkflows"), jcrSessionWrapper);
+            }
 
-        GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
-        boolean needPermissionReload = false;
-        if (rb != null) {
-            needPermissionReload = GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
-        }
+            GWTResourceBundle rb = node.get(GWTJahiaNode.RESOURCE_BUNDLE);
+            boolean needPermissionReload = false;
+            if (rb != null) {
+                needPermissionReload = GWTResourceBundleUtils.store(node, rb, jcrSessionWrapper);
+            }
 
-        try {
             jcrSessionWrapper.save();
+
+            if (rb != null) {
+                try {
+                    result.put(GWTJahiaNode.SITE_LANGUAGES,
+                            languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()),
+                                    getUser(), getLocale())
+                    );
+                    if (needPermissionReload) {
+                        // need to load the permissions
+                        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
+                        List<String> permissions = new ArrayList<String>();
+                        for (Privilege privilege : p) {
+                            permissions.add(((PrivilegeImpl) privilege).getPrefixedName());
+                        }
+                        result.put(GWTJahiaNode.PERMISSIONS, permissions);
+                    }
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
+        } catch (LockException e) {
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("could.not.be.accessed", getUILocale(), node.getDisplayName(), e.getLocalizedMessage()));
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), e.getLocalizedMessage()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), e.getLocalizedMessage()));
-        }
-
-        if (rb != null) {
-            try {
-                result.put(GWTJahiaNode.SITE_LANGUAGES,
-                        languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()),
-                                getUser(), getLocale())
-                );
-                if (needPermissionReload) {
-                    // need to load the permissions
-                    Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
-                    List<String> permissions = new ArrayList<String>();
-                    for (Privilege privilege : p) {
-                        permissions.add(((PrivilegeImpl) privilege).getPrefixedName());
-                    }
-                    result.put(GWTJahiaNode.PERMISSIONS, permissions);
-                }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
         }
 
         return result;
@@ -961,16 +948,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         GWTJahiaNode node;
         try {
-            node = navigation.getGWTJahiaNode(session.getNodeByUUID(res.getUUID()), fields);
+            final JCRNodeWrapper nodeWrapper = session.getNodeByUUID(res.getUUID());
+            node = navigation.getGWTJahiaNode(nodeWrapper, fields);
 
             if (acl != null && (!acl.getAce().isEmpty() || acl.isBreakAllInheritance())) {
                 contentManager.setACL(res.getUUID(), acl, session);
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), e.getMessage()));
-        }
-        try {
+
             if (langCodeProperties != null && !langCodeProperties.isEmpty()) {
                 List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
                 nodes.add(node);
@@ -988,6 +972,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         langSession.validate();
                     }
                 }
+
+                properties.saveI18NDraftStatus(nodeWrapper, props, langCodeProperties.keySet());
             }
             session.save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
@@ -2587,10 +2573,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         List<GWTJahiaValueDisplayBean> tags = new ArrayList<GWTJahiaValueDisplayBean>();
         try {
             Map<String, Long> tagsMap = tagHelper.getTags(prefix, startPath, minCount, limit, offset, sortByCount, retrieveCurrentSession());
-            for(String tagEntry : tagsMap.keySet()){
+            for (String tagEntry : tagsMap.keySet()) {
                 tags.add(new GWTJahiaValueDisplayBean(tagEntry, tagEntry));
             }
-        }catch (RepositoryException e){
+        } catch (RepositoryException e) {
             throw new GWTJahiaServiceException("Cannot get tags", e);
         }
         return tags;

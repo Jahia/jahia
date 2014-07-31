@@ -85,6 +85,8 @@ import com.extjs.gxt.ui.client.widget.form.FieldSet;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
@@ -290,13 +292,14 @@ public abstract class SaveButtonItem implements ButtonItem {
 
     protected void setDraftMode(AbstractContentEngine engine, Boolean value) {
         if (isNodeOfJmixLastPublishedType(engine)) {
-            String selectedLanguage = engine.getSelectedLanguage();
-            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedI18NProperties().get(selectedLanguage);
-            if (gwtJahiaNodeProperties == null) {
-                gwtJahiaNodeProperties = new ArrayList<GWTJahiaNodeProperty>(1);
-                engine.getChangedI18NProperties().put(selectedLanguage, gwtJahiaNodeProperties);
+            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedProperties();
+            for (GWTJahiaNodeProperty property : gwtJahiaNodeProperties) {
+                if (property.getName().equals("j:isDraft")) {
+                    property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+                    return;
+                }
             }
-            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", value ? "true" : "false"));
+            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
         }
     }
 
@@ -305,7 +308,7 @@ public abstract class SaveButtonItem implements ButtonItem {
            ((engine instanceof CreateContentEngine) && ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished"));
     }
 
-    public void setDraft(boolean isDraft) {
-        this.isDraft = isDraft;
+    public static void setDraft(boolean isDraft) {
+        SaveButtonItem.isDraft = isDraft;
     }
 }

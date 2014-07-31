@@ -88,7 +88,7 @@ public class CreateDraftButtonItem extends CreateButtonItem {
         final CheckBox checkbox = new CheckBox();
 
         checkbox.setValue(engine.getNode() != null && engine.getNode().get("j:isDraft") != null && (Boolean) engine.getNode().get("j:isDraft"));
-        setDraft(true);
+        setDraft(checkbox.getValue());
 
         // uncomment this if you want to change this behavior
         // and set checkbox state to the stored value

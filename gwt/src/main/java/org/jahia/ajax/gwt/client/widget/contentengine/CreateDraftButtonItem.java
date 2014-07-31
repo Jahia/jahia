@@ -87,8 +87,7 @@ public class CreateDraftButtonItem extends CreateButtonItem {
     public BoxComponent create(final AbstractContentEngine engine) {
         final CheckBox checkbox = new CheckBox();
 
-        // when the engine is open the content is always set as Draft
-        checkbox.setValue(true);
+        checkbox.setValue(engine.getNode() != null && engine.getNode().get("j:isDraft") != null && (Boolean) engine.getNode().get("j:isDraft"));
         setDraft(true);
 
         // uncomment this if you want to change this behavior

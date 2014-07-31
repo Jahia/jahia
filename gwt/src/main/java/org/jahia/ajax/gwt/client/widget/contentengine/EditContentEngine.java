@@ -127,6 +127,7 @@ public class EditContentEngine extends AbstractContentEngine {
         super(linker.getConfig().getEngineConfiguration(node), linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')));
         contentPath = node.getPath();
         nodeName = node.getName();
+        this.node = node;
         init(engineContainer);
         loadEngine();
 

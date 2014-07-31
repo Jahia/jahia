@@ -128,12 +128,12 @@ public class User {
 
     public List<Group> getGroups() {
         List<Group> r = new ArrayList<Group>();
-        JahiaGroupManagerService grpManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        JahiaGroupManagerService grpManager = JahiaGroupManagerService.getInstance();
         JCRUserNode jahiaUser = getUserNode();
         if (jahiaUser != null) {
             List<String> groups = grpManager.getMembershipByPath(jahiaUser.getPath());
             for (String groupname : groups) {
-                JCRGroupNode group = grpManager.lookupGroup(groupname);
+                JCRGroupNode group = grpManager.lookupGroupByPath(groupname);
                 r.add(new Group(group));
             }
         }

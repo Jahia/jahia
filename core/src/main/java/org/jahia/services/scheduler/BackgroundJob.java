@@ -151,7 +151,7 @@ public abstract class BackgroundJob implements StatefulJob {
         try {
         	String userKey = data.getString(JOB_USERKEY);
         	if (userKey != null && !userKey.equals(JahiaLoginModule.SYSTEM)) {
-                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(userKey);
+                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
                 if (userNode != null) {
                     sessionFactory.setCurrentUser(userNode.getJahiaUser());
 	            	logger.debug("Executing job as user {}", userKey);

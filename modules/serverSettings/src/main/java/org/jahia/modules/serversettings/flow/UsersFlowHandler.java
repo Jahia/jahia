@@ -113,7 +113,7 @@ public class UsersFlowHandler implements Serializable {
 
     public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JCRUserNode jahiaUser = service.lookupUserByKey(userKey);
+        JCRUserNode jahiaUser = service.lookupUserByPath(userKey);
         if (propertiesToPopulate == null) {
             propertiesToPopulate = new UserProperties();
         }
@@ -325,7 +325,7 @@ public class UsersFlowHandler implements Serializable {
         return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
+                JCRUserNode jahiaUser = userManagerService.lookupUserByPath(userKey);
                 String displayName = PrincipalViewHelper.getDisplayName(jahiaUser);
                 if (userManagerService.deleteUser(jahiaUser.getPath(), session)) {
                     context.addMessage(new MessageBuilder().info().code(
@@ -450,9 +450,11 @@ public class UsersFlowHandler implements Serializable {
     public Set<Principal> populateUsers(String selectedUsers) {
         final String[] split = selectedUsers.split(",");
         Set<Principal> searchResult = new HashSet<Principal>();
-        for (String userKey : split) {
-            JCRUserNode jahiaUser = userManagerService.lookupUserByKey(userKey);
-            searchResult.add(jahiaUser.getJahiaUser());
+        for (String userPath : split) {
+            JCRUserNode jahiaUser = userManagerService.lookupUserByPath(userPath);
+            if (jahiaUser != null) {
+                searchResult.add(jahiaUser.getJahiaUser());
+            }
         }
         return searchResult;
     }

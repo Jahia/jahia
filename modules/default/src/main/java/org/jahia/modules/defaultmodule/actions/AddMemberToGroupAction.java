@@ -126,7 +126,7 @@ public class AddMemberToGroupAction extends Action {
 
         if (parameters.get("userKey") != null) {
             String userKey = parameters.get("userKey").get(0);
-            JCRUserNode jahiaUser = jahiaUserManagerService.lookupUserByKey(userKey);
+            JCRUserNode jahiaUser = jahiaUserManagerService.lookupUserByPath(userKey);
             if (jahiaUser == null) {
                 logger.warn("User " + userKey + " could not be found, will not add as member of group " + targetJahiaGroup.getPath());
                 return ActionResult.BAD_REQUEST;
@@ -136,7 +136,7 @@ public class AddMemberToGroupAction extends Action {
             }
         } else if (parameters.get("groupKey") != null) {
             String groupKey = parameters.get("groupKey").get(0);
-            JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+            JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroupByPath(groupKey);
             if (jahiaGroup == null) {
                 logger.warn("Group " + groupKey + " could not be found, will not add as member of group " + targetJahiaGroup.getPath());
                 return ActionResult.BAD_REQUEST;

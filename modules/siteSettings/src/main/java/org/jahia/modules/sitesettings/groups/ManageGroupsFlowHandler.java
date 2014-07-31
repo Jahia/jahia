@@ -331,7 +331,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return up the specified group by key
      */
     public JCRGroupNode lookupGroup(String selectedGroup) {
-        return selectedGroup != null ? groupManagerService.lookupGroup(selectedGroup) : null;
+        return selectedGroup != null ? groupManagerService.lookupGroupByPath(selectedGroup) : null;
     }
 
     /**
@@ -344,9 +344,9 @@ public class ManageGroupsFlowHandler implements Serializable {
     private JCRNodeWrapper lookupMember(String memberKey) {
         JCRNodeWrapper p = null;
         if (memberKey.startsWith("u:")) {
-            p = userManagerService.lookupUserByKey(StringUtils.substringAfter(memberKey, ":"));
+            p = userManagerService.lookupUserByPath(StringUtils.substringAfter(memberKey, ":"));
         } else if (memberKey.startsWith("g:")) {
-            p = groupManagerService.lookupGroup(StringUtils.substringAfter(memberKey, ":"));
+            p = groupManagerService.lookupGroupByPath(StringUtils.substringAfter(memberKey, ":"));
         } else {
             throw new IllegalArgumentException("Unsupported member type for member: " + memberKey);
         }

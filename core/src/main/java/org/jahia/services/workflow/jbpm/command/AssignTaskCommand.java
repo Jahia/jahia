@@ -72,6 +72,7 @@
 package org.jahia.services.workflow.jbpm.command;
 
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowTask;
 import org.jahia.services.workflow.jbpm.BaseCommand;
@@ -116,15 +117,15 @@ public class AssignTaskCommand extends BaseCommand<List<WorkflowTask>> {
         } else {
             getTaskService().claim(id, user.getUserKey());
         }
-        JahiaUser actualUser = null;
+        JCRUserNode actualUser = null;
         if (task.getTaskData().getActualOwner() != null) {
-            actualUser = getUserManager().lookupUserByKey(task.getTaskData().getActualOwner().getId()).getJahiaUser();
+            actualUser = getUserManager().lookupUserByPath(task.getTaskData().getActualOwner().getId());
         }
         if (actualUser != null) {
             taskOutputParameters.put("currentUser", user.getUserKey());
             ((InternalTaskService) getTaskService()).addContent(id, taskOutputParameters);
+            updateTaskNode(actualUser.getJahiaUser(), (String) taskOutputParameters.get("task-" + id));
         }
-        updateTaskNode(actualUser, (String) taskOutputParameters.get("task-" + id));
         return null;
     }
 }

@@ -100,7 +100,7 @@ public class User {
     public static Boolean memberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(currentUser.getUserKey());
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(currentUser.getLocalPath());
             if (userNode != null) {
                 final String siteID = retrieveSiteId(renderContext);
                 final String[] groupArray = StringUtils.split(groups, ',');
@@ -118,7 +118,7 @@ public class User {
     public static Boolean notMemberOf(String groups, RenderContext renderContext) {
         final JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
         if (currentUser != null) {
-            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(currentUser.getUserKey());
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(currentUser.getLocalPath());
             if (userNode != null) {
                 final String siteID = retrieveSiteId(renderContext);
                 final String[] groupArray = StringUtils.split(groups, ',');
@@ -134,7 +134,7 @@ public class User {
     }
     
     public static Collection<JCRNodeWrapper> getMembers(String group, RenderContext renderContext) {
-        return ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group).getMembers();
+        return JahiaGroupManagerService.getInstance().lookupGroupByPath(group).getMembers();
     }
 
     private static String retrieveSiteId(RenderContext renderContext) {
@@ -157,7 +157,7 @@ public class User {
             throw new IllegalArgumentException("Specified user key is null");
         }
         return user.startsWith("/") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUserByKey(user) : ServicesRegistry.getInstance()
+                .lookupUserByPath(user) : ServicesRegistry.getInstance()
                 .getJahiaUserManagerService().lookupUser(user);
     }
 
@@ -166,11 +166,11 @@ public class User {
         final JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final List<String> userMembership = managerService.getMembershipByPath(jahiaUser.getPath());
-        for (String groupName : userMembership) {
-            if(!groupName.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
-                    !groupName.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
-                final JCRGroupNode group = managerService.lookupGroup(groupName);
-                map.put(groupName,group);
+        for (String groupPath : userMembership) {
+            if(!groupPath.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
+                    !groupPath.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
+                final JCRGroupNode group = managerService.lookupGroupByPath(groupPath);
+                map.put(groupPath,group);
             }
         }
         return map;
@@ -212,15 +212,15 @@ public class User {
                         // otherwise, check if we're looking at a group, extract the group name and check whether the user is a member of
                         // that group
                         if (candidate.startsWith("g:")) {
-                            final String groupName = candidate.substring(2);
-                            JCRGroupNode candidateGroup = managerService.lookupGroup(groupName);
+                            final String groupPath = candidate.substring(2);
+                            JCRGroupNode candidateGroup = managerService.lookupGroupByPath(groupPath);
                             if (candidateGroup != null) {
                                 if (candidateGroup.isMember(user.getLocalPath())) {
                                     return true;
                                 }
                             } else {
                                 logger.info("Unable to lookup group for key {}."
-                                        + " Skipping it when checking task assignee candidates.", groupName);
+                                        + " Skipping it when checking task assignee candidates.", groupPath);
                             }
                         }
                     }

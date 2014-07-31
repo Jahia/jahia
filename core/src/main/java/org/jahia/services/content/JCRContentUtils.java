@@ -1578,7 +1578,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 m.put("principalType", "user");
                 m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
-                JCRGroupNode g = groupService.lookupGroup(StringUtils.substringAfter(entryKey, "g:"));
+                JCRGroupNode g = groupService.lookupGroupByPath(StringUtils.substringAfter(entryKey, "g:"));
                 if (g == null) {
                     logger.warn("Group {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "g:"));
                     continue;

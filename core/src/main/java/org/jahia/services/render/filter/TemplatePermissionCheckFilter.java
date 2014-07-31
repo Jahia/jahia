@@ -240,12 +240,12 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
-                JCRUserNode userNode = userManagerService.lookupUserByKey(renderContext.getUser().getUserKey());
+                JCRUserNode userNode = userManagerService.lookupUserByPath(renderContext.getUser().getLocalPath());
                 if (userNode != null && !userNode.isMemberOfGroup(null,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                     return invert ? null : "";
                 }
                 if (aliasedUser != null) {
-                    JCRUserNode aliasedUserNode = userManagerService.lookupUserByKey(aliasedUser.getUserKey());
+                    JCRUserNode aliasedUserNode = userManagerService.lookupUserByPath(aliasedUser.getLocalPath());
                     if (aliasedUserNode != null && !aliasedUserNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                         return invert ? null : "";
                     }

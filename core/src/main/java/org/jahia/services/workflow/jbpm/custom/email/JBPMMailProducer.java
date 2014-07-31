@@ -79,10 +79,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
@@ -133,6 +130,7 @@ public class JBPMMailProducer {
 
     private MailTemplateRegistry mailTemplateRegistry;
     private TaskIdentityService taskIdentityService;
+    private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
@@ -292,7 +290,7 @@ public class JBPMMailProducer {
                         if (principal instanceof JahiaUser) {
                             users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
                         } else if (principal instanceof JahiaGroup) {
-                            JCRGroupNode groupNode = groupManagerService.lookupGroup(((JahiaGroup) principal).getGroupKey());
+                            JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                             if (groupNode != null) {
                                 for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {
                                     users.add(taskIdentityService.getUserById(user.getPath()));
@@ -349,7 +347,7 @@ public class JBPMMailProducer {
 
     private Address[] getAddresses(Group group) {
         List<Address> addresses = new ArrayList<Address>();
-        JCRGroupNode jahiaGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(group.getId());
+        JCRGroupNode jahiaGroup = JahiaGroupManagerService.getInstance().lookupGroupByPath(group.getId());
         if (jahiaGroup == null) {
             return new Address[0];
         }
@@ -483,9 +481,9 @@ public class JBPMMailProducer {
         bindings.put("bundle", resourceBundle);
         // user is the one that initiate the Execution  (WorkflowService.startProcess)
         // currentUser is the one that "moves" the Execution  (JBPMProvider.assignTask)
-        JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("user"));
+        JCRUserNode jahiaUser = userManagerService.lookupUserByPath((String) vars.get("user"));
         if (vars.containsKey("currentUser")) {
-            JCRUserNode currentUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey((String) vars.get("currentUser"));
+            JCRUserNode currentUser = userManagerService.lookupUserByPath((String) vars.get("currentUser"));
             bindings.put("currentUser", currentUser);
         } else {
             bindings.put("currentUser", jahiaUser);
@@ -590,6 +588,10 @@ public class JBPMMailProducer {
 
         int sepIndex = path.lastIndexOf('/');
         return sepIndex != -1 ? path.substring(sepIndex + 1) : null;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {

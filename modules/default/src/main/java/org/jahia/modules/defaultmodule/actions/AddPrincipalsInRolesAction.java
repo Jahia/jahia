@@ -128,7 +128,7 @@ public class AddPrincipalsInRolesAction extends Action {
                     session.save();
                 } else if (principalKey.startsWith("g:")) {
                     String groupKey = principalKey.substring("g:".length());
-                    JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroup(groupKey);
+                    JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroupByPath(groupKey);
                     if (jahiaGroup == null) {
                         logger.warn("Group " + groupKey + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;

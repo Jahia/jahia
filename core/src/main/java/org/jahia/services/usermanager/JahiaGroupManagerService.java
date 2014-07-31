@@ -161,14 +161,17 @@ public class JahiaGroupManagerService extends JahiaService {
 
     }
 
+    /**
+     * @deprecated use lookupGroupByPath() instead
+     */
     public JCRGroupNode lookupGroup(String groupPath) {
         return lookupGroupByPath(groupPath);
     }
 
     /**
-     * Lookup the group information from the underlaying system (DB, LDAP, ... )
+     * Lookup the group information from the underlying system (DB, LDAP, ... )
      * Try to lookup the group into the cache, if it's not in the cache, then
-     * load it into the cahce from the database.
+     * load it into the cache from the database.
      *
      * @param groupPath  Group's path
      * @return Return a reference on a the specified group name. Return null
@@ -275,7 +278,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * Get administrator or site administrator group
      */
     public JCRGroupNode getAdministratorGroup(String siteKey) throws RepositoryException {
-        return lookupGroup(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+        return lookupGroupByPath(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
     }
 
     /**

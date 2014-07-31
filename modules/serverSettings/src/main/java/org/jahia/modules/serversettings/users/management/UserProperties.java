@@ -85,6 +85,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
@@ -172,8 +173,7 @@ public class UserProperties implements Serializable {
                         .code("serverSettings.user.errors.password.not.matching")
                         .build());
             } else {
-                JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService()
-                        .lookupUserByKey(userKey);
+                JCRUserNode jahiaUser = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
                 PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnPasswordChange(jahiaUser,
                         password, true);
                 if (!evalResult.isSuccess()) {

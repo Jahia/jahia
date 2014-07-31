@@ -116,6 +116,7 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -2555,7 +2556,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         for (String key : userKeys) {
-            final JCRUserNode principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(key);
+            final JCRUserNode principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(key);
             nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
         }
         return nodes;
@@ -2564,7 +2565,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         for (String key : groupKeys) {
-            final JCRGroupNode principal = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(key);
+            final JCRGroupNode principal = JahiaGroupManagerService.getInstance().lookupGroupByPath(key);
             nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
         }
         return nodes;
@@ -2625,9 +2626,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         JCRNodeWrapper p;
 
         if (type == 'u') {
-            p = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userkey);
+            p = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(userkey);
         } else {
-            p = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(userkey);
+            p = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroupByPath(userkey);
         }
 
         String principalTextOption = pvh.getPrincipalTextOption(p);

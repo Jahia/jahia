@@ -135,7 +135,7 @@ public class GWTInitializer {
             Locale sessionLocale = (Locale) session.getAttribute(Constants.SESSION_UI_LOCALE);
             JCRUserNode userNode = null;
             if (user != null) {
-                userNode = JahiaUserManagerService.getInstance().lookupUserByKey(user.getUserKey());
+                userNode = JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath());
             }
             uilocale = sessionLocale != null ?
                     UserPreferencesHelper.getPreferredLocale(userNode, sessionLocale) :

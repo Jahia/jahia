@@ -170,9 +170,9 @@ public class JahiaGroupManagerServiceTest {
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        group1 = groupManager.lookupGroup("test-group1:0");
+        group1 = groupManager.lookupGroupByPath("test-group1:0");
         assertNull("Group 1 should have been deleted but is still available !", group1);
-        group2 = groupManager.lookupGroup("test-group2:0");
+        group2 = groupManager.lookupGroupByPath("test-group2:0");
         assertNull("Group 1 should have been deleted but is still available !", group2);
 
     }
@@ -217,7 +217,7 @@ public class JahiaGroupManagerServiceTest {
         JCRGroupNode user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false, session);
         group1.addMember(user1Group);
         session.save();
-        group1 = groupManager.lookupGroup("test-group1:0");
+        group1 = groupManager.lookupGroupByPath("test-group1:0");
         Collection<JCRNodeWrapper> members = group1.getMembers();
 
         assertTrue("Test group 1 should contain user called 'test-user1'", members.contains(user1));

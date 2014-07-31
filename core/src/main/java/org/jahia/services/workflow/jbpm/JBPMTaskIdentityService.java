@@ -107,7 +107,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
 
     public List<Group> findGroupsByUser(String userId) {
         List<Group> results = new ArrayList<Group>();
-        JCRUserNode user = this.userService.lookupUserByKey(userId);
+        JCRUserNode user = this.userService.lookupUserByPath(userId);
         if (user != null) {
             List<String> l = groupService.getMembershipByPath(user.getPath());
             for (String groupKey : l) {
@@ -145,7 +145,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<String> userKeyList = userService.getUserList();
         List<User> results = new ArrayList<User>();
         for (String userKey : userKeyList) {
-            JCRUserNode jahiaUser = userService.lookupUserByKey(userKey);
+            JCRUserNode jahiaUser = userService.lookupUserByPath(userKey);
             try {
                 results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser.getProperty("lastName").getString(), jahiaUser.getProperty("email").getString()));
             } catch (RepositoryException e) {
@@ -160,7 +160,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<Group> results = new ArrayList<Group>();
         List<String> groupKeyList = groupService.getGroupList();
         for (String groupKey : groupKeyList) {
-            JCRGroupNode jahiaGroup = groupService.lookupGroup(groupKey);
+            JCRGroupNode jahiaGroup = groupService.lookupGroupByPath(groupKey);
             results.add(new GroupImpl(jahiaGroup.getPath(), jahiaGroup.getName(), "jahia"));
         }
         return results;
@@ -169,7 +169,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
     @Override
     public User getUserById(String userId) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JCRUserNode user = service.lookupUserByKey(userId);
+        JCRUserNode user = service.lookupUserByPath(userId);
         if (user != null) {
             return new UserImpl(userId, user.getPropertyAsString("j:firstName"), user.getPropertyAsString("j:lastName"),
                     user.getPropertyAsString("j:email"));
@@ -179,8 +179,8 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
 
     @Override
     public Group getGroupById(String groupId) {
-        JahiaGroupManagerService service = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        JCRGroupNode group = service.lookupGroup(groupId);
+        JahiaGroupManagerService service = JahiaGroupManagerService.getInstance();
+        JCRGroupNode group = service.lookupGroupByPath(groupId);
         if (group != null) {
             return new GroupImpl(groupId, group.getName(), "jahia");
         }

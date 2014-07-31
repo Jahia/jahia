@@ -243,7 +243,7 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
         if (jUser == null) {
             return null;
         }
-        return JahiaUserManagerService.getInstance().lookupUserByKey(jUser.getUserKey());
+        return JahiaUserManagerService.getInstance().lookupUserByPath(jUser.getLocalPath());
     }
 
     /**

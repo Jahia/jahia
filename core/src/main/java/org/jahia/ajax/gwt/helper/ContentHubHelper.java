@@ -152,7 +152,7 @@ public class ContentHubHelper {
     public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
-        JCRUserNode userNode = userManagerService.lookupUserByKey(user.getUserKey());
+        JCRUserNode userNode = userManagerService.lookupUserByPath(user.getLocalPath());
         if (userNode != null) {
             for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
                 if ("storedPasswords".equals(provider.getAuthenticationType())) {

@@ -14,7 +14,7 @@
     String getUserContentLine(String userKey, String contentLineName) throws RepositoryException {
         if (userKey != null && !"".equals(userKey)) {
             JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            JCRUserNode user = userService.lookupUserByKey(userKey);
+            JCRUserNode user = userService.lookupUserByPath(userKey);
             String email = user.getPropertyAsString("j:email");
             if (email != null && !"".equals(email)) {
                 String contentLine = contentLineName;

@@ -103,7 +103,6 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import java.security.Principal;
 import java.util.*;
 
 /**
@@ -153,14 +152,14 @@ public class WorkflowHelper {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
                                     if (principal instanceof JahiaGroup) {
-                                        JCRGroupNode groupNode = groupManagerService.lookupGroup(((JahiaGroup) principal).getGroupKey());
-                                        JCRUserNode userNode = userManagerService.lookupUserByKey(session.getUser().getUserKey());
+                                        JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
+                                        JCRUserNode userNode = userManagerService.lookupUserByPath(session.getUser().getLocalPath());
                                         if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
                                             gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                             break;
                                         }
                                     }
-                                    if (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey())) {
+                                    if (principal instanceof JahiaUser && principal.getLocalPath().equals(session.getUser().getLocalPath())) {
                                         gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                         break;
                                     }
@@ -368,10 +367,9 @@ public class WorkflowHelper {
             final GWTJahiaWorkflowComment workflowComment = new GWTJahiaWorkflowComment();
             workflowComment.setComment(comment.getComment());
             workflowComment.setTime(comment.getTime());
-            final JahiaUser user =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(comment.getUser()).getJahiaUser();
-            if (user != null) {
-                workflowComment.setUser(user.getName());
+            JCRUserNode userNode = userManagerService.lookupUserByPath(comment.getUser());
+            if (userNode != null) {
+                workflowComment.setUser(userNode.getName());
             } else {
                 workflowComment.setUser(comment.getUser());
             }
@@ -396,17 +394,8 @@ public class WorkflowHelper {
         return history;
     }
 
-    private String getUsername(String userKey) {
-        String username = "";
-        if (userKey != null) {
-            final JahiaUser jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey).getJahiaUser();
-            if (jahiaUser != null) {
-                username = jahiaUser.getName();
-            } else {
-                username = StringUtils.substringAfterLast(userKey, "/");
-            }
-        }
-        return username;
+    private String getUsername(String userPath) {
+        return StringUtils.substringAfterLast(userPath, "/");
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId, Locale uiLocale) throws GWTJahiaServiceException {
@@ -658,7 +647,7 @@ public class WorkflowHelper {
 
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
-            JCRUserNode user = userManagerService.lookupUserByKey(workflow.getUser());
+            JCRUserNode user = userManagerService.lookupUserByPath(workflow.getUser());
             final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
             Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {
@@ -692,12 +681,12 @@ public class WorkflowHelper {
                 for (WorkflowParticipation workflowParticipation : task.getParticipations()) {
                     JahiaPrincipal p = workflowParticipation.getJahiaPrincipal();
                     if (p instanceof JahiaUser) {
-                        JCRUserNode u = userManagerService.lookupUserByKey(((JahiaUser) p).getUserKey());
+                        JCRUserNode u = userManagerService.lookupUserByPath(p.getLocalPath());
                         if (u != null) {
                             users.add(u);
                         }
                     } else if (p instanceof JahiaGroup) {
-                        JCRGroupNode g = groupManagerService.lookupGroup(((JahiaGroup) p).getGroupKey());
+                        JCRGroupNode g = groupManagerService.lookupGroupByPath(p.getLocalPath());
                         if (g != null) {
                             users.addAll(g.getRecursiveUserMembers());
                         }

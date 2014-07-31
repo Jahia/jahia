@@ -504,7 +504,7 @@ public class SubscriptionService {
                 boolean registered = true;
                 if (StringUtils.isNotEmpty(username)) {
                     // registered Jahia user is provided
-                    JCRUserNode user = username.charAt(0) == '{' ? userManagerService.lookupUserByKey(username) :
+                    JCRUserNode user = username.charAt(0) == '{' ? userManagerService.lookupUserByPath(username) :
                             userManagerService.lookupUser(username);
                     if (user == null) {
                         logger.warn("No user can be found for the specified username '" + username +
@@ -725,7 +725,7 @@ public class SubscriptionService {
         if (provider != null) {
             // registered user
             String key = "{" + provider + "}" + subscriber.getSubscriber();
-            JCRUserNode user = userManagerService.lookupUserByKey(key);
+            JCRUserNode user = userManagerService.lookupUserByPath(key);
             if (user != null) {
                 subscriber.setFirstName(user.getProperty(J_FIRST_NAME).getString());
                 subscriber.setLastName(user.getProperty(J_LAST_NAME).getString());

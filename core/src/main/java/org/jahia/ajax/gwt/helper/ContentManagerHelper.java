@@ -797,7 +797,7 @@ public class ContentManagerHelper {
                 if (ace.getPrincipalType() == 'g') {
                     JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), ace.getPrincipal());
                     if (g == null) {
-                        g = groupManagerService.lookupGroup(ace.getPrincipal());
+                        g = groupManagerService.lookupGroupByPath(ace.getPrincipal());
                     }
                     if (g != null) {
                         ace.setHidden(g.isHidden());
@@ -866,7 +866,7 @@ public class ContentManagerHelper {
                             JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(),
                                     ace.getPrincipal());
                             if (g == null) {
-                                g = groupManagerService.lookupGroup(ace.getPrincipal());
+                                g = groupManagerService.lookupGroupByPath(ace.getPrincipal());
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());

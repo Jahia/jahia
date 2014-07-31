@@ -73,13 +73,12 @@ package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.WorkflowTask;
@@ -181,9 +180,9 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             final List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
             for (OrganizationalEntity entity : task.getPeopleAssignments().getPotentialOwners()) {
                 if (entity instanceof UserImpl) {
-                    principals.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(entity.getId()).getJahiaUser());
+                    principals.add(JahiaUserManagerService.getInstance().lookupUserByPath(entity.getId()).getJahiaUser());
                 } else if (entity instanceof GroupImpl) {
-                    principals.add(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(entity.getId()).getJahiaGroup());
+                    principals.add(JahiaGroupManagerService.getInstance().lookupGroupByPath(entity.getId()).getJahiaGroup());
                 }
             }
             createTask(task, taskInputParameters, taskOutputParameters, principals);
@@ -213,21 +212,21 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                               final List<JahiaPrincipal> candidates) throws RepositoryException {
         final Workflow workflow = workflowProvider.getWorkflow(Long.toString(task.getTaskData().getProcessInstanceId()), null);
 
-        String username = (String) taskInputParameters.get("user");
-        if (username == null) {
-            username = workflow.getStartUser();
+        String userPath = (String) taskInputParameters.get("user");
+        if (userPath == null) {
+            userPath = workflow.getStartUser();
         }
-        final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username).getJahiaUser();
+        final JCRUserNode user = JahiaUserManagerService.getInstance().lookupUserByPath(userPath);
 
         if (user != null) {
             String workspace = (String) taskInputParameters.get("workspace");
             if (workspace == null) {
                 workspace = (String) workflow.getVariables().get("workspace");
             }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), workspace, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
-                    JCRNodeWrapper n = session.getNode(user.getLocalPath());
+                    JCRNodeWrapper n = session.getNode(user.getPath());
                     JCRNodeWrapper tasks;
 
                     if (!n.hasNode("workflowTasks")) {

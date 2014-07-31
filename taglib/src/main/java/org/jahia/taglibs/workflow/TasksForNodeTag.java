@@ -124,14 +124,14 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                             for (WorkflowParticipation participation : participations) {
                                 JahiaPrincipal principal = participation.getJahiaPrincipal();
                                 if (principal instanceof JahiaGroup) {
-                                    JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroup(((JahiaGroup) principal).getGroupKey());
-                                    JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(getUser().getUserKey());
+                                    JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroupByPath(principal.getLocalPath());
+                                    JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(getUser().getLocalPath());
                                     if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
                                         tasks.add(workflowTask);
                                         break;
                                     }
                                 }
-                                if (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey())) {
+                                if (principal instanceof JahiaUser && principal.getLocalPath().equals(getUser().getLocalPath())) {
                                     tasks.add(workflowTask);
                                     break;
                                 }

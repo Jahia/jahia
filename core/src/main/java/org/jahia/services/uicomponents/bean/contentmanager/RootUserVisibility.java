@@ -91,7 +91,7 @@ public class RootUserVisibility extends Visibility {
     @Override
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale, HttpServletRequest request) {
         if (jahiaUser != null) {
-            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByKey(jahiaUser.getUserKey());
+            JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(jahiaUser.getLocalPath());
             if (userNode != null) {
                 return userNode.isRoot();
             }

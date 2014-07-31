@@ -1132,14 +1132,14 @@ public class LegacyImportHandler extends DefaultHandler {
                                     String ref = buf.substring(from, to);
                                     if (ref.startsWith("###/webdav")) {
                                         ref = StringUtils.substringAfter(ref, "###/webdav");
-                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");
+                                        buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
                                     } else if (ref.startsWith("###file:")) {
                                         ref = StringUtils.substringAfter(ref, "###file:");
                                         if (ref.indexOf('?') != -1) {
                                             ref = StringUtils.substringBefore(ref, "?");
                                         }
                                         ref = correctFilename(ref);
-                                        buf.replace(from, to, "##doc-context##/{mode}/##ref:link" + count + "##");
+                                        buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");
                                         buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html");

@@ -513,22 +513,18 @@ public class FileServlet extends HttpServlet {
                     // Hack for CK Editor links
                     workspace = Constants.EDIT_WORKSPACE;
                 }
-<<<<<<< .working
                 if (JCRContentUtils.isValidWorkspace(workspace)) {
                     if (path != null && path.contains("___")) {
                         path = Patterns.TRIPPLE_UNDERSCORE.matcher(path).replaceAll(":");
                     }
                 } else {
-=======
-                if (!JCRContentUtils.isValidWorkspace(workspace)) {
->>>>>>> .merge-right.r50315
                     // unknown workspace
                     workspace = null;
                 }
             }
         }
 
-        return path != null && workspace != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
+        return workspace != null && path != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
                 req.getParameter("v"), req.getParameter("l"), StringUtils.defaultIfEmpty(
                         req.getParameter("t"), StringUtils.EMPTY)) : null;
     }

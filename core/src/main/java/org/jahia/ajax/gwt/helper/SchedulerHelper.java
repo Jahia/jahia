@@ -310,6 +310,10 @@ public class SchedulerHelper {
                     totalCount += startedJob.size();
                 }
                 totalCount -= endedJob.size();
+                if(totalCount < 0) {
+                    //In case job is ended only and there is no active nor started job
+                    totalCount = 0;
+                }
                 final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
                 if (broadcasterFactory != null) {
                     Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);

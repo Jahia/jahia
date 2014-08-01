@@ -409,11 +409,13 @@ public class LanguageCodeConverters {
             availableBundleLocales.add(defaultLocale);
         }
         for (Locale locale : Locale.getAvailableLocales()) {
-            ResourceBundle res = ResourceBundle.getBundle(resourceBundleName,
-                    locale);
-            if (res != null && res.getLocale().equals(locale)
-                    && (defaultLocale == null || !locale.equals(defaultLocale))) {
-                availableBundleLocales.add(locale);
+            if(!StringUtils.isEmpty(locale.getDisplayName())) { // Avoid "default/system" empty locale
+                ResourceBundle res = ResourceBundle.getBundle(resourceBundleName,
+                        locale);
+                if (res != null && res.getLocale().equals(locale)
+                        && (defaultLocale == null || !locale.equals(defaultLocale))) {
+                    availableBundleLocales.add(locale);
+                }
             }
         }
 

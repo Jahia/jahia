@@ -52,7 +52,7 @@
         <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String)</function-signature>
         <example>
-            ${user:lookupUser('sergiy')} or ${user:lookupUser('{ldap}john')}
+            ${user:lookupUser('sergiy')} or ${user:lookupUser('/users/aa/bb/cc/john')}
         </example>
     </function>
     <function>

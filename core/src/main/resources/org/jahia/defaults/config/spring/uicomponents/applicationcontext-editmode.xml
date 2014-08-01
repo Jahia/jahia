@@ -191,7 +191,9 @@
                                     <ref bean="Toolbar.Item.ClearAllLocks"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Separator"/>
@@ -317,6 +319,7 @@
                                     <ref bean="Toolbar.Item.NewExternalLink"/>
                                     <ref bean="Toolbar.Item.NavMenuText"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
@@ -413,7 +416,9 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
@@ -440,7 +445,9 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
+                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>

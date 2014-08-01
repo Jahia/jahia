@@ -1359,8 +1359,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
-                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args) throws GWTJahiaServiceException {
-        workflow.startWorkflow(uuids, def, retrieveCurrentSession(), properties, comments, args);
+                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, String locale) throws GWTJahiaServiceException {
+        workflow.startWorkflow(uuids, def, retrieveCurrentSession(locale != null ? LanguageCodeConverters.languageCodeToLocale(locale) : getLocale()), properties, comments, args);
     }
 
     public void abortWorkflow(String processId, String provider) throws GWTJahiaServiceException {

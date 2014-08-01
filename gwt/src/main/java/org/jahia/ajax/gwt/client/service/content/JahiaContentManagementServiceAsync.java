@@ -372,7 +372,7 @@ public interface JahiaContentManagementServiceAsync {
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments, AsyncCallback async);
 
     void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
-                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, AsyncCallback async);
+                       List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, String locale, AsyncCallback async);
 
     void storePasswordForProvider(String providerKey, String username, String password, AsyncCallback async);
 

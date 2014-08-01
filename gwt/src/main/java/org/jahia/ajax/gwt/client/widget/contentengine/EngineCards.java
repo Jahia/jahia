@@ -238,6 +238,10 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         return components.get(i);
     }
 
+    public List<Component> getComponents() {
+        return components;
+    }
+
     public void closeAllEngines() {
         components.clear();
         headers.clear();

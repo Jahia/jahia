@@ -444,7 +444,7 @@ public interface JahiaContentManagementService extends RemoteService {
     void startWorkflow(String path, GWTJahiaWorkflowDefinition workflowDefinition, List<GWTJahiaNodeProperty> properties, List<String> comments) throws GWTJahiaServiceException;
 
     void startWorkflow(List<String> uuids, GWTJahiaWorkflowDefinition def,
-                              List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args) throws GWTJahiaServiceException;
+                       List<GWTJahiaNodeProperty> properties, List<String> comments, Map<String, Object> args, String locale) throws GWTJahiaServiceException;
 
     void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException;
 

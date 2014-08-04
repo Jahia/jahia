@@ -688,6 +688,9 @@ public class JahiaGroupManagerService extends JahiaService {
         return groupPathByGroupNameCache;
     }
 
+    public void updatePathCache(String groupname) {
+        groupPathByGroupNameCache.refresh(groupname);
+    }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
         @Override

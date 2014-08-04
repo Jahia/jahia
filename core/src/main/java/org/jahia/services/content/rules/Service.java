@@ -73,6 +73,7 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.drools.core.FactException;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -765,22 +766,28 @@ public class Service extends JahiaService {
         }
     }
 
-    public void flushGroupCaches() {
-        //groupManagerService.flushCache();
+    public void flushUserCache(NodeFact node) {
+        try {
+            userManagerService.updatePathCache(StringUtils.substringAfterLast(node.getPath(), "/"));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
-    public void flushGroupCaches(NodeFact node) {
+    public void flushGroupCache(NodeFact node) {
         try {
-            JCRNodeWrapper n = node.getParent().getNode();
-            if (n != null && n.isNodeType("jnt:members")) {
-                n = n.getParent();
-            }
-            if (n != null && n.getResolveSite() != null) {
-                if (node instanceof  AddedNodeFact) {
-                    groupManagerService.membershipAdded(node.getPath());
-                } else if (node instanceof DeletedNodeFact) {
-                    groupManagerService.membershipRemoved(node.getPath());
-                }
+            groupManagerService.updatePathCache(StringUtils.substringAfterLast(node.getPath(), "/"));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void flushGroupMembershipCache(NodeFact node) {
+        try {
+            if (node instanceof  AddedNodeFact) {
+                groupManagerService.membershipAdded(node.getPath());
+            } else if (node instanceof DeletedNodeFact) {
+                groupManagerService.membershipRemoved(node.getPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

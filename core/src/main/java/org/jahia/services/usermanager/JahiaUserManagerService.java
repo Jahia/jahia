@@ -731,6 +731,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return userPathByUserNameCache;
     }
 
+    public void updatePathCache(String username) {
+        userPathByUserNameCache.refresh(username);
+    }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
         @Override

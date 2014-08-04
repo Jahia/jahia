@@ -268,6 +268,19 @@ public class JahiaGWTParameters {
         return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
 
+    public static GWTJahiaLanguage getLanguage(String language) {
+        if (language != null) {
+            for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
+                if (jahiaLanguage.getLanguage().equals(language)) {
+                    return jahiaLanguage;
+                }
+            }
+        }
+        return null;
+    }
+
+
+
     /**
      * Return a list of mandatory languages defined on current site.
      * @return a list of mandatory languages defined on current site.

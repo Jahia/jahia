@@ -126,10 +126,9 @@ public class CustomWorkflowMenuActionItem extends BaseActionItem {
                         @Override
                         public void componentSelected(MenuEvent ce) {
                             EngineContainer container = new EnginePanel();
-                            EngineContainer cards = new EngineCards(container, linker);
                             new WorkflowActionDialog(singleSelection.getPath(),
-                                    value.getDisplayName(), value, linker, null, cards);
-                            cards.showEngine();
+                                    value.getDisplayName(), value, linker, null, container);
+                            container.showEngine();
                         }
                     });
                     menu.add(item);

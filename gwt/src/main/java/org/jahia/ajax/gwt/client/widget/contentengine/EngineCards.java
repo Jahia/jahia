@@ -87,10 +87,8 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
-import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
-import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -125,17 +123,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         actions.setRenderer(new GridCellRenderer() {
             @Override
             public Object render(final ModelData model, String property, ColumnData config, int rowIndex, int colIndex, ListStore store, Grid grid) {
-                ButtonBar bb = new ButtonBar();
-                final WorkflowActionDialog dialog = model.get("wfDialog");
-                CustomWorkflow customWorkflow = dialog.getCustomWorkflow();
-                if (customWorkflow instanceof PublicationWorkflow) {
-                    PublicationWorkflow publicationWorkflow = (PublicationWorkflow) customWorkflow;
-                    bb.add(publicationWorkflow.getStartWorkflowButton(dialog.getWfDefinition(), dialog));
-                    if (!publicationWorkflow.getPublicationInfos().isEmpty() && publicationWorkflow.getPublicationInfos().get(0).isAllowedToPublishWithoutWorkflow()) {
-                        bb.add(publicationWorkflow.getBypassWorkflowButton(dialog.getWfDefinition(), dialog));
-                    }
-                }
-                return bb;
+                return model.get("action");
             }
         });
         ColumnModel header = new ColumnModel(Arrays.asList(lang, title, actions));
@@ -176,12 +164,9 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         headers.add(header);
         BaseModelData data = new BaseModelData();
         data.set("header", header);
-        if (component instanceof WorkflowActionDialog) {
-            WorkflowActionDialog wfDialog = (WorkflowActionDialog) component;
-            if (language != null) {
-                data.set("lang", "<img src=\"" + language.getImage() + "\"/>&nbsp;");
-            }
-            data.set("wfDialog", wfDialog);
+        data.set("action", buttonsBar);
+        if (language != null) {
+            data.set("lang", "<img src=\"" + language.getImage() + "\"/>&nbsp;");
         }
         list.getStore().add(data);
         cardsContainer.add(component);
@@ -220,18 +205,12 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
 
         ((CardLayout) cardsContainer.getLayout()).setActiveItem(components.get(i));
         mainContainer.getPanel().setHeadingHtml(headers.get(i));
-        bar.removeAll();
-        List<Component> items = barItems.get(i);
-        for (Component component : items) {
-            bar.add(component);
-        }
-        for (Button globalButton : globalButtons) {
-            bar.insert(globalButton, bar.getItemCount() - 1);
-        }
     }
 
     public void addGlobalButton(Button button) {
-        globalButtons.add(button);
+        if (button != null) {
+            bar.add(button);
+        }
     }
 
     public Component getCurrentComponent() {

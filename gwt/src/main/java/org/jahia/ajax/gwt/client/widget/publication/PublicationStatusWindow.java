@@ -83,6 +83,7 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -106,12 +107,14 @@ public class PublicationStatusWindow extends LayoutContainer {
     protected Button cancel;
     protected boolean unpublish;
     protected EngineContainer container;
+    protected List<String> uuids;
 
     public PublicationStatusWindow(final Linker linker, final List<String> uuids, final List<GWTJahiaPublicationInfo> infos, final EngineContainer container, boolean unpublish) {
         setLayout(new FitLayout());
 
         this.linker = linker;
         this.unpublish = unpublish;
+        this.uuids = uuids;
         setScrollMode(Style.Scroll.NONE);
 
         TableData d = new TableData(Style.HorizontalAlignment.CENTER, Style.VerticalAlignment.MIDDLE);
@@ -129,16 +132,22 @@ public class PublicationStatusWindow extends LayoutContainer {
         ButtonBar bar = new ButtonBar();
         bar.setAlignment(Style.HorizontalAlignment.CENTER);
 
+        String language = null;
         if (uuids != null && infos != null && !infos.isEmpty() && infos.get(0).isAllowedToPublishWithoutWorkflow()) {
             noWorkflow = new Button(Messages.get("label.bypassWorkflow", "Bypass workflow"));
             noWorkflow.addSelectionListener(new ButtonEventSelectionListener(uuids));
+            language = infos.get(0).getWorkflowGroup().substring(0,infos.get(0).getWorkflowGroup().indexOf(" "));
             bar.add(noWorkflow);
         }
 
         bar.add(cancel);
 
         this.container = container;
-        container.setEngine(this, "Publish", bar, null, linker);
+        container.setEngine(this, "Publish", bar, JahiaGWTParameters.getLanguage(language), linker);
+    }
+
+    public List<String> getUuids() {
+        return uuids;
     }
 
     private class ButtonEventSelectionListener extends SelectionListener<ButtonEvent> {

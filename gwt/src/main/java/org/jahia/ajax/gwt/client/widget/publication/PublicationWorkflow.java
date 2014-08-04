@@ -132,6 +132,16 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     public void initStartWorkflowDialog(GWTJahiaWorkflowDefinition workflow, WorkflowActionDialog dialog) {
         initDialog(dialog);
+
+        dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
+        Button button = getBypassWorkflowButton(workflow, dialog);
+        if(button!=null) {
+            dialog.getButtonsBar().insert(button, 0);
+        }
+        button = getStartWorkflowButton(workflow, dialog);
+        if (button!=null) {
+            dialog.getButtonsBar().insert(button, 0);
+        }
     }
 
     public void initExecuteActionDialog(GWTJahiaWorkflow workflow, WorkflowActionDialog dialog) {
@@ -210,7 +220,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final HashMap<String, Object> map = new HashMap<String, Object>();
                 map.put("customWorkflowInfo", PublicationWorkflow.this);
 
-                String locale = publicationInfos.get(0).getWorkflowGroup().substring(0,publicationInfos.get(0).getWorkflowGroup().indexOf("/"));
+                String locale = publicationInfos.get(0).getWorkflowGroup().substring(0, publicationInfos.get(0).getWorkflowGroup().indexOf("/"));
 
                 JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
                         dialog.getComments(), map, locale, new BaseAsyncCallback() {
@@ -283,9 +293,13 @@ public class PublicationWorkflow implements CustomWorkflow {
     }
 
     public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos) {
+        return getAllUuids(publicationInfos, false);
+    }
+
+    public static List<String> getAllUuids(List<GWTJahiaPublicationInfo> publicationInfos, boolean onlyAllowedToPublishWithoutWorkflow) {
         List<String> l = new ArrayList<String>();
         for (GWTJahiaPublicationInfo info : publicationInfos) {
-            if (info.getStatus() != GWTJahiaPublicationInfo.DELETED) {
+            if (info.getStatus() != GWTJahiaPublicationInfo.DELETED && (!onlyAllowedToPublishWithoutWorkflow || info.isAllowedToPublishWithoutWorkflow())) {
                 if (info.getUuid() != null) {
                     l.add(info.getUuid());
                 }
@@ -315,85 +329,131 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
             }
         }
-
-        JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
-                new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
-                    public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> definitions) {
-                        if (definitions.size() > 0) {
-                            EngineContainer container;
-                            if (linker instanceof ManagerLinker) {
-                                container = new EngineWindow();
-                            } else {
-                                container = new EnginePanel();
-                            }
-                            final EngineCards cards = new EngineCards(container, linker);
-                            if (infosListByWorflowGroup.entrySet().isEmpty()) {
-                                new PublicationStatusWindow(linker, null, null, cards, unpublish);
-                            }
-                            for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
-                                final List<GWTJahiaPublicationInfo> infoList = entry.getValue();
-
-                                String workflowDefinition = infoList.get(0).getWorkflowDefinition();
-                                if (workflowDefinition != null) {
-                                    final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
-                                    new WorkflowActionDialog(infoList.get(0).getMainPath(), Messages.getWithArgs("label.workflow.start.message",
-                                            "{0} started by {1} on {2} - {3} content items involved",
-                                            new Object[]{definitions.get(workflowDefinition).getDisplayName(), JahiaGWTParameters.getCurrentUser(), DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()), infoList.size()})
-                                            , definitions.get(workflowDefinition),
-                                            linker, custom, cards, infoList.get(0).getLanguage()
-                                    );
-                                } else {
-                                    // No Workflow defined
-                                    new PublicationStatusWindow(linker, getAllUuids(infoList), infoList, cards, unpublish);
-                                }
-                            }
-                            cards.addGlobalButton(getStartWorkflowInAllLanguagesButton(cards, all, definitions, infosListByWorflowGroup));
-                            cards.addGlobalButton(getBypassInAllLanguagesButton(cards, all));
-                            cards.showEngine();
-                        } else {
-                            String s = unpublish ? Messages.get("label.publication.nothingToUnpublish", "Nothing to unPublish") : Messages.get("label.publication.nothingToPublish", "Nothing to publish");
-                            MessageBox.info(Messages.get("label.publish", "Publication"), s, null);
+        if (keys.size() >0) {
+            JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
+                    new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
+                        public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> definitions) {
+                            PublicationWorkflow.create(all, infosListByWorflowGroup, definitions, linker, unpublish);
                         }
                     }
-
-                }
-        );
+            );
+        } else {
+            create(all, infosListByWorflowGroup, new HashMap<String, GWTJahiaWorkflowDefinition>(), linker, unpublish);
+        }
     }
 
-    private static Button getBypassInAllLanguagesButton(final EngineCards cards, final List<GWTJahiaPublicationInfo> all) {
+    private static void create(List<GWTJahiaPublicationInfo> all, TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, Linker linker, boolean unpublish) {
+        EngineContainer container;
+        if (linker instanceof ManagerLinker) {
+            container = new EngineWindow();
+        } else {
+            container = new EnginePanel();
+        }
+        final EngineCards cards = new EngineCards(container, linker);
+        if (infosListByWorflowGroup.entrySet().isEmpty()) {
+            new PublicationStatusWindow(linker, null, null, cards, unpublish);
+        }
+        for (Map.Entry<String, List<GWTJahiaPublicationInfo>> entry : infosListByWorflowGroup.entrySet()) {
+            final List<GWTJahiaPublicationInfo> infoList = entry.getValue();
+
+            String workflowDefinition = infoList.get(0).getWorkflowDefinition();
+            if (workflowDefinition != null) {
+                final PublicationWorkflow custom = unpublish ? new UnpublicationWorkflow(infoList) : new PublicationWorkflow(infoList);
+                new WorkflowActionDialog(infoList.get(0).getMainPath(), Messages.getWithArgs("label.workflow.start.message",
+                        "{0} started by {1} on {2} - {3} content items involved",
+                        new Object[]{definitions.get(workflowDefinition).getDisplayName(), JahiaGWTParameters.getCurrentUser(), DateTimeFormat.getFormat(DateTimeFormat.PredefinedFormat.DATE_SHORT).format(new Date()), infoList.size()})
+                        , definitions.get(workflowDefinition),
+                        linker, custom, cards, infoList.get(0).getLanguage()
+                );
+            } else {
+                // No Workflow defined
+                new PublicationStatusWindow(linker, getAllUuids(infoList), infoList, cards, unpublish);
+            }
+        }
+        cards.addGlobalButton(getStartAllWorkflows(cards, linker));
+        cards.addGlobalButton(getBypassAllWorkflowsButton(cards, linker));
+        cards.addGlobalButton(new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+            public void componentSelected(ButtonEvent event) {
+                cards.closeAllEngines();
+            }
+        }));
+        cards.showEngine();
+    }
+
+    private static Button getBypassAllWorkflowsButton(final EngineCards cards, final Linker linker) {
+        boolean hasBypassAll = false;
+        for (Component component : cards.getComponents()) {
+            if (component instanceof WorkflowActionDialog) {
+                final List<GWTJahiaPublicationInfo> thisWFInfo = ((PublicationWorkflow) ((WorkflowActionDialog) component).getCustomWorkflow()).getPublicationInfos();
+                if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
+                    hasBypassAll = true;
+                    break;
+                }
+            } else if (component instanceof PublicationStatusWindow) {
+                hasBypassAll = true;
+                break;
+            }
+        }
+        if (!hasBypassAll) {
+            return null;
+        }
+
         final Button button = new Button(Messages.get("label.bypassWorkflow.all", "Bypass all workflows"));
+
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                WorkflowActionDialog dialog = (WorkflowActionDialog) cards.getCurrentComponent();
-                dialog.disableButtons();
-                button.disable();
-                List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                if (dialog.getPropertiesEditor() != null) {
-                    nodeProperties = dialog.getPropertiesEditor().getProperties();
-                }
                 final String status = Messages.get("label.publication.task", "Publishing content");
                 Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
-                BaseAsyncCallback callback = new BaseAsyncCallback() {
-                    public void onApplicationFailure(Throwable caught) {
-                        WorkInProgressActionItem.removeStatus(status);
-                        Info.display("Cannot publish", "Cannot publish");
-                        Window.alert("Cannot publish " + caught.getMessage());
-                    }
 
-                    public void onSuccess(Object result) {
-                        WorkInProgressActionItem.removeStatus(status);
-                        cards.closeAllEngines();
+                final HashMap<String, Object> refreshData = new HashMap<String, Object>();
+                refreshData.put(Linker.REFRESH_ALL, true);
+
+                final List<Component> components = new ArrayList<Component>(cards.getComponents());
+                final int[] nbWF = {components.size()};
+                for (Component component : components) {
+                    if (component instanceof WorkflowActionDialog) {
+                        final WorkflowActionDialog dialog = (WorkflowActionDialog) component;
+                        dialog.disableButtons();
+                        List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
+                        if (!fillDialogProperties(dialog, nodeProperties)) {
+                            return;
+                        }
+                        dialog.getContainer().closeEngine();
+                        final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
+                        final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
+                        if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
+                            JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
+                                    getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"), "Cannot publish", status, linker, refreshData));
+                        } else {
+                             close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), refreshData);
+                        }
+                    } else if (component instanceof PublicationStatusWindow) {
+                        final PublicationStatusWindow dialog = (PublicationStatusWindow) component;
+                        JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
+                                getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"), "Cannot publish", status, linker, refreshData));
+                    } else {
+                        close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
                     }
-                };
-                JahiaContentManagementService.App.getInstance().publish(getAllUuids(all), nodeProperties, null, callback);
+                }
+
             }
         });
         return button;
     }
 
-    private static Button getStartWorkflowInAllLanguagesButton(final EngineCards cards, final List<GWTJahiaPublicationInfo> all, final Map<String, GWTJahiaWorkflowDefinition> definitions, final TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup) {
+    private static Button getStartAllWorkflows(final EngineCards cards, final Linker linker) {
+        boolean hasWorkflow = false;
+        for (Component component : cards.getComponents()) {
+            if (component instanceof WorkflowActionDialog) {
+                hasWorkflow = true;
+                break;
+            }
+        }
+        if (!hasWorkflow) {
+            return null;
+        }
 
         final Button button = new Button(Messages.get("label.workflow.start.all", "Start all workflows"));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -408,64 +468,76 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final List<Component> components = new ArrayList<Component>(cards.getComponents());
                 final int[] nbWF = {components.size()};
 
+                final HashMap<String, Object> refreshData = new HashMap<String, Object>();
+                refreshData.put(Linker.REFRESH_MAIN, true);
+                refreshData.put("event", "workflowStarted");
+
                 for (Component component : components) {
-                    final WorkflowActionDialog dialog = (WorkflowActionDialog) component;
-                    dialog.disableButtons();
-
-                    List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
-                    PropertiesEditor propertiesEditor = dialog.getPropertiesEditor();
-                    if (propertiesEditor != null) {
-                        for (PropertiesEditor.PropertyAdapterField adapterField : propertiesEditor.getFieldsMap().values()) {
-                            Field<?> field = adapterField.getField();
-                            if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet) adapterField.getParent()).isExpanded()) {
-                                final String error = Messages.get("label.workflow.form.error", "Your form is not valid");
-                                Info.display(error, error);
-                                dialog.enableButtons();
-                                continue;
-                            }
+                    if (component instanceof WorkflowActionDialog) {
+                        final WorkflowActionDialog dialog = (WorkflowActionDialog) component;
+                        dialog.disableButtons();
+                        List<GWTJahiaNodeProperty> nodeProperties = new ArrayList<GWTJahiaNodeProperty>();
+                        if (!fillDialogProperties(dialog, nodeProperties)) {
+                            return;
                         }
-                        nodeProperties = propertiesEditor.getProperties();
+                        dialog.getContainer().closeEngine();
+                        final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
+                        final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
+
+                        final HashMap<String, Object> map = new HashMap<String, Object>();
+                        map.put("customWorkflowInfo", customWorkflow);
+                        String locale = thisWFInfo.get(0).getWorkflowGroup().substring(0, thisWFInfo.get(0).getWorkflowGroup().indexOf("/"));
+                        JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
+                                dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
+                        );
+                    } else {
+                        close(cards,nbWF,  Messages.get("label.workflow.start", "Start Workflow"),status,linker, refreshData);
                     }
-
-                    dialog.getContainer().closeEngine();
-
-                    final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
-                    final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
-
-                    all.removeAll(thisWFInfo);
-
-                    final HashMap<String, Object> map = new HashMap<String, Object>();
-                    map.put("customWorkflowInfo", customWorkflow);
-
-                    String locale = thisWFInfo.get(0).getWorkflowGroup().substring(0,thisWFInfo.get(0).getWorkflowGroup().indexOf("/"));
-
-                    JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
-                            dialog.getComments(), map, locale, new BaseAsyncCallback() {
-                                public void onApplicationFailure(Throwable caught) {
-                                    WorkInProgressActionItem.removeStatus(status);
-                                    Log.error(Messages.get("label.workflow.cannotStart", "Cannot start workflow"), caught);
-                                    com.google.gwt.user.client.Window.alert(Messages.get("label.workflow.cannotStart", "Cannot start workflow") + caught.getMessage());
-                                }
-
-                                public void onSuccess(Object result) {
-                                    Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
-                                            "message.workflow.started", "Workflow started"));
-                                    Map<String, Object> data = new HashMap<String, Object>();
-                                    data.put(Linker.REFRESH_MAIN, true);
-                                    data.put("event", "workflowStarted");
-                                    nbWF[0]--;
-                                    if (nbWF[0] == 0) {
-                                        WorkInProgressActionItem.removeStatus(status);
-                                        dialog.getLinker().refresh(data);
-                                        cards.closeAllEngines();
-                                    }
-                                }
-                            }
-                    );
                 }
             }
         });
         return button;
+    }
+
+    private static BaseAsyncCallback getCallback(final EngineCards cards, final int[] nbWF, final String successMessage, final String errorMessage, final String statusMessage, final Linker linker, final HashMap<String, Object> refreshData) {
+        return new BaseAsyncCallback() {
+            public void onApplicationFailure(Throwable caught) {
+                close(cards, nbWF, errorMessage, statusMessage, linker, refreshData);
+                Log.error(errorMessage, caught);
+                Window.alert(errorMessage+ caught.getMessage());
+            }
+
+            public void onSuccess(Object result) {
+                close(cards, nbWF, successMessage, statusMessage, linker, refreshData);
+            }
+        };
+    }
+
+    private static void close(EngineCards cards, int[] nbWF, String message, String statusMessage, Linker linker, Map<String, Object> refreshData) {
+        nbWF[0]--;
+        if (nbWF[0] == 0) {
+            Info.display(message, message);
+            WorkInProgressActionItem.removeStatus(statusMessage);
+            linker.refresh(refreshData);
+            cards.closeAllEngines();
+        }
+    }
+
+    private static boolean fillDialogProperties(WorkflowActionDialog dialog, List<GWTJahiaNodeProperty> nodeProperties) {
+        PropertiesEditor propertiesEditor = dialog.getPropertiesEditor();
+        if (propertiesEditor != null) {
+            for (PropertiesEditor.PropertyAdapterField adapterField : propertiesEditor.getFieldsMap().values()) {
+                Field<?> field = adapterField.getField();
+                if (field.isEnabled() && !field.isReadOnly() && !field.validate() && ((FieldSet) adapterField.getParent()).isExpanded()) {
+                    final String error = Messages.get("label.workflow.form.error", "Your form is not valid");
+                    Info.display(error, error);
+                    dialog.enableButtons();
+                    return false;
+                }
+            }
+            nodeProperties.addAll(propertiesEditor.getProperties());
+        }
+        return true;
     }
 
     public List<GWTJahiaPublicationInfo> getPublicationInfos() {

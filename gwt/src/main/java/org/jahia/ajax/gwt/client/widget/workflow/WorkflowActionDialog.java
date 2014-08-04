@@ -153,7 +153,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
-
+        initStartWorkflowDialog(wfDefinition);
         if (custom != null) {
             custom.initStartWorkflowDialog(wfDefinition, this);
         }
@@ -176,31 +176,21 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem();
 
         this.container = container;
-        GWTJahiaLanguage lang = null;
-        if (language != null) {
-            for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
-                if (jahiaLanguage.getLanguage().equals(language)) {
-                    lang = jahiaLanguage;
-                }
-            }
-        }
         initTabs(wfDefinition.getFormResourceName(), language);
 
-        container.setEngine(this, this.title, buttonsBar, lang, this.linker);
+        container.setEngine(this, this.title, buttonsBar, JahiaGWTParameters.getLanguage(language), this.linker);
         addCancelButton(container);
     }
 
     private void addCancelButton(final EngineContainer container) {
-        Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
-            public void componentSelected(ButtonEvent event) {
-                if (container instanceof EngineCards) {
-                    ((EngineCards) container).closeAllEngines();
-                } else {
+        if (! (container instanceof EngineCards)) {
+            Button cancel = new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
+                public void componentSelected(ButtonEvent event) {
                     container.closeEngine();
                 }
-            }
-        });
-        buttonsBar.add(cancel);
+            });
+            buttonsBar.add(cancel);
+        }
     }
 
     public EngineContainer getContainer() {

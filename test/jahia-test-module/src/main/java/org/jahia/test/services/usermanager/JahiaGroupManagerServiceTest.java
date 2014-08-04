@@ -103,9 +103,9 @@ public class JahiaGroupManagerServiceTest {
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
-        userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
+        userManager = JahiaUserManagerService.getInstance();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
-        groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
+        groupManager = JahiaGroupManagerService.getInstance();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
@@ -170,9 +170,9 @@ public class JahiaGroupManagerServiceTest {
 
         JCRSessionFactory.getInstance().closeAllSessions();
 
-        group1 = groupManager.lookupGroupByPath("test-group1:0");
+        group1 = groupManager.lookupGroupByPath("/groups/test-group1");
         assertNull("Group 1 should have been deleted but is still available !", group1);
-        group2 = groupManager.lookupGroupByPath("test-group2:0");
+        group2 = groupManager.lookupGroupByPath("/groups/test-group2");
         assertNull("Group 1 should have been deleted but is still available !", group2);
 
     }
@@ -192,14 +192,15 @@ public class JahiaGroupManagerServiceTest {
                 user1.isMemberOfGroup(null, "test-group2"));
         List<String> user1GroupMembership = groupManager.getMembershipByPath(user1.getPath());
         assertTrue("User 1 should be a transitive member of group2, as group1 is a member of group 2",
-                user1GroupMembership.contains("test-group2:0"));
+                user1GroupMembership.contains("/groups/test-group2"));
 
         group1.removeMember(user1);
+        session.save();
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
                 user1.isMemberOfGroup(null, "test-group2"));
         user1GroupMembership = groupManager.getMembershipByPath(user1.getPath());
         assertFalse("User 1 should no longer be a transitive member of group2, as we have just removed it.",
-                user1GroupMembership.contains("test-group2:0"));
+                user1GroupMembership.contains("/groups/test-group2"));
 
         groupManager.deleteGroup(group2.getPath(), session);
         groupManager.deleteGroup(group1.getPath(), session);
@@ -217,7 +218,7 @@ public class JahiaGroupManagerServiceTest {
         JCRGroupNode user1Group = groupManager.createGroup(null, "test-user1", new Properties(), false, session);
         group1.addMember(user1Group);
         session.save();
-        group1 = groupManager.lookupGroupByPath("test-group1:0");
+        group1 = groupManager.lookupGroupByPath("/groups/test-group1");
         Collection<JCRNodeWrapper> members = group1.getMembers();
 
         assertTrue("Test group 1 should contain user called 'test-user1'", members.contains(user1));

@@ -71,8 +71,12 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.services.content.*;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.content.JCRNodeIteratorWrapper;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -176,19 +180,24 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     public void addMember(JCRNodeWrapper principal) {
         try {
-           if(principal.isNodeType("jnt:user") || principal.isNodeType("jnt:group")) {
-               String[] parts = principal.getPath().split("/");
-               JCRNodeWrapper member = getNode("j:members");
-               for (int i = 1; i < parts.length - 1; i++) {
-                   if (member.hasNode(parts[i])) {
-                       member = member.getNode(parts[i]);
-                   } else{
-                       member = member.addNode(parts[i], "jnt:members");
-                   }
-               }
-               member = member.addNode(parts[parts.length - 1], "jnt:member");
-               member.setProperty("j:member", principal.getIdentifier());
-           }
+            if (principal.isNodeType("jnt:user") || principal.isNodeType("jnt:group")) {
+                String[] parts = principal.getPath().split("/");
+                JCRNodeWrapper member;
+                if (hasNode("j:members")) {
+                    member = getNode("j:members");
+                } else {
+                    member = addNode("j:members", "jnt:members");
+                }
+                for (int i = 1; i < parts.length - 1; i++) {
+                    if (member.hasNode(parts[i])) {
+                        member = member.getNode(parts[i]);
+                    } else {
+                        member = member.addNode(parts[i], "jnt:members");
+                    }
+                }
+                member = member.addNode(parts[parts.length - 1], "jnt:member");
+                member.setProperty("j:member", principal.getIdentifier());
+            }
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }

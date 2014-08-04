@@ -793,11 +793,7 @@ public class Service extends JahiaService {
 
     public void flushGroupMembershipCache(NodeFact node) {
         try {
-            if (node instanceof  AddedNodeFact) {
-                groupManagerService.membershipAdded(node.getPath());
-            } else if (node instanceof DeletedNodeFact) {
-                groupManagerService.membershipRemoved(node.getPath());
-            }
+            groupManagerService.flushMembershipCache(node.getPath());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

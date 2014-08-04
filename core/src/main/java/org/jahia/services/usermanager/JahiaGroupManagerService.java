@@ -634,18 +634,10 @@ public class JahiaGroupManagerService extends JahiaService {
         return usernameCorrect;
     }
 
-    public void membershipAdded(String memberPath) {
-        flushMembershipCache(memberPath);
-    }
-
-    public void membershipRemoved(String memberPath) {
-        flushMembershipCache(memberPath);
-    }
-
-    private void flushMembershipCache(String memberPath) {
+    public void flushMembershipCache(String memberPath) {
         final String key = StringUtils.substringAfter(memberPath, "/j:members/");
         if (key.contains("/")) {
-            getMembershipCache().remove(key);
+            getMembershipCache().refresh("/"+key);
         } else {
             getMembershipCache().removeAll();
         }

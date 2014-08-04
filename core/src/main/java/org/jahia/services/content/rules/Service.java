@@ -776,7 +776,16 @@ public class Service extends JahiaService {
 
     public void flushGroupCache(NodeFact node) {
         try {
-            groupManagerService.updatePathCache(StringUtils.substringAfterLast(node.getPath(), "/"));
+            JCRSiteNode site = null;
+            if (node instanceof  AddedNodeFact) {
+                site = ((AddedNodeFact) node).getNode().getResolveSite();
+            } else if (node instanceof DeletedNodeFact) {
+                site = ((DeletedNodeFact) node).getParent().getNode().getResolveSite();
+            }
+            if (site != null) {
+                String groupName = StringUtils.substringAfterLast(node.getPath(), "/");
+                groupManagerService.updatePathCache(site.getSiteKey(), groupName);
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

@@ -688,8 +688,8 @@ public class JahiaGroupManagerService extends JahiaService {
         return groupPathByGroupNameCache;
     }
 
-    public void updatePathCache(String groupname) {
-        groupPathByGroupNameCache.refresh(groupname);
+    public void updatePathCache(String siteKey, String groupName) {
+        getGroupPathByGroupNameCache().refresh(new GroupPathByGroupNameCacheKey(siteKey, groupName));
     }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {

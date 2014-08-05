@@ -75,7 +75,13 @@ import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
+<<<<<<< .working
 import com.google.gwt.user.client.Window;
+=======
+import com.extjs.gxt.ui.client.widget.Text;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.HorizontalPanel;
+>>>>>>> .merge-right.r50361
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -215,6 +221,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     linker.loaded();
                     callback(result);
                 }
+<<<<<<< .working
             };
             if (!allLanguages) {
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
@@ -227,6 +234,20 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, languages, asyncCallback);
             }
+=======
+            };
+            if(!allLanguages) {
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
+            } else {
+                Set<String> languages = new HashSet<String>();
+                for (GWTJahiaLanguage gwtJahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
+                    if(gwtJahiaLanguage.isActive()) {
+                        languages.add(gwtJahiaLanguage.getLanguage());
+                    }
+                }
+                JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, languages, asyncCallback);
+            }
+>>>>>>> .merge-right.r50361
         }
     }
 

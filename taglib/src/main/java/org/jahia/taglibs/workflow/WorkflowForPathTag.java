@@ -97,15 +97,21 @@ public class WorkflowForPathTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
-        WorkflowService service = WorkflowService.getInstance();
-        List<HistoryWorkflow> history = service.getHistoryWorkflowsByPath(path, locale != null ? locale : getUILocale());
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
+            WorkflowService service = WorkflowService.getInstance();
+            List<HistoryWorkflow> history = service.getHistoryWorkflowsByPath(path, locale != null ? locale : getUILocale());
 
-        pageContext.setAttribute(var, history, scope);
-        var = null;
-        path = null;
-        scope = PageContext.PAGE_SCOPE;
+            pageContext.setAttribute(var, history, scope);
+            var = null;
+            path = null;
+            scope = PageContext.PAGE_SCOPE;
 
-        return super.doEndTag();
+            return super.doEndTag();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 
     public void setPath(String path) {

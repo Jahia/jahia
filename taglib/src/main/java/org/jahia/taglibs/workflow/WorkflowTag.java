@@ -71,15 +71,14 @@
  */
 package org.jahia.taglibs.workflow;
 
-import java.util.Locale;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import java.util.Locale;
 
 /**
  * User: toto
@@ -112,14 +111,20 @@ public class WorkflowTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
-        Workflow workflow = WorkflowService.getInstance().getWorkflow(provider, id, locale != null ? locale : getUILocale() );
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
+            Workflow workflow = WorkflowService.getInstance().getWorkflow(provider, id, locale != null ? locale : getUILocale());
 
-        pageContext.setAttribute(var, workflow, scope);
+            pageContext.setAttribute(var, workflow, scope);
 
-        id = null;
-        var = null;
-        scope = PageContext.PAGE_SCOPE;
-        return super.doEndTag();
+            id = null;
+            var = null;
+            scope = PageContext.PAGE_SCOPE;
+            return super.doEndTag();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 
     public void setLocale(Locale locale) {

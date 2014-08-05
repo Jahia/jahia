@@ -97,18 +97,25 @@ public class WorkflowHistoryTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
-        WorkflowService service = WorkflowService.getInstance();
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
 
-        List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(workflowId,
-                workflowProvider, locale != null ? locale : getUILocale());
+            WorkflowService service = WorkflowService.getInstance();
 
-        pageContext.setAttribute(var, tasks, scope);
-        var = null;
-        workflowId = null;
-        workflowProvider = null;
-        scope = PageContext.PAGE_SCOPE;
+            List<HistoryWorkflowTask> tasks = service.getHistoryWorkflowTasks(workflowId,
+                    workflowProvider, locale != null ? locale : getUILocale());
 
-        return super.doEndTag();
+            pageContext.setAttribute(var, tasks, scope);
+            var = null;
+            workflowId = null;
+            workflowProvider = null;
+            scope = PageContext.PAGE_SCOPE;
+
+            return super.doEndTag();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 
     public void setVar(String var) {

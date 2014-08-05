@@ -87,11 +87,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * 
  * User: toto
  * Date: Mar 17, 2010
  * Time: 8:02:06 PM
- * 
  */
 public class TasksForNodeTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -8866901816731959175L;
@@ -104,60 +102,66 @@ public class TasksForNodeTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
-        List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
-        if (node != null) {
-            Locale uiLocale = getUILocale();
-            List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
-            if(logger.isDebugEnabled()){
-                if(actives.isEmpty()){
-                    logger.debug("Could not find any active workflow for node : " +node.getPath());
-                } else {
-                    logger.debug("We have found "+actives.size()+" active workflow(s) for node : " +node.getPath());
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
+            List<WorkflowTask> tasks = new ArrayList<WorkflowTask>();
+            if (node != null) {
+                Locale uiLocale = getUILocale();
+                List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
+                if (logger.isDebugEnabled()) {
+                    if (actives.isEmpty()) {
+                        logger.debug("Could not find any active workflow for node : " + node.getPath());
+                    } else {
+                        logger.debug("We have found " + actives.size() + " active workflow(s) for node : " + node.getPath());
+                    }
                 }
-            }
-            for (Workflow workflow : actives) {
-                for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
-                    if (workflowAction instanceof WorkflowTask) {
-                        WorkflowTask workflowTask = (WorkflowTask) workflowAction;
-                        List<WorkflowParticipation> participations = workflowTask.getParticipations();
-                        if (participations != null) {
-                            for (WorkflowParticipation participation : participations) {
-                                JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
-                                    (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey()))) {
-                                    tasks.add(workflowTask);
-                                    break;
+                for (Workflow workflow : actives) {
+                    for (WorkflowAction workflowAction : workflow.getAvailableActions()) {
+                        if (workflowAction instanceof WorkflowTask) {
+                            WorkflowTask workflowTask = (WorkflowTask) workflowAction;
+                            List<WorkflowParticipation> participations = workflowTask.getParticipations();
+                            if (participations != null) {
+                                for (WorkflowParticipation participation : participations) {
+                                    JahiaPrincipal principal = participation.getJahiaPrincipal();
+                                    if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
+                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey()))) {
+                                        tasks.add(workflowTask);
+                                        break;
+                                    }
                                 }
+                            } else {
+                                logger.error("There is no possible participants for workflow task id " + workflowTask.getId() + " (" + workflowTask.getDescription() + ")");
                             }
-                        } else {
-                            logger.error("There is no possible participants for workflow task id "+workflowTask.getId()+" ("+workflowTask.getDescription()+")");
                         }
                     }
                 }
-            }
-            if(logger.isDebugEnabled()){
-                if(tasks.isEmpty()){
-                    logger.debug("Could not find any tasks for user "+getUser().getUsername()+" on node : " +node.getPath());
-                } else {
-                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getUsername()+" on node : " +node.getPath());
+                if (logger.isDebugEnabled()) {
+                    if (tasks.isEmpty()) {
+                        logger.debug("Could not find any tasks for user " + getUser().getUsername() + " on node : " + node.getPath());
+                    } else {
+                        logger.debug("We have found " + tasks.size() + " tasks to do for user " + getUser().getUsername() + " on node : " + node.getPath());
+                    }
+                }
+            } else if (user != null) {
+                tasks = WorkflowService.getInstance().getTasksForUser(user, locale != null ? locale : getUILocale());
+                if (logger.isDebugEnabled()) {
+                    if (tasks.isEmpty()) {
+                        logger.debug("Could not find any tasks for user " + getUser().getUsername());
+                    } else {
+                        logger.debug("We have found " + tasks.size() + " tasks to do for user " + getUser().getUsername());
+                    }
                 }
             }
-        } else if (user != null) {
-            tasks = WorkflowService.getInstance().getTasksForUser(user, locale != null ? locale : getUILocale());
-            if(logger.isDebugEnabled()){
-                if(tasks.isEmpty()){
-                    logger.debug("Could not find any tasks for user "+getUser().getUsername());
-                } else {
-                    logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getUsername());
-                }
-            }
-        }
 
-        pageContext.setAttribute(var, tasks, scope);
-        node = null;
-        var = null;
-        scope = PageContext.PAGE_SCOPE;
-        return super.doEndTag();
+            pageContext.setAttribute(var, tasks, scope);
+            node = null;
+            var = null;
+            scope = PageContext.PAGE_SCOPE;
+            return super.doEndTag();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 
     public void setNode(JCRNodeWrapper node) {

@@ -81,6 +81,12 @@ import org.jahia.services.workflow.WorkflowService;
 public class WorkflowFunctions {
 
     public static boolean hasActivePublicationWorkflow(JCRNodeWrapper node) {
-        return WorkflowService.getInstance().hasActiveWorkflowForType(node, "publish");
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
+            return WorkflowService.getInstance().hasActiveWorkflowForType(node, "publish");
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 }

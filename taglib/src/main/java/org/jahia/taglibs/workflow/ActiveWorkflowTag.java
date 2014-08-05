@@ -73,7 +73,8 @@ package org.jahia.taglibs.workflow;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.workflow.*;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
@@ -82,11 +83,9 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * 
  * User: david
  * Date: May 14, 2010
  * Time: 3:13:55 PM
- * 
  */
 public class ActiveWorkflowTag extends AbstractJahiaTag {
 
@@ -97,13 +96,19 @@ public class ActiveWorkflowTag extends AbstractJahiaTag {
     private Locale locale;
 
     public int doEndTag() throws JspException {
-        Locale uiLocale = getUILocale();
-        List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
-        pageContext.setAttribute(var, wfs, scope);
-        node = null;
-        var = null;
-        scope = PageContext.PAGE_SCOPE;
-        return super.doEndTag();
+        final ClassLoader loader = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(WorkflowService.class.getClassLoader());
+            Locale uiLocale = getUILocale();
+            List<Workflow> wfs = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
+            pageContext.setAttribute(var, wfs, scope);
+            node = null;
+            var = null;
+            scope = PageContext.PAGE_SCOPE;
+            return super.doEndTag();
+        } finally {
+            Thread.currentThread().setContextClassLoader(loader);
+        }
     }
 
     public void setNode(JCRNodeWrapper node) {

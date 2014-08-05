@@ -637,7 +637,7 @@ public class JahiaGroupManagerService extends JahiaService {
     public void flushMembershipCache(String memberPath) {
         final String key = StringUtils.substringAfter(memberPath, "/j:members/");
         if (key.contains("/")) {
-            getMembershipCache().refresh("/"+key);
+            getMembershipCache().refresh("/" + key);
         } else {
             getMembershipCache().removeAll();
         }
@@ -680,8 +680,21 @@ public class JahiaGroupManagerService extends JahiaService {
         return groupPathByGroupNameCache;
     }
 
-    public void updatePathCache(String siteKey, String groupName) {
-        getGroupPathByGroupNameCache().refresh(new GroupPathByGroupNameCacheKey(siteKey, groupName));
+    public void updatePathCacheAdded(String groupPath) {
+        getGroupPathByGroupNameCache().put(new Element(getPathCacheKey(groupPath), groupPath));
+    }
+
+    public void updatePathCacheRemoved(String groupPath) {
+        getGroupPathByGroupNameCache().put(new Element(getPathCacheKey(groupPath), "", 0, userManagerService.getTimeToLiveForEmptyPath()));
+    }
+
+    private GroupPathByGroupNameCacheKey getPathCacheKey(String groupPath) {
+        String groupName = StringUtils.substringAfterLast(groupPath, "/");
+        String siteKey = null;
+        if (groupPath.startsWith("/sites/")) {
+            siteKey = StringUtils.substringBefore(StringUtils.removeStart(groupPath, "/sites/"), "/");
+        }
+        return new GroupPathByGroupNameCacheKey(siteKey, groupName);
     }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {

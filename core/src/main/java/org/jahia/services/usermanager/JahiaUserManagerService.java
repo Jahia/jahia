@@ -731,8 +731,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return userPathByUserNameCache;
     }
 
-    public void updatePathCache(String username) {
-        getUserPathByUserNameCache().refresh(username);
+    public void updatePathCacheAdded(String userPath) {
+        getUserPathByUserNameCache().put(new Element(StringUtils.substringAfterLast(userPath, "/"), userPath));
+    }
+
+    public void updatePathCacheRemoved(String userPath) {
+        getUserPathByUserNameCache().put(new Element(StringUtils.substringAfterLast(userPath, "/"), "", 0, timeToLiveForEmptyPath));
     }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {

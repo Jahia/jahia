@@ -768,7 +768,11 @@ public class Service extends JahiaService {
 
     public void flushUserCache(NodeFact node) {
         try {
-            userManagerService.updatePathCache(StringUtils.substringAfterLast(node.getPath(), "/"));
+            if (node instanceof AddedNodeFact) {
+                userManagerService.updatePathCacheAdded(node.getPath());
+            } else if (node instanceof DeletedNodeFact) {
+                userManagerService.updatePathCacheRemoved(node.getPath());
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -776,15 +780,10 @@ public class Service extends JahiaService {
 
     public void flushGroupCache(NodeFact node) {
         try {
-            JCRSiteNode site = null;
-            if (node instanceof  AddedNodeFact) {
-                site = ((AddedNodeFact) node).getNode().getResolveSite();
+            if (node instanceof AddedNodeFact) {
+                groupManagerService.updatePathCacheAdded(node.getPath());
             } else if (node instanceof DeletedNodeFact) {
-                site = ((DeletedNodeFact) node).getParent().getNode().getResolveSite();
-            }
-            if (site != null) {
-                String groupName = StringUtils.substringAfterLast(node.getPath(), "/");
-                groupManagerService.updatePathCache(site.getSiteKey(), groupName);
+                groupManagerService.updatePathCacheRemoved(node.getPath());
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

@@ -124,7 +124,7 @@ public class RolesTabItem extends EditEngineTabItem {
                 node = engine.getTargetNode();
             }
 
-            rolesEditor = new AclEditor(engine.getAcl(), node.getAclContext(), roles, roleGroups, rolesEditors);
+            rolesEditor = new AclEditor(engine.getAcl(), node.getSiteKey(), roles, roleGroups, rolesEditors);
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
             rolesEditor.setAutoAddRole(autoAddRole);
 

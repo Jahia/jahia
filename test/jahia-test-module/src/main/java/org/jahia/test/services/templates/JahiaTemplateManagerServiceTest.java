@@ -74,17 +74,15 @@ package org.jahia.test.services.templates;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 import org.junit.*;
@@ -92,7 +90,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
 import java.util.*;
@@ -124,13 +121,17 @@ public class JahiaTemplateManagerServiceTest {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-        JahiaUser user = userManager.createUser("user1", "password", new Properties());
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRUserNode user = userManager.createUser("user1", "password", new Properties(), session);
+
+        session.save();
 
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
         if (site != null) {
-            JahiaGroup group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
+            JCRGroupNode group = groupManager.lookupGroup(site.getSiteKey(), "site-privileged");
             group.addMember(user);
+            group.getSession().save();
         }
     }
 

@@ -73,9 +73,9 @@ package org.jahia.taglibs.workflow;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.*;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
@@ -87,9 +87,11 @@ import java.util.List;
 import java.util.Locale;
 
 /**
+ *
  * User: toto
  * Date: Mar 17, 2010
  * Time: 8:02:06 PM
+ *
  */
 public class TasksForNodeTag extends AbstractJahiaTag {
     private static final long serialVersionUID = -8866901816731959175L;
@@ -109,11 +111,11 @@ public class TasksForNodeTag extends AbstractJahiaTag {
             if (node != null) {
                 Locale uiLocale = getUILocale();
                 List<Workflow> actives = WorkflowService.getInstance().getActiveWorkflows(node, locale != null ? locale : uiLocale, uiLocale);
-                if (logger.isDebugEnabled()) {
-                    if (actives.isEmpty()) {
-                        logger.debug("Could not find any active workflow for node : " + node.getPath());
+                if(logger.isDebugEnabled()){
+                    if(actives.isEmpty()){
+                        logger.debug("Could not find any active workflow for node : " +node.getPath());
                     } else {
-                        logger.debug("We have found " + actives.size() + " active workflow(s) for node : " + node.getPath());
+                        logger.debug("We have found "+actives.size()+" active workflow(s) for node : " +node.getPath());
                     }
                 }
                 for (Workflow workflow : actives) {
@@ -124,32 +126,39 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                    if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(getUser())) ||
-                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(getUser().getUserKey()))) {
+                                    if (principal instanceof JahiaGroup) {
+                                        JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroupByPath(principal.getLocalPath());
+                                        JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(getUser().getLocalPath());
+                                        if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
+                                            tasks.add(workflowTask);
+                                            break;
+                                        }
+                                    }
+                                    if (principal instanceof JahiaUser && principal.getLocalPath().equals(getUser().getLocalPath())) {
                                         tasks.add(workflowTask);
                                         break;
                                     }
                                 }
                             } else {
-                                logger.error("There is no possible participants for workflow task id " + workflowTask.getId() + " (" + workflowTask.getDescription() + ")");
+                                logger.error("There is no possible participants for workflow task id "+workflowTask.getId()+" ("+workflowTask.getDescription()+")");
                             }
                         }
                     }
                 }
-                if (logger.isDebugEnabled()) {
-                    if (tasks.isEmpty()) {
-                        logger.debug("Could not find any tasks for user " + getUser().getUsername() + " on node : " + node.getPath());
+                if(logger.isDebugEnabled()){
+                    if(tasks.isEmpty()){
+                        logger.debug("Could not find any tasks for user "+getUser().getName()+" on node : " +node.getPath());
                     } else {
-                        logger.debug("We have found " + tasks.size() + " tasks to do for user " + getUser().getUsername() + " on node : " + node.getPath());
+                        logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getName()+" on node : " +node.getPath());
                     }
                 }
             } else if (user != null) {
                 tasks = WorkflowService.getInstance().getTasksForUser(user, locale != null ? locale : getUILocale());
-                if (logger.isDebugEnabled()) {
-                    if (tasks.isEmpty()) {
-                        logger.debug("Could not find any tasks for user " + getUser().getUsername());
+                if(logger.isDebugEnabled()){
+                    if(tasks.isEmpty()){
+                        logger.debug("Could not find any tasks for user "+getUser().getName());
                     } else {
-                        logger.debug("We have found " + tasks.size() + " tasks to do for user " + getUser().getUsername());
+                        logger.debug("We have found "+tasks.size()+" tasks to do for user "+getUser().getName());
                     }
                 }
             }

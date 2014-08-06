@@ -106,9 +106,7 @@ import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -183,7 +181,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
-    private JahiaUser jahiaUser;
     private boolean globalGroupMembershipCheckActivated = false;
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
@@ -316,12 +313,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-
-        if (!jahiaPrincipal.isSystem()) {
-            if (!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) {
-                jahiaUser = userService.lookupUser(jahiaPrincipal.getName());
-            }
-        }
 
         initialized = true;
     }
@@ -533,7 +524,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(), 0)) {
+                if (isAdmin(jahiaPrincipal.getName(), null)) {
                     pathPermissionCache.put(cacheKey, true);
                     return true;
                 }
@@ -609,15 +600,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            // Todo : optimize site resolution
-            String site = null;
-            if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH)) {
-                if (jcrPath.length() > JahiaSitesService.SITES_JCR_PATH.length() + 1) {
-                    site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
-                }
-            } else {
-                site = resolveSite(n);
-            }
+            String site = resolveSite(jcrPath);
 
 //            if (jahiaPrincipal != null) {
 //                if (isAdmin(jahiaPrincipal.getName(), siteId)) {
@@ -635,14 +618,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         return res;
     }
 
-    private String resolveSite(Node node) throws RepositoryException {
-        while (!node.isNodeType("jnt:virtualsite")) {
-            if (node.isNodeType("rep:root")) {
-                return null;
-            }
-            node = node.getParent();
+    private String resolveSite(String jcrPath) {
+        String site;
+        if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH + "/")) {
+            site = StringUtils.substringBefore(jcrPath.substring(JahiaSitesService.SITES_JCR_PATH.length() + 1), "/");
+        } else {
+            site = JahiaSitesService.SYSTEM_SITE_KEY;
         }
-        return node.getName();
+        return site;
     }
 
     public boolean isGranted(Path parentPath, Name childName, int permissions) throws RepositoryException {
@@ -923,8 +906,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
         } else if (principal.charAt(0) == 'g') {
-            if (principalName.equals("guest") || (!jahiaPrincipal.isGuest() &&
-                    (isUserMemberOf(principalName, site) || (globalGroupMembershipCheckActivated && isUserMemberOf(principalName, null))))) {
+            if (isUserMemberOf(principalName, site)) {
                 return true;
             }
         }
@@ -955,7 +937,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        if (isAdmin(jahiaPrincipal.getName(), 0)) {
+        if (isAdmin(jahiaPrincipal.getName(), null)) {
             return getSupportedPrivileges(absPath);
         }
 
@@ -983,35 +965,22 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         isAliased = aliased;
     }
 
-    public boolean isAdmin(String username, int siteId) {
+    public boolean isAdmin(String username, String siteKey) {
         if (isAdmin == null) {
             // optimize away guest, we assume he can never be site administrator.
             if (JahiaLoginModule.GUEST.equals(username)) {
                 return false;
             }
-            JahiaUser user = userService.lookupUser(username);
-            if (user != null) {
-                return isAdmin = user.isAdminMember(siteId);
-            }
-            return isAdmin = false;
+            return isAdmin = groupService.isAdminMember(username,siteKey);
         }
         return isAdmin;
     }
 
 
     private boolean isUserMemberOf(String groupname, String site) {
-        if (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) {
-            return true;
-        }
-        if (JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname) && site == null && !JahiaUserManagerService.GUEST_USERNAME.equals(jahiaPrincipal.getName())) {
-            return true;
-        }
-
-        JahiaGroup group = groupService.lookupGroup(site, groupname);
-        if (group == null) {
-            group = groupService.lookupGroup(null, groupname);
-        }
-        return (jahiaUser != null) && (group != null) && group.isMember(jahiaUser);
+        return  (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) ||
+                (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname)) ||
+                (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), groupname, null)));
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
@@ -1020,7 +989,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Session s = getDefaultWorkspaceSecuritySession();
         Node n = s.getNode(absPath);
 
-        String site = resolveSite(n);
+        String site = resolveSite(n.getPath());
 
         try {
             while (true) {

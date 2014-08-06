@@ -116,7 +116,7 @@
         </description>
         <name>memberOf</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.Boolean memberOf(java.lang.String)</function-signature>
+        <function-signature>java.lang.Boolean memberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
             &lt;c:if test="${functions:memberOf('administrators')}"&gt;
             The user belongs to administrators
@@ -133,7 +133,7 @@
         </description>
         <name>notMemberOf</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.Boolean notMemberOf(java.lang.String)</function-signature>
+        <function-signature>java.lang.Boolean notMemberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
             &lt;c:if test="${functions:notMemberOf('administrators,editors')}"&gt;
             The user belong neither to administrators nor to editors
@@ -433,9 +433,9 @@
 		</description>
 		<name>lookupUser</name>
 		<function-class>org.jahia.taglibs.user.User</function-class>
-		<function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
+		<function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String)</function-signature>
 		<example>
-			${functions:lookupUser('sergiy')} or ${functions:lookupUser('{ldap}john')}
+			${functions:lookupUser('sergiy')} or ${functions:lookupUser('/users/aa/bb/cc/john')}
 		</example>
 	</function>
 
@@ -448,7 +448,7 @@
 		</description>
 		<name>displayName</name>
 		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getDisplayName(java.security.Principal)</function-signature>
+        <function-signature>java.lang.String getDisplayName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
 			${functions:displayName(jahiaUser)}
 		</example>
@@ -465,7 +465,7 @@
 		</description>
 		<name>fullName</name>
 		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getFullName(java.security.Principal)</function-signature>
+        <function-signature>java.lang.String getFullName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
 			${functions:fullName(jahiaUser)} or ${functions:fullName(jahiaGroup)}
 		</example>

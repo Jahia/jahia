@@ -191,10 +191,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             logger.warn("Cannot parse ACL event for : " + nodeName);
                         }
                         if (key.startsWith("u_")) {
-                            key = "u:" + key.substring(2) + ":0";
+                            key = "u:" + key.substring(2);
                         } else if (key.startsWith("g_")) {
-                            int siteId = getSiteId(path);
-                            key = "g:" + key.substring(2) + ":" + siteId;
+                            key = "g:" + key.substring(2);
                         }
                         userGroupsKeyToFlush.add(key);
                     }
@@ -211,16 +210,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                                 QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + fPath + "/')", Query.JCR_SQL2).execute();
                                 for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
                                     String principal = nodeWrapper.getProperty("j:principal").getString();
-                                    if (principal.startsWith("u:")) {
-                                        principal += ":0";
-                                    } else {
-                                        int siteId = getSiteId(fPath);
-                                        JahiaGroup group = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(siteId, principal.substring(2));
-                                        if (group != null) {
-                                            siteId = group.getSiteID();
-                                        }
-                                        principal += ":" + siteId;
-                                    }
                                     userGroupsKeyToFlush.add(principal);
                                 }
                                 return null;
@@ -292,20 +281,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             }
 
         }
-    }
-
-    private int getSiteId(String path) {
-        int siteId = 0;
-        if (path.startsWith("/sites/")) {
-            String siteKey = StringUtils.substringBetween(path, "/sites/", "/");
-            try {
-                JahiaSite site = JahiaSitesService.getInstance().getSiteByKey(siteKey);
-                siteId = site != null ? site.getID() : 0;
-            } catch (JahiaException e) {
-                //
-            }
-        }
-        return siteId;
     }
 
     private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propagateToOtherClusterNodes) {

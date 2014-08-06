@@ -73,6 +73,7 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
@@ -98,7 +99,9 @@ import java.util.Locale;
  * @author Thomas Draier
  */
 public class TemplatePermissionCheckFilter extends AbstractFilter {
-    
+
+    private JahiaUserManagerService userManagerService;
+
     class RequiredModeException extends AccessDeniedException {
 
         private static final long serialVersionUID = -984310772102680834L;
@@ -237,11 +240,13 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
             }
             if (node.hasProperty("j:requirePrivilegedUser") && node.getProperty("j:requirePrivilegedUser").getBoolean()) {
-                if (!renderContext.getUser().isMemberOfGroup(0,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+                JCRUserNode userNode = userManagerService.lookupUserByPath(renderContext.getUser().getLocalPath());
+                if (userNode != null && !userNode.isMemberOfGroup(null,JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                     return invert ? null : "";
                 }
                 if (aliasedUser != null) {
-                    if (!aliasedUser.isMemberOfGroup(0, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
+                    JCRUserNode aliasedUserNode = userManagerService.lookupUserByPath(aliasedUser.getLocalPath());
+                    if (aliasedUserNode != null && !aliasedUserNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
                         return invert ? null : "";
                     }
                 }
@@ -295,5 +300,9 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
             return null;
         }
         return null;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

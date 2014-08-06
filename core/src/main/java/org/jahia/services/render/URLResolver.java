@@ -186,7 +186,7 @@ public class URLResolver {
 
         this.urlPathInfo = normalizeUrlPathInfo(pathInfo);
 
-        if (JahiaUserManagerService.isNotGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
+        if (!JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
             Date date = getVersionDate(request);
             String versionLabel = getVersionLabel(request);
             setVersionDate(date);

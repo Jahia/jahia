@@ -369,6 +369,7 @@
  - j:member (weakreference) < jnt:user, jnt:group
 
 [jnt:members]  > nt:base
+ + * (jnt:members)
  + * (jnt:member)
 
 [jnt:group] > nt:base, jmix:nodenameInfo, jmix:unversionedBasemetadata, jmix:publication, jmix:observable, jmix:autoPublish

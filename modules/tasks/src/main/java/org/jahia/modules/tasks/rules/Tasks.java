@@ -78,6 +78,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tasks.Task;
@@ -138,22 +139,14 @@ public class Tasks {
 
     public void createTaskForGroupMembers(String group, String title, String description, KnowledgeHelper drools)
             throws RepositoryException {
-        int siteId = 0;
+        String siteKey = null;
         if (group.startsWith("/sites/")) {
-            String siteKey = StringUtils.substringBetween(group, "/sites/", "/");
-            try {
-                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteKey);
-                if (site != null) {
-                    siteId = site.getID();
-                }
-            } catch (JahiaException e) {
-                logger.warn("Unable to find site for key " + siteKey, e);
-            }
+            siteKey = StringUtils.substringBetween(group, "/sites/", "/");
         }
         if (group.indexOf('/') != -1) {
             group = StringUtils.substringAfterLast(group, "/");
         }
-        taskService.createTaskForGroup(new Task(title, description), group, siteId);
+        taskService.createTaskForGroup(new Task(title, description), group, siteKey);
     }
 
     public void setTaskService(TaskService taskService) {
@@ -161,12 +154,12 @@ public class Tasks {
     }
 
     public void assignTask(AddedNodeFact node, String username) {
-        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+        JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         try {
             JCRNodeWrapper jcrNodeWrapper = node.getNode();
             String taskId = jcrNodeWrapper.getProperty("taskId").getString();
             String provider = jcrNodeWrapper.getProperty("provider").getString();
-            WorkflowService.getInstance().assignTask(taskId, provider, user);
+            WorkflowService.getInstance().assignTask(taskId, provider, user.getJahiaUser());
         } catch (RepositoryException e) {
             logger.error("cannot assign task", e);
         }

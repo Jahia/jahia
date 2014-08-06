@@ -140,7 +140,7 @@ public class SchedulerHelper {
             JobDataMap jobDataMap = jobDetail.getJobDataMap();
             Date created = (Date) jobDataMap.get(BackgroundJob.JOB_CREATED);
             final String status = jobDataMap.getString(BackgroundJob.JOB_STATUS);
-            final String user = StringUtils.substringAfter(jobDataMap.getString(BackgroundJob.JOB_USERKEY), "}");
+            final String user = StringUtils.substringAfterLast(jobDataMap.getString(BackgroundJob.JOB_USERKEY), "/");
             final String message = jobDataMap.getString(BackgroundJob.JOB_MESSAGE);
             final Long beginTime = getLong(jobDataMap, BackgroundJob.JOB_BEGIN);
             final Long endTime = getLong(jobDataMap, BackgroundJob.JOB_END);

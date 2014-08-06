@@ -220,5 +220,4 @@ public interface JahiaSite {
 
     String getJCRLocalPath();
 
-    int getID();
 }

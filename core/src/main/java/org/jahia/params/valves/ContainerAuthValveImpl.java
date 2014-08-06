@@ -74,7 +74,9 @@ package org.jahia.params.valves;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -107,14 +109,13 @@ public class ContainerAuthValveImpl extends BaseAuthValve {
                         "  already in HttpServletRequest, using it to try to login...(Principal.toString=" + principal);
             }
             try {
-                JahiaUser jahiaUser =
-                        ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(principal.getName());
-                if (jahiaUser != null) {
-                    if (jahiaUser.isAccountLocked()) {
+                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUser(principal.getName());
+                if (userNode != null) {
+                    if (userNode.isAccountLocked()) {
                         logger.debug("Login failed. Account is locked for user " + principal.getName());
                         return;
                     }
-                    authContext.getSessionFactory().setCurrentUser(jahiaUser);
+                    authContext.getSessionFactory().setCurrentUser(userNode.getJahiaUser());
                     return;
                 }
             } catch (Exception e) {

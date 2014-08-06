@@ -79,10 +79,10 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ProvisionActivator;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -93,7 +93,6 @@ import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -180,13 +179,13 @@ public class TemplatePackageDeployer {
                         IOUtils.closeQuietly(is);
                     }
                 } else if (imp.toLowerCase().contains("/importsite")) {
-                    JCRUser user = null;
+                    JCRUserNode user = null;
                     try {
-                        user = JCRUserManagerProvider.getInstance().lookupRootUser();
-                        JCRSessionFactory.getInstance().setCurrentUser(user);
+                        user = JahiaUserManagerService.getInstance().lookupRootUser();
+                        JCRSessionFactory.getInstance().setCurrentUser(user.getJahiaUser());
                         importExportService.importSiteZip(importFile, session);
                     } finally {
-                        JCRSessionFactory.getInstance().setCurrentUser(user);
+                        JCRSessionFactory.getInstance().setCurrentUser(null);
                     }
                 } else {
 //                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);

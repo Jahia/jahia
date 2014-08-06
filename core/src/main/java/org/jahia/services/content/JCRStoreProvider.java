@@ -81,21 +81,17 @@ import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.JahiaCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRGroup;
-import org.jahia.services.usermanager.jcr.JCRGroupManagerProvider;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.LuceneUtils;
@@ -174,6 +170,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private boolean providesDynamicMountPoints;
 
+    private Boolean readOnly = null;
     private Boolean versioningAvailable = null;
     private Boolean lockingAvailable = null;
     private Boolean searchAvailable = null;
@@ -717,13 +714,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     credentials = JahiaLoginModule.getCredentials(guestUser);
                 }
             } else if ("storedPasswords".equals(authenticationType)) {
-                JahiaUser user = userManagerService.lookupUser(username);
-                if (user.getProperty("storedUsername_" + getKey()) != null) {
-                    username = user.getProperty("storedUsername_" + getKey());
-                }
-                String pass = user.getProperty("storedPassword_" + getKey());
-                if (pass != null) {
-                    credentials = new SimpleCredentials(username, pass.toCharArray());
+                JCRUserNode user = userManagerService.lookupUser(username);
+                username = user.getPropertyAsString("storedUsername_" + getKey());
+                JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
+                if (passProp != null) {
+                    credentials = new SimpleCredentials(username, passProp.getString().toCharArray());
                 } else {
                     if (guestPassword != null) {
                         credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
@@ -848,79 +843,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         return;
     }
-
-    public void deployExternalUser(JahiaUser jahiaUser) throws RepositoryException {
-        String username = jahiaUser.getUsername();
-        JCRSessionWrapper session = sessionFactory.getSystemSession(username, null);
-        try {
-            String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(jahiaUser.getLocalPath(), "/"));
-            try {
-                Node startNode = session.getNode("/" + jcrUsernamePath[0]);
-                Node usersFolderNode = startNode;
-                int length = jcrUsernamePath.length;
-                for (int i = 1; i < length; i++) {
-                    try {
-                        startNode = startNode.getNode(jcrUsernamePath[i]);
-                    } catch (PathNotFoundException e) {
-                        try {
-                            if (i == (length - 1)) {
-                                Node userNode = startNode.addNode(jcrUsernamePath[i], Constants.JAHIANT_USER);
-                                if (usersFolderNode.hasProperty("j:usersFolderSkeleton")) {
-                                    String skeletons = usersFolderNode.getProperty("j:usersFolderSkeleton").getString();
-                                    try {
-                                        JCRContentUtils.importSkeletons(skeletons,
-                                                startNode.getPath() + "/" + jcrUsernamePath[i], session,
-                                                new HashMap<String, String>());
-                                    } catch (Exception importEx) {
-                                        logger.error("Unable to import data using user skeletons " + skeletons,
-                                                importEx);
-                                    }
-                                }
-
-                                userNode.setProperty(JCRUser.J_EXTERNAL, true);
-                                userNode.setProperty(JCRUser.J_EXTERNAL_SOURCE, jahiaUser.getProviderName());
-                                ValueFactory valueFactory = session.getValueFactory();
-                                List<Value> properties = new ArrayList<Value>();
-                                for (Object o : jahiaUser.getProperties().keySet()) {
-                                    properties.add(valueFactory.createValue((String) o));
-                                }
-                                userNode.setProperty("j:publicProperties", properties.toArray(new Value[properties.size()]));
-
-                                ((JCRNodeWrapper) userNode).grantRoles("u:" + username, Collections.singleton("owner"));
-                            } else {
-                                // Simply create a folder
-                                startNode = startNode.addNode(jcrUsernamePath[i], "jnt:usersFolder");
-                            }
-                            session.save();
-                        } catch (RepositoryException e1) {
-                            logger.error("Cannot save", e1);
-                        }
-                    }
-                }
-            } catch (PathNotFoundException e) {
-            }
-        } finally {
-            session.logout();
-        }
-    }
-
-    /**
-     * Create an entry in the JCR for an external group.
-     *
-     * @param group the unique name for the group
-     * @return a reference on a group object on success, or if the group name
-     * already exists or another error occurred, null is returned.
-     */
-    public void deployExternalGroup(JahiaGroup group) {
-        Properties properties = new Properties();
-        properties.put(JCRGroup.J_EXTERNAL, Boolean.TRUE);
-        properties.put(JCRGroup.J_EXTERNAL_SOURCE, group.getProviderName());
-        JCRGroupManagerProvider groupManager = (JCRGroupManagerProvider) SpringContextSingleton.getInstance().getContext().getBean("JCRGroupManagerProvider");
-        if (groupManager.lookupExternalGroup(group.getName()) == null) {
-            groupManagerService.createGroup(null, group.getName(), properties, true);
-        }
-    }
-
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
@@ -1059,6 +981,27 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public void setProvidesDynamicMountPoints(boolean providesDynamicMountPoints) {
         this.providesDynamicMountPoints = providesDynamicMountPoints;
+    }
+
+    public boolean isReadOnly() {
+        if (readOnly != null) {
+            return readOnly;
+        }
+        Repository repository = getRepository();
+        Value writeableValue = repository.getDescriptorValue(Repository.WRITE_SUPPORTED);
+        if (writeableValue == null) {
+            readOnly = Boolean.FALSE;
+            return false;
+        }
+        try {
+            readOnly = !writeableValue.getBoolean();
+        } catch (RepositoryException e) {
+            logger.warn("Error while trying to check for writeable support", e);
+            readOnly = Boolean.FALSE;
+            return false;
+        }
+        return readOnly;
+
     }
 
     public boolean isVersioningAvailable() {

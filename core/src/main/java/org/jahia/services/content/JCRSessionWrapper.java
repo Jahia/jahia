@@ -78,6 +78,7 @@ import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -1115,17 +1116,17 @@ public class JCRSessionWrapper implements Session {
 
     public Map<String, String> getStoredPasswordsProviders() {
         Map<String, String> results = new HashMap<String, String>();
-        results.put(null, user.getUsername());
-        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+        results.put(null, user.getName());
+        /*for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if ("storedPasswords".equals(provider.getAuthenticationType())) {
                 results.put(provider.getKey(), user.getProperty("storedUsername_" + provider.getKey()));
             }
-        }
+        }*/
         return results;
     }
 
     public void storePasswordForProvider(String providerKey, String username, String password) {
-        if (username == null) {
+        /*if (username == null) {
             user.removeProperty("storedUsername_" + providerKey);
         } else {
             user.setProperty("storedUsername_" + providerKey, username);
@@ -1134,7 +1135,7 @@ public class JCRSessionWrapper implements Session {
             user.removeProperty("storedPassword_" + providerKey);
         } else {
             user.setProperty("storedPassword_" + providerKey, password);
-        }
+        }*/
     }
 
     /**
@@ -1310,4 +1311,7 @@ public class JCRSessionWrapper implements Session {
     }
 
 
+    public JCRUserNode getUserNode() throws RepositoryException {
+        return (JCRUserNode) getNode(user.getLocalPath());
+    }
 }

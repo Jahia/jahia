@@ -250,7 +250,7 @@ public class PropertiesHelper {
      * @param currentUserSession @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      * @param uiLocale
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JahiaUser user, JCRSessionWrapper currentUserSession, Locale uiLocale) throws RepositoryException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws RepositoryException {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode = currentUserSession.getNode(aNode.getPath());
             List<String> types = aNode.getNodeTypes();

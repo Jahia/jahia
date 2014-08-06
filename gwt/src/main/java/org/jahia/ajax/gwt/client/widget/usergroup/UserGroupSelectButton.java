@@ -75,8 +75,8 @@ import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.InlineHTML;
 import com.google.gwt.user.client.ui.Widget;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.HashSet;
 import java.util.List;
@@ -179,20 +179,13 @@ public class UserGroupSelectButton extends InlineHTML {
             public void onClick(Widget sender) {
 
                 new UserGroupSelect(new UserGroupAdder() {
-                    public void addGroups(List<GWTJahiaGroup> groups) {
-                        for (final GWTJahiaGroup group : groups) {
-                            add(fieldId, callback, "g", group.getGroupKey(),
-                                    group.getDisplay());
+                    public void addUsersGroups(List<GWTJahiaNode> users) {
+                        for (final GWTJahiaNode user : users) {
+                            add(fieldId, callback, user.isNodeType("jnt:user") ? "u" : "g", user.getPath(), user
+                                    .getDisplayName());
                         }
                     }
-
-                    public void addUsers(List<GWTJahiaUser> users) {
-                        for (final GWTJahiaUser user : users) {
-                            add(fieldId, callback, "u", user.getUserKey(), user
-                                    .getDisplay());
-                        }
-                    }
-                }, getViewMode(), "currentSite", singleSelectionMode);
+                }, getViewMode(), JahiaGWTParameters.getSiteKey(), singleSelectionMode);
             }
         });
     }

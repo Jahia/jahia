@@ -78,8 +78,8 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.mail.MailService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -159,9 +159,9 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JahiaUser userNode = user.getJahiaUser();
-        if (userNode.getProperty("j:email") != null) {
-            String toMail = userNode.getProperty("j:email");
+        JCRUserNode userNode = user.getUserNode();
+        if (userNode!=null && userNode.hasProperty("j:email")) {
+            String toMail = userNode.getProperty("j:email").getString();
             Locale locale = getLocale(userNode);
 
             sendMail(template, userNode, toMail, fromMail, ccList, bccList, locale, drools);
@@ -173,17 +173,22 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JahiaUser userNode = user.getJahiaUser();
-        if (userNode.getProperty("j:email") != null) {
-            String toMail = userNode.getProperty("j:email");
+        JCRUserNode userNode = user.getUserNode();
+        if (userNode!=null && userNode.hasProperty("j:email")) {
+            String toMail = userNode.getProperty("j:email").getString();
             Locale locale = getLocale(userNode);
             sendMail(template, userNode, toMail, fromMail, null, null, locale, drools);
         }
     }
 
-    private Locale getLocale(JahiaUser userNode) {
+    private Locale getLocale(JCRUserNode userNode) {
         Locale locale;
-        String property = userNode.getProperty("preferredLanguage");
+        String property = null;
+        try {
+            property = userNode.getProperty("preferredLanguage").getString();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
         if (property != null) {
             locale = LanguageCodeConverters.languageCodeToLocale(property);
         } else {
@@ -197,9 +202,9 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode != null && userNode.getProperty("j:email") != null) {
-            String toMail = userNode.getProperty("j:email");
+        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode != null && userNode.hasProperty("j:email")) {
+            String toMail = userNode.getProperty("j:email").getString();
             sendMail(template, userNode, toMail, fromMail, null, null, getLocale(userNode), drools);
         }
     }
@@ -209,9 +214,9 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode != null && userNode.getProperty("j:email") != null) {
-            String toMail = userNode.getProperty("j:email");
+        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode != null && userNode.hasProperty("j:email")) {
+            String toMail = userNode.getProperty("j:email").getString();
             sendMail(template, userNode, toMail, fromMail.getStringValue(), null, null, getLocale(userNode), drools);
         }
     }
@@ -222,9 +227,9 @@ public class RulesNotificationService {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JahiaUser userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode.getProperty("j:email") != null) {
-            String toMail = userNode.getProperty("j:email");
+        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        if (userNode.hasProperty("j:email")) {
+            String toMail = userNode.getProperty("j:email").getString();
             sendMail(template, userNode, toMail, fromMail, ccList, bccList, getLocale(userNode), drools);
         }
     }

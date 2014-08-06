@@ -78,10 +78,10 @@ import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
 import org.jahia.test.services.content.*;
@@ -103,13 +103,13 @@ public class AclTest {
 
     private final static String TESTSITE_NAME = "aclTestSite";
 
-    private static JahiaUser user1;
-    private static JahiaUser user2;
-    private static JahiaUser user3;
-    private static JahiaUser user4;
+    private static JCRUserNode user1;
+    private static JCRUserNode user2;
+    private static JCRUserNode user3;
+    private static JCRUserNode user4;
 
-    private static JahiaGroup group1;
-    private static JahiaGroup group2;
+    private static JCRGroupNode group1;
+    private static JCRGroupNode group2;
     public static final String HOMEPATH = "/sites/"+TESTSITE_NAME+"/home";
 
     public static JCRPublicationService jcrService;
@@ -165,22 +165,23 @@ public class AclTest {
         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-        user1 = userManager.createUser("user1", "password", new Properties());
-        user2 = userManager.createUser("user2", "password", new Properties());
-        user3 = userManager.createUser("user3", "password", new Properties());
-        user4 = userManager.createUser("user4", "password", new Properties());
+        user1 = userManager.createUser("user1", "password", new Properties(), session);
+        user2 = userManager.createUser("user2", "password", new Properties(), session);
+        user3 = userManager.createUser("user3", "password", new Properties(), session);
+        user4 = userManager.createUser("user4", "password", new Properties(), session);
 
         JahiaGroupManagerService groupManager = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
 
-        group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false);
-        group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false);
+        group1 = groupManager.createGroup(site.getSiteKey(), "group1", new Properties(), false, session);
+        group2 = groupManager.createGroup(site.getSiteKey(), "group2", new Properties(), false, session);
 
         group1.addMember(user1);
         group1.addMember(user2);
 
         group2.addMember(user3);
         group2.addMember(user4);
+        session.save();
     }
 
     @AfterClass
@@ -192,10 +193,10 @@ public class AclTest {
             }
 
             JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            userManager.deleteUser(user1);
-            userManager.deleteUser(user2);
-            userManager.deleteUser(user3);
-            userManager.deleteUser(user4);
+            userManager.deleteUser(user1.getPath(), session);
+            userManager.deleteUser(user2.getPath(), session);
+            userManager.deleteUser(user3.getPath(), session);
+            userManager.deleteUser(user4.getPath(), session);
 
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);

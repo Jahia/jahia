@@ -71,15 +71,157 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import java.security.Principal;
+import java.util.*;
 
 /**
  * A JCR group node decorator
  */
 public class JCRGroupNode extends JCRNodeDecorator {
 
+    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRGroupNode.class);
+
+    public static final String J_HIDDEN = "j:hidden";
+
     public JCRGroupNode(JCRNodeWrapper node) {
         super(node);
+    }
+
+    public JahiaGroup getJahiaGroup() {
+        try {
+            return new JahiaGroup(getName(), getPath(), getResolveSite().getName());
+        } catch (RepositoryException e) {
+            logger.error("Cannot get group",e);
+        }
+        return null;
+    }
+
+    public String getGroupKey() {
+        return getPath();
+    }
+
+    public String getProviderName() {
+        return getProvider().getKey();
+    }
+
+    public List<JCRNodeWrapper> getMembers() {
+        List<JCRNodeWrapper> result = null;
+        try {
+            result = new ArrayList<JCRNodeWrapper>();
+            getMembers(getNode("j:members"), result);
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group members",e);
+        }
+        return result;
+    }
+
+    private void getMembers(JCRNodeWrapper members, List<JCRNodeWrapper> result) throws RepositoryException {
+        JCRNodeIteratorWrapper ni = members.getNodes();
+        for (JCRNodeWrapper wrapper : ni) {
+            if (wrapper.isNodeType("jnt:members")) {
+                getMembers(wrapper, result);
+            } else if (wrapper.isNodeType("jnt:member")) {
+                result.add(wrapper.getProperty("j:member").getValue().getNode());
+            }
+        }
+    }
+
+    public Set<JCRUserNode> getRecursiveUserMembers() {
+        Set<JCRUserNode> result = new HashSet<JCRUserNode>();
+
+        List<JCRNodeWrapper> members = getMembers();
+        for (JCRNodeWrapper member : members) {
+            if (member instanceof JCRUserNode) {
+                result.add((JCRUserNode) member);
+            } else if (member instanceof JCRGroupNode) {
+                result.addAll(((JCRGroupNode)member).getRecursiveUserMembers());
+            }
+        }
+
+        return result;
+    }
+
+    public boolean isMember(String userPath) {
+        return JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath()) ||
+                !JahiaUserManagerService.GUEST_USERPATH.equals(userPath) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath()) ||
+                JahiaGroupManagerService.getInstance().getMembershipByPath(userPath).contains(getPath());
+    }
+
+    public boolean isMember(JCRNodeWrapper principal) {
+        return isMember(principal.getPath());
+    }
+
+    public void addMember(Principal principal) {
+        if (principal instanceof JahiaPrincipal) {
+            try {
+                addMember(getSession().getNode(((JahiaPrincipal) principal).getLocalPath()));
+            } catch (RepositoryException e) {
+                logger.error("Cannot find principal", e);
+            }
+        }
+    }
+
+    public void addMembers(final Collection<JCRNodeWrapper> members) {
+        for (JCRNodeWrapper candidate : members) {
+            addMember(candidate);
+        }
+    }
+
+    public void addMember(JCRNodeWrapper principal) {
+        try {
+            if (principal.isNodeType("jnt:user") || principal.isNodeType("jnt:group")) {
+                String[] parts = principal.getPath().split("/");
+                JCRNodeWrapper member;
+                if (hasNode("j:members")) {
+                    member = getNode("j:members");
+                } else {
+                    member = addNode("j:members", "jnt:members");
+                }
+                for (int i = 1; i < parts.length - 1; i++) {
+                    if (member.hasNode(parts[i])) {
+                        member = member.getNode(parts[i]);
+                    } else {
+                        member = member.addNode(parts[i], "jnt:members");
+                    }
+                }
+                member = member.addNode(parts[parts.length - 1], "jnt:member");
+                member.setProperty("j:member", principal.getIdentifier());
+            }
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
+        }
+    }
+
+    public void removeMember(JCRNodeWrapper principal) {
+        try {
+            Query q = getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'"+getPath()+"') and [j:member]='"+principal.getIdentifier()+"'", Query.JCR_SQL2);
+            NodeIterator ni = q.execute().getNodes();
+            if (ni.hasNext()) {
+                ni.nextNode().remove();
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group members",e);
+        }
+    }
+
+    public boolean isHidden() {
+        try {
+            return hasProperty("j:hidden") && getProperty("j:hidden").getBoolean();
+        } catch (RepositoryException e) {
+            logger.error("Cannot read group",e);
+            return false;
+        }
     }
 
 }

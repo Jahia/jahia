@@ -135,7 +135,7 @@ public class PortletHelper {
         this.contentManager = contentManager;
     }
 
-    public List<GWTJahiaPortletDefinition> searchPortlets(String match, JahiaUser user, Locale locale, JCRSessionWrapper session, Locale uiLocale) {
+    public List<GWTJahiaPortletDefinition> searchPortlets(String match, Locale locale, JCRSessionWrapper session, Locale uiLocale) {
         List<GWTJahiaPortletDefinition> results = new ArrayList<GWTJahiaPortletDefinition>();
         try {
             List<ApplicationBean> appList = new LinkedList<ApplicationBean>();

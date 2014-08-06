@@ -113,6 +113,20 @@ public class NavigationHelper {
     
     private NodeHelper nodeHelper;
 
+    private Map<String,String> defaultUserFolderTypes;
+
+
+    public void setIgnoreInUsages(Set<String> ignoreInUsages) {
+        this.ignoreInUsages = ignoreInUsages;
+    }
+
+    public void setNodeHelper(NodeHelper nodeHelper) {
+        this.nodeHelper = nodeHelper;
+    }
+
+    public void setDefaultUserFolderTypes(Map<String, String> defaultUserFolderTypes) {
+        this.defaultUserFolderTypes = defaultUserFolderTypes;
+    }
 
     /**
      * like ls unix command on the folder
@@ -441,28 +455,40 @@ public class NavigationHelper {
                 });
             }
             if (path.contains("$user")) {
-                path = path.replace("$user", currentUserSession.getUser().getLocalPath());
+                final JCRNodeWrapper userFolder = getDefaultUserFolder(currentUserSession, StringUtils.substringAfter(path, "$user"));
+                if (userFolder.isNew()) {
+                    currentUserSession.save();
+                }
+                path = userFolder.getPath();
                 displayName = Messages.getInternal("label.personalFolder", uiLocale, "label.personalFolder");
             }
             if (path.startsWith("/")) {
-                if (path.endsWith("/*")) {
-                    try {
+                try {
+                    if (path.endsWith("/*")) {
                         getMatchingChildNodes(nodeTypes, mimeTypes, filters, fields, currentUserSession.getNode(StringUtils.substringBeforeLast(path, "/*")), userNodes ,checkSubChild, displayHiddenTypes, hiddenTypes,hiddenRegex,false, uiLocale);
-                    } catch (PathNotFoundException e) {
-                        // do nothing is the path is not found
-                    }
-                } else {
-                    GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
-                    if (root != null) {
-                        if (displayName != null) {
-                            root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+                    } else {
+                        GWTJahiaNode root = getNode(path, fields, currentUserSession, uiLocale);
+                        if (root != null) {
+                            if (displayName != null) {
+                                root.setDisplayName(JCRContentUtils.unescapeLocalNodeName(displayName));
+                            }
+                            userNodes.add(root);
                         }
-                        userNodes.add(root);
                     }
+                } catch (PathNotFoundException e) {
+                    // do nothing is the path is not found
                 }
             }
         }
         return userNodes;
+    }
+
+    public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path) throws RepositoryException {
+        if (!session.itemExists(session.getUserNode().getPath() + path)) {
+            final String name = StringUtils.substringAfterLast(path, "/");
+            return getDefaultUserFolder(session, StringUtils.substringBeforeLast(path, "/")).addNode(name,defaultUserFolderTypes.get(path));
+        }
+        return session.getNode(session.getUserNode().getPath() + path);
     }
 
     /**
@@ -778,14 +804,6 @@ public class NavigationHelper {
     public String getNodeURL(String servlet, JCRNodeWrapper node, Date versionDate, String versionLabel, final String workspace,
                              final Locale locale) throws RepositoryException {
         return NodeHelper.getNodeURL(servlet, node, versionDate, versionLabel, workspace, locale);
-    }
-
-    public void setIgnoreInUsages(Set<String> ignoreInUsages) {
-    	this.ignoreInUsages = ignoreInUsages;
-    }
-
-    public void setNodeHelper(NodeHelper nodeHelper) {
-        this.nodeHelper = nodeHelper;
     }
 
     private boolean isAllowedByLicense(JCRNodeWrapper node) {

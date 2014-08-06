@@ -89,6 +89,7 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -137,10 +138,10 @@ public class TrashboardEngine extends LayoutContainer {
 
 
         // data proxy
-        RpcProxy<List<GWTJahiaNode>> proxy = new RpcProxy<List<GWTJahiaNode>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object loadConfig, AsyncCallback<List<GWTJahiaNode>> callback) {
-                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot]", -1, null, null, null,
+            protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot] where isdescendantnode(content,['"+ JahiaGWTParameters.getSiteNode().getPath()+"'])",-1, 0, null,
                         FIELDS, true, callback);
             }
         };

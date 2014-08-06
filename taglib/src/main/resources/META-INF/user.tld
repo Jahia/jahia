@@ -50,9 +50,9 @@
         </description>
         <name>lookupUser</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>org.jahia.services.usermanager.JahiaUser lookupUser(java.lang.String)</function-signature>
+        <function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String)</function-signature>
         <example>
-            ${user:lookupUser('sergiy')} or ${user:lookupUser('{ldap}john')}
+            ${user:lookupUser('sergiy')} or ${user:lookupUser('/users/aa/bb/cc/john')}
         </example>
     </function>
     <function>
@@ -63,7 +63,7 @@
         </description>
         <name>displayName</name>
         <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getDisplayName(java.security.Principal)</function-signature>
+        <function-signature>java.lang.String getDisplayName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
             ${user:displayName(jahiaUser)}
         </example>
@@ -78,7 +78,7 @@
         </description>
         <name>fullName</name>
         <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getFullName(java.security.Principal)</function-signature>
+        <function-signature>java.lang.String getFullName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
             ${user:fullName(jahiaUser)} or ${user:fullName(jahiaGroup)}
         </example>
@@ -137,7 +137,7 @@
         </description>
         <name>formatUserValueOption</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.String formatUserValueOption(java.security.Principal)
+        <function-signature>java.lang.String formatUserValueOption(org.jahia.services.content.JCRNodeWrapper)
         </function-signature>
         <example>
             &lt;c:if test="${user:formatUserValueOption(principal)}"/&gt;
@@ -150,7 +150,7 @@
         </description>
         <name>formatUserTextOption</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.String formatUserTextOption(java.security.Principal,java.lang.String)
+        <function-signature>java.lang.String formatUserTextOption(org.jahia.services.content.JCRNodeWrapper,java.lang.String)
         </function-signature>
         <example>
             &lt;c:if test="${user:formatUserTextOption(principal,'Name,30;Properties,30'}"/&gt;
@@ -188,7 +188,7 @@
         </description>
         <name>isReadOnlyProvider</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.Boolean isReadOnlyProvider(java.security.Principal)</function-signature>
+        <function-signature>java.lang.Boolean isReadOnlyProvider(org.jahia.services.content.JCRNodeWrapper)</function-signature>
         <example>
             &lt;c:if test="${user:isReadOnlyProvider(testUser)}"/&gt;
         </example>

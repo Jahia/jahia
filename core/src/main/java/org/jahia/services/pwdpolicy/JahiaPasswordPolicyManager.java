@@ -87,8 +87,8 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRUser;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -180,33 +180,27 @@ class JahiaPasswordPolicyManager {
      * @throws RepositoryException
      *             in case of a JCR error
      */
-    public List<PasswordHistoryEntry> getPasswordHistory(final JahiaUser user)
+    public List<PasswordHistoryEntry> getPasswordHistory(final JCRUserNode user)
             throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(
-                new JCRCallback<List<PasswordHistoryEntry>>() {
-                    public List<PasswordHistoryEntry> doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        List<PasswordHistoryEntry> pwds = Collections.emptyList();
-                        try {
-                            pwds = new LinkedList<PasswordHistoryEntry>();
-                            for (@SuppressWarnings("unchecked")
-                            Iterator<JCRNodeWrapper> iterator = ((JCRUser) user).getNode(session)
-                                    .getNode(HISTORY_NODENAME).getNodes(); iterator
-                                    .hasNext();) {
-                                JCRNodeWrapper historyEntryNode = (JCRNodeWrapper) iterator.next();
-                                pwds.add(new PasswordHistoryEntry(historyEntryNode
-                                        .getPropertyAsString("j:password"), historyEntryNode
-                                        .getProperty(Constants.JCR_CREATED).getDate().getTime()));
-                            }
-                            Collections.sort(pwds);
-                        } catch (PathNotFoundException e) {
-                            // ignore
-                            pwds = Collections.emptyList();
-                        }
+        List<PasswordHistoryEntry> pwds;
+        try {
+            pwds = new LinkedList<PasswordHistoryEntry>();
+            for (@SuppressWarnings("unchecked")
+                 Iterator<JCRNodeWrapper> iterator = user
+                    .getNode(HISTORY_NODENAME).getNodes(); iterator
+                    .hasNext();) {
+                JCRNodeWrapper historyEntryNode = iterator.next();
+                pwds.add(new PasswordHistoryEntry(historyEntryNode
+                        .getPropertyAsString("j:password"), historyEntryNode
+                        .getProperty(Constants.JCR_CREATED).getDate().getTime()));
+            }
+            Collections.sort(pwds);
+        } catch (PathNotFoundException e) {
+            // ignore
+            pwds = Collections.emptyList();
+        }
 
-                        return pwds;
-                    }
-                });
+        return pwds;
     }
 
     /**
@@ -217,21 +211,14 @@ class JahiaPasswordPolicyManager {
      * @throws RepositoryException
      *             in case of a JCR error
      */
-    public void storePasswordHistory(final JahiaUser user) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper pwdHistory = ((JCRUser) user).getNode(session).getNode(
-                        HISTORY_NODENAME);
-                session.checkout(pwdHistory);
-                JCRNodeWrapper entry = pwdHistory.addNode(
-                        JCRContentUtils.findAvailableNodeName(pwdHistory,
-                                "pwd-" + NODENAME_FORMAT.format(System.currentTimeMillis())),
-                        "jnt:passwordHistoryEntry");
-                entry.setProperty("j:password", user.getProperty("j:password"));
-                session.save();
-                return true;
-            }
-        });
+    public void storePasswordHistory(final JCRUserNode user) throws RepositoryException {
+        JCRNodeWrapper pwdHistory = user.getNode(
+                HISTORY_NODENAME);
+        JCRNodeWrapper entry = pwdHistory.addNode(
+                JCRContentUtils.findAvailableNodeName(pwdHistory,
+                        "pwd-" + NODENAME_FORMAT.format(System.currentTimeMillis())),
+                "jnt:passwordHistoryEntry");
+        entry.setProperty("j:password", user.getProperty("j:password").getString());
     }
 
     /**

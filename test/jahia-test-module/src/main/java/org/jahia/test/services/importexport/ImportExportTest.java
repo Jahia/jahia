@@ -105,6 +105,7 @@ import javax.jcr.version.VersionException;
 import javax.xml.transform.TransformerException;
 
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.springframework.core.io.FileSystemResource;
 import org.xml.sax.SAXException;
@@ -112,7 +113,6 @@ import org.xml.sax.SAXException;
 import static org.junit.Assert.*;
 
 import org.jahia.api.Constants;
-import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -132,12 +132,10 @@ import org.jahia.services.importexport.validation.ValidationResult;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.tags.TaggingService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jdom.JDOMException;
 import org.junit.*;
 
 import com.google.common.collect.Lists;
@@ -394,10 +392,10 @@ public class ImportExportTest {
                         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
                         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-                        JahiaUser user1 = userManager.createUser("impexpuser", "password", new Properties());
-                        user1 = userManager.createUser("user1", "password", new Properties());
+                        JCRUserNode user1 = userManager.createUser("impexpuser", "password", new Properties(), session);
+                        user1 = userManager.createUser("user1", "password", new Properties(), session);
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user1.getUsername(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user1.getPath(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton
@@ -523,9 +521,9 @@ public class ImportExportTest {
                         JahiaUserManagerService userManager = ServicesRegistry.getInstance().getJahiaUserManagerService();
                         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
 
-                        JahiaUser user2 = userManager.createUser("impexpuserugc", "password", new Properties());
+                        JCRUserNode user2 = userManager.createUser("impexpuserugc", "password", new Properties(), session);
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user2.getUsername(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user2.getPath(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton

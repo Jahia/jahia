@@ -78,6 +78,7 @@ import org.jahia.pipelines.PipelineException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -119,14 +120,15 @@ public class JcrSessionFilter implements Filter {
                     logger.error("Error while authorizing user", pe);
                 }
             }
-            if (sessionFactory.getCurrentUser() != null && sessionFactory.getCurrentUser().isAccountLocked()) {
-                sessionFactory.setCurrentUser(null);
-            }
 
             if (sessionFactory.getCurrentUser() == null) {
                 sessionFactory
-                        .setCurrentUser(userManagerService.lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+                        .setCurrentUser(userManagerService.lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser());
             } else {
+                JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
+                if (userNode != null && userNode.isAccountLocked()) {
+                    sessionFactory.setCurrentUser(null);
+                }
                 ((HttpServletRequest)servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
             }
 

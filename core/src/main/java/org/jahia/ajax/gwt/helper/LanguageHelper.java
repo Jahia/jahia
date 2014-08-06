@@ -98,11 +98,10 @@ public class LanguageHelper {
      * Get available languages for the current site
      *
      * @param site
-     * @param user
      * @param currentLocale
      * @return
      */
-    public List<GWTJahiaLanguage> getLanguages(@NotNull JCRSiteNode site, JahiaUser user, Locale currentLocale) {
+    public List<GWTJahiaLanguage> getLanguages(@NotNull JCRSiteNode site, Locale currentLocale) {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {

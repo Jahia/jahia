@@ -122,7 +122,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
             drawPortlet(new JCRPortletNode((JCRNodeWrapper) portletNode), windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            logger.error(e.getMessage());
         }
         return SKIP_BODY;
     }

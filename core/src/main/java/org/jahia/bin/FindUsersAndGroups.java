@@ -79,11 +79,15 @@ import java.util.LinkedList;
 import java.util.Properties;
 import java.util.Set;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroup;
@@ -115,30 +119,17 @@ public class FindUsersAndGroups extends FindUser {
 
     private JahiaGroupManagerService groupService;
 
-    private JahiaSitesService siteService;
-
     protected String getSiteKey(HttpServletRequest request) {
         String siteKey = getParameter(request, "siteKey", null);
         if (siteKey == null) {
-            int siteId = getIntParameter(request, "siteId");
-
-            try {
-                JahiaSite site = siteService.getSite(siteId);
-                if (site == null) {
-                    throw new JahiaBadRequestException("Site with id " + siteId
-                            + " cannot be found");
-                }
-                siteKey = site.getSiteKey();
-            } catch (JahiaException e) {
-                throw new JahiaBadRequestException(e);
-            }
+                throw new JahiaBadRequestException("siteKey parameter must be present");
         }
 
         return siteKey;
     }
 
     @Override
-    protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
+    protected Set<JCRNodeWrapper> search(String queryTerm, HttpServletRequest request) {
 
         int limit = Math.min(getIntParameter(request, "limit", defaultLimit), hardLimit);
         
@@ -147,11 +138,11 @@ public class FindUsersAndGroups extends FindUser {
             queryTerm += "*"; 
         }
 
-        Set<Principal> users = searchUsers(queryTerm);
+        Set<JCRUserNode> users = searchUsers(queryTerm);
 
-        Set<JahiaGroup> groups = searchGroups(queryTerm, request);
+        Set<JCRGroupNode> groups = searchGroups(queryTerm, request);
 
-        Set<Principal> result = new HashSet<Principal>();
+        Set<JCRNodeWrapper> result = new HashSet<JCRNodeWrapper>();
 
         if (users.size() + groups.size() <= limit) {
             result.addAll(users);
@@ -160,10 +151,10 @@ public class FindUsersAndGroups extends FindUser {
             if (users.size() <= (limit / 2)) {
                 result.addAll(users);
             } else {
-                result.addAll(new LinkedList<Principal>(users).subList(0,
+                result.addAll(new LinkedList<JCRUserNode>(users).subList(0,
                         Math.max(limit / 2, limit - groups.size())));
             }
-            for (JahiaGroup g : groups) {
+            for (JCRGroupNode g : groups) {
                 if (result.size() >= limit) {
                     break;
                 }
@@ -174,7 +165,7 @@ public class FindUsersAndGroups extends FindUser {
         return result;
     }
 
-    protected Set<JahiaGroup> searchGroups(String queryTerm, HttpServletRequest request) {
+    protected Set<JCRGroupNode> searchGroups(String queryTerm, HttpServletRequest request) {
         long startTime = System.currentTimeMillis();
 
         String siteKey = getSiteKey(request);
@@ -188,7 +179,7 @@ public class FindUsersAndGroups extends FindUser {
             logger.debug("Performing group search using criteria: {}", searchCriterias);
         }
 
-        Set<JahiaGroup> result = groupService.searchGroups(siteKey, searchCriterias);
+        Set<JCRGroupNode> result = groupService.searchGroups(siteKey, searchCriterias);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching groups in {} ms", result.size(),
@@ -210,36 +201,36 @@ public class FindUsersAndGroups extends FindUser {
         this.groupService = groupService;
     }
 
-    public void setJahiaSitesService(JahiaSitesService siteService) {
-        this.siteService = siteService;
-    }
-
-    protected JSONObject toJSON(JahiaGroup group) throws JSONException {
+    protected JSONObject toJSON(JCRGroupNode group) throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put("key", "g:" + group.getGroupname());
-        json.put("groupKey", group.getGroupKey());
-        json.put("groupname", group.getGroupname());
+        json.put("key", "g:" + group.getPath());
+        json.put("groupKey", group.getPath());
+        json.put("groupname", group.getName());
         json.put("displayName", PrincipalViewHelper.getFullName(group));
         json.put("type", "g");
 
         for (String key : groupDisplayProperties) {
-            String value = group.getProperty(key);
-            if (value != null) {
-                json.put(key, value);
+            try {
+                String value = group.getProperty(key).getString();
+                if (value != null) {
+                    json.put(key, value);
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
         }
 
         return json;
     }
 
-    protected JSONObject toJSON(JahiaUser user) throws JSONException {
-        JSONObject json = super.toJSON(user);
+    protected JSONObject toJSON(JCRUserNode user) throws JSONException {
+        JSONObject json = super.toJSON(user.getJahiaUser());
 
-        json.put("key", "u:" + user.getUsername());
+        json.put("key", "u:" + user.getName());
         String fullName = PrincipalViewHelper.getFullName(user);
-        if (!fullName.equals(user.getUsername())) {
-            fullName = fullName + " (" + user.getUsername() + ")";
+        if (!fullName.equals(user.getName())) {
+            fullName = fullName + " (" + user.getName() + ")";
         }
         json.put("displayName", fullName);
         json.put("type", "u");

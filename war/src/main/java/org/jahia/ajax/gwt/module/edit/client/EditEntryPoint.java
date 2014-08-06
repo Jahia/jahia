@@ -73,7 +73,6 @@ package org.jahia.ajax.gwt.module.edit.client;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Window;
@@ -81,12 +80,9 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
-import org.jahia.ajax.gwt.client.service.UserManagerService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
@@ -135,7 +131,6 @@ public class EditEntryPoint extends CommonEntryPoint {
         }
     }
     private native void exposeFunctions() /*-{
-        $wnd.openUserGroupSelect = function (mode,id,pattern) { @org.jahia.ajax.gwt.module.edit.client.EditEntryPoint::openUserGroupSelect(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)(mode,id,pattern) };
         if (!$wnd.jahia) {
             $wnd.jahia = new Object();
         }
@@ -150,41 +145,6 @@ public class EditEntryPoint extends CommonEntryPoint {
      */
     static void alert(String title, String message) {
         MessageBox.alert(title != null ? title : "Info", message, null);
-    }
-
-
-    /**
-     * User/group picker
-     * @param mode
-     * @param id
-     * @param pattern
-     */
-    public static void openUserGroupSelect(final String mode, final String id, final String pattern) {
-        int viewMode = UserGroupSelect.VIEW_TABS;
-        if ("users".equals(mode)) viewMode = UserGroupSelect.VIEW_USERS;
-        if ("groups".equals(mode)) viewMode = UserGroupSelect.VIEW_GROUPS;
-
-        new UserGroupSelect(new UserGroupAdder() {
-            public void addUsers(List<GWTJahiaUser> users) {
-                for (GWTJahiaUser user : users) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(user.getUserKey(), 'u', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
-                        public void onSuccess(String[] strings) {
-                            add(strings[0], strings[1]);
-                        }
-                    });
-                }
-            }
-
-            public void addGroups(List<GWTJahiaGroup> groups) {
-                for (GWTJahiaGroup group : groups) {
-                    UserManagerService.App.getInstance().getFormattedPrincipal(group.getGroupKey(), 'g', pattern.split("\\|"), new BaseAsyncCallback<String[]>() {
-                        public void onSuccess(String[] strings) {
-                            add(strings[0], strings[1]);
-                        }
-                    });
-                }
-            }
-        }, viewMode, "currentSite");
     }
 
     /**

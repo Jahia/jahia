@@ -214,7 +214,7 @@ public class RolesAndPermissionsHandler implements Serializable {
 
     public boolean copyRole(final String roleName, final String deepCopy, final String uuid, final MessageContext messageContext) throws RepositoryException {
         final JCRSessionWrapper currentUserSession = getSession();
-        boolean copy = JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getUsername(), currentUserSession.getWorkspace().getName(), new JCRCallback<Boolean>() {
+        boolean copy = JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getName(), currentUserSession.getWorkspace().getName(), new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper roleToCopy = session.getNodeByIdentifier(uuid);

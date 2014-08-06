@@ -6,7 +6,7 @@ import org.jahia.services.content.*
 import javax.jcr.observation.Event
 import org.slf4j.Logger
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
-import org.jahia.services.usermanager.JahiaGroupManagerRoutingService;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.sites.JahiaSitesService;
 
 
@@ -20,14 +20,6 @@ global ExtractionService extractionService
 global RulesNotificationService notificationService
 global Logger logger
 global JCRStoreProvider provider
-
-rule "Remove user from cache when updated"
-    when
-		A property j:accountLocked has been set on a node
-			- the node has the type jnt:user
-    then
-        Remove entry node.getName() from cache "JCRUserCache"
-end
 
 rule "Import file"
     salience 50
@@ -115,31 +107,55 @@ rule "Create dependency on module"
         Update dependencies for module
 end
 
-rule "Flush group cache"
+rule "Flush user cache when adding user"
+    when
+        A new node is created
+			- the node has the type jnt:user
+    then
+        Flush user cache for node
+end
+
+rule "Flush user cache when removing user"
     when
         A node is deleted
         The node has a parent
-            - the parent has the type jnt:virtualsitesFolder
+            - the parent has the type jnt:usersFolder
     then
-        Flush group cache
->       JahiaGroupManagerRoutingService.getInstance().flushSiteKeyIdMap();
+        Flush user cache for node
 end
 
-rule "Flush group cache when adding member"
+rule "Flush group cache when adding group"
     when
         A new node is created
-			- the node has the type jnt:member
+			- the node has the type jnt:group
     then
         Flush group cache for node
 end
 
-rule "Flush group cache when removing member"
+rule "Flush group cache when removing group"
+    when
+        A node is deleted
+        The node has a parent
+            - the parent has the type jnt:groupsFolder
+    then
+        Flush group cache for node
+end
+
+rule "Flush group membership cache when adding member"
+    when
+        A new node is created
+			- the node has the type jnt:member
+    then
+        Flush group membership cache for node
+end
+
+rule "Flush group membership cache when removing member"
     when
         A node is deleted
         The node has a parent
             - the parent has the type jnt:members
     then
-        Flush group cache for node
+        Flush group membership cache for node
 end
 
 rule "Clear site cache when updated"
@@ -184,13 +200,13 @@ rule "Flush privileges in role cache on role deletion"
 >       JahiaAccessManager.flushPrivilegesInRoles();
 end
 
-rule "Flush site key to site id map in jahia group manager routing service on site update"
-    when
-        A property j:siteId has been set on a node
-            - the node has the type jnt:virtualsite
-    then
->       JahiaGroupManagerRoutingService.getInstance().flushSiteKeyIdMap();
-end
+//rule "Flush site key to site id map in jahia group manager routing service on site update"
+//    when
+//        A property j:siteId has been set on a node
+//            - the node has the type jnt:virtualsite
+//    then
+//>       JahiaGroupManagerRoutingService.getInstance().flushSiteKeyIdMap();
+//end
 
 rule "Flush workflow rules cache on update"
     when

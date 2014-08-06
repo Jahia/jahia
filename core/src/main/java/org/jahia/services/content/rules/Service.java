@@ -87,6 +87,7 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
@@ -97,11 +98,9 @@ import org.jahia.services.sites.SitesSettings;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -206,7 +205,7 @@ public class Service extends JahiaService {
                 logger.info("Import site " + uri);
                 //String sitename = st.nextToken() + "_" + st.nextToken();
 
-                if (!user.getJahiaUser().isRoot()) {
+                if (!user.getUserNode().isRoot()) {
                     return;
                 }
 
@@ -218,7 +217,7 @@ public class Service extends JahiaService {
 
         } else if (name.endsWith(".zip")) {
             try {
-                processFileImport(prepareFileImports(node, node.getName()), user.getJahiaUser());
+                processFileImport(prepareFileImports(node, node.getName()), user.getUserNode().getJahiaUser());
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             } catch (ServletException e) {
@@ -414,7 +413,7 @@ public class Service extends JahiaService {
     }
 
     private void processFileImport(List<Map<Object, Object>> importsInfos, JahiaUser user)
-            throws IOException, ServletException, JahiaException {
+            throws IOException, RepositoryException, ServletException, JahiaException {
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
@@ -625,7 +624,7 @@ public class Service extends JahiaService {
 
         boolean resetUser = false;
         if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
             resetUser = true;
         }
 
@@ -676,14 +675,21 @@ public class Service extends JahiaService {
         logger.info("All caches flushed.");
     }
 
-    public void storeUserPasswordHistory(String username, KnowledgeHelper drools) {
-        JahiaUser user = userManagerService.lookupUser(username);
-        if (user != null) {
-            passwordPolicyService.storePasswordHistory(user);
-        } else {
-            logger.warn("Unlable to lookup user for name: " + username
-                    + ". Skip updating user password history.");
-        }
+    public void storeUserPasswordHistory(final String username, KnowledgeHelper drools) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            @Override
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRUserNode user = userManagerService.lookupUser(username, session);
+                if (user != null) {
+                    passwordPolicyService.storePasswordHistory(user);
+                } else {
+                    logger.warn("Unlable to lookup user for name: " + username
+                            + ". Skip updating user password history.");
+                }
+                session.save();
+                return null;
+            }
+        });
     }
 
     public void deployModule(String moduleId, AddedNodeFact site, KnowledgeHelper drools) {
@@ -760,22 +766,33 @@ public class Service extends JahiaService {
         }
     }
 
-    public void flushGroupCaches() {
-        groupManagerService.flushCache();
+    public void flushUserCache(NodeFact node) {
+        try {
+            if (node instanceof AddedNodeFact) {
+                userManagerService.updatePathCacheAdded(node.getPath());
+            } else if (node instanceof DeletedNodeFact) {
+                userManagerService.updatePathCacheRemoved(node.getPath());
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
-    public void flushGroupCaches(NodeFact node) {
+    public void flushGroupCache(NodeFact node) {
         try {
-            JCRNodeWrapper n = node.getParent().getNode();
-            if (n != null && n.isNodeType("jnt:members")) {
-                n = n.getParent();
+            if (node instanceof AddedNodeFact) {
+                groupManagerService.updatePathCacheAdded(node.getPath());
+            } else if (node instanceof DeletedNodeFact) {
+                groupManagerService.updatePathCacheRemoved(node.getPath());
             }
-            if (n != null && n.getResolveSite() != null) {
-                final JahiaGroup jahiaGroup = groupManagerService.lookupGroup(n.getResolveSite().getName(), n.getName());
-                if (jahiaGroup != null) {
-                    groupManagerService.updateCache(jahiaGroup);
-                }
-            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    public void flushGroupMembershipCache(NodeFact node) {
+        try {
+            groupManagerService.flushMembershipCache(node.getPath());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -862,7 +879,7 @@ public class Service extends JahiaService {
 
             boolean resetUser = false;
             if (JCRSessionFactory.getInstance().getCurrentUser() == null) {
-                JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+                JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
                 resetUser = true;
             }
 

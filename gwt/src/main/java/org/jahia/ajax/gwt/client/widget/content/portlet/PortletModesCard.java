@@ -137,7 +137,7 @@ public class PortletModesCard extends PortletWizardCard {
     }
 
     private void initModeMappingEditor(GWTJahiaNodeACL acl) {
-        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getAclContext(), null, Collections.singleton(JCRClientUtils.PORTLET_MODES_ROLES), null);
+        modeMappingEditor = new AclEditor(acl, getPortletWizardWindow().getParentNode().getSiteKey(), null, Collections.singleton(JCRClientUtils.PORTLET_MODES_ROLES), null);
         modeMappingEditor.setAddUsersLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.adduser.label", "Add mode-user permission"));
         modeMappingEditor.setAddGroupsLabel(Messages.get("org.jahia.engines.PortletsManager.wizard.modes.addgroup.label", "Add mode-group permission"));
     }

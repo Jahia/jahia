@@ -73,9 +73,7 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -111,8 +109,8 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -136,7 +134,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -284,7 +281,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 final List<File> files = (List<File>) args;
                 if (!files.isEmpty()) {
                     try {
-                        JCRUser user = JCRUserManagerProvider.getInstance().lookupRootUser();
+                        JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
                         JCRSessionFactory.getInstance().setCurrentUser(user);
                         JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -772,7 +769,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
 
         final CategoriesImportHandler categoriesImportHandler = new CategoriesImportHandler();
-        final UsersImportHandler usersImportHandler = new UsersImportHandler(site);
+        final UsersImportHandler usersImportHandler = new UsersImportHandler(site, session);
 
         boolean legacyImport = false;
         List<String[]> catProps = null;
@@ -1422,10 +1419,17 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     @Override
-    public List<String[]> importUsers(File file) throws IOException {
-        InputStream is = new BufferedInputStream(new FileInputStream(file));
+    public List<String[]> importUsers(final File file) throws IOException, RepositoryException {
+        final InputStream is = new BufferedInputStream(new FileInputStream(file));
         try {
-            return importUsers(is, new UsersImportHandler(), file.getName());
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String[]>>() {
+                @Override
+                public List<String[]>  doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    List<String[]> l = importUsers(is, new UsersImportHandler(session), file.getName());
+                    session.save();
+                    return l;
+                }
+            });
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -1441,11 +1445,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         handleImport(is, importHandler, fileName);
         logger.info("Done importing users in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
         return importHandler.getUuidProps();
-    }
-
-    @Override
-    public List<String[]> importUsersFromZip(File file, JahiaSite site) throws IOException {
-        return importUsersFromZip(file, new UsersImportHandler(site));
     }
 
     private List<String[]> importUsersFromZip(File file, UsersImportHandler usersImportHandler)

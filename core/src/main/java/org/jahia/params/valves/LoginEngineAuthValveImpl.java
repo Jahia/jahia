@@ -73,6 +73,7 @@ package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -88,6 +89,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.springframework.context.ApplicationEvent;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -141,7 +143,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         this.preserveSessionAttributes = preserveSessionAttributes;
     }
 
-    private void enforcePasswordPolicy(JahiaUser theUser) {
+    private void enforcePasswordPolicy(JCRUserNode theUser) {
 //        PolicyEnforcementResult evalResult = ServicesRegistry.getInstance().getJahiaPasswordPolicyService().
 //                enforcePolicyOnLogin(theUser);
 //        if (!evalResult.isSuccess()) {
@@ -162,7 +164,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         final AuthValveContext authContext = (AuthValveContext) context;
         final HttpServletRequest httpServletRequest = authContext.getRequest();
 
-        JahiaUser theUser = null;
+        JCRUserNode theUser = null;
         boolean ok = false;
 
         if (isLoginRequested(httpServletRequest)) {
@@ -182,11 +184,11 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                                 if (!theUser.isAccountLocked()) {
                                     ok = true;
                                 } else {
-                                    logger.warn("Login failed: account for user " + theUser.getUsername() + " is locked.");
+                                    logger.warn("Login failed: account for user " + theUser.getName() + " is locked.");
                                     httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
                                 }
                             } else {
-                                logger.warn("Login failed: user " + theUser.getUsername() + " provided bad password.");
+                                logger.warn("Login failed: user " + theUser.getName() + " provided bad password.");
                                 httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                             }
                         } else {
@@ -215,7 +217,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
 
             httpServletRequest.setAttribute(VALVE_RESULT, OK);
-            authContext.getSessionFactory().setCurrentUser(theUser);
+            authContext.getSessionFactory().setCurrentUser(theUser.getJahiaUser());
 
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
@@ -233,14 +235,18 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                     cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
                     Properties searchCriterias = new Properties();
                     searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                    Set<Principal> foundUsers =
+                    Set<JCRUserNode> foundUsers =
                             ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
                     if (foundUsers.size() > 0) {
                         cookieUserKey = null;
                     }
                 }
                 // let's save the identifier for the user in the database
-                theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                try {
+                    theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
                 // now let's save the same identifier in the cookie.
                 Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
                 authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
@@ -258,7 +264,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             //        String.valueOf(System.currentTimeMillis()));
 
             if (fireLoginEvent) {
-                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, theUser, authContext));
+                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, theUser.getJahiaUser(), authContext));
             }
 
         } else {

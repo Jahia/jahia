@@ -75,6 +75,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.runtime.process.WorkItem;
@@ -104,9 +105,9 @@ public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements
         String userKey = (String) workItem.getParameter("user");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
         final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JahiaUser user = userMgr.lookupUserByKey(userKey);
+        JCRUserNode user = userMgr.lookupUser(userKey);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
-        sessionFactory.setCurrentUser(user);
+        sessionFactory.setCurrentUser(user.getJahiaUser());
         try {
             if (logger.isDebugEnabled()) {
                 for (String id : ids) {

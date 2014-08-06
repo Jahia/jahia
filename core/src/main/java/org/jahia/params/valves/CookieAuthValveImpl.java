@@ -76,8 +76,15 @@ import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRNodeDecorator;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -99,7 +106,7 @@ import java.util.Set;
 public class CookieAuthValveImpl extends BaseAuthValve {
 
     private CookieAuthConfig cookieAuthConfig;
-
+    private static final Logger logger = LoggerFactory.getLogger(CookieAuthValveImpl.class);
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         if (!isEnabled()) {
             valveContext.invokeNext(context);
@@ -107,7 +114,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         }
         
         AuthValveContext authContext = (AuthValveContext) context;
-        JahiaUser jahiaUser = null;
+        JCRUserNode jahiaUser = null;
         // now lets look for a cookie in case we are using cookie-based
         // authentication.
         Cookie[] cookies = cookieAuthConfig.isActivated() ? authContext.getRequest().getCookies() : null;
@@ -133,16 +140,16 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             Properties searchCriterias = new Properties();
             String userPropertyName = cookieAuthConfig.getUserPropertyName();
             searchCriterias.setProperty(userPropertyName, authCookie.getValue());
-            Set<Principal> foundUsers = ServicesRegistry.getInstance().
+            Set<JCRUserNode> foundUsers = ServicesRegistry.getInstance().
                     getJahiaUserManagerService().searchUsers(searchCriterias);
             if (foundUsers.size() == 1) {
-                jahiaUser = (JahiaUser) foundUsers.iterator().next();
+                jahiaUser = foundUsers.iterator().next();
                 if (jahiaUser.isAccountLocked()) {
                     jahiaUser = null;
                 } else {
                     HttpSession session = authContext.getRequest().getSession(false);
                     if (session !=null) {
-                        session.setAttribute(Constants.SESSION_USER, jahiaUser);
+                        session.setAttribute(Constants.SESSION_USER, jahiaUser.getJahiaUser());
                     }
     
                     if (cookieAuthConfig.isRenewalActivated()) {
@@ -153,7 +160,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                             cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
                             searchCriterias = new Properties();
                             searchCriterias.setProperty(userPropertyName, cookieUserKey);
-                            Set<Principal> usersWithKey = ServicesRegistry.getInstance().
+                            Set<JCRUserNode> usersWithKey = ServicesRegistry.getInstance().
                                     getJahiaUserManagerService().
                                     searchUsers(searchCriterias);
                             if (usersWithKey.size() > 0) {
@@ -161,7 +168,11 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                             }
                         }
                         // let's save the identifier for the user in the database
-                        jahiaUser.setProperty(userPropertyName, cookieUserKey);
+                        try {
+                            jahiaUser.setProperty(userPropertyName, cookieUserKey);
+                        } catch (RepositoryException e) {
+                            logger.error(e.getMessage(), e);
+                        }
                         // now let's save the same identifier in the cookie.
                         authCookie.setValue(cookieUserKey);
                         authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
@@ -181,42 +192,15 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             if (authContext.getRequest().getSession(false) != null) {
                 authContext.getRequest().getSession().invalidate();
             }
-            authContext.getSessionFactory().setCurrentUser(jahiaUser);
+            authContext.getSessionFactory().setCurrentUser(jahiaUser.getJahiaUser());
 
-            // do a switch to the user's preferred language
-//            if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
-//                Locale preferredUserLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
-//            }
-
-            enforcePasswordPolicy(jahiaUser, authContext);
-            jahiaUser.setProperty(Constants.JCR_LASTLOGINDATE,
-                    String.valueOf(System.currentTimeMillis()));
+            try {
+                jahiaUser.setProperty(Constants.JCR_LASTLOGINDATE,
+                        String.valueOf(System.currentTimeMillis()));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
-    }
-
-    private void enforcePasswordPolicy(JahiaUser theUser, AuthValveContext authContext) {
-//        PolicyEnforcementResult evalResult =
-//                ServicesRegistry.getInstance().getJahiaPasswordPolicyService().enforcePolicyOnLogin(theUser);
-//        if (!evalResult.isSuccess()) {
-//            EngineMessages policyMsgs = evalResult.getEngineMessages();
-//            EngineMessages resultMessages = new EngineMessages();
-//            for (Iterator<EngineMessage> iterator = policyMsgs.getMessages().iterator(); iterator.hasNext();) {
-//                resultMessages.add((EngineMessage) iterator.next());
-//            }
-//            if (authContext != null) {
-//                authContext.getRequest().getSession().setAttribute(EngineMessages.CONTEXT_KEY, resultMessages);
-//                try {
-//                    String redirectUrl = null;
-//                    redirectUrl = new StringBuffer(64).append(authContext.getRequest().getContextPath())
-//                            .append(Render.getRenderServletPath()).append("/default/en/users").append(theUser.getName())
-//                            .append(".html").toString();
-//                    authContext.getResponse().sendRedirect(redirectUrl);
-//                } catch (Exception ex) {
-//                    logger.error("Unable to forward to the mysettings engine page", ex);
-//                }
-//            }
-//        }
-
     }
 
     public void setCookieAuthConfig(CookieAuthConfig config) {

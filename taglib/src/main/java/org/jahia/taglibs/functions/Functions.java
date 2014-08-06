@@ -221,7 +221,7 @@ public class Functions {
         results = JCRContentUtils.getRolesForNode(node, includeInherited, expandGroups, roles, limit,sortType != null && sortType.equalsIgnoreCase("latestFirst"));
         if (sortByDisplayName) {
             for (Map<String, Object> result : results) {
-                result.put("displayName", PrincipalViewHelper.getFullName((Principal) result.get("principal")));
+                result.put("displayName", PrincipalViewHelper.getFullName((JCRNodeWrapper) result.get("principal")));
             }
             Collections.sort(results, DISPLAY_NAME_COMPARATOR);
         }

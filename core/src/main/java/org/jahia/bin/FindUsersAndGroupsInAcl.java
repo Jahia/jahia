@@ -89,6 +89,8 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
@@ -109,22 +111,22 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
         return "/cms/findUsersAndGroupsInAcl";
     }
 
-    protected Set<Principal> findMatchingPrincipals(List<Map<String, Object>> rolesForNode,
+    protected Set<JCRNodeWrapper> findMatchingPrincipals(List<Map<String, Object>> rolesForNode,
             String queryTerm) {
         if (rolesForNode.isEmpty()) {
             return Collections.emptySet();
         }
         Pattern pattern = Pattern.compile(queryTerm, Pattern.CASE_INSENSITIVE);
-        Set<Principal> matching = new HashSet<Principal>();
+        Set<JCRNodeWrapper> matching = new HashSet<JCRNodeWrapper>();
 
         for (Map<String, Object> principalEntry : rolesForNode) {
-            Principal principal = (Principal) principalEntry.get("principal");
+            JCRNodeWrapper principal = (JCRNodeWrapper) principalEntry.get("principal");
             if ("user".equals(principalEntry.get("principalType"))) {
-                if (userMatches((JahiaUser) principal, pattern)) {
+                if (userMatches((JCRUserNode) principal, pattern)) {
                     matching.add(principal);
                 }
             } else if ("group".equals(principalEntry.get("principalType"))) {
-                if (groupMatches((JahiaGroup) principal, pattern)) {
+                if (groupMatches((JCRGroupNode) principal, pattern)) {
                     matching.add(principal);
                 }
             } else {
@@ -135,15 +137,19 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
         return matching;
     }
 
-    protected boolean groupMatches(JahiaGroup group, Pattern pattern) {
+    protected boolean groupMatches(JCRGroupNode group, Pattern pattern) {
         boolean matches = false;
 
         for (String prop : groupSearchProperties) {
-            String value = "groupname".equals(prop) ? group.getGroupname() : group
-                    .getProperty(prop);
-            if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
-                matches = true;
-                break;
+            try {
+                String value = "groupname".equals(prop) ? group.getName() : group
+                        .getProperty(prop).getString();
+                if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
+                    matches = true;
+                    break;
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -151,7 +157,7 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
     }
 
     @Override
-    protected Set<Principal> search(String queryTerm, HttpServletRequest request) {
+    protected Set<JCRNodeWrapper> search(String queryTerm, HttpServletRequest request) {
         String sourceNodePath = getParameter(request, "sourceNode");
 
         // append wildcard to the search term and convert wildcards to regexp
@@ -178,7 +184,7 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
                 false,
                 getParameter(request, "roles", null), -1, false));
 
-        Set<Principal> result = findMatchingPrincipals(rolesForNode, queryTerm);
+        Set<JCRNodeWrapper> result = findMatchingPrincipals(rolesForNode, queryTerm);
 
         if (logger.isDebugEnabled()) {
             logger.debug("Found {} matching principals in ACL of the node {}", result.size(),
@@ -188,14 +194,18 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
         return result;
     }
 
-    protected boolean userMatches(JahiaUser user, Pattern pattern) {
+    protected boolean userMatches(JCRUserNode user, Pattern pattern) {
         boolean matches = false;
 
         for (String prop : searchProperties) {
-            String value = "username".equals(prop) ? user.getUsername() : user.getProperty(prop);
-            if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
-                matches = true;
-                break;
+            try {
+                String value = "username".equals(prop) ? user.getName() : user.getProperty(prop).getString();
+                if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
+                    matches = true;
+                    break;
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
             }
         }
 

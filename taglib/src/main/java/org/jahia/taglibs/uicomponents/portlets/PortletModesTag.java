@@ -71,6 +71,7 @@
  */
 package org.jahia.taglibs.uicomponents.portlets;
 
+import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;
@@ -237,7 +238,7 @@ public class PortletModesTag extends TagSupport {
             try {
                 EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(new JCRPortletNode(node));
                 if (entryPointInstance == null) {
-                    logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getIdentifier());
+                    logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getIdentifier()+" Or it the portlet is not available anymore.........................................................................................");
                 }
 
                 if (entryPointInstance != null) {
@@ -264,15 +265,20 @@ public class PortletModesTag extends TagSupport {
                         }
                         EntryPointDefinition entryPointDefinition = appBean.getEntryPointDefinitionByName(defName);
                         PortletWindow window = ServicesRegistry.getInstance().getApplicationsManagerService().getPortletWindow(entryPointInstance, portletWindowID, renderContext.getUser(), renderContext.getRequest(), renderContext.getResponse(), pageContext.getServletContext(), node.getSession().getWorkspace().getName());
-                        portletWindowBean = new PortletWindowBean(renderContext.getUser(), renderContext.getRequest(), window);
-                        portletWindowBean.setEntryPointInstance(entryPointInstance);
-                        portletWindowBean.setEntryPointDefinition(entryPointDefinition);
+                        if(window!=null) {
+                            portletWindowBean = new PortletWindowBean(renderContext.getUser(), renderContext.getRequest(), window);
+                            portletWindowBean.setEntryPointInstance(entryPointInstance);
+                            portletWindowBean.setEntryPointDefinition(entryPointDefinition);
+                        }
                     }
                 }
             } catch (RepositoryException e) {
                 throw new JspTagException(e);
             } catch (JahiaException e) {
                 throw new JspTagException(e);
+            } catch (Exception e) {
+                logger.error("Error accessing portlet : "+node.getPath()+" "+e.getMessage());
+                return SKIP_BODY;
             }
 
         } else {

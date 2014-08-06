@@ -74,6 +74,7 @@ package org.jahia.ajax.gwt.commons.server;
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
@@ -215,10 +216,10 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected Locale getUILocale() throws GWTJahiaServiceException {
         Locale sessionLocale = (Locale) getSession().getAttribute(Constants.SESSION_UI_LOCALE);
-        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser(), LanguageCodeConverters.resolveLocaleForGuest(request));
+        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), LanguageCodeConverters.resolveLocaleForGuest(request));
         if (locale == null) {
-            if(JahiaUserManagerService.isNotGuest(getRemoteJahiaUser())) {
-                locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUser());
+            if(!JahiaUserManagerService.isGuest(getRemoteJahiaUser())) {
+                locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode());
             }
             if (locale == null) {
                 locale = getLocale();
@@ -235,6 +236,14 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected JahiaUser getRemoteJahiaUser() {
         return JCRSessionFactory.getInstance().getCurrentUser();
+    }
+
+    protected JCRUserNode getRemoteJahiaUserNode() {
+        JahiaUser jUser = getRemoteJahiaUser();
+        if (jUser == null) {
+            return null;
+        }
+        return JahiaUserManagerService.getInstance().lookupUserByPath(jUser.getLocalPath());
     }
 
     /**

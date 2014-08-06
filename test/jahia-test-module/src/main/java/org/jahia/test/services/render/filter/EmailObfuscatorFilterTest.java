@@ -119,11 +119,10 @@ public class EmailObfuscatorFilterTest extends JahiaTestCase {
                 return s;
             }
         });
-        RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());        
+        RenderContext renderCtx = new RenderContext(getRequest(), getResponse(), getUser());
         
         String result = chain.doFilter(renderCtx, null);
 
         assertFalse("Email found in result : "+result, mailPattern.matcher(result).find());
     }
-
 }

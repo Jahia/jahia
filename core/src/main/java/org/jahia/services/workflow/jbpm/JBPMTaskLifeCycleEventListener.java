@@ -72,19 +72,17 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.jcr.JCRGroup;
-import org.jahia.services.usermanager.jcr.JCRUser;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
-import org.jahia.services.workflow.*;
+import org.jahia.services.usermanager.*;
+import org.jahia.services.workflow.Workflow;
+import org.jahia.services.workflow.WorkflowService;
+import org.jahia.services.workflow.WorkflowTask;
+import org.jahia.services.workflow.WorkflowVariable;
 import org.jahia.services.workflow.jbpm.custom.AbstractTaskLifeCycleEventListener;
 import org.jahia.utils.Patterns;
 import org.jbpm.runtime.manager.impl.task.SynchronizedTaskService;
@@ -182,9 +180,9 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             final List<JahiaPrincipal> principals = new ArrayList<JahiaPrincipal>();
             for (OrganizationalEntity entity : task.getPeopleAssignments().getPotentialOwners()) {
                 if (entity instanceof UserImpl) {
-                    principals.add(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(entity.getId()));
+                    principals.add(JahiaUserManagerService.getInstance().lookupUserByPath(entity.getId()).getJahiaUser());
                 } else if (entity instanceof GroupImpl) {
-                    principals.add(ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroup(entity.getId()));
+                    principals.add(JahiaGroupManagerService.getInstance().lookupGroupByPath(entity.getId()).getJahiaGroup());
                 }
             }
             createTask(task, taskInputParameters, taskOutputParameters, principals);
@@ -214,26 +212,21 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                               final List<JahiaPrincipal> candidates) throws RepositoryException {
         final Workflow workflow = workflowProvider.getWorkflow(Long.toString(task.getTaskData().getProcessInstanceId()), null);
 
-        String username = (String) taskInputParameters.get("user");
-        if (username == null) {
-            username = workflow.getStartUser();
+        String userPath = (String) taskInputParameters.get("user");
+        if (userPath == null) {
+            userPath = workflow.getStartUser();
         }
-        final JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(username);
+        final JCRUserNode user = JahiaUserManagerService.getInstance().lookupUserByPath(userPath);
 
         if (user != null) {
             String workspace = (String) taskInputParameters.get("workspace");
             if (workspace == null) {
                 workspace = (String) workflow.getVariables().get("workspace");
             }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), workspace, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    JCRUser jcrUser;
-                    if (user instanceof JCRUser) {
-                        jcrUser = (JCRUser) user;
-                    } else {
-                        jcrUser = ((JCRUserManagerProvider) SpringContextSingleton.getBean("JCRUserManagerProvider")).lookupExternalUser(user);
-                    }
-                    JCRNodeWrapper n = jcrUser.getNode(session);
+
+                    JCRNodeWrapper n = session.getNode(user.getPath());
                     JCRNodeWrapper tasks;
 
                     if (!n.hasNode("workflowTasks")) {
@@ -267,7 +260,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     ValueFactory valueFactory = session.getValueFactory();
                     for (JahiaPrincipal principal : candidates) {
                         if (principal instanceof JahiaGroup) {
-                            candidatesArray.add(valueFactory.createValue("g:" + ((JCRGroup) principal).getGroupKey()));
+                            candidatesArray.add(valueFactory.createValue("g:" + ((JahiaGroup) principal).getGroupKey()));
                         } else if (principal instanceof JahiaUser) {
                             candidatesArray.add(valueFactory.createValue("u:" + principal.getName()));
                         }

@@ -69,87 +69,40 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.ajax.gwt.client.data;
+package org.jahia.services.usermanager;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-import java.io.Serializable;
-import java.util.Collection;
+import org.jahia.services.cache.ClassLoaderAwareCacheEntry;
 
 /**
+ * Wrapper for the cache entry to use the chained class loader of all registered user/group providers, if more than one is registered.
  * 
- * User: toto
- * Date: Nov 5, 2008
- * Time: 2:53:01 PM
- * 
+ * @author Sergiy Shyrkov
  */
-public class GWTJahiaGroup extends GWTJahiaValueDisplayBean implements GWTJahiaPrincipal {
-    public GWTJahiaGroup() {
-    }
+public class ProviderClassLoaderAwareCacheEntry extends ClassLoaderAwareCacheEntry {
+    private static final long serialVersionUID = -4281419239864698107L;
 
-    public GWTJahiaGroup(String groupName, String groupKey, String displayableName) {
-        super(groupKey, displayableName);
-        setGroupname(groupName);
-        setGroupKey(groupKey) ;
-    }
-
-    public String getGroupname() {
-        return get("groupname") ;
-    }
-
-    public String getName() {
-        return get("name") ;
-    }
-
-    public void setGroupname(String username) {
-        set("groupname", username) ;
-        set("name", username) ;
-    }
-
-    public String getGroupKey() {
-        return get("groupKey") ;
-    }
-
-    public String getKey() {
-        return get("groupKey") ;
-    }
-
-    public void setGroupKey(String userKey) {
-        set("groupKey", userKey) ;
-        set("key", userKey) ;
-    }
-
-    public void setSiteName (String serverName) {
-        set("siteName",serverName);
-    }
-
-    public String getSiteName(){
-        return get("siteName");
-    }
-
-    public void setSiteId (Integer siteId) {
-        set("siteId",siteId);
-    }
-
-    public Integer getSiteId(){
-        return get("siteId");
-    }
-
-    public void setProvider (String provider) {
-        set("provider",provider);
-    }
-
-    public String getProvider(){
-        return get("provider");
+    public ProviderClassLoaderAwareCacheEntry(Object value) {
+        super(value);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof GWTJahiaGroup && getGroupKey().equals(((GWTJahiaGroup)obj).getGroupKey());
+    protected void beforeReadObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        // do nothing
     }
 
     @Override
-    public int hashCode() {
-        return getGroupKey() != null ? getGroupKey().hashCode() : 0;
+    protected void beforeWriteObject(ObjectOutputStream out) throws IOException {
+        // do nothing
     }
+
+    @Override
+    protected ClassLoader getClassLoaderToUse() {
+//        return JCRGroupManagerProvider.getInstance().getChainedClassloader();
+        return null;
+    }
+
 }

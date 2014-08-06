@@ -72,6 +72,7 @@
 package org.jahia.services.cache.ehcache;
 
 import net.sf.ehcache.Cache;
+import net.sf.ehcache.Ehcache;
 
 /**
  * Base cache information and statistics.
@@ -81,7 +82,7 @@ import net.sf.ehcache.Cache;
 public class CacheInfo extends BaseCacheInfo {
     private static final long serialVersionUID = -2400940258119747703L;
 
-    private Cache cache;
+    private Ehcache cache;
 
     /**
      * Initializes an instance of this class.
@@ -89,12 +90,12 @@ public class CacheInfo extends BaseCacheInfo {
      * @param cache
      *            the underlying cache instance
      */
-    public CacheInfo(Cache cache) {
+    public CacheInfo(Ehcache cache) {
         super();
         this.cache = cache;
     }
 
-    public Cache getCache() {
+    public Ehcache getCache() {
         return cache;
     }
 

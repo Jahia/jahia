@@ -231,7 +231,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         if (keyPart.equals(PER_USER)) {
-            keyPart = renderContext.getUser().getUsername();
+            keyPart = renderContext.getUser().getName();
         } else {
             String[] paths = keyPart.split(",");
             SortedSet<String> aclKeys = new TreeSet<String>();
@@ -240,7 +240,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     if (s.equals(MR_ACL)) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false));
                     } else if (s.equals(LOGGED_USER)) {
-                        aclKeys.add(Boolean.toString(renderContext.getUser().getUsername().equals(JahiaUserManagerService.GUEST_USERNAME)));
+                        aclKeys.add(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
                     } else if (s.startsWith("*")) {
                         aclKeys.add(getAclKeyPartForNode(renderContext, URLDecoder.decode(s.substring(1), "UTF-8"), renderContext.getUser(), new HashSet<String>(), true));
                     } else {
@@ -270,13 +270,14 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-        l.add(getPrincipalAcl("u:" + principal.getName(), 0));
+        l.add(getPrincipalAcl("u:" + principal.getName(), null));
 
-        List<String> groups = groupManagerService.getUserMembership(principal);
+        List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
 
         for (String group : groups) {
-            JahiaGroup g = groupManagerService.lookupGroup(group);
-            l.add(getPrincipalAcl("g:" + g.getName(), g.getSiteID()));
+            String groupName = StringUtils.substringAfterLast(group, "/");
+            String siteName = group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null;
+            l.add(getPrincipalAcl("g:" + groupName, siteName));
         }
 
         Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
@@ -330,8 +331,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
-    private Map<String, Set<String>> getPrincipalAcl(final String key, final int siteId) throws RepositoryException {
-        final String cacheKey = key + ":" + siteId;
+    private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+        final String cacheKey = aclKey + ":" + siteKey;
         Element element = cache.get(cacheKey);
         if (element == null) {
             Semaphore semaphore = processings.get(cacheKey);
@@ -353,7 +354,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     @SuppressWarnings("unchecked")
                     public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + key + "'",
+                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + aclKey + "'",
                                 Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();
@@ -363,13 +364,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
-                            if (key.startsWith("g:") && siteId != node.getResolveSite().getID() && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteId != 0)) {
+                            if (aclKey.startsWith("g:") && !node.getResolveSite().getName().equals(siteKey) && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteKey != null)) {
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();
-                            if (path.startsWith("/sites/")) {
-
-                            }
                             Set<String> foundRoles = new HashSet<String>();
                             boolean granted = node.getProperty("j:aceType").getString().equals("GRANT");
                             Value[] roles = node.getProperty(Constants.J_ROLES).getValues();

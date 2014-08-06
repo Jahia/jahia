@@ -72,6 +72,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -93,11 +94,11 @@ public class ACLHelper {
     }
 
     public GWTJahiaNodeACE createUsersGroupACE(List<String> permissions, boolean grand, JCRSiteNode site) {
-        JahiaGroup usersGroup = jahiaGroupManagerService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.USERS_GROUPNAME);
+        JCRGroupNode usersGroup = jahiaGroupManagerService.lookupGroup(site.getSiteKey(), JahiaGroupManagerService.USERS_GROUPNAME);
         GWTJahiaNodeACE ace = new GWTJahiaNodeACE();
         ace.setPrincipalType('g');
-        ace.setPrincipal(usersGroup.getGroupname());
-        ace.setPrincipalKey(usersGroup.getGroupKey());
+        ace.setPrincipal(usersGroup.getName());
+        ace.setPrincipalKey(usersGroup.getPath());
         Map<String, Boolean> permissionsMap = new HashMap<String, Boolean>();
         for (String perm : permissions) {
             if (grand) {

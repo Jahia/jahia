@@ -104,7 +104,7 @@ public class GroupModel implements Serializable {
     }
 
     @SuppressWarnings("deprecation")
-    static boolean validateGroupName(String name, int siteId, MessageContext context) {
+    static boolean validateGroupName(String name, String siteId, MessageContext context) {
         boolean valid = false;
         if (StringUtils.isBlank(name)) {
             addErrorI18n(context, "siteSettings.groups.errors.groupname.mandatory");
@@ -125,51 +125,51 @@ public class GroupModel implements Serializable {
 
     private String groupname;
 
-    private int siteId;
+    private String siteKey;
 
     public GroupModel() {
         super();
     }
 
-    public GroupModel(int siteId) {
+    public GroupModel(String siteKey) {
         this();
-        this.siteId = siteId;
+        this.siteKey = siteKey;
     }
 
     public String getGroupname() {
         return groupname;
     }
 
-    public int getSiteId() {
-        return siteId;
+    public String getSiteKey() {
+        return siteKey;
     }
 
     public void setGroupname(String groupname) {
         this.groupname = groupname;
     }
 
-    public void setSiteId(int siteId) {
-        this.siteId = siteId;
+    public void setSiteKey(String siteKey) {
+        this.siteKey = siteKey;
     }
 
     /**
      * Performs validation of the group name for syntax and also the group for existence.
-     * 
+     *
      * @param context
      *            the current validation context object
      */
     public void validateCopyGroup(ValidationContext context) {
-        validateGroupName(groupname, siteId, context.getMessageContext());
+        validateGroupName(groupname, siteKey, context.getMessageContext());
     }
 
     /**
      * Performs validation of the group name for syntax and also the group for existence.
-     * 
+     *
      * @param context
      *            the current validation context object
      */
     public void validateCreateGroup(ValidationContext context) {
-        validateGroupName(groupname, siteId, context.getMessageContext());
+        validateGroupName(groupname, siteKey, context.getMessageContext());
     }
 
 }

@@ -198,7 +198,6 @@
                                 <list/>
                             </property>
                         </bean>
-                        <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                         </bean>
                         <ref bean="urlResolverListener" />
@@ -296,7 +295,6 @@
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
                         <ref bean="org.jahia.services.templates.JCRModuleListener"/>
-                        <bean class="org.jahia.services.content.JCRUserPropertyModificationListener"/>
                         <ref bean="urlResolverListener" />
                         <bean class="org.jahia.services.history.NodeVersionHistoryListener">
                             <property name="schedulerService" ref="SchedulerService"/>

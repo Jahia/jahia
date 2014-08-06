@@ -75,26 +75,26 @@ import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
-import org.jahia.api.Constants;
-import org.jahia.osgi.FrameworkService;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.JahiaAfterInitializationService;
-import org.jahia.services.SpringContextSingleton;
-import org.osgi.framework.BundleException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.pluto.driver.PortalStartupListener;
 import org.codehaus.plexus.util.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.osgi.FrameworkService;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
+import org.osgi.framework.BundleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
@@ -106,7 +106,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.jstl.core.Config;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -338,7 +337,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     private void initJahiaAfterInitializationServices() throws JahiaInitializationException {
         try {
-            JCRSessionFactory.getInstance().setCurrentUser(JCRUserManagerProvider.getInstance().lookupRootUser());
+            JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
 
             // initializing core services
             for (JahiaAfterInitializationService service : SpringContextSingleton.getInstance().getContext()

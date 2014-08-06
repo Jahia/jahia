@@ -76,7 +76,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -109,7 +108,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getRealNode();
     }
 
-    public JahiaUser getUser() {
+    public JCRUserNode getUser() {
         return node.getUser();
     }
 

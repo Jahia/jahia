@@ -74,13 +74,16 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
@@ -92,10 +95,12 @@ import java.util.*;
  * Time: 2:47:08 PM
  */
 public class ContentHubHelper {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
     private ContentManagerHelper contentManager;
+    private JahiaUserManagerService userManagerService;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
@@ -147,24 +152,31 @@ public class ContentHubHelper {
     public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
-        for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
-            if ("storedPasswords".equals(provider.getAuthenticationType())) {
-                results.put(provider.getKey(), user.getProperty("storedUsername_" + provider.getKey()));
+        JCRUserNode userNode = userManagerService.lookupUserByPath(user.getLocalPath());
+        if (userNode != null) {
+            for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
+                if ("storedPasswords".equals(provider.getAuthenticationType())) {
+                    results.put(provider.getKey(), userNode.getPropertyAsString("storedUsername_" + provider.getKey()));
+                }
             }
         }
         return results;
     }
 
-    public void storePasswordForProvider(JahiaUser user, String providerKey, String username, String password) {
-        if (username == null) {
-            user.removeProperty("storedUsername_" + providerKey);
-        } else {
-            user.setProperty("storedUsername_" + providerKey, username);
-        }
-        if (password == null) {
-            user.removeProperty("storedPassword_" + providerKey);
-        } else {
-            user.setProperty("storedPassword_" + providerKey, password);
+    public void storePasswordForProvider(JCRUserNode user, String providerKey, String username, String password) {
+        try {
+            if (username == null) {
+                user.getProperty("storedUsername_" + providerKey).remove();
+            } else {
+                user.setProperty("storedUsername_" + providerKey, username);
+            }
+            if (password == null) {
+                user.getProperty("storedPassword_" + providerKey).remove();
+            } else {
+                user.setProperty("storedPassword_" + providerKey, password);
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -178,5 +190,9 @@ public class ContentHubHelper {
 
     public void setContentManager(ContentManagerHelper contentManager) {
         this.contentManager = contentManager;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 }

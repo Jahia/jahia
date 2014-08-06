@@ -75,9 +75,9 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -89,7 +89,6 @@ import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -309,12 +308,12 @@ public class AclListener extends DefaultEventListener {
 
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
-                final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        Principal p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
-                        if (priv.isMember(p)) {
+                        if (p == null || priv.isMember(p)) {
                             continue;
                         }
                         logger.info(principal + " need privileged access");
@@ -325,12 +324,12 @@ public class AclListener extends DefaultEventListener {
 
             for (Map.Entry<String, Set<String>> entry : privilegedToCheck.entrySet()) {
                 final String site = entry.getKey();
-                final JahiaGroup priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME);
+                final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        Principal p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
 
-                        if (!priv.isMember(p)) {
+                        if (p == null || !priv.isMember(p)) {
                             continue;
                         }
 
@@ -364,6 +363,8 @@ public class AclListener extends DefaultEventListener {
                 }
             }
         }
+
+        systemSession.save();
     }
 
     private void handleAclModifications(JCRSessionWrapper session, JCRSessionWrapper defaultSession, Set<String> roles, JCRNodeWrapper ace, String principal, Map<String, Set<String>> privilegedAdded, Map<String, Set<String>> privilegedRemoved, Map<String, JCRNodeWrapper> roleNodes, boolean isNewAce, boolean publish) throws RepositoryException {
@@ -426,12 +427,16 @@ public class AclListener extends DefaultEventListener {
         return null;
     }
 
-    private Principal getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
-        Principal p = null;
+    private JCRNodeWrapper getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
+        JCRNodeWrapper p = null;
+        String principalName = principal.substring(2);
         if (principal.startsWith("u:")) {
-            p = userService.lookupUser(principal.substring(2));
-        } else if (principal.length() > 2) {
-            p = groupService.lookupGroup(site, principal.substring(2));
+            p = userService.lookupUser(principalName);
+        } else if (principal.startsWith("g:")) {
+            p = groupService.lookupGroup(site, principalName);
+            if (p == null) {
+                p = groupService.lookupGroup(null, principalName);
+            }
         }
         return p;
     }
@@ -541,7 +546,8 @@ public class AclListener extends DefaultEventListener {
             refAce.setProperty("j:roles", new String[]{role});
             refAce.setProperty("j:externalPermissionsName", externalPermissions.getName());
             refAce.setProperty("j:protected", true);
-            refAce.setProperty("j:sourceAce", new Value[]{session.getValueFactory().createValue(ace, true)});
+            refAce.setProperty("j:sourceAce",
+ new Value[]{session.getValueFactory().createValue(ace, true)});
         } else {
             JCRNodeWrapper refAce = acl.getNode(n);
             if (refAce.hasProperty("j:sourceAce")) {

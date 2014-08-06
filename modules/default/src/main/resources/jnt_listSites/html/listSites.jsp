@@ -85,7 +85,6 @@
         </c:choose>
         <c:choose>
             <c:when test="${not empty node and (jcr:hasPermission(node,'editModeAccess') || jcr:hasPermission(node,'contributeModeAccess'))}">
-                    <c:set var="siteId" value="${node.properties['j:siteId'].long}"/>
                     <c:set var="baseLive" value="${url.baseLive}"/>
                     <c:set var="basePreview" value="${url.basePreview}"/>
                     <c:set var="baseContribute" value="${url.baseContribute}"/>

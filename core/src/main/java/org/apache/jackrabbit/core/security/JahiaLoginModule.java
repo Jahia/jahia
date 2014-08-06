@@ -76,9 +76,9 @@ import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
 import org.slf4j.Logger;
 
 import javax.jcr.Credentials;
@@ -89,7 +89,10 @@ import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
 import java.security.Principal;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -108,8 +111,6 @@ public class JahiaLoginModule implements LoginModule {
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
     private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
 
-    private JahiaUserManagerService userService;
-
     private Subject subject;
     private Set<Principal> principals = new HashSet<Principal>();
     private CallbackHandler callbackHandler;
@@ -121,7 +122,6 @@ public class JahiaLoginModule implements LoginModule {
         this.callbackHandler = callbackHandler;
         this.sharedState = sharedState;
         this.options = options;
-        this.userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
     }
 
     public boolean login() throws LoginException {
@@ -153,17 +153,9 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
 
-                    JahiaUser user = null;
-                    if (userService != null) {
-                        user = userService.lookupUser(name);
-                    } else {
-                        // this can happen if we are still starting up.
-                        user = JCRUserManagerProvider.getInstance().lookupUser(name);
-                    }
-
-                    if ((token != null) || user.verifyPassword(key)) {
+                    if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(name).verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));
-                        if (user.isAdminMember(0)) {
+                        if (JahiaGroupManagerService.getInstance().isAdminMember(name, null)) {
                             principals.add(new AdminPrincipal(name));
                         }
                     }

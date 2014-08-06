@@ -423,7 +423,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaPortletDefinition> searchPortlets(String match) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException;
+    PagingLoadResult<GWTJahiaNode> searchSQL(String searchString, int limit, int offset, List<String> nodeTypes, List<String> fields, boolean sortOnDisplayName) throws GWTJahiaServiceException;
 
     /**
      * Updates the module's pom.xml file with the specified distribution server details and returns the module release information.
@@ -514,6 +514,8 @@ public interface JahiaContentManagementService extends RemoteService {
     List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
 
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
+
+    String[] getFormattedPrincipal(String key, char type, String[] textpattern);
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

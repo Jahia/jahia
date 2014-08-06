@@ -86,9 +86,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRComponentNode;
-import org.jahia.services.content.decorator.JCRFileNode;
-import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -1220,7 +1218,7 @@ public final class JCRContentUtils implements ServletContextAware {
             return false;
         }
 
-        String username = node.getSession().getUser().getUsername();
+        String username = node.getSession().getUser().getName();
         String lockOwner = node.getLockOwner();
         boolean isLocked = node.isLocked() && (lockOwner == null || !lockOwner.equals(username));
         try {
@@ -1572,7 +1570,7 @@ public final class JCRContentUtils implements ServletContextAware {
             Map<String, Object> m = new HashMap<String, Object>();
             String entryKey = entry.getKey();
             if (entryKey.startsWith("u:")) {
-                JahiaUser u = userService.lookupUser(StringUtils.substringAfter(entryKey, "u:"));
+                JCRUserNode u = userService.lookupUser(StringUtils.substringAfter(entryKey, "u:"));
                 if (u == null) {
                     logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
                     continue;
@@ -1580,17 +1578,9 @@ public final class JCRContentUtils implements ServletContextAware {
                 m.put("principalType", "user");
                 m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
-                if (siteKey == null) {
-                    try {
-                        JCRSiteNode resolveSite = node.getResolveSite();
-                        siteKey = resolveSite != null ? resolveSite.getSiteKey() : null;
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                JahiaGroup g = groupService.lookupGroup(siteKey, StringUtils.substringAfter(entryKey, "g:"));
+                JCRGroupNode g = groupService.lookupGroupByPath(StringUtils.substringAfter(entryKey, "g:"));
                 if (g == null) {
-                    logger.warn("Group {} cannot be found for site with ID={}. Skipping.", StringUtils.substringAfter(entryKey, "g:"), siteKey);
+                    logger.warn("Group {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "g:"));
                     continue;
                 }
                 m.put("principalType", "group");
@@ -1626,9 +1616,9 @@ public final class JCRContentUtils implements ServletContextAware {
             List<Map<String, Object>> expandedResults = new LinkedList<Map<String, Object>>();
             for (Map<String, Object> result : results) {
                 if (result.get("principalType").equals("group")) {
-                    JahiaGroup g = (JahiaGroup) result.get("principal");
-                    Set<Principal> principals = g.getRecursiveUserMembers();
-                    for (Principal user : principals) {
+                    JCRGroupNode g = (JCRGroupNode) result.get("principal");
+                    Set<JCRUserNode> principals = g.getRecursiveUserMembers();
+                    for (JCRUserNode user : principals) {
                         Map<String, Object> m = new HashMap<String, Object>(result);
                         m.put("principalType", "user");
                         m.put("principal", user);

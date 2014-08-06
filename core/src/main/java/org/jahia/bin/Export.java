@@ -168,7 +168,7 @@ public class Export extends JahiaController implements ServletContextAware {
             }
 
             if ("all".equals(exportFormat)) {
-                if (!getCurrentUser().isRoot()) {
+                if (!session.getUserNode().isRoot()) {
                     throw new JahiaUnauthorizedException("Only root user can perform export of all content");
                 }
 
@@ -187,7 +187,7 @@ public class Export extends JahiaController implements ServletContextAware {
                 importExportService.exportAll(outputStream, params);
                 outputStream.close();
             } else if ("site".equals(exportFormat)) {
-                if (!getCurrentUser().isRoot()) {
+                if (!session.getUserNode().isRoot()) {
                     throw new JahiaUnauthorizedException("Only root user can perform export of a site");
                 }
 

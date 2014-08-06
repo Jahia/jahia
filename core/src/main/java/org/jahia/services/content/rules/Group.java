@@ -71,6 +71,9 @@
  */
 package org.jahia.services.content.rules;
 
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 
@@ -78,6 +81,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 
@@ -87,28 +91,22 @@ import java.util.List;
  * 
  */
 public class Group {
-    private JahiaGroup group;
+    private JCRGroupNode group;
 
-    public Group(JahiaGroup group) {
+    public Group(JCRGroupNode group) {
         this.group = group;
     }
 
     public String getName() {
-        return group.getGroupname();
+        return group.getName();
     }
 
     public List<User> getUsers() {
         List<User> r = new ArrayList<User>();
-        Enumeration<Principal> en = group.members();
-        while (en.hasMoreElements()) {
-            Principal p = en.nextElement();
-            if (p instanceof JahiaUser) {
-                JahiaUser user = (JahiaUser)p;
-                r.add(new User(user));
-            } else {
-                JahiaGroup group = (JahiaGroup)p;
-            }
-
+        Set<JCRUserNode> en = group.getRecursiveUserMembers();
+        for (JCRNodeWrapper nodeWrapper : en) {
+            JCRUserNode user = (JCRUserNode)nodeWrapper;
+            r.add(new User(user));
         }
         return r;
     }

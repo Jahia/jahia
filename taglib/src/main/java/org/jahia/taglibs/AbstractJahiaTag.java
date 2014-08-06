@@ -71,7 +71,6 @@
  */
 package org.jahia.taglibs;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.fmt.BundleSupport;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -83,13 +82,16 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.jstl.fmt.LocalizationContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
-import java.util.*;
+import java.util.Locale;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 /**
  * This abstract Tag is the starting point for implementing any knew tags. In contains common attributes that should be

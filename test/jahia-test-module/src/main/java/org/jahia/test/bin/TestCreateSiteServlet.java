@@ -196,9 +196,7 @@ public class TestCreateSiteServlet extends BaseTestController {
                 Iterator<JCRSiteNode> sites = ServicesRegistry.getInstance().getJahiaSitesService().getSitesNodeList().iterator();
                 while (sites.hasNext()) {
                     JCRSiteNode siteToDelete = sites.next();
-                    if (siteToDelete.getID() != 1) {
-                        TestHelper.deleteSite(siteToDelete.getSiteKey());
-                    }
+                    TestHelper.deleteSite(siteToDelete.getSiteKey());
                 }
             } catch (Exception e) {
                 logger.warn("Exception during test tearDown", e);

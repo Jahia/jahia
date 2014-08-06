@@ -4,8 +4,6 @@
 <%@page import="org.apache.commons.lang.StringUtils" %>
 <%@page import="org.jahia.services.content.JCRSessionFactory" %>
 <%@page import="org.jahia.services.content.JCRSessionWrapper" %>
-<%@page import="org.jahia.services.usermanager.jcr.JCRUser" %>
-<%@page import="org.jahia.services.usermanager.jcr.JCRUserManagerProvider" %>
 <%@page import="org.jahia.services.workflow.Workflow" %>
 <%@ page import="org.jahia.services.workflow.WorkflowService" %>
 <%@ page import="org.jahia.services.workflow.WorkflowTask" %>
@@ -14,6 +12,8 @@
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
 <%@ page import="javax.jcr.RepositoryException" %>
 <%@ page import="javax.jcr.ItemNotFoundException" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUserManagerService" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
@@ -30,7 +30,7 @@
 
 <%
 
-    final JCRUser user = JCRUserManagerProvider.getInstance().lookupRootUser();
+    final JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
     JCRSessionFactory.getInstance().setCurrentUser(user);
     JCRSessionWrapper jcrSession = JCRSessionFactory.getInstance().getCurrentUserSession();
 %>

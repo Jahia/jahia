@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.client.service.content;
 
+import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
@@ -362,7 +363,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void searchPortlets(String match, AsyncCallback<List<GWTJahiaPortletDefinition>> async);
 
-    void searchSQL(String searchString, int limit, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean sortOnDisplayName, AsyncCallback<List<GWTJahiaNode>> async);
+    void searchSQL(String searchString, int limit, int offset, List<String> nodeTypes, List<String> fields, boolean sortOnDisplayName, AsyncCallback<PagingLoadResult<GWTJahiaNode>> async);
 
     void setDistributionServerForModule(String module, GWTModuleReleaseInfo info,
             AsyncCallback<GWTModuleReleaseInfo> async);
@@ -438,4 +439,7 @@ public interface JahiaContentManagementServiceAsync {
     void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
 
     void getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount, AsyncCallback<List<GWTJahiaValueDisplayBean>> async);
+
+    void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
+
 }

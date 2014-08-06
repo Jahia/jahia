@@ -17,7 +17,6 @@
                 /**/contentManager.gwt=contentManagerServiceController
                 /**/subscription.gwt=subscriptionServiceController
                 /**/toolbar.gwt=toolbarServiceController
-                /**/userManager.gwt=userManagerServiceController
             </value>
         </property>
     </bean>
@@ -65,15 +64,6 @@
         <property name="remoteServiceName" value="gwtToolbarService"/>
     </bean>
 
-    <bean name="userManagerServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtUserManagerService"/>
-    </bean>
-    <bean name="gwtUserManagerService" class="org.jahia.ajax.gwt.commons.server.rpc.UserManagerServiceImpl" scope="prototype">
-        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
-        <property name="userManagerService" ref="JahiaUserManagerService"/>
-        <property name="sitesService" ref="JahiaSitesService"/>
-    </bean>
-    
     <bean name="subscriptionServiceController" parent="abstractServiceController">
         <property name="remoteServiceName" value="gwtSubscriptionService"/>
     </bean>

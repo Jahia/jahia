@@ -4,7 +4,7 @@
  * Date: 11/8/13
  * Time: 9:28 AM
  */
-if(currentNode.hasNode("j:keywords") == true){
+if(currentNode.hasProperty("j:keywords")){
     keywords = currentNode.getProperty("j:keywords").getValues();
     keywordsSize =  keywords.size();
     for(int i = 0 ; i < keywordsSize ; i++){

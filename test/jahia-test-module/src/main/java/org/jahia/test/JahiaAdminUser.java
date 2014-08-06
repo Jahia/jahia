@@ -72,6 +72,8 @@
  package org.jahia.test;
 
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -89,17 +91,17 @@ import java.util.HashMap;
  */
 public class JahiaAdminUser {
 
-    public static Map adminUser = new HashMap();
+    public static Map<String, JahiaUser> adminUser = new HashMap<String, JahiaUser>();
 
-    public static synchronized JahiaUser getAdminUser(int siteId){
-        JahiaUser user = (JahiaUser)adminUser.get(new Integer(siteId));
+    public static synchronized JahiaUser getAdminUser(String siteKey){
+        JahiaUser user = adminUser.get(siteKey);
         if ( user == null ){
-            JahiaGroup adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
-                    .lookupGroup(siteId, siteId == 0 ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+            JCRGroupNode adminGroup = ServicesRegistry.getInstance().getJahiaGroupManagerService()
+                    .lookupGroup(siteKey, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
             Set members = adminGroup.getRecursiveUserMembers();
             if ( members.iterator().hasNext() ){
-                user = (JahiaUser)members.iterator().next();
-                adminUser.put(new Integer(siteId), user);
+                user = ((JCRUserNode)members.iterator().next()).getJahiaUser();
+                adminUser.put(siteKey, user);
             }
         }
         return user;

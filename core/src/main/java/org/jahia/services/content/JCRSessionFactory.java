@@ -75,9 +75,9 @@ import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.services.usermanager.jcr.JCRUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -198,9 +198,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
         JahiaUser user = getCurrentUser();
 
-        if (system) {
-            username = null;
-        } else if (JahiaUserManagerService.isGuest(user)) {
+        if (JahiaUserManagerService.isGuest(user)) {
             username = JahiaLoginModule.GUEST;
         } else {
             username = user.getUsername();
@@ -223,15 +221,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
         if (s == null || !s.isLive()) {
             if (system) {
-                s = login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, fallbackLocale);
+                s = login(JahiaLoginModule.getSystemCredentials(), workspace, locale, fallbackLocale);
                 wsMap.put(key, s);
             } else {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
                     s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
                     // should be done somewhere else, call can be quite expensive
-                    if (!(user instanceof JCRUser)) {
+                    //Todo rewrite with new User/Group API
+                    /*if (!(user instanceof JCRUser)) {
                         mountPoints.get("/").deployExternalUser(user);
-                    }
+                    }*/
                 } else {
                     s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
                 }
@@ -341,9 +340,9 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             JahiaUser user = null;
             if (!jahiaPrincipal.getName().startsWith(JahiaLoginModule.SYSTEM)) {
                 if (jahiaPrincipal.isGuest()) {
-                    user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
+                    user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser();
                 } else {
-                    user = userService.lookupUser(jahiaPrincipal.getName());
+                    user = userService.lookupUser(jahiaPrincipal.getName()).getJahiaUser();
                 }
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);

@@ -86,12 +86,9 @@ import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSite;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.UserManagerService;
-import org.jahia.ajax.gwt.client.service.UserManagerServiceAsync;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.SearchField;
@@ -110,39 +107,37 @@ public class UserGroupSelect extends Window {
     public static final int VIEW_GROUPS = 2;
     public static final int VIEW_TABS = 3;
     public static final int VIEW_ROLES = 4;
-    private JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
     private SearchField userSearchField;
     private String lastUserSearchValue;
     private SearchField groupSearchField;
     private String lastGroupSearchValue;
     private ListStore<GWTJahiaSite> sites;
     private String selectedSite;
-    private Grid<GWTJahiaUser> userGrid;
-    private Grid<GWTJahiaGroup> groupGrid;
-    private String aclContext;
+    private Grid<GWTJahiaNode> userGrid;
+    private Grid<GWTJahiaNode> groupGrid;
+    private String siteKey;
     private boolean singleSelectionMode;
 
-    public UserGroupSelect (final UserGroupAdder target, int viewMode, String aclContext) {
-        this(target, viewMode, aclContext, false);
+    public UserGroupSelect (final UserGroupAdder target, int viewMode, String siteKey) {
+        this(target, viewMode, siteKey, false);
     }
     
-    public UserGroupSelect (final UserGroupAdder target, int viewMode, String aclContext, boolean singleSelectionMode) {
-        this.aclContext = aclContext;
+    public UserGroupSelect (final UserGroupAdder target, int viewMode, String siteKey, boolean singleSelectionMode) {
+        this.siteKey = siteKey;
         this.singleSelectionMode = singleSelectionMode;
         setModal(true);
         setSize(500, 500);
         setLayout(new FitLayout());
-        final UserManagerServiceAsync service = UserManagerService.App.getInstance();
 
         switch (viewMode) {
             case VIEW_TABS:
-                ContentPanel userPanel = getUserPanel(target, service);
+                ContentPanel userPanel = getUserPanel(target);
 
                 TabItem userTab = new TabItem(Messages.get("label.users", "Users"));
                 userTab.setLayout(new FitLayout());
                 userTab.add(userPanel);
 
-                ContentPanel groupsPanel = getGroupsPanel(target, service);
+                ContentPanel groupsPanel = getGroupsPanel(target);
 
                 TabItem groupsTab = new TabItem(Messages.get("label.groups", "Groups"));
                 groupsTab.setLayout(new FitLayout());
@@ -154,19 +149,19 @@ public class UserGroupSelect extends Window {
                 add(tabs);
                 break;
             case VIEW_USERS:
-                add(getUserPanel(target, service));
+                add(getUserPanel(target));
                 break;
             case VIEW_GROUPS:
-                add(getGroupsPanel(target, service));
+                add(getGroupsPanel(target));
                 break;
         }
         Button add = new Button(Messages.get("label.add", "Add"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 if (userGrid != null) {
-                    target.addUsers(userGrid.getSelectionModel().getSelectedItems());
+                    target.addUsersGroups(userGrid.getSelectionModel().getSelectedItems());
                 }
                 if (groupGrid != null) {
-                    target.addGroups(groupGrid.getSelectionModel().getSelectedItems());
+                    target.addUsersGroups(groupGrid.getSelectionModel().getSelectedItems());
                 }
                 hide();
             }
@@ -183,27 +178,31 @@ public class UserGroupSelect extends Window {
         show();
     }
 
-    private ContentPanel getUserPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
+    private ContentPanel getUserPanel(final UserGroupAdder target) {
         // data proxy
-        RpcProxy<BasePagingLoadResult<GWTJahiaUser>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaUser>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaUser>> callback) {
-                String context = aclContext;
-                if ("siteSelector".equals(aclContext)) {
-                    context = "site:"+selectedSite;
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+                JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                String newSearch = userSearchField.getText().trim().replace("'","''");
+
+                String path = "/users";
+                String query = "select * from [jnt:user] as u where isdescendantnode(u,'"+path+"') ";
+                if (newSearch.length() > 0) {
+                    query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
                 }
-                if (context != null) {
-                    String newSearch = userSearchField.getText();
-                    String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
-                    // reset offset to 0 if the search value has changed
-                    int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
-                    service.searchUsersInContext(searchQuery, offset, ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
-                    // remember last searched value
-                    lastUserSearchValue = newSearch;
-                }
+                query += " ORDER BY u.[j:nodename]";
+
+                // reset offset to 0 if the search value has changed
+                int offset = lastUserSearchValue != null && lastUserSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
+
+                service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_USER_FIELDS, false, callback);
+
+                // remember last searched value
+                lastUserSearchValue = newSearch;
             }
         };
-        final BasePagingLoader<PagingLoadResult<GWTJahiaUser>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaUser>>(proxy);
+        final PagingLoader<PagingLoadResult<GWTJahiaNode>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
         userSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
                 loader.load();
@@ -218,19 +217,19 @@ public class UserGroupSelect extends Window {
         loader.load();
         HorizontalPanel panel = new HorizontalPanel();
         panel.add(userSearchField);
-        if("siteSelector".equals(aclContext) ){
+        if("siteSelector".equals(siteKey) ){
             ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
             panel.add(siteMenu);
         }
 
-        ListStore<GWTJahiaUser> store = new ListStore<GWTJahiaUser>(loader);
+        ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 120));
+        columns.add(new ColumnConfig("displayName", Messages.get("label.username", "User name"), 120));
         columns.add(new ColumnConfig("j:lastName", Messages.get("label.lastName", "Last name"), 140));
         columns.add(new ColumnConfig("j:firstName", Messages.get("label.firstName", "First name"), 140));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
-        columns.add(new ColumnConfig("provider", Messages.get("column.provider.label", "Provider"), 80));
+        columns.add(new ColumnConfig("providerKey", Messages.get("column.provider.label", "Provider"), 80));
 //        columns.add(new ColumnConfig("email", "Email", 100));
 
         ColumnModel cm = new ColumnModel(columns);
@@ -238,7 +237,7 @@ public class UserGroupSelect extends Window {
         final PagingToolBar toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
 
-        userGrid = new Grid<GWTJahiaUser>(store, cm);
+        userGrid = new Grid<GWTJahiaNode>(store, cm);
         if (singleSelectionMode) {
             userGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
@@ -246,7 +245,7 @@ public class UserGroupSelect extends Window {
         userGrid.setBorders(true);
         userGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
-                target.addUsers(userGrid.getSelectionModel().getSelectedItems());
+                target.addUsersGroups(userGrid.getSelectionModel().getSelectedItems());
                 if (singleSelectionMode) {
                     hide();
                 }
@@ -265,26 +264,31 @@ public class UserGroupSelect extends Window {
     }
 
 
-    private ContentPanel getGroupsPanel(final UserGroupAdder target, final UserManagerServiceAsync service) {
+    private ContentPanel getGroupsPanel(final UserGroupAdder target) {
         // data proxy
-        RpcProxy<BasePagingLoadResult<GWTJahiaGroup>> proxy = new RpcProxy<BasePagingLoadResult<GWTJahiaGroup>>() {
+        RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
-            protected void load(Object pageLoaderConfig, AsyncCallback<BasePagingLoadResult<GWTJahiaGroup>> callback) {
-                String context = aclContext;
-                if ("siteSelector".equals(aclContext)) {
-                    context = "site:"+selectedSite;
-                }
+            protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
+                String newSearch = groupSearchField.getText().trim().replace("'","''");
 
-                String newSearch = groupSearchField.getText();
-                String searchQuery = newSearch.length() == 0 ? "*" : "*"+newSearch+"*";
+                String path = siteKey.equals("systemsite") ? "/groups" : "/sites/"+siteKey +"/groups";
+                String query = "select * from [jnt:group] as g where isdescendantnode(g,'"+path+"') ";
+                if (newSearch.length() > 0) {
+                    query += " and (CONTAINS(g.*,'*" + newSearch + "*') OR LOWER(g.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
+                }
+                query += " ORDER BY g.[j:nodename]";
+
                 // reset offset to 0 if the search value has changed
                 int offset = lastGroupSearchValue != null && lastGroupSearchValue.equals(newSearch) ? ((PagingLoadConfig) pageLoaderConfig).getOffset() : 0;
-                service.searchGroupsInContext(searchQuery, offset, ((PagingLoadConfig) pageLoaderConfig).getLimit(),context, callback);
+
+                JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
+                service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_USER_FIELDS, false, callback);
+
                 // remember last searched value
                 lastGroupSearchValue = newSearch;
             }
         };
-        final BasePagingLoader<PagingLoadResult<GWTJahiaGroup>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaGroup>>(proxy);
+        final BasePagingLoader<PagingLoadResult<GWTJahiaNode>> loader = new BasePagingLoader<PagingLoadResult<GWTJahiaNode>>(proxy);
 
         groupSearchField = new SearchField(Messages.get("label.search", "Search: "), false) {
             public void onFieldValidation(String value) {
@@ -301,23 +305,23 @@ public class UserGroupSelect extends Window {
         loader.load();
         HorizontalPanel panel = new HorizontalPanel();
         panel.add(groupSearchField);
-        if("siteSelector".equals(aclContext) ){
+        if("siteSelector".equals(siteKey) ){
             ComboBox<GWTJahiaSite> siteMenu = createMenu(loader);
             panel.add(siteMenu);
         }
-        ListStore<GWTJahiaGroup> store = new ListStore<GWTJahiaGroup>(loader);
+        ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("display", "Group name", 240));
-        columns.add(new ColumnConfig("siteName", "Site name", 120));
-        columns.add(new ColumnConfig("provider", "Provider", 120));
+        columns.add(new ColumnConfig("displayName", "Group name", 240));
+        columns.add(new ColumnConfig("siteKey", "Site name", 120));
+        columns.add(new ColumnConfig("providerKey", "Provider", 120));
 
         ColumnModel cm = new ColumnModel(columns);
 
         final PagingToolBar toolBar = new PagingToolBar(15);
         toolBar.bind(loader);
 
-        groupGrid = new Grid<GWTJahiaGroup>(store, cm);
+        groupGrid = new Grid<GWTJahiaNode>(store, cm);
         if (singleSelectionMode) {
             groupGrid.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         }
@@ -325,7 +329,7 @@ public class UserGroupSelect extends Window {
         groupGrid.setBorders(true);
         groupGrid.addListener(Events.RowDoubleClick, new Listener<GridEvent>() {
             public void handleEvent(GridEvent event) {
-                target.addGroups(groupGrid.getSelectionModel().getSelectedItems());
+                target.addUsersGroups(groupGrid.getSelectionModel().getSelectedItems());
                 if (singleSelectionMode) {
                     hide();
                 }
@@ -343,8 +347,8 @@ public class UserGroupSelect extends Window {
         return groupsPanel;
     }
 
-    protected ComboBox<GWTJahiaSite> createMenu (final BasePagingLoader loader) {
-        if ("siteSelector".equals(aclContext)) {
+    protected ComboBox<GWTJahiaSite> createMenu (final PagingLoader loader) {
+        if ("siteSelector".equals(siteKey)) {
 
             sites = new ListStore<GWTJahiaSite>();
 
@@ -359,7 +363,7 @@ public class UserGroupSelect extends Window {
                 }
             });
             
-            service.getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
+            JahiaContentManagementService.App.getInstance().getAvailableSites(new BaseAsyncCallback<List<GWTJahiaSite>>() {
                 public void onSuccess (List<GWTJahiaSite> gwtJahiaSites) {
                     sites.add(gwtJahiaSites);
                     if (gwtJahiaSites.size() > 0) {

@@ -93,7 +93,6 @@ import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.InsertionSortedMap;
@@ -655,80 +654,6 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
     }
 
     /**
-     * delete groups associated with an application.
-     * When deleting an Application definition, should call this method to
-     * remove unused groups
-     */
-    public void deleteApplicationGroups(ApplicationBean app) throws JahiaException {
-
-        checkIsLoaded();
-
-        List<String> vec = groupManagerService.getGroupnameList();
-
-        if (app != null && vec != null) {
-
-            String appID = app.getID();
-            JahiaGroup grp;
-            String grpName;
-            String pattern = appID + "_";
-            for (String aVec : vec) {
-                grpName = aVec;
-                if (grpName.startsWith(pattern)) {
-                    grp = groupManagerService.lookupGroup(null, grpName);
-                    if (grp != null) {
-                        groupManagerService.deleteGroup(grp);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * create groups for each context, that is for each field id
-     */
-    public void createApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
-        // update roles
-        final String context = entryPointInstance.getContextName();
-        WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
-
-        Iterator<String> updatedRoles = appContext.getRoles().iterator();
-        String groupName;
-        String role;
-        while (updatedRoles.hasNext()) {
-            role = updatedRoles.next();
-            groupName = entryPointInstance.getID() + "_" + role;
-            groupManagerService.createGroup(null, groupName, null, true); // Hollis all app role groups are of site 0 !!!
-        }
-
-    }
-
-    /**
-     * delete groups associated with a gived context, that is attached to a field id
-     * and all its members
-     */
-    public void deleteApplicationGroups(EntryPointInstance entryPointInstance) throws JahiaException {
-        final String context = entryPointInstance.getContextName();
-
-        WebAppContext appContext = getApplicationContext(getApplicationByContext(context));
-
-        Iterator<String> roles = appContext.getRoles().iterator();
-        String groupName;
-        String role;
-        while (roles.hasNext()) {
-            role = roles.next();
-            groupName = new StringBuffer().append(entryPointInstance.getID()).append("_").append(role).toString();
-            JahiaGroup grp = groupManagerService.lookupGroup(null,
-                    groupName); // Hollis : All App group roles are in site 0 !!!
-            if (grp != null) {
-                // delete all members
-                grp.removeMembers();
-                groupManagerService.deleteGroup(grp);
-            }
-        }
-
-    }
-
-    /**
      * Get an ApplicationContext for a given application id
      *
      * @param id , the application id
@@ -874,7 +799,11 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
      * @throws RepositoryException
      */
     public EntryPointInstance getEntryPointInstance(JCRPortletNode node) throws RepositoryException {
-        EntryPointInstance entryPointInstance = new EntryPointInstance(node.getUUID(), node.getContextName(),
+        final String contextName = node.getContextName();
+        if(contextName==null) {
+            return null;
+        }
+        EntryPointInstance entryPointInstance = new EntryPointInstance(node.getUUID(), contextName,
                 node.getDefinitionName(), node.getName());
         if (node.hasProperty("j:cacheScope")) {
             entryPointInstance.setCacheScope(node.getCacheScope());

@@ -73,7 +73,6 @@
 
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRTemplate;
-import org.jahia.services.usermanager.jcr.JCRGroup;
 
 import javax.jcr.Node;
 import java.util.*;
@@ -84,54 +83,12 @@ import java.security.Principal;
  * 
  * @author Thomas Draier
  */
-public class GuestGroup extends JCRGroup {
+public class GuestGroup extends JahiaGroup {
 
     private static final long serialVersionUID = -7050824816792955816L;
 
-    public GuestGroup(Node nodeWrapper, JCRTemplate jcrTemplate, int siteID) {
-        super(nodeWrapper, siteID);
+    public GuestGroup(String name, String path, String siteKey) {
+        super(name, path, siteKey);
     }
 
-    @Override
-    public Enumeration<Principal> members() {
-        return new Vector<Principal>(getRecursiveUserMembers()).elements();
-    }
-
-    @Override
-    public Set<Principal> getRecursiveUserMembers() {
-        Set<Principal> users = new HashSet<Principal> ();
-
-        List<Principal> userList = new LinkedList<Principal>();
-        JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance()
-                .getJahiaUserManagerService();
-        List<String> l = jahiaUserManagerService.getUserList();
-        for (String s : l) {
-            userList.add(jahiaUserManagerService.lookupUserByKey(s));
-        }
-        if (userList != null) {
-            users.addAll(userList);
-        }
-        // should we list ldap users here ?
-        return users;
-    }
-
-    @Override
-    public boolean addMember(Principal principal) {
-        return false;
-    }
-
-    @Override
-    public boolean removeMember(Principal principal) {
-        return false;
-    }
-
-    @Override
-    public boolean isMember(Principal principal) {
-        return true;
-    }
-
-    @Override
-    public void addMembers(Collection<Principal> principals) {
-        // do nothing
-    }
 }

@@ -80,8 +80,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -109,7 +109,6 @@ public class WorkflowServiceTest {
     private static JahiaSite site;
     private static JahiaUser johndoe;
     private static JahiaUser johnsmoe;
-    private static JahiaGroup group;
     private static final long MILLIS = 1000l;
     private HashMap<String, Object> emptyMap;
     private static final String PROVIDER = "jBPM";
@@ -140,9 +139,9 @@ public class WorkflowServiceTest {
             logger.warn("Exception during test tearDown", ex);
         }
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        userManagerService.deleteUser(userManagerService.lookupUser("johndoe"));
-        userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe"));
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        userManagerService.deleteUser(userManagerService.lookupUser("johndoe").getPath(), session);
+        userManagerService.deleteUser(userManagerService.lookupUser("johnsmoe").getPath(), session);
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }
@@ -220,7 +219,7 @@ public class WorkflowServiceTest {
         WorkflowAction action = actionSet.iterator().next();
         assertTrue(action instanceof WorkflowTask);
         WorkflowTask task = (WorkflowTask) action;
-        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root");
+        JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser("root").getJahiaUser();
         assertNotNull(user);
         service.assignTask(task.getId(), PROVIDER, user);
         List<WorkflowTask> forUser = service.getTasksForUser(user, Locale.ENGLISH);
@@ -314,28 +313,30 @@ public class WorkflowServiceTest {
     private static void initUsersGroup() throws RepositoryException {
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        johndoe = userManagerService.lookupUser("johndoe");
-        johnsmoe = userManagerService.lookupUser("johnsmoe");
+        johndoe = userManagerService.lookupUser("johndoe").getJahiaUser();
+        johnsmoe = userManagerService.lookupUser("johnsmoe").getJahiaUser();
         Properties properties = new Properties();
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+
         if (johndoe == null) {
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Doe");
 //            properties.setProperty("j:email", "johndoe@localhost.com");
-            johndoe = userManagerService.createUser("johndoe", "johndoe", properties);
+            johndoe = userManagerService.createUser("johndoe", "johndoe", properties, session).getJahiaUser();
         }
         if (johnsmoe == null) {
             properties = new Properties();
             properties.setProperty("j:firstName", "John");
             properties.setProperty("j:lastName", "Smoe");
 //            properties.setProperty("j:email", "johnsmoe@localhost.com");
-            johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties);
+            johnsmoe = userManagerService.createUser("johnsmoe", "johnsmoe", properties, session).getJahiaUser();
         }
-        group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true);
+        JCRGroupNode group = groupManagerService.createGroup(site.getSiteKey(), "taskUsersGroup", new Properties(), true, session);
         group.addMember(johndoe);
         group.addMember(johnsmoe);
 
-        final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getGroupname(), ImmutableSet.of("editor-in-chief"));
+        session.getNode("/sites/" + site.getSiteKey()).grantRoles("g:" + group.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
     }
 

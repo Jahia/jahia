@@ -73,12 +73,14 @@ package org.jahia.taglibs.utility.session;
 
 import java.io.IOException;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 import org.slf4j.Logger;
 
 /**
@@ -88,7 +90,7 @@ import org.slf4j.Logger;
  * @author Xavier Lawrence
  */
 @SuppressWarnings("serial")
-public class UserPropertyTag extends AbstractJahiaTag {
+public class UserPropertyTag extends AbstractJCRTag {
 
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(UserPropertyTag.class);
     private String propertyName = null;
@@ -104,9 +106,9 @@ public class UserPropertyTag extends AbstractJahiaTag {
                 buff.append("\">");
             }
             if (propertyName != null) {
-                buff.append(renderContext.getUser().getProperty(propertyName));
+                buff.append(getJCRSession().getUserNode().getPropertyAsString(propertyName));
             } else {
-                buff.append(renderContext.getUser().getUsername());
+                buff.append(renderContext.getUser().getName());
             }
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("</div>");
@@ -117,6 +119,8 @@ public class UserPropertyTag extends AbstractJahiaTag {
 
         } catch (final IOException e) {
             logger.error("IOException in UserPropertyTag", e);
+        } catch (RepositoryException e) {
+            logger.error("RepositoryException in UserPropertyTag", e);
         }
 
         return SKIP_BODY;

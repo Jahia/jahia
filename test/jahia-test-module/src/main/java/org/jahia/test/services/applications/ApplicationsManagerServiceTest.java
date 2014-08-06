@@ -112,7 +112,6 @@ public class ApplicationsManagerServiceTest {
 
     @AfterClass
     public static void oneTimeTearDown() throws Exception {
-        applicationsManagerService.deleteApplicationGroups(applicationBean);
     }
 
     @Test

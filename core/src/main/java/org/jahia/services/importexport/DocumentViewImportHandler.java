@@ -192,7 +192,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 node = (JCRNodeWrapper) session.getNode(rootPath);
             }
             if (node.isNodeType("jnt:user")) {
-                placeHoldersMap.put("$user", "u:" + node.getPath().substring(node.getPath().lastIndexOf("/") + 1));
+                placeHoldersMap.put("$user", "u:" + node.getName().substring(node.getPath().lastIndexOf("/") + 1));
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage()+ getLocation(), e);
@@ -432,7 +432,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         }
 //                    }
                     } else {
-                        throw new AccessDeniedException("Missing jcr:addChildNodes permission for user "+session.getUser().getUsername());
+                        throw new AccessDeniedException("Missing jcr:addChildNodes permission for user "+session.getUser().getName());
                     }
                 } else {
                     if (child.hasPermission("jcr:modifyProperties") && child.isCheckedOut()) {

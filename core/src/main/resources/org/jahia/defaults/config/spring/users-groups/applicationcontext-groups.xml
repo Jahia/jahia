@@ -4,8 +4,9 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerRoutingService" parent="jahiaServiceTemplate" factory-method="getInstance">
-    	<property name="defaultProvider" ref="JCRGroupManagerProvider"/>
+    <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerService" parent="jahiaServiceTemplate" factory-method="getInstance">
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+        <property name="ehCacheProvider" ref="ehCacheProvider"/>
         <property name="jahiaJcrEnforcedGroups">
             <list value-type="java.lang.String">
                 <value>guest</value>
@@ -16,33 +17,5 @@
                 <value>site-privileged</value>
             </list>
         </property>
-        <property name="jahiaJcrEnforcedGroupsProviderKey" value="jcr"/>
-        <property name="ehCacheProvider" ref="ehCacheProvider"/>
     </bean>
-
-	<bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">
-		<property name="groupManagerService" ref="JahiaGroupManagerService"/>
-	</bean>
-	
-    <bean id="JCRGroupManagerProvider" class="org.jahia.services.usermanager.jcr.JCRGroupManagerProvider" parent="jahiaServiceTemplate" factory-method="getInstance">
-        <property name="key" value="jcr"/>
-        <property name="jcrTemplate" ref="jcrTemplate"/>
-        <property name="sitesService" ref="JahiaSitesService"/>
-        <property name="userManagerProvider" ref="JCRUserManagerProvider"/>
-        <property name="cacheProvider" ref="ehCacheProvider"/>
-        <property name="defaultProvider" value="true"/>
-        <property name="readOnly" value="false"/>
-        <property name="priority" value="1"/>
-    </bean>
-
-    <!-- 
-    <bean id="JahiaGroupManagerDBProvider" class="org.jahia.services.usermanager.JahiaGroupManagerDBProvider" parent="JahiaGroupManagerProvider" factory-method="getInstance">
-        <property name="key" value="jahia_db"/>
-        <property name="userService" ref="JahiaUserManagerService"/>
-        <property name="groupManager" ref="org.jahia.hibernate.manager.JahiaGroupManager"/>
-        <property name="defaultProvider" value="false"/>
-        <property name="readOnly" value="true"/>
-        <property name="priority" value="1"/>
-    </bean>
-    -->
 </beans>

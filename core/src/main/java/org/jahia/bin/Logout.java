@@ -86,6 +86,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.*;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -108,6 +109,7 @@ import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 public class Logout implements Controller {
     private static final String DEFAULT_LOCALE = Locale.ENGLISH.toString();
     private static final transient Logger logger = LoggerFactory.getLogger(Logout.class);
+    private JahiaUserManagerService userManagerService;
 
     public static String getLogoutServletPath() {
         // TODO move this into configuration
@@ -305,7 +307,7 @@ public class Logout implements Controller {
 
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRSessionFactory.getInstance()
-                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME));
+                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser());
 
         request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
         request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);
@@ -322,15 +324,27 @@ public class Logout implements Controller {
         // now let's destroy the cookie authentication if there was one
         // set for this user.
         JahiaUser curUser = JCRSessionFactory.getInstance().getCurrentUser();
-        String cookieAuthKey = JahiaUserManagerService.isNotGuest(curUser) ? curUser.getProperty(cookieAuthConfig.getUserPropertyName()) : null;
-        if (cookieAuthKey != null) {
-            Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey);
-            authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
-            authCookie.setMaxAge(0); // means we want it deleted now !
-            authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-            authCookie.setSecure(cookieAuthConfig.isSecure());
-            response.addCookie(authCookie);
-            curUser.removeProperty(cookieAuthConfig.getUserPropertyName());
+        JCRPropertyWrapper cookieAuthKey = null;
+        try {
+            if (!JahiaUserManagerService.isGuest(curUser)) {
+                JCRUserNode userNode = userManagerService.lookupUserByPath(curUser.getLocalPath());
+                String userPropertyName = cookieAuthConfig.getUserPropertyName();
+                if (userNode != null && userNode.hasProperty(userPropertyName)) {
+                    cookieAuthKey = userNode.getProperty(userPropertyName);
+                }
+            }
+            if (cookieAuthKey != null) {
+                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieAuthKey.getString());
+                authCookie.setPath(StringUtils.isNotEmpty(request.getContextPath()) ? request.getContextPath() : "/");
+                authCookie.setMaxAge(0); // means we want it deleted now !
+                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                authCookie.setSecure(cookieAuthConfig.isSecure());
+                response.addCookie(authCookie);
+                cookieAuthKey.remove();
+                cookieAuthKey.getSession().save();
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
         }
     }
 
@@ -381,6 +395,10 @@ public class Logout implements Controller {
 
     public void setUrlRewriteService(UrlRewriteService urlRewriteService) {
         this.urlRewriteService = urlRewriteService;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 
     private Map<String, Object> preserveSessionAttributes(HttpServletRequest httpServletRequest) {

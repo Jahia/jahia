@@ -89,7 +89,9 @@ import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.history.ContentHistoryService;
 import org.jahia.services.history.HistoryEntry;
@@ -102,7 +104,6 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.SourceControlManagement;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityService;
@@ -454,7 +455,7 @@ public class ContentManagerHelper {
 
             List<String> uuids;
             if (allLanguages) {
-                uuids = JCRTemplate.getInstance().doExecute(false, currentUserSession.getUser().getUsername(), currentUserSession.getWorkspace().getName(), null, callback);
+                uuids = JCRTemplate.getInstance().doExecute(false, currentUserSession.getUser().getName(), currentUserSession.getWorkspace().getName(), null, callback);
             } else {
                 uuids = callback.doInJCR(currentUserSession);
             }
@@ -548,7 +549,7 @@ public class ContentManagerHelper {
             JCRNodeWrapper nodeToDelete = null;
             try {
                 nodeToDelete = currentUserSession.getNode(path);
-                if (!user.isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
+                if (!currentUserSession.getUserNode().isRoot() && nodeToDelete.isLocked() && !nodeToDelete.getLockOwner().equals(user.getUsername())) {
                     if (nodeToDelete.isNodeType(JAHIAMIX_MARKED_FOR_DELETION_ROOT) && nodeToDelete.hasPermission(Privilege.JCR_REMOVE_NODE)) {
                         nodeToDelete.unmarkForDeletion();
                     } else {
@@ -632,8 +633,8 @@ public class ContentManagerHelper {
             throw new GWTJahiaServiceException(path + Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale) + e.toString());
         }
         try {
-            if (node.isLocked() && !node.getLockOwner().equals(currentUserSession.getUser().getUsername())) {
-                throw new GWTJahiaServiceException(node.getName() + Messages.getInternal("label.gwt.error.locked.by", uiLocale) + currentUserSession.getUser().getUsername());
+            if (node.isLocked() && !node.getLockOwner().equals(currentUserSession.getUser().getName())) {
+                throw new GWTJahiaServiceException(node.getName() + Messages.getInternal("label.gwt.error.locked.by", uiLocale) + currentUserSession.getUser().getName());
             } else if (!node.hasPermission(Privilege.JCR_WRITE)) {
                 throw new GWTJahiaServiceException(node.getName() + " - ACCESS DENIED");
             } else if (!node.rename(JCRContentUtils.escapeLocalNodeName(newName))) {
@@ -684,8 +685,12 @@ public class ContentManagerHelper {
             if (results.isSuccessful()) {
                 try {
                     // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = session.getNode(
-                            session.getUser().getLocalPath() + "/files/private");
+                    JCRNodeWrapper privateFilesFolder = navigation.getDefaultUserFolder(session, "/files/private");
+                    if (privateFilesFolder.isNew()) {
+                        privateFilesFolder.grantRoles("u:"+session.getUser().getName(), Collections.singleton("owner"));
+                        privateFilesFolder.setAclInheritanceBreak(true);
+                        session.save();
+                    }
                     String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
@@ -790,22 +795,22 @@ public class ContentManagerHelper {
                 ace.setPrincipalType(principal.charAt(0));
                 ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                 if (ace.getPrincipalType() == 'g') {
-                    JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), ace.getPrincipal());
+                    JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(), ace.getPrincipal());
                     if (g == null) {
-                        g = groupManagerService.lookupGroup(ace.getPrincipal());
+                        g = groupManagerService.lookupGroupByPath(ace.getPrincipal());
                     }
                     if (g != null) {
                         ace.setHidden(g.isHidden());
-                        ace.setPrincipalKey(g.getGroupKey());
+                        ace.setPrincipalKey(g.getPath());
                         String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
                         ace.setPrincipalDisplayName(groupName);
                     } else {
                         continue;
                     }
                 } else {
-                    JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                    JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
                     if (u != null) {
-                        ace.setPrincipalKey(u.getUserKey());
+                        ace.setPrincipalKey(u.getPath());
                         String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
                         ace.setPrincipalDisplayName(userName);
                     } else {
@@ -858,21 +863,21 @@ public class ContentManagerHelper {
                         ace.setPrincipalType(principal.charAt(0));
                         ace.setPrincipal(principal.substring(2)); // we set this even if we can't lookup the principal
                         if (ace.getPrincipalType() == 'g') {
-                            JahiaGroup g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(),
+                            JCRGroupNode g = groupManagerService.lookupGroup(node.getResolveSite().getSiteKey(),
                                     ace.getPrincipal());
                             if (g == null) {
-                                g = groupManagerService.lookupGroup(ace.getPrincipal());
+                                g = groupManagerService.lookupGroupByPath(ace.getPrincipal());
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
                                 String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
-                                ace.setPrincipalKey(g.getGroupKey());
+                                ace.setPrincipalKey(g.getPath());
                                 ace.setPrincipalDisplayName(groupName);
                             }
                         } else {
-                            JahiaUser u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                            JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
                             if (u != null) {
-                                ace.setPrincipalKey(u.getUserKey());
+                                ace.setPrincipalKey(u.getPath());
                                 String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
                                 ace.setPrincipalDisplayName(userName);
                             }
@@ -988,7 +993,7 @@ public class ContentManagerHelper {
 
     public void clearAllLocks(String path, boolean processChildNodes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         try {
-            if (currentUserSession.getUser().isRoot()) {
+            if (currentUserSession.getUserNode().isRoot()) {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
                 logger.error("Error when clearing all locks on node " + path);
@@ -1029,7 +1034,7 @@ public class ContentManagerHelper {
                         }
                     } else {
                         String lockOwner = node.getLockOwner();
-                        if (lockOwner != null && !lockOwner.equals(user.getUsername())) {
+                        if (lockOwner != null && !lockOwner.equals(user.getName())) {
                             missedPaths.add(node.getName() + ": locked by " + lockOwner);
                         }
                     }
@@ -1168,7 +1173,7 @@ public class ContentManagerHelper {
         try {
             referencedNode = currentUserSession.getNode(path);
             if (referencedNode != null) {
-                if (!user.isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
+                if (!currentUserSession.getUserNode().isRoot() && referencedNode.isLocked() && !referencedNode.getLockOwner().equals(user.getUsername())) {
                     missedPaths.add(referencedNode.getPath() + " - locked by " + referencedNode.getLockOwner());
                 }
                 if (!referencedNode.hasPermission(Privilege.JCR_REMOVE_NODE)) {

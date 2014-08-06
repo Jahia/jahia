@@ -89,10 +89,9 @@ import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTJahiaGroup;
-import org.jahia.ajax.gwt.client.data.GWTJahiaUser;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
@@ -106,7 +105,7 @@ import java.util.*;
  */
 public class AclEditor {
     private GWTJahiaNodeACL acl;
-    private final String context;
+    private final String siteKey;
     private Button restoreButton;
     private boolean canBreakInheritance = false;
     private String autoAddRole;
@@ -125,9 +124,9 @@ public class AclEditor {
     private StoreFilter<PrincipalModelData> inheritanceBreakFilter;
     private FormPanel formPanel;
 
-    public AclEditor(GWTJahiaNodeACL acl, String aclContext, Set<String> roles, Set<String> roleGroups, List<AclEditor> rolesEditors) {
+    public AclEditor(GWTJahiaNodeACL acl, String siteKey, Set<String> roles, Set<String> roleGroups, List<AclEditor> rolesEditors) {
         this.acl = acl;
-        this.context = aclContext;
+        this.siteKey = siteKey;
         if (rolesEditors == null) {
             rolesEditors = new ArrayList<AclEditor>();
         }
@@ -484,7 +483,7 @@ public class AclEditor {
             addUsersToolItem.setEnabled(!readOnly);
             addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, context);
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_USERS, siteKey);
                 }
             });
             toolBar.add(addUsersToolItem);
@@ -494,7 +493,7 @@ public class AclEditor {
             addUsersToolItem.setEnabled(!readOnly);
             addUsersToolItem.addSelectionListener(new SelectionListener<ButtonEvent>() {
                 public void componentSelected(ButtonEvent event) {
-                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, context);
+                    new UserGroupSelect(userGroupAdder, UserGroupSelect.VIEW_GROUPS, siteKey);
                 }
             });
             toolBar.add(addUsersToolItem);
@@ -686,21 +685,10 @@ public class AclEditor {
             this.grid = grid;
         }
 
-        public void addUsers(List<GWTJahiaUser> users) {
-            for (GWTJahiaUser user : users) {
-                PrincipalModelData entry = new PrincipalModelData(user.getKey(), 'u', user.getName(), user.getDisplay(), false);
+        public void addUsersGroups(List<GWTJahiaNode> users) {
+            for (GWTJahiaNode user : users) {
+                PrincipalModelData entry = new PrincipalModelData(user.getPath(), user.isNodeType("jnt:user") ? 'u' : 'g', user.getName(), user.getDisplayName(), false);
 
-                if (!store.contains(entry)) {
-                    store.add(entry);
-                }
-            }
-            resizeGrid(grid);
-            setDirty();
-        }
-
-        public void addGroups(List<GWTJahiaGroup> groups) {
-            for (GWTJahiaGroup group : groups) {
-                PrincipalModelData entry = new PrincipalModelData(group.getKey(), 'g', group.getName(), group.getDisplay(), false);
                 if (!store.contains(entry)) {
                     store.add(entry);
                 }

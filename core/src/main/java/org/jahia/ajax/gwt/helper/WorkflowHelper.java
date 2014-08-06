@@ -92,10 +92,10 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
@@ -103,7 +103,6 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import java.security.Principal;
 import java.util.*;
 
 /**
@@ -116,10 +115,8 @@ public class WorkflowHelper {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowHelper.class);
 
     private WorkflowService service;
-
-    public void setService(WorkflowService service) {
-        this.service = service;
-    }
+    private JahiaUserManagerService userManagerService;
+    private JahiaGroupManagerService groupManagerService;
 
     public void start() {
         service.addWorkflowListener(new PollingWorkflowListener());
@@ -154,8 +151,15 @@ public class WorkflowHelper {
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                    if ((principal instanceof JahiaGroup && ((JahiaGroup) principal).isMember(session.getUser())) ||
-                                            (principal instanceof JahiaUser && ((JahiaUser) principal).getUserKey().equals(session.getUser().getUserKey()))) {
+                                    if (principal instanceof JahiaGroup) {
+                                        JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
+                                        JCRUserNode userNode = userManagerService.lookupUserByPath(session.getUser().getLocalPath());
+                                        if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
+                                            gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
+                                            break;
+                                        }
+                                    }
+                                    if (principal instanceof JahiaUser && principal.getLocalPath().equals(session.getUser().getLocalPath())) {
                                         gwtWf.getAvailableTasks().add(getGWTJahiaWorkflowTask(workflowTask));
                                         break;
                                     }
@@ -363,10 +367,9 @@ public class WorkflowHelper {
             final GWTJahiaWorkflowComment workflowComment = new GWTJahiaWorkflowComment();
             workflowComment.setComment(comment.getComment());
             workflowComment.setTime(comment.getTime());
-            final JahiaUser user =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(comment.getUser());
-            if (user != null) {
-                workflowComment.setUser(user.getName());
+            JCRUserNode userNode = userManagerService.lookupUserByPath(comment.getUser());
+            if (userNode != null) {
+                workflowComment.setUser(userNode.getName());
             } else {
                 workflowComment.setUser(comment.getUser());
             }
@@ -391,18 +394,8 @@ public class WorkflowHelper {
         return history;
     }
 
-    private String getUsername(String userKey) {
-        String username = "";
-        if (userKey != null) {
-            final JahiaUser jahiaUser =
-                    ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(userKey);
-            if (jahiaUser != null) {
-                username = jahiaUser.getName();
-            } else {
-                username = StringUtils.substringAfter(userKey, "}");
-            }
-        }
-        return username;
+    private String getUsername(String userPath) {
+        return StringUtils.substringAfterLast(userPath, "/");
     }
 
     public List<GWTJahiaWorkflowHistoryItem> getWorkflowHistoryTasks(String provider, String processId, Locale uiLocale) throws GWTJahiaServiceException {
@@ -654,7 +647,7 @@ public class WorkflowHelper {
 
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
-            JahiaUser user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByKey(workflow.getUser());
+            JCRUserNode user = userManagerService.lookupUserByPath(workflow.getUser());
             final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
             Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {
@@ -684,24 +677,30 @@ public class WorkflowHelper {
             final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
             if (broadcasterFactory != null) {
 
-                Set<Principal> users = new HashSet<Principal>();
+                Set<JCRUserNode> users = new HashSet<JCRUserNode>();
                 for (WorkflowParticipation workflowParticipation : task.getParticipations()) {
                     JahiaPrincipal p = workflowParticipation.getJahiaPrincipal();
                     if (p instanceof JahiaUser) {
-                        users.add(p);
+                        JCRUserNode u = userManagerService.lookupUserByPath(p.getLocalPath());
+                        if (u != null) {
+                            users.add(u);
+                        }
                     } else if (p instanceof JahiaGroup) {
-                        users.addAll(((JahiaGroup) p).getRecursiveUserMembers());
+                        JCRGroupNode g = groupManagerService.lookupGroupByPath(p.getLocalPath());
+                        if (g != null) {
+                            users.addAll(g.getRecursiveUserMembers());
+                        }
                     }
                 }
-                for (Principal user : users) {
+                for (JCRUserNode user : users) {
                     if (user != null) {
                         Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
                         if (broadcaster != null) {
                             TaskEvent taskEvent = new TaskEvent();
                             try {
-                                JahiaUser jahiaUser = (JahiaUser) user;
+                                JahiaUser jahiaUser = user.getJahiaUser();
                                 if (newTask) {
-                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(jahiaUser);
+                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
                                     if (preferredLocale == null) {
                                         preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
                                     }
@@ -709,7 +708,7 @@ public class WorkflowHelper {
                                     taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                                 }
                                 taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser));
-                                if (!newTask && user.equals(task.getAssignee())) {
+                                if (!newTask && jahiaUser.equals(task.getAssignee())) {
                                     taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
                                 }
                             } catch (GWTJahiaServiceException e) {
@@ -724,4 +723,15 @@ public class WorkflowHelper {
 
     }
 
+    public void setService(WorkflowService service) {
+        this.service = service;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
+
+    public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
+        this.groupManagerService = groupManagerService;
+    }
 }

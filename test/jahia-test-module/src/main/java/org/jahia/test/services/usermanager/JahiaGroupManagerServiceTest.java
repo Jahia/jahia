@@ -107,33 +107,23 @@ public class JahiaGroupManagerServiceTest {
         assertNotNull("JahiaUserManagerService cannot be retrieved", userManager);
         groupManager = JahiaGroupManagerService.getInstance();
         assertNotNull("JahiaGroupManagerService cannot be retrieved", groupManager);
+    }
 
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-
-        // now let's create some users and groups.
+    @Before
+    public void setUp() throws Exception {
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
         user1 = userManager.createUser("test-user1", "password", new Properties(), session);
         user2 = userManager.createUser("test-user2", "password", new Properties(), session);
         session.save();
     }
 
-    @AfterClass
-    public static void oneTimeTearDown() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
-        userManager.deleteUser(user1.getPath(), session);
-        userManager.deleteUser(user2.getPath(), session);
-        session.save();
-    }
-
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
     @After
     public void tearDown() throws Exception {
         JCRSessionFactory.getInstance().closeAllSessions();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+        userManager.deleteUser(user1.getPath(), session);
+        userManager.deleteUser(user2.getPath(), session);
         JCRGroupNode group = groupManager.lookupGroup(null, "test-group1");
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         if (group != null) {
             groupManager.deleteGroup(group.getPath(), session);
         }
@@ -153,7 +143,7 @@ public class JahiaGroupManagerServiceTest {
 
     @Test
     public void testGroupDelete() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
 
         JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);
@@ -179,7 +169,7 @@ public class JahiaGroupManagerServiceTest {
 
     @Test
     public void testGroupMembership() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
 
         JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);
@@ -211,7 +201,7 @@ public class JahiaGroupManagerServiceTest {
 
     @Test
     public void testSameNameUserAndGroup() throws Exception {
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
 
         JCRGroupNode group1 = groupManager.createGroup(null, "test-group1", new Properties(), false, session);
         group1.addMember(user1);

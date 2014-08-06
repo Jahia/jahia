@@ -131,7 +131,7 @@ public class JahiaTestCase {
     }
 
     protected static final JCRUserNode getUserNode(JahiaUser admin) {
-        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(admin.getLocalPath());
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(admin.getLocalPath());
     }
 
     protected static void publishAll(String nodeIdentifier) throws RepositoryException {

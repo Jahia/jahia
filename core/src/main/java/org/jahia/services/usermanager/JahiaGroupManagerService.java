@@ -293,9 +293,9 @@ public class JahiaGroupManagerService extends JahiaService {
 
     /**
      * Return a <code>List</code) of <code>String</code> representing all the
-     * group keys of a site.
+     * group keys in the system.
      *
-     * @return Return a List of identifier of all groups of this site.
+     * @return Return a List of identifier of all groups of this system.
      */
     public List<String> getGroupList() {
         try {
@@ -321,6 +321,13 @@ public class JahiaGroupManagerService extends JahiaService {
         }
     }
 
+    /**
+     * Return a <code>List</code) of <code>String</code> representing all the
+     * group keys of a site.
+     *
+     * @param siteKey the key of the site from which you wish to retrieve the list of group
+     * @return Return a List of identifier of all groups of this site.
+     */
     public List<String> getGroupList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);

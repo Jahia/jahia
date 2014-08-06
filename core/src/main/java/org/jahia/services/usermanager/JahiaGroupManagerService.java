@@ -81,7 +81,10 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.utils.Patterns;
@@ -599,6 +602,13 @@ public class JahiaGroupManagerService extends JahiaService {
             while (pi.hasNext()) {
                 JCRPropertyWrapper member = (JCRPropertyWrapper) pi.next();
                 member.getParent().remove();
+            }
+
+            // Update membership cache
+            Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'" + node.getPath() + "')", Query.JCR_SQL2);
+            NodeIterator ni = q.execute().getNodes();
+            if (ni.hasNext()) {
+                getMembershipCache().remove("/" + StringUtils.substringAfter(ni.nextNode().getPath(), "/j:members/"));
             }
 
             node.remove();

@@ -109,8 +109,14 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+<<<<<<< .working
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+=======
+import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.usermanager.jcr.JCRUser;
+import org.jahia.services.usermanager.jcr.JCRUserManagerProvider;
+>>>>>>> .merge-right.r50370
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -176,6 +182,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private String expandImportedFilesOnDiskPath;
 
     private List<AttributeProcessor> attributeProcessors;
+    private TemplatePackageRegistry templatePackageRegistry;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -784,6 +791,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         logger.info("Done analyzing import file {} in {}", file, DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
 
         Map<String, String> pathMapping = session.getPathMapping();
+        for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
+            pathMapping.put("/modules/" + pkg.getId() + "/", "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+        }
+
         NoCloseZipInputStream zis;
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
@@ -1691,6 +1702,11 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         getFileList(file, sizes, fileList);
         NoCloseZipInputStream zis;
 
+        Map<String, String> pathMapping = session.getPathMapping();
+        for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
+            pathMapping.put("/modules/" + pkg.getId() + "/", "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+        }
+
         boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);
 
         List<String> liveUuids = null;
@@ -1858,7 +1874,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setRootBehavior(rootBehaviour);
                         documentViewImportHandler.setBaseFilesPath("/live-content");
                         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
-                        liveSession.getPathMapping().putAll(session.getPathMapping());
+                        liveSession.getPathMapping().putAll(pathMapping);
                         handleImport(zis, documentViewImportHandler, LIVE_REPOSITORY_XML);
 
                         logger.debug("Saving JCR session for UGC");
@@ -1983,5 +1999,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     public void setPostImportPatcher(PostImportPatcher postImportPatcher) {
         this.postImportPatcher = postImportPatcher;
+    }
+
+    public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
+        this.templatePackageRegistry = templatePackageRegistry;
     }
 }

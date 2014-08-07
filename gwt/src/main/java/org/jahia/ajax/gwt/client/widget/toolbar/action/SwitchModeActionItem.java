@@ -128,7 +128,8 @@ public class SwitchModeActionItem extends BaseActionItem {
                             .getAggregatedPublicationInfo() : node.getQuickPublicationInfo();
 
                     if (publicationInfo.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED
-                            ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
+                            ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED
+                            ||  publicationInfo.getStatus() == GWTJahiaPublicationInfo.DRAFT) {
                         setEnabled(false);
                     } else {
                         setEnabled(true);

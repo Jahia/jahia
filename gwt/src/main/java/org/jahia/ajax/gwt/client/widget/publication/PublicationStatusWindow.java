@@ -209,4 +209,9 @@ public class PublicationStatusWindow extends LayoutContainer {
             }
         }
     }
+
+    public boolean isUnpublish() {
+        return unpublish;
+    }
+
 }

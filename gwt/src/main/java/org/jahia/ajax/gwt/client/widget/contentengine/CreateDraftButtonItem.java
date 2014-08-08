@@ -83,11 +83,17 @@ import org.jahia.ajax.gwt.client.messages.Messages;
  */
 public class CreateDraftButtonItem extends CreateButtonItem {
 
+    private boolean checkedByDefault = false;
+
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
         final CheckBox checkbox = new CheckBox();
 
-        checkbox.setValue(engine.getNode() != null && engine.getNode().get("j:isDraft") != null && (Boolean) engine.getNode().get("j:isDraft"));
+        if (engine.getNode() != null && engine.getNode().get("j:isDraft") != null) {
+            checkbox.setValue((Boolean) engine.getNode().get("j:isDraft"));
+        } else {
+            checkbox.setValue(checkedByDefault);
+        }
         setDraft(checkbox.getValue());
 
         // uncomment this if you want to change this behavior
@@ -100,10 +106,13 @@ public class CreateDraftButtonItem extends CreateButtonItem {
                 setDraft(checkbox.getValue());
             }
         });
-        checkbox.setBoxLabel(Messages.get("label.saveAtWork", "Save as working"));
-        checkbox.setToolTip(Messages.get("label.saveAtWork.information", "If checked, this content will ne be part of publication process"));
+        checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
+        checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
 
         return checkbox;
     }
 
+    public void setCheckedByDefault(boolean checkedByDefault) {
+        this.checkedByDefault = checkedByDefault;
+    }
 }

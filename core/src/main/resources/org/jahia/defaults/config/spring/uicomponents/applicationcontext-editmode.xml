@@ -1096,7 +1096,9 @@
 
     <bean id="Engine.Button.CreateAndNew" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateAndNewButtonItem" />
 
-    <bean id="Engine.Button.CreateAsDraft" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateDraftButtonItem" />
+    <bean id="Engine.Button.CreateAsDraft" class="org.jahia.ajax.gwt.client.widget.contentengine.CreateDraftButtonItem">
+        <property name="checkedByDefault" value="${wip.checkbox.checked:false}" />
+    </bean>
 
     <bean id="Engine.Button.Update" class="org.jahia.ajax.gwt.client.widget.contentengine.UpdateButtonItem" />
 

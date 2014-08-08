@@ -104,10 +104,11 @@ public class UnpublishWorkItemHandler extends AbstractWorkItemHandler implements
 
         String userKey = (String) workItem.getParameter("user");
         JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
-        final JahiaUserManagerService userMgr = ServicesRegistry.getInstance().getJahiaUserManagerService();
-        JCRUserNode user = userMgr.lookupUser(userKey);
+        JCRUserNode user = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
         JahiaUser currentUser = sessionFactory.getCurrentUser();
-        sessionFactory.setCurrentUser(user.getJahiaUser());
+        if (user != null) {
+            sessionFactory.setCurrentUser(user.getJahiaUser());
+        }
         try {
             if (logger.isDebugEnabled()) {
                 for (String id : ids) {

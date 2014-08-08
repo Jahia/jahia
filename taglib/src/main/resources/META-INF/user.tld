@@ -46,7 +46,7 @@
     </function>
     <function>
         <description>
-            Lookup the user by the user key (with provider prefix) or username.
+            Lookup the user by the user key (path) or username.
         </description>
         <name>lookupUser</name>
         <function-class>org.jahia.taglibs.user.User</function-class>

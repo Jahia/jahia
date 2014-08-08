@@ -501,7 +501,7 @@
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
- - j:siteId (long) protected
+ - j:siteId (long) protected hidden
  - j:installedModules (string) multiple protected nofulltext
  - j:languages (string) multiple protected nofulltext
  - j:inactiveLanguages (string) multiple nofulltext protected

@@ -118,7 +118,7 @@
         <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean memberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
-            &lt;c:if test="${functions:memberOf('administrators')}"&gt;
+            &lt;c:if test="${functions:memberOf('administrators',renderContext)}"&gt;
             The user belongs to administrators
             &lt;/c:if&gt;
         </example>
@@ -135,7 +135,7 @@
         <function-class>org.jahia.taglibs.user.User</function-class>
         <function-signature>java.lang.Boolean notMemberOf(java.lang.String, org.jahia.services.render.RenderContext)</function-signature>
         <example>
-            &lt;c:if test="${functions:notMemberOf('administrators,editors')}"&gt;
+            &lt;c:if test="${functions:notMemberOf('administrators,editors',renderContext)}"&gt;
             The user belong neither to administrators nor to editors
             &lt;/c:if&gt;
         </example>
@@ -429,7 +429,7 @@
     <function>
 		<description>
             DEPRECATED: Use user taglib instead
-			Lookup the user by the user key (with provider prefix) or username.
+			Lookup the user by the user key (path) or username.
 		</description>
 		<name>lookupUser</name>
 		<function-class>org.jahia.taglibs.user.User</function-class>

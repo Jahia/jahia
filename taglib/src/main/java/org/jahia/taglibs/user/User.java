@@ -102,11 +102,11 @@ public class User {
         if (currentUser != null) {
             JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(currentUser.getLocalPath());
             if (userNode != null) {
-                final String siteID = retrieveSiteId(renderContext);
+                final String siteKey = retrieveSiteKey(renderContext);
                 final String[] groupArray = StringUtils.split(groups, ',');
                 for (String aGroupArray : groupArray) {
                     final String groupName = aGroupArray.trim();
-                    if (userNode.isMemberOfGroup(siteID, groupName)) {
+                    if (userNode.isMemberOfGroup(siteKey, groupName)) {
                         return true;
                     }
                 }
@@ -120,11 +120,11 @@ public class User {
         if (currentUser != null) {
             JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(currentUser.getLocalPath());
             if (userNode != null) {
-                final String siteID = retrieveSiteId(renderContext);
+                final String siteKey = retrieveSiteKey(renderContext);
                 final String[] groupArray = StringUtils.split(groups, ',');
                 for (String aGroupArray : groupArray) {
                     String groupName = aGroupArray.trim();
-                    if (userNode.isMemberOfGroup(siteID, groupName)) {
+                    if (userNode.isMemberOfGroup(siteKey, groupName)) {
                         return false;
                     }
                 }
@@ -137,7 +137,7 @@ public class User {
         return JahiaGroupManagerService.getInstance().lookupGroupByPath(group).getMembers();
     }
 
-    private static String retrieveSiteId(RenderContext renderContext) {
+    private static String retrieveSiteKey(RenderContext renderContext) {
         String siteId = null;
         if (renderContext != null && renderContext.getSite() != null) {
             siteId = renderContext.getSite().getSiteKey();

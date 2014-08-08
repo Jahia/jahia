@@ -12,10 +12,9 @@
  * @param errorCallback : the error function for the request (Optional)
  * @return callResult : the result of the Ajax call
  */
-function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method, json , callback, errorCallback)
-{
+function jahiaAPIStandardCall(urlContext, workspace, locale, way, endOfURI, method, json, callback, errorCallback) {
     var callResult;
-    var url = urlContext+"/"+API_URL_START+"/"+workspace+"/"+locale+"/"+way+"/"+endOfURI;
+    var url = urlContext + "/" + API_URL_START + "/" + workspace + "/" + locale + "/" + way + (way=="paths"?"":"/") + endOfURI;
     var httpResult = $.ajax({
         contentType: 'application/json',
         data: json,
@@ -23,16 +22,15 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
         processData: false,
         type: method,
         url: url,
-        success:function(result) {
+        success: function (result) {
             result["status"] = httpResult.status;
             //calling the callback
-            if(!(callback === undefined))
-            {
-                callback(result,json);
+            if (!(callback === undefined)) {
+                callback(result, json);
             }
-            callResult=result;
+            callResult = result;
         },
-        error : function(result){
+        error: function (result) {
             result["status"] = httpResult.status;
             return errorCallback(result, json);
 
@@ -54,41 +52,35 @@ function jahiaAPIStandardCall(urlContext,workspace,locale, way, endOfURI,method,
  * @param callback : the callback function for the PUT Request (Optional)
  * @param errorCallback : the error function for the PUT request (Optional)
  */
-function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, callback, errorCallback)
-{
-    var deleteList=new Array();
+function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, fieldsClass, callback, errorCallback) {
+    var deleteList = new Array();
     //JSon Serialized String
     var serializedForm;
     var serializedObject;
     var result;
     //Creating the Json String to send with the PUT request
-    serializedObject = $(formId).serializeObject(fieldsClass,deleteList);
+    serializedObject = $(formId).serializeObject(fieldsClass, deleteList);
     serializedForm = JSON.stringify(serializedObject);
-    if(deleteList.length>0)
-    {
+    if (deleteList.length > 0) {
         var deleteJsonString = "[";
         //Deleting the properties listed to be deleted
-        for (var currentPropertie = 0; currentPropertie<deleteList.length;currentPropertie++)
-        {
-            if(deleteJsonString.length>1)
-            {
-                deleteJsonString+=",";
+        for (var currentPropertie = 0; currentPropertie < deleteList.length; currentPropertie++) {
+            if (deleteJsonString.length > 1) {
+                deleteJsonString += ",";
             }
-            deleteJsonString+="\""+deleteList[currentPropertie]+"\"";
+            deleteJsonString += "\"" + deleteList[currentPropertie] + "\"";
         }
-        deleteJsonString+="]";
+        deleteJsonString += "]";
         //Delete the current propertie
-        var endOfURI = nodeIdentifier+"/properties";
-        result = jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"DELETE", deleteJsonString , undefined, errorCallback);
+        var endOfURI = nodeIdentifier + "/properties";
+        result = jahiaAPIStandardCall(context, "default", locale, "nodes", endOfURI, "DELETE", deleteJsonString, undefined, errorCallback);
     }
-    if (serializedForm != '{"properties":{"undefined":{"value":""}}}' && serializedForm != '{"properties":{}}')
-    {
+    if (serializedForm != '{"properties":{"undefined":{"value":""}}}' && serializedForm != '{"properties":{}}') {
         //Post the Serialized form to Jahia
-        return jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", serializedForm , callback, errorCallback);
+        return jahiaAPIStandardCall(context, "default", locale, "nodes", nodeIdentifier, "PUT", serializedForm, callback, errorCallback);
     }
-    else
-    {
-      callback(result, serializedForm);
+    else {
+        callback(result, serializedForm);
     }
 }
 
@@ -100,46 +92,39 @@ function formToJahiaCreateUpdateProperties(formId, nodeIdentifier, locale, field
  * @param deleteList : Table of the properties to delete
  * @returns JSon Object containing all the properties to send to API
  */
-$.fn.serializeObject = function(fieldsClass, deleteTable)
-{
+$.fn.serializeObject = function (fieldsClass, deleteTable) {
     var serializedArray;
 
     //index to browse the deleteTable
-    var deleteIndex=0;
+    var deleteIndex = 0;
 
     //Serializing the form (or the by cssCLass) to an Array
-    if(fieldsClass === undefined)
-    {
+    if (fieldsClass === undefined) {
         serializedArray = this.serializeArray();
     }
-    else
-    {
-        serializedArray = $('.'+fieldsClass+':not([disabled])');
+    else {
+        serializedArray = $('.' + fieldsClass + ':not([disabled])');
     }
 
     //Building the JSON Object from the array
     var serializedObject = {};
 
     //For each form element
-    $.each(serializedArray, function() {
+    $.each(serializedArray, function () {
         var name = this.name;
         var value = this.value;
 
         //Adding to delete List all the form elements with empty values
-        if(value=="")
-        {
+        if (value == "") {
             deleteTable[deleteIndex] = this.name;
             deleteIndex++;
         }
-        else
-        {
-            if(this.name != undefined && this.value != undefined)
-            {
+        else {
+            if (this.name != undefined && this.value != undefined) {
                 //formatting dates
-                if(this.getAttribute("jcrtype") != undefined && this.getAttribute("jcrtype") == "Date")
-                {
+                if (this.getAttribute("jcrtype") != undefined && this.getAttribute("jcrtype") == "Date") {
                     // Add Timezone to gmt as we are only picking date by day/month/year
-                    value = new Date(value+'T00:00:00.000').toISOString();
+                    value = new Date(value + 'T00:00:00.000').toISOString();
                 }
                 //adding to object
                 if (serializedObject[name]) {
@@ -148,12 +133,12 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
                     }
                     serializedObject[name].push(value || '');
                 } else {
-                    serializedObject[name] = {"value" : value || ''};
+                    serializedObject[name] = {"value": value || ''};
                 }
             }
         }
     });
-    return {"properties" : serializedObject};
+    return {"properties": serializedObject};
 };
 
 /* Edit User Details Functions */
@@ -166,16 +151,13 @@ $.fn.serializeObject = function(fieldsClass, deleteTable)
  * @param result : The PUT request result
  * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
  */
-var ajaxReloadCallback = function (result,sent)
-{
-    if (sent != undefined && (sent.indexOf("preferredLanguage") != -1 && currentCssClass != "privacyField"))
-    {
+var ajaxReloadCallback = function (result, sent) {
+    if (sent != undefined && (sent.indexOf("preferredLanguage") != -1 && currentCssClass != "privacyField")) {
         var windowToRefresh = window.parent;
-        if(windowToRefresh == undefined)
+        if (windowToRefresh == undefined)
             windowToRefresh = window;
         windowToRefresh.location.reload();
-    } else
-    {
+    } else {
         $('#editDetailspage').load(getUrl);
     }
 }
@@ -190,18 +172,16 @@ var ajaxReloadCallback = function (result,sent)
  * @param result : The PUT request result
  * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
  */
-function ajaxReloadPublicView ()
-{
+function ajaxReloadPublicView() {
     $('#public').load(getUrl);
 }
 
 
-function goToStart()
-{
+function goToStart() {
     var windowToRefresh = window.parent;
-    if(windowToRefresh == undefined)
+    if (windowToRefresh == undefined)
         windowToRefresh = window;
-    windowToRefresh.location.replace(context+"/start");
+    windowToRefresh.location.replace(context + "/start");
 }
 
 /* Edit User Details Functions */
@@ -213,85 +193,72 @@ function goToStart()
  * @param result : The PUT request result
  * @param sent : The sent Json with the PUT request (to check for the preferredLanguage Properties)
  */
-var formError = function (result,sent)
-{
-    var resultObject=null;
+var formError = function (result, sent) {
+    var resultObject = null;
 
-    if(result["status"]>300)
-    {
-        if(result["status"]==401)
-        {
+    if (result["status"] > 300) {
+        if (result["status"] == 401) {
             //Lost session redirecting to login
             goToStart();
         }
-        else if (result["status"]>=400 && result["status"]<500)
-        {
+        else if (result["status"] >= 400 && result["status"] < 500) {
             //other errors displaying default message
-            $("."+currentCssClass+".otherErrorsMessage").hide();
-            $("."+currentCssClass+".otherErrorsMessage").fadeIn('slow').delay(1500);
+            $("." + currentCssClass + ".otherErrorsMessage").hide();
+            $("." + currentCssClass + ".otherErrorsMessage").fadeIn('slow').delay(1500);
         }
-        else if(result["status"]==500)
-        {
+        else if (result["status"] == 500) {
             //server error trying to get message from Api
-            if(result.responseJSON != undefined)
-            {
+            if (result.responseJSON != undefined) {
                 //trying to get message in Json
-                resultObject = {"message":""+result.responseJSON.message+"", "properties":[]};
+                resultObject = {"message": "" + result.responseJSON.message + "", "properties": []};
             }
-            else if(result["message"] != undefined)
-            {
+            else if (result["message"] != undefined) {
                 //trying to get message directly from result
-                resultObject = {"message":""+result["message"]+"", "properties":[]};
+                resultObject = {"message": "" + result["message"] + "", "properties": []};
             }
-            if(resultObject != null)
-            {
+            if (resultObject != null) {
                 //formatting the message (replacing the j:properties by their names)
 
                 //looking for JCR property name
-                var propertiesArray=new Array();
-                if(result.responseJSON.message.indexOf("j:")!=-1)
-                {
+                var propertiesArray = new Array();
+                if (result.responseJSON.message.indexOf("j:") != -1) {
                     //split message on spaces
-                    propertiesArray=result.responseJSON.message.split(" ");
+                    propertiesArray = result.responseJSON.message.split(" ");
 
-                    for(var property=0;property<propertiesArray.length;property++)
-                    {
-                        if(propertiesArray[property].indexOf("j:")!=-1)
-                        {
+                    for (var property = 0; property < propertiesArray.length; property++) {
+                        if (propertiesArray[property].indexOf("j:") != -1) {
                             if (resultObject["properties"]) {
                                 if (!resultObject["properties"].push) {
                                     resultObject["properties"] = [resultObject["properties"]];
                                 }
                                 resultObject["properties"].push(propertiesArray[property] || '');
                             } else {
-                                resultObject["properties"] = {"keys" : propertiesArray[property] || ''};
+                                resultObject["properties"] = {"keys": propertiesArray[property] || ''};
                             }
                         }
                     }
                 }
-                var errorMessage = ""+resultObject["message"];
+                var errorMessage = "" + resultObject["message"];
 
                 var propertiesArray = resultObject["properties"];
 
-                for(var propertyName = 0;propertyName<propertiesArray.length;propertyName++)
-                {
-                    errorMessage=errorMessage.replace(propertiesArray[propertyName], propertiesNames[propertiesArray[propertyName]]);
+                for (var propertyName = 0; propertyName < propertiesArray.length; propertyName++) {
+                    errorMessage = errorMessage.replace(propertiesArray[propertyName], propertiesNames[propertiesArray[propertyName]]);
                 }
 
                 //displaying formatted error message
-                $("."+currentCssClass+".errorMessage").html("");
-                $("."+currentCssClass+".errorMessage").hide();
-                $("."+currentCssClass+".errorMessage").stop().fadeIn();
-                $("."+currentCssClass+".errorMessage").stop().fadeOut();
-                $("."+currentCssClass+".errorMessage").html($("."+currentCssClass+".errorMessage").html()+"<div>"+errorMessage+"</div>");
-                $("."+currentCssClass+".errorMessage").fadeIn('slow').delay(4000).fadeOut('slow');
+                $("." + currentCssClass + ".errorMessage").html("");
+                $("." + currentCssClass + ".errorMessage").hide();
+                $("." + currentCssClass + ".errorMessage").stop().fadeIn();
+                $("." + currentCssClass + ".errorMessage").stop().fadeOut();
+                $("." + currentCssClass + ".errorMessage").html($("." + currentCssClass + ".errorMessage").html() + "<div>" + errorMessage + "</div>");
+                $("." + currentCssClass + ".errorMessage").fadeIn('slow').delay(4000).fadeOut('slow');
 
             }
-            else
-            {
+            else {
                 //default error message
-                $("."+currentCssClass+".otherErrorsMessage").hide();
-                $("."+currentCssClass+".otherErrorsMessage").fadeIn('slow').delay(1500);
+                $("." + currentCssClass + ".otherErrorsMessage").hide();
+                $("." + currentCssClass + ".otherErrorsMessage").fadeIn('slow').delay(1500);
             }
         }
     }
@@ -308,43 +275,37 @@ var formError = function (result,sent)
  * @param emailErrorId : The css id of the div that will display the email error message
  * @return true if the address is valid and false in the other case
  */
-function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
-{
-    var phoneValidation=true;
-    var emailValidation=true;
+function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId) {
+    var phoneValidation = true;
+    var emailValidation = true;
 
     var phoneRegex = /^[0-9]{1,45}$/;
     var emailRegex = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
 
-    $.each($("."+cssClass+".phone"),function(){
-        if($(this).val().length>0 && $(this).val().length<5)
-        {
-            phoneValidation=false;
+    $.each($("." + cssClass + ".phone"), function () {
+        if ($(this).val().length > 0 && $(this).val().length < 5) {
+            phoneValidation = false;
         }
-        if($(this).val().length>0 && !phoneRegex.test($(this).val()))
-        {
-            phoneValidation=false;
+        if ($(this).val().length > 0 && !phoneRegex.test($(this).val())) {
+            phoneValidation = false;
         }
     });
 
-    $.each($("."+cssClass+".email"),function(){
-        if($(this).val().length>0 && !emailRegex.test($(this).val()))
-        {
-            emailValidation=false;
+    $.each($("." + cssClass + ".email"), function () {
+        if ($(this).val().length > 0 && !emailRegex.test($(this).val())) {
+            emailValidation = false;
         }
     });
 
     //displaying the error messages
-    $("#"+phoneErrorId).hide();
+    $("#" + phoneErrorId).hide();
 
-    $("#"+emailErrorId).hide();
-    if(!phoneValidation)
-    {
-        $('#'+phoneErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
+    $("#" + emailErrorId).hide();
+    if (!phoneValidation) {
+        $('#' + phoneErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
     }
-    if(!emailValidation)
-    {
-        $('#'+emailErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
+    if (!emailValidation) {
+        $('#' + emailErrorId).fadeIn('slow').delay(5000).fadeOut('slow');
     }
     return phoneValidation && emailValidation;
 }
@@ -358,10 +319,10 @@ function verifyAndSubmitAddress(cssClass, phoneErrorId, emailErrorId)
  */
 function urlExists(testUrl) {
     var http = jQuery.ajax({
-        type:"GET",
+        type: "GET",
         url: testUrl,
         async: false
-    })
+    });
     return http.status;
 }
 
@@ -375,40 +336,34 @@ function urlExists(testUrl) {
  * @param nodeIdentifier: The end of URI for the jahia API Standard Call is the user id
  * @param locale: The locale for the jahia API Standard Call
  */
-function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale)
-{
+function editVisibility(propertiesNumber, idNumber, value, nodeIdentifier, locale) {
 
     var jsonString = "{\"properties\":{\"j:publicProperties\":{\"multiValued\":true,\"value\":[";
-    var filled=false;
+    var filled = false;
     //the image to put near the switch once the post is successful
     var doneImageId = '';
-    if(value == true)
-    {
-        doneImageId = '#switchOn'+idNumber;
+    if (value == true) {
+        doneImageId = '#switchOn' + idNumber;
     }
-    else
-    {
-        doneImageId = '#switchOff'+idNumber;
+    else {
+        doneImageId = '#switchOff' + idNumber;
     }
 
     //Looping on properties and filling the data
-    for(var currentPropertieIndex=0;currentPropertieIndex<propertiesNumber;currentPropertieIndex++)
-    {
+    for (var currentPropertieIndex = 0; currentPropertieIndex < propertiesNumber; currentPropertieIndex++) {
         //replacing the list of public properties by the list of all the switches in true state
-        if($('#publicProperties'+currentPropertieIndex).bootstrapSwitch('state') == true)
-        {
-            if(filled==true)
-            {
+        if ($('#publicProperties' + currentPropertieIndex).bootstrapSwitch('state') == true) {
+            if (filled == true) {
                 jsonString += ",";
             }
-            jsonString += "\""+$("#publicProperties"+currentPropertieIndex).val()+"\"";
-            filled=true;
+            jsonString += "\"" + $("#publicProperties" + currentPropertieIndex).val() + "\"";
+            filled = true;
         }
     }
     jsonString += "]}}}";
     //posting the properties visibility to JCR
     currentCssClass = "privacyField";
-    jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", jsonString , ajaxReloadCallback, formError);
+    jahiaAPIStandardCall(context, "default", locale, "nodes", nodeIdentifier, "PUT", jsonString, ajaxReloadCallback, formError);
 }
 
 /**
@@ -422,8 +377,7 @@ function editVisibility(propertiesNumber,idNumber, value, nodeIdentifier, locale
  * @param passwordMandatory: The error message for the empty password case
  * @param passwordNotMatching: The error message for the non matching passwords case
  */
-function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMandatory, passwordNotMatching)
-{
+function changePassword(oldPasswordMandatory, confirmationMandatory, passwordMandatory, passwordNotMatching) {
     //passwords checks
     if ($("#oldPasswordField").val() == "") {
         $("#passwordErrors").hide();
@@ -445,8 +399,7 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
         $('#passwordconfirm').focus();
     }
 
-    else if ($("#passwordField").val() != $("#passwordconfirm").val())
-    {
+    else if ($("#passwordField").val() != $("#passwordconfirm").val()) {
         $("#passwordField").val("");
         $("#passwordconfirm").val("");
         $("#passwordErrors").hide();
@@ -454,31 +407,28 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
         $('#passwordErrors').fadeIn('slow').delay(5000).fadeOut('slow');
         $('#passwordField').focus();
     }
-    else{
-        currentCssClass  = "passwordField";
-        $.post( changePasswordUrl, { oldpassword: $("#oldPasswordField").val(), password: $("#passwordField").val(), passwordconfirm:  $("#passwordconfirm").val()},
-            function(result)
-            {
-                if(result['result'] == 'success')
-                {
+    else {
+        currentCssClass = "passwordField";
+        $.post(changePasswordUrl, { oldpassword: $("#oldPasswordField").val(), password: $("#passwordField").val(), passwordconfirm: $("#passwordconfirm").val()},
+            function (result) {
+                if (result['result'] == 'success') {
                     switchRow('password');
                     $('#passwordSuccess').addClass("text-success");
                     $('#passwordSuccess').html(result['errorMessage']);
                     $('#passwordSuccess').fadeIn('slow').delay(5000).fadeOut('slow');
                 }
-                else
-                {
+                else {
                     $("#passwordField").val("");
                     $("#passwordconfirm").val("");
                     $("#oldPasswordField").val("");
                     $("#passwordErrors").hide();
                     $("#passwordErrors").html(result['errorMessage']);
                     $("#passwordErrors").fadeIn('slow').delay(5000).fadeOut('slow');
-                    $("input[name="+result['focusField']+"]").focus();
+                    $("input[name=" + result['focusField'] + "]").focus();
                 }
             },
-            'json').fail(function(){
-                var result = {status : "404", message : "standard error ..."};
+            'json').fail(function () {
+                var result = {status: "404", message: "standard error ..."};
                 formError(result);
             });
     }
@@ -496,79 +446,88 @@ function changePassword(oldPasswordMandatory,confirmationMandatory, passwordMand
  * @param callbackFunction : the callback function
  * @param errorFunction : The error callback function
  */
-function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction)
-{
-    var uploadUrl = context+"/"+API_URL_START+"/default/"+locale+"/paths"+nodePath+"/files/profile";
-    var buggedUrl = context+"/default/"+locale+"/paths"+nodePath+"/files/profile";
-    currentCssClass= "imageField";
+function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorFunction) {
+    currentCssClass = "imageField";
     //checking if the file input has been filled
-    if( $("#"+imageId).val() == "")
-    {
+    if ($("#" + imageId).val() == "") {
         $("#imageUploadEmptyError").fadeIn('slow').delay(5000).fadeOut('slow');
     }
-    else
-    {
-        //Upload the picture
-        $.ajaxFileUpload({
-                url: uploadUrl,
-                secureuri:false,
-                fileElementId: imageId,
-                dataType: 'json',
-                success: function(result)
-                {
-                    if(result["exception"] != undefined)
-                    {
-                        if(result["status"]===undefined){
-                            result["status"]=404
-                        };
-                        errorFunction(result);
-                    }
-                    else
-                    {
-                        var fileId = result["id"];
-                        var fileName = result["name"];
-                        var filepath = urlFiles+"/files/profile/"+fileName;
-                        //JSon Serialized String
-                        var jsonData;
-                        var endOfURI = userId+"/properties/j__picture";
+    else {
+        jahiaAPIStandardCall(context, "default", locale, "paths", nodePath + "/files/profile", "GET", null, function () {
+            doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction);
+        }, function () {
 
-                        //Creating the Json String to send with the PUT request
-                        jsonData = "{\"value\":\""+fileId+"\"}";
-                        if(fileId != undefined)
-                        {
-                            //Requesting the Jahia API to update the user picture
-                            jahiaAPIStandardCall(context,"default",locale, "nodes", endOfURI,"PUT", jsonData, function(){
-                                //Check If Jahia had the time to create the Avatar
-                                //building the avatar URL
-                                var imageUrl = filepath+"?t=avatar_120";
-                                var avatarExists=false;
-                                var ExistsCode=-1;
-                                intervalURLChecker = window.setInterval(function(){
-                                    ExistsCode = urlExists(imageUrl);
-                                    if(ExistsCode<=300)
-                                    {
-                                        //Avatar has been found refreshing the profile display ...
-                                        avatarExists=true;
-                                        window.clearInterval(intervalURLChecker);
-                                        callbackFunction(result, "picture");
-                                    }
-                                },500);
-                            }, errorFunction);
-                        }
-                        else
-                        {
-                            $("#imageUploadError").fadeIn('slow').delay(5000).fadeOut('slow');
-                        }
-                    }
-                },
-                error: function(result){
-                    if(result["status"]===undefined){
-                        result["status"]=404
-                    };
-                    errorFunction(result);
-                }
+            //create profile
+            alert("profile folder does not exist");
+            var jsonData = {"name": "files", "type": "jnt:folder"};
+            jahiaAPIStandardCall(context, "default", locale, "nodes", userId + "/children/files", "PUT", JSON.stringify(jsonData), function (result) {
+                jahiaAPIStandardCall(context, "default", locale, "nodes", result.id + "/children/profile", "PUT", JSON.stringify(jsonData), function (result) {
+                    console.log(JSON.stringify(result));
+                    doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction);
+                });
             });
+        });
+    }
+}
+function doUpload(imageId, locale, nodePath, userId, callbackFunction, errorFunction) {
+    var uploadUrl = context + "/" + API_URL_START + "/default/" + locale + "/paths" + nodePath + "/files/profile";
+    currentCssClass = "imageField";
+    //Upload the picture
+    $.ajaxFileUpload({
+        url: uploadUrl,
+        secureuri: false,
+        fileElementId: imageId,
+        dataType: 'json',
+        success: function (result) {
+            if (result["exception"] != undefined) {
+                if (result["status"] === undefined) {
+                    result["status"] = 404
+                }
+                ;
+                errorFunction(result);
+            }
+            else {
+                var fileId = result["id"];
+                var fileName = result["name"];
+                var filepath = urlFiles + "/files/profile/" + fileName;
+                //JSon Serialized String
+                var jsonData;
+                var endOfURI = userId + "/properties/j__picture";
+
+                //Creating the Json String to send with the PUT request
+                jsonData = "{\"value\":\"" + fileId + "\"}";
+                if (fileId != undefined) {
+                    //Requesting the Jahia API to update the user picture
+                    jahiaAPIStandardCall(context, "default", locale, "nodes", endOfURI, "PUT", jsonData, function () {
+                        //Check If Jahia had the time to create the Avatar
+                        //building the avatar URL
+                        var imageUrl = filepath + "?t=avatar_120";
+                        var avatarExists = false;
+                        var ExistsCode = -1;
+                        intervalURLChecker = window.setInterval(function () {
+                            ExistsCode = urlExists(imageUrl);
+                            if (ExistsCode <= 300) {
+                                //Avatar has been found refreshing the profile display ...
+                                avatarExists = true;
+                                window.clearInterval(intervalURLChecker);
+                                callbackFunction(result, "picture");
+                            }
+                        }, 500);
+                    }, errorFunction);
+                }
+                else {
+                    $("#imageUploadError").fadeIn('slow').delay(5000).fadeOut('slow');
+                }
+            }
+        },
+        error: function (result) {
+            if (result["status"] === undefined) {
+                result["status"] = 404
+            }
+            ;
+            errorFunction(result);
         }
+    });
 }
 /**
  * @Author : Jahia(rahmed)
@@ -581,28 +540,27 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
  * @param callback : the callback function for the Jahia API Standard Call
  * @param errorCallback : the error callback function for the Jahia API Standard Call
  */
-function saveCkEditorChanges(rowId,nodeIdentifier ,locale, callback, errorCallback )
-{
+function saveCkEditorChanges(rowId, nodeIdentifier, locale, callback, errorCallback) {
 
     //Opening the JSON
     var jsonPropTable = {};
     var jsonTable = {};
 
     //getting the ckeditors
-    var editorId = rowId+"_editor";
+    var editorId = rowId + "_editor";
     var editor = CKEDITOR.instances[editorId];
-    var editorValue=editor.getData().trim();
+    var editorValue = editor.getData().trim();
 
-    jsonPropTable["j:"+rowId] = {"value" : editorValue};
+    jsonPropTable["j:" + rowId] = {"value": editorValue};
 
-    jsonTable["properties"]=jsonPropTable;
+    jsonTable["properties"] = jsonPropTable;
 
     //calling ajax POST
     var myJSONText = JSON.stringify(jsonTable);
-    currentCssClass=rowId+"Field";
+    currentCssClass = rowId + "Field";
 
     //Calling the Jahia Restful API to Update the node
-    jahiaAPIStandardCall(context,"default",locale, "nodes", nodeIdentifier,"PUT", myJSONText, callback, errorCallback);
+    jahiaAPIStandardCall(context, "default", locale, "nodes", nodeIdentifier, "PUT", myJSONText, callback, errorCallback);
 }
 
 
@@ -613,18 +571,15 @@ var currentForm = "";
  * This function switches a row from the display view to the form view hiding other form view already active
  * @elementId : id of the row to switch
  */
-function switchRow(elementId)
-{
+function switchRow(elementId) {
     //building css element id
-    elementId="#"+elementId;
+    elementId = "#" + elementId;
 
     //building css form id
-    var elementFormId = elementId+"_form";
+    var elementFormId = elementId + "_form";
     //Checking which element to show and which element to hide
-    if( $(elementId).is(":visible"))
-    {
-        if(currentForm!='')
-        {
+    if ($(elementId).is(":visible")) {
+        if (currentForm != '') {
             $(currentForm).hide();
             $(currentElement).show();
         }
@@ -633,8 +588,7 @@ function switchRow(elementId)
         //Show the form
         $(elementFormId).show();
     }
-    else
-    {
+    else {
         //Hide the Form
         $(elementFormId).hide();
         //Show the display Row

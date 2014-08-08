@@ -244,6 +244,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                 // let's save the identifier for the user in the database
                 try {
                     theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+                    theUser.getSession().save();
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

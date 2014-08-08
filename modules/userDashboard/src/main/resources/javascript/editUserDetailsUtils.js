@@ -458,7 +458,7 @@ function updatePhoto(imageId, locale, nodePath, userId, callbackFunction, errorF
         }, function () {
 
             //create profile
-            alert("profile folder does not exist");
+            console.log("profile folder does not exist, we are creating it.");
             var jsonData = {"name": "files", "type": "jnt:folder"};
             jahiaAPIStandardCall(context, "default", locale, "nodes", userId + "/children/files", "PUT", JSON.stringify(jsonData), function (result) {
                 jahiaAPIStandardCall(context, "default", locale, "nodes", result.id + "/children/profile", "PUT", JSON.stringify(jsonData), function (result) {

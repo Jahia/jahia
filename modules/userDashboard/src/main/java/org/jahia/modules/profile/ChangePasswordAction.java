@@ -136,6 +136,7 @@ public class ChangePasswordAction extends Action {
                     } else {
                         // change password
                         user.setPassword(passwd);
+                        session.save();
                         json.put("errorMessage", Messages.get("resources.userDashboard","mySettings.passwordChanged", renderContext.getUILocale()));
                         json.put("result", "success");
                     }

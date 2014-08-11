@@ -79,7 +79,6 @@ import org.apache.pluto.driver.PortalStartupListener;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
-import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -246,8 +245,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 requireLicense();
             }
             
-            createSymlinks();
-            
             boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
             
             // execute patches after root context initialization
@@ -312,22 +309,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             throw e;
         } finally {
             JCRSessionFactory.getInstance().closeAllSessions();
-        }
-    }
-
-    private void createSymlinks() {
-        try {
-            ServerDeploymentFactory.createSymbolicLinksForLegacyFolders(new File(webAppRoot), new File(SettingsBean
-                    .getInstance().getJahiaVarDiskPath()));
-        } catch (Exception e) {
-            String legacyDataDir = new File(webAppRoot, "WEB-INF/var").getAbsolutePath();
-            if (logger.isDebugEnabled()) {
-                logger.warn("Unable to create symbolic links for legacy modules and prepackagedSites folders under "
-                        + legacyDataDir, e);
-            } else {
-                logger.warn("Unable to create symbolic links for legacy modules and prepackagedSites folders under "
-                        + legacyDataDir);
-            }
         }
     }
 

@@ -92,16 +92,9 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
-<<<<<<< .working
-<<<<<<< .working
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-=======
-import org.jahia.utils.ProcessHelper;
-=======
->>>>>>> .merge-right.r50395
->>>>>>> .merge-right.r50393
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;

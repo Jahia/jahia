@@ -72,7 +72,6 @@
 package org.jahia.bin.listeners;
 
 import org.apache.commons.collections.map.LRUMap;
-import org.apache.commons.exec.OS;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
@@ -80,6 +79,7 @@ import org.apache.pluto.driver.PortalStartupListener;
 import org.codehaus.plexus.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -94,11 +94,14 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
 <<<<<<< .working
+<<<<<<< .working
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 =======
 import org.jahia.utils.ProcessHelper;
+=======
+>>>>>>> .merge-right.r50395
 >>>>>>> .merge-right.r50393
 import org.springframework.beans.FatalBeanException;
 import org.springframework.beans.factory.ListableBeanFactory;
@@ -313,35 +316,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     private void createSymlinks() {
-        File legacyDataDir = new File(webAppRoot, "WEB-INF/var");
         try {
-            String dataDir = SettingsBean.getInstance().getJahiaVarDiskPath();
-            if (!legacyDataDir.exists()) {
-                legacyDataDir.mkdir();
-            }
-            File legacyModulesDir = new File(webAppRoot, "WEB-INF/var/modules");
-            if (!legacyModulesDir.exists()) {
-                if (OS.isFamilyWindows()) {
-                    ProcessHelper.execute("cmd.exe", new String[] { "/c", "mklink", "/j",
-                            "\"" + legacyModulesDir + "\"",
-                            "\"" + SettingsBean.getInstance().getJahiaModulesDiskPath() + "\"" });
-                } else {
-                    ProcessHelper.execute("ln", new String[] { "-s",
-                            SettingsBean.getInstance().getJahiaModulesDiskPath(), legacyModulesDir.getAbsolutePath() });
-                }
-            }
-            File legacyDemoDir = new File(webAppRoot, "WEB-INF/var/prepackagedSites");
-            if (!legacyDemoDir.exists()) {
-                if (OS.isFamilyWindows()) {
-                    String[] params = new String[] { "/c", "mklink", "/j", "\"" + legacyDemoDir + "\"",
-                            "\"" + dataDir + "\\prepackagedSites\"" };
-                    ProcessHelper.execute("cmd.exe", params);
-                } else {
-                    ProcessHelper.execute("ln",
-                            new String[] { "-s", dataDir + "/prepackagedSites", legacyDemoDir.getAbsolutePath() });
-                }
-            }
+            ServerDeploymentFactory.createSymbolicLinksForLegacyFolders(new File(webAppRoot), new File(SettingsBean
+                    .getInstance().getJahiaVarDiskPath()));
         } catch (Exception e) {
+            String legacyDataDir = new File(webAppRoot, "WEB-INF/var").getAbsolutePath();
             if (logger.isDebugEnabled()) {
                 logger.warn("Unable to create symbolic links for legacy modules and prepackagedSites folders under "
                         + legacyDataDir, e);

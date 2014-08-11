@@ -82,9 +82,9 @@
     <name>Jahia Test Module War Package</name>
     <packaging>war</packaging>
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/test/jahia-test-module-war</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/test/jahia-test-module-war</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH/test/jahia-test-module-war</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/branches/JAHIA-7-0-X-X-BRANCH/jahia-test-module-war</url>
     </scm>
     <profiles>
         <profile>

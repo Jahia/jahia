@@ -146,7 +146,7 @@
         <jahia.manifest.vendor.id>org.jahia</jahia.manifest.vendor.id>
         <jahia.manifest.vendor.url>http://www.jahia.com</jahia.manifest.vendor.url>
         <jahia.manifest.vendor.email>info@jahia.com</jahia.manifest.vendor.email>
-        <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-0-X-X-BRANCH</jahia.svn.base.url>
+        <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
 		<jahia.license.header>header.txt</jahia.license.header>
 		<jahia.license.style>style.xml</jahia.license.style>
 

@@ -195,7 +195,11 @@ public class JCRGroupNode extends JCRNodeDecorator {
                         member = member.addNode(parts[i], "jnt:members");
                     }
                 }
-                member = member.addNode(parts[parts.length - 1], "jnt:member");
+                if (member.hasNode(parts[parts.length - 1])) {
+                    member = member.getNode(parts[parts.length - 1]);
+                } else {
+                    member = member.addNode(parts[parts.length - 1], "jnt:member");
+                }
                 member.setProperty("j:member", principal.getIdentifier());
             }
         } catch (RepositoryException e) {

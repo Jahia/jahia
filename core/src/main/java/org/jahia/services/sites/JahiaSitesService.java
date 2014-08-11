@@ -590,6 +590,17 @@ public class JahiaSitesService extends JahiaService {
                     return true;
                 }
             };
+            // First delete all groups
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (String groupPath : groupService.getGroupList(siteKey)) {
+                        groupService.deleteGroup(groupPath, session);
+                    }
+                    session.save();
+                    return true;
+                }
+            });
             // Now let's delete the live workspace site.
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback);
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);

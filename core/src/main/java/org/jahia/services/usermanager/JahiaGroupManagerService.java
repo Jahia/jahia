@@ -333,16 +333,16 @@ public class JahiaGroupManagerService extends JahiaService {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> groups = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String groupPath = siteKey != null ? "/sites/" + siteKey + "/groups" :  "/groups";
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE isdescendantnode(group,'" + groupPath + "') ORDER BY group.[j:nodename]";
+                String groupsFolderPath = siteKey != null ? "/sites/" + siteKey + "/groups" :  "/groups";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE isdescendantnode(group,'" + groupsFolderPath + "') ORDER BY group.[j:nodename]";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
-                    Row groupsFolderNode = rows.nextRow();
-                    String groupName = groupsFolderNode.getPath();
-                    if (!groups.contains(groupName)) {
-                        groups.add(groupName);
+                    Row groupNode = rows.nextRow();
+                    String groupPath = groupNode.getPath();
+                    if (!groups.contains(groupPath)) {
+                        groups.add(groupPath);
                     }
                 }
             }
@@ -370,8 +370,8 @@ public class JahiaGroupManagerService extends JahiaService {
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
-                    Row groupsFolderNode = rows.nextRow();
-                    String groupName = groupsFolderNode.getValue("j:nodename").getString();
+                    Row groupNode = rows.nextRow();
+                    String groupName = groupNode.getValue("j:nodename").getString();
                     if (!groups.contains(groupName)) {
                         groups.add(groupName);
                     }

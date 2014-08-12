@@ -87,7 +87,6 @@ import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.CardLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.ArrayList;
@@ -108,7 +107,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
     private List<String> headers = new ArrayList<String>();
     private List<ButtonBar> bars = new ArrayList<ButtonBar>();
     private List<List<Component>> barItems = new ArrayList<List<Component>>();
-    private List<Button> globalButtons = new ArrayList<Button>();
     private ButtonBar bar;
     private int i = 0;
 
@@ -188,7 +186,7 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         list.getStore().remove(i);
 
         if (list.getStore().getCount() == 0) {
-            mainContainer.closeEngine();
+            closeAllEngines();
         } else {
             if (i >= list.getStore().getCount()) {
                 i = list.getStore().getCount() - 1;
@@ -227,7 +225,6 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         bars.clear();
         barItems.clear();
         list.getStore().removeAll();
-
         mainContainer.closeEngine();
 
     }

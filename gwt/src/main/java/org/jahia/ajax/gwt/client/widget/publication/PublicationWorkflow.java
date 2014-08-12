@@ -120,6 +120,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID);
 
     protected List<GWTJahiaPublicationInfo> publicationInfos;
+    private static transient boolean doRefresh;
 
     private static final long serialVersionUID = -4916142720074054130L;
 
@@ -135,11 +136,11 @@ public class PublicationWorkflow implements CustomWorkflow {
 
         dialog.getButtonsBar().remove(dialog.getButtonsBar().getItem(0));
         Button button = getBypassWorkflowButton(workflow, dialog);
-        if(button!=null) {
+        if (button != null) {
             dialog.getButtonsBar().insert(button, 0);
         }
         button = getStartWorkflowButton(workflow, dialog);
-        if (button!=null) {
+        if (button != null) {
             dialog.getButtonsBar().insert(button, 0);
         }
     }
@@ -151,6 +152,7 @@ public class PublicationWorkflow implements CustomWorkflow {
     protected void initDialog(WorkflowActionDialog dialog) {
         TabItem tab = new TabItem("Publication infos");
         tab.setLayout(new FitLayout());
+        doRefresh = false;
 
         PublicationStatusGrid g = new PublicationStatusGrid(publicationInfos, true, dialog.getLinker(), dialog.getContainer());
         tab.add(g);
@@ -211,6 +213,8 @@ public class PublicationWorkflow implements CustomWorkflow {
                     }
                     nodeProperties = propertiesEditor.getProperties();
                 }
+                // enable buttons before close the engine to avoid layout side effect (the remaining button at the same index is disabled)
+                dialog.enableButtons();
                 dialog.getContainer().closeEngine();
                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                         "message.workflow.starting", "Starting publication workflow"));
@@ -234,10 +238,15 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 Info.display(Messages.get("label.workflow.start", "Start Workflow"), Messages.get(
                                         "message.workflow.started", "Workflow started"));
                                 WorkInProgressActionItem.removeStatus(status);
-                                Map<String, Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_MAIN, true);
-                                data.put("event", "workflowStarted");
-                                dialog.getLinker().refresh(data);
+                                // if one wf has been started, do a refresh even on cancel
+                                doRefresh = true;
+                                // refresh only if there is no more wf
+                                if (dialog.getContainer() instanceof EngineCards && ((EngineCards) dialog.getContainer()).getComponents().isEmpty()) {
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_MAIN, true);
+                                    data.put("event", "workflowStarted");
+                                    dialog.getLinker().refresh(data);
+                                }
                             }
                         }
                 );
@@ -329,7 +338,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 }
             }
         }
-        if (keys.size() >0) {
+        if (keys.size() > 0) {
             JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
                     new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
                         public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> definitions) {
@@ -342,7 +351,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         }
     }
 
-    private static void create(List<GWTJahiaPublicationInfo> all, TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, Linker linker, boolean unpublish) {
+    private static void create(List<GWTJahiaPublicationInfo> all, TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, final Linker linker, boolean unpublish) {
         EngineContainer container;
         if (linker instanceof ManagerLinker) {
             container = new EngineWindow();
@@ -375,6 +384,12 @@ public class PublicationWorkflow implements CustomWorkflow {
         cards.addGlobalButton(new Button(Messages.get("label.cancel"), new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
                 cards.closeAllEngines();
+                if (doRefresh) {
+                    Map<String, Object> data = new HashMap<String, Object>();
+                    data.put(Linker.REFRESH_MAIN, true);
+                    data.put("event", "workflowStarted");
+                    linker.refresh(data);
+                }
             }
         }));
         cards.showEngine();
@@ -432,7 +447,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                         getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"), "Cannot publish", status, linker, refreshData));
                             }
                         } else {
-                             close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), refreshData);
+                            close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), refreshData);
                         }
                     } else if (component instanceof PublicationStatusWindow) {
                         final PublicationStatusWindow dialog = (PublicationStatusWindow) component;
@@ -501,7 +516,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                                 dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                         );
                     } else {
-                        close(cards,nbWF,  Messages.get("label.workflow.start", "Start Workflow"),status,linker, refreshData);
+                        close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
                     }
                 }
             }
@@ -514,7 +529,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             public void onApplicationFailure(Throwable caught) {
                 close(cards, nbWF, errorMessage, statusMessage, linker, refreshData);
                 Log.error(errorMessage, caught);
-                Window.alert(errorMessage+ caught.getMessage());
+                Window.alert(errorMessage + caught.getMessage());
             }
 
             public void onSuccess(Object result) {

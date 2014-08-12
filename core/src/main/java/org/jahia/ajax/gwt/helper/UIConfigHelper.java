@@ -652,10 +652,10 @@ public class UIConfigHelper {
                 gwtConfig.setDefaultLocation(defaultLocation);
                 JCRNodeWrapper contextNode = null;
                 JCRSiteNode site = null;
-                if (contextPath == null ) {
-                    int nodeNameIndex = StringUtils.indexOf(defaultLocation,".",StringUtils.lastIndexOf(defaultLocation,"/"));
-                    contextPath = StringUtils.substring(defaultLocation,0,nodeNameIndex);
-                    if (session.nodeExists(contextPath)) {
+                if (contextPath == null) {
+                    int nodeNameIndex = StringUtils.indexOf(defaultLocation, ".", StringUtils.lastIndexOf(defaultLocation, "/"));
+                    contextPath = StringUtils.substring(defaultLocation, 0, nodeNameIndex);
+                    if (defaultLocation != null && session.nodeExists(contextPath)) {
                         contextNode = session.getNode(contextPath);
                         site = contextNode.getResolveSite();
                     }

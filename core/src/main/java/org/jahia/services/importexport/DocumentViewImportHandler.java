@@ -81,11 +81,14 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.zip.ZipEntry;
@@ -276,7 +279,28 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             if (pathes.peek().startsWith("/users/") && "jnt:user".equals(atts.getValue("jcr:primaryType"))) {
                 Matcher m = Pattern.compile("/users/([^/]+)").matcher(pathes.peek());
                 if (m.matches()) {
-                    path = ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(m.group(1));
+                    path = JahiaUserManagerService.getInstance().getUserSplittingRule().getPathForUsername(m.group(1));
+                }
+            }
+
+            // Create missing structure for group members
+            if ("jnt:member".equals(atts.getValue("jcr:primaryType")) && nodes.peek().isNodeType("jnt:members") && "j:members".equals(nodes.peek().getName())) {
+                String memberRef = atts.getValue("j:member");
+                if (memberRef != null) {
+                    String referenceValue = getReferenceValue(memberRef);
+                    JCRNodeWrapper principal;
+                    if (referenceValue.startsWith("/")) {
+                        principal = session.getNode(referenceValue);
+                    } else {
+                        principal = session.getNodeByIdentifier(memberRef);
+                    }
+                    JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroupByPath(StringUtils.substringBeforeLast(nodes.peek().getPath(), "/"), session);
+                    JCRNodeWrapper member = groupNode.addMember(principal);
+                    if (member != null) {
+                        uuids.add(member.getIdentifier());
+                    }
+                    nodes.push(member);
+                    return;
                 }
             }
 
@@ -656,15 +680,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         for (String value : values) {
                             value = JCRMultipleValueUtils.decode(value);
                             if (!StringUtils.isEmpty(value)) {
-                                if (value.startsWith("$currentSite")) {
-                                    value = nodes.peek().getResolveSite().getPath() + value.substring(12);
-                                } else if (value.startsWith("#")) {
-                                    value = value.substring(1);
-                                    String rootPath = nodes.firstElement().getPath();
-                                    if (!rootPath.equals("/")) {
-                                        value = rootPath + value;
-                                    }
-                                }
+                                value = getReferenceValue(value);
                                 if (attrName.equals("j:defaultCategory") && value.startsWith("/root")) {
                                     // Map categories from legacy imports
                                     value = JCRContentUtils.getSystemSitePath() + "/categories" + StringUtils.substringAfter(value, "/root");
@@ -720,6 +736,19 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 }
             }
         }
+    }
+
+    private String getReferenceValue(String value) throws RepositoryException {
+        if (value.startsWith("$currentSite")) {
+            value = nodes.peek().getResolveSite().getPath() + value.substring(12);
+        } else if (value.startsWith("#")) {
+            value = value.substring(1);
+            String rootPath = nodes.firstElement().getPath();
+            if (!rootPath.equals("/")) {
+                value = rootPath + value;
+            }
+        }
+        return value;
     }
 
     private boolean findContent() throws IOException {

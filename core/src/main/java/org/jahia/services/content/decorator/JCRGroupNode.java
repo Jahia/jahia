@@ -153,9 +153,12 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public boolean isMember(String userPath) {
-        return JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath()) ||
-                !JahiaUserManagerService.GUEST_USERPATH.equals(userPath) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath()) ||
-                JahiaGroupManagerService.getInstance().getMembershipByPath(userPath).contains(getPath());
+        if (JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath()) ||
+                !JahiaUserManagerService.GUEST_USERPATH.equals(userPath) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) {
+            return true;
+        }
+        List<String> membershipByPath = JahiaGroupManagerService.getInstance().getMembershipByPath(userPath);
+        return membershipByPath != null && membershipByPath.contains(getPath());
     }
 
     public boolean isMember(JCRNodeWrapper principal) {
@@ -178,7 +181,7 @@ public class JCRGroupNode extends JCRNodeDecorator {
         }
     }
 
-    public void addMember(JCRNodeWrapper principal) {
+    public JCRNodeWrapper addMember(JCRNodeWrapper principal) {
         try {
             if (principal.isNodeType("jnt:user") || principal.isNodeType("jnt:group")) {
                 String[] parts = principal.getPath().split("/");
@@ -199,12 +202,14 @@ public class JCRGroupNode extends JCRNodeDecorator {
                     member = member.getNode(parts[parts.length - 1]);
                 } else {
                     member = member.addNode(parts[parts.length - 1], "jnt:member");
+                    member.setProperty("j:member", principal.getIdentifier());
                 }
-                member.setProperty("j:member", principal.getIdentifier());
+                return member;
             }
         } catch (RepositoryException e) {
             logger.warn(e.getMessage(), e);
         }
+        return null;
     }
 
     public void removeMember(JCRNodeWrapper principal) {

@@ -89,11 +89,7 @@ public class CreateDraftButtonItem extends CreateButtonItem {
     public BoxComponent create(final AbstractContentEngine engine) {
         final CheckBox checkbox = new CheckBox();
 
-        if (engine.getNode() != null && engine.getNode().get("j:isDraft") != null) {
-            checkbox.setValue((Boolean) engine.getNode().get("j:isDraft"));
-        } else {
-            checkbox.setValue(checkedByDefault);
-        }
+        checkbox.setValue(checkedByDefault || (engine.getNode() != null && engine.getNode().get("j:isDraft") != null && (Boolean) engine.getNode().get("j:isDraft")));
         setDraft(checkbox.getValue());
 
         // uncomment this if you want to change this behavior

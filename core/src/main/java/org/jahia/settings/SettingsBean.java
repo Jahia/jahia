@@ -579,6 +579,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             } else if (info.contains("websphere")) {
                 server = "was";
             } else {
+                server = "tomcat";
                 logger.warn(
                         "Unable to auto-detect server type, based on the server info '{}'. Assuming Apache Tomcat.",
                         servletContext.getServerInfo());

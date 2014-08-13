@@ -181,6 +181,9 @@
                                     <ref bean="Toolbar.Item.Cut"/>
                                     <ref bean="Toolbar.Item.Paste"/>
                                     <ref bean="Toolbar.Item.PasteReference"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
+                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.TranslateMenu"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Export"/>
@@ -190,9 +193,6 @@
                                     <ref bean="Toolbar.Item.Unlock"/>
                                     <ref bean="Toolbar.Item.ClearLock"/>
                                     <ref bean="Toolbar.Item.ClearAllLocks"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
-                                    <ref bean="Toolbar.Item.Publish"/>
-                                    <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
                                 </list>
@@ -218,6 +218,7 @@
                         <ref bean="Toolbar.Item.Cut"/>
                         <ref bean="Toolbar.Item.Paste"/>
                         <ref bean="Toolbar.Item.PasteReference"/>
+                        <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.TranslateMenu"/>
                         <ref bean="Toolbar.Item.Export"/>
                         <ref bean="Toolbar.Item.Import"/>
@@ -225,7 +226,6 @@
                         <ref bean="Toolbar.Item.Unlock"/>
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
-                        <ref bean="Toolbar.Item.Publish"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                         <ref bean="Toolbar.Item.GoToViewDefinition"/>
                     </list>

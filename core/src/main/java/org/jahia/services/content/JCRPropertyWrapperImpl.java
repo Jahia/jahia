@@ -106,7 +106,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def) {
         super(session, provider);
-        this.node = provider.getService().decorate(objectNode);
+        this.node = objectNode;
         this.property = property;
         setItem(property);
         if (property != null) {
@@ -123,7 +123,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
 
     public JCRPropertyWrapperImpl(JCRNodeWrapper objectNode, Property property, JCRSessionWrapper session, JCRStoreProvider provider, ExtendedPropertyDefinition def, String name) {
         super(session, provider);
-        this.node = provider.getService().decorate(objectNode);
+        this.node = objectNode;
         this.property = property;
         setItem(property);
         this.name = name;

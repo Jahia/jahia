@@ -75,6 +75,7 @@
                                     <ref bean="Toolbar.Item.PublishAll"/>
                                     <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishSite"/>
+                                    <ref bean="Toolbar.Item.PublishSiteInAllLanguages"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.ViewPublishStatus"/>
                                     <ref bean="Toolbar.Item.PublicationManager"/>
@@ -315,6 +316,20 @@
                                     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                                         <property name="actionItem">
                                             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                                                <property name="allowedNodeTypes">
+                                                    <list>
+                                                        <value>jnt:virtualsite</value>
+                                                    </list>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.publishSite"/>
+                                        <property name="icon" value="publishSite"/>
+                                    </bean>
+                                    <bean id="Toolbar.Item.PublishSiteInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+                                        <property name="actionItem">
+                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                                                <property name="allLanguages" value="true"/>
                                                 <property name="allowedNodeTypes">
                                                     <list>
                                                         <value>jnt:virtualsite</value>

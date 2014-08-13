@@ -77,7 +77,6 @@ import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
-import com.extjs.gxt.ui.client.widget.layout.ToolBarLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.dom.client.BodyElement;
 import com.google.gwt.dom.client.Document;
@@ -94,7 +93,6 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem;
 
 import java.util.Date;
 
@@ -251,7 +249,8 @@ public class VersionViewer extends ContentPanel {
             actionItem.handleNewLinkerSelection();
 
             gwtJahiaToolbarItem = new GWTJahiaToolbarItem();
-            actionItem = new PublishAllActionItem();
+            actionItem = new PublishActionItem();
+            actionItem.setAllSubTree(true);
             gwtJahiaToolbarItem.setActionItem(actionItem);
             gwtJahiaToolbarItem.setTitle(Messages.get("label.publishall"));
             gwtJahiaToolbarItem.setLayout(Constants.LAYOUT_BUTTON_LABEL);

@@ -101,7 +101,11 @@ public class PublishSiteActionItem extends PublishActionItem {
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (isNodeTypeAllowed(ctx.getMultipleSelection())) {
             setEnabled(true);
-            updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+            if (allLanguages) {
+                updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + Messages.get("label.publish.selected.item.all.languages", "all languages"));
+            } else {
+                updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());
+            }
         } else {
             setEnabled(false);
         }

@@ -129,46 +129,103 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
     protected transient String workflowType = "publish";
     protected transient boolean checkForUnpublication = false;
-    protected transient boolean allSubTree = false;
-    protected transient boolean allLanguages = false;
+    protected boolean allSubTree = false;
+    protected boolean allLanguages = false;
 
     public void handleNewLinkerSelection() {
         setEnabled(false);
         LinkerSelectionContext ctx = linker.getSelectionContext();
-        if (ctx.getMultipleSelection() != null
-                && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
-            if (!isChildOfMarkedForDeletion(ctx) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
-                setEnabled(true);
-                updateTitle(getGwtToolbarItem().getTitle());
+
+        if (allLanguages) {
+            if (ctx.getMultipleSelection() != null
+                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
+                if (!isChildOfMarkedForDeletion(ctx)) {
+                    setEnabled(true);
+                    if (allSubTree) {
+                        updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all selected items in all languages"));
+                    } else {
+                        updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all under selected items in all languages"));
+                    }
+                }
+            } else {
+                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                    setEnabled(true);
+                    if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                        if (gwtJahiaNode.isFile()) {
+                            setEnabled(false);
+                        }
+                    } else {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                                Messages.get("label.publish.selected.item.all.languages", "all languages"));
+                    }
+                }
+            }
+        } else if (allSubTree) {
+            if (ctx.getMultipleSelection() != null
+                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
+                if (!isChildOfMarkedForDeletion(ctx)) {
+                    setEnabled(true);
+                    updateTitle(Messages.get("label.publish.all.selected.items"));
+                }
+            } else {
+                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                    setEnabled(true);
+                    if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                        if(gwtJahiaNode.isFile()) {
+                            setEnabled(false);
+                        }
+                    } else {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                                JahiaGWTParameters.getLanguageDisplayName());
+                    }
+                }
             }
         } else {
+<<<<<<< .working
             GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
             if (isDraft(gwtJahiaNode)) {
                 setEnabled(false);
             } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                 setEnabled(true);
-
-                if (checkForUnpublication) {
-                    GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null ? gwtJahiaNode
-                            .getAggregatedPublicationInfo() : gwtJahiaNode.getQuickPublicationInfo();
-                    if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
-                        setEnabled(false);
-                    }
-                } else if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
-                    GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
-                    GWTJahiaWorkflowDefinition def = null;
-                    if (gwtJahiaNode.getWorkflowInfo() != null) {
-                        def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
-                    }
-
-                    setEnabled(info.isPublishable() && (def != null || info.isAllowedToPublishWithoutWorkflow()));
+=======
+            if (ctx.getMultipleSelection() != null
+                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
+                if (!isChildOfMarkedForDeletion(ctx) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
+                    setEnabled(true);
+                    updateTitle(getGwtToolbarItem().getTitle());
                 }
+            } else {
+                GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                    setEnabled(true);
+>>>>>>> .merge-right.r50411
 
-                if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                } else {
-                    updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                            JahiaGWTParameters.getLanguageDisplayName());
+                    if (checkForUnpublication) {
+                        GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null ? gwtJahiaNode
+                                .getAggregatedPublicationInfo() : gwtJahiaNode.getQuickPublicationInfo();
+                        if (publicationInfo != null && !publicationInfo.isUnpublishable()) {
+                            setEnabled(false);
+                        }
+                    } else if (gwtJahiaNode.getAggregatedPublicationInfo() != null) {
+                        GWTJahiaPublicationInfo info = gwtJahiaNode.getAggregatedPublicationInfo();
+                        GWTJahiaWorkflowDefinition def = null;
+                        if (gwtJahiaNode.getWorkflowInfo() != null) {
+                            def = gwtJahiaNode.getWorkflowInfo().getPossibleWorkflows().get(new GWTJahiaWorkflowType(workflowType));
+                        }
+
+                        setEnabled(info.isPublishable() && (def != null || info.isAllowedToPublishWithoutWorkflow()));
+                    }
+
+                    if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                    } else {
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                                JahiaGWTParameters.getLanguageDisplayName());
+                    }
                 }
             }
         }
@@ -216,12 +273,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     callback(result);
                 }
             };
-            if(!allLanguages) {
+            if (!allLanguages) {
                 JahiaContentManagementService.App.getInstance().getPublicationInfo(uuids, allSubTree, checkForUnpublication, asyncCallback);
             } else {
                 Set<String> languages = new HashSet<String>();
                 for (GWTJahiaLanguage gwtJahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {
-                    if(gwtJahiaLanguage.isActive()) {
+                    if (gwtJahiaLanguage.isActive()) {
                         languages.add(gwtJahiaLanguage.getLanguage());
                     }
                 }
@@ -289,5 +346,13 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             }
         }
+    }
+
+    public void setAllSubTree(boolean allSubTree) {
+        this.allSubTree = allSubTree;
+    }
+
+    public void setAllLanguages(boolean allLanguages) {
+        this.allLanguages = allLanguages;
     }
 }

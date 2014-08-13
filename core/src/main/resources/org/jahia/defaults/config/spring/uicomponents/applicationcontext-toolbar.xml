@@ -668,8 +668,8 @@
         <property name="items">
             <list>
                 <ref bean="Toolbar.Item.PublishOne"/>
-                <ref bean="Toolbar.Item.PublishAll"/>
                 <ref bean="Toolbar.Item.PublishInAllLanguages"/>
+                <ref bean="Toolbar.Item.PublishAll"/>
                 <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
                 <ref bean="Toolbar.Item.Unpublish"/>
             </list>
@@ -693,7 +693,9 @@
 
     <bean id="Toolbar.Item.PublishAll" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allSubTree" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.publishall"/>
         <property name="icon" value="publishAll"/>
@@ -701,7 +703,10 @@
 
     <bean id="Toolbar.Item.PublishAllInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishAllInAllLanguagesActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+                <property name="allSubTree" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.publishall"/>
         <property name="icon" value="publishAll"/>
@@ -709,7 +714,9 @@
 
     <bean id="Toolbar.Item.PublishInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishInAllLanguagesActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishActionItem">
+                <property name="allLanguages" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.publish"/>
         <property name="icon" value="publish"/>
@@ -718,6 +725,16 @@
     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem"/>
+        </property>
+        <property name="titleKey" value="label.publishSite"/>
+        <property name="icon" value="publishSite"/>
+    </bean>
+
+    <bean id="Toolbar.Item.PublishSiteInAllLanguages" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
+        <property name="actionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem">
+                <property name="allLanguages" value="true"/>
+            </bean>
         </property>
         <property name="titleKey" value="label.publishSite"/>
         <property name="icon" value="publishSite"/>

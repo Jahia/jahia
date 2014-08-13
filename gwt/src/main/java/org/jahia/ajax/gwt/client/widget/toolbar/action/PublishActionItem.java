@@ -149,7 +149,9 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                if (isDraft(gwtJahiaNode)) {
+                    setEnabled(false);
+                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
                     if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
@@ -171,7 +173,9 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                if (isDraft(gwtJahiaNode)) {
+                    setEnabled(false);
+                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
                     if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
@@ -185,13 +189,6 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             }
         } else {
-<<<<<<< .working
-            GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-            if (isDraft(gwtJahiaNode)) {
-                setEnabled(false);
-            } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
-                setEnabled(true);
-=======
             if (ctx.getMultipleSelection() != null
                     && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
                 if (!isChildOfMarkedForDeletion(ctx) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
@@ -200,9 +197,10 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+                if (isDraft(gwtJahiaNode)) {
+                    setEnabled(false);
+                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
->>>>>>> .merge-right.r50411
 
                     if (checkForUnpublication) {
                         GWTJahiaPublicationInfo publicationInfo = gwtJahiaNode.getAggregatedPublicationInfo() != null ? gwtJahiaNode

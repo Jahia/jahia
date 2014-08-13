@@ -745,6 +745,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, JCRSessionWrapper session) throws RepositoryException {
+<<<<<<< .working
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
@@ -765,6 +766,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         } else {
             throw new PathNotFoundException("Invalid node : " + objectNode.getPath());
         }
+=======
+        return getNodeWrapper(objectNode, null, null, session);
+>>>>>>> .merge-right.r50416
     }
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
@@ -782,12 +786,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                     }
             );
         }
-        final JCRNodeWrapper w = createWrapper(objectNode, path, parent, session);
-        if (objectNode.isNew() || w.checkValidity()) {
-            return service.decorate(w);
-        } else {
-            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
-        }
+        return createWrapper(objectNode, path, parent, session);
     }
 
     private JCRNodeWrapper createWrapper(Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
@@ -798,16 +797,24 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             }
         }
 
+        JCRNodeWrapperImpl w = null;
         if (session.getVersionDate() != null || session.getVersionLabel() != null) {
             try {
                 if (objectNode.isNodeType(Constants.NT_FROZENNODE)) {
-                    return new JCRFrozenNodeAsRegular(objectNode, path, parent, session, this, session.getVersionDate(), session.getVersionLabel());
+                    w = new JCRFrozenNodeAsRegular(objectNode, path, parent, session, this, session.getVersionDate(), session.getVersionLabel());
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
         }
-        return new JCRNodeWrapperImpl(objectNode, path, parent, session, this);
+        if (w == null) {
+            w = new JCRNodeWrapperImpl(objectNode, path, parent, session, this);
+        }
+        if (objectNode.isNew() || w.checkValidity()) {
+            return service.decorate(w);
+        } else {
+            throw new PathNotFoundException("This node doesn't exist in this language " + objectNode.getPath());
+        }
     }
 
     public JCRPropertyWrapper getPropertyWrapper(Property prop, JCRSessionWrapper session) throws RepositoryException {
@@ -824,11 +831,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             jcrNode = getNodeWrapper(parent.getParent(), session);
             String name = prop.getName();
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(name);
-            return new JCRPropertyWrapperImpl(createWrapper(session.getLocale() != null ? prop.getParent().getParent() : prop.getParent(), null, null, session), prop, session, this, epd, name);
+            return new JCRPropertyWrapperImpl(getNodeWrapper(session.getLocale() != null ? prop.getParent().getParent() : prop.getParent(), null, null, session), prop, session, this, epd, name);
         } else {
             jcrNode = getNodeWrapper(prop.getParent(), session);
             ExtendedPropertyDefinition epd = jcrNode.getApplicablePropertyDefinition(prop.getName());
-            return new JCRPropertyWrapperImpl(createWrapper(prop.getParent(), null, null, session), prop, session, this, epd);
+            return new JCRPropertyWrapperImpl(getNodeWrapper(prop.getParent(), null, null, session), prop, session, this, epd);
         }
     }
 

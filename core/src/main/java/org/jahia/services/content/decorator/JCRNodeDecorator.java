@@ -101,6 +101,9 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     protected JCRNodeWrapper node;
 
     public JCRNodeDecorator(JCRNodeWrapper node) {
+        if (node instanceof JCRNodeDecorator) {
+            throw new UnsupportedOperationException("Cannot decorate an already decorated node");
+        }
         this.node = node;
     }
 

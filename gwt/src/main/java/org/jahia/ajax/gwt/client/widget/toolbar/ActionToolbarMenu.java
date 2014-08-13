@@ -110,10 +110,10 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
             if (gwtToolbarItem.getIcon() != null) {
                 subMenu.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarItem.getIcon()));
             }
-            subMenu.setText(gwtToolbarItem.getTitle());
 
             GWTJahiaToolbarMenu gwtToolbarMenu = (GWTJahiaToolbarMenu) gwtToolbarItem;
 
+            subMenu.setText(gwtToolbarMenu.getItemsGroupTitle());
             ActionToolbarMenu menu = new ActionToolbarMenu(linker);
             menu.setActionItems(actionItems);
             for (GWTJahiaToolbarItem subItem : gwtToolbarMenu.getGwtToolbarItems()) {

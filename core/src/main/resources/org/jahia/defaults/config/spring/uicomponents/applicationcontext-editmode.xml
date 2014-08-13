@@ -70,7 +70,7 @@
                             <!-- <property name="icon" value="publicationAction"/> -->
                             <property name="items">
                                 <list>
-                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishOne"/>
                                     <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
                                     <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
@@ -191,10 +191,6 @@
                                     <ref bean="Toolbar.Item.ClearAllLocks"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Publish"/>
-                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.PublishAll"/>
-                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.Separator"/>
                                     <ref bean="Toolbar.Item.OpenInContentManager"/>
@@ -229,10 +225,6 @@
                         <ref bean="Toolbar.Item.ClearLock"/>
                         <ref bean="Toolbar.Item.ClearAllLocks"/>
                         <ref bean="Toolbar.Item.Publish"/>
-                        <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                        <ref bean="Toolbar.Item.PublishAll"/>
-                        <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
-                        <ref bean="Toolbar.Item.Unpublish"/>
                         <ref bean="Toolbar.Item.OpenInContentManager"/>
                         <ref bean="Toolbar.Item.GoToViewDefinition"/>
                     </list>
@@ -318,7 +310,7 @@
                                     <ref bean="Toolbar.Item.NewInternalLink"/>
                                     <ref bean="Toolbar.Item.NewExternalLink"/>
                                     <ref bean="Toolbar.Item.NavMenuText"/>
-                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishOne"/>
                                     <ref bean="Toolbar.Item.PublishInAllLanguages"/>
                                     <bean id="Toolbar.Item.PublishSite" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                                         <property name="actionItem">
@@ -416,10 +408,6 @@
                                     <ref bean="Toolbar.Item.NewContent"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Publish"/>
-                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.PublishAll"/>
-                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -445,10 +433,6 @@
                                 <list>
                                     <ref bean="Toolbar.Item.EditContent"/>
                                     <ref bean="Toolbar.Item.Publish"/>
-                                    <ref bean="Toolbar.Item.PublishInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.PublishAll"/>
-                                    <ref bean="Toolbar.Item.PublishAllInAllLanguages"/>
-                                    <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
                                     <ref bean="Toolbar.Item.Undelete"/>
                                     <ref bean="Toolbar.Item.DeletePermanently"/>
@@ -499,7 +483,7 @@
                                     <ref bean="Toolbar.Item.NewFolder"/>
                                     <ref bean="Toolbar.Item.Upload"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishOne"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>
@@ -520,7 +504,7 @@
                                     <ref bean="Toolbar.Item.Download"/>
                                     <ref bean="Toolbar.Item.FilePreview"/>
                                     <ref bean="Toolbar.Item.EditContent"/>
-                                    <ref bean="Toolbar.Item.Publish"/>
+                                    <ref bean="Toolbar.Item.PublishOne"/>
                                     <ref bean="Toolbar.Item.PublishAll"/>
                                     <ref bean="Toolbar.Item.Unpublish"/>
                                     <ref bean="Toolbar.Item.Delete"/>

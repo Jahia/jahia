@@ -225,7 +225,7 @@ public class FindUsersAndGroups extends FindUser {
     }
 
     protected JSONObject toJSON(JCRUserNode user) throws JSONException {
-        JSONObject json = super.toJSON(user.getJahiaUser());
+        JSONObject json = super.toJSON(user);
 
         json.put("key", "u:" + user.getName());
         String fullName = PrincipalViewHelper.getFullName(user);
@@ -239,9 +239,9 @@ public class FindUsersAndGroups extends FindUser {
     }
 
     @Override
-    protected JSONObject toJSON(Principal principal) throws JSONException {
-        return (principal instanceof JahiaGroup) ? toJSON((JahiaGroup) principal)
-                : toJSON((JahiaUser) principal);
+    protected JSONObject toJSON(JCRNodeWrapper principal) throws JSONException {
+        return (principal instanceof JahiaGroup) ? toJSON((JCRGroupNode) principal)
+                : toJSON((JCRUserNode) principal);
     }
 
 }

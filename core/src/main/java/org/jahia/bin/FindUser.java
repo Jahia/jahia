@@ -71,21 +71,12 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.security.Principal;
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
 import org.json.JSONArray;
@@ -93,6 +84,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Controller for performing user search.
@@ -191,16 +188,15 @@ public class FindUser extends BaseFindController {
         // no sorting here
     }
 
-    protected JSONObject toJSON(JahiaUser user) throws JSONException {
+    protected JSONObject toJSON(JCRUserNode user) throws JSONException {
         JSONObject json = new JSONObject();
 
-        json.put("userKey", user.getUserKey());
-        json.put("username", user.getUsername());
+        if (user != null) {
+            json.put("userKey", user.getUserKey());
+            json.put("username", user.getName());
 
-        JCRUserNode userNode = userService.lookupUserByPath(user.getLocalPath());
-        if (userNode != null) {
             for (String key : displayProperties) {
-                String value = userNode.getPropertyAsString(key);
+                String value = user.getPropertyAsString(key);
                 if (value != null) {
                     json.put(key, value);
                 }
@@ -209,8 +205,8 @@ public class FindUser extends BaseFindController {
         return json;
     }
 
-    protected JSONObject toJSON(Principal principal) throws JSONException {
-        return toJSON((JahiaUser) principal);
+    protected JSONObject toJSON(JCRNodeWrapper principal) throws JSONException {
+        return toJSON((JCRUserNode) principal);
     }
 
     protected void writeResults(Set<JCRNodeWrapper> users, HttpServletRequest request, HttpServletResponse response,
@@ -230,12 +226,12 @@ public class FindUser extends BaseFindController {
             if (jcrNodeWrapper != null && roles != null) {
                 for (Map<String, Object> stringObjectMap : rolesForNode) {
                     if (stringObjectMap.get("principalType").equals("user") && stringObjectMap.get("principal").equals(user)) {
-                        jsonResults.add(toJSON(((JCRUserNode)user).getJahiaUser()));
+                        jsonResults.add(toJSON(user));
                         count++;
                     }
                 }
             } else {
-                jsonResults.add(toJSON(((JCRUserNode)user).getJahiaUser()));
+                jsonResults.add(toJSON(user));
                 count++;
             }
             if (count >= hardLimit) {

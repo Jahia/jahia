@@ -193,7 +193,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * Load all the user data and attributes. On success a reference on the user
      * is returned, otherwise NULL is returned.
      *
-     * @return Return a reference on a new created jahiaUser object.
+     * @return Return a reference on a new created JCRUserNode object.
      * @deprecated use lookupUserByPath() instead
      */
     public JCRUserNode lookupUserByKey(String userKey) {
@@ -204,7 +204,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * Load all the user data and attributes. On success a reference on the user
      * is returned, otherwise NULL is returned.
      *
-     * @return Return a reference on a new created jahiaUser object.
+     * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUserByPath(String path) {
         try {
@@ -219,7 +219,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * Load all the user data and attributes. On success a reference on the user
      * is returned, otherwise NULL is returned.
      *
-     * @return Return a reference on a new created jahiaUser object.
+     * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUserByPath(String userKey, JCRSessionWrapper session) {
         try {
@@ -235,7 +235,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * is returned, otherwise NULL is returned.
      *
      * @param name User's identification name.
-     * @return Return a reference on a new created jahiaUser object.
+     * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUser(String name) {
         try {
@@ -251,7 +251,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * is returned, otherwise NULL is returned.
      *
      * @param name User's identification name.
-     * @return Return a reference on a new created jahiaUser object.
+     * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUser(String name, JCRSessionWrapper session) {
         if (StringUtils.isBlank(name)) {
@@ -400,8 +400,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criterias
-     * @return List a List of JahiaUser elements that correspond to those
-     * search criterias
+     * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias) {
         try {
@@ -420,8 +419,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "username"="*test*") or
      *                        null to search without criterias
-     * @return List a List of JahiaUser elements that correspond to those
-     * search criterias
+     * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, JCRSessionWrapper session) {
         return searchUsers(searchCriterias, null, session);

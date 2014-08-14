@@ -393,8 +393,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
      *                        null to search without criterias
-     * @return List a List of JahiaGroup elements that correspond to those
-     * search criterias
+     * @return a Set of JCRGroupNode elements that correspond to those search criterias
      */
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias) {
         try {
@@ -413,8 +412,7 @@ public class JahiaGroupManagerService extends JahiaService {
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
      *                        null to search without criterias
-     * @return List a List of JahiaGroup elements that correspond to those
-     * search criterias
+     * @return a Set of JCRGroupNode elements that correspond to those search criterias
      */
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, JCRSessionWrapper session) {
         try {

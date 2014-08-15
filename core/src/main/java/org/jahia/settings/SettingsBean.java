@@ -611,15 +611,28 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 File ear = war.getParentFile();
                 if (ear != null) {
                     File deploymentsFolder = ear.getParentFile();
-                    if (deploymentsFolder != null
-                            && "deployments"
-                                    .equals(deploymentsFolder.getName())) {
-                        File standaloneFolder = deploymentsFolder
-                                .getParentFile();
-                        if (standaloneFolder != null) {
-                            File jboss = standaloneFolder.getParentFile();
-                            if (jboss != null && jboss.isDirectory()) {
-                                serverHome = jboss.getAbsolutePath();
+                    if (deploymentsFolder != null) {
+                        if ("deployments".equals(deploymentsFolder.getName())) {
+                            // exploded EAR deployment on JBoss
+                            File standaloneFolder = deploymentsFolder.getParentFile();
+                            if (standaloneFolder != null) {
+                                File jboss = standaloneFolder.getParentFile();
+                                if (jboss != null && jboss.isDirectory()) {
+                                    serverHome = jboss.getAbsolutePath();
+                                }
+                            }
+                        } else if ("deployment".equals(deploymentsFolder.getName())) {
+                            // packaged EAR deployment on JBoss
+                            File vfsFolder = deploymentsFolder.getParentFile();
+                            if (vfsFolder != null && "vfs".equals(vfsFolder.getName())) {
+                                File standaloneFolder = vfsFolder.getParentFile() != null ? vfsFolder.getParentFile()
+                                        .getParentFile() : null;
+                                if (standaloneFolder != null) {
+                                    File jboss = standaloneFolder.getParentFile();
+                                    if (jboss != null && jboss.isDirectory()) {
+                                        serverHome = jboss.getAbsolutePath();
+                                    }
+                                }
                             }
                         }
                     }

@@ -10,9 +10,13 @@
   		<list>
             <value>classpath*:org/jahia/defaults/config/properties/jahia*.properties</value>
   			<value>/WEB-INF/etc/config/jahia.properties</value>
-  			<value>/WEB-INF/etc/config/jahia.advanced.properties</value>
+            <value>/WEB-INF/etc/config/jahia.advanced.properties</value>
+            <value>/WEB-INF/etc/config/jahia.node.properties</value>
   			<value>/WEB-INF/etc/config/jahia.custom.properties</value>
   			<value>classpath*:org/jahia/config/jahia*.properties</value>
+            <value>classpath*:jahia/jahia.properties</value>
+            <value>classpath*:jahia/jahia.node.properties</value>
+            <value>classpath*:jahia/jahia*.properties</value>
             <value>file:${jahia.config}</value>
   		</list>
   	</property>
@@ -43,6 +47,7 @@
           <list>
               <!-- we will take the first found license file -->
               <value>file:/${jahia.license}</value>
+              <value>classpath*:jahia/license*.xml</value>
               <value>classpath*:org/jahia/config/license*.xml</value>
               <value>WEB-INF/etc/config/license*.xml</value>
           </list>

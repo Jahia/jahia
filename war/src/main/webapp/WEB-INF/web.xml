@@ -19,7 +19,16 @@
             of the web application
         </description>
         <param-name>contextConfigLocation</param-name>
-        <param-value>classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,classpath*:org/jahia/defaults/config/**/applicationcontext-override-*.xml,WEB-INF/etc/spring/**/applicationcontext-*.xml,WEB-INF/etc/spring/**/applicationcontext-override-*.xml,classpath*:org/jahia/config/**/applicationcontext-*.xml,classpath*:org/jahia/config/**/applicationcontext-override-*.xml</param-value>
+        <param-value>
+            classpath*:org/jahia/defaults/config/**/applicationcontext-*.xml,
+            classpath*:org/jahia/defaults/config/**/applicationcontext-override-*.xml,
+            WEB-INF/etc/spring/**/applicationcontext-*.xml,
+            WEB-INF/etc/spring/**/applicationcontext-override-*.xml,
+            classpath*:org/jahia/config/**/applicationcontext-*.xml,
+            classpath*:org/jahia/config/**/applicationcontext-override-*.xml,
+            classpath*:jahia/**/applicationcontext-*.xml,
+            classpath*:jahia/**/applicationcontext-override-*.xml
+        </param-value>
     </context-param>
 
     <context-param>
@@ -50,7 +59,7 @@
     	<description>
 	      The following filter to use SPNEGO authentication is
 	      configured in applicationcontext-spnego.xml.
-	      It can be enabled in the jahia.advanced.properties.
+	      It can be enabled in the jahia.properties.
     	</description>
         <filter-name>SpnegoHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
@@ -562,7 +571,11 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml,WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-gwt*.xml,
+                WEB-INF/etc/spring/servlet-applicationcontext-gwt*.xml,
+                classpath*:jahia/**/servlet-applicationcontext-gwt*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
@@ -575,7 +588,11 @@
         <servlet-class>org.jahia.bin.JahiaDispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer*.xml,WEB-INF/etc/spring/servlet-applicationcontext-renderer*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-renderer*.xml,
+                WEB-INF/etc/spring/servlet-applicationcontext-renderer*.xml,
+                classpath*:jahia/**/servlet-applicationcontext-renderer*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>
@@ -637,7 +654,11 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-webflow*.xml,WEB-INF/etc/spring/servlet-applicationcontext-webflow*.xml</param-value>
+            <param-value>
+                classpath*:org/jahia/defaults/config/**/servlet-applicationcontext-webflow*.xml,
+                WEB-INF/etc/spring/servlet-applicationcontext-webflow*.xml,
+                classpath*:jahia/**/servlet-applicationcontext-webflow*.xml
+            </param-value>
         </init-param>
         <init-param>
             <param-name>publishEvents</param-name>

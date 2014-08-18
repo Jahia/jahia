@@ -75,9 +75,8 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.services.content.decorator.JCRPortletNode;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -103,9 +102,9 @@ public class PortletRenderTag extends AbstractJahiaTag {
 
     public int doStartTag() {
         try {
-            if(!(portletNode instanceof JCRNodeWrapper)){
-                logger.error("portletNode must be an instance of JCRNodeWrapper");
-                return SKIP_BODY;               
+            if (!(portletNode instanceof JCRPortletNode)) {
+                logger.error("portletNode must be an instance of JCRPortletNode");
+                return SKIP_BODY;
             }
             if (windowId <= 0) {
                 Integer globalId = (Integer) pageContext.getAttribute(this
@@ -119,7 +118,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
                         PageContext.REQUEST_SCOPE);
                 windowId = globalId;
             }
-            drawPortlet(new JCRPortletNode((JCRNodeWrapper) portletNode), windowId, pageContext.getOut(), pageContext.getServletContext());
+            drawPortlet((JCRPortletNode) portletNode, windowId, pageContext.getOut(), pageContext.getServletContext());
 
         } catch (Exception e) {
             logger.error(e.getMessage());
@@ -132,7 +131,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         super.doEndTag();
         portletNode = null;
-        windowId=-1;
+        windowId = -1;
         return EVAL_PAGE;
     }
 

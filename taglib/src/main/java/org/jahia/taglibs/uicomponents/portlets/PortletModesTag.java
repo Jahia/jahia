@@ -229,14 +229,14 @@ public class PortletModesTag extends TagSupport {
 
     public int doStartTag() throws JspException {
 
-        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);        
+        RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
         PortletWindowBean portletWindowBean = null;
         if (name != null) {
             portletWindowBean = (PortletWindowBean) pageContext.
                     findAttribute(name);
-        } else if (node != null) {
+        } else if (node != null && node instanceof JCRPortletNode) {
             try {
-                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(new JCRPortletNode(node));
+                EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance((JCRPortletNode) node);
                 if (entryPointInstance == null) {
                     logger.error("User " + renderContext.getUser().getName() + " could not load the portlet instance :" + node.getIdentifier()+" Or it the portlet is not available anymore.........................................................................................");
                 }
@@ -331,7 +331,7 @@ public class PortletModesTag extends TagSupport {
         if (portletModeBeansIterList.size() < 2) {
             return;
         }
-        Map<String,String> modeUrls = new HashMap<String, String>();
+        Map<String, String> modeUrls = new HashMap<String, String>();
         StringBuilder s = new StringBuilder();
         s.append("<ul class=\"");
         s.append(listCSSClass);
@@ -356,11 +356,11 @@ public class PortletModesTag extends TagSupport {
             modeUrls.put(getResource(locale, resourceBundle,
                     "org.jahia.taglibs.html.portlets.portletmodes." +
                             curPortletModeBean.getName() + ".label" +
-                            namePostFix),curPortletModeBean.getURL());
+                            namePostFix), curPortletModeBean.getURL());
         }
         s.append("</ul>");
-        if (var!=null) {
-            pageContext.setAttribute(var,modeUrls);
+        if (var != null) {
+            pageContext.setAttribute(var, modeUrls);
         } else {
             out.print(s.toString());
         }

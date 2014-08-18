@@ -76,6 +76,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,4 +155,11 @@ public class User {
         return user;
     }
 
+    public JahiaUser getJahiaUser() {
+        JCRUserNode userNode = getUserNode();
+        if (userNode != null) {
+            return userNode.getJahiaUser();
+        }
+        return null;
+    }
 }

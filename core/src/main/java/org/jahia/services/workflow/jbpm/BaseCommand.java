@@ -443,7 +443,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
     protected void updateTaskNode(final JahiaUser user, final String taskUuid) {
         if (taskUuid != null) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(user != null ? user.getUsername() : null, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper nodeByUUID = session.getNodeByUUID(taskUuid);
                         if (user != null) {

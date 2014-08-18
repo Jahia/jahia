@@ -84,7 +84,6 @@
     <name>Jahia Test Parent Package</name>
     <packaging>pom</packaging>
 
-<<<<<<< .working
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -100,23 +99,6 @@
         </repository>
     </repositories>
 
-=======
-    <repositories>
-        <repository>
-            <id>jahia-public</id>
-            <name>Jahia Public Repository</name>
-            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-    
->>>>>>> .merge-right.r50450
     <modules>
         <!--
 		<module>dummy-modules</module>

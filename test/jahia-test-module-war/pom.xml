@@ -130,6 +130,7 @@
                     <groupId>javax.servlet</groupId>
                     <artifactId>javax.servlet-api</artifactId>
                 </exclusion>
+<<<<<<< .working
                 <exclusion>
                     <artifactId>commons-cli</artifactId>
                     <groupId>commons-cli</groupId>
@@ -146,6 +147,12 @@
                     <artifactId>jcommon</artifactId>
                     <groupId>jfree</groupId>
                 </exclusion>
+=======
+                <exclusion>
+                    <groupId>xml-apis</groupId>
+                    <artifactId>xml-apis</artifactId>
+                </exclusion>
+>>>>>>> .merge-right.r50447
             </exclusions>
         </dependency>
         <dependency>

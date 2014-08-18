@@ -240,7 +240,7 @@ public class FindUsersAndGroups extends FindUser {
 
     @Override
     protected JSONObject toJSON(JCRNodeWrapper principal) throws JSONException {
-        return (principal instanceof JahiaGroup) ? toJSON((JCRGroupNode) principal)
+        return (principal instanceof JCRGroupNode) ? toJSON((JCRGroupNode) principal)
                 : toJSON((JCRUserNode) principal);
     }
 

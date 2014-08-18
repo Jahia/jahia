@@ -76,6 +76,8 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.util.*;
@@ -88,6 +90,9 @@ import java.util.*;
  * 
  */
 public class User {
+
+    private static Logger log = LoggerFactory.getLogger(User.class);
+
     private String username;
     private JCRUserNode user;
 
@@ -120,7 +125,7 @@ public class User {
                     r.add(new UserProperty(this, entry.getKey(), entry.getValue()));
                 }
             } catch (RepositoryException e) {
-                e.printStackTrace();
+                log.error("Error while getting user properties", e);
             }
         }
         return r;

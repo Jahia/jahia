@@ -531,7 +531,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                             name), "/"
             ));
             JCRNodeWrapper startNode = session.getNode("/" + jcrUsernamePath[0]);
-            Node usersFolderNode = startNode;
             int length = jcrUsernamePath.length;
             for (int i = 1; i < length; i++) {
                 try {

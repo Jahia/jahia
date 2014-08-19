@@ -85,7 +85,6 @@ import com.google.gwt.user.client.Window;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
-import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -128,7 +127,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, title, null, wfDefinition);
+        this(linker, container, title, null, wfDefinition.getFormResourceName());
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         initStartWorkflowDialog(wfDefinition);
@@ -139,7 +138,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, workflow.getDefinition());
+        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"));
         this.workflow = workflow;
         initExecuteActionDialog(task);
         if (custom != null) {
@@ -149,7 +148,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, final EngineContainer container, String language) {
-        this(linker, container, title, language, wfDefinition);
+        this(linker, container, title, language, wfDefinition.getFormResourceName());
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
@@ -160,7 +159,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     }
 
-    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, GWTJahiaWorkflowDefinition wfDefinition) {
+    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType) {
         super();
         contentManagement = JahiaContentManagementService.App.getInstance();
         this.linker = linker;
@@ -176,7 +175,7 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem();
 
         this.container = container;
-        initTabs(wfDefinition.getFormResourceName(), language);
+        initTabs(wfDefinitionNodeType, language);
 
         container.setEngine(this, this.title, buttonsBar, JahiaGWTParameters.getLanguage(language), this.linker);
         addCancelButton(container);

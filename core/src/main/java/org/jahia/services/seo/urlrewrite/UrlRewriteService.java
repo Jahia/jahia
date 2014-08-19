@@ -78,7 +78,6 @@ import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.FileUtils;
@@ -471,8 +470,17 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
     }
 
     public void setReservedUrlPrefixes(String reservedUrlPrefixes) {
-        this.reservedUrlPrefixSet = StringUtils.isNotBlank(reservedUrlPrefixes) ? new HashSet<String>(
-                Arrays.asList(StringUtils.split(reservedUrlPrefixes, ", "))) : Collections.<String>emptySet();
+        Set<String> prefixes = new HashSet<String>();
+        if (StringUtils.isBlank(reservedUrlPrefixes)) {
+            prefixes =  Collections.emptySet();
+        } else {
+            for (String prefix : StringUtils.split(reservedUrlPrefixes, ",")) {
+                if (StringUtils.isNotBlank(prefix)) {
+                    prefixes.add(StringUtils.trim(prefix));
+                }
+            }
+        }
+        this.reservedUrlPrefixSet = prefixes;
     }
 
     public void setSiteService(JahiaSitesService siteService) {

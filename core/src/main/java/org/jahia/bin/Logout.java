@@ -307,7 +307,7 @@ public class Logout implements Controller {
 
         JCRSessionFactory.getInstance().closeAllSessions();
         JCRSessionFactory.getInstance()
-                .setCurrentUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser());
+                .setCurrentUser(JahiaUserManagerService.getInstance().lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
 
         request.getSession().setAttribute(Constants.SESSION_UI_LOCALE, uiLocale);
         request.getSession().setAttribute(Constants.SESSION_LOCALE, locale);

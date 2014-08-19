@@ -82,6 +82,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
@@ -179,13 +180,12 @@ public class TemplatePackageDeployer {
                         IOUtils.closeQuietly(is);
                     }
                 } else if (imp.toLowerCase().contains("/importsite")) {
-                    JCRUserNode user = null;
+                    JahiaUser previousUser = JCRSessionFactory.getInstance().getCurrentUser();
                     try {
-                        user = JahiaUserManagerService.getInstance().lookupRootUser();
-                        JCRSessionFactory.getInstance().setCurrentUser(user.getJahiaUser());
+                        JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
                         importExportService.importSiteZip(importFile, session);
                     } finally {
-                        JCRSessionFactory.getInstance().setCurrentUser(null);
+                        JCRSessionFactory.getInstance().setCurrentUser(previousUser);
                     }
                 } else {
 //                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);

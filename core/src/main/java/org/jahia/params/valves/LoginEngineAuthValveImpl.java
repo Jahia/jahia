@@ -72,28 +72,25 @@
 package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Patterns;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Login;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 import org.springframework.context.ApplicationEvent;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.security.Principal;
 import java.util.*;
 
 /**
@@ -113,6 +110,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
     private boolean fireLoginEvent = false;
     private String preserveSessionAttributes = null;
+    private JahiaUserManagerService userManagerService;
 
     public void setFireLoginEvent(boolean fireLoginEvent) {
         this.fireLoginEvent = fireLoginEvent;
@@ -173,31 +171,25 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             final String password = httpServletRequest.getParameter("password");
 
             if ((username != null) && (password != null)) {
-                final ServicesRegistry theRegistry = ServicesRegistry.getInstance();
-                if (theRegistry != null) {
-                    JahiaUserManagerService theService = theRegistry.getJahiaUserManagerService();
-                    if (theService != null) {
-                        // Check if the user has site access ( even though it is not a user of this site )
-                        theUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
-                        if (theUser != null) {
-                            if (theUser.verifyPassword(password)) {
-                                if (!theUser.isAccountLocked()) {
-                                    ok = true;
-                                } else {
-                                    logger.warn("Login failed: account for user " + theUser.getName() + " is locked.");
-                                    httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
-                                }
-                            } else {
-                                logger.warn("Login failed: user " + theUser.getName() + " provided bad password.");
-                                httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
-                            }
+                // Check if the user has site access ( even though it is not a user of this site )
+                theUser = userManagerService.lookupUser(username);
+                if (theUser != null) {
+                    if (theUser.verifyPassword(password)) {
+                        if (!theUser.isAccountLocked()) {
+                            ok = true;
                         } else {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Login failed. Unknown username " + username + ".");
-                            }
-                            httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
+                            logger.warn("Login failed: account for user " + theUser.getName() + " is locked.");
+                            httpServletRequest.setAttribute(VALVE_RESULT, ACCOUNT_LOCKED);
                         }
+                    } else {
+                        logger.warn("Login failed: user " + theUser.getName() + " provided bad password.");
+                        httpServletRequest.setAttribute(VALVE_RESULT, BAD_PASSWORD);
                     }
+                } else {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Login failed. Unknown username " + username + ".");
+                    }
+                    httpServletRequest.setAttribute(VALVE_RESULT, UNKNOWN_USER);
                 }
             }
         }
@@ -235,8 +227,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                     cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
                     Properties searchCriterias = new Properties();
                     searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                    Set<JCRUserNode> foundUsers =
-                            ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
+                    Set<JCRUserNode> foundUsers = userManagerService.searchUsers(searchCriterias);
                     if (foundUsers.size() > 0) {
                         cookieUserKey = null;
                     }
@@ -312,6 +303,10 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
     public void setCookieAuthConfig(CookieAuthConfig cookieAuthConfig) {
         this.cookieAuthConfig = cookieAuthConfig;
+    }
+
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
     }
 
 }

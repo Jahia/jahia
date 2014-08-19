@@ -74,7 +74,6 @@ package org.jahia.params.valves;
 import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -93,6 +92,8 @@ import javax.servlet.http.HttpSession;
 
 public class SessionAuthValveImpl extends BaseAuthValve {
 
+    private JahiaUserManagerService userManagerService;
+
     public void invoke(Object context, ValveContext valveContext) throws PipelineException {
         if (!isEnabled()) {
             valveContext.invokeNext(context);
@@ -102,17 +103,23 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         AuthValveContext authContext = (AuthValveContext) context;
         JahiaUser jahiaUser = null;
         HttpSession session = authContext.getRequest().getSession(false);
-        if (session !=null) {
+        if (session != null) {
             jahiaUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
         }
         if (jahiaUser != null) {
-            jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(jahiaUser.getName()).getJahiaUser();
+            JCRUserNode userNode = userManagerService.lookupUser(jahiaUser.getName());
+            if (userNode != null) {
+                jahiaUser = userNode.getJahiaUser();
+            }
         }
-        if (jahiaUser==null || JahiaUserManagerService.isGuest(jahiaUser)) {
+        if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);
         } else {
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
         }
     }
 
+    public void setUserManagerService(JahiaUserManagerService userManagerService) {
+        this.userManagerService = userManagerService;
+    }
 }

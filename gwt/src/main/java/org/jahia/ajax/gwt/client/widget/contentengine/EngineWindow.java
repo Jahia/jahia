@@ -76,12 +76,8 @@ import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-<<<<<<< .working
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-=======
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
->>>>>>> .merge-right.r50466
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;

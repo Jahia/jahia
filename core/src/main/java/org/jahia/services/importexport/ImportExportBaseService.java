@@ -787,7 +787,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
-            pathMapping.put("/modules/" + pkg.getId() + "/", "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+            String key = "/modules/" + pkg.getId() + "/";
+            if (!pathMapping.containsKey(key)) {
+                pathMapping.put(key, "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+            }
         }
 
         NoCloseZipInputStream zis;
@@ -1699,7 +1702,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
-            pathMapping.put("/modules/" + pkg.getId() + "/", "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+            String key = "/modules/" + pkg.getId() + "/";
+            if (!pathMapping.containsKey(key)) {
+                pathMapping.put(key, "/modules/" + pkg.getId() + "/" + pkg.getVersion() + "/");
+            }
         }
 
         boolean importLive = sizes.containsKey(LIVE_REPOSITORY_XML);

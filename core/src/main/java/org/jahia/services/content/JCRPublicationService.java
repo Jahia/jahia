@@ -1056,6 +1056,10 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
+            if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()){
+                info.setDraft(true);
+            }
+
             info.setStatus(getStatus(node, destinationSession, languages));
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
@@ -1096,11 +1100,11 @@ public class JCRPublicationService extends JahiaService {
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
-                        if(child.getStatus()==PublicationInfo.DRAFT) {
+                        if(child.isDraft()) {
                             info.getChildren().clear();
                             info.getReferences().clear();
                             info.addChild(child);
-                            info.setStatus(PublicationInfo.DRAFT);
+                            info.setDraft(true);
                             break;
                         }
                     }
@@ -1130,9 +1134,7 @@ public class JCRPublicationService extends JahiaService {
 
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
         int status;
-        if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()){
-            status = PublicationInfo.DRAFT;
-        } else if (!node.checkLanguageValidity(languages)) {
+        if (!node.checkLanguageValidity(languages)) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
             for (String language : languages) {
                 Locale locale = LanguageCodeConverters.getLocaleFromCode(language);

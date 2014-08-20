@@ -97,7 +97,6 @@ public class PublicationInfo implements Serializable {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
-    public static final int DRAFT = -13;
 
     private transient Map<String, List<String>> allUuidsCache = new HashMap<String, List<String>>();
 
@@ -153,7 +152,7 @@ public class PublicationInfo implements Serializable {
                 }
             }
             if ((includeDeleted || node.getStatus() != DELETED) && (includePublished || node.getStatus() != PUBLISHED)
-                    && (includeDraft || node.getStatus() != DRAFT)) {
+                    && (includeDraft || !node.isDraft())) {
                 allUuids.add(node.getUuid());
             }
             node = nodes.poll();

@@ -88,6 +88,7 @@ public class PublicationInfoNode implements Serializable {
     private String path;
     private int status;
     private boolean locked;
+    private boolean draft = false;
     private List<PublicationInfoNode> child = new LinkedList<PublicationInfoNode>();
     private List<PublicationInfo> references = new LinkedList<PublicationInfo>();
 
@@ -125,6 +126,14 @@ public class PublicationInfoNode implements Serializable {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public boolean isDraft() {
+        return draft;
+    }
+
+    public void setDraft(boolean draft) {
+        this.draft = draft;
     }
 
     public List<PublicationInfoNode> getChildren() {

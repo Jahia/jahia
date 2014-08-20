@@ -125,6 +125,10 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                         if (info.isLocked()) {
                             infoLayers.addInfoLayer(module, Messages.get("label.publication.locked", "locked"), "orange", "orange", removeListener, true,
                                     "0.7");
+                        }  else if (info.isDraft()) {
+                            lastUnpublished = node.getPath();
+                            infoLayers.addInfoLayer(module, status, "dimgray", "dimgray", removeListener, false,
+                                    "0.7");
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             lastUnpublished = node.getPath();
                             infoLayers.addInfoLayer(module, status, "black", "black", removeListener, false,
@@ -143,10 +147,6 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                                     "0.7");
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID) {
                             infoLayers.addInfoLayer(module, status, "red", "red", removeListener, true,
-                                    "0.7");
-                        }  else if (info.getStatus() == GWTJahiaPublicationInfo.DRAFT) {
-                            lastUnpublished = node.getPath();
-                            infoLayers.addInfoLayer(module, status, "dimgray", "dimgray", removeListener, false,
                                     "0.7");
                         }
                     }

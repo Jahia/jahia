@@ -624,6 +624,29 @@ public class PublicationTest {
         return 0;
     }
 
+    private Boolean getDraftsFor(List<PublicationInfo> infos, String uuid) {
+        for (PublicationInfo info : infos) {
+            Boolean draft = getDraftsFor(info.getRoot(), uuid);
+            if (draft != null) {
+                return draft;
+            }
+        }
+        return false;
+    }
+
+    private Boolean getDraftsFor(PublicationInfoNode info, String uuid) {
+        if (info.getUuid().equals(uuid)) {
+            return info.isDraft();
+        }
+        for (PublicationInfoNode node : info.getChildren()) {
+            Boolean draft = getDraftsFor(node, uuid);
+            if (draft != null) {
+                return draft;
+            }
+        }
+        return null;
+    }
+
     @Test
     public void testDraftStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
@@ -636,7 +659,8 @@ public class PublicationTest {
 
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.DRAFT,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid draft info for content", true, getDraftsFor(infos, editTextNode1.getIdentifier()));
         // Publish content
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
 
@@ -645,7 +669,8 @@ public class PublicationTest {
 
         assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
-        assertEquals("Invalid status for content", PublicationInfo.DRAFT,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid draft info for content", true, getDraftsFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
         editTextNode1.setProperty("j:isDraft",Boolean.FALSE);
@@ -657,6 +682,7 @@ public class PublicationTest {
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid draft info for content", false, getDraftsFor(infos, editTextNode1.getIdentifier()));
     }
 
     private void testNodeInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage)

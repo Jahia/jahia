@@ -181,6 +181,9 @@ public class PublicationHelper {
                         if (sub.isLocked()) {
                             gwtInfo.setLocked(true);
                         }
+                        if (sub.isDraft()) {
+                            gwtInfo.setDraft(true);
+                        }
                     }
                 }
 
@@ -422,6 +425,9 @@ public class PublicationHelper {
                     }
                     if (sub.isLocked()) {
                         gwtInfo.setLocked(true);
+                    }
+                    if (sub.isDraft()) {
+                        gwtInfo.setDraft(true);
                     }
                     lastPub.setI18NUuid(sub.getUuid());
                 }

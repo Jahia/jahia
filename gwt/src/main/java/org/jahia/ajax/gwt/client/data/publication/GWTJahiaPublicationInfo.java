@@ -100,7 +100,6 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int MANDATORY_LANGUAGE_VALID = 10;
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
-    public static final int DRAFT = -13;
 
     public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
@@ -116,7 +115,6 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         statusToLabel.put(GWTJahiaPublicationInfo.CONFLICT,"conflict");
         statusToLabel.put(GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID,"mandatorylanguagevalid");
         statusToLabel.put(GWTJahiaPublicationInfo.DELETED,"deleted");
-        statusToLabel.put(GWTJahiaPublicationInfo.DRAFT,"draft");
     }
 
     public GWTJahiaPublicationInfo() {
@@ -126,6 +124,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         setUuid(uuid);
         setStatus(status);
         setLocked(false);
+        setDraft(false);
         setIsAllowedToPublishWithoutWorkflow(false);
         setIsNonRootMarkedForDeletion(false);
     }
@@ -194,6 +193,14 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("locked", locked);
     }
 
+    public Boolean isDraft() {
+        return get("draft");
+    }
+
+    public void setDraft(Boolean draft) {
+        set("draft", draft);
+    }
+
     public String getMainPath() {
         return get("mainPath");
     }
@@ -256,8 +263,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
                 getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID &&
-                getStatus() != GWTJahiaPublicationInfo.DRAFT
-                && !getIsNonRootMarkedForDeletion();
+                !isDraft() && !getIsNonRootMarkedForDeletion();
     }
 
     public boolean isUnpublishable() {

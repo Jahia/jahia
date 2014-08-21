@@ -295,11 +295,19 @@ public abstract class SaveButtonItem implements ButtonItem {
             List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedProperties();
             for (GWTJahiaNodeProperty property : gwtJahiaNodeProperties) {
                 if (property.getName().equals("j:isDraft")) {
-                    property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+                    if (value) {
+                        property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+                    } else {
+                        property.setValue(new GWTJahiaNodePropertyValue((String) null, GWTJahiaNodePropertyType.BOOLEAN));
+                    }
                     return;
                 }
             }
-            gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+            if (value) {
+                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+            } else {
+                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", null, GWTJahiaNodePropertyType.BOOLEAN));
+            }
         }
     }
 

@@ -871,11 +871,11 @@ class NodeHelper {
         try {
             if (node.hasProperty("j:isDraft")) {
                 n.set("j:isDraft", node.getProperty("j:isDraft").getBoolean());
-                if (node.hasI18N(node.getSession().getLocale())) {
-                    final Node i18n = node.getI18N(node.getSession().getLocale());
-                    if (i18n.hasProperty("j:isDraft")){
-                        n.set("j:isDraft", i18n.getProperty("j:isDraft").getBoolean());
-                    }
+            }
+            if (node.hasI18N(node.getSession().getLocale())) {
+                final Node i18n = node.getI18N(node.getSession().getLocale());
+                if (i18n.hasProperty("j:isDraft")){
+                    n.set("j:isDraft", i18n.getProperty("j:isDraft").getBoolean());
                 }
             }
         } catch (RepositoryException e) {

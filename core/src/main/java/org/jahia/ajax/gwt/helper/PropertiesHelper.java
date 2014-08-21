@@ -313,9 +313,17 @@ public class PropertiesHelper {
                 }
             }
             if (isDraft != null) {
-                node.setProperty("j:isDraft",false);
+                if (node.hasProperty("j:isDraft")) {
+                    node.getProperty("j:isDraft").remove();
+                }
+                Boolean draftValue = isDraft.getValues().get(0).getBoolean();
                 for (String language : languages) {
-                    node.getI18N(LanguageCodeConverters.languageCodeToLocale(language)).setProperty("j:isDraft", isDraft.getValues().get(0).getBoolean());
+                    Node i18N = node.getI18N(LanguageCodeConverters.languageCodeToLocale(language));
+                    if (draftValue != null && draftValue.booleanValue()) {
+                        i18N.setProperty("j:isDraft", draftValue);
+                    } else if (i18N.hasProperty("j:isDraft")) {
+                        i18N.getProperty("j:isDraft").remove();
+                    }
                 }
             }
         }

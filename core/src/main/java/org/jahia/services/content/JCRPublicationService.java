@@ -1056,7 +1056,8 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()){
+            if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()
+                    && !node.isMarkedForDeletion() && (!node.isNodeType(Constants.JAHIANT_TRANSLATION) || !node.getParent().isMarkedForDeletion())) {
                 info.setDraft(true);
             }
 

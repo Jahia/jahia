@@ -230,7 +230,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     protected boolean isDraft(GWTJahiaNode gwtJahiaNode) {
-        return gwtJahiaNode != null && gwtJahiaNode.get("j:isDraft") != null && Boolean.parseBoolean(gwtJahiaNode.get("j:isDraft").toString());
+        return gwtJahiaNode != null && gwtJahiaNode.get("j:isDraft") != null && Boolean.parseBoolean(gwtJahiaNode.get("j:isDraft").toString()) && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
     }
 
     /**

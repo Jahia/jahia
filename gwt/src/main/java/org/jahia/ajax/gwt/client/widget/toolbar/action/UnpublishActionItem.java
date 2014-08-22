@@ -115,7 +115,7 @@ public class UnpublishActionItem extends PublishActionItem {
     }
 
     @Override
-    protected boolean isDraft(GWTJahiaNode gwtJahiaNode) {
+    protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
         return false;
     }
 }

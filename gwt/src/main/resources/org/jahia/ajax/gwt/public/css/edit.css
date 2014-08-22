@@ -545,7 +545,7 @@ button.button-disable:hover, div.button-disable:hover {
     text-transform: uppercase;
 }
 
-.draft-overlay {
+.workinprogress-overlay {
     overflow: hidden;
     background: #eaeaea;
     color: #39f;

@@ -96,7 +96,6 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +105,7 @@ import java.util.Map;
  */
 public abstract class SaveButtonItem implements ButtonItem {
 
-    private static transient boolean isDraft;
+    private static transient boolean workInProgress;
 
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
@@ -121,7 +120,7 @@ public abstract class SaveButtonItem implements ButtonItem {
     }
 
     protected void save(final AbstractContentEngine engine, final boolean closeAfterSave, boolean skipValidation) {
-        setDraftMode(engine,isDraft);
+        setWorkInProgress(engine, workInProgress);
         engine.mask(Messages.get("label.saving", "Saving..."), "x-mask-loading");
         engine.setButtonsEnabled(false);
 
@@ -290,11 +289,11 @@ public abstract class SaveButtonItem implements ButtonItem {
         engine.setButtonsEnabled(true);
     }
 
-    protected void setDraftMode(AbstractContentEngine engine, Boolean value) {
+    protected void setWorkInProgress(AbstractContentEngine engine, Boolean value) {
         if (isNodeOfJmixLastPublishedType(engine)) {
             List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedProperties();
             for (GWTJahiaNodeProperty property : gwtJahiaNodeProperties) {
-                if (property.getName().equals("j:isDraft")) {
+                if (property.getName().equals("j:workInProgress")) {
                     if (value) {
                         property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
                     } else {
@@ -304,9 +303,9 @@ public abstract class SaveButtonItem implements ButtonItem {
                 }
             }
             if (value) {
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
+                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
             } else {
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:isDraft", null, GWTJahiaNodePropertyType.BOOLEAN));
+                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:workInProgress", null, GWTJahiaNodePropertyType.BOOLEAN));
             }
         }
     }
@@ -316,7 +315,7 @@ public abstract class SaveButtonItem implements ButtonItem {
            ((engine instanceof CreateContentEngine) && ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished"));
     }
 
-    public static void setDraft(boolean isDraft) {
-        SaveButtonItem.isDraft = isDraft;
+    public static void setWorkInProgress(boolean workInProgress) {
+        SaveButtonItem.workInProgress = workInProgress;
     }
 }

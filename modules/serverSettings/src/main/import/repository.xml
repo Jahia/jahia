@@ -257,13 +257,13 @@
                                    j:hiddenTemplate="false"
                                    j:view="serverSettings"
                                    jcr:primaryType="jnt:contentTemplate">
-                                <j:translation_en j:isDraft="false"
+                                <j:translation_en
                                        jcr:language="en"
                                        jcr:primaryType="jnt:translation"
                                        jcr:title="Search settings"/>
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <search-settings jcr:primaryType="jnt:serverSettingsSearchConfig">
-                                        <j:translation_en j:isDraft="false"
+                                        <j:translation_en
                                              jcr:language="en"
                                              jcr:primaryType="jnt:translation"
                                              jcr:title="search settings"/>

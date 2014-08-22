@@ -624,34 +624,34 @@ public class PublicationTest {
         return 0;
     }
 
-    private Boolean getDraftsFor(List<PublicationInfo> infos, String uuid) {
+    private Boolean getWipFor(List<PublicationInfo> infos, String uuid) {
         for (PublicationInfo info : infos) {
-            Boolean draft = getDraftsFor(info.getRoot(), uuid);
-            if (draft != null) {
-                return draft;
+            Boolean wip = getWipFor(info.getRoot(), uuid);
+            if (wip != null) {
+                return wip;
             }
         }
         return false;
     }
 
-    private Boolean getDraftsFor(PublicationInfoNode info, String uuid) {
+    private Boolean getWipFor(PublicationInfoNode info, String uuid) {
         if (info.getUuid().equals(uuid)) {
-            return info.isDraft();
+            return info.isWorkInProgress();
         }
         for (PublicationInfoNode node : info.getChildren()) {
-            Boolean draft = getDraftsFor(node, uuid);
-            if (draft != null) {
-                return draft;
+            Boolean wip = getWipFor(node, uuid);
+            if (wip != null) {
+                return wip;
             }
         }
         return null;
     }
 
     @Test
-    public void testDraftStatus() throws RepositoryException {
+    public void testWorkInProgressStatus() throws RepositoryException {
         JCRNodeWrapper list = TestHelper.createList(testHomeEdit, "contentList1", 4, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
         JCRNodeWrapper editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:isDraft",Boolean.TRUE);
+        editTextNode1.setProperty("j:workInProgress",Boolean.TRUE);
         englishEditSession.save();
         getCleanSession();
         HashSet<String> languages = new HashSet<String>(Arrays.asList("en"));
@@ -660,7 +660,7 @@ public class PublicationTest {
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
-        assertEquals("Invalid draft info for content", true, getDraftsFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
         // Publish content
         jcrService.publishByMainId(testHomeEdit.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, languages, false, null);
 
@@ -670,10 +670,10 @@ public class PublicationTest {
         assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
-        assertEquals("Invalid draft info for content", true, getDraftsFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", true, getWipFor(infos, editTextNode1.getIdentifier()));
 
         editTextNode1 = englishEditSession.getNode(testHomeEdit.getPath() + "/contentList1/contentList1_text1");
-        editTextNode1.setProperty("j:isDraft",Boolean.FALSE);
+        editTextNode1.setProperty("j:workInProgress",Boolean.FALSE);
         englishEditSession.save();
 
         getCleanSession();
@@ -682,7 +682,7 @@ public class PublicationTest {
         assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.NOT_PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
-        assertEquals("Invalid draft info for content", false, getDraftsFor(infos, editTextNode1.getIdentifier()));
+        assertEquals("Invalid 'work in progress' info for content", false, getWipFor(infos, editTextNode1.getIdentifier()));
     }
 
     private void testNodeInWorkspace(JCRSessionWrapper sessionWrapper, String absoluteNodePath, String failureMessage)

@@ -150,9 +150,9 @@
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 
-    <bean id="previewDraftFilter" class="org.jahia.services.render.filter.PreviewDraftFilter">
+    <bean id="workInProgressFilter" class="org.jahia.services.render.filter.WorkInProgressFilter">
         <property name="priority" value="17" />
-        <property name="description" value="Display live content for draft items"/>
+        <property name="description" value="Displays live version of 'work in progress' content in preview"/>
         <property name="applyOnNodeTypes" value="jmix:lastPublished" />
         <property name="applyOnModes" value="preview,live"/>
         <property name="applyOnConfigurations" value="module" />

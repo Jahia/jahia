@@ -125,7 +125,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                         if (info.isLocked()) {
                             infoLayers.addInfoLayer(module, Messages.get("label.publication.locked", "locked"), "orange", "orange", removeListener, true,
                                     "0.7");
-                        }  else if (info.isDraft()) {
+                        }  else if (info.isWorkInProgress()) {
                             lastUnpublished = node.getPath();
                             infoLayers.addInfoLayer(module, status, "dimgray", "dimgray", removeListener, false,
                                     "0.7");

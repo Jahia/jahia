@@ -867,15 +867,15 @@ class NodeHelper {
             logger.error("Cannot get repository infos", e);
         }
         n.set("supportsPublication", Boolean.valueOf(supportsPublication));
-        // Add draft infos
+        // Add 'work in progress' info
         try {
-            if (node.hasProperty("j:isDraft")) {
-                n.set("j:isDraft", node.getProperty("j:isDraft").getBoolean());
+            if (node.hasProperty("j:workInProgress")) {
+                n.set("j:workInProgress", node.getProperty("j:workInProgress").getBoolean());
             }
             if (node.hasI18N(node.getSession().getLocale())) {
                 final Node i18n = node.getI18N(node.getSession().getLocale());
-                if (i18n.hasProperty("j:isDraft")){
-                    n.set("j:isDraft", i18n.getProperty("j:isDraft").getBoolean());
+                if (i18n.hasProperty("j:workInProgress")){
+                    n.set("j:workInProgress", i18n.getProperty("j:workInProgress").getBoolean());
                 }
             }
         } catch (RepositoryException e) {

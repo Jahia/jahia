@@ -132,7 +132,7 @@ public class PublicationInfo implements Serializable {
         return getAllUuids(includeDeleted, includePublished, true);
     }
 
-    public List<String> getAllUuids(boolean includeDeleted, boolean includePublished, boolean includeDraft) {
+    public List<String> getAllUuids(boolean includeDeleted, boolean includePublished, boolean includeWorkInProgress) {
         String cacheKey = getKey(includeDeleted, includePublished);
         List<String> allUuids = allUuidsCache.get(cacheKey);
         if (allUuids != null) {
@@ -152,7 +152,7 @@ public class PublicationInfo implements Serializable {
                 }
             }
             if ((includeDeleted || node.getStatus() != DELETED) && (includePublished || node.getStatus() != PUBLISHED)
-                    && (includeDraft || !node.isDraft())) {
+                    && (includeWorkInProgress || !node.isWorkInProgress())) {
                 allUuids.add(node.getUuid());
             }
             node = nodes.poll();

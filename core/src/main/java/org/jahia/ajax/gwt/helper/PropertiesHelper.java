@@ -303,26 +303,26 @@ public class PropertiesHelper {
         }
     }
 
-    public void saveI18NDraftStatus(JCRNodeWrapper node, List<GWTJahiaNodeProperty> sharedProperties, Set<String> languages) throws RepositoryException {
+    public void saveI18nWorkInProgress(JCRNodeWrapper node, List<GWTJahiaNodeProperty> sharedProperties, Set<String> languages) throws RepositoryException {
         if (node.hasTranslations()) {
-            GWTJahiaNodeProperty isDraft = null;
+            GWTJahiaNodeProperty wipProperty = null;
             for (GWTJahiaNodeProperty property : sharedProperties) {
-                if (property.getName().equals("j:isDraft")) {
-                    isDraft = property;
+                if (property.getName().equals("j:workInProgress")) {
+                    wipProperty = property;
                     break;
                 }
             }
-            if (isDraft != null) {
-                if (node.hasProperty("j:isDraft")) {
-                    node.getProperty("j:isDraft").remove();
+            if (wipProperty != null) {
+                if (node.hasProperty("j:workInProgress")) {
+                    node.getProperty("j:workInProgress").remove();
                 }
-                Boolean draftValue = isDraft.getValues().get(0).getBoolean();
+                Boolean workInProgress = wipProperty.getValues().get(0).getBoolean();
                 for (String language : languages) {
                     Node i18N = node.getI18N(LanguageCodeConverters.languageCodeToLocale(language));
-                    if (draftValue != null && draftValue.booleanValue()) {
-                        i18N.setProperty("j:isDraft", draftValue);
-                    } else if (i18N.hasProperty("j:isDraft")) {
-                        i18N.getProperty("j:isDraft").remove();
+                    if (workInProgress != null && workInProgress.booleanValue()) {
+                        i18N.setProperty("j:workInProgress", workInProgress);
+                    } else if (i18N.hasProperty("j:workInProgress")) {
+                        i18N.getProperty("j:workInProgress").remove();
                     }
                 }
             }

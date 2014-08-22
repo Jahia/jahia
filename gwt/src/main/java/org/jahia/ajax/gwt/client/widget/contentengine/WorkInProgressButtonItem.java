@@ -69,56 +69,41 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.services.render.filter;
+package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-
-import javax.jcr.PathNotFoundException;
-import javax.servlet.http.HttpServletRequest;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
- * Filer that displays live content of draft content in preview
+ * Button Item for create and new
  */
-public class PreviewDraftFilter extends AbstractFilter {
+public class WorkInProgressButtonItem extends CreateButtonItem {
+
+    private boolean checkedByDefault = false;
 
     @Override
-    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        final HttpServletRequest request = renderContext.getRequest();
-        if (StringUtils.equals(resource.getWorkspace(), "default") && resource.getNode().hasProperty("j:isDraft") && resource.getNode().getProperty("j:isDraft").getBoolean()) {
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("live", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
-            try {
-                JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
-                chain.pushAttribute(request, "previousWorkspace" + resource.getPath(), resource.getWorkspace());
-                renderContext.setWorkspace("live");
-                resource.setNode(n);
-                renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
-                request.setAttribute("workspace", "live");
-                request.setAttribute("currentNode", n);
-            } catch (PathNotFoundException e) {
-                return "";
+    public BoxComponent create(final AbstractContentEngine engine) {
+        final CheckBox checkbox = new CheckBox();
+
+        checkbox.setValue(checkedByDefault || (engine.getNode() != null && engine.getNode().get("j:workInProgress") != null && (Boolean) engine.getNode().get("j:workInProgress")));
+        setWorkInProgress(checkbox.getValue());
+
+        checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
+            public void handleEvent(ComponentEvent event) {
+                setWorkInProgress(checkbox.getValue());
             }
-        }
-        return null;
+        });
+        checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
+        checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
+
+        return checkbox;
     }
 
-    @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        final HttpServletRequest request = renderContext.getRequest();
-        String previousWorkspace = (String) request.getAttribute("previousWorkspace" + resource.getPath());
-        if (previousWorkspace != null) {
-            renderContext.setWorkspace("default");
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("default", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
-            JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
-            resource.setNode(n);
-            renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
-            request.setAttribute("workspace", "default");
-            request.setAttribute("currentNode", n);
-        }
-        return previousOut;
+    public void setCheckedByDefault(boolean checkedByDefault) {
+        this.checkedByDefault = checkedByDefault;
     }
 }

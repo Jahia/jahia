@@ -544,7 +544,7 @@ public class VisibilityTabItem extends EditEngineTabItem {
             statusPanel.add(statusContainer);
 
             GWTJahiaPublicationInfo aggregatedPublicationInfo = node.getAggregatedPublicationInfo();
-            if (aggregatedPublicationInfo!=null && aggregatedPublicationInfo.getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED && !aggregatedPublicationInfo.isDraft()) {
+            if (aggregatedPublicationInfo!=null && aggregatedPublicationInfo.getStatus() != GWTJahiaPublicationInfo.NOT_PUBLISHED && !aggregatedPublicationInfo.isWorkInProgress()) {
                 statusPanel.add(new HTML("&nbsp;&nbsp;&nbsp;" + Messages.get("label.visibility.publicationStatus", "Publication status") + ":&nbsp;"));
                 publicationInfoContainer = new LayoutContainer(new FitLayout());
                 statusPanel.add(publicationInfoContainer);

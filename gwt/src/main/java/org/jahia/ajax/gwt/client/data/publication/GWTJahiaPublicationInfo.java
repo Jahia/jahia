@@ -124,7 +124,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         setUuid(uuid);
         setStatus(status);
         setLocked(false);
-        setDraft(false);
+        setWorkInProgress(false);
         setIsAllowedToPublishWithoutWorkflow(false);
         setIsNonRootMarkedForDeletion(false);
     }
@@ -193,12 +193,12 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("locked", locked);
     }
 
-    public Boolean isDraft() {
-        return get("draft");
+    public Boolean isWorkInProgress() {
+        return get("workInProgress");
     }
 
-    public void setDraft(Boolean draft) {
-        set("draft", draft);
+    public void setWorkInProgress(Boolean workInProgress) {
+        set("workInProgress", workInProgress);
     }
 
     public String getMainPath() {
@@ -263,7 +263,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
                 getStatus() > GWTJahiaPublicationInfo.PUBLISHED &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE &&
                 getStatus() != GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_VALID &&
-                !isDraft() && !getIsNonRootMarkedForDeletion();
+                !isWorkInProgress() && !getIsNonRootMarkedForDeletion();
     }
 
     public boolean isUnpublishable() {

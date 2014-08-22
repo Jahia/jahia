@@ -1056,9 +1056,9 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if(node.hasProperty("j:isDraft") && node.getProperty("j:isDraft").getBoolean()
+            if(node.hasProperty("j:workInProgress") && node.getProperty("j:workInProgress").getBoolean()
                     && !node.isMarkedForDeletion() && (!node.isNodeType(Constants.JAHIANT_TRANSLATION) || !node.getParent().isMarkedForDeletion())) {
-                info.setDraft(true);
+                info.setWorkInProgress(true);
             }
 
             info.setStatus(getStatus(node, destinationSession, languages));
@@ -1101,11 +1101,11 @@ public class JCRPublicationService extends JahiaService {
                                 getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                         sourceSession, destinationSession, infosMap, infos);
                         info.addChild(child);
-                        if(child.isDraft()) {
+                        if(child.isWorkInProgress()) {
                             info.getChildren().clear();
                             info.getReferences().clear();
                             info.addChild(child);
-                            info.setDraft(true);
+                            info.setWorkInProgress(true);
                             break;
                         }
                     }

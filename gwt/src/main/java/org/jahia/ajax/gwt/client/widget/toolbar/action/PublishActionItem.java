@@ -149,7 +149,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (isDraft(gwtJahiaNode)) {
+                if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
@@ -173,7 +173,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (isDraft(gwtJahiaNode)) {
+                if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
@@ -197,7 +197,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-                if (isDraft(gwtJahiaNode)) {
+                if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
                     setEnabled(true);
@@ -229,8 +229,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         }
     }
 
-    protected boolean isDraft(GWTJahiaNode gwtJahiaNode) {
-        return gwtJahiaNode != null && gwtJahiaNode.get("j:isDraft") != null && Boolean.parseBoolean(gwtJahiaNode.get("j:isDraft").toString()) && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
+    protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
+        return gwtJahiaNode != null && gwtJahiaNode.get("j:workInProgress") != null && Boolean.parseBoolean(gwtJahiaNode.get("j:workInProgress").toString()) && !gwtJahiaNode.getNodeTypes().contains("jmix:markedForDeletion");
     }
 
     /**

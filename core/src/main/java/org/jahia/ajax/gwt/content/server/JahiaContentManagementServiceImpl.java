@@ -795,7 +795,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 saveProperties(Arrays.asList(node), props, removedTypes, currentLangCode);
             }
 
-            properties.saveI18NDraftStatus(nodeWrapper, sharedProperties, langCodeProperties.keySet());
+            properties.saveI18nWorkInProgress(nodeWrapper, sharedProperties, langCodeProperties.keySet());
 
             if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
                 List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
@@ -985,7 +985,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                 }
 
-                properties.saveI18NDraftStatus(nodeWrapper, props, langCodeProperties.keySet());
+                properties.saveI18nWorkInProgress(nodeWrapper, props, langCodeProperties.keySet());
             }
             session.save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {

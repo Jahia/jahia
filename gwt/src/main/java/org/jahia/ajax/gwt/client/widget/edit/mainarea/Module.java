@@ -280,9 +280,9 @@ public abstract class Module extends LayoutContainer {
             overlayLabel.setStyleName("deleted-overlay");
             opacity = "0.4";
             overlayColorText = "#f00";
-        } else if (node.get("j:isDraft") != null && Boolean.valueOf(node.get("j:isDraft").toString())) {
-            overlayLabel = new HTML(Messages.get("label.draft", "Draft"));
-            overlayLabel.setStyleName("draft-overlay");
+        } else if (node.get("j:workInProgress") != null && Boolean.valueOf(node.get("j:workInProgress").toString())) {
+            overlayLabel = new HTML(Messages.get("label.workInProgress", "work in progress"));
+            overlayLabel.setStyleName("workinprogress-overlay");
             opacity = "0.6";
             overlayColorText = "#39f";
         }

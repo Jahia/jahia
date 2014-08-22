@@ -151,7 +151,7 @@
                         <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                         <property name="urlResolverFactory" ref="urlResolverFactory"/>
                         <property name="urlRewriteService" ref="UrlRewriteService"/>
-                        <property name="fireLogoutEvent" value="${fireLogoutEvent:false}"/>
+                        <property name="fireLogoutEvent" value="${fireLogoutEvent:true}"/>
                         <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogout:}"/>
                         <property name="userManagerService" ref="JahiaUserManagerService"/>
                     </bean>

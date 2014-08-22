@@ -81,7 +81,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 /**
  * Button Item for create and new
  */
-public class WorkInProgressButtonItem extends CreateButtonItem {
+public class WorkInProgressButtonItem implements ButtonItem {
 
     private boolean checkedByDefault = false;
 
@@ -90,11 +90,11 @@ public class WorkInProgressButtonItem extends CreateButtonItem {
         final CheckBox checkbox = new CheckBox();
 
         checkbox.setValue(checkedByDefault || (engine.getNode() != null && engine.getNode().get("j:workInProgress") != null && (Boolean) engine.getNode().get("j:workInProgress")));
-        setWorkInProgress(checkbox.getValue());
+        engine.setWorkInProgress(checkbox.getValue());
 
         checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
-                setWorkInProgress(checkbox.getValue());
+                engine.setWorkInProgress(checkbox.getValue());
             }
         });
         checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));

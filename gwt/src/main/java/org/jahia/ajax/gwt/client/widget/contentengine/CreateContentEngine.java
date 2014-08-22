@@ -281,4 +281,9 @@ public class CreateContentEngine extends AbstractContentEngine {
     public int getListLimit() {
         return listLimit;
     }
+
+    @Override
+    protected boolean isNodeOfJmixLastPublishedType() {
+        return super.isNodeOfJmixLastPublishedType() || this.getType().getSuperTypes().contains("jmix:lastPublished");
+    }
 }

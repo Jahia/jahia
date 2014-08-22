@@ -105,8 +105,6 @@ import java.util.Map;
  */
 public abstract class SaveButtonItem implements ButtonItem {
 
-    private static transient boolean workInProgress;
-
     public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.save"));
         button.setHeight(BUTTON_HEIGHT);
@@ -120,7 +118,7 @@ public abstract class SaveButtonItem implements ButtonItem {
     }
 
     protected void save(final AbstractContentEngine engine, final boolean closeAfterSave, boolean skipValidation) {
-        setWorkInProgress(engine, workInProgress);
+        engine.setWorkInProgressProperty();
         engine.mask(Messages.get("label.saving", "Saving..."), "x-mask-loading");
         engine.setButtonsEnabled(false);
 
@@ -289,33 +287,4 @@ public abstract class SaveButtonItem implements ButtonItem {
         engine.setButtonsEnabled(true);
     }
 
-    protected void setWorkInProgress(AbstractContentEngine engine, Boolean value) {
-        if (isNodeOfJmixLastPublishedType(engine)) {
-            List<GWTJahiaNodeProperty> gwtJahiaNodeProperties = engine.getChangedProperties();
-            for (GWTJahiaNodeProperty property : gwtJahiaNodeProperties) {
-                if (property.getName().equals("j:workInProgress")) {
-                    if (value) {
-                        property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
-                    } else {
-                        property.setValue(new GWTJahiaNodePropertyValue((String) null, GWTJahiaNodePropertyType.BOOLEAN));
-                    }
-                    return;
-                }
-            }
-            if (value) {
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(value), GWTJahiaNodePropertyType.BOOLEAN));
-            } else {
-                gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:workInProgress", null, GWTJahiaNodePropertyType.BOOLEAN));
-            }
-        }
-    }
-
-    protected boolean isNodeOfJmixLastPublishedType(AbstractContentEngine engine) {
-        return (engine.getNode() != null && engine.getNode().isNodeType("jmix:lastPublished")) ||
-           ((engine instanceof CreateContentEngine) && ((CreateContentEngine) engine).getType().getSuperTypes().contains("jmix:lastPublished"));
-    }
-
-    public static void setWorkInProgress(boolean workInProgress) {
-        SaveButtonItem.workInProgress = workInProgress;
-    }
 }

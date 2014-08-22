@@ -92,6 +92,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -137,6 +138,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNodeACL acl;
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
+    private boolean workInProgress = false;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -565,4 +567,33 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
         return defaultValues;
     }
+
+    public void setWorkInProgress(boolean workInProgress) {
+        this.workInProgress = workInProgress;
+    }
+
+    public void setWorkInProgressProperty() {
+        if (isNodeOfJmixLastPublishedType()) {
+            for (GWTJahiaNodeProperty property : changedProperties) {
+                if (property.getName().equals("j:workInProgress")) {
+                    if (workInProgress) {
+                        property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
+                    } else {
+                        property.setValue(new GWTJahiaNodePropertyValue((String) null, GWTJahiaNodePropertyType.BOOLEAN));
+                    }
+                    return;
+                }
+            }
+            if (workInProgress) {
+                changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
+            } else {
+                changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", null, GWTJahiaNodePropertyType.BOOLEAN));
+            }
+        }
+    }
+
+    protected boolean isNodeOfJmixLastPublishedType() {
+        return getNode() != null && getNode().isNodeType("jmix:lastPublished");
+    }
+
 }

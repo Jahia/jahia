@@ -99,7 +99,6 @@ public class CreateAndNewButtonItem extends CreateButtonItem {
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             public void componentSelected(ButtonEvent event) {
-                setWorkInProgress(engine, Boolean.FALSE);
                 save(engine, false, false);
             }
         });

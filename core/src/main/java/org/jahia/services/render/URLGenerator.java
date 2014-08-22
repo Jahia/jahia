@@ -374,14 +374,19 @@ public class URLGenerator {
     }
 
     public String buildURL(JCRNodeWrapper node, String template, String templateType) {
-        return base + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+        return buildURL(node, null, template, templateType);
     }
 
     public String buildURL(JCRNodeWrapper node, String languageCode, String template, String templateType) {
-        if (StringUtils.isEmpty(languageCode)) {
-            return buildURL(node, template, templateType);
+        return buildURL(node.getPath(), languageCode, template, templateType);
+    }
+
+    public String buildURL(String nodePath, String languageCode, String template, String templateType) {
+        String baseURL = this.base;
+        if (!StringUtils.isEmpty(languageCode)) {
+            baseURL = context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
         }
-        return context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + node.getPath() + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+        return baseURL + nodePath + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
     }
 
     public String getInitializers() {

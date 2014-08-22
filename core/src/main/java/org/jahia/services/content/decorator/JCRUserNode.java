@@ -81,11 +81,9 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +126,14 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     public JahiaUser getJahiaUser() {
-        return new JahiaUser(getName(), getPath());
+        Properties properties = new Properties();
+        try {
+            properties.putAll(getPropertiesAsString());
+        } catch (RepositoryException e) {
+            logger.error("Cannot read user properties",e);
+        }
+        return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName());
+
     }
 
     public String getUserKey() {
@@ -191,15 +196,22 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     public boolean isAccountLocked() {
-        return false;
+        try {
+            return !isRoot() && hasProperty("j:accountLocked") && getProperty("j:accountLocked").getBoolean();
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     public List<PasswordHistoryEntry> getPasswordHistory() {
-        return null;
+        return JahiaPasswordPolicyService.getInstance().getPasswordHistory(this);
     }
 
     public long getLastPasswordChangeTimestamp() {
-        return 0;
+        List<PasswordHistoryEntry> pwdHistory = getPasswordHistory();
+
+        return pwdHistory.size() > 0 ? pwdHistory.get(0).getModificationDate().getTime() : 0;
     }
 
     public boolean isMemberOfGroup(String siteKey, String name) {
@@ -207,5 +219,12 @@ public class JCRUserNode extends JCRNodeDecorator {
                 JahiaGroupManagerService.USERS_GROUPNAME.equals(name) ||
                 (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) ||
                 JahiaGroupManagerService.getInstance().isMember(getName(), name, siteKey);
+    }
+
+    /**
+     * @deprecated for compatibility only, use getPath()
+     */
+    public String getLocalPath() {
+        return getPath();
     }
 }

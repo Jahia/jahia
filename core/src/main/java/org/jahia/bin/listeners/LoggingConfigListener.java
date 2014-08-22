@@ -86,11 +86,26 @@ import org.springframework.web.util.Log4jConfigListener;
 public class LoggingConfigListener extends Log4jConfigListener {
 
     private static final String JAHIA_LOG_DIR = "jahia.log.dir";
+    private static final String JAHIA_LOG4J_CONFIG = "jahia.log4j.config";
+    private static final String JAHIA_LOG4J_XML = "jahia/log4j.xml";
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
         initLogDir(event.getServletContext());
+        initLog4jLocation();
         super.contextInitialized(event);
+    }
+
+    private void initLog4jLocation() {
+        String lookup = null;
+        if (System.getProperty(JAHIA_LOG4J_CONFIG) == null) {
+            lookup = getClass().getResource("/" + JAHIA_LOG4J_XML) != null ? "classpath:" + JAHIA_LOG4J_XML
+                    : "/WEB-INF/etc/config/log4j.xml";
+            System.setProperty(JAHIA_LOG4J_CONFIG, lookup);
+        } else {
+            lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
+        }
+        System.out.println("Set log4j.xml configuration location to :" + lookup);
     }
 
     protected void initLogDir(ServletContext servletContext) {

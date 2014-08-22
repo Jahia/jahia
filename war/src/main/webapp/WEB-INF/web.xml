@@ -33,7 +33,7 @@
 
     <context-param>
         <param-name>log4jConfigLocation</param-name>
-        <param-value>/WEB-INF/etc/config/log4j.xml</param-value>
+        <param-value>${jahia.log4j.config}</param-value>
     </context-param>
     <context-param>
         <param-name>log4jRefreshInterval</param-name>

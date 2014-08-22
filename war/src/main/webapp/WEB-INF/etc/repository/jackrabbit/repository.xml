@@ -158,7 +158,7 @@
     </SearchIndex>
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
-        <param name="path" value="${rep.home}/datastore"/>
+        <param name="path" value="${jahia.jackrabbit.datastore.path}"/>
         <param name="minRecordLength" value="1024"/>
     </DataStore>
 

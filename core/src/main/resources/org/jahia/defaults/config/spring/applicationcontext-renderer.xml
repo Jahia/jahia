@@ -150,7 +150,7 @@
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 
-    <bean id="workInProgressFilter" class="org.jahia.services.render.filter.WorkInProgressFilter">
+    <bean class="org.jahia.services.render.filter.WorkInProgressPreviewFilter">
         <property name="priority" value="17" />
         <property name="description" value="Displays live version of 'work in progress' content in preview"/>
         <property name="applyOnNodeTypes" value="jmix:lastPublished" />

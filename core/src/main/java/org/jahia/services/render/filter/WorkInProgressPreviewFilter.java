@@ -78,18 +78,21 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
+import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * Filer that displays live version of 'work in progress' content in preview
  */
-public class WorkInProgressFilter extends AbstractFilter {
+public class WorkInProgressPreviewFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final HttpServletRequest request = renderContext.getRequest();
-        if (StringUtils.equals(resource.getWorkspace(), "default") && resource.getNode().hasProperty("j:workInProgress") && resource.getNode().getProperty("j:workInProgress").getBoolean()) {
+        if (StringUtils.equals(resource.getWorkspace(), "default") && isWorkInProgress(resource.getNode())) {
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("live", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
             try {
                 JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
@@ -120,5 +123,19 @@ public class WorkInProgressFilter extends AbstractFilter {
             request.setAttribute("currentNode", n);
         }
         return previousOut;
+    }
+
+    private boolean isWorkInProgress(JCRNodeWrapper node) throws RepositoryException {
+        Locale locale = node.getSession().getLocale();
+        if (node.hasI18N(locale)) {
+            final Node i18n = node.getI18N(locale);
+            if (i18n.hasProperty("j:workInProgress")){
+                return i18n.getProperty("j:workInProgress").getBoolean();
+            }
+        }
+        if (node.hasProperty("j:workInProgress")) {
+            return node.getProperty("j:workInProgress").getBoolean();
+        }
+        return false;
     }
 }

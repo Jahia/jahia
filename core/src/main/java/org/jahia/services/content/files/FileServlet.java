@@ -51,10 +51,10 @@
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     Rooted in Open Source CMS, Jahia's Digital Industrialization paradigm is about
  *     streamlining Enterprise digital projects across channels to truly control
  *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     Putting an end to "the Tunnel effectâ", the Jahia Studio enables IT and
  *     marketing teams to collaboratively and iteratively build cutting-edge
  *     online business solutions.
  *     These, in turn, are securely and easily deployed as modules and apps,
@@ -513,18 +513,14 @@ public class FileServlet extends HttpServlet {
                     // Hack for CK Editor links
                     workspace = Constants.EDIT_WORKSPACE;
                 }
-                if (JCRContentUtils.isValidWorkspace(workspace)) {
-                    if (path != null && path.contains("___")) {
-                        path = Patterns.TRIPPLE_UNDERSCORE.matcher(path).replaceAll(":");
-                    }
-                } else {
+                if (!JCRContentUtils.isValidWorkspace(workspace)) {
                     // unknown workspace
                     workspace = null;
                 }
             }
         }
 
-        return workspace != null && path != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
+        return path != null && workspace != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
                 req.getParameter("v"), req.getParameter("l"), StringUtils.defaultIfEmpty(
                         req.getParameter("t"), StringUtils.EMPTY)) : null;
     }

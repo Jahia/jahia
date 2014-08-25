@@ -75,8 +75,16 @@ import org.apache.regexp.RE;
 import org.apache.regexp.RESyntaxException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+<<<<<<< .working
 import org.jahia.services.content.decorator.JCRPortletNode;
 import org.jahia.taglibs.AbstractJahiaTag;
+=======
+>>>>>>> .merge-right.r50527
+<<<<<<< .working
+=======
+import org.jahia.services.content.decorator.JCRPortletNode;
+import org.jahia.taglibs.AbstractJahiaTag;
+>>>>>>> .merge-right.r50527
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

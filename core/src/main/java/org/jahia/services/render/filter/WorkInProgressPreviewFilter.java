@@ -82,6 +82,8 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -92,11 +94,17 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final HttpServletRequest request = renderContext.getRequest();
-        if (StringUtils.equals(resource.getWorkspace(), "default") && isWorkInProgress(resource.getNode())) {
+        List<String> wipNodes = (List<String>) request.getAttribute("WIP_nodes");
+        if (StringUtils.equals(resource.getWorkspace(), "default") && isWorkInProgress(resource.getNode(), wipNodes)) {
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("live", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
             try {
                 JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
-                chain.pushAttribute(request, "previousWorkspace" + resource.getPath(), resource.getWorkspace());
+                chain.pushAttribute(request, "WIP_" + resource.toString(), true);
+                if (wipNodes == null) {
+                    wipNodes = new ArrayList<String>();
+                }
+                wipNodes.add(resource.getNode().getPath());
+                chain.pushAttribute(request, "WIP_nodes", wipNodes);
                 renderContext.setWorkspace("live");
                 resource.setNode(n);
                 renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
@@ -112,9 +120,21 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final HttpServletRequest request = renderContext.getRequest();
-        String previousWorkspace = (String) request.getAttribute("previousWorkspace" + resource.getPath());
-        if (previousWorkspace != null) {
+        String attrName = "WIP_" + resource.toString();
+        Boolean wipResource = (Boolean) request.getAttribute(attrName);
+        if (wipResource != null) {
+            request.removeAttribute(attrName);
             renderContext.setWorkspace("default");
+            List<String> wipNodes = (List<String>) request.getAttribute("WIP_nodes");
+            if (wipNodes != null) {
+                if (wipNodes.remove(resource.getNode().getPath())) {
+                    if (wipNodes.isEmpty()) {
+                        request.removeAttribute("WIP_nodes");
+                    } else {
+                        chain.pushAttribute(request, "WIP_nodes", wipNodes);
+                    }
+                }
+            }
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("default", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());
             JCRNodeWrapper n = s.getNode(resource.getNode().getPath());
             resource.setNode(n);
@@ -125,7 +145,10 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
         return previousOut;
     }
 
-    private boolean isWorkInProgress(JCRNodeWrapper node) throws RepositoryException {
+    private boolean isWorkInProgress(JCRNodeWrapper node, List<String> wipNodes) throws RepositoryException {
+        if (wipNodes != null && !wipNodes.isEmpty() && node.getPath().startsWith(wipNodes.get(wipNodes.size() - 1) + "/")) {
+            return true;
+        }
         Locale locale = node.getSession().getLocale();
         if (node.hasI18N(locale)) {
             final Node i18n = node.getI18N(locale);

@@ -16,7 +16,7 @@
                     <property name="userManagerService" ref="JahiaUserManagerService"/>
                 	  <property name="cookieAuthConfig" ref="cookieAuthConfig"/>
                     <property name="fireLoginEvent" value="${fireLoginEvent:true}"/>
-                    <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogin:}" />
+                    <property name="preserveSessionAttributes" value="${preserveSessionAttributesOnLogin:wemSessionId}" />
                 </bean>
                 <bean id="SessionAuthValve" class="org.jahia.params.valves.SessionAuthValveImpl">
                     <property name="userManagerService" ref="JahiaUserManagerService"/>

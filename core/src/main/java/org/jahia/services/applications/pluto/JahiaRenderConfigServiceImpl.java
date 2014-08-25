@@ -159,8 +159,10 @@ public class JahiaRenderConfigServiceImpl extends RenderConfigServiceImpl {
                             NodeIterator ni = qr.getNodes();
                             List<String> portletIds = new ArrayList<String>();
                             while (ni.hasNext()) {
-                                JCRPortletNode nodeWrapper = new JCRPortletNode((JCRNodeWrapper) ni.nextNode());
-                                portletIds.add(PortletWindowConfig.fromId(nodeWrapper));
+                                JCRNodeWrapper n = (JCRNodeWrapper) ni.nextNode();
+                                portletIds.add(PortletWindowConfig
+                                        .fromId(!(n instanceof JCRPortletNode) ? new JCRPortletNode(n)
+                                                : (JCRPortletNode) n));
                             }
                             pageConfig.setPortletIds(portletIds);
 

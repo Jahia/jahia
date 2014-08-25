@@ -127,7 +127,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, title, null, wfDefinition.getFormResourceName());
+        this(linker, container, title, null, wfDefinition.getFormResourceName(), null);
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         initStartWorkflowDialog(wfDefinition);
@@ -138,8 +138,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final GWTJahiaWorkflow workflow, final GWTJahiaWorkflowTask task, final Linker linker,
                                 CustomWorkflow custom, EngineContainer container) {
-        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"));
-        this.workflow = workflow;
+        this(linker, container, (workflow.getVariables().get("jcr_title") != null && workflow.getVariables().get("jcr_title").getValues().size() == 1) ? workflow.getVariables().get("jcr_title").getValues().get(0).getString() : null, null, (String) task.get("formResourceName"),workflow);
         initExecuteActionDialog(task);
         if (custom != null) {
             custom.initExecuteActionDialog(workflow, this);
@@ -148,7 +147,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, final EngineContainer container, String language) {
-        this(linker, container, title, language, wfDefinition.getFormResourceName());
+        this(linker, container, title, language, wfDefinition.getFormResourceName(), null);
         this.nodePath = nodePath;
         this.wfDefinition = wfDefinition;
         this.customWorkflow = custom;
@@ -159,8 +158,9 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     }
 
-    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType) {
+    private WorkflowActionDialog(Linker linker, EngineContainer container, String title, String language, String wfDefinitionNodeType, final GWTJahiaWorkflow workflow) {
         super();
+        this.workflow = workflow;
         contentManagement = JahiaContentManagementService.App.getInstance();
         this.linker = linker;
         this.title = title;

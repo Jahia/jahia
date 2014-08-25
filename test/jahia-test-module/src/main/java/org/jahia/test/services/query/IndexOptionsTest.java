@@ -77,7 +77,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -328,7 +327,7 @@ public class IndexOptionsTest {
     }
     
     @Test
-    public void testPublishUnpublishPageWithContent() throws Exception {
+    public void testFulltextAndNonIndexedField() throws Exception {
         JCRStoreService jcrService = ServicesRegistry.getInstance()
                 .getJCRStoreService();
         JCRSessionWrapper session = jcrService.getSessionFactory()
@@ -342,13 +341,12 @@ public class IndexOptionsTest {
                 Query q = queryManager.createQuery(query, Query.JCR_SQL2);
                 QueryResult queryResult = q.execute();
                 NodeIterator it = queryResult.getNodes();
-                assertTrue(it.hasNext());
-                assertTrue(((Node) it.next()).getIdentifier().equals(
-                        "8c467cc3-a42c-4252-84b7-0b20ecc0ce30"));
-                assertTrue(it.hasNext());
-                assertTrue(((Node) it.next()).getIdentifier().equals(
-                        "225162ba-69ac-4128-a141-fd95bd8c792e"));
-                assertTrue(!it.hasNext());
+                assertEquals(2, it.getSize());
+                Set<String> results = new HashSet<String>();
+                results.add(it.nextNode().getIdentifier());
+                results.add(it.nextNode().getIdentifier());
+                assertTrue(results.containsAll(Arrays.asList("8c467cc3-a42c-4252-84b7-0b20ecc0ce30", 
+                        "225162ba-69ac-4128-a141-fd95bd8c792e")));
             }
 
         } catch (Exception ex) {

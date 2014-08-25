@@ -79,13 +79,14 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-
 import java.util.*;
 
 /**
@@ -289,6 +290,6 @@ public class User {
     }
     
     public static Boolean isReadOnlyProvider(JCRNodeWrapper principal) {
-        return false;
+        return principal.getProvider().isReadOnly();
     }
 }

@@ -76,7 +76,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -287,7 +286,7 @@ public class JahiaPasswordPolicyService extends JahiaService {
      */
     public boolean isPasswordReadOnly(JCRUserNode user) {
         //Todo add check again
-        return true;
+        return user.getProvider().isReadOnly();
     }
 
     /**

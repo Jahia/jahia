@@ -554,6 +554,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
                     
                     JahiaPrivilegeRegistry.init(session);
 
+                    JahiaPrivilegeRegistry.init(session);
+
                     return true;
                 }
             });
@@ -1083,6 +1085,7 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
             namespaces.put(getEntryPointPrefix(appName, portlet.getPortletName()), getEntryPointNamespaceURI(appName, portlet.getPortletName()));
         }
 
+<<<<<<< .working
         registerNamespacesAndLoadPrivileges(namespaces);
     }
 
@@ -1111,6 +1114,35 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
         }
         // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
         // we load all the privileges attached to portlets.
+=======
+        registerNamespacesAndLoadPrivileges(namespaces);
+    }
+
+    private void loadApplicationPrivileges(List<ApplicationBean> apps) throws RepositoryException {
+        if (apps == null || apps.isEmpty()) {
+            return;
+        }
+        
+        Map<String, String> namespaces = new LinkedHashMap<String, String>();
+
+        for (ApplicationBean app : apps) {
+            namespaces.put(getWebAppPrefix(app.getName()), getWebAppNamespaceURI(app.getName()));
+            for (EntryPointDefinition entryPointDefinition : app.getEntryPointDefinitions()) {
+                namespaces.put(getEntryPointPrefix(app.getName(), entryPointDefinition.getName()),
+                        getEntryPointNamespaceURI(app.getName(), entryPointDefinition.getName()));
+            }
+        }
+
+        registerNamespacesAndLoadPrivileges(namespaces);
+    }
+
+    private void registerNamespacesAndLoadPrivileges(final Map<String, String> namespaces) throws RepositoryException {
+        if (namespaces == null || namespaces.isEmpty()) {
+            return;
+        }
+        // we must now register the namespace for the portlet, as well as refresh the privileges, to make sure
+        // we load all the privileges attached to portlets.
+>>>>>>> .merge-right.r50543
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // first we register the namespaces.

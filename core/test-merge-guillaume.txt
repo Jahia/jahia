@@ -1,3 +1,8 @@
 Test toto 12
 Test Guillaume 2014-07-02
 Test rsync
+<<<<<<< .working
+=======
+Test Serge 2014-08-25 11:32
+Test Serge 2014-08-25 11:41
+Test Serge 2014-08-25 11:47>>>>>>> .merge-right.r50515

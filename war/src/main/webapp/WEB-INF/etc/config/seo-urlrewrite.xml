@@ -122,8 +122,8 @@
     <outbound-rule>
         <name>Remove the /cms/render/live part</name>
         <note>Removes the /render/live part for remaining URLs and /cms if not disabled and if the path does not start with a reserved word.</note>
-        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(?!\{lang\})(.*)$</from>
-        <to>$1%{attribute:jahiaSeoCmsToken}/$2$3</to>
+        <from>^(/[\p{Alnum}\-_]*)?/cms/render/live/(?!\{lang\})(.*)?$</from>
+        <to>$1%{attribute:jahiaSeoCmsToken}/$2</to>
     </outbound-rule>
 
     <outbound-rule>

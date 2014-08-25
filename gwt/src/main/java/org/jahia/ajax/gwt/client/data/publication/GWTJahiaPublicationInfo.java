@@ -249,9 +249,22 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         set("language", language);
     }
 
-    public static Image renderPublicationStatusImage(Integer status) {
-        String label= statusToLabel.get(status);
 
+    public static Image renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
+        String label;
+        if (info.isWorkInProgress()) {
+            label = "workinprogress";
+        } else {
+            label = statusToLabel.get(info.getStatus());
+        }
+        return statusLabelToImage(label);
+    }
+
+    public static Image renderPublicationStatusImage(Integer status) {
+        return statusLabelToImage(statusToLabel.get(status));
+    }
+
+    private static Image statusLabelToImage(String label) {
         String title = Messages.get("label.publication." + label, label);
         final Image image = ToolbarIconProvider.getInstance().getIcon("publication/" + label).createImage();
         image.setTitle(title);

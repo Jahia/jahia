@@ -107,7 +107,7 @@ public class PublicationStatusActionItem extends BaseActionItem {
     }
 
     private void displayInfo(GWTJahiaPublicationInfo info) {
-        Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+        Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
         panel.removeAll();
         if (getGwtToolbarItem().getTitle() != null) {
             panel.add(new Html(getGwtToolbarItem().getTitle() + "&nbsp;:&nbsp;"));

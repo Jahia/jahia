@@ -578,20 +578,20 @@ public class VisibilityTabItem extends EditEngineTabItem {
                     statusContainer.add(ToolbarIconProvider.getInstance().getIcon("visibilityStatusRed").createImage());
                 }
             }
-            int infoStatus;
-            if (info != null) {
-                infoStatus = info.getStatus();
-                if (changed && infoStatus == GWTJahiaPublicationInfo.PUBLISHED) {
-                    infoStatus = GWTJahiaPublicationInfo.MODIFIED;
-                }
-            } else {
-                if (changed) {
-                    infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
-                } else {
-                    infoStatus = GWTJahiaPublicationInfo.PUBLISHED;
-                }
-            }
             if (publicationInfoContainer != null) {
+                int infoStatus;
+                if (info != null) {
+                    infoStatus = info.getStatus();
+                    if (changed && infoStatus == GWTJahiaPublicationInfo.PUBLISHED) {
+                        infoStatus = GWTJahiaPublicationInfo.MODIFIED;
+                    }
+                } else {
+                    if (changed) {
+                        infoStatus = GWTJahiaPublicationInfo.NOT_PUBLISHED;
+                    } else {
+                        infoStatus = GWTJahiaPublicationInfo.PUBLISHED;
+                    }
+                }
                 Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(infoStatus);
                 publicationInfoContainer.removeAll();
                 publicationInfoContainer.add(res);

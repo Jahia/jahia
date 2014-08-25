@@ -296,7 +296,7 @@ public class PublicationManagerEngine extends Window {
                 ctn.setWidth(16);
                 ctn.setHeight(16);
                 p.add(ctn,td);
-                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
                 p.add(res, td);
                 if (info.isLocked()) {
                     p.add(StandardIconsProvider.STANDARD_ICONS.lock().createImage());

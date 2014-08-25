@@ -167,7 +167,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
             final GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
             if (info != null) {
                 HorizontalPanel p = new HorizontalPanel();
-                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+                Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
                 p.add(res);
                 return p;
             }
@@ -196,7 +196,7 @@ public class NodeColumnConfigList extends ArrayList<ColumnConfig> {
                 if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED
                         || info.getStatus() == GWTJahiaPublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE) {
                     HorizontalPanel p = new HorizontalPanel();
-                    Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info.getStatus());
+                    Image res = GWTJahiaPublicationInfo.renderPublicationStatusImage(info);
                     p.add(res);
                     return p;
                 } else {

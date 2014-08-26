@@ -113,7 +113,7 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
                     Module module = modules.get(node.getPath());
 
                     GWTJahiaPublicationInfo info = node.getAggregatedPublicationInfo();
-                    if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED) {
+                    if (info.getStatus() != GWTJahiaPublicationInfo.PUBLISHED && !info.isWorkInProgress()) {
                         allPublished = false;
                         if (lastUnpublished != null && node.getPath().startsWith(lastUnpublished)) {
                             continue;
@@ -124,10 +124,6 @@ public class ViewPublishStatusActionItem extends ViewStatusActionItem {
 
                         if (info.isLocked()) {
                             infoLayers.addInfoLayer(module, Messages.get("label.publication.locked", "locked"), "orange", "orange", removeListener, true,
-                                    "0.7");
-                        }  else if (info.isWorkInProgress()) {
-                            lastUnpublished = node.getPath();
-                            infoLayers.addInfoLayer(module, status, "dimgray", "dimgray", removeListener, false,
                                     "0.7");
                         } else if (info.getStatus() == GWTJahiaPublicationInfo.NOT_PUBLISHED || info.getStatus() == GWTJahiaPublicationInfo.UNPUBLISHED) {
                             lastUnpublished = node.getPath();

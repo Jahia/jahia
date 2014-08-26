@@ -408,7 +408,7 @@ public class PublicationHelper {
             gwtInfo.setWorkflowGroup(language + lastRule.getDefinitionPath());
             gwtInfo.setWorkflowDefinition(lastRule.getProviderKey()+":"+lastRule.getWorkflowDefinitionKey());
         } else {
-            gwtInfo.setWorkflowGroup("no-workflow");
+            gwtInfo.setWorkflowGroup(language + " no-workflow");
         }
 
         String translationNodeName = node.getChildren().size() > 0 ? "/j:translation_" + language : null;

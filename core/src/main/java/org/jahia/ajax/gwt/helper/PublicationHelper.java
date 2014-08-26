@@ -386,6 +386,7 @@ public class PublicationHelper {
             gwtInfo.setTitle(node.getPath());
         }
 
+        gwtInfo.setWorkInProgress(node.isWorkInProgress());
         String mainPath = root.getPath();
         gwtInfo.setMainPath(mainPath);
         gwtInfo.setMainUUID(root.getUuid());

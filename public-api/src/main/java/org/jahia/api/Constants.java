@@ -104,6 +104,7 @@ public class Constants {
     public static final String JCR_HASORDERABLECHILDNODES = "jcr:hasOrderableChildNodes";
     public static final String JCR_ISCHECKEDOUT = "jcr:isCheckedOut";
     public static final String JCR_ISMIXIN = "jcr:isMixin";
+    public static final String JCR_KEYWORDS = "jcr:keywords";
     public static final String JCR_LANGUAGE = "jcr:language";
     public static final String JCR_LASTMODIFIED = "jcr:lastModified";
     public static final String JCR_LASTMODIFIEDBY = "jcr:lastModifiedBy";

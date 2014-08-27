@@ -130,7 +130,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private static final Pattern NOT_PATTERN = Pattern.compile(" NOT ");
 
     private static final Pattern OR_PATTERN = Pattern.compile(" OR ");
-    
+    private static final String AND = "and";
+    private static final String OR = "or";
+
     private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
@@ -538,22 +540,22 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                              StringBuilder constraints, boolean xpath) {
 
         if (params.getCreatedBy() != null && params.getCreatedBy().length() > 0) {
-            addConstraint(constraints, "and", getContainsExpr("jcr:createdBy", stringToJCRSearchExp(params.getCreatedBy().trim()), xpath));
+            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_CREATEDBY, stringToJCRSearchExp(params.getCreatedBy().trim()), xpath));
         }
 
         if (params.getLastModifiedBy() != null
                 && params.getLastModifiedBy().length() > 0) {
-            addConstraint(constraints, "and", getContainsExpr("jcr:lastModifiedBy", stringToJCRSearchExp(params.getLastModifiedBy().trim()), xpath));
+            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_LASTMODIFIEDBY, stringToJCRSearchExp(params.getLastModifiedBy().trim()), xpath));
         }
 
         if (!params.getCreated().isEmpty()
                 && DateValue.Type.ANYTIME != params.getCreated().getType()) {
-            addDateConstraint(constraints, params.getCreated(), "jcr:created", xpath);
+            addDateConstraint(constraints, params.getCreated(), Constants.JCR_CREATED, xpath);
         }
 
         if (!params.getLastModified().isEmpty()
                 && DateValue.Type.ANYTIME != params.getLastModified().getType()) {
-            addDateConstraint(constraints, params.getLastModified(), "jcr:lastModified", xpath);
+            addDateConstraint(constraints, params.getLastModified(), Constants.JCR_LASTMODIFIED, xpath);
         }
 
     }
@@ -591,11 +593,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         try {
             if (greaterThanDate != null) {
-                addConstraint(constraints, "and", getPropertyName(paramName, xpath)
+                addConstraint(constraints, AND, getPropertyName(paramName, xpath)
                         + " >= " + getDateLiteral(DateUtils.dayStart(greaterThanDate), xpath));
             }
             if (smallerThanDate != null) {
-                addConstraint(constraints, "and", getPropertyName(paramName, xpath)
+                addConstraint(constraints, AND, getPropertyName(paramName, xpath)
                         + " <= " + getDateLiteral(DateUtils.dayEnd(smallerThanDate), xpath));
             }
         } catch (IllegalStateException e) {
@@ -613,13 +615,13 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (mimeTypes.size() > 1) {
                     StringBuilder fileTypeConstraints = new StringBuilder(128);
                     for (String mimeType : mimeTypes) {
-                        addConstraint(fileTypeConstraints, "or",
+                        addConstraint(fileTypeConstraints, OR,
                                 getMimeTypeConstraint(mimeType, xpath));
                     }
-                    addConstraint(constraints, "and", fileTypeConstraints
+                    addConstraint(constraints, AND, fileTypeConstraints
                             .insert(0, "(").append(")").toString());
                 } else {
-                    addConstraint(constraints, "and",
+                    addConstraint(constraints, AND,
                             getMimeTypeConstraint(mimeTypes.get(0), xpath));
                 }
             } else {
@@ -639,7 +641,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
                 return;
             }
-            addConstraint(categoryConstraints, "or", getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
+            addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
             if (includeChildren) {
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
@@ -654,7 +656,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         List<Category> childs = category.getChildCategories();
         if (childs != null && childs.size() > 0) {
             for (Category cat : childs) {
-                addConstraint(categoryConstraints, "or", getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
+                addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
         }
@@ -673,7 +675,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 .getCategoryValue().isIncludeChildren(), xpath);
                     }
                     if (categoryConstraints.length() > 0) {
-                        addConstraint(constraints, "and", categoryConstraints
+                        addConstraint(constraints, AND, categoryConstraints
                                 .insert(0, "(").append(")").toString());
                     }
                 } else if (NodeProperty.Type.DATE == property.getType()) {
@@ -686,24 +688,24 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             if (property.getMatch() == MatchType.WITHOUT_WORDS) {
                                 matchType = "!=";
                             }
-                            addConstraint(propertyConstraints, "or", getPropertyName(property.getName(), xpath) + matchType + stringToJCRSearchExp(value));
+                            addConstraint(propertyConstraints, OR, getPropertyName(property.getName(), xpath) + matchType + stringToJCRSearchExp(value));
                         } else {
-                            addConstraint(propertyConstraints, "or", getContainsExpr(property.getName(), getSearchExpressionForMatchType(value, property.getMatch(), false), xpath));
+                            addConstraint(propertyConstraints, OR, getContainsExpr(property.getName(), getSearchExpressionForMatchType(value, property.getMatch(), false), xpath));
                         }
                     }
                     if (propertyConstraints.length() > 0) {
                         if (property.getValues().length == 1) {
-                            addConstraint(constraints, "and",
+                            addConstraint(constraints, AND,
                                     propertyConstraints.toString());
                         } else {
-                            addConstraint(constraints, "and", "("
+                            addConstraint(constraints, AND, "("
                                     + propertyConstraints.toString() + ")");
                         }
                     }
                 } else if (NodeProperty.Type.BOOLEAN == property.getType()) {
                     // only handle 'true' case
                     if (Boolean.parseBoolean(property.getValue())) {
-                        addConstraint(constraints, "and", getPropertyName(property.getName(), xpath) + "='true'");
+                        addConstraint(constraints, AND, getPropertyName(property.getName(), xpath) + "='true'");
                     }
                 } else {
                     throw new IllegalArgumentException(
@@ -726,31 +728,31 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 SearchFields searchFields = textSearch.getFields();
                 StringBuilder textSearchConstraints = new StringBuilder(256);
                 if (searchFields.isSiteContent() || (!searchFields.isTags() && !searchFields.isFileContent() && !searchFields.isDescription() && !searchFields.isTitle() && !searchFields.isKeywords() && !searchFields.isFilename())) {
-                    addConstraint(textSearchConstraints, "or", xpath ? ("jcr:contains(., " + searchExpression + ")") : ("contains(n, " + searchExpression + ")"));
+                    addConstraint(textSearchConstraints, OR, xpath ? ("jcr:contains(., " + searchExpression + ")") : ("contains(n, " + searchExpression + ")"));
                 }
                 if (searchFields.isFileContent()) {
                     if (xpath) {
-                        addConstraint(textSearchConstraints, "or", "jcr:contains(jcr:content," + searchExpression + ")");
+                        addConstraint(textSearchConstraints, OR, "jcr:contains(jcr:content," + searchExpression + ")");
                     } else {
-                        addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:content", searchExpression, xpath));
+                        addConstraint(textSearchConstraints, OR, getContainsExpr("jcr:content", searchExpression, xpath));
                     }
                 }
                 if (searchFields.isDescription()) {
-                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:description", searchExpression, xpath));
+                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_DESCRIPTION, searchExpression, xpath));
                 }
                 if (searchFields.isTitle()) {
-                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:title", searchExpression, xpath));
+                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_TITLE, searchExpression, xpath));
                 }
                 if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, "or", getContainsExpr("jcr:keywords", searchExpression, xpath));
+                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_KEYWORDS, searchExpression, xpath));
                 }
                 if (searchFields.isFilename()) {
                     String[] terms = null;
-                    String constraint = "or";
+                    String constraint = OR;
                     if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
                         terms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
                         if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
-                            constraint = "and";
+                            constraint = AND;
                         }
                     } else {
                         terms = new String[]{textSearch.getTerm()};
@@ -768,15 +770,15 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 termConstraint);
                     }
                     addConstraint(textSearchConstraints,
-                            "or", nameSearchConstraints.toString());
+                            OR, nameSearchConstraints.toString());
                 }
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
                         && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
-                    addConstraint(textSearchConstraints, "or", getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(textSearch.getTerm()));
+                    addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(textSearch.getTerm()));
                 }
                 if (textSearchConstraints.length() > 0) {
-                    addConstraint(constraints, "and", "("
+                    addConstraint(constraints, AND, "("
                             + textSearchConstraints.toString() + ")");
                 }
             }
@@ -789,7 +791,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (!params.getLanguages().isEmpty()) {
             for (String languageCode : params.getLanguages().getValues()) {
                 if (languageCode != null && languageCode.length() != 0) {
-                    addConstraint(languageSearchConstraints, "or",
+                    addConstraint(languageSearchConstraints, OR,
                             getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(languageCode.trim()));
                 }
             }
@@ -800,16 +802,16 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 JCRSessionWrapper session = jcrService.getSessionFactory()
                         .getCurrentUserSession();
                 if (session.getLocale() != null) {
-                    addConstraint(languageSearchConstraints, "or",
+                    addConstraint(languageSearchConstraints, OR,
                             getPropertyName("jcr:language",xpath) + "=" + stringToJCRSearchExp(session.getLocale().toString()));
                 }
             } catch (RepositoryException e) {
             }
         }
         if (languageSearchConstraints.length() > 0) {
-            addConstraint(languageSearchConstraints, "or",
+            addConstraint(languageSearchConstraints, OR,
                     xpath ? "not(@jcr:language)" : "[jcr:language] is null");
-            addConstraint(constraints, "and", "(" + languageSearchConstraints
+            addConstraint(constraints, AND, "(" + languageSearchConstraints
                     .toString() + ")");
         }
     }

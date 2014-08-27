@@ -505,7 +505,6 @@ public class PublicationWorkflow implements CustomWorkflow {
                         if (!fillDialogProperties(dialog, nodeProperties)) {
                             return;
                         }
-                        dialog.getContainer().closeEngine();
                         final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
                         final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
 

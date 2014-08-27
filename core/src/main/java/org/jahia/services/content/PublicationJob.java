@@ -121,8 +121,8 @@ public class PublicationJob extends BackgroundJob {
         for (Workflow workflow : l) {
             if (!("publication-process-"+workflow.getId()).equals(lock)) {
                 List<String> nodeIds = (List<String>) workflow.getVariables().get("nodeIds");
-                if (uuids.containsAll(nodeIds)) {
-                    JCRPublicationService.getInstance().unlockForPublication(nodeIds, (String)workflow.getVariables().get("workspace"), "publication-process-" + workflow.getId());
+                if (nodeIds != null && uuids.containsAll(nodeIds)) {
+                    JCRPublicationService.getInstance().unlockForPublication(nodeIds, (String) workflow.getVariables().get("workspace"), "publication-process-" + workflow.getId());
                     workflowService.abortProcess(workflow.getId(), workflow.getProvider());
                 }
             }

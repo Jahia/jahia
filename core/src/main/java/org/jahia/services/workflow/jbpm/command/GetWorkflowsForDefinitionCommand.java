@@ -73,6 +73,7 @@ package org.jahia.services.workflow.jbpm.command;
 
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.jbpm.BaseCommand;
+import org.jbpm.process.audit.ProcessInstanceLog;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
 
@@ -82,8 +83,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
-* Get workflow definition from name
-*/
+ * Get workflow definition from name
+ */
 public class GetWorkflowsForDefinitionCommand extends BaseCommand<List<Workflow>> {
     private final String definition;
     private final Locale uiLocale;
@@ -96,12 +97,12 @@ public class GetWorkflowsForDefinitionCommand extends BaseCommand<List<Workflow>
     @Override
     public List<Workflow> execute() {
         final List<Workflow> workflows = new LinkedList<Workflow>();
-        Collection<ProcessInstance> processInstances = getKieSession().getProcessInstances();
-        for (ProcessInstance processInstance : processInstances) {
-            if (processInstance instanceof WorkflowProcessInstance) {
-                WorkflowProcessInstance workflowProcessInstance = (WorkflowProcessInstance) processInstance;
-                if (workflowProcessInstance.getProcessName().equals(definition)) {
-                    workflows.add(convertToWorkflow(workflowProcessInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
+        for (org.kie.api.definition.process.Process process : getKieSession().getKieBase().getProcesses()) {
+            Collection<ProcessInstanceLog> processInstanceLogs = getLogService().findActiveProcessInstances(process.getId());
+            for (ProcessInstanceLog processInstanceLog : processInstanceLogs) {
+                ProcessInstance processInstance = getKieSession().getProcessInstance(processInstanceLog.getProcessInstanceId());
+                if (processInstance != null && processInstance.getProcessName().equals(definition) && processInstance instanceof WorkflowProcessInstance) {
+                    workflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
                 }
             }
         }

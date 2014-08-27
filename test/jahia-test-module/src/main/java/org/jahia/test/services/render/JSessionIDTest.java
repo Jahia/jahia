@@ -82,7 +82,9 @@ import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -94,6 +96,18 @@ public class JSessionIDTest extends JahiaTestCase {
     private HttpClient httpClient;
     private String jsessionid;
 
+    private static boolean isJsessionIdActive;
+
+    @BeforeClass
+    public static void oneTimeSetUp() throws Exception {
+        isJsessionIdActive = SettingsBean.getInstance().isDisableJsessionIdParameter();
+    }
+    
+    @AfterClass
+    public static void oneTimeTearDown() throws Exception {
+        SettingsBean.getInstance().setDisableJsessionIdParameter(isJsessionIdActive);        
+    }    
+    
     @Before
     public void setUp() {
         httpClient = new HttpClient();

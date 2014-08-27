@@ -76,9 +76,11 @@ import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
+import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.nodetype.ConstraintViolationException;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
@@ -123,7 +125,7 @@ public class ValidationTest {
         List<ConstraintViolationException> errors = null;
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
-            JCRNodeWrapper testNotNull = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testNotNull", TEST_NODE_TYPE);
+            session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testNotNull", TEST_NODE_TYPE);
             session.save();
         } catch (CompositeConstraintViolationException e) {
             errors = e.getErrors();
@@ -235,32 +237,40 @@ public class ValidationTest {
     @Test
     public void testMessageTranslation() throws Exception {
         List<ConstraintViolationException> errors = null;
+        LocaleContext localeContext = null;
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
-            JCRNodeWrapper testGreaterThan2 = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testTranslation", TEST_NODE_TYPE);
-            testGreaterThan2.setProperty("test:sizeBetween6And20", "abc");
-            testGreaterThan2.setProperty("test:email", "badmail.com");
-            testGreaterThan2.setProperty("test:confirmEmail", "badmail2.com");
-            testGreaterThan2.setProperty("test:futureDate", Calendar.getInstance());
-            testGreaterThan2.setProperty("test:greaterThan2", 2);
-            LocaleContextHolder.setLocale(Locale.FRENCH, true);
-            session.save();
-        } catch (CompositeConstraintViolationException e) {
-            errors = e.getErrors();
-        }
-        Assert.assertEquals(7, errors.size());
-        List<String> messages = Arrays.asList(
-                "/sites/validationTest/testTranslation Champ non nul: ne peut pas être nul",
-                "/sites/validationTest/testTranslation Champ dont la taille est comprise entre 6 et 20: la taille doit être entre 6 et 20",
-                "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Les champs ne correspondent pas",
-                "/sites/validationTest/testTranslation Champ d'e-mail: Adresse email mal formée",
-                "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Adresse email mal formée",
-                "/sites/validationTest/testTranslation Champ de date dans le futur: doit être dans le futur",
-                "/sites/validationTest/testTranslation Champ avec valeur strictement supérieure à 2: doit être plus grand que 3"
-        );
-        for (ConstraintViolationException error: errors) {
-            String localizedMessage = error.getLocalizedMessage();
-            Assert.assertTrue(messages.contains(localizedMessage));
+            try {
+                JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE,Locale.ENGLISH);
+                JCRNodeWrapper testGreaterThan2 = session.getNode(SITE_CONTENT_ROOT_NODE).addNode("testTranslation", TEST_NODE_TYPE);
+                testGreaterThan2.setProperty("test:sizeBetween6And20", "abc");
+                testGreaterThan2.setProperty("test:email", "badmail.com");
+                testGreaterThan2.setProperty("test:confirmEmail", "badmail2.com");
+                testGreaterThan2.setProperty("test:futureDate", Calendar.getInstance());
+                testGreaterThan2.setProperty("test:greaterThan2", 2);
+                localeContext = LocaleContextHolder.getLocaleContext();
+                LocaleContextHolder.setLocale(Locale.FRENCH, true);
+                session.save();
+            } catch (CompositeConstraintViolationException e) {
+                errors = e.getErrors();
+            }
+            Assert.assertEquals(7, errors.size());
+            List<String> messages = Arrays.asList(
+                    "/sites/validationTest/testTranslation Champ non nul: ne peut pas être nul",
+                    "/sites/validationTest/testTranslation Champ dont la taille est comprise entre 6 et 20: la taille doit être entre 6 et 20",
+                    "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Les champs ne correspondent pas",
+                    "/sites/validationTest/testTranslation Champ d'e-mail: Adresse email mal formée",
+                    "/sites/validationTest/testTranslation Champ de confirmation d'e-mail: Adresse email mal formée",
+                    "/sites/validationTest/testTranslation Champ de date dans le futur: doit être dans le futur",
+                    "/sites/validationTest/testTranslation Champ avec valeur strictement supérieure à 2: doit être plus grand que 3"
+            );
+            for (ConstraintViolationException error: errors) {
+                String localizedMessage = error.getLocalizedMessage();
+                Assert.assertTrue(messages.contains(localizedMessage));
+            }
+        } finally {
+            if (localeContext != null) {
+                LocaleContextHolder.setLocaleContext(localeContext);
+            }
         }
     }
 

@@ -809,23 +809,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 try {
                     Node p = s.getNodeByIdentifier(value.getString());
                     try {
-<<<<<<< .working
                         Privilege privilege = privilegeRegistry.getPrivilege(p);
                         privileges.add(privilege);
                     } catch (AccessControlException e) {
                         if (logger.isDebugEnabled()) {
                             logger.debug("Permission not available : " + p, e);
                         }
-=======
-                        try {
-                            Privilege privilege = privilegeRegistry.getPrivilege(p);
-                            list.add(privilege);
-                        } catch (AccessControlException e) {
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("Permission not available: " + p, e);
-                            }
-                        }
->>>>>>> .merge-right.r50568
                     }
                 } catch (RepositoryException e) {
 

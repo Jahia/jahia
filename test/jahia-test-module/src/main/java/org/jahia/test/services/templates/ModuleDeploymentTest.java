@@ -266,6 +266,15 @@ public class ModuleDeploymentTest {
 //        managerService.scanSharedModulesFolderNow();
 
             JahiaTemplatesPackage pack = managerService.getTemplatePackageById("dummy1");
+            if (pack == null || pack.getContext() == null || !pack.isServiceInitialized()) {
+                // system is slow, so wait some more
+                try {
+                    Thread.sleep(10000);
+                } catch (InterruptedException e) {
+                    logger.error(e.getMessage(), e);
+                }                
+                pack = managerService.getTemplatePackageById("dummy1");
+            }
             assertNotNull(pack);
             assertEquals("Module is not started", ModuleState.State.STARTED, pack.getState().getState());
             assertNotNull("Spring context is null", pack.getContext());

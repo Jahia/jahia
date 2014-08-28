@@ -359,6 +359,8 @@
           factory-method="getInstance" depends-on="loggingService">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="loggingService" ref="loggingService"/>
+        <property name="propertiesToSkipForReferences" value="${jahia.publicationStatus.propertiesToSkipForReferencesInternal:*,j:defaultCategory,j:sourceTemplate,j:tags,j:templateNode},${jahia.publicationStatus.propertiesToSkipForReferences:}"/>
+        <property name="referencedNodeTypesToSkip" value="${jahia.publicationStatus.referencedNodeTypesToSkipInternal:jnt:page,jmix:autoPublish},${jahia.publicationStatus.referencedNodeTypesToSkip:}"/>
     </bean>
 
     <bean id="jackrabbit" class="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository"

@@ -90,6 +90,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
+
 import java.util.*;
 
 import static org.jahia.api.Constants.*;
@@ -107,6 +108,12 @@ public class JCRPublicationService extends JahiaService {
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
     private MetricsLoggingService loggingService;
+    
+    private Set<String> propertiesToSkipForReferences = Collections.emptySet();
+    
+    private Set<String> referencedNodeTypesToSkip = Collections.emptySet();
+    
+    private boolean skipAllReferenceProperties;
 
     private JCRPublicationService() {
         super();
@@ -1226,12 +1233,14 @@ public class JCRPublicationService extends JahiaService {
                                boolean includesSubnodes, JCRSessionWrapper sourceSession,
                                JCRSessionWrapper destinationSession, Map<String, PublicationInfoNode> infosMap,
                                List<PublicationInfo> infos, PublicationInfoNode info) throws RepositoryException {
+        if (skipAllReferenceProperties) {
+            return;
+        }
         List<ExtendedPropertyDefinition> defs = node.getReferenceProperties();
         for (ExtendedPropertyDefinition def : defs) {
             String propName = def.getName();
-            if (propName.equals("*") || propName.startsWith("jcr:") || propName.equals("j:templateNode")
-                    || propName.equals("j:sourceTemplate") || propName.equals("j:tags")
-                    || propName.equals("j:defaultCategory") || !node.hasProperty(propName)) {
+            if (propertiesToSkipForReferences.contains(propName) || propName.startsWith("jcr:")
+                    || !node.hasProperty(propName)) {
                 continue;
             }
             Property p = node.getProperty(def.getName());
@@ -1240,7 +1249,10 @@ public class JCRPublicationService extends JahiaService {
                 for (Value v : vs) {
                     try {
                         JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
-                        if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
+                        if (!skipReferencedNodeType(ref)) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Calculating publication status for the reference property {}", propName);
+                            }
                             PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
                                     includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
                             info.addReference(new PublicationInfo(n));
@@ -1265,6 +1277,9 @@ public class JCRPublicationService extends JahiaService {
                     if (!supportsPublication(sourceSession, ref)) continue;
 
                     if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Calculating publication status for the reference property {}", propName);
+                        }
                         PublicationInfoNode n = getPublicationInfo(ref, languages, includesReferences,
                                 includesSubnodes, false, sourceSession, destinationSession, infosMap, infos);
                         info.addReference(new PublicationInfo(n));
@@ -1284,6 +1299,7 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
+<<<<<<< .working
     private boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper ref) throws RepositoryException {
         Value descriptorValue = sourceSession.getProviderSession(ref.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
         if (descriptorValue == null) {
@@ -1292,6 +1308,17 @@ public class JCRPublicationService extends JahiaService {
         return descriptorValue.getBoolean();
     }
 
+=======
+    private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {
+        for (String ntName : referencedNodeTypesToSkip) {
+            if (ref.isNodeType(ntName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+>>>>>>> .merge-right.r50587
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
         if (node.isVersioned()) {
             node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);
@@ -1337,5 +1364,27 @@ public class JCRPublicationService extends JahiaService {
         for (Version version : succ) {
             print(version, indent + 2);
         }
+    }
+
+    public void setPropertiesToSkipForReferences(String propertiesToSkipForReferences) {
+        this.propertiesToSkipForReferences = tokenize(propertiesToSkipForReferences);
+        this.skipAllReferenceProperties = propertiesToSkipForReferences.contains(".*");
+    }
+
+    public void setReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {
+        this.referencedNodeTypesToSkip = tokenize(referencedNodeTypesToSkip);
+    }
+
+    private static Set<String> tokenize(String input) {
+        Set<String> result;
+        String[] tokens = StringUtils.split(input, " ,");
+        if (tokens == null || tokens.length == 0) {
+            result = Collections.emptySet();
+        } else {
+            result = new LinkedHashSet<String>();
+            result.addAll(Arrays.asList(tokens));
+        }
+
+        return result;
     }
 }

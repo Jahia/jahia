@@ -74,7 +74,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -90,7 +89,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
-
 import java.util.*;
 
 import static org.jahia.api.Constants.*;
@@ -108,7 +106,7 @@ public class JCRPublicationService extends JahiaService {
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
     private JCRSessionFactory sessionFactory;
     private MetricsLoggingService loggingService;
-    
+
     private Set<String> propertiesToSkipForReferences = Collections.emptySet();
     
     private Set<String> referencedNodeTypesToSkip = Collections.emptySet();
@@ -1273,14 +1271,10 @@ public class JCRPublicationService extends JahiaService {
             } else {
                 try {
                     JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
-<<<<<<< .working
 
                     if (!supportsPublication(sourceSession, ref)) continue;
 
-                    if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
-=======
                     if (!skipReferencedNodeType(ref)) {
->>>>>>> .merge-right.r50592
                         if (logger.isDebugEnabled()) {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }
@@ -1303,7 +1297,6 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-<<<<<<< .working
     private boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper ref) throws RepositoryException {
         Value descriptorValue = sourceSession.getProviderSession(ref.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
         if (descriptorValue == null) {
@@ -1312,7 +1305,6 @@ public class JCRPublicationService extends JahiaService {
         return descriptorValue.getBoolean();
     }
 
-=======
     private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {
         for (String ntName : referencedNodeTypesToSkip) {
             if (ref.isNodeType(ntName)) {
@@ -1322,7 +1314,6 @@ public class JCRPublicationService extends JahiaService {
         return false;
     }
 
->>>>>>> .merge-right.r50587
     protected void addRemovedLabel(JCRNodeWrapper node, final String label) throws RepositoryException {
         if (node.isVersioned()) {
             node.getVersionHistory().addVersionLabel(node.getBaseVersion().getName(), label, false);

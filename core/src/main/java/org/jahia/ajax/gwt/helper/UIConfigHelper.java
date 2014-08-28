@@ -411,6 +411,8 @@ public class UIConfigHelper {
                     List<GWTEngineTab> managerTabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
                     gwtConfig.setManagerEngineTabs(managerTabs);
                 }
+                
+                gwtConfig.setSuppressPublicationInfo(config.isSuppressPublicationInfo());
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
                 setAvailablePermissions(gwtConfig);

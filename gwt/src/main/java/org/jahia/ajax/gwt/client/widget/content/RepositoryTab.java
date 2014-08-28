@@ -86,6 +86,7 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
+
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
@@ -136,7 +137,12 @@ public class RepositoryTab extends ContentPanel {
         factory.setFilters(config.getFilters());
 
         List<String> keys = new ArrayList<String>(config.getTreeColumnKeys());
-        keys.add(GWTJahiaNode.PUBLICATION_INFO);
+        int indexOf = keys.indexOf(GWTJahiaNode.PUBLICATION_INFO);
+        if (indexOf == -1 && !config.isSuppressPublicationInfo()) {
+            keys.add(GWTJahiaNode.PUBLICATION_INFO);
+        } else if (indexOf != -1 && config.isSuppressPublicationInfo()) {
+            keys.remove(indexOf);
+        }
         keys.add(GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         factory.setFields(keys);
 

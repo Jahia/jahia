@@ -4,8 +4,12 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="abstractpicker" parent="abstractmanager" abstract="true">
+        <property name="suppressPublicationInfo" value="${jahia.ui.pickers.suppressPublicationInfo:false}"/>
+    </bean>
+    
     <!-- filepicker -->
-    <bean id="filepicker" parent="abstractmanager">
+    <bean id="filepicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>nt:file</value>
@@ -112,7 +116,7 @@
     </bean>
 
 
-    <bean id="imagepicker" parent="abstractmanager">
+    <bean id="imagepicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>nt:file</value>
@@ -221,7 +225,7 @@
         </property>
     </bean>
 
-    <bean id="folderpicker" parent="abstractmanager">
+    <bean id="folderpicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>nt:folder</value>
@@ -311,7 +315,7 @@
         </property>
     </bean>
 
-    <bean id="contentfolderpicker" parent="abstractmanager">
+    <bean id="contentfolderpicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>jnt:contentFolder</value>
@@ -373,7 +377,7 @@
         </property>
     </bean>
 
-    <bean id="portletpicker" parent="abstractmanager">
+    <bean id="portletpicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>jnt:portlet</value>
@@ -455,7 +459,7 @@
 
 
     <!-- Page picker -->
-    <bean id="pagepicker" parent="abstractmanager">
+    <bean id="pagepicker" parent="abstractpicker">
         <property name="nodeTypes" value="jnt:page"/>
 
         <property name="folderTypes">
@@ -521,7 +525,7 @@
     </bean>
 
     <!-- Editorial content picker -->
-    <bean id="editorialpicker" parent="abstractmanager">
+    <bean id="editorialpicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>jnt:page</value>
@@ -608,7 +612,7 @@
     </bean>
 
     <!-- categorypicker -->
-    <bean id="categorypicker" parent="abstractmanager">
+    <bean id="categorypicker" parent="abstractpicker">
         <property name="nodeTypes" value="jnt:category"/>
         <property name="folderTypes" value="jnt:category"/>
         <property name="enableFileDoubleClick" value="false"/>
@@ -689,7 +693,7 @@
     </bean>
 
     <!-- Page picker -->
-    <bean id="sitepicker" parent="abstractmanager">
+    <bean id="sitepicker" parent="abstractpicker">
         <property name="nodeTypes" value="jnt:virtualsite"/>
 
         <property name="folderTypes">
@@ -739,7 +743,7 @@
     </bean>
 
     <!-- userpicker -->
-    <bean id="userpicker" parent="abstractmanager">
+    <bean id="userpicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>jnt:user</value>
@@ -774,7 +778,7 @@
     </bean>
 
     <!-- usergrouppicker -->
-    <bean id="usergrouppicker" parent="abstractmanager">
+    <bean id="usergrouppicker" parent="abstractpicker">
         <property name="nodeTypes">
             <list>
                 <value>jnt:group</value>

@@ -135,6 +135,8 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private boolean showOnlyNodesWithTemplates = false;
     
     private String title = null;
+    
+    private boolean suppressPublicationInfo;
 
     private boolean editableGrid = false;
 
@@ -457,5 +459,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public boolean isSuppressPublicationInfo() {
+        return suppressPublicationInfo;
+    }
+
+    public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
+        this.suppressPublicationInfo = suppressPublicationInfo;
     }
 }

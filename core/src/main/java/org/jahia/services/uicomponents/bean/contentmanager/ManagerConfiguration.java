@@ -141,6 +141,8 @@ public class ManagerConfiguration implements Serializable {
     
     private String titleKey = null;
 
+    private boolean suppressPublicationInfo;
+    
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
@@ -448,4 +450,12 @@ public class ManagerConfiguration implements Serializable {
         this.titleKey = titleKey;
     }    
     
+
+    public boolean isSuppressPublicationInfo() {
+        return suppressPublicationInfo;
+    }
+
+    public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
+        this.suppressPublicationInfo = suppressPublicationInfo;
+    }
 }

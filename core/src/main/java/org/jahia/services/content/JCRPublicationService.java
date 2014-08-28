@@ -1273,10 +1273,14 @@ public class JCRPublicationService extends JahiaService {
             } else {
                 try {
                     JCRNodeWrapper ref = (JCRNodeWrapper) p.getNode();
+<<<<<<< .working
 
                     if (!supportsPublication(sourceSession, ref)) continue;
 
                     if (!ref.isNodeType(Constants.JAHIANT_PAGE) && !ref.isNodeType("jmix:autoPublish")) {
+=======
+                    if (!skipReferencedNodeType(ref)) {
+>>>>>>> .merge-right.r50592
                         if (logger.isDebugEnabled()) {
                             logger.debug("Calculating publication status for the reference property {}", propName);
                         }

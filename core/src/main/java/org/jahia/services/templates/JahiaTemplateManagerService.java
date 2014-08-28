@@ -83,7 +83,6 @@ import org.dom4j.io.OutputFormat;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
@@ -101,7 +100,6 @@ import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.render.filter.RenderFilter;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.PomUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -230,11 +228,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void onApplicationEvent(final ApplicationEvent event) {
-        if (event instanceof JahiaContextLoaderListener.RootContextInitializedEvent) {
-            if (SettingsBean.getInstance().isProcessingServer()) {
-                templatePackageDeployer.initializeModulesContent();
-            }
-        } else if (event instanceof TemplatePackageRedeployedEvent) {
+        if (event instanceof TemplatePackageRedeployedEvent) {
             // flush resource bundle cache
             ResourceBundles.flushCache();
             NodeTypeRegistry.getInstance().flushLabels();

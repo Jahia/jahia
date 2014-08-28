@@ -831,7 +831,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         break;
                     String name = zipentry.getName();
                     if (name.equals(SITE_PROPERTIES)) {
-                        importSiteProperties(zis, site);
+                        importSiteProperties(zis, site, session);
                         break;
                     }
                     zis.closeEntry();
@@ -1229,7 +1229,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     }
 
-    private void importSiteProperties(final InputStream is, final JahiaSite site) throws IOException {
+    private void importSiteProperties(final InputStream is, final JahiaSite site, JCRSessionWrapper session) throws IOException {
         if (site.getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY)) {
             return;
         }
@@ -1238,17 +1238,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         final Properties p = new Properties();
         p.load(is);
-        try {
-            JCRTemplate.getInstance()
-                    .doExecuteWithSystemSession(JCRSessionFactory.getInstance().getCurrentUser().getUsername(), new JCRCallback<Object>() {
-                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                            importSiteProperties(site, p, session);
-                            return null;
-                        }
-                    });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
+        importSiteProperties(site, p, session);
         logger.info("Done loading properties for site {} in {}", site.getSiteKey(), DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
     }
 

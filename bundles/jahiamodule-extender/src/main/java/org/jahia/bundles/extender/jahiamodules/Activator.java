@@ -78,7 +78,6 @@ import org.apache.felix.service.command.CommandProcessor;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.commons.*;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
@@ -87,10 +86,7 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
@@ -99,11 +95,12 @@ import org.jahia.services.templates.JCRModuleListener;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.TemplatePackageDeployer;
 import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.framework.Version;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -516,7 +513,8 @@ public class Activator implements BundleActivator {
 
             if (SettingsBean.getInstance().isProcessingServer()) {
                 try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                    JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser() != null ? JCRSessionFactory.getInstance().getCurrentUser() : JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             templatePackageDeployer.initializeModuleContent(pkg, session);
                             return null;

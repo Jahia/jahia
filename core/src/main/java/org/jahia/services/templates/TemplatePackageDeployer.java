@@ -79,11 +79,8 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ProvisionActivator;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -136,28 +133,6 @@ public class TemplatePackageDeployer {
         templatePackageRegistry = tmplPackageRegistry;
     }
 
-    public void initializeModulesContent() {
-        try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    // initialize modules (migration case)
-                    while (!modulesToInitialize.isEmpty()) {
-                        JahiaTemplatesPackage aPackage = modulesToInitialize.remove(0);
-                        try {
-                            initializeModuleContent(aPackage, session);
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot initialize module " + aPackage.getName(), e);
-                        }
-                    }
-
-                    return Boolean.TRUE;
-                }
-            });
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
     public void initializeModuleContent(JahiaTemplatesPackage aPackage, JCRSessionWrapper session) throws RepositoryException {
         resetModuleNodes(aPackage, session);
 
@@ -180,13 +155,7 @@ public class TemplatePackageDeployer {
                         IOUtils.closeQuietly(is);
                     }
                 } else if (imp.toLowerCase().contains("/importsite")) {
-                    JahiaUser previousUser = JCRSessionFactory.getInstance().getCurrentUser();
-                    try {
-                        JCRSessionFactory.getInstance().setCurrentUser(JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser());
-                        importExportService.importSiteZip(importFile, session);
-                    } finally {
-                        JCRSessionFactory.getInstance().setCurrentUser(previousUser);
-                    }
+                    importExportService.importSiteZip(importFile, session);
                 } else {
 //                    importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session);
                     importExportService.importZip(targetPath, importFile, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, new HashSet<String>(Arrays.asList("permissions.xml","roles.xml")), false);

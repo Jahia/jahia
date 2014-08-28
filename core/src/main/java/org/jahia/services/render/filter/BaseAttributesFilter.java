@@ -71,12 +71,15 @@
  */
 package org.jahia.services.render.filter;
 
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Set;
@@ -107,6 +110,20 @@ public class BaseAttributesFilter extends AbstractFilter {
         }
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
+
+        String contextPath = null;
+        if(context.isEditMode() && ! context.isContributionMode()){
+            contextPath = StringUtils.substringAfterLast(((EditConfiguration) SpringContextSingleton.getBean(context.getEditModeConfigName())).getDefaultUrlMapping(), "/");
+        } else if(context.isContributionMode()){
+            contextPath = "contribute";
+        } else{
+            contextPath = "render";
+        }
+        String mode = contextPath + "/" + resource.getWorkspace();
+
+        chain.pushAttribute(request, "currentLocale", resource.getLocale());
+        chain.pushAttribute(request, "currentWorkspace", resource.getNode().getSession().getWorkspace().getName());
+        chain.pushAttribute(request, "currentMode", mode);
         chain.pushAttribute(request, "currentUser", context.getMainResource().getNode().getSession().getUser());
         chain.pushAttribute(request, "currentAliasUser", context.getMainResource().getNode().getSession().getAliasedUser());
         if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {

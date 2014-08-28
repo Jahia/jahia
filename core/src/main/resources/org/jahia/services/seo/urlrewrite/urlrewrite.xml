@@ -58,7 +58,25 @@
         <from>^/tools(/)?$</from>
         <to type="redirect">%{context-path}/tools/index.jsp</to>
     </rule>
-    
+
+    <outbound-rule>
+        <name>lang placehodler</name>
+        <note>Replace {lang} placeholder</note>
+        <from>^([^?]*)\{lang\}(.*)$</from>
+        <to>$1%{attribute:currentLocale}$2</to>
+    </outbound-rule>
+    <outbound-rule>
+        <name>workspace placeholder</name>
+        <note>Replace {workspace} placeholder</note>
+        <from>^([^?]*)\{workspace\}(.*)$</from>
+        <to>$1%{attribute:currentWorkspace}$2</to>
+    </outbound-rule>
+    <outbound-rule>
+        <name>mode placeholder</name>
+        <note>Replace {mode} placeholder</note>
+        <from>^([^?]*)\{mode\}(.*)$</from>
+        <to>$1%{attribute:currentMode}$2</to>
+    </outbound-rule>
     <!-- Jahia Administration -->
     <rule enabled="true">
         <name>Jahia Administration</name>

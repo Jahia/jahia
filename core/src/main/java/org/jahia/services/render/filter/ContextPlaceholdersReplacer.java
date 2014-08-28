@@ -71,21 +71,6 @@
  */
 package org.jahia.services.render.filter;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
-import org.jahia.services.seo.urlrewrite.UrlRewriteService;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * Replaces contextual placeholders in internal links like ##mode## and ##lang## with their actual value.
  *
@@ -93,57 +78,10 @@ import java.util.regex.Pattern;
  * ##lang## is the current language.
  *
  */
-public class ContextPlaceholdersReplacer implements HtmlTagAttributeVisitor {
+public class ContextPlaceholdersReplacer {
 
-    public static String CURRENT_CONTEXT_PLACEHOLDER;
-    public static String WORKSPACE_PLACEHOLDER;
-    public static String LANG_PLACEHOLDER;
-
-    static {
-        CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
-        WORKSPACE_PLACEHOLDER = "{workspace}";
-        LANG_PLACEHOLDER = "{lang}";
-    }
-
-    private static Pattern CTX_PATTERN = Pattern.compile(CURRENT_CONTEXT_PLACEHOLDER, Pattern.LITERAL);
-    private static Pattern WORKSPACE_PATTERN = Pattern.compile(WORKSPACE_PLACEHOLDER, Pattern.LITERAL);
-    private static Pattern LANG_PATTERN = Pattern.compile(LANG_PLACEHOLDER, Pattern.LITERAL);
-    private static Pattern SITES_PATTERN = Pattern.compile("/sites/([^/]+)");
-
-    public String visit(String value, RenderContext context, String tagName, String attrName, Resource resource) {
-        if (value != null) {
-            String contextPath = null;
-            if(context.isEditMode() && ! context.isContributionMode()){
-                contextPath = StringUtils.substringAfterLast(((EditConfiguration)SpringContextSingleton.getBean(context.getEditModeConfigName())).getDefaultUrlMapping(), "/");
-            } else if(context.isContributionMode()){
-               contextPath = "contribute";
-            } else{
-               contextPath = "render";
-            }
-
-            String mode = contextPath + "/" + resource.getWorkspace();
-            String locale = resource.getLocale().toString();
-
-            if (value.startsWith(Jahia.getContextPath() + "/cms/")) {
-                Matcher m = SITES_PATTERN.matcher(value);
-                if (m.find()) {
-                    String siteName = m.group(1);
-                    try {
-                        JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName);
-                        if (site != null && !site.getLanguages().contains(locale)) {
-                            locale = site.getDefaultLanguage();
-                        }
-                    } catch (JahiaException e) {
-                        // cannot get site, don't change locale
-                    }
-                }
-            }
-            value = CTX_PATTERN.matcher(value).replaceAll(mode);
-            value = LANG_PATTERN.matcher(value).replaceAll(locale);
-            value = WORKSPACE_PATTERN.matcher(value).replaceAll(resource.getWorkspace());
-        }
-
-        return value;
-    }
+    public static final String CURRENT_CONTEXT_PLACEHOLDER = "{mode}";
+    public static final String WORKSPACE_PLACEHOLDER = "{workspace}";
+    public static final String LANG_PLACEHOLDER= "{lang}";
 
 }

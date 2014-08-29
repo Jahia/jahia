@@ -196,7 +196,8 @@ public class WorkflowService implements BeanPostProcessor {
     }
 
     public synchronized void registerWorkflowTypes() {
-        for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
+        for (WorklowTypeRegistration registration : new LinkedList<WorklowTypeRegistration>(
+                workflowRegistrationByDefinition.values())) {
             doRegisterWorkflowType(registration);
         }
     }

@@ -1026,6 +1026,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                         return grantedRoles;
                     }
                 }
+                if (n.getPath().equals("/")) {
+                    break;
+                }
                 n = n.getParent();
             }
         } catch (ItemNotFoundException e) {

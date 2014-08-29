@@ -73,17 +73,14 @@
 
 package org.jahia.data.viewhelper.principal;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.*;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
@@ -223,7 +220,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param p The principal (user or group) to format
      * @return The user/group key depending from principal type.
      */
-    public String getPrincipalValueOption(JCRNodeWrapper p) {
+    public String getPrincipalValueOption(Object p) {
         final StringBuilder buff = new StringBuilder();
         if (p == null) {
             return "null";
@@ -232,9 +229,14 @@ public class PrincipalViewHelper implements Serializable {
             return buff.append("u").append(((JCRUserNode) p).getUserKey()).toString();
         } else if (p instanceof JCRGroupNode) {
             return buff.append("g").append(((JCRGroupNode) p).getGroupKey()).toString();
-        } else {
-            return "";
+        } else if (p instanceof Principal) {
+            if (p instanceof JahiaUser) {
+                return buff.append("u").append(((JahiaUser) p).getUserKey()).toString();
+            } else {
+                return buff.append("g").append(((JahiaGroup) p).getGroupKey()).toString();
+            }
         }
+        return "";
     }
 
     /**
@@ -244,39 +246,32 @@ public class PrincipalViewHelper implements Serializable {
      * returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
      * @param p
      * @return
-     * @see org.jahia.data.viewhelper.principal.PrincipalViewHelper#getDisplayName(java.security.Principal)
+     * @see org.jahia.data.viewhelper.principal.PrincipalViewHelper#getDisplayName(java.lang.Object)
      */
-    public static String getFullName(JCRNodeWrapper p) {
+    public static String getFullName(Object p) {
+        String firstName = null;
+        String lastName = null;
         if (p instanceof JCRGroupNode) {
-            return getDisplayName(p);
+            firstName = getDisplayName((JCRGroupNode) p);
         } else if (p instanceof JCRUserNode) {
             JCRUserNode jahiaUser = (JCRUserNode) p;
-            StringBuilder fullName = new StringBuilder();
-            String value = null;
             try {
-                value = jahiaUser.getProperty("j:firstName").getString();
-                fullName.append(value);
+                firstName = jahiaUser.hasProperty("j:firstName")?jahiaUser.getProperty("j:firstName").getString():"";
+                lastName= jahiaUser.hasProperty("j:lastName")?jahiaUser.getProperty("j:lastName").getString():"";
             } catch (RepositoryException e) {
-                value = "";
-                fullName.append(value);
+                // do nothing
             }
-            try {
-                value = jahiaUser.getProperty("j:lastName").getString();
-                if (StringUtils.isNotEmpty(value)) {
-                    if (fullName.length() > 0) {
-                        fullName.append(" ");
-                    }
-                    fullName.append(value);
-                }
-            } catch (RepositoryException e) {
-                value = "";
-                fullName.append(value);
+        } else  if (p instanceof Principal) {
+            if (p instanceof JahiaUser) {
+                firstName = ((JahiaUser) p).getProperty("j:firstName");
+                lastName = ((JahiaUser) p).getProperty("j:lastname");
+            } else {
+                firstName = ((Principal) p).getName();
             }
-
-            return fullName.length() == 0 ? getDisplayName(jahiaUser) : fullName.toString();
         } else {
-            return p.getName();
+            throw new IllegalArgumentException("getFullName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
         }
+        return (StringUtils.isEmpty(firstName)?"":firstName) + (StringUtils.isEmpty(lastName)?"":(StringUtils.isEmpty(firstName)?"":" ") + lastName);
     }
 
     /**
@@ -284,7 +279,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param p the principal for which to build the displayable name
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
-    public static String getDisplayName(JCRNodeWrapper p) {
+    public static String getDisplayName(Object p) {
         return getDisplayName(p, null);
     }
     
@@ -294,7 +289,7 @@ public class PrincipalViewHelper implements Serializable {
      * @param locale the locale to use for looking up resource bundle values 
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
-    public static String getDisplayName(JCRNodeWrapper p, Locale locale) {
+    public static String getDisplayName(Object p, Locale locale) {
         if (p instanceof JCRUserNode) {
             JCRUserNode jahiaUser = (JCRUserNode) p;
             String userName = jahiaUser.getName();
@@ -305,8 +300,10 @@ public class PrincipalViewHelper implements Serializable {
             String groupName = jahiaGroup.getName();
             groupName = getGroupDisplayName(groupName, locale);
             return groupName;
+        } else if (p instanceof Principal) {
+            return ((Principal) p).getName();
         } else {
-            return p.getName();
+            throw new IllegalArgumentException("getFullName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
         }
     }
 

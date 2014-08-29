@@ -63,7 +63,7 @@
         </description>
         <name>displayName</name>
         <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getDisplayName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <function-signature>java.lang.String getDisplayName(java.lang.Object)</function-signature>
         <example>
             ${user:displayName(jahiaUser)}
         </example>
@@ -78,7 +78,7 @@
         </description>
         <name>fullName</name>
         <function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getFullName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <function-signature>java.lang.String getFullName(java.lang.Object)</function-signature>
         <example>
             ${user:fullName(jahiaUser)} or ${user:fullName(jahiaGroup)}
         </example>
@@ -137,8 +137,7 @@
         </description>
         <name>formatUserValueOption</name>
         <function-class>org.jahia.taglibs.user.User</function-class>
-        <function-signature>java.lang.String formatUserValueOption(org.jahia.services.content.JCRNodeWrapper)
-        </function-signature>
+        <function-signature>java.lang.String formatUserValueOption(java.lang.Object)</function-signature>
         <example>
             &lt;c:if test="${user:formatUserValueOption(principal)}"/&gt;
         </example>

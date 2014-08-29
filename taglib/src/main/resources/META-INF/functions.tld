@@ -448,7 +448,7 @@
 		</description>
 		<name>displayName</name>
 		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getDisplayName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <function-signature>java.lang.String getDisplayName(java.lang.Object)</function-signature>
         <example>
 			${functions:displayName(jahiaUser)}
 		</example>
@@ -465,7 +465,7 @@
 		</description>
 		<name>fullName</name>
 		<function-class>org.jahia.data.viewhelper.principal.PrincipalViewHelper</function-class>
-        <function-signature>java.lang.String getFullName(org.jahia.services.content.JCRNodeWrapper)</function-signature>
+        <function-signature>java.lang.String getFullName(java.lang.Object)</function-signature>
         <example>
 			${functions:fullName(jahiaUser)} or ${functions:fullName(jahiaGroup)}
 		</example>

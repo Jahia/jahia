@@ -281,7 +281,7 @@ public class User {
         return userNode.isPropertyEditable(name);
     }
 
-    public static String formatUserValueOption(JCRNodeWrapper principal) {
+    public static String formatUserValueOption(Object principal) {
         return new PrincipalViewHelper(new String[]{"Name,30","Properties,30"}).getPrincipalValueOption(principal);
     }
 

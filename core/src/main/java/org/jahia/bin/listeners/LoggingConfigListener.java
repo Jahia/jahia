@@ -105,7 +105,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
         } else {
             lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
         }
-        System.out.println("Set log4j.xml configuration location to :" + lookup);
+        System.out.println("Set log4j.xml configuration location to: " + lookup);
     }
 
     protected void initLogDir(ServletContext servletContext) {

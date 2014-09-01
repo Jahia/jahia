@@ -116,7 +116,7 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                     epd.getDeclaringNodeType().getSystemId());
             for (ChoiceListValue value : values) {
                 try {
-                    final Resource imagePath = template.getResource(File.separator + "img" + File.separator + value.getValue().getString() + "." + param);
+                    final Resource imagePath = template.getResource("/img/" + value.getValue().getString() + "." + param);
                     if (imagePath != null && imagePath.exists()) {
                         String s = Jahia.getContextPath();
                         if (s.equals("/")) {
@@ -124,7 +124,8 @@ public class ModuleImageChoiceListInitializerImpl implements ChoiceListInitializ
                         }
                         value.addProperty("image", s + (template.getRootFolderPath().startsWith("/")?"":"/")+template.getRootFolderPath() + "/img/" + value.getValue().getString() + "." + param);
                     } else {
-                        logger.debug("ModuleImageChoiceListInitializerImpl : unable to find image " + template.getFilePath() + File.separator + "img" + File.separator + value.getValue().getString() + "."  + param
+                        logger.debug("ModuleImageChoiceListInitializerImpl : unable to find image /img/" + value.getValue().getString() + "."  + param
+                                + " in module " + template.getName()
                                 + " for property " + epd.getName()
                                 + " for type " + epd.getDeclaringNodeType().getName() );
                     }

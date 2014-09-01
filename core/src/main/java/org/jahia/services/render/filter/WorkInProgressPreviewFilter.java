@@ -108,6 +108,7 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
                 renderContext.setWorkspace("live");
                 resource.setNode(n);
                 renderContext.getMainResource().setNode(s.getNode(renderContext.getMainResource().getNode().getPath()));
+                request.setAttribute("expiration", "0");
                 request.setAttribute("workspace", "live");
                 request.setAttribute("currentNode", n);
             } catch (PathNotFoundException e) {
@@ -156,9 +157,6 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
                 return i18n.getProperty("j:workInProgress").getBoolean();
             }
         }
-        if (node.hasProperty("j:workInProgress")) {
-            return node.getProperty("j:workInProgress").getBoolean();
-        }
-        return false;
+        return node.hasProperty("j:workInProgress") && node.getProperty("j:workInProgress").getBoolean();
     }
 }

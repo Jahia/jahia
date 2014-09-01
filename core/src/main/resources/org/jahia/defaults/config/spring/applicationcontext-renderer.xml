@@ -151,7 +151,7 @@
     </bean>
 
     <bean class="org.jahia.services.render.filter.WorkInProgressPreviewFilter">
-        <property name="priority" value="17" />
+        <property name="priority" value="14" />
         <property name="description" value="Displays live version of 'work in progress' content in preview"/>
         <property name="applyOnNodeTypes" value="jmix:lastPublished" />
         <property name="applyOnModes" value="preview,live"/>

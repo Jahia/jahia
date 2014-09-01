@@ -851,6 +851,9 @@
                                 <exclude>org.jahia.test:*</exclude>
                                 <exclude>*.jahia.modules</exclude>
                             </artifactExcludes>
+                            <excludedJarEntries>
+                                <entry>org/jahia/migration/legacyDefinitions/.*</entry>
+                            </excludedJarEntries>
                         </configuration>
                         <phase>prepare-package</phase>
                     </execution>

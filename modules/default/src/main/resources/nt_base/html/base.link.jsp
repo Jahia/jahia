@@ -19,4 +19,4 @@
         <c:url var="urlValue" value="${url.base}${currentNode.path}.html"/>
     </c:otherwise>
 </c:choose>
-<c:if test="${not omitFormatting}"><span class="icon ${cssClass}"></span></c:if><a target="${param.target}" href="${urlValue}"${linkTitle}>${fn:escapeXml(not param.useNodeNameAsTitle && not empty title.string ? title.string : currentNode.name)}</a>
+<c:if test="${not omitFormatting}"><span class="icon ${cssClass}"></span></c:if><a target="${param.target}" href="${urlValue}"${linkTitle}>${fn:escapeXml(not currentResource.moduleParams.useNodeNameAsTitle && not empty title.string ? title.string : currentNode.name)}</a>

@@ -289,8 +289,8 @@ public class StubHelper {
         }
 
         Map<String, Set<String>> availableModuleResources = new HashMap<String, Set<String>>();
-        availableModuleResources.put("moduleCss", template.getAvailableResources(siteName, "css", ".css", false));
-        availableModuleResources.put("moduleJavascript", template.getAvailableResources(siteName, "javascript", ".js", false));
+        availableModuleResources.put("css", template.getAvailableResources(siteName, "css", ".css", false));
+        availableModuleResources.put("javascript", template.getAvailableResources(siteName, "javascript", ".js", false));
         snippetsByType = fillResources(fileType, uiLocale, availableModuleResources);
         if (!snippetsByType.isEmpty() || !snippets.isEmpty()) {
             r.put("availableModuleResources", availableModuleResources);

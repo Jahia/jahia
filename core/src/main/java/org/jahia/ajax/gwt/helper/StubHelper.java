@@ -71,20 +71,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.servlet.ServletContext;
-
+import com.extjs.gxt.ui.client.data.RpcMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -101,7 +88,13 @@ import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.servlet.ServletContext;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.MessageFormat;
+import java.util.*;
 
 /**
  * Service to provide Stubs (code snippets) for source edition in studio mode.
@@ -288,6 +281,27 @@ public class StubHelper {
 
         Map<String, Set<String>> availableResources = template.getAvailableResources(siteName);
 
+        snippetsByType = fillResources(fileType, uiLocale, availableResources);
+        if (!snippetsByType.isEmpty() || !snippets.isEmpty()) {
+            r.put("availableResources", availableResources);
+            snippets.put("resources", snippetsByType);
+            r.put("snippets", snippets);
+        }
+
+        Map<String, Set<String>> availableModuleResources = new HashMap<String, Set<String>>();
+        availableModuleResources.put("moduleCss", template.getAvailableResources(siteName, "css", ".css", false));
+        availableModuleResources.put("moduleJavascript", template.getAvailableResources(siteName, "javascript", ".js", false));
+        snippetsByType = fillResources(fileType, uiLocale, availableModuleResources);
+        if (!snippetsByType.isEmpty() || !snippets.isEmpty()) {
+            r.put("availableModuleResources", availableModuleResources);
+            snippets.put("moduleResources", snippetsByType);
+            r.put("snippets", snippets);
+        }
+        return r;
+    }
+
+    private List<GWTJahiaValueDisplayBean> fillResources(String fileType, Locale uiLocale, Map<String, Set<String>> availableResources) {
+        List<GWTJahiaValueDisplayBean> snippetsByType;
         snippetsByType = new ArrayList<GWTJahiaValueDisplayBean>();
         for (Map.Entry<String, String> resourceSnippetEntry : getCodeSnippets(fileType, "resources", null).entrySet()) {
             MessageFormat labelTemplate = null;
@@ -305,13 +319,7 @@ public class StubHelper {
                 }
             }
         }
-        if (!snippetsByType.isEmpty() || !snippets.isEmpty()) {
-            r.put("availableResources", availableResources);
-            snippets.put("resources", snippetsByType);
-            r.put("snippets", snippets);
-        }
-
-        return r;
+        return snippetsByType;
     }
 
     /**

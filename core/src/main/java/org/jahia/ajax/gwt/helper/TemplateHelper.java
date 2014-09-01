@@ -89,8 +89,8 @@ import org.jahia.services.render.RenderException;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
-import org.jahia.utils.i18n.Messages;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -116,7 +116,7 @@ public class TemplateHelper {
     public static final int LIVE = 0;
     public static final int PREVIEW = 1;
     public static final int EDIT = 2;
-    
+
     public void setRenderService(RenderService renderService) {
         this.renderService = renderService;
     }
@@ -197,7 +197,7 @@ public class TemplateHelper {
 
             EditConfiguration editConfiguration = null;
             if (configName != null) {
-                editConfiguration= (EditConfiguration) SpringContextSingleton.getBean(configName);
+                editConfiguration = (EditConfiguration) SpringContextSingleton.getBean(configName);
             }
             renderContext.setEditModeConfig(editConfiguration);
 
@@ -211,7 +211,7 @@ public class TemplateHelper {
 
             if (permission != null) {
                 if (!node.getResolveSite().hasPermission(permission)) {
-                    throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied",uiLocale));
+                    throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied", uiLocale));
                 }
             }
 
@@ -232,16 +232,16 @@ public class TemplateHelper {
 
             response.setCharacterEncoding(SettingsBean.getInstance().getCharacterEncoding());
             String res = renderService.render(r, renderContext);
-            Map<String, Map<String,Map<String,String>>> map = (Map<String, Map<String,Map<String,String>>>) renderContext.getRequest().getAttribute("staticAssets");
+            Map<String, Map<String, Map<String, String>>> map = (Map<String, Map<String, Map<String, String>>>) renderContext.getRequest().getAttribute("staticAssets");
 
             if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
-                Map<String,Map<String,String>> css  = map.get(CSS);
-                SortedMap<String,Map<String,String>> cssWithParam  = new TreeMap<String, Map<String, String>>();
+                Map<String, Map<String, String>> css = map.get(CSS);
+                SortedMap<String, Map<String, String>> cssWithParam = new TreeMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
-                    String k = entry.getKey() + "?channel="+channelIdentifier+(channelVariant!=null?"&variant="+channelVariant:"");
+                    String k = entry.getKey() + "?channel=" + channelIdentifier + (channelVariant != null ? "&variant=" + channelVariant : "");
                     cssWithParam.put(k, entry.getValue());
                 }
-                map.put(CSS,cssWithParam);
+                map.put(CSS, cssWithParam);
             }
 
 
@@ -252,11 +252,11 @@ public class TemplateHelper {
 
             Map<String, List<GWTStaticAssetEntry>> m = new HashMap<String, List<GWTStaticAssetEntry>>();
             if (map != null) {
-                  for (Map.Entry<String, Map<String,Map<String,String>>> entry : map.entrySet()) {
+                for (Map.Entry<String, Map<String, Map<String, String>>> entry : map.entrySet()) {
                     List<GWTStaticAssetEntry> fileEntries = new ArrayList<GWTStaticAssetEntry>();
-                    for (Map.Entry<String,Map<String,String>> filetypeEntries : entry.getValue().entrySet()) {
+                    for (Map.Entry<String, Map<String, String>> filetypeEntries : entry.getValue().entrySet()) {
                         String filePath = filetypeEntries.getKey();
-                        Map<String,String> fileOptions = filetypeEntries.getValue();
+                        Map<String, String> fileOptions = filetypeEntries.getValue();
                         fileEntries.add(new GWTStaticAssetEntry(filePath, fileOptions));
                     }
                     m.put(entry.getKey(), fileEntries);
@@ -264,37 +264,44 @@ public class TemplateHelper {
             }
             result = new GWTRenderResult(res, m, constraints, node.getDisplayableName());
         } catch (PathNotFoundException e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.not.found.for.user",uiLocale, path, currentUserSession.getUser().getName()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.not.found.for.user", uiLocale, path, currentUserSession.getUser().getName()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.repository.exception.on.path",uiLocale, path));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.repository.exception.on.path", uiLocale, path));
         } catch (RenderException e) {
-            if(e.getCause() instanceof AccessDeniedException ) {
-                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied",uiLocale));
+            if (e.getCause() instanceof AccessDeniedException) {
+                throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.access.denied", uiLocale));
             } else {
                 logger.error(e.getMessage(), e);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.render.exception",uiLocale, e.getMessage()));
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.render.exception", uiLocale, e.getMessage()));
             }
         }
         return result;
     }
-    
 
-    public Map<String,Set<String>> getAvailableResources(String moduleName) {
-        Map<String, Set<String>> m  = new HashMap<String, Set<String>>();
-        m.put(CSS,getAvailableResources(moduleName, CSS, ".css"));
+
+    public Map<String, Set<String>> getAvailableResources(String moduleName) {
+        Map<String, Set<String>> m = new HashMap<String, Set<String>>();
+        m.put(CSS, getAvailableResources(moduleName, CSS, ".css"));
         m.put(JAVASCRIPT, getAvailableResources(moduleName, JAVASCRIPT, ".js"));
         return m;
     }
 
     public Set<String> getAvailableResources(String moduleName, String type, String ext) {
+        return getAvailableResources(moduleName, type, ext, true);
+    }
+
+
+    public Set<String> getAvailableResources(String moduleName, String type, String ext, boolean checkDependencies) {
         Set<String> resources = new HashSet<String>();
 
         JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleName);
 
         Set<JahiaTemplatesPackage> packages = new LinkedHashSet<JahiaTemplatesPackage>();
         packages.add(aPackage);
-        packages.addAll(aPackage.getDependencies());
+        if (checkDependencies) {
+            packages.addAll(aPackage.getDependencies());
+        }
 
         for (JahiaTemplatesPackage pack : packages) {
             if (pack.getSourcesFolder() != null && new File(pack.getSourcesFolder(), "src/main/resources").exists()) {

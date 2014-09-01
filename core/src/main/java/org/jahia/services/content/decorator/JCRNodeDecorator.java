@@ -76,6 +76,8 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -98,11 +100,15 @@ import java.util.*;
  * Time: 10:21:11 AM
  */
 public class JCRNodeDecorator implements JCRNodeWrapper {
+
+    private static final Logger logger = LoggerFactory.getLogger(JCRNodeDecorator.class);
+
     protected JCRNodeWrapper node;
 
     public JCRNodeDecorator(JCRNodeWrapper node) {
         if (node instanceof JCRNodeDecorator) {
-            throw new UnsupportedOperationException("Cannot decorate an already decorated node");
+            logger.warn("An already decorated node shouldn't be decorated");
+            Thread.dumpStack();
         }
         this.node = node;
     }

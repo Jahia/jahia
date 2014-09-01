@@ -806,6 +806,13 @@
                                 ${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesOutputFile>
                             <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
+                            <artifactExcludes>
+                                <artifactExclude>org.jahia.modules:*</artifactExclude>
+                                <artifactExclude>org.jahia.templates:*</artifactExclude>
+                                <artifactExclude>org.jahia.test:*</artifactExclude>
+                                <artifactExclude>*.jahia.modules</artifactExclude>
+                                <artifactExclude>com.google.gwt:gwt-user</artifactExclude>
+                            </artifactExcludes>
                             <packageExcludes>
                                 <packageExclude>org.jahia.taglibs*</packageExclude>
                                 <packageExclude>org.apache.taglibs.standard*</packageExclude>

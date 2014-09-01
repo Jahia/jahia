@@ -689,8 +689,11 @@ public class UIConfigHelper {
                 gwtConfig.setNonVisibleTypes(config.getNonVisibleTypes());
                 gwtConfig.setExcludedNodeTypes(config.getExcludedNodeTypes());
                 List<String> configsList = new ArrayList<String>();
+                // configsList will define the list of modes that share the same configuration to avoid reloading the main resource
+                // when switching from edit to preview or live or any mode that has the same default location.
+                // An exception has been added for system site that is used for dashboard or administration.
                 for (EditConfiguration configuration : SpringContextSingleton.getInstance().getContext().getBeansOfType(EditConfiguration.class).values()) {
-                    if (StringUtils.equals(configuration.getSitesLocation(),(config.getSitesLocation()))) {
+                    if (StringUtils.equals(configuration.getSitesLocation(),(config.getSitesLocation())) && !StringUtils.equals(config.getSitesLocation(),"/sites/systemsite")) {
                         configsList.add(configuration.getName());
                     }
                 }

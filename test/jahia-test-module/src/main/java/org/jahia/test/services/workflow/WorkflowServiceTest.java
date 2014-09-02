@@ -313,8 +313,8 @@ public class WorkflowServiceTest {
     private static void initUsersGroup() throws RepositoryException {
         JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupManagerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        johndoe = userManagerService.lookupUser("johndoe").getJahiaUser();
-        johnsmoe = userManagerService.lookupUser("johnsmoe").getJahiaUser();
+        johndoe = userManagerService.lookupUser("johndoe") != null ? userManagerService.lookupUser("johndoe").getJahiaUser() : null;
+        johnsmoe = userManagerService.lookupUser("johnsmoe")!= null ? userManagerService.lookupUser("johndoe").getJahiaUser() : null;
         Properties properties = new Properties();
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();

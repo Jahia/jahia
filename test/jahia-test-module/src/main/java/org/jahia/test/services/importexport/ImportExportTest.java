@@ -395,7 +395,7 @@ public class ImportExportTest {
                         JCRUserNode user1 = userManager.createUser("impexpuser", "password", new Properties(), session);
                         user1 = userManager.createUser("user1", "password", new Properties(), session);
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user1.getPath(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user1.getName(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton
@@ -523,7 +523,7 @@ public class ImportExportTest {
 
                         JCRUserNode user2 = userManager.createUser("impexpuserugc", "password", new Properties(), session);
                         childPage.setAclInheritanceBreak(true);
-                        childPage.grantRoles("u:" + user2.getPath(), Sets.newHashSet("owner"));
+                        childPage.grantRoles("u:" + user2.getName(), Sets.newHashSet("owner"));
 
                         // set tag
                         TaggingService tagService = (TaggingService) SpringContextSingleton

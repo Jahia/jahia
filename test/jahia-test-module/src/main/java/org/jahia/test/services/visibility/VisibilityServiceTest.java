@@ -121,7 +121,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
 
         JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(USERNAME, PASSWORD, properties, session);
-        session.getNode("/sites/" + site.getSiteKey()).grantRoles("u:" + john.getPath(), ImmutableSet.of("editor-in-chief"));
+        session.getNode("/sites/" + site.getSiteKey()).grantRoles("u:" + john.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
     }
 

@@ -107,6 +107,13 @@ public class JCRGroupNode extends JCRNodeDecorator {
         return null;
     }
 
+    /**
+     * @deprecated
+     */
+    public String getGroupname() {
+        return getName();
+    }
+
     public String getGroupKey() {
         return getPath();
     }

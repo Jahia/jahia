@@ -136,6 +136,13 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     }
 
+    /**
+     * @deprecated 
+     */
+    public String getUsername() {
+        return getName();
+    }
+
     public String getUserKey() {
         return getPath();
     }

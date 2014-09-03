@@ -283,7 +283,7 @@ public class FindPrincipal extends BaseFindController {
         }
 
         for (JCRGroupNode jahiaGroup : groups) {
-            JSONObject jsonGroup = new JSONObject(jahiaGroup);
+            JSONObject jsonGroup = new JSONObject(jahiaGroup.getJahiaGroup());
             if (propertyMatchRegexp != null) {
                 Pattern pattern = Pattern.compile(propertyMatchRegexp, Pattern.CASE_INSENSITIVE);
                 PropertyIterator userProperties = jahiaGroup.getProperties();

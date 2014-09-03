@@ -97,6 +97,8 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
 
     private JCRStoreProvider provider;
     private String workspace;
+    private String mountPoint;
+    private String relativeRoot;
 
     public void setProvider(JCRStoreProvider provider) {
         this.provider = provider;
@@ -104,6 +106,22 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
+    }
+
+    public String getMountPoint() {
+        return mountPoint;
+    }
+
+    public void setMountPoint(String mountPoint) {
+        this.mountPoint = mountPoint;
+    }
+
+    public String getRelativeRoot() {
+        return relativeRoot;
+    }
+
+    public void setRelativeRoot(String relativeRoot) {
+        this.relativeRoot = relativeRoot;
     }
 
     /**
@@ -126,9 +144,9 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
     public void onEvent(EventIterator events) {
         List<Event> external = null;
         while (events.hasNext()) {
-            EventImpl event = (EventImpl) events.next();
-            if (!event.isExternal()) {
-                JCRObservationManager.addEvent(event);
+            Event event = events.nextEvent();
+            if (event instanceof EventImpl && !((EventImpl)event).isExternal()) {
+                JCRObservationManager.addEvent(event, mountPoint, relativeRoot);
             } else {
                 if (external == null) {
                     external = new ArrayList<Event>();
@@ -144,7 +162,9 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<JCRObservationManager.EventWrapper>();
                         for (Event event : fexternal) {
-                            eventWrappers.add(JCRObservationManager.getEventWrapper(event,session));
+                            if (event.getPath().startsWith(relativeRoot)) {
+                                eventWrappers.add(JCRObservationManager.getEventWrapper(event, session, mountPoint, relativeRoot));
+                            }
                         }
                         JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC, JCRObservationManager.EXTERNAL_SYNC);
                         return null;

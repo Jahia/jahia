@@ -120,6 +120,9 @@
         <property name="attributeProcessors">
             <list>
                 <bean class="org.jahia.services.importexport.TemplateNodeProcessor"/>
+                <bean class="org.jahia.services.importexport.TagsProcessor">
+                    <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+                </bean>
             </list>
         </property>
         <property name="expandImportedFilesOnDisk" value="${expandImportedFilesOnDisk:false}"/>

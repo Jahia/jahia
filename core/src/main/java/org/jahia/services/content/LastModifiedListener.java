@@ -73,6 +73,7 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.api.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +129,36 @@ public class LastModifiedListener extends DefaultEventListener {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Calendar c = GregorianCalendar.getInstance();
                     while (eventIterator.hasNext()) {
-                        Event event = eventIterator.nextEvent();
+                        final Event event = eventIterator.nextEvent();
+                        if (event.getType() == Event.NODE_REMOVED) {
+                            try {
+                                JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(),"/"));
+                                if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
+                                    // Test if published and has lastPublished property
+                                    boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, Constants.LIVE_WORKSPACE, new JCRCallback<Boolean>() {
+                                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                            return session.getNodeByIdentifier(event.getIdentifier()).hasProperty("j:lastPublished");
+                                        }
+                                    });
+
+                                    if (lastPublished) {
+                                        if (!parent.isNodeType("jmix:deletedChildren")) {
+                                            parent.addMixin("jmix:deletedChildren");
+                                            parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
+                                        } else if (!parent.hasProperty("j:deletedChildren")) {
+                                            parent.setProperty("j:deletedChildren", new String[] {event.getIdentifier()});
+                                        } else {
+                                            parent.getProperty("j:deletedChildren").addValue(event.getIdentifier());
+                                        }
+                                        sessions.add(parent.getRealNode().getSession());
+                                    }
+                                }
+                            } catch (PathNotFoundException e) {
+                                // no parent
+                            } catch (ItemNotFoundException e) {
+                                // no live
+                            }
+                        }
 
                         if (isExternal(event)) {
                             continue;

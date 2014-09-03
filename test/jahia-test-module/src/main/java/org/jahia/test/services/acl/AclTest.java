@@ -197,7 +197,7 @@ public class AclTest {
             userManager.deleteUser(user2.getPath(), session);
             userManager.deleteUser(user3.getPath(), session);
             userManager.deleteUser(user4.getPath(), session);
-
+            session.save();
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }

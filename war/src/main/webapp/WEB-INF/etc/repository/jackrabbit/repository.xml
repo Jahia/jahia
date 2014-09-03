@@ -73,7 +73,7 @@
             <param name="analyzer" value="org.jahia.services.search.analyzer.DefaultLanguageAnalyzer"/>
             <param name="supportHighlighting" value="true"/>
             <param name="excerptProviderClass" value="org.jahia.services.search.jcr.HTMLExcerpt"/>
-            <param name="indexingConfiguration" value="${rep.home}/indexing_configuration.xml"/>
+            <param name="indexingConfiguration" value="${jahia.jackrabbit.searchIndex.workspace.config}"/>
             <param name="indexingConfigurationClass" value="org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl"/>            
             <param name="spellCheckerClass" value="org.jahia.services.search.spell.CompositeSpellChecker"/>
 
@@ -149,7 +149,7 @@
     -->
     <SearchIndex class="org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex">
         <param name="path" value="${rep.home}/index"/>
-        <param name="indexingConfiguration" value="${rep.home}/indexing_configuration_version.xml"/>
+        <param name="indexingConfiguration" value="${jahia.jackrabbit.searchIndex.versioning.config}"/>
         
         <param name="onWorkspaceInconsistency" value="${jahia.jackrabbit.onWorkspaceInconsistency}"/>
         <param name="enableConsistencyCheck" value="${jahia.jackrabbit.searchIndex.enableConsistencyCheck}"/>

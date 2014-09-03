@@ -536,6 +536,18 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             if (System.getProperty("jahia.jackrabbit.datastore.path") == null) {
                 System.setProperty("jahia.jackrabbit.datastore.path", new File(repoHome, "datastore").getAbsolutePath());
             }
+            if (System.getProperty("jahia.jackrabbit.searchIndex.workspace.config") == null) {
+                System.setProperty(
+                        "jahia.jackrabbit.searchIndex.workspace.config",
+                        getClass().getResource("/jahia/indexing_configuration.xml") != null ? "/jahia/indexing_configuration.xml"
+                                : new File(repoHome, "indexing_configuration.xml").getAbsolutePath());
+            }
+            if (System.getProperty("jahia.jackrabbit.searchIndex.versioning.config") == null) {
+                System.setProperty(
+                        "jahia.jackrabbit.searchIndex.versioning.config",
+                        getClass().getResource("/jahia/indexing_configuration_version.xml") != null ? "/jahia/indexing_configuration_version.xml"
+                                : new File(repoHome, "indexing_configuration_version.xml").getAbsolutePath());
+            }
         } catch (IOException e) {
             logger.error("Unable to determine JCR repository home", e);
         }

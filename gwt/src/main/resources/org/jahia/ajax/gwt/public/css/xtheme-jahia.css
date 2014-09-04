@@ -1380,21 +1380,8 @@ a.x-menu-item {
 .x-toolbar-header .x-btn-over .x-btn-tc{
     background-position: 0 -9px;
 }
-<<<<<<< .working
 .x-toolbar-header .x-btn-over .x-btn-ml{
     background-position: -6px -24px;
-=======
-/* menu */
-.x-menu{width: auto !important; border:1px solid #b7cbd8;background:#f0f0f0 url(../images/xtheme-jahia-andromeda/default/menu/menu.gif) repeat-y;}
-.x-menu-item-active{background:#dbedf4 url(../images/xtheme-jahia-andromeda/default/menu/item-over.gif) repeat-x left bottom;border:1px solid #dbedf4}
-.x-menu-item-checked .x-menu-group-item .x-menu-item-icon{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/group-checked.gif) no-repeat center;}
-.x-menu-item-arrow{background:transparent url(../images/xtheme-jahia-andromeda/default/menu/menu-parent.gif) no-repeat right;}
-
-/*folders*/
-.x-tree-node-collapsed .x-tree-node-icon{background-image:url(../images/xtheme-jahia-andromeda/gxt/icons/folder.gif);}
-.tree-folder {
-  background: url(../images/xtheme-jahia-andromeda/gxt/icons/folder-closed.gif) no-repeat 0px 0px;
->>>>>>> .merge-right.r50654
 }
 .x-toolbar-header .x-btn-over .x-btn-mr{
     background-position: -9px -24px;

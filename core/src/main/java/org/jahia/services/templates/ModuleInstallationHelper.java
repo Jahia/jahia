@@ -318,7 +318,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             }
         };
         return JCRTemplate.getInstance().doExecuteWithSystemSession(callback) ||
-                JCRTemplate.getInstance().doExecuteWithSystemSession("live", callback);
+                JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", callback);
     }
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

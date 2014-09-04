@@ -73,18 +73,12 @@ package org.jahia.services.tags;
 import javax.annotation.Nullable;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.services.content.*;
-import org.jahia.services.query.QOMBuilder;
-import org.jahia.services.query.QueryResultWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -98,6 +92,9 @@ import java.util.*;
 public class TaggingService {
 
     private static Logger logger = LoggerFactory.getLogger(TaggingService.class);
+
+    private TagsSuggester tagsSuggester;
+
     private final static String JMIX_TAGGED = "jmix:tagged";
     private final static String J_TAG_LIST = "j:tagList";
 
@@ -365,43 +362,10 @@ public class TaggingService {
      */
     public Map<String, Long> searchTags(String prefix, String startPath, Long mincount, Long limit, Long offset,
                                         boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        LinkedHashMap<String, Long> tagsMap = new LinkedHashMap<String, Long>();
+        return tagsSuggester.suggest(prefix, startPath, mincount, limit, offset, sortByCount, sessionWrapper);
+    }
 
-        QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
-        if (queryManager == null) {
-            logger.error("Unable to obtain QueryManager instance");
-            return tagsMap;
-        }
-
-        if(StringUtils.isEmpty(startPath)){
-            startPath = "/sites";
-        }
-
-        StringBuilder facet = new StringBuilder();
-        facet.append("rep:facet(nodetype=jmix:tagged&key=j:tagList")
-                .append(mincount != null ? "&facet.mincount=" + mincount.toString() : "")
-                .append(limit != null ? "&facet.limit=" + limit.toString() : "")
-                .append(offset != null ? "&facet.offset=" + offset.toString() : "")
-                .append("&facet.sort=").append(String.valueOf(sortByCount))
-                .append(StringUtils.isNotEmpty(prefix) ? "&facet.prefix=" + prefix : "")
-                .append(")");
-
-        QueryObjectModelFactory factory = queryManager.getQOMFactory();
-        QOMBuilder qomBuilder = new QOMBuilder(factory, sessionWrapper.getValueFactory());
-
-        qomBuilder.setSource(factory.selector("jmix:tagged", "tagged"));
-        qomBuilder.andConstraint(factory.descendantNode("tagged", startPath));
-        qomBuilder.getColumns().add(factory.column("tagged", "j:tagList", facet.toString()));
-
-        QueryObjectModel qom = qomBuilder.createQOM();
-        QueryResultWrapper res = (QueryResultWrapper) qom.execute();
-
-        if(res.getFacetField("j:tagList").getValues() != null){
-            for(FacetField.Count count : res.getFacetField("j:tagList").getValues()){
-                tagsMap.put(count.getName(), count.getCount());
-            }
-        }
-
-        return tagsMap;
+    public void setTagsSuggester(TagsSuggester tagsSuggester) {
+        this.tagsSuggester = tagsSuggester;
     }
 }

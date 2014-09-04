@@ -95,8 +95,14 @@
     <bean id="org.jahia.services.categories.jcr.JCRCategoryProvider" class="org.jahia.services.categories.jcr.JCRCategoryProvider">
 		<property name="sessionFactory" ref="jcrSessionFactory"/>
     </bean>
-    
-    <bean id="org.jahia.services.tags.TaggingService" class="org.jahia.services.tags.TaggingService"/>
+
+    <bean id="org.jahia.services.tags.TagsSuggester" class="org.jahia.services.tags.TagsSuggesterImpl">
+        <property name="faceted" value="${tag.suggester.faceted:false}"/>
+    </bean>
+
+    <bean id="org.jahia.services.tags.TaggingService" class="org.jahia.services.tags.TaggingService">
+        <property name="tagsSuggester" ref="org.jahia.services.tags.TagsSuggester"/>
+    </bean>
 
 	<bean id="ImportExportService" class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">
 		<property name="sitesService" ref="JahiaSitesService" />

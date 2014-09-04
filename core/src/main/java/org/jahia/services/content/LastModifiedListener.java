@@ -132,31 +132,35 @@ public class LastModifiedListener extends DefaultEventListener {
                         final Event event = eventIterator.nextEvent();
                         if (event.getType() == Event.NODE_REMOVED) {
                             try {
-                                JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(),"/"));
-                                if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
-                                    // Test if published and has lastPublished property
-                                    boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, Constants.LIVE_WORKSPACE, new JCRCallback<Boolean>() {
-                                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                            return session.getNodeByIdentifier(event.getIdentifier()).hasProperty("j:lastPublished");
-                                        }
-                                    });
+                                session.getNodeByIdentifier(event.getIdentifier());
+                            } catch (ItemNotFoundException infe) {
+                                try {
+                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(),"/"));
+                                    if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
+                                        // Test if published and has lastPublished property
+                                        boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, Constants.LIVE_WORKSPACE, new JCRCallback<Boolean>() {
+                                            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                                                return session.getNodeByIdentifier(event.getIdentifier()).hasProperty("j:lastPublished");
+                                            }
+                                        });
 
-                                    if (lastPublished) {
-                                        if (!parent.isNodeType("jmix:deletedChildren")) {
-                                            parent.addMixin("jmix:deletedChildren");
-                                            parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
-                                        } else if (!parent.hasProperty("j:deletedChildren")) {
-                                            parent.setProperty("j:deletedChildren", new String[] {event.getIdentifier()});
-                                        } else {
-                                            parent.getProperty("j:deletedChildren").addValue(event.getIdentifier());
+                                        if (lastPublished) {
+                                            if (!parent.isNodeType("jmix:deletedChildren")) {
+                                                parent.addMixin("jmix:deletedChildren");
+                                                parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
+                                            } else if (!parent.hasProperty("j:deletedChildren")) {
+                                                parent.setProperty("j:deletedChildren", new String[] {event.getIdentifier()});
+                                            } else {
+                                                parent.getProperty("j:deletedChildren").addValue(event.getIdentifier());
+                                            }
+                                            sessions.add(parent.getRealNode().getSession());
                                         }
-                                        sessions.add(parent.getRealNode().getSession());
                                     }
+                                } catch (PathNotFoundException e) {
+                                    // no parent
+                                } catch (ItemNotFoundException e) {
+                                    // no live
                                 }
-                            } catch (PathNotFoundException e) {
-                                // no parent
-                            } catch (ItemNotFoundException e) {
-                                // no live
                             }
                         }
 

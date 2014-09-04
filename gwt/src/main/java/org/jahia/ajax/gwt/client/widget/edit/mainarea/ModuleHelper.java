@@ -107,6 +107,7 @@ public class ModuleHelper {
     private static Map<String, GWTJahiaNodeType> nodeTypes = new HashMap<String, GWTJahiaNodeType>();
     private static Map<String, List<String>> linkedContentInfo;
     private static Map<String, String> linkedContentInfoType;
+    private static Map<String, List<SimpleModule>> simpleModules = new HashMap<String, List<SimpleModule>>();
     private static boolean parsed;
     private static Map<String,List<? extends ModelData>> nodesAndTypes;
 
@@ -160,8 +161,10 @@ public class ModuleHelper {
                     module = new ListModule(id, path, divElement, mainModule);
                 } else if (type.equals("existingNode")) {
                     module = new SimpleModule(id, path, divElement, mainModule, false);
+                    addSimpleModule(simpleModules, path, (SimpleModule) module);
                 } else if (type.equals("existingNodeWithHeader")) {
                     module = new SimpleModule(id, path, divElement, mainModule, true);
+                    addSimpleModule(simpleModules, path, (SimpleModule) module);
                 } else if (type.equals("placeholder")) {
                     module = new PlaceholderModule(id, path, divElement, mainModule);
                 }
@@ -270,6 +273,12 @@ public class ModuleHelper {
             setNodeForModule(gwtJahiaNode);
         }
 
+        for (Map.Entry<String, List<SimpleModule>> entry : simpleModules.entrySet()) {
+            for (SimpleModule simpleModule : entry.getValue()) {
+                simpleModule.removeAll();
+            }
+        }
+
         for (Module module : modules) {
             module.onNodeTypesLoaded();
         }
@@ -280,6 +289,7 @@ public class ModuleHelper {
 
     public static void setNodeForModule(GWTJahiaNode gwtJahiaNode) {
         final List<Module> moduleList = modulesByPath.get(gwtJahiaNode.getPath());
+        simpleModules.remove(gwtJahiaNode.getPath());
         if (moduleList != null) {
             for (Module module : moduleList) {
                 module.setNode(gwtJahiaNode);
@@ -426,5 +436,12 @@ public class ModuleHelper {
 
     public static GWTJahiaNodeType getNodeType(String nodeType) {
         return nodeTypes.get(nodeType);
+    }
+
+    private static void addSimpleModule(Map<String, List<SimpleModule>> simpleModules, String path, SimpleModule simpleModule) {
+        if (!simpleModules.containsKey(path)) {
+            simpleModules.put(path,new ArrayList<SimpleModule>());
+        }
+        simpleModules.get(path).add(simpleModule);
     }
 }

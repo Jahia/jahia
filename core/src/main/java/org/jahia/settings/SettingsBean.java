@@ -534,7 +534,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         try {
             File repoHome = getRepositoryHome();
             if (System.getProperty("jahia.jackrabbit.datastore.path") == null) {
-                System.setProperty("jahia.jackrabbit.datastore.path", new File(repoHome, "datastore").getAbsolutePath());
+                String path = getString("jackrabbit.datastore.path", null);
+                if (path != null) {
+                    if (path.contains("${jahia.jackrabbit.home}")) {
+                        path = StringUtils.replace(path, "${jahia.jackrabbit.home}", repoHome.getAbsolutePath());
+                    }
+                    path = new File(interpolate(path)).getCanonicalPath();
+                } else {
+                    path = new File(repoHome, "datastore").getAbsolutePath();
+                }
+                System.setProperty("jahia.jackrabbit.datastore.path", path);
             }
             if (System.getProperty("jahia.jackrabbit.searchIndex.workspace.config") == null) {
                 System.setProperty(

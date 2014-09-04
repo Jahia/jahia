@@ -408,6 +408,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
             listener.setWorkspace(workspace.getName());
+            listener.setMountPoint(mountPoint);
+            listener.setRelativeRoot(relativeRoot);
             observationManager.addEventListener(listener,
                     Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
                     "/", true, null, null, false);
@@ -749,6 +751,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
+        if (!objectNode.getPath().startsWith(relativeRoot)) {
+            throw new PathNotFoundException("Invalid node : " + objectNode.getPath());
+        }
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),

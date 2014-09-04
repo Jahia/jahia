@@ -452,16 +452,9 @@ public class JCRSessionWrapper implements Session {
                 if (n instanceof JCRNodeDecorator) {
                     n = ((JCRNodeDecorator) n).getDecoratedNode();
                 }
-<<<<<<< .working
-                String newPath = dest + n.getPath().substring(source.length());
-                ((JCRNodeWrapperImpl) n).localPath = newPath;
-                ((JCRNodeWrapperImpl) n).localPathInProvider = newPath;
-                cacheByPath.put(newPath, n);
-=======
                 ((JCRNodeWrapperImpl)n).localPath = dest;
                 ((JCRNodeWrapperImpl)n).localPathInProvider = dest;
                 cacheByPath.put(dest, n);
->>>>>>> .merge-right.r50664
             }
         }
     }

@@ -4,7 +4,7 @@
 <div class="resultsListFileType">${hit.contentType}</div>
 <div class="resultsListDate"><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
 
-<c:catch var="exception">${hit.usages}</c:catch>
+<c:catch var="exception"><c:set var="usages" value="${hit.usages}"/></c:catch>
 <c:if test="${empty exception}">
     <div class="resultsListUsages">
         <c:forEach items="${hit.usages}" var="usage" varStatus="loopStatus">

@@ -130,7 +130,7 @@ public class LastModifiedListener extends DefaultEventListener {
                     Calendar c = GregorianCalendar.getInstance();
                     while (eventIterator.hasNext()) {
                         final Event event = eventIterator.nextEvent();
-                        if (event.getType() == Event.NODE_REMOVED) {
+                        if (event.getType() == Event.NODE_REMOVED && event.getIdentifier() != null) {
                             try {
                                 session.getNodeByIdentifier(event.getIdentifier());
                             } catch (ItemNotFoundException infe) {

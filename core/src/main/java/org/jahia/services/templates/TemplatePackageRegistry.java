@@ -667,7 +667,7 @@ public class TemplatePackageRegistry {
 
 // -------------------------- INNER CLASSES --------------------------
 
-    static class ModuleRegistry implements DestructionAwareBeanPostProcessor,ApplicationListener {
+    static class ModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener {
         private TemplatePackageRegistry templatePackageRegistry;
 
         private ChoiceListInitializerService choiceListInitializers;

@@ -686,10 +686,8 @@ public class TemplatePackageRegistry {
 
         private CompositeFilter compositeFilter;
 
-<<<<<<< .working
         private SearchServiceImpl searchService;
 
-=======
         private boolean flushCaches;
 
         @Override
@@ -700,7 +698,6 @@ public class TemplatePackageRegistry {
             flushCaches = false;
         }
 
->>>>>>> .merge-right.r50675
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;

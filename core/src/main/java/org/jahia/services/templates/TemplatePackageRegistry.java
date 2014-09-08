@@ -115,8 +115,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
-import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ApplicationContextEvent;
+import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -667,7 +669,7 @@ public class TemplatePackageRegistry {
 
 // -------------------------- INNER CLASSES --------------------------
 
-    static class ModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener {
+    static class ModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener<ApplicationContextEvent> {
         private TemplatePackageRegistry templatePackageRegistry;
 
         private ChoiceListInitializerService choiceListInitializers;
@@ -691,11 +693,10 @@ public class TemplatePackageRegistry {
         private boolean flushCaches;
 
         @Override
-        public void onApplicationEvent(ApplicationEvent event) {
-            if (flushCaches) {
+        public void onApplicationEvent(ApplicationContextEvent event) {
+            if ((event instanceof ContextClosedEvent || event instanceof ContextRefreshedEvent) && flushCaches) {
                 CacheHelper.flushOutputCaches();
             }
-            flushCaches = false;
         }
 
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
@@ -813,7 +814,7 @@ public class TemplatePackageRegistry {
                 List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
                 l.remove(bean);
                 cacheKeyGenerator.setPartGenerators(l);
-                CacheHelper.flushOutputCaches();
+                flushCaches = true;
             }
 
             if (bean instanceof HandlerMapping) {

@@ -71,6 +71,8 @@
  */
 package org.jahia.taglibs.template.pager;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
@@ -138,11 +140,11 @@ public class InitPagerTag extends TagSupport {
             if (value != null) {
                 moduleMap.put("old_totalSize"+id, value);
             }
-            String beginStr = pageContext.getRequest().getParameter("begin"+id);
-            String endStr = pageContext.getRequest().getParameter("end"+id);
+            String beginStr = StringEscapeUtils.escapeXml(pageContext.getRequest().getParameter("begin"+id));
+            String endStr = StringEscapeUtils.escapeXml(pageContext.getRequest().getParameter("end"+id));
 
             if (pageContext.getRequest().getParameter("pagesize"+id) != null) {
-                pageSize = Integer.parseInt(pageContext.getRequest().getParameter("pagesize"+id));
+                pageSize = Integer.parseInt(StringEscapeUtils.escapeXml(pageContext.getRequest().getParameter("pagesize"+id)));
             }
 
             int begin = beginStr == null ? 0 : Integer.parseInt(beginStr);

@@ -24,10 +24,10 @@
     <c:set var="pagesizeid" value="pagesize${boundComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
-            <c:set var="pageSize" value="${param[pagesizeid]}"/>
+            <c:set var="pageSize" value="${fn:escapeXml(param[pagesizeid])}"/>
         </c:when>
         <c:when test="${not empty param.src_itemsPerPage}">
-            <c:set var="pageSize" value="${param.src_itemsPerPage}"/>
+            <c:set var="pageSize" value="${fn:escapeXml(param.src_itemsPerPage)}"/>
         </c:when>
         <c:otherwise>
             <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
@@ -59,7 +59,7 @@
                         <c:if test="${not empty param}">
                             <c:forEach items="${param}" var="extraParam">
                                 <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid and !fn:startsWith(extraParam.key, 'src_')}">
-                                    <c:param name="${extraParam.key}" value="${extraParam.value}"/>
+                                    <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
                                 </c:if>
                             </c:forEach>
                         </c:if>
@@ -71,7 +71,7 @@
                         <c:if test="${not empty param}">
                             <c:forEach items="${param}" var="extraParam">
                                 <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid}">
-                                    <c:param name="${extraParam.key}" value="${extraParam.value}"/>
+                                    <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
                                 </c:if>
                             </c:forEach>
                         </c:if>

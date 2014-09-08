@@ -21,17 +21,17 @@
     <c:set var="beginid" value="begin${boundComponent.identifier}"/>
     <c:choose>
         <c:when test="${not empty param[pagesizeid]}">
-            <c:set var="pageSize" value="${param[pagesizeid]}"/>
+            <c:set var="pageSize" value="${fn:escapeXml(param[pagesizeid])}"/>
         </c:when>
         <c:when test="${not empty param.src_itemsPerPage}">
-            <c:set var="pageSize" value="${param.src_itemsPerPage}"/>
+            <c:set var="pageSize" value="${fn:escapeXml(param.src_itemsPerPage)}"/>
         </c:when>
         <c:otherwise>
             <c:set var="pageSize" value="${currentNode.properties['pageSize'].long}"/>
         </c:otherwise>
     </c:choose>
     <c:set target="${moduleMap}" property="pageSize" value="${pageSize}"/>
-    <c:set target="${moduleMap}" property="pageStart" value="${param[beginid]}"/>
+    <c:set target="${moduleMap}" property="pageStart" value="${fn:escapeXml(param[beginid])}"/>
     <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
     <c:set var="sizeNotExact" value="${moduleMap.listApproxSize > 0 && moduleMap.listApproxSize != moduleMap.listTotalSize}"/>    
     <template:initPager totalSize="${sizeNotExact ? moduleMap.listApproxSize : moduleMap.listTotalSize}" sizeNotExact="${sizeNotExact}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>

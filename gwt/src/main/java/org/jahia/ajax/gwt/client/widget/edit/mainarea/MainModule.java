@@ -1167,7 +1167,11 @@ public class MainModule extends Module {
                         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                             @Override
                             public void execute() {
-                                onGWTFrameReady(iframe);
+                                if ("".equals(path)) {
+                                    setUrl(getBaseUrl() + config.getDefaultLocation());
+                                } else {
+                                    onGWTFrameReady(iframe);
+                                }
                             }
                         });
                     } else {

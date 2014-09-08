@@ -115,6 +115,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.config.DestructionAwareBeanPostProcessor;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.core.io.Resource;
 import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.handler.SimpleUrlHandlerMapping;
@@ -665,7 +667,7 @@ public class TemplatePackageRegistry {
 
 // -------------------------- INNER CLASSES --------------------------
 
-    static class ModuleRegistry implements DestructionAwareBeanPostProcessor {
+    static class ModuleRegistry implements DestructionAwareBeanPostProcessor,ApplicationListener {
         private TemplatePackageRegistry templatePackageRegistry;
 
         private ChoiceListInitializerService choiceListInitializers;
@@ -684,8 +686,21 @@ public class TemplatePackageRegistry {
 
         private CompositeFilter compositeFilter;
 
+<<<<<<< .working
         private SearchServiceImpl searchService;
 
+=======
+        private boolean flushCaches;
+
+        @Override
+        public void onApplicationEvent(ApplicationEvent event) {
+            if (flushCaches) {
+                CacheHelper.flushOutputCaches();
+            }
+            flushCaches = false;
+        }
+
+>>>>>>> .merge-right.r50675
         public void postProcessBeforeDestruction(Object bean, String beanName) throws BeansException {
             if (!JahiaContextLoaderListener.isRunning()) {
                 return;
@@ -968,7 +983,8 @@ public class TemplatePackageRegistry {
                 List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
                 l.add((CacheKeyPartGenerator) bean);
                 cacheKeyGenerator.setPartGenerators(l);
-                CacheHelper.flushOutputCaches();
+                // flush the cache only once by module
+                flushCaches = true;
             }
 
             if (bean instanceof HandlerMapping) {

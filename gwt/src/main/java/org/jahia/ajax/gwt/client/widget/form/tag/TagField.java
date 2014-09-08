@@ -9,6 +9,8 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.ColumnLayout;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,30 +87,34 @@ public class TagField extends MultiField<List<String>> {
 
     private void addSplitedTag(String tag){
         if(tag != null && tag.trim().length() > 0){
-            tag = tag.trim().toLowerCase();
-            boolean exist = false;
-            for (Component tagComponent : displayTagContainer.getItems()){
-                if(tagComponent instanceof TagButton && tag.equals(((TagButton) tagComponent).getTagField().getValue())){
-                    exist = true;
-                    break;
-                }
-            }
-            if(!exist){
-                TagButton tagButton = new TagButton(tag);
-                tagButton.getTagButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
-                    @Override
-                    public void componentSelected(ButtonEvent ce) {
-                        displayTagContainer.remove(ce.getButton().getParent());
-                        displayTagContainer.layout(true);
+            JahiaContentManagementService.App.getInstance().convertTag(tag, new BaseAsyncCallback<String>() {
+                @Override
+                public void onSuccess(String tag) {
+                    boolean exist = false;
+                    for (Component tagComponent : displayTagContainer.getItems()){
+                        if(tagComponent instanceof TagButton && tag.equals(((TagButton) tagComponent).getTagField().getValue())){
+                            exist = true;
+                            break;
+                        }
                     }
-                });
-                if (afterRender) {
-                    displayTagContainer.insert(tagButton, displayTagContainer.getItems().size());
-                    displayTagContainer.layout(true);
-                } else {
-                    displayTagContainer.add(tagButton);
+                    if(!exist){
+                        TagButton tagButton = new TagButton(tag);
+                        tagButton.getTagButton().addSelectionListener(new SelectionListener<ButtonEvent>() {
+                            @Override
+                            public void componentSelected(ButtonEvent ce) {
+                                displayTagContainer.remove(ce.getButton().getParent());
+                                displayTagContainer.layout(true);
+                            }
+                        });
+                        if (afterRender) {
+                            displayTagContainer.insert(tagButton, displayTagContainer.getItems().size());
+                            displayTagContainer.layout(true);
+                        } else {
+                            displayTagContainer.add(tagButton);
+                        }
+                    }
                 }
-            }
+            });
         }
     }
 

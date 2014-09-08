@@ -440,6 +440,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount, AsyncCallback<List<GWTJahiaValueDisplayBean>> async);
 
-    void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
+    void convertTag(String tag, AsyncCallback<String> async);
 
+    void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
 }

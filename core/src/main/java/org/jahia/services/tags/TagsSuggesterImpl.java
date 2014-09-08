@@ -101,11 +101,11 @@ public class TagsSuggesterImpl implements TagsSuggester{
     @Override
     public Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
                                      boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-
+        String converterdInput = TaggingService.getInstance().getTagHandler().execute(input);
         if(faceted){
-            return facetedSuggestion(input, startPath, mincount, limit, offset, sortByCount, sessionWrapper);
+            return facetedSuggestion(converterdInput, startPath, mincount, limit, offset, sortByCount, sessionWrapper);
         } else {
-            return simpleSuggestion(input, startPath, limit, sessionWrapper);
+            return simpleSuggestion(converterdInput, startPath, limit, sessionWrapper);
         }
     }
 

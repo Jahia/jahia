@@ -26,7 +26,7 @@ public class MatchingTags extends Action{
         String prefix = parameters.get("q") != null && parameters.get("q").size() > 0 ? parameters.get("q").get(0) : "";
         String path = parameters.get("path") != null && parameters.get("path").size() > 0 ? parameters.get("path").get(0) : renderContext.getSite().getPath();
         Long limit = parameters.get("limit") != null && parameters.get("limit").size() > 0 ? Long.valueOf(parameters.get("limit").get(0)) : 10l;
-        Map<String, Long> tags = taggingService.searchTags(prefix, path, 1l, limit, 0l, true, session);
+        Map<String, Long> tags = taggingService.getTagsSuggester().suggest(prefix, path, 1l, limit, 0l, true, session);
         JSONObject result = new JSONObject();
         JSONArray tagsJSON = new JSONArray();
         for(String tag : tags.keySet()){

@@ -291,7 +291,7 @@ public class TaggingTest {
 
                 for (int i = 1; i <= 10; i++) {
                     String tag = tags.get(i - 1);
-                    Map<String, Long> tagsMap = service.searchTags(tag, "/sites/" + TESTSITE_NAME, 1l, -1l, 0l, false, session);
+                    Map<String, Long> tagsMap = service.getTagsSuggester().suggest(tag, "/sites/" + TESTSITE_NAME, 1l, -1l, 0l, false, session);
                     assertEquals("Wrong count for the tag '" + tag + "'",
                             tagsMap.get(tag).longValue(), new Integer(i).longValue());
                 }

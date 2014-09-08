@@ -78,6 +78,9 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,11 +92,12 @@ import java.util.*;
  * 
  * @author Sergiy Shyrkov
  */
-public class TaggingService {
+public class TaggingService extends JahiaService{
 
     private static Logger logger = LoggerFactory.getLogger(TaggingService.class);
 
     private TagsSuggester tagsSuggester;
+    private TagHandler tagHandler;
 
     private final static String JMIX_TAGGED = "jmix:tagged";
     private final static String J_TAG_LIST = "j:tagList";
@@ -109,6 +113,15 @@ public class TaggingService {
             }
         }
     };
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final TaggingService INSTANCE = new TaggingService();
+    }
+
+    public static TaggingService getInstance() {
+        return Holder.INSTANCE;
+    }
 
     /**
      * @deprecated the tags are no longer nodes, there are stored directly on the content
@@ -131,7 +144,7 @@ public class TaggingService {
     }
 
     /**
-     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content, Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
+     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content, Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
@@ -141,7 +154,7 @@ public class TaggingService {
     }
 
     /**
-     * @deprecated the tags are no longer nodes, there are stored directly on the content, Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
+     * @deprecated the tags are no longer nodes, there are stored directly on the content, Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
@@ -151,7 +164,7 @@ public class TaggingService {
     }
 
     /**
-     * @deprecated Use {@link #searchTags(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
+     * @deprecated Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
      * @throws RepositoryException
      *             in case of errors
      */
@@ -220,7 +233,7 @@ public class TaggingService {
         }
         currentTags = new ArrayList<String>(Collections2.transform(currentTagValues, JCR_VALUE_WRAPPER_STRING_FUNCTION));
         for (String tag : tags) {
-            String cleanedTag = tag.trim().toLowerCase();
+            String cleanedTag = tagHandler.execute(tag);
             if (StringUtils.isNotEmpty(cleanedTag) && !currentTags.contains(cleanedTag)) {
                 currentTags.add(cleanedTag);
                 addedTags.add(cleanedTag);
@@ -346,26 +359,29 @@ public class TaggingService {
         untag(session.getNode(nodePath), Lists.newArrayList(tag));
     }
 
-    /**
-     * Search for tags
-     *
-     * @param prefix prefix used to search tags
-     * @param startPath where search the tags, default: /sites
-     * @param mincount min count of a tag to be return
-     * @param limit limit of result
-     * @param offset offset for pagers
-     * @param sortByCount
-     * @param sessionWrapper
-     *
-     * @return The map of matching tags, value and count
-     * @throws RepositoryException
-     */
-    public Map<String, Long> searchTags(String prefix, String startPath, Long mincount, Long limit, Long offset,
-                                        boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        return tagsSuggester.suggest(prefix, startPath, mincount, limit, offset, sortByCount, sessionWrapper);
-    }
-
     public void setTagsSuggester(TagsSuggester tagsSuggester) {
         this.tagsSuggester = tagsSuggester;
+    }
+
+    public TagHandler getTagHandler() {
+        return tagHandler;
+    }
+
+    public void setTagHandler(TagHandler tagHandler) {
+        this.tagHandler = tagHandler;
+    }
+
+    public TagsSuggester getTagsSuggester() {
+        return tagsSuggester;
+    }
+
+    @Override
+    public void start() throws JahiaInitializationException {
+
+    }
+
+    @Override
+    public void stop() throws JahiaException {
+
     }
 }

@@ -515,6 +515,8 @@ public interface JahiaContentManagementService extends RemoteService {
 
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
 
+    String convertTag(String tag);
+
     String[] getFormattedPrincipal(String key, char type, String[] textpattern);
 
     public static class App {

@@ -100,8 +100,11 @@
         <property name="faceted" value="${tag.suggester.faceted:false}"/>
     </bean>
 
-    <bean id="org.jahia.services.tags.TaggingService" class="org.jahia.services.tags.TaggingService">
+    <bean id="org.jahia.services.tags.TagHandler" class="org.jahia.services.tags.TagHandlerImpl"/>
+
+    <bean id="org.jahia.services.tags.TaggingService" class="org.jahia.services.tags.TaggingService" factory-method="getInstance">
         <property name="tagsSuggester" ref="org.jahia.services.tags.TagsSuggester"/>
+        <property name="tagHandler" ref="org.jahia.services.tags.TagHandler"/>
     </bean>
 
 	<bean id="ImportExportService" class="org.jahia.services.importexport.ImportExportBaseService" parent="jahiaServiceTemplate" factory-method="getInstance">

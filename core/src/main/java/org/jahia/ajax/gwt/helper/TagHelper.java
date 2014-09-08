@@ -15,7 +15,11 @@ public class TagHelper {
 
     public Map<String, Long> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount, JCRSessionWrapper session)
             throws ItemNotFoundException, RepositoryException {
-        return taggingService.searchTags(prefix, startPath, minCount, limit, offset, sortByCount, session);
+        return taggingService.getTagsSuggester().suggest(prefix, startPath, minCount, limit, offset, sortByCount, session);
+    }
+
+    public String convert(String tag){
+        return taggingService.getTagHandler().execute(tag);
     }
 
     public void setTaggingService(TaggingService taggingService) {

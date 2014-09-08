@@ -2571,6 +2571,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return tags;
     }
 
+    @Override
+    public String convertTag(String tag) {
+        return tagHelper.convert(tag);
+    }
 
     @Override
     public GWTModuleReleaseInfo getInfoForModuleRelease(String moduleId) throws GWTJahiaServiceException {

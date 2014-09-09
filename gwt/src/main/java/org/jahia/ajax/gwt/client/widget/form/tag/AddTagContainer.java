@@ -2,9 +2,7 @@ package org.jahia.ajax.gwt.client.widget.form.tag;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
@@ -92,6 +90,13 @@ public class AddTagContainer extends HorizontalPanel {
                 public void componentKeyPress(ComponentEvent event) {
                     if (event.getEvent().getKeyCode() == 13) {
                         addTag();
+                    }
+                }
+
+                @Override
+                public void componentKeyUp(ComponentEvent event) {
+                    if (((FieldEvent) event).getField().getRawValue().length() == 0) {
+                        collapse();
                     }
                 }
             });

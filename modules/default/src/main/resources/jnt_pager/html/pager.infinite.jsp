@@ -59,7 +59,9 @@
                         <c:if test="${not empty param}">
                             <c:forEach items="${param}" var="extraParam">
                                 <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid and !fn:startsWith(extraParam.key, 'src_')}">
-                                    <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
+                                    <c:if test="${not empty extraParam.value}">
+                                        <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
+                                    </c:if>
                                 </c:if>
                             </c:forEach>
                         </c:if>
@@ -71,7 +73,9 @@
                         <c:if test="${not empty param}">
                             <c:forEach items="${param}" var="extraParam">
                                 <c:if test="${extraParam.key ne beginid and extraParam.key ne endid and extraParam.key ne pagesizeid}">
-                                    <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
+                                    <c:if test="${not empty extraParam.value}">
+                                        <c:param name="${extraParam.key}" value="${fn:escapeXml(extraParam.value)}"/>
+                                    </c:if>
                                 </c:if>
                             </c:forEach>
                         </c:if>

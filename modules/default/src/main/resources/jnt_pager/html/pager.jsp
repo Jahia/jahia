@@ -31,7 +31,9 @@
         </c:otherwise>
     </c:choose>
     <c:set target="${moduleMap}" property="pageSize" value="${pageSize}"/>
-    <c:set target="${moduleMap}" property="pageStart" value="${fn:escapeXml(param[beginid])}"/>
+    <c:if test="${not empty param[beginid]}">
+        <c:set target="${moduleMap}" property="pageStart" value="${fn:escapeXml(param[beginid])}"/>
+    </c:if>
     <template:option node="${boundComponent}" nodetype="${boundComponent.primaryNodeTypeName},jmix:list" view="hidden.header"/>
     <c:set var="sizeNotExact" value="${moduleMap.listApproxSize > 0 && moduleMap.listApproxSize != moduleMap.listTotalSize}"/>    
     <template:initPager totalSize="${sizeNotExact ? moduleMap.listApproxSize : moduleMap.listTotalSize}" sizeNotExact="${sizeNotExact}" pageSize="${pageSize}" id="${boundComponent.identifier}"/>

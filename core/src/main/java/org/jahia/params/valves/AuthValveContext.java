@@ -85,6 +85,7 @@ public class AuthValveContext {
     private HttpServletRequest request;
     private HttpServletResponse response;
     private JCRSessionFactory sessionFactory;
+    private boolean authRetrievedFromSession = false;
 
     public AuthValveContext(HttpServletRequest request, HttpServletResponse response, JCRSessionFactory sessionFactory) {
         this.request = request;
@@ -104,4 +105,11 @@ public class AuthValveContext {
         return sessionFactory;
     }
 
+    public boolean isAuthRetrievedFromSession() {
+        return authRetrievedFromSession;
+    }
+
+    public void setAuthRetrievedFromSession(boolean authRetrievedFromSession) {
+        this.authRetrievedFromSession = authRetrievedFromSession;
+    }
 }

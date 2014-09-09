@@ -837,6 +837,7 @@
     
     <session-config>
         <cookie-config>
+            <path>/</path> <!-- This is needed for proper portlet external application scoped attributes to work -->
             <http-only>true</http-only>
         </cookie-config>
     <!-- Session timeout value is set in minutes. Comment this section out

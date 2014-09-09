@@ -115,6 +115,7 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);
         } else {
+            authContext.setAuthRetrievedFromSession(true);
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
         }
     }

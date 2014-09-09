@@ -111,11 +111,13 @@ public class JcrSessionFilter implements Filter {
             throws IOException, ServletException {
         boolean initialized = SpringContextSingleton.getInstance().isInitialized();
         try {
+            AuthValveContext authValveContext = null;
             if (initialized) {
                 try {
                     sessionFactory.setCurrentUser(null);
-                    authPipeline.invoke(new AuthValveContext((HttpServletRequest) servletRequest,
-                            (HttpServletResponse) servletResponse, sessionFactory));
+                    authValveContext = new AuthValveContext((HttpServletRequest) servletRequest,
+                                                (HttpServletResponse) servletResponse, sessionFactory);
+                    authPipeline.invoke(authValveContext);
                 } catch (PipelineException pe) {
                     logger.error("Error while authorizing user", pe);
                 }
@@ -125,11 +127,21 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
+<<<<<<< .working
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 if (userNode != null && userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
                 ((HttpServletRequest)servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
+=======
+                if (authValveContext == null) {
+                    ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
+                } else {
+                    if (!authValveContext.isAuthRetrievedFromSession()) {
+                        ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
+                    }
+                }
+>>>>>>> .merge-right.r50708
             }
 
             filterChain.doFilter (servletRequest, servletResponse );

@@ -708,8 +708,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         if (bypassCache) {
             stringList = parameters.get(RESOURCE_ID);
             String formuuid = !CollectionUtils.isEmpty(stringList) && !StringUtils.isBlank(stringList.get(
-                    0)) ? stringList.get(0) : UUID.randomUUID().toString();
-            renderedURL = renderedURL + "?ec=" + formuuid;
+                    0)) ? stringList.get(0) : null;
+            if (formuuid != null) {
+                renderedURL = renderedURL + "?ec=" + formuuid;
+            }
         }
         if (!StringUtils.isEmpty(renderedURL)) {
             if (StringUtils.isEmpty(stayOnPage)) {

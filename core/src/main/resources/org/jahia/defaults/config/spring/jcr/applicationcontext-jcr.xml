@@ -324,6 +324,7 @@
                     <constructor-arg ref="org.jahia.services.render.filter.URLTraverser"/>
                 </bean>
                 <bean class="org.jahia.services.content.interceptor.TagInterceptor">
+                    <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
                     <property name="nodeTypes">
                         <list>
                             <value>jmix:tagged</value>

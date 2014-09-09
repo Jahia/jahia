@@ -127,13 +127,10 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
-<<<<<<< .working
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 if (userNode != null && userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
-                ((HttpServletRequest)servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
-=======
                 if (authValveContext == null) {
                     ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
                 } else {
@@ -141,7 +138,6 @@ public class JcrSessionFilter implements Filter {
                         ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
                     }
                 }
->>>>>>> .merge-right.r50708
             }
 
             filterChain.doFilter (servletRequest, servletResponse );

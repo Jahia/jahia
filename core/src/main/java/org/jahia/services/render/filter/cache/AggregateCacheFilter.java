@@ -743,38 +743,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 }*/
                 // Get the sub-fragment cache key
                 String cacheKey = segment.getAttributeValue("src");
-<<<<<<< .working
-=======
-                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                boolean cacheable = true;
-                if (!cacheKey.contains(DefaultCacheKeyGenerator.PER_USER) && keyGenerator instanceof DefaultCacheKeyGenerator) {
-                    DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
-                    try {
-                        Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
-                        String[] split = P_REGEXP.split(keyAttrbs.get("acls"));
-                        String nodePath = "/" + StringUtils.substringAfter(split[1], "/");
-                        String acls = defaultCacheKeyGenerator.getAclsKeyPart(renderContext, Boolean.parseBoolean(StringUtils.substringBefore(split[1], "/")), nodePath, true, keyAttrbs.get("acls"));
-                        cacheKey = keyGenerator.replaceField(cacheKey, "acls", hashKey(acls));
-                        if (renderContext.getRequest().getParameter("ec") != null &&
-                                renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
-                            cacheable = false;
-                        }
-                        if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
-                            cacheable = false;
-                        }
-                    } catch (ParseException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (PathNotFoundException e) {
-                        try {
-                            cacheKey = keyGenerator.replaceField(cacheKey, "acls", "invalid");
-                        } catch (ParseException e1) {
-                            logger.error(e1.getMessage(), e1);
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
->>>>>>> .merge-right.r50690
 
                 // Replace placeholder to have a full contextual cache key
                 String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
@@ -782,12 +750,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
                 }
-<<<<<<< .working
 
-                if (cache.isKeyInCache(replacedCacheKey)) {
-=======
-                if (cacheable && cache.isKeyInCache(mrCacheKey)) {
->>>>>>> .merge-right.r50690
+                boolean cacheable = true;
+                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+                Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
+                if (renderContext.getRequest().getParameter("ec") != null &&
+                        renderContext.getRequest().getParameter("ec").equals(keyAttrbs.get("resourceID"))) {
+                    cacheable = false;
+                }
+                if (renderContext.isLoggedIn() && renderContext.getRequest().getParameter("v") != null) {
+                    cacheable = false;
+                }
+
+                if (cacheable && cache.isKeyInCache(replacedCacheKey)) {
                     // If fragment is in cache, get it from there and aggregate recursively
                     final Element element = cache.get(replacedCacheKey);
                     if (element != null && element.getObjectValue() != null) {

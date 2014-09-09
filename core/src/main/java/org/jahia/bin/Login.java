@@ -132,14 +132,14 @@ public class Login implements Controller {
             // Create one session at login to initialize external user
             JCRSessionFactory.getInstance().getCurrentUserSession();
 
-            if (redirectActive) {
+            if (redirectActive && isAuthorizedRedirect(request, request.getParameter("redirect"))) {
                 response.sendRedirect(getRedirectUrl(request, response));
             } else {
                 response.getWriter().append("OK");
             }
         } else {
             if (!restMode) {
-                if (request.getParameter("failureRedirect") != null) {
+                if (request.getParameter("failureRedirect") != null && isAuthorizedRedirect(request, request.getParameter("failureRedirect"))) {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
@@ -156,5 +156,13 @@ public class Login implements Controller {
         }
         return null;
     }
-    
+
+    private boolean isAuthorizedRedirect(HttpServletRequest request, String url) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            String urlBase = StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString());
+            return url.startsWith(urlBase);
+        }
+        return true;
+    }
+
 }

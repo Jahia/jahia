@@ -183,12 +183,14 @@ public class Logout implements Controller {
         String redirect = request.getParameter("redirect");
         if (redirect == null) {
             redirect = request.getHeader("referer");
-            if (StringUtils.isNotEmpty(redirect) && (redirect.startsWith("http://") || redirect.startsWith("https://") && redirect.length() > 8 )) {
+            if (StringUtils.isNotEmpty(redirect) && isAuthorizedRedirect(request, redirect) && (redirect.startsWith("http://") || redirect.startsWith("https://") && redirect.length() > 8 )) {
                 redirect = redirect.startsWith("http://") ? StringUtils.substringAfter(redirect, "http://") : StringUtils.substringAfter(redirect, "https://");
                 redirect = redirect.contains("/") ? "/" + StringUtils.substringAfter(redirect, "/") : null;
             } else {
                 redirect = null;
             }
+        } else if (!isAuthorizedRedirect(request, redirect)) {
+            redirect = null;
         }
         if (StringUtils.isNotEmpty(redirect)) {
             try {
@@ -425,6 +427,14 @@ public class Logout implements Controller {
                 session.setAttribute(savedSessionAttribute.getKey(), savedSessionAttribute.getValue());
             }
         }
+    }
+
+    private boolean isAuthorizedRedirect(HttpServletRequest request, String url) {
+        if (url.startsWith("http://") || url.startsWith("https://")) {
+            String urlBase = StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString());
+            return url.startsWith(urlBase);
+        }
+        return true;
     }
 
 }

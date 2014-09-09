@@ -15,4 +15,8 @@
     <bean class="org.jahia.modules.tags.actions.MatchingTags" >
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
     </bean>
+
+    <bean class="org.jahia.modules.tags.actions.TransformTag" >
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+    </bean>
 </beans>

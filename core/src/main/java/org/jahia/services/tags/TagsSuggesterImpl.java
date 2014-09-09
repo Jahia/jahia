@@ -73,6 +73,7 @@ package org.jahia.services.tags;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRValueWrapper;
@@ -165,7 +166,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
         }
 
         Query query = queryManager.createQuery("select t.[j:tagList] from [jmix:tagged] as t where " +
-                "isdescendantnode(t, [" + startPath + "]) and t.[j:tagList] like '%" + term + "%'", Query.JCR_SQL2);
+                "isdescendantnode(t, [" + startPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
         QueryResult queryResult = query.execute();
 
         NodeIterator nodeIterator = queryResult.getNodes();

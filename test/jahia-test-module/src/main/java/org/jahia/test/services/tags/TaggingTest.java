@@ -81,6 +81,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.jahia.services.content.*;
+import org.jahia.services.tags.TagHandlerImpl;
+import org.jahia.services.tags.TagsSuggesterImpl;
 import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.tags.TaggingService;
@@ -92,6 +94,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for the Tagging feature: creating tags, assigning tags to nodes etc.
@@ -263,13 +266,13 @@ public class TaggingTest {
     }
 
     @Test    
-    public void testSearchCount() throws RepositoryException {
+    public void testFacetedSuggester() throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // assert the tag count
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
                 for (int i = 1; i <= 10; i++) {
-                    contentFolder.addNode("content-" + i, "jnt:text");
+                    contentFolder.addNode("content-45" + i, "jnt:text");
                 }
                 session.save();
 
@@ -283,7 +286,7 @@ public class TaggingTest {
                 // tag content using those tags
                 for (int i = 1; i <= 10; i++) {
                     for (int j = i; j <= 10; j++) {
-                        service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-" + i,
+                        service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-45" + i,
                                 tags.get(j - 1), session);
                     }
                 }
@@ -291,12 +294,58 @@ public class TaggingTest {
 
                 for (int i = 1; i <= 10; i++) {
                     String tag = tags.get(i - 1);
-                    Map<String, Long> tagsMap = service.getTagsSuggester().suggest(tag, "/sites/" + TESTSITE_NAME, 1l, -1l, 0l, false, session);
+                    TagsSuggesterImpl tagsSuggester = new TagsSuggesterImpl();
+                    tagsSuggester.setFaceted(true);
+                    Map<String, Long> tagsMap =tagsSuggester.suggest(tag, "/sites/" + TESTSITE_NAME, 1l, -1l, 0l, false, session);
                     assertEquals("Wrong count for the tag '" + tag + "'",
                             tagsMap.get(tag).longValue(), new Integer(i).longValue());
                 }
                 return null;
             }
         });
+    }
+
+    @Test
+    public void testSimpleSuggester() throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                // assert the tag count
+                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
+                for (int i = 1; i <= 10; i++) {
+                    contentFolder.addNode("content-95" + i, "jnt:text");
+                }
+                session.save();
+
+                // create 10 tags
+                List<String> tags = new LinkedList<String>();
+                for (int i = 0; i < 10; i++) {
+                    String tag = "test-" + System.currentTimeMillis() + "-" + i;
+                    tags.add(tag);
+                }
+
+                // tag content using those tags
+                for (int i = 1; i <= 10; i++) {
+                    for (int j = i; j <= 10; j++) {
+                        service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-95" + i,
+                                tags.get(j - 1), session);
+                    }
+                }
+                session.save();
+
+                TagsSuggesterImpl tagsSuggester = new TagsSuggesterImpl();
+                tagsSuggester.setFaceted(false);
+                Map<String, Long> tagsMap = tagsSuggester.suggest("test-", "/sites/" + TESTSITE_NAME, 1l, 40l, 0l, false, session);
+                assertEquals("Wrong number of tags suggested",
+                        tagsMap.size(), 10);
+                return null;
+            }
+        });
+    }
+
+    @Test
+    public void testTagHandler() throws RepositoryException {
+        TagHandlerImpl tagHandler = new TagHandlerImpl();
+        assertEquals("Tag handler should lower case and trim the tag",
+                tagHandler.execute(" TEST "), "test");
     }
 }

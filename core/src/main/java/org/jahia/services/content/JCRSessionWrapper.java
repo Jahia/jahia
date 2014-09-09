@@ -858,12 +858,7 @@ public class JCRSessionWrapper implements Session {
                 if (s == null) {
                     s = provider.getSession(credentials, workspace.getName());
                 }
-
-<<<<<<< .working
-=======
-                s = provider.getSession(credentials, workspace.getName());
                 JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
->>>>>>> .merge-right.r50700
                 credentials =
                         JahiaLoginModule.getCredentials(simpleCredentials.getUserID(), t != null ? t.deniedPath : null);
             } else {

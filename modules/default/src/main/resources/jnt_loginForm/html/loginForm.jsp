@@ -34,7 +34,7 @@
 
         <p>
             <label class="left" for="password"><fmt:message key="label.password"/></label>
-            <input class="full" type="password" tabindex="2" maxlength="250" name="password" id="password"/>
+            <input class="full" type="password" tabindex="2" maxlength="250" name="password" id="password" autocomplete="off"/>
         </p>
 
         <p>

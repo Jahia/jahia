@@ -430,11 +430,11 @@
                     </c:if>
                 </c:forEach>
                 <p>
-                    <input type="password" id="password" name="password"/></p>
+                    <input type="password" id="password" name="password" autocomplete="off"/></p>
                 </p>
                 <p>
                     <span class="label"><fmt:message key="label.confirmPassword"/></span>
-                    <input type="password" id="passwordconfirm" name="passwordconfirm"/>
+                    <input type="password" id="passwordconfirm" name="passwordconfirm" autocomplete="off"/>
                 </p>
                 <div>
                     <button id="passwordokbutton" ><span class="icon-contribute icon-accept"></span><fmt:message key="label.ok"/></button>

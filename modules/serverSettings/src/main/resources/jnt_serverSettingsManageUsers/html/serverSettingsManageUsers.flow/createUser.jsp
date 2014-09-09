@@ -70,11 +70,11 @@
                     <div class="row-fluid">
                         <div class="span4">
                             <label for="password"><fmt:message key="label.password"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="password" name="password" class="span12" id="password" value="">
+                            <input type="password" name="password" class="span12" id="password" value="" autocomplete="off">
                         </div>
                         <div class="span4">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/> <span class="text-error"><strong>*</strong></span></label>
-                            <input type="password" name="passwordConfirm" class="span12" id="passwordConfirm" value="">
+                            <input type="password" name="passwordConfirm" class="span12" id="passwordConfirm" value="" autocomplete="off">
                         </div>
                     </div>
 

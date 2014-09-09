@@ -62,12 +62,12 @@
                     <div class="row-fluid">
                         <div class="span4">
                             <label for="password"><fmt:message key="label.password"/></label>
-                            <input class="span12" type="password" name="password" id="password" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''}>
+                            <input class="span12" type="password" name="password" id="password" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
                             <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
                         <div class="span4">
                             <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''}>
+                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
                             <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
                         </div>
                     </div>

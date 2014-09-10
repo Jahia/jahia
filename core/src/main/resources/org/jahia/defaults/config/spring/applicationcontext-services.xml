@@ -226,6 +226,7 @@
             <set>
                 <value>jnt:acl</value>
                 <value>jnt:ace</value>
+                <value>jnt:user</value>
             </set>
         </property>
         <property name="name" value="Default JCR search provider"/>

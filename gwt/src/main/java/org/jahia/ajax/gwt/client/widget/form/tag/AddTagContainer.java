@@ -95,8 +95,10 @@ public class AddTagContainer extends HorizontalPanel {
 
                 @Override
                 public void componentKeyUp(ComponentEvent event) {
-                    if (((FieldEvent) event).getField().getRawValue().length() == 0) {
-                        collapse();
+                    if(event instanceof FieldEvent){
+                        if (((FieldEvent) event).getField().getRawValue().length() == 0) {
+                            collapse();
+                        }
                     }
                 }
             });

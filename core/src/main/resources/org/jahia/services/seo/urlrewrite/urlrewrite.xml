@@ -63,7 +63,8 @@
         <name>lang placehodler</name>
         <note>Replace {lang} placeholder</note>
         <from>^([^?]*)\{lang\}(.*)$</from>
-        <to>$1%{attribute:currentLocale}$2</to>
+        <run class="org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper" method="getLinkLocale(HttpServletRequest, String, String)"/>
+        <to>$1%{attribute:currentLinkLocale}$2</to>
     </outbound-rule>
     <outbound-rule>
         <name>workspace placeholder</name>

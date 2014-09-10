@@ -207,6 +207,23 @@ public class ServerNameToSiteMapper {
         }
     }
 
+    public void getLinkLocale(HttpServletRequest request, String ctx, String path) {
+        String linkLocale = request.getAttribute("currentLocale").toString();
+        if (path.startsWith("/sites/")) {
+            String siteKey = StringUtils.substringBetween(path,"/sites/", "/");
+            try {
+                JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(siteKey);
+                if (site != null && !site.getLanguages().contains(linkLocale)) {
+                    linkLocale = site.getDefaultLanguage();
+                }
+            } catch (JahiaException e) {
+                // cannot get site, don't change locale
+            }
+        }
+        request.setAttribute("currentLinkLocale",linkLocale);
+    }
+
+
     public void analyzeLink(HttpServletRequest request, String ctx, String siteKey, String path) {
         analyzeLink(request, ctx, null, siteKey, path);
     }

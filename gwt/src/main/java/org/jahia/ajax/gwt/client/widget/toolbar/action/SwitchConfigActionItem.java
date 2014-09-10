@@ -77,8 +77,8 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -176,6 +176,8 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                             if (storage != null && storage.getItem(gwtEditConfiguration.getName() + "_path") != null) {
                                 newPath = storage.getItem(gwtEditConfiguration.getName() + "_path");
                             } else {
+                                // set locale to the site locale
+                                ((EditLinker) linker).setLocale((GWTJahiaLanguage) gwtEditConfiguration.getSiteNode().get(GWTJahiaNode.DEFAULT_LANGUAGE));
                                 newPath = MainModule.getInstance().getBaseUrl() + gwtEditConfiguration.getDefaultLocation();
                             }
                         }

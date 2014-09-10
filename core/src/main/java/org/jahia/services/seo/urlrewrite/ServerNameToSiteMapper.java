@@ -212,7 +212,7 @@ public class ServerNameToSiteMapper {
         if (path.startsWith("/sites/")) {
             String siteKey = StringUtils.substringBetween(path,"/sites/", "/");
             try {
-                JahiaSite site = JahiaSitesBaseService.getInstance().getSiteByKey(siteKey);
+                JahiaSite site = JahiaSitesService.getInstance().getSiteByKey(siteKey);
                 if (site != null && !site.getLanguages().contains(linkLocale)) {
                     linkLocale = site.getDefaultLanguage();
                 }

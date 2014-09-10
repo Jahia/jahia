@@ -115,30 +115,6 @@ public class ExtractionService {
         return instance;
     }
 
-    protected static void convertPropertyToBinary(JCRNodeWrapper fileNode, BinaryImpl contentValue,
-            JCRSessionWrapper session) throws RepositoryException {
-        if (session.hasPendingChanges()) {
-            session.save();
-        }
-        JCRNodeWrapper contentNodeCopy = null;
-        JCRObservationManager.setEventListenersAvailableDuringPublishOnly(Boolean.TRUE);
-        try {
-            JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);
-            contentNode.copy(fileNode, Constants.JCR_CONTENT + "-temp", true);
-            contentNodeCopy = fileNode.getNode(Constants.JCR_CONTENT + "-temp");
-            contentNode.remove();
-            session.move(contentNodeCopy.getPath(), fileNode.getPath() + "/" + Constants.JCR_CONTENT);
-            session.save();
-        } finally {
-            JCRObservationManager.setEventListenersAvailableDuringPublishOnly(null);
-        }
-
-        JCRNodeWrapper contentNode = fileNode.getNode(Constants.JCR_CONTENT);
-        contentNode.setProperty(Constants.EXTRACTED_TEXT, contentValue);
-        contentNode.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
-        session.save();
-    }
-
     private JCRTemplate jcrTemplate;
 
     private TextExtractionService textExtractionService;
@@ -303,9 +279,7 @@ public class ExtractionService {
                             n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
                             session.save();
                         } catch (ConstraintViolationException cve) {
-                            if (n.hasProperty(Constants.EXTRACTED_TEXT)) {
-                                convertPropertyToBinary(file, contentValue, session);
-                            }
+                            logger.error("Extracted text property is not of the right type for node " + sourcePath + " please run patch associated for this conversion.", cve);
                         } finally {
                             contentValue.dispose();
                         }

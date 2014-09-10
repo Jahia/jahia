@@ -158,7 +158,17 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
         RepositoryConfig config = RepositoryConfig.create(configFile.getFile().toString(), homeDir.getFile().toString());
         JahiaRepositoryConfig jahiaConfig = new JahiaRepositoryConfig(config);
         useDataStore = jahiaConfig.getDataStore() != null;
-        return JahiaRepositoryImpl.create(jahiaConfig);
+        try {
+            return JahiaRepositoryImpl.create(jahiaConfig);
+        } catch (RepositoryException e) {
+            if (e.getMessage().startsWith("internal error: failed to read custom node type definitions stored in ")) {
+                throw new RepositoryException(e.getMessage() +
+                        "\nPlease refer to the following Jahia Knowledge Base entry for more details on the issue and how to fix it : https://jira.jahia.org/browse/JKB-29",
+                        e.getCause());
+            } else {
+                throw e;
+            }
+        }
     }
 
 

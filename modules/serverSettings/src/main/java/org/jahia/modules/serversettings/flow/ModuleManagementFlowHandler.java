@@ -326,7 +326,8 @@ public class ModuleManagementFlowHandler implements Serializable {
             }
             if(!forceUpdate) {
                 Set<ModuleVersion> aPackage = templatePackageRegistry.getAvailableVersionsForModule(symbolicName);
-                if (aPackage.contains(new ModuleVersion(version))) {
+                ModuleVersion moduleVersion = new ModuleVersion(version);
+                if (!moduleVersion.isSnapshot() && aPackage.contains(moduleVersion)) {
                     context.addMessage(new MessageBuilder().source("moduleExists")
                             .code("serverSettings.manageModules.install.moduleExists")
                             .args(new String[]{symbolicName, version})

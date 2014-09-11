@@ -207,7 +207,7 @@ public class URLResolver {
                     if (siteKeyByServerName != null && siteKeyByServerName.equals(getNode().getResolveSite().getSiteKey()) ) {
                         VanityUrl defaultVanityUrl = getVanityUrlService()
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
-                                        workspace, locale, siteKey);
+                                        this.workspace, locale, siteKey);
                         if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
                             if (request == null || StringUtils.isEmpty(request.getQueryString())) {
                                 setRedirectUrl(defaultVanityUrl.getUrl());

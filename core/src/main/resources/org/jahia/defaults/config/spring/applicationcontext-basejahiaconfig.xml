@@ -243,7 +243,7 @@
 			<set>
 				<value>^/css/.*</value>
 				<value>^/engines/images/.*</value>
-                <value>^/icons/.*</value>
+				<value>^/icons/.*</value>
 				<value>^/tools/.*</value>
 			</set>
 		</property>

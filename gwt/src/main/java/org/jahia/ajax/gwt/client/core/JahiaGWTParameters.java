@@ -231,6 +231,9 @@ public class JahiaGWTParameters {
         if ($wnd.contextJsParameters) {
             $wnd.contextJsParameters.siteUuid = newSiteUUID;
         }
+        if ($wnd.CKEDITOR) {
+            $wnd.CKEDITOR.config.siteUuid = newSiteUUID;
+        }
     }-*/;
 
     public static String getSiteKey() {

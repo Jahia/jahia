@@ -51,6 +51,16 @@
                                         <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     </mail_preferences.png>
                                 </mail_x0020_server>
+                                <search_x0020_settings jcr:primaryType="jnt:folder">
+                                    <recherche-16x16.png j:height="16"
+                                             j:width="16"
+                                             jcr:mixinTypes="jmix:image"
+                                             jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </recherche-16x16.png>
+                                </search_x0020_settings>
                             </configurations>
                             <system_x0020_components jcr:primaryType="jnt:folder">
                                 <modules jcr:primaryType="jnt:folder">
@@ -255,16 +265,17 @@
                             <search-settings j:applyOn="jnt:globalSettings"
                                    j:defaultTemplate="false"
                                    j:hiddenTemplate="false"
+                                   j:icon="/modules/serverSettings/templates/files/serveradmin/configurations/search_x0020_settings/recherche-16x16.png"
                                    j:view="serverSettings"
                                    jcr:primaryType="jnt:contentTemplate">
-                                <j:translation_en
-                                       jcr:language="en"
+                                <j:translation_en jcr:language="en"
+                                       jcr:mixinTypes="mix:title"
                                        jcr:primaryType="jnt:translation"
                                        jcr:title="Search settings"/>
                                 <pagecontent jcr:primaryType="jnt:contentList">
                                     <search-settings jcr:primaryType="jnt:serverSettingsSearchConfig">
-                                        <j:translation_en
-                                             jcr:language="en"
+                                        <j:translation_en jcr:language="en"
+                                             jcr:mixinTypes="mix:title"
                                              jcr:primaryType="jnt:translation"
                                              jcr:title="search settings"/>
                             </search-settings>

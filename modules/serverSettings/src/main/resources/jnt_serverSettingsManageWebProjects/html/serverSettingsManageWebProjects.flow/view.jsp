@@ -155,8 +155,7 @@
             </thead>
 
             <tbody>
-                <jcr:sql var="siteQuery" sql="select * from [jnt:virtualsite] where isdescendantnode('/sites') and localname()<>'systemsite' order by [j:title]"/>
-                <c:forEach items="${siteQuery.nodes}" var="site" varStatus="loopStatus">
+                <c:forEach items="${webprojectHandler.allSites}" var="site" varStatus="loopStatus">
                     <c:if test="${site.name ne 'systemsite'}">
                         <tr>
                             <td><input name="selectedSites" type="checkbox" value="${site.name}"/></td>

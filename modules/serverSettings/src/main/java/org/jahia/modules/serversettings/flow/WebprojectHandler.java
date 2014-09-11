@@ -71,6 +71,9 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -193,6 +196,21 @@ public class WebprojectHandler implements Serializable {
             prepackagedSites = Arrays.asList(files);
         }
     }
+
+    public List<JCRSiteNode> getAllSites() {
+        try {
+            return Lists.newArrayList(Iterables.filter(sitesService.getSitesNodeList(),new Predicate<JCRSiteNode>() {
+                @Override
+                public boolean apply(JCRSiteNode jcrSiteNode) {
+                    return !jcrSiteNode.getName().equals("systemsite");
+                }
+            }));
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
+
 
     public void createSite(final SiteBean bean) {
 

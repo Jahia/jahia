@@ -143,9 +143,6 @@ public class ModuleManagementFlowHandler implements Serializable {
     private transient TemplatePackageRegistry templatePackageRegistry;
 
     @Autowired
-    private transient LicenseCheckerService licenseCheckerService;
-
-    @Autowired
     private transient SettingsBean settingsBean;
 
     private String moduleName;
@@ -260,8 +257,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         if (isPackage) {
             //Check license
             String licenseFeature = manifestAttributes.getValue("Jahia-Package-License");
-            boolean isallowed = true;
-            if(licenseFeature!=null && !licenseCheckerService.checkFeature(licenseFeature)){
+            if(licenseFeature != null && !LicenseCheckerService.Stub.isAllowed(licenseFeature)){
                 context.addMessage(new MessageBuilder().source("moduleFile")
                         .code("serverSettings.manageModules.install.package.missing.license")
                         .args(new String[]{originalFilename, licenseFeature})

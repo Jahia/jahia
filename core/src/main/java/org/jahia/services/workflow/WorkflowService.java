@@ -81,11 +81,9 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
@@ -576,6 +574,34 @@ public class WorkflowService implements BeanPostProcessor {
      * @param provider  The provider executing the process
      */
     public void abortProcess(String processId, String provider) {
+        Workflow workflow = lookupProvider(provider).getWorkflow(processId, null);
+        final Set<String> actionIds = new HashSet<String>();
+        for (final WorkflowAction action : workflow.getAvailableActions()) {
+            if (action instanceof WorkflowTask) {
+                actionIds.add(((WorkflowTask) action).getId());
+            }
+        }
+        if (!actionIds.isEmpty()) {
+            try {
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    @Override
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        for (String actionId : actionIds) {
+                            QueryWrapper q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:workflowTask] where [taskId]='" + actionId + "'", Query.JCR_SQL2);
+                            JCRNodeIteratorWrapper ni = q.execute().getNodes();
+                            for (JCRNodeWrapper wrapper : ni) {
+                                wrapper.remove();
+                            }
+                        }
+                        session.save();
+                        return false;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error("Cannot remove tasks",e);
+            }
+        }
+
         lookupProvider(provider).abortProcess(processId);
     }
 

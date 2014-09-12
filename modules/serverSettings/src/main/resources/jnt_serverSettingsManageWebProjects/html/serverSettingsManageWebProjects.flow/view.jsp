@@ -181,10 +181,13 @@
                                             </a>
                                         </c:when>
                                         <c:otherwise>
-                                            <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${site.home.path}.html"/>
-                                            <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
-                                                <i class="icon-pencil"></i>
-                                            </a>
+                                            <jcr:node var="editSite" path="${site.path}"/>
+                                            <c:if test="${not functions:contains(editSite.nodeTypes,'jmix:remotelyPublished')}">
+                                                <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${editSite.home.path}.html"/>
+                                                <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
+                                                    <i class="icon-pencil"></i>
+                                                </a>
+                                            </c:if>
                                         </c:otherwise>
                                     </c:choose>
                                 </c:if>

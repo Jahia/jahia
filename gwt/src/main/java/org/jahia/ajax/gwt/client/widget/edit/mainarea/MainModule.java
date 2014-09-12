@@ -140,13 +140,10 @@ public class MainModule extends Module {
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
     protected EditFrame frame;
-<<<<<<< .working
     private Element mainModuleElement;
-=======
     protected String frameError = null;
     protected boolean frameErrorRedirect = false;
 
->>>>>>> .merge-right.r50758
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;

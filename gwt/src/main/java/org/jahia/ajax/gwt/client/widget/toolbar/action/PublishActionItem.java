@@ -150,27 +150,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
-                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
-                    setEnabled(true);
-                    if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                        if (gwtJahiaNode.isFile()) {
-                            setEnabled(false);
-                        }
-                    } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                                Messages.get("label.publish.selected.item.all.languages", "all languages"));
-                    }
-=======
-
-                if (gwtJahiaNode != null) {
+                } else if (gwtJahiaNode != null) {
                     String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                             Messages.get("label.publish.selected.item.all.languages", "all languages");
                     updateItem(ctx, gwtJahiaNode, title);
->>>>>>> .merge-right.r50764
                 }
             }
         } else if (allSubTree) {
@@ -184,27 +169,12 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
-                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
-                    setEnabled(true);
-                    if(gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
-                        if(gwtJahiaNode.isFile()) {
-                            setEnabled(false);
-                        }
-                    } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                                JahiaGWTParameters.getLanguageDisplayName());
-                    }
-=======
-
-                if (gwtJahiaNode != null) {
+                } else if (gwtJahiaNode != null) {
                     String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
                             " - " + JahiaGWTParameters.getLanguageDisplayName();
                     updateItem(ctx, gwtJahiaNode, title);
->>>>>>> .merge-right.r50764
                 }
             }
         } else {
@@ -218,15 +188,11 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
-<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
-                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
-=======
-                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)
+                } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)
                         && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))
                         && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
->>>>>>> .merge-right.r50764
                     setEnabled(true);
 
                     if (checkForUnpublication) {

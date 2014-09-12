@@ -136,7 +136,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private static File threadDir;
     
     private static File heapDir;
-    
+
     private static String ensureEndSlash(String path, boolean needsEndSlash) {
         char lastChar = path.charAt(path.length() - 1);
         if (lastChar == '/' || lastChar == '\\') {
@@ -342,6 +342,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private boolean isMavenExecutableSet;
 
+    private String[] authorizedRedirectHosts;
+
     /**
      * Default constructor.
      *
@@ -469,6 +471,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             readOnlyMode = getBoolean("readOnlyMode", false);
             
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
+
+            String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
+            authorizedRedirectHosts = authorizedRedirectHostsStr == null ? new String[0] : authorizedRedirectHostsStr.split("\\s*,\\s*");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));
@@ -1358,5 +1363,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setMavenExecutableSet(boolean isMavenExecutableSet) {
         this.isMavenExecutableSet = isMavenExecutableSet;
+    }
+
+    public String[] getAuthorizedRedirectHosts() {
+        return authorizedRedirectHosts;
     }
 }

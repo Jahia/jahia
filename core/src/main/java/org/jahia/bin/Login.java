@@ -77,6 +77,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.settings.SettingsBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
 
@@ -139,7 +140,7 @@ public class Login implements Controller {
             }
         } else {
             if (!restMode) {
-                if (request.getParameter("failureRedirect") != null && isAuthorizedRedirect(request, request.getParameter("failureRedirect"))) {
+                if (isAuthorizedRedirect(request, request.getParameter("failureRedirect"))) {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
@@ -157,11 +158,26 @@ public class Login implements Controller {
         return null;
     }
 
-    private boolean isAuthorizedRedirect(HttpServletRequest request, String url) {
-        if (url.startsWith("http://") || url.startsWith("https://")) {
-            String urlBase = StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString());
-            return url.startsWith(urlBase);
+    protected static boolean isAuthorizedRedirect(HttpServletRequest request, String redirectUrl) {
+        if (redirectUrl == null) {
+            return false;
         }
+        if (redirectUrl.contains("://")) {
+            if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://")) {
+                String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "://");
+                String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString()), "://");
+                if (redirectUrlAfterProtocol.startsWith(urlBase)) {
+                    return true;
+                }
+                for (String authorizedRedirectHost : SettingsBean.getInstance().getAuthorizedRedirectHosts()) {
+                    if (redirectUrlAfterProtocol.startsWith(authorizedRedirectHost)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+        // relative URL
         return true;
     }
 

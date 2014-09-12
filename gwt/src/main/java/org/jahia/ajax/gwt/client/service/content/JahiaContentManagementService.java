@@ -290,22 +290,28 @@ public interface JahiaContentManagementService extends RemoteService {
     GWTJahiaGetPropertiesResult getProperties(String path, String langCode) throws GWTJahiaServiceException;
 
     /**
-     * Get the publication status information for multiple pathes.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the current session locale.
      *
-     *
-     * @param uuids path to get publication info from
-     * @param checkForUnpublication
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @param uuids                 uuids to get publication info from
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
+     * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws GWTJahiaServiceException
      */
     List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
                                                             boolean checkForUnpublication) throws GWTJahiaServiceException;
 
     /**
-     * Get the publication status information for a particular path.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the set of languages provided.
      *
      * @param uuids                 uuids to get publication info from
-     * @param checkForUnpublication
-     * @param async                 Local implementation of callback to react on return for asynchronous call to getPublicationInfo
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
+     * @param languages Set of languages from which we want information
+     * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @throws GWTJahiaServiceException
      */
     List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, Set<String> languages) throws GWTJahiaServiceException;
 

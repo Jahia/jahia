@@ -107,6 +107,7 @@ import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import java.util.*;
 
 /**
+ * Implementation of CustomWorkflow for publication type workflow
  * User: toto
  * Date: Sep 10, 2010
  * Time: 3:32:00 PM
@@ -221,10 +222,11 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final String status = Messages.get("label.workflow.task", "Executing workflow task");
                 WorkInProgressActionItem.setStatus(status);
 
-                final HashMap<String, Object> map = new HashMap<String, Object>();
+                final Map<String, Object> map = new HashMap<String, Object>();
                 map.put("customWorkflowInfo", PublicationWorkflow.this);
 
-                String locale = publicationInfos.get(0).getWorkflowGroup().substring(0, publicationInfos.get(0).getWorkflowGroup().indexOf("/"));
+                String workflowGroup = publicationInfos.get(0).getWorkflowGroup();
+                String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
 
                 JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(), wf, nodeProperties,
                         dialog.getComments(), map, locale, new BaseAsyncCallback() {
@@ -322,7 +324,7 @@ public class PublicationWorkflow implements CustomWorkflow {
 
     public static void create(final List<GWTJahiaPublicationInfo> all, final Linker linker, final boolean unpublish) {
 
-        final TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup = new TreeMap<String, List<GWTJahiaPublicationInfo>>();
+        final SortedMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup = new TreeMap<String, List<GWTJahiaPublicationInfo>>();
 
         List<String> keys = new ArrayList<String>();
 
@@ -342,16 +344,16 @@ public class PublicationWorkflow implements CustomWorkflow {
             JahiaContentManagementService.App.getInstance().getWorkflowDefinitions(keys,
                     new BaseAsyncCallback<Map<String, GWTJahiaWorkflowDefinition>>() {
                         public void onSuccess(Map<String, GWTJahiaWorkflowDefinition> definitions) {
-                            PublicationWorkflow.create(all, infosListByWorflowGroup, definitions, linker, unpublish);
+                            PublicationWorkflow.create(infosListByWorflowGroup, definitions, linker, unpublish);
                         }
                     }
             );
         } else {
-            create(all, infosListByWorflowGroup, new HashMap<String, GWTJahiaWorkflowDefinition>(), linker, unpublish);
+            create(infosListByWorflowGroup, new HashMap<String, GWTJahiaWorkflowDefinition>(), linker, unpublish);
         }
     }
 
-    private static void create(List<GWTJahiaPublicationInfo> all, TreeMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, final Linker linker, boolean unpublish) {
+    private static void create(SortedMap<String, List<GWTJahiaPublicationInfo>> infosListByWorflowGroup, Map<String, GWTJahiaWorkflowDefinition> definitions, final Linker linker, boolean unpublish) {
         EngineContainer container;
         if (linker instanceof ManagerLinker) {
             container = new EngineWindow();
@@ -422,7 +424,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 Info.display(status, status);
                 WorkInProgressActionItem.setStatus(status);
 
-                final HashMap<String, Object> refreshData = new HashMap<String, Object>();
+                final Map<String, Object> refreshData = new HashMap<String, Object>();
                 refreshData.put(Linker.REFRESH_ALL, true);
 
                 final List<Component> components = new ArrayList<Component>(cards.getComponents());
@@ -441,10 +443,12 @@ public class PublicationWorkflow implements CustomWorkflow {
                         if (thisWFInfo.get(0).isAllowedToPublishWithoutWorkflow()) {
                             if (customWorkflow instanceof UnpublicationWorkflow) {
                                 JahiaContentManagementService.App.getInstance().unpublish(getAllUuids(thisWFInfo),
-                                        getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"), "Cannot unpublish", status, linker, refreshData));
+                                        getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
+                                                Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, refreshData));
                             } else {
                                 JahiaContentManagementService.App.getInstance().publish(getAllUuids(thisWFInfo), nodeProperties, null,
-                                        getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"), "Cannot publish", status, linker, refreshData));
+                                        getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
+                                                Messages.get("message.content.published.error", "Cannot publish"), status, linker, refreshData));
                             }
                         } else {
                             close(cards, nbWF, Messages.get("message.content.published", "Content published"), status, dialog.getLinker(), refreshData);
@@ -453,10 +457,12 @@ public class PublicationWorkflow implements CustomWorkflow {
                         final PublicationStatusWindow dialog = (PublicationStatusWindow) component;
                         if (dialog.isUnpublish()) {
                             JahiaContentManagementService.App.getInstance().unpublish(dialog.getUuids(),
-                                    getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"), "Cannot unpublish", status, linker, refreshData));
+                                    getCallback(cards, nbWF, Messages.get("message.content.unpublished", "Content unpublished"),
+                                            Messages.get("message.content.unpublished.error", "Cannot unpublish"), status, linker, refreshData));
                         } else {
                             JahiaContentManagementService.App.getInstance().publish(dialog.getUuids(), null, null,
-                                    getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"), "Cannot publish", status, linker, refreshData));
+                                    getCallback(cards, nbWF, Messages.get("message.content.published", "Content published"),
+                                            Messages.get("message.content.published.error", "Cannot publish"), status, linker, refreshData));
                         }
                     } else {
                         close(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), status, linker, refreshData);
@@ -493,7 +499,7 @@ public class PublicationWorkflow implements CustomWorkflow {
                 final List<Component> components = new ArrayList<Component>(cards.getComponents());
                 final int[] nbWF = {components.size()};
 
-                final HashMap<String, Object> refreshData = new HashMap<String, Object>();
+                final Map<String, Object> refreshData = new HashMap<String, Object>();
                 refreshData.put(Linker.REFRESH_MAIN, true);
                 refreshData.put("event", "workflowStarted");
 
@@ -508,9 +514,10 @@ public class PublicationWorkflow implements CustomWorkflow {
                         final PublicationWorkflow customWorkflow = (PublicationWorkflow) dialog.getCustomWorkflow();
                         final List<GWTJahiaPublicationInfo> thisWFInfo = customWorkflow.getPublicationInfos();
 
-                        final HashMap<String, Object> map = new HashMap<String, Object>();
+                        final Map<String, Object> map = new HashMap<String, Object>();
                         map.put("customWorkflowInfo", customWorkflow);
-                        String locale = thisWFInfo.get(0).getWorkflowGroup().substring(0, thisWFInfo.get(0).getWorkflowGroup().indexOf("/"));
+                        String workflowGroup = thisWFInfo.get(0).getWorkflowGroup();
+                        String locale = workflowGroup.substring(0, workflowGroup.indexOf("/"));
                         JahiaContentManagementService.App.getInstance().startWorkflow(getAllUuids(thisWFInfo), dialog.getWfDefinition(), nodeProperties,
                                 dialog.getComments(), map, locale, getCallback(cards, nbWF, Messages.get("label.workflow.start", "Start Workflow"), Messages.get("label.workflow.cannotStart", "Cannot start workflow"), status, linker, refreshData)
                         );
@@ -523,7 +530,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         return button;
     }
 
-    private static BaseAsyncCallback getCallback(final EngineCards cards, final int[] nbWF, final String successMessage, final String errorMessage, final String statusMessage, final Linker linker, final HashMap<String, Object> refreshData) {
+    private static BaseAsyncCallback getCallback(final EngineCards cards, final int[] nbWF, final String successMessage, final String errorMessage, final String statusMessage, final Linker linker, final Map<String, Object> refreshData) {
         return new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable caught) {
                 close(cards, nbWF, errorMessage, statusMessage, linker, refreshData);

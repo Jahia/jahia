@@ -137,9 +137,10 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         LinkerSelectionContext ctx = linker.getSelectionContext();
 
         if (allLanguages) {
-            if (ctx.getMultipleSelection() != null
-                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
-                if (!isChildOfMarkedForDeletion(ctx)) {
+            if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
+                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+                        && supportPublication(ctx.getMultipleSelection())
+                        && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     if (allSubTree) {
                         updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all selected items in all languages"));
@@ -149,6 +150,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
@@ -162,17 +164,27 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                                 Messages.get("label.publish.selected.item.all.languages", "all languages"));
                     }
+=======
+
+                if (gwtJahiaNode != null) {
+                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
+                            Messages.get("label.publish.selected.item.all.languages", "all languages");
+                    updateItem(ctx, gwtJahiaNode, title);
+>>>>>>> .merge-right.r50764
                 }
             }
         } else if (allSubTree) {
             if (ctx.getMultipleSelection() != null
-                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions()) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
-                if (!isChildOfMarkedForDeletion(ctx)) {
+                    && ctx.getMultipleSelection().size() > 1) {
+                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+                        && supportPublication(ctx.getMultipleSelection())
+                        && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     updateTitle(Messages.get("label.publish.all.selected.items"));
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
@@ -186,20 +198,35 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
                                 JahiaGWTParameters.getLanguageDisplayName());
                     }
+=======
+
+                if (gwtJahiaNode != null) {
+                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
+                            " - " + JahiaGWTParameters.getLanguageDisplayName();
+                    updateItem(ctx, gwtJahiaNode, title);
+>>>>>>> .merge-right.r50764
                 }
             }
         } else {
             if (ctx.getMultipleSelection() != null
-                    && ctx.getMultipleSelection().size() > 1 && hasPermission(ctx.getSelectionPermissions())) {
-                if (!isChildOfMarkedForDeletion(ctx) && isNodeTypeAllowed(ctx.getMultipleSelection())) {
+                    && ctx.getMultipleSelection().size() > 1) {
+                if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
+                        && supportPublication(ctx.getMultipleSelection())
+                        && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     updateTitle(getGwtToolbarItem().getTitle());
                 }
             } else {
                 GWTJahiaNode gwtJahiaNode = ctx.getSingleSelection();
+<<<<<<< .working
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+=======
+                if (gwtJahiaNode != null && !isChildOfMarkedForDeletion(ctx)
+                        && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))
+                        && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+>>>>>>> .merge-right.r50764
                     setEnabled(true);
 
                     if (checkForUnpublication) {
@@ -221,8 +248,8 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
                         updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
                     } else {
-                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                                JahiaGWTParameters.getLanguageDisplayName());
+                        updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
+                                " - " + JahiaGWTParameters.getLanguageDisplayName());
                     }
                 }
             }
@@ -346,11 +373,42 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         }
     }
 
+    /**
+     *
+     * @param allSubTree true if this item should publish all subtree of selected elements
+     */
     public void setAllSubTree(boolean allSubTree) {
         this.allSubTree = allSubTree;
     }
 
+    /**
+     *
+     * @param allLanguages true if this item should publish selected items in all languages
+     */
     public void setAllLanguages(boolean allLanguages) {
         this.allLanguages = allLanguages;
+    }
+
+    private void updateItem(LinkerSelectionContext ctx, GWTJahiaNode gwtJahiaNode, String title) {
+        if(!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
+            setEnabled(true);
+            if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
+                updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
+                if (gwtJahiaNode.isFile()) {
+                    setEnabled(false);
+                }
+            } else {
+                updateTitle(title);
+            }
+        }
+    }
+
+    private boolean supportPublication(List<GWTJahiaNode> multipleSelection) {
+        for (GWTJahiaNode gwtJahiaNode : multipleSelection) {
+            if(!Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication"))){
+                return false;
+            }
+        }
+        return true;
     }
 }

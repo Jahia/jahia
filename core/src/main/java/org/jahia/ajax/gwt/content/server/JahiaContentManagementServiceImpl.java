@@ -1428,41 +1428,41 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Get the publication status information for multiple pathes.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the current session locale.
      *
-     * @param uuids                 path to get publication info from
-     * @param checkForUnpublication
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @param uuids                 uuids to get publication info from
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
+     * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
                                                             boolean checkForUnpublication)
             throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession();
-        List<GWTJahiaPublicationInfo> all = publication
-                .getFullPublicationInfos(uuids, Collections.singleton(session.getLocale().toString()), session, allSubTree,
-                        checkForUnpublication);
-
-        return all;
+        return publication.getFullPublicationInfos(uuids,
+                Collections.singleton(retrieveCurrentSession().getLocale().toString()),
+                session, allSubTree, checkForUnpublication);
     }
 
     /**
-     * Get the publication status information for multiple pathes.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the set of languages provided.
      *
-     * @param uuids                 path to get publication info from
-     * @param checkForUnpublication
-     * @return a GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
+     * @param uuids                 uuids to get publication info from
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
+     * @param languages Set of languages from which we want information
+     * @return a List of GWTJahiaPublicationInfo object filled with the right status for the publication state of this path
      * @throws GWTJahiaServiceException
      */
     public List<GWTJahiaPublicationInfo> getPublicationInfo(List<String> uuids, boolean allSubTree,
                                                             boolean checkForUnpublication, Set<String> languages)
             throws GWTJahiaServiceException {
         final JCRSessionWrapper session = retrieveCurrentSession();
-        List<GWTJahiaPublicationInfo> all = publication
-                .getFullPublicationInfos(uuids, languages, session, allSubTree,
-                        checkForUnpublication);
 
-        return all;
+        return publication.getFullPublicationInfos(uuids, languages, session, allSubTree, checkForUnpublication);
     }
 
 

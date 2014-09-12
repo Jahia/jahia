@@ -267,10 +267,19 @@ public class JahiaGWTParameters {
         setSiteKey(siteNode.getSiteKey());
     }
 
+    /**
+     * Getter for the list of GWTJahiaLanguage available on this site
+     * @return List of GWTJahiaLanguage available on the current site.
+     */
     public static List<GWTJahiaLanguage> getSiteLanguages() {
         return (List<GWTJahiaLanguage>) getSiteNode().get(GWTJahiaNode.SITE_LANGUAGES);
     }
 
+    /**
+     * Get/Check if a particular language exist on the current site.
+     * @param language the language as a string that we want to get as a GWTJahiaLanguage
+     * @return the GWTJahiaLanguage associated to this language if available on the current site or null otherwise
+     */
     public static GWTJahiaLanguage getLanguage(String language) {
         if (language != null) {
             for (GWTJahiaLanguage jahiaLanguage : JahiaGWTParameters.getSiteLanguages()) {

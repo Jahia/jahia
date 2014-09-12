@@ -234,19 +234,24 @@ public interface JahiaContentManagementServiceAsync {
     void getProperties(String path, String langCode, AsyncCallback<GWTJahiaGetPropertiesResult> async);
 
     /**
-     * Get the publication status information for a particular path.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the current session locale.
      *
-     * @param uuids uuids to get publication info from
-     * @param checkForUnpublication
+     * @param uuids                 uuids to get publication info from
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, AsyncCallback<List<GWTJahiaPublicationInfo>> async);
 
     /**
-     * Get the publication status information for a particular path.
+     * Get the publication status information for multiple nodes by their identifier.
+     * Check is done against the set of languages provided.
      *
-     * @param uuids uuids to get publication info from
-     * @param checkForUnpublication
+     * @param uuids                 uuids to get publication info from
+     * @param allSubTree check on the whole subtree or no.
+     * @param checkForUnpublication allow to check for element which have been unpublished
+     * @param languages Set of languages from which we want information
      * @param async Local implementation of callback to react on return for asynchronous call to getPublicationInfo
      */
     void getPublicationInfo(List<String> uuids, boolean allSubTree, boolean checkForUnpublication, Set<String> languages, AsyncCallback<List<GWTJahiaPublicationInfo>> async);

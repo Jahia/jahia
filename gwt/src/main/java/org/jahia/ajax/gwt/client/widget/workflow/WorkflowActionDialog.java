@@ -388,6 +388,11 @@ public class WorkflowActionDialog extends LayoutContainer {
         }
     }
 
+    /**
+     * Create a start button for a specific workflow definition
+     * @param wf the workflow definition for which we need to generate a button
+     * @return the newly generated button
+     */
     public Button generateStartWorkflowButton(final GWTJahiaWorkflowDefinition wf) {
         final Button button = new Button(Messages.get("label.workflow.start", "Start Workflow") + ":" + wf.getDisplayName());
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
@@ -479,14 +484,26 @@ public class WorkflowActionDialog extends LayoutContainer {
         return allButtons;
     }
 
+    /**
+     * get the custom workflow associated with this workflow dialog
+     * @return the CustomWorkflow object
+     */
     public CustomWorkflow getCustomWorkflow() {
         return customWorkflow;
     }
 
+    /**
+     * return the nodePath used to create this dialog
+     * @return the nodePath associated at creation with this dialog
+     */
     public String getNodePath() {
         return nodePath;
     }
 
+    /**
+     * return the workflow definition used to create this dialog
+     * @return the workflow definition associated at creation with this dialog
+     */
     public GWTJahiaWorkflowDefinition getWfDefinition() {
         return wfDefinition;
     }
@@ -495,6 +512,10 @@ public class WorkflowActionDialog extends LayoutContainer {
         this.workflowDashboard = workflowDashboard;
     }
 
+    /**
+     * The list of comments in this workflow
+     * @return list of comments in this workflow
+     */
     public List<String> getComments() {
         List<String> result = new ArrayList<String>();
         if (comments != null && comments.size() > 0) {

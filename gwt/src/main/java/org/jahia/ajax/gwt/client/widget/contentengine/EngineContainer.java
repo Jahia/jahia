@@ -78,6 +78,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
+ * An interface for Engines in Jahia that Container of Components
  * User: toto
  * Date: Aug 2, 2010
  * Time: 4:06:57 PM

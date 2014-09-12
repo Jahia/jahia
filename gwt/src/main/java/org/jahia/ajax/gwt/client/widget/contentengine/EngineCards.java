@@ -94,6 +94,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Engine displaying multiple sub container as multiple cards, with their own buttons/actions per card.
  * User: toto
  * Date: Nov 16, 2010
  * Time: 2:11:21 PM
@@ -156,6 +157,14 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         return mainContainer.getPanel();
     }
 
+    /**
+     * Add a component as a card
+     * @param component the component to be drawn
+     * @param header header to be displayed
+     * @param buttonsBar buttons bar to displayed for this card
+     * @param language if not null will be displayed in the language column
+     * @param linker the current linker from GWT
+     */
     public void setEngine(Component component, String header, ButtonBar buttonsBar, GWTJahiaLanguage language, Linker linker) {
         components.add(component);
         bars.add(buttonsBar);
@@ -170,6 +179,9 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         cardsContainer.add(component);
     }
 
+    /**
+     * show the first engine in the main area
+     */
     public void showEngine() {
         for (ButtonBar buttonBar : bars) {
             barItems.add(new ArrayList<Component>(buttonBar.getItems()));
@@ -178,6 +190,9 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         mainContainer.showEngine();
     }
 
+    /**
+     * Close the current engine
+     */
     public void closeEngine() {
         components.remove(i);
         headers.remove(i);
@@ -205,6 +220,10 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         mainContainer.getPanel().setHeadingHtml(headers.get(i));
     }
 
+    /**
+     * a a global button that will be displayed for all cards
+     * @param button the button to be added to all cards
+     */
     public void addGlobalButton(Button button) {
         if (button != null) {
             bar.add(button);
@@ -215,10 +234,17 @@ public class EngineCards extends LayoutContainer implements EngineContainer {
         return components.get(i);
     }
 
+    /**
+     * get the List of <Component/> in this engine
+     * @return the List of <Component/> in this engine
+     */
     public List<Component> getComponents() {
         return components;
     }
 
+    /**
+     * Empty the engine of all its cards.
+     */
     public void closeAllEngines() {
         components.clear();
         headers.clear();

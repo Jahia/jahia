@@ -151,7 +151,10 @@ public class ErrorServlet extends HttpServlet {
         int errorCode = getErrorCode(request);
         String page = "error_" + errorCode + ".jsp";
 
-        if (siteLevelErrorPagesEnabled) {
+        String requestUri = (String) request.getAttribute("javax.servlet.error.request_uri");
+        if (requestUri != null && requestUri.matches("/cms/[^/]+frame/.*")) {
+            page = "gwt_error.jsp";
+        } else if (siteLevelErrorPagesEnabled) {
             String siteKey = resolveSiteKey(request);
 
             // site information available?

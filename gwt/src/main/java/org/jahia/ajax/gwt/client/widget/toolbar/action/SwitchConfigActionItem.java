@@ -180,8 +180,8 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                                 ((EditLinker) linker).setLocale((GWTJahiaLanguage) gwtEditConfiguration.getSiteNode().get(GWTJahiaNode.DEFAULT_LANGUAGE));
                                 newPath = MainModule.getInstance().getBaseUrl() + gwtEditConfiguration.getDefaultLocation();
                             }
+                            newPath = removeWebflowParameter(newPath);
                         }
-                        newPath = removeWebflowParameter(newPath);
                         ((EditLinker) linker).switchConfig(gwtEditConfiguration, newPath, updateSidePanel, updateToolbar, enforcedWorkspace);
                     }
                 }
@@ -196,6 +196,9 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
     }
 
     private String removeWebflowParameter(String path) {
+        if (path == null) {
+            return null;
+        }
         int index = path.indexOf("webflowexecution");
         String newPath = path;
         if (index > -1) {

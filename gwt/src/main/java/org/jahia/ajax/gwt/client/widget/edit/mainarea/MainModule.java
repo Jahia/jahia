@@ -98,7 +98,6 @@ import com.google.gwt.user.client.ui.AbstractImagePrototype;
 import com.google.gwt.user.client.ui.Frame;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.Image;
-
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
@@ -141,7 +140,13 @@ public class MainModule extends Module {
     protected LayoutContainer scrollContainer;
     protected LayoutContainer center;
     protected EditFrame frame;
+<<<<<<< .working
     private Element mainModuleElement;
+=======
+    protected String frameError = null;
+    protected boolean frameErrorRedirect = false;
+
+>>>>>>> .merge-right.r50758
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;
@@ -1067,6 +1072,7 @@ public class MainModule extends Module {
 
     private void parseFrameContent(boolean forceImageRefresh, boolean forceCssRefresh, boolean forceJavascriptRefresh) {
         try {
+            frameError = null;
             final IFrameElement iframe = IFrameElement.as(frame.getElement());
             Document contentDocument = iframe.getContentDocument();
             Element body = (Element) contentDocument.getElementsByTagName("body").getItem(0);
@@ -1095,6 +1101,8 @@ public class MainModule extends Module {
                     el = ModuleHelper.getAllJahiaTypedElementsRec(getInnerElement());
                 }
 
+            } else if (body.getAttribute("jahia-error-code") != null && !"".equals(body.getAttribute("jahia-error-code"))) {
+                frameError = body.getAttribute("jahia-error-code");
             } else {
                 NodeList<com.google.gwt.dom.client.Element> el1 = body.getElementsByTagName("div");
                 int i = 0;
@@ -1167,9 +1175,11 @@ public class MainModule extends Module {
                         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
                             @Override
                             public void execute() {
-                                if ("".equals(path)) {
+                                if (frameError != null && !frameErrorRedirect) {
+                                    frameErrorRedirect = true;
                                     setUrl(getBaseUrl() + config.getDefaultLocation());
                                 } else {
+                                    frameErrorRedirect = false;
                                     onGWTFrameReady(iframe);
                                 }
                             }
@@ -1179,7 +1189,7 @@ public class MainModule extends Module {
                     }
                 }
             } catch (Exception e) {
-                Log.error("Error in EditFrame: " + e.getMessage(), e);                
+                Log.error("Error in EditFrame: " + e.getMessage(), e);
             }
         }
 

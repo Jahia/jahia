@@ -116,17 +116,27 @@ public class TaggingService extends JahiaService{
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
+        private Holder() {
+        }
+
         static final TaggingService INSTANCE = new TaggingService();
     }
 
+    /**
+     * Get the tagging service instance
+     * @return get the tagging service instance
+     */
     public static TaggingService getInstance() {
         return Holder.INSTANCE;
     }
 
     /**
      * @deprecated the tags are no longer nodes, there are stored directly on the content
-     * @throws RepositoryException
-     *             in case of errors
+     *
+     * @param tag the tag to create
+     * @param siteKey the site where the tag need to be create
+     * @throws RepositoryException in case of errors
+     * @return true if the tag is successfully created
      */
     @Deprecated
     public boolean createTag(final String tag, final String siteKey) throws RepositoryException {
@@ -135,8 +145,11 @@ public class TaggingService extends JahiaService{
 
     /**
      * @deprecated not relevant anymore, the tags are no longer nodes
-     * @throws RepositoryException
-     *             in case of errors
+     *
+     * @param tag the tag to delete
+     * @param siteKey the site where the tag need to be delete
+     * @throws RepositoryException in case of errors
+     * @return true if the tag is successfully deleted
      */
     @Deprecated
     public boolean deleteTag(final String tag, final String siteKey) throws RepositoryException {
@@ -144,9 +157,13 @@ public class TaggingService extends JahiaService{
     }
 
     /**
-     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content, Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     * @deprecated not relevant anymore, the tags are no longer nodes, there are stored directly on the content,
+     * Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
+     *
+     * @param tag the tag to test the existence
+     * @param siteKey the site where the tag need to be search
+     * @throws RepositoryException in case of errors
+     * @return true if the tag exist
      */
     @Deprecated
     public boolean exists(final String tag, final String siteKey) throws RepositoryException {
@@ -154,9 +171,14 @@ public class TaggingService extends JahiaService{
     }
 
     /**
-     * @deprecated the tags are no longer nodes, there are stored directly on the content, Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     * @deprecated the tags are no longer nodes, there are stored directly on the content,
+     * Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
+     *
+     * @param tag the tag to retrieve
+     * @param siteKey the site to search the tag
+     * @param session the session used to retrieve the tag
+     * @throws RepositoryException in case of errors
+     * @return return the tag node, null in case of tag not found
      */
     @Deprecated
     public JCRNodeWrapper getTag(String tag, String siteKey, JCRSessionWrapper session) throws RepositoryException {
@@ -165,8 +187,11 @@ public class TaggingService extends JahiaService{
 
     /**
      * @deprecated Use {@link #getTagsSuggester().suggest(String, String, Long, Long, Long, boolean, org.jahia.services.content.JCRSessionWrapper)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     *
+     * @param tag the tag to retrieve
+     * @param siteKey the site to search the tag
+     * @throws RepositoryException in case of errors
+     * @return the count
      */
     @Deprecated
     public long getTagCount(final String tag, final String siteKey) throws RepositoryException {
@@ -175,8 +200,13 @@ public class TaggingService extends JahiaService{
 
     /**
      * @deprecated Use {@link #tag(org.jahia.services.content.JCRNodeWrapper, String)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     *
+     * @param node the node to tag
+     * @param tag the tag to apply on the node
+     * @param siteKey the site where the tag is locate
+     * @param createTagIfNotExists create the tag if not exist
+     * @throws RepositoryException in case of errors
+     * @return true if the tag is correctly apply on the node
      */
     @Deprecated
     public boolean tag(final JCRNodeWrapper node, final String tag, final String siteKey, final boolean createTagIfNotExists)
@@ -186,9 +216,15 @@ public class TaggingService extends JahiaService{
     }
 
     /**
-     * @deprecated Use {@link #tag(String, String, org.jahia.services.content.JCRSessionWrapper)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     * @deprecated Use {@link #tag(org.jahia.services.content.JCRNodeWrapper, String)} instead
+     *
+     * @param nodePath the node to tag
+     * @param tag the tag to apply on the node
+     * @param siteKey the site where the tag is locate
+     * @param createTagIfNotExists create the tag if not exist
+     * @param session the session used to tag the content
+     * @throws RepositoryException in case of errors
+     * @return true if the tag is correctly apply on the node
      */
     @Deprecated
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists,
@@ -199,8 +235,13 @@ public class TaggingService extends JahiaService{
 
     /**
      * @deprecated Use {@link #tag(org.jahia.services.content.JCRNodeWrapper, String)} instead
-     * @throws RepositoryException
-     *             in case of errors
+     *
+     * @param nodePath the node to tag
+     * @param tag the tag to apply on the node
+     * @param siteKey the site where the tag is locate
+     * @param createTagIfNotExists create the tag if not exist
+     * @throws RepositoryException in case of errors
+     * @return true if the tag is correctly apply on the node
      */
     @Deprecated
     public boolean tag(final String nodePath, final String tag, final String siteKey, final boolean createTagIfNotExists)
@@ -298,7 +339,7 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public void untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
-        ArrayList<String> currentTags = new ArrayList<String>();
+        List<String> currentTags = new ArrayList<String>();
         boolean updated = false;
         if(node.isNodeType(JMIX_TAGGED)){
             try{
@@ -377,11 +418,11 @@ public class TaggingService extends JahiaService{
 
     @Override
     public void start() throws JahiaInitializationException {
-
+        // do nothing
     }
 
     @Override
     public void stop() throws JahiaException {
-
+        // do nothing
     }
 }

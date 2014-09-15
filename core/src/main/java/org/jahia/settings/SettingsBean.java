@@ -473,7 +473,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
-            authorizedRedirectHosts = authorizedRedirectHostsStr == null ? new String[0] : authorizedRedirectHostsStr.split("\\s*,\\s*");
+            authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
 
             settings.put("userManagementUserNamePattern", getString(
                     "userManagementUserNamePattern", "[\\w\\{\\}\\-]+"));

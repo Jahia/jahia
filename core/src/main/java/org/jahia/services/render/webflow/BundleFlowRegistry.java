@@ -125,6 +125,16 @@ public class BundleFlowRegistry extends FlowDefinitionRegistryImpl {
         return s.toArray(new String[s.size()]);
     }
 
+    /**
+     * Tests if a FlowDefinitionRegistry is already registered inside the BundleFlowRegistry
+     * @param r the flowDefinitionRegistry instance we want to test. Should implement the equals
+     *          method for this to work properly.
+     * @return true if the FlowDefinitionRegistry instance is already registered
+     */
+    public boolean containsFlowRegistry(FlowDefinitionRegistry r) {
+        return l.contains(r);
+    }
+
     public void addFlowRegistry(FlowDefinitionRegistry r) {
         if (r.getFlowDefinitionCount() > 0) {
             l.add(r);

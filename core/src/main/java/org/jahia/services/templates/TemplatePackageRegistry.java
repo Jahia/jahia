@@ -862,11 +862,17 @@ public class TemplatePackageRegistry {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering RenderFilter '" + beanName + "'");
                 }
+                if (templatePackageRegistry.filters.contains((RenderFilter) bean)) {
+                    templatePackageRegistry.filters.remove((RenderFilter) bean);
+                }
                 templatePackageRegistry.filters.add((RenderFilter) bean);
             }
             if (bean instanceof ErrorHandler) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Registering ErrorHandler '" + beanName + "'");
+                }
+                if (templatePackageRegistry.errorHandlers.contains((ErrorHandler) bean)) {
+                    templatePackageRegistry.errorHandlers.remove((ErrorHandler) bean);
                 }
                 templatePackageRegistry.errorHandlers.add((ErrorHandler) bean);
             }
@@ -979,6 +985,9 @@ public class TemplatePackageRegistry {
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
                 List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
+                if (l.contains((CacheKeyPartGenerator) bean)) {
+                    l.remove((CacheKeyPartGenerator) bean);
+                }
                 l.add((CacheKeyPartGenerator) bean);
                 cacheKeyGenerator.setPartGenerators(l);
                 // flush the cache only once by module
@@ -986,6 +995,9 @@ public class TemplatePackageRegistry {
             }
 
             if (bean instanceof HandlerMapping) {
+                if (templatePackageRegistry.springHandlerMappings.contains((HandlerMapping) bean)) {
+                    templatePackageRegistry.springHandlerMappings.remove((HandlerMapping) bean);
+                }
                 templatePackageRegistry.springHandlerMappings.add((HandlerMapping) bean);
                 try {
                     logger.info("Map {}", ((SimpleUrlHandlerMapping) bean).getUrlMap());
@@ -1001,7 +1013,11 @@ public class TemplatePackageRegistry {
             if (bean instanceof FactoryBean && bean.getClass().getName().equals("org.springframework.webflow.config.FlowRegistryFactoryBean")) {
                 try {
                     FlowDefinitionRegistry flowDefinitionRegistry = ((FactoryBean<FlowDefinitionRegistry>) bean).getObject();
-                    ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry")).addFlowRegistry(flowDefinitionRegistry);
+                    BundleFlowRegistry bundleFlowRegistry = ((BundleFlowRegistry) SpringContextSingleton.getBean("jahiaBundleFlowRegistry"));
+                    if (bundleFlowRegistry.containsFlowRegistry(flowDefinitionRegistry)) {
+                        bundleFlowRegistry.removeFlowRegistry(flowDefinitionRegistry);
+                    }
+                    bundleFlowRegistry.addFlowRegistry(flowDefinitionRegistry);
                 } catch (Exception e) {
                     logger.error("Cannot register webflow registry", e);
                 }
@@ -1009,6 +1025,9 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof AbstractServletFilter) {
                 try {
+                    if (compositeFilter.containsFilter((AbstractServletFilter) bean)) {
+                        compositeFilter.unregisterFilter((AbstractServletFilter) bean);
+                    }
                     compositeFilter.registerFilter((AbstractServletFilter) bean);
                 } catch (Exception e) {
                     logger.error("Cannot register servlet filter", e);

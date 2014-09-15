@@ -91,6 +91,15 @@ public class CompositeFilter implements Filter {
         }
     }
 
+    /**
+     * Tests if a filter is already registered in the composite filter
+     * @param filter the filter we want to test for presence in the composite
+     * @return true if the filter is already present, false otherwise
+     */
+    public boolean containsFilter(AbstractServletFilter filter) {
+        return filters.contains(filter);
+    }
+
     public void registerFilter(AbstractServletFilter filter) throws ServletException {
         if(filterConfig != null){
             filter.init(filterConfig);

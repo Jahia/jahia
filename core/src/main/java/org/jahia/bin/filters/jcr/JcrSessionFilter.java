@@ -127,16 +127,16 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
+<<<<<<< .working
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 if (userNode != null && userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
                 if (authValveContext == null) {
+=======
+                if (authValveContext == null || !authValveContext.isAuthRetrievedFromSession()) {
+>>>>>>> .merge-right.r50767
                     ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
-                } else {
-                    if (!authValveContext.isAuthRetrievedFromSession()) {
-                        ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
-                    }
                 }
             }
 

@@ -105,10 +105,22 @@ public class AuthValveContext {
         return sessionFactory;
     }
 
+    /**
+     * This method will return true if the auth was indeed retrieved by the session.
+     * It is the responsability of the valve to set this value using the setAuthRetrievedFromSession method
+     * @return true if the authentifcation was retrieved from the HttpSession object, false otherwise
+     */
     public boolean isAuthRetrievedFromSession() {
         return authRetrievedFromSession;
     }
 
+    /**
+     * A valve that resolves the authentication from an HttpSession attribute should set this value to true.
+     * This value will then be used by the JCRSessionFilter and possibly other classes to avoid setting the session
+     * attribute once again if the value was read from the session.
+     * @param authRetrievedFromSession set to true if the authentication was read from the session, false otherwise.
+     *                                 if not yet the default value is false.
+     */
     public void setAuthRetrievedFromSession(boolean authRetrievedFromSession) {
         this.authRetrievedFromSession = authRetrievedFromSession;
     }

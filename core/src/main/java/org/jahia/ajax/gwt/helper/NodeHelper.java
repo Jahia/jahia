@@ -898,15 +898,12 @@ class NodeHelper {
 
     private void populateTags(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
-            if (node.hasProperty("j:tags")) {
+            if (node.hasProperty("j:tagList")) {
                 StringBuilder b = new StringBuilder();
-                Value[] values = node.getProperty("j:tags").getValues();
+                Value[] values = node.getProperty("j:tagList").getValues();
                 for (Value value : values) {
-                    Node tag = ((JCRValueWrapper) value).getNode();
-                    if (tag != null) {
-                        b.append(", ");
-                        b.append(tag.getName());
-                    }
+                    b.append(", ");
+                    b.append(value.getString());
                 }
                 if (b.length() > 0) {
                     n.setTags(b.substring(2));

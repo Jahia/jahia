@@ -76,6 +76,7 @@ import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationCont
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.context.support.AbstractApplicationContext;
 
 /**
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.
@@ -107,6 +108,10 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
                     // Module is already started by activator, start context now
                     BundleUtils.setContextToStartForModule(getBundle(), null);
                     JahiaOsgiBundleXmlApplicationContext.this.normalRefresh();
+                    for (AbstractApplicationContext context : BundleUtils.getDependantContexts(getBundle())) {
+                        context.refresh();
+                    }
+                    BundleUtils.getDependantContexts(getBundle()).clear();
                 } else {
                     // Delegate start to activator
                     BundleUtils.setContextToStartForModule(getBundle(), JahiaOsgiBundleXmlApplicationContext.this);

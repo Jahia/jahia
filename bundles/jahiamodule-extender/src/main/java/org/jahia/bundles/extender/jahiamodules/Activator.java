@@ -248,7 +248,7 @@ public class Activator implements BundleActivator {
         });
 
         // If activator was stopped, restart modules that were stopped at the same time
-        startDependantBundles(context.getBundle().getSymbolicName());
+        startDependantBundles(context.getBundle().getSymbolicName(), null);
 
         logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
 
@@ -594,6 +594,10 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void start(final Bundle bundle) {
+        start(bundle, null);
+    }
+
+    private synchronized void start(final Bundle bundle, Bundle dependency) {
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
             logger.error("--- Bundle "+bundle+" is starting but has not yet been parsed");
@@ -674,29 +678,48 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
         setModuleState(bundle, ModuleState.State.STARTED, null);
 
-        try {
-            if (BundleUtils.getContextToStartForModule(bundle) != null) {
-                BundleUtils.getContextToStartForModule(bundle).refresh();
-            }
-        } catch (Exception e) {
-            setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
-        }
-
         // update dependency entry for dependent modules
         final List<JahiaTemplatesPackage> dependantModules = templatePackageRegistry.getDependantModules(jahiaTemplatesPackage, true);
         for (JahiaTemplatesPackage dependantModule : dependantModules) {
             dependantModule.addDependency(jahiaTemplatesPackage);
         }
 
-        startDependantBundles(id);
-        startDependantBundles(jahiaTemplatesPackage.getName());
+        startDependantBundles(id, bundle);
+        startDependantBundles(jahiaTemplatesPackage.getName(), bundle);
+
+        if (hasSpringFile(bundle)) {
+            try {
+                if (BundleUtils.getContextToStartForModule(bundle) != null) {
+                    if (dependency == null || !hasSpringFile(dependency)) {
+                        BundleUtils.getContextToStartForModule(bundle).refresh();
+                    } else {
+                        BundleUtils.addContextToStartAfterDependency(dependency, BundleUtils.getContextToStartForModule(bundle));
+                    }
+                }
+            } catch (Exception e) {
+                setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
+            }
+        }
+    }
+
+    private boolean hasSpringFile(Bundle bundle) {
+        Enumeration<String> entries = bundle.getEntryPaths("/META-INF/spring");
+        if (entries != null) {
+            while (entries.hasMoreElements()) {
+                String s = entries.nextElement();
+                if (s.toLowerCase().endsWith(".xml")) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private String getDisplayName(Bundle bundle) {
         return BundleUtils.getDisplayName(bundle);
     }
 
-    private void startDependantBundles(String key) {
+    private void startDependantBundles(String key, Bundle source) {
         final List<Bundle> toBeStartedForKey = toBeStarted.get(key);
         if (toBeStartedForKey != null) {
             List<Bundle> startedBundles = new ArrayList<Bundle>();
@@ -704,7 +727,7 @@ public class Activator implements BundleActivator {
                 logger.debug("Starting module " + bundle.getSymbolicName() + " since it is dependent on just started module " + key);
                 setModuleState(bundle, ModuleState.State.STARTING, key);
                 try {
-                    start(bundle);
+                    start(bundle, source);
                     startedBundles.add(bundle);
                 } catch (Exception e) {
                     logger.error("Error during startup of dependent module " + bundle.getSymbolicName() + ", module is not started !", e);
@@ -813,6 +836,9 @@ public class Activator implements BundleActivator {
                 list.remove(bundle);
             }
         }
+
+        // Ensure context is reset
+        BundleUtils.setContextToStartForModule(bundle,null);
     }
 
     private void registerHttpResources(final Bundle bundle) {

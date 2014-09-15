@@ -82,8 +82,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -100,6 +99,7 @@ public final class BundleUtils {
     private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<String, String[]>();
 
     private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<Bundle, AbstractApplicationContext>();
+    private static Map<Bundle, List<AbstractApplicationContext>> contextDependenciesToStart = new HashMap<Bundle, List<AbstractApplicationContext>>();
 
     private static Map<String, Throwable> contextException = new HashMap<String, Throwable>();
 
@@ -360,7 +360,18 @@ public final class BundleUtils {
     }
 
     public static void setContextToStartForModule(Bundle bundle, AbstractApplicationContext context) {
-        contextToStart.put(bundle,context);
+        contextToStart.put(bundle, context);
+    }
+
+    public static void addContextToStartAfterDependency(Bundle dependency, AbstractApplicationContext contextToStart) {
+        if (contextDependenciesToStart.get(dependency) == null) {
+            contextDependenciesToStart.put(dependency, new ArrayList<AbstractApplicationContext>());
+        }
+        contextDependenciesToStart.get(dependency).add(contextToStart);
+    }
+
+    public static List<AbstractApplicationContext> getDependantContexts(Bundle dependency) {
+        return contextDependenciesToStart.containsKey(dependency) ? contextDependenciesToStart.get(dependency) : Collections.<AbstractApplicationContext>emptyList();
     }
 
     public static Throwable getContextStartException(String key) {

@@ -110,19 +110,24 @@ public class TagsSuggesterImpl implements TagsSuggester{
         }
     }
 
+    /**
+     * Do a faceted query to suggest tags
+     *
+     * @param prefix the prefix to search on
+     * @param startPath the path to start the search
+     * @param mincount the minimum for a tag to be include in the result
+     * @param limit the limit of tag returned
+     * @param offset offset
+     * @param sortByCount sort the map by count
+     * @param sessionWrapper the session used to do the query
+     * @return Map of tags retrieving the tag name and the count associate
+     * @throws RepositoryException
+     */
     public Map<String, Long> facetedSuggestion (String prefix, String startPath, Long mincount, Long limit, Long offset,
                                                boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        LinkedHashMap<String, Long> tagsMap = new LinkedHashMap<String, Long>();
-
+        Map<String, Long> tagsMap = new LinkedHashMap<String, Long>();
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
-        if (queryManager == null) {
-            logger.error("Unable to obtain QueryManager instance");
-            return tagsMap;
-        }
-
-        if(StringUtils.isEmpty(startPath)){
-            startPath = "/sites";
-        }
+        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
 
         StringBuilder facet = new StringBuilder();
         facet.append("rep:facet(nodetype=jmix:tagged&key=j:tagList")
@@ -137,7 +142,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
         QOMBuilder qomBuilder = new QOMBuilder(factory, sessionWrapper.getValueFactory());
 
         qomBuilder.setSource(factory.selector("jmix:tagged", "tagged"));
-        qomBuilder.andConstraint(factory.descendantNode("tagged", startPath));
+        qomBuilder.andConstraint(factory.descendantNode("tagged", searchPath));
         qomBuilder.getColumns().add(factory.column("tagged", "j:tagList", facet.toString()));
 
         QueryObjectModel qom = qomBuilder.createQOM();
@@ -152,21 +157,22 @@ public class TagsSuggesterImpl implements TagsSuggester{
         return tagsMap;
     }
 
+    /**
+     * Use a simple query to suggest tags
+     * @param term the term used to search tags
+     * @param startPath the path to start the search
+     * @param limit the limit of tag returned
+     * @param sessionWrapper the session used to do the query
+     * @return Map of tags retrieving the tag name
+     * @throws RepositoryException
+     */
     public Map<String, Long> simpleSuggestion (String term, String startPath, Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        LinkedHashMap<String, Long> tagsMap = new LinkedHashMap<String, Long>();
+        Map<String, Long> tagsMap = new LinkedHashMap<String, Long>();
 
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
-        if (queryManager == null) {
-            logger.error("Unable to obtain QueryManager instance");
-            return tagsMap;
-        }
-
-        if(StringUtils.isEmpty(startPath)){
-            startPath = "/sites";
-        }
-
+        String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
         Query query = queryManager.createQuery("select t.[j:tagList] from [jmix:tagged] as t where " +
-                "isdescendantnode(t, [" + startPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
+                "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
         QueryResult queryResult = query.execute();
 
         NodeIterator nodeIterator = queryResult.getNodes();
@@ -178,7 +184,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
                 String tagValue = tag.getString();
                 if (tagValue.contains(term)) {
                     if (tagsMap.keySet().size() < limit) {
-                        tagsMap.put(tagValue, 0l);
+                        tagsMap.put(tagValue, 0L);
                     }else {
                         // limit reached
                         limitReached = true;

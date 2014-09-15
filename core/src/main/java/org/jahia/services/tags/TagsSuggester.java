@@ -100,6 +100,6 @@ public interface TagsSuggester {
      *
      * @throws RepositoryException
      */
-    public abstract Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
+    Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
                                      boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException;
 }

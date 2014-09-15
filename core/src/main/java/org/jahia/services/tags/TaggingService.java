@@ -99,10 +99,10 @@ public class TaggingService extends JahiaService{
     private TagsSuggester tagsSuggester;
     private TagHandler tagHandler;
 
-    private final static String JMIX_TAGGED = "jmix:tagged";
-    private final static String J_TAG_LIST = "j:tagList";
+    private static final String JMIX_TAGGED = "jmix:tagged";
+    private static final String J_TAG_LIST = "j:tagList";
 
-    private final static Function<JCRValueWrapper, String> JCR_VALUE_WRAPPER_STRING_FUNCTION = new Function<JCRValueWrapper, String>() {
+    private static final Function<JCRValueWrapper, String> JCR_VALUE_WRAPPER_STRING_FUNCTION = new Function<JCRValueWrapper, String>() {
         @Nullable
         @Override
         public String apply(@Nullable JCRValueWrapper input) {

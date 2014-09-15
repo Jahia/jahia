@@ -82,5 +82,5 @@ public interface TagHandler {
      * @param tag the tag to transform
      * @return the transformed tag
      */
-    public String execute(String tag);
+    String execute(String tag);
 }

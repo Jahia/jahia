@@ -111,7 +111,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
     }
 
     /**
-     * Do a faceted query to suggest tags
+     * Use a faceted query to suggest tags
      *
      * @param prefix the prefix to search on
      * @param startPath the path to start the search
@@ -159,6 +159,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
 
     /**
      * Use a simple query to suggest tags
+     *
      * @param term the term used to search tags
      * @param startPath the path to start the search
      * @param limit the limit of tag returned

@@ -76,6 +76,8 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.services.content.*;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.services.query.QueryResultWrapper;
+import org.jahia.services.query.ScrollableQueryCallback;
+import org.jahia.services.query.ScrollableQuery;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
@@ -175,12 +177,13 @@ public class TagsSuggesterImpl implements TagsSuggester{
                 "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
 
         // use a scrollableQuery to iterate on contents, to avoid query returning too much nodes in one time
-        ScrollableQuery scrollableQuery = new ScrollableQuery(100, query);
-        return scrollableQuery.execute(new ScrollableCallback<Map<String, Long>>() {
+        // use a step of 100, and max iterations limit to 100
+        ScrollableQuery scrollableQuery = new ScrollableQuery(100, 100, query);
+        return scrollableQuery.execute(new ScrollableQueryCallback<Map<String, Long>>() {
             Map<String, Long> result = new LinkedHashMap<String, Long>();
 
             @Override
-            boolean scroll() throws RepositoryException {
+            public boolean scroll() throws RepositoryException {
                 NodeIterator nodeIterator = stepResult.getNodes();
                 boolean limitReached = result.keySet().size() == limit;
                 while (!limitReached && nodeIterator.hasNext()) {
@@ -205,7 +208,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
             }
 
             @Override
-            Map<String, Long> getResult() {
+            protected Map<String, Long> getResult() {
                 return result;
             }
         });

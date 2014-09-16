@@ -73,22 +73,17 @@ package org.jahia.services.tags;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRValueWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.services.query.QueryResultWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.jcr.query.qom.QueryObjectModelFactory;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -98,7 +93,6 @@ import java.util.Map;
  * @author kevan
  */
 public class TagsSuggesterImpl implements TagsSuggester{
-    private static Logger logger = LoggerFactory.getLogger(TagsSuggesterImpl.class);
     private boolean faceted = false;
 
     @Override
@@ -125,7 +119,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
      * @return Map of tags retrieving the tag name and the count associate
      * @throws RepositoryException
      */
-    public Map<String, Long> facetedSuggestion (String prefix, String startPath, Long mincount, Long limit, Long offset,
+    protected Map<String, Long> facetedSuggestion (String prefix, String startPath, Long mincount, Long limit, Long offset,
                                                boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
         Map<String, Long> tagsMap = new LinkedHashMap<String, Long>();
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
@@ -169,35 +163,52 @@ public class TagsSuggesterImpl implements TagsSuggester{
      * @return Map of tags retrieving the tag name
      * @throws RepositoryException
      */
-    public Map<String, Long> simpleSuggestion (String term, String startPath, Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        Map<String, Long> tagsMap = new LinkedHashMap<String, Long>();
+    protected Map<String, Long> simpleSuggestion (final String term, String startPath, final Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
+        // handle empty term
+        if(StringUtils.isEmpty(term.trim())){
+            return new HashMap<String, Long>();
+        }
 
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
         String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
         Query query = queryManager.createQuery("select t.[j:tagList] from [jmix:tagged] as t where " +
                 "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
-        QueryResult queryResult = query.execute();
 
-        NodeIterator nodeIterator = queryResult.getNodes();
-        boolean limitReached = false;
-        while (!limitReached && nodeIterator.hasNext()) {
-            JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
-            JCRValueWrapper[] tags = nodeWrapper.getProperty("j:tagList").getValues();
-            for (JCRValueWrapper tag : tags) {
-                String tagValue = tag.getString();
-                if (tagValue.contains(term)) {
-                    if (tagsMap.keySet().size() < limit) {
-                        tagsMap.put(tagValue, 0L);
-                    }else {
-                        // limit reached
-                        limitReached = true;
-                        break;
+        // use a scrollableQuery to iterate on contents, to avoid query returning too much nodes in one time
+        ScrollableQuery scrollableQuery = new ScrollableQuery(100, query);
+        return scrollableQuery.execute(new ScrollableCallback<Map<String, Long>>() {
+            Map<String, Long> result = new LinkedHashMap<String, Long>();
+
+            @Override
+            boolean scroll() throws RepositoryException {
+                NodeIterator nodeIterator = stepResult.getNodes();
+                boolean limitReached = result.keySet().size() == limit;
+                while (!limitReached && nodeIterator.hasNext()) {
+                    JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
+                    JCRValueWrapper[] tags = nodeWrapper.getProperty("j:tagList").getValues();
+                    for (JCRValueWrapper tag : tags) {
+                        String tagValue = tag.getString();
+                        if (tagValue.contains(term)) {
+                            if (result.keySet().size() < limit) {
+                                result.put(tagValue, 0L);
+                            }else {
+                                // limit reached
+                                limitReached = true;
+                                break;
+                            }
+                        }
                     }
                 }
-            }
-        }
 
-        return tagsMap;
+                // continue until the limit is not reached
+                return !limitReached;
+            }
+
+            @Override
+            Map<String, Long> getResult() {
+                return result;
+            }
+        });
     }
 
     public void setFaceted(boolean faceted) {

@@ -82,8 +82,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -93,8 +91,6 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class TaggingService extends JahiaService{
-
-    private static Logger logger = LoggerFactory.getLogger(TaggingService.class);
 
     private TagsSuggester tagsSuggester;
     private TagHandler tagHandler;

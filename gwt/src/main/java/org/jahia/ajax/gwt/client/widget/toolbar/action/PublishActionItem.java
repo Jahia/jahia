@@ -134,9 +134,14 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
 
     public void handleNewLinkerSelection() {
         setEnabled(false);
+        this.getGwtToolbarItem().setHideWhenDisabled(true);
         LinkerSelectionContext ctx = linker.getSelectionContext();
-
+        boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
         if (allLanguages) {
+            if(hasOnlyOneLanguage) {
+                setEnabled(false);
+                return;
+            }
             if (ctx.getMultipleSelection() != null && ctx.getMultipleSelection().size() > 1) {
                 if (!isChildOfMarkedForDeletion(ctx) && hasPermission(ctx.getSelectionPermissions())
                         && supportPublication(ctx.getMultipleSelection())
@@ -235,6 +240,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
     @Override
     public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker) {
         super.init(gwtToolbarItem, linker);
+        this.getGwtToolbarItem().setHideWhenDisabled(true);
         setEnabled(false);
     }
 

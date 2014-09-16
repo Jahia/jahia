@@ -100,8 +100,13 @@ public class PublishSiteActionItem extends PublishActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext ctx = linker.getSelectionContext();
         if (isNodeTypeAllowed(ctx.getMultipleSelection())) {
+            boolean hasOnlyOneLanguage = JahiaGWTParameters.getSiteLanguages().size() == 1;
             setEnabled(true);
             if (allLanguages) {
+                if(hasOnlyOneLanguage) {
+                    setEnabled(false);
+                    return;
+                }
                 updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + Messages.get("label.publish.selected.item.all.languages", "all languages"));
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());

@@ -415,7 +415,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             return null;
         }
 
-        final Button button = new Button(Messages.get("label.bypassWorkflow.all", "Bypass all workflows"));
+        final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.bypassWorkflow":"label.bypassWorkflow.all"), (cards.getComponents().size()==1?"Bypass workflow":"Bypass all workflows")));
 
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
@@ -486,7 +486,7 @@ public class PublicationWorkflow implements CustomWorkflow {
             return null;
         }
 
-        final Button button = new Button(Messages.get("label.workflow.start.all", "Start all workflows"));
+        final Button button = new Button(Messages.get((cards.getComponents().size()==1?"label.workflow.start":"label.workflow.start.all"), (cards.getComponents().size()==1?"Start workflow":"Start all workflows")));
         button.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent buttonEvent) {

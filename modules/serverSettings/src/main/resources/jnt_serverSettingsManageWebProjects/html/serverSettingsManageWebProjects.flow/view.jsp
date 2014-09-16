@@ -182,7 +182,7 @@
                                         </c:when>
                                         <c:otherwise>
                                             <jcr:node var="editSite" path="${site.path}"/>
-                                            <c:if test="${not functions:contains(editSite.nodeTypes,'jmix:remotelyPublished')}">
+                                            <c:if test="${not jcr:isNodeType(editSite, 'jmix:remotelyPublished')}">
                                                 <c:url var="editUrl" value="/cms/edit/default/${site.defaultLanguage}${editSite.home.path}.html"/>
                                                 <a style="margin-bottom:0;" class="btn btn-small" href="${editUrl}" title="<fmt:message key='serverSettings.manageWebProjects.exitToEdit'/>">
                                                     <i class="icon-pencil"></i>

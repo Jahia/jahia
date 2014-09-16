@@ -71,9 +71,12 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import com.google.common.base.Function;
 import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Ordering;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -111,6 +114,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.webflow.execution.RequestContext;
 
+import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
 import java.io.*;
 import java.util.*;
@@ -199,12 +203,18 @@ public class WebprojectHandler implements Serializable {
 
     public List<JCRSiteNode> getAllSites() {
         try {
-            return Lists.newArrayList(Iterables.filter(sitesService.getSitesNodeList(),new Predicate<JCRSiteNode>() {
+            Function<JCRSiteNode, String> getTitle = new Function<JCRSiteNode, String>() {
+                public String apply(@Nullable JCRSiteNode input) {
+                    return input != null ? input.getTitle() : "";
+                }
+            };
+            Predicate<JCRSiteNode> notSystemSite = new Predicate<JCRSiteNode>() {
                 @Override
                 public boolean apply(JCRSiteNode jcrSiteNode) {
                     return !jcrSiteNode.getName().equals("systemsite");
                 }
-            }));
+            };
+            return Ordering.natural().onResultOf(getTitle).sortedCopy(Iterables.filter(sitesService.getSitesNodeList(), notSystemSite));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

@@ -32,7 +32,9 @@ public class AddTag extends Action{
 
         if(CollectionUtils.isNotEmpty(parameters.get("tag"))){
             List<String> addedTags = taggingService.tag(node, parameters.get("tag"));
-            jcrSessionWrapper.save();
+            if(!addedTags.isEmpty()){
+                jcrSessionWrapper.save();
+            }
 
             JSONObject result = new JSONObject();
             result.put("size", node.hasProperty("j:tagList") ? String.valueOf(node.getProperty("j:tagList").getValues().length) : "0");

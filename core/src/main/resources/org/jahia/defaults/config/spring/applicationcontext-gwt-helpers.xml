@@ -165,8 +165,4 @@
         <property name="httpClient" ref="HttpClientService"/>
     </bean>
 
-    <bean name="TagHelper" class="org.jahia.ajax.gwt.helper.TagHelper">
-        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
-
 </beans>

@@ -116,6 +116,7 @@ import org.jahia.services.htmlvalidator.Result;
 import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
+import org.jahia.services.tags.TaggingService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
@@ -180,7 +181,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private TranslationHelper translationHelper;
     private StubHelper stubHelper;
     private ModuleHelper moduleHelper;
-    private TagHelper tagHelper;
+    private TaggingService taggingService;
 
     public void setAcl(ACLHelper acl) {
         this.acl = acl;
@@ -287,8 +288,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         this.stubHelper = stubHelper;
     }
 
-    public void setTagHelper(TagHelper tagHelper) {
-        this.tagHelper = tagHelper;
+    public void setTaggingService(TaggingService taggingService) {
+        this.taggingService = taggingService;
     }
 
     // ------------------------ INTERFACE METHODS ------------------------
@@ -2561,7 +2562,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException {
         List<GWTJahiaValueDisplayBean> tags = new ArrayList<GWTJahiaValueDisplayBean>();
         try {
-            Map<String, Long> tagsMap = tagHelper.getTags(prefix, startPath, minCount, limit, offset, sortByCount, retrieveCurrentSession());
+            Map<String, Long> tagsMap = taggingService.getTagsSuggester().suggest(prefix, startPath, minCount, limit, offset, sortByCount, retrieveCurrentSession());
             for (String tagEntry : tagsMap.keySet()) {
                 tags.add(new GWTJahiaValueDisplayBean(tagEntry, tagEntry));
             }
@@ -2573,7 +2574,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     @Override
     public String convertTag(String tag) {
-        return tagHelper.convert(tag);
+        return taggingService.getTagHandler().execute(tag);
     }
 
     @Override

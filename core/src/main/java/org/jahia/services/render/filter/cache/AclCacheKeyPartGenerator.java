@@ -377,6 +377,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                     foundRoles.add(role);
                                 }
                             }
+                            if (path.equals("/")) {
+                                path = "";
+                            }
                             if (granted) {
                                 mapGranted.put(path, foundRoles);
                             } else {

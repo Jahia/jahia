@@ -264,7 +264,7 @@ public class CKEditor extends Component {
             $wnd.CKEDITOR.config.toolbar = overrideOptions.defaultToolbar;
         }
         $wnd.CKEDITOR.tools.extend(cfg, overrideOptions, true);
-        var oCKeditor = new $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
+        var oCKeditor = $wnd.CKEDITOR.replace(this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::instanceId, cfg);
         oCKeditor.checkWCAGCompliance = this.@org.jahia.ajax.gwt.client.widget.ckeditor.CKEditor::checkWCAGCompliance(Ljava/lang/String;);
         thisck = this;
         oCKeditor.on('blur', function(event) {

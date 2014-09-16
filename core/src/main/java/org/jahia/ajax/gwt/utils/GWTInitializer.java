@@ -115,7 +115,7 @@ public class GWTInitializer {
         buf.append("<script type=\"text/javascript\">\n" + "var onGWTFrameLoaded = []; "
                 + "function onGWTFrameLoad(fun) { onGWTFrameLoaded[onGWTFrameLoaded.length] = fun; }; ");
         String customCkeditorConfig = getCustomCKEditorConfig(ctx);
-        buf.append("if (typeof parent.CKEDITOR.config != 'undefined') { parent.CKEDITOR.config.customConfig='");
+        buf.append("if (typeof parent.contextJsParameters != 'undefined') { parent.contextJsParameters.ckeCfg='");
         if (customCkeditorConfig != null) {
             buf.append(customCkeditorConfig);
         }

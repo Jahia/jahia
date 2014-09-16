@@ -275,15 +275,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             assets.put(type, stringMap);
         }
         
-        Map<String, Map<String, String>> inlineScripts = assets.get("inlinejavascript");
-        if (inlineScripts == null) {
-            inlineScripts = new LinkedHashMap<String, Map<String, String>>();
-            assets.put("inlinejavascript", inlineScripts);
-        }
-        inlineScripts
-                .put("<script type=\"text/javascript\">\ncontextJsParameters.ckeCfg='/modules/sample-bootstrap-templates/javascript/ckeditor_config.js';\n</script>",
-                        Collections.<String, String> emptyMap());
-
         renderContext.getRequest().setAttribute("staticAssets", assets);
 
         OutputDocument outputDocument = new OutputDocument(source);

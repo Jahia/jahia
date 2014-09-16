@@ -75,6 +75,7 @@ import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.services.render.View;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -82,6 +83,7 @@ import org.slf4j.profiler.Profiler;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -162,13 +164,13 @@ public class TemplateScriptFilter extends AbstractFilter {
 
             if (moduleInfo) {
                 stopWatch.stop();
-                output.append("<legend>")
-                        .append("<img src=\"")
-                        .append(renderContext.getURLGenerator().getContext())
-                        .append("/modules/default/images/icons/information.png")
-                        .append("\" title=\"").append(script.getView().getInfo()).append(" node : ").append(resource.getNode().getPath())
-                        .append(" in total: ").append(System.currentTimeMillis() - start).append( "ms")
-                        .append(" , own time: ").append(stopWatch.getTotalTimeMillis()).append( "ms")
+                View view = script.getView();
+                output.append("<legend>").append("<img src=\"").append(renderContext.getURLGenerator().getContext())
+                        .append("/modules/default/images/icons/information.png").append("\" title=\"Module: ")
+                        .append(view.getModule().getId()).append("-").append(view.getModuleVersion()).append(" ")
+                        .append(view.getInfo()).append(" node : ").append(resource.getNode().getPath())
+                        .append(" in total: ").append(System.currentTimeMillis() - start).append("ms")
+                        .append(" , own time: ").append(stopWatch.getTotalTimeMillis()).append("ms")
                         .append("\"/></legend>");
                 output.append("</fieldset> ");
             }

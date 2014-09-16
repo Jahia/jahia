@@ -71,6 +71,9 @@
  */
 package org.apache.felix.http.base.internal.handler;
 
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+
 import org.apache.felix.http.base.internal.context.ExtServletContext;
 
 import javax.servlet.Servlet;
@@ -182,16 +185,19 @@ public final class ServletHandler
     private void doHandle(HttpServletRequest req, HttpServletResponse res)
         throws ServletException, IOException
     {
-        // set a sensible status code in case handleSecurity returns false
-        // but fails to send a response
-        res.setStatus(HttpServletResponse.SC_FORBIDDEN);
         if (getContext().handleSecurity(req, res))
         {
-            // reset status to OK for further processing
-            res.setStatus(HttpServletResponse.SC_OK);
-
             // in case of a JSP alias (*.jsp) or if we are trying to access a JAX-RS servlet we do not wrap the request
             this.servlet.service(jspPathPrefix == null && !isRESTCall ? new ServletHandlerRequest(req, this.alias) : req, res);
+        }
+        else
+        {
+            // FELIX-3988: If the response is not yet committed and still has the default 
+            // status, we're going to override this and send an error instead.
+            if (!res.isCommitted() && res.getStatus() == SC_OK)
+            {
+                res.sendError(SC_FORBIDDEN);
+            }
         }
     }
 

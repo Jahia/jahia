@@ -175,6 +175,14 @@ public class Login implements Controller {
                     }
                 }
             }
+            // Block non-HTTP URls, like ftp://...
+            return false;
+        }
+        // Block any other absolute URLs, like mailto:some@mail.com or even http:\\www.somedomain.com, which works on Google Chrome
+        // Second part of the test is to allow relative URLs that contain a colon in the end
+        int indexOfColon = redirectUrl.indexOf(":");
+        int indexOfSlash = redirectUrl.indexOf("/");
+        if (indexOfColon >= 0 && (indexOfSlash < 0 || indexOfColon < indexOfSlash)) {
             return false;
         }
         // relative URL

@@ -259,18 +259,18 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public List<String> tag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
+        if(tags.isEmpty()){
+            return Collections.emptyList();
+        }
+
         List<String> currentTags;
         List<JCRValueWrapper> currentTagValues = new ArrayList<JCRValueWrapper>();
         List<String> addedTags = new ArrayList<String>();
-        boolean updated = false;
         try {
             currentTagValues = Arrays.asList(node.getProperty(J_TAG_LIST).getValues());
         } catch (PathNotFoundException e) {
             // property not found
-            if (tags.size() > 0) {
-                node.addMixin(JMIX_TAGGED);
-                updated = true;
-            }
+            node.addMixin(JMIX_TAGGED);
         }
         currentTags = new ArrayList<String>(Collections2.transform(currentTagValues, JCR_VALUE_WRAPPER_STRING_FUNCTION));
         for (String tag : tags) {
@@ -278,11 +278,10 @@ public class TaggingService extends JahiaService{
             if (StringUtils.isNotEmpty(cleanedTag) && !currentTags.contains(cleanedTag)) {
                 currentTags.add(cleanedTag);
                 addedTags.add(cleanedTag);
-                updated = true;
             }
         }
 
-        if(updated){
+        if(!addedTags.isEmpty()){
             node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
         }
 
@@ -336,11 +335,16 @@ public class TaggingService extends JahiaService{
      * @param node the node to untag
      * @param tags the tag list to remove from the node
      *
+     * @return the list of deleted tags
      * @throws RepositoryException
      */
-    public void untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
+    public List<String> untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
+        if(tags.isEmpty()){
+            return Collections.emptyList();
+        }
+
         List<String> currentTags = new ArrayList<String>();
-        boolean updated = false;
+        List<String> deletedTags = new ArrayList<String>();
         if(node.isNodeType(JMIX_TAGGED)){
             try{
                 JCRValueWrapper[] currentTagValues = node.getProperty(J_TAG_LIST).getValues();
@@ -349,7 +353,7 @@ public class TaggingService extends JahiaService{
                     int index = currentTags.indexOf(tag);
                     if(index != -1){
                         currentTags.remove(index);
-                        updated = true;
+                        deletedTags.add(tag);
                     }
                 }
             } catch (PathNotFoundException e){
@@ -357,9 +361,11 @@ public class TaggingService extends JahiaService{
             }
         }
 
-        if(updated){
+        if(!deletedTags.isEmpty()){
             node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
         }
+
+        return deletedTags;
     }
 
     /**
@@ -369,10 +375,11 @@ public class TaggingService extends JahiaService{
      * @param tags the tag list to remove from the node
      * @param session the session used to perform the operation
      *
+     * @return the list of deleted tags
      * @throws RepositoryException
      */
-    public void untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
-        untag(session.getNode(nodePath), tags);
+    public List<String> untag(final String nodePath, final List<String> tags, JCRSessionWrapper session) throws RepositoryException {
+        return untag(session.getNode(nodePath), tags);
     }
 
     /**
@@ -381,10 +388,11 @@ public class TaggingService extends JahiaService{
      * @param node the node to untag
      * @param tag the tag to remove from the node
      *
+     * @return the list of deleted tags
      * @throws RepositoryException
      */
-    public void untag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
-        untag(node, Lists.newArrayList(tag));
+    public List<String> untag(final JCRNodeWrapper node, final String tag) throws RepositoryException {
+        return untag(node, Lists.newArrayList(tag));
     }
 
     /**
@@ -394,10 +402,11 @@ public class TaggingService extends JahiaService{
      * @param tag the tag to remove from the node
      * @param session the session used to perform the operation
      *
+     * @return the list of deleted tags
      * @throws RepositoryException
      */
-    public void untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
-        untag(session.getNode(nodePath), Lists.newArrayList(tag));
+    public List<String> untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
+        return untag(session.getNode(nodePath), Lists.newArrayList(tag));
     }
 
     public void setTagsSuggester(TagsSuggester tagsSuggester) {

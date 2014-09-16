@@ -93,7 +93,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Created by kevan on 03/09/14.
+ * Default TagSuggester implementation
+ *
+ * @author kevan
  */
 public class TagsSuggesterImpl implements TagsSuggester{
     private static Logger logger = LoggerFactory.getLogger(TagsSuggesterImpl.class);

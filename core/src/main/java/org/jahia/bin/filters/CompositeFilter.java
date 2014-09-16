@@ -78,7 +78,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by kevan on 28/02/14.
+ * Provide a servlet filter to handle servlet filters provided by the modules.
+ * An inner filter chain is created in this composite filter to execute the additional filters.
+ *
+ * @author kevan
  */
 public class CompositeFilter implements Filter {
     private List<AbstractServletFilter> filters = new ArrayList<AbstractServletFilter>();

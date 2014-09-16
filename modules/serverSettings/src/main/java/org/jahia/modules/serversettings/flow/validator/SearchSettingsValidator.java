@@ -9,7 +9,9 @@ import org.springframework.binding.validation.ValidationContext;
 import java.io.Serializable;
 
 /**
- * Created by kevan on 22/07/14.
+ * Validator for the search configuration settings web flow
+ *
+ * @author kevan
  */
 public class SearchSettingsValidator implements Serializable {
     private static final long serialVersionUID = 828187966326333450L;

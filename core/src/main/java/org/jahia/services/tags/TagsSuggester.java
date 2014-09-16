@@ -79,7 +79,7 @@ import java.util.Map;
 /**
  * Tag suggester interface, used to retrieve tags related to a user input. Generally a term or a prefix.
  *
- * Created by kevan on 03/09/14.
+ * @author kevan
  */
 public interface TagsSuggester {
     /**

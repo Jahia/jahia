@@ -74,7 +74,7 @@ package org.jahia.services.tags;
 /**
  * Tag handler transform a tag before store it
  *
- * Created by kevan on 04/09/14.
+ * @author kevan
  */
 public interface TagHandler {
     /**

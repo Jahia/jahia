@@ -16,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by kevan on 30/06/14.
+ *  Provide the GWT Tag field
+ *
+ * @author kevan
  */
 public class TagField extends MultiField<List<String>> {
     protected LayoutContainer displayTagContainer;

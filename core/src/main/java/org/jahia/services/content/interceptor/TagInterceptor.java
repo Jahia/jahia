@@ -84,7 +84,10 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
 
 /**
- * Created by kevan on 08/07/14.
+ * Intercept tags before store them in the JCR,
+ * using the taggingService tag handler to transform them.
+ *
+ * @author kevan
  */
 public class TagInterceptor extends BaseInterceptor{
     TaggingService taggingService;

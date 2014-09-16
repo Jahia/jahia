@@ -72,7 +72,7 @@
 package org.jahia.services.search.exception;
 
 /**
- * Created by kevan on 18/07/14.
+ * @author kevan
  */
 public class InvalidSearchProviderException extends Exception{
     private static final long serialVersionUID = -508286996136966851L;

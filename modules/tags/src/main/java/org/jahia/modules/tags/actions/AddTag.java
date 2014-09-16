@@ -18,7 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by kevan on 20/06/14.
+ * Add tag(s) action
+ *
+ * @author kevan
  */
 public class AddTag extends Action{
     private TaggingService taggingService;

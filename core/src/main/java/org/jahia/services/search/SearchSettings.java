@@ -76,7 +76,9 @@ import org.apache.commons.lang.builder.ToStringBuilder;
 import java.io.Serializable;
 
 /**
- * Created by kevan on 21/07/14.
+ * Search configuration settings
+ *
+ * @author kevan
  */
 public class SearchSettings implements Serializable {
 

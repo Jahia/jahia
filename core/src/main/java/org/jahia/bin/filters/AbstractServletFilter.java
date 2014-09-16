@@ -75,7 +75,9 @@ import javax.servlet.*;
 import java.io.IOException;
 
 /**
- * Created by kevan on 11/03/14.
+ * Base servlet filter implementation
+ *
+ * @author kevan
  */
 public abstract class AbstractServletFilter implements javax.servlet.Filter{
 

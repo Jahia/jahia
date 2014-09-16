@@ -82,7 +82,9 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 /**
- * Created by kevan on 21/07/14.
+ * Listener for external (from other cluster nodes) change events for the search settings.
+ *
+ * @author kevan
  */
 public class SearchSettingsListener extends DefaultEventListener implements ExternalEventListener,
         ApplicationEventPublisherAware {

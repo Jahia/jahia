@@ -19,7 +19,9 @@ import java.util.List;
 
 
 /**
- * Created by kevan on 02/07/14.
+ * Provide a container for tags
+ *
+ * @author kevan
  */
 public class AddTagContainer extends HorizontalPanel {
     protected TagComboBox tagComboBox;
@@ -57,7 +59,9 @@ public class AddTagContainer extends HorizontalPanel {
     }
 
     /**
-     * Created by kevan on 02/07/14.
+     * Provide the input for add tags, autocomplete is provide by this ComboBox
+     *
+     * @author kevan
      */
     public class TagComboBox extends ComboBox<GWTJahiaValueDisplayBean> {
         public TagComboBox(boolean autoComplete) {

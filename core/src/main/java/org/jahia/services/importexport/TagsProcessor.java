@@ -81,7 +81,7 @@ import javax.jcr.RepositoryException;
 /**
  * Attribute processor that handles <code>j:tags</code> attributes
  *
- * Created by kevan on 03/09/14.
+ * @author kevan
  */
 public class TagsProcessor implements AttributeProcessor{
     private TaggingService taggingService;

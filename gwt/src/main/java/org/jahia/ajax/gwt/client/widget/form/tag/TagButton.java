@@ -8,7 +8,9 @@ import com.extjs.gxt.ui.client.widget.form.TextField;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 
 /**
- * Created by kevan on 02/07/14.
+ * Provide a tag representation
+ *
+ * @author kevan
  */
 public class TagButton extends HorizontalPanel {
     private Field<String> tagField;

@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Created by kevan on 20/06/14.
+ * Matching tag(s) action
+ *
+ * @author kevan
  */
 public class MatchingTags extends Action{
     private TaggingService taggingService;

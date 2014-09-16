@@ -73,10 +73,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
-import org.bouncycastle.jce.provider.JDKDSASigner;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
@@ -291,16 +288,81 @@ public class ReferencesHelper {
                 newValues[newValues.length - 1] = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
                 if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
                     session.checkout(n);
-                    n.setProperty(pName, newValues);
+                    JCRPropertyWrapper property = n.setProperty(pName, newValues);
+
+                    try {
+                        property.getParent().getCorrespondingNodePath("live");
+                        String key = property.getParent().getIdentifier() + "/" + property.getName();
+                        if (!session.getResolvedReferences().containsKey(key)) {
+                            session.getResolvedReferences().put(key, new HashSet<String>());
+                        }
+                        ((Set<String>)session.getResolvedReferences().get(key)).add(value);
+                    } catch (ItemNotFoundException e) {
+                        // Not in live
+                    }
                 }
             } else {
                 if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
                     session.checkout(n);
-                    n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+                    JCRPropertyWrapper property = n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+                    String key = property.getParent().getIdentifier() + "/" + property.getName();
+                    try {
+                        property.getParent().getCorrespondingNodePath("live");
+                        session.getResolvedReferences().put(key, property.getValue().getString());
+                    } catch (ItemNotFoundException e) {
+                        // Not in live
+                    }
                 }
             }
         }
     }
 
+    public static void updateReferencesInLive(final Map<String, Object> resolvedReferences) throws RepositoryException {
+        if (!resolvedReferences.isEmpty()) {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (Map.Entry<String, Object> entry : resolvedReferences.entrySet()) {
+                        String nodeIdentifier = StringUtils.substringBeforeLast(entry.getKey(), "/");
+                        String propertyName = StringUtils.substringAfterLast(entry.getKey(), "/");
+
+                        try {
+                            JCRNodeWrapper node = session.getNodeByIdentifier(nodeIdentifier);
+                            ExtendedPropertyDefinition definition = node.getApplicablePropertyDefinition(propertyName);
+                            if (definition != null) {
+                                if (entry.getValue() instanceof String) {
+                                    if (!node.hasProperty(propertyName) || !node.getProperty(propertyName).getString().equals(entry.getValue())) {
+                                        node.setProperty(propertyName, session.getValueFactory().createValue((String) entry.getValue(), definition.getRequiredType()));
+                                    }
+                                } else if (entry.getValue() instanceof Set) {
+                                    Set<String> values = (Set<String>) entry.getValue();
+                                    if (!node.hasProperty(propertyName)) {
+                                        JCRPropertyWrapper property = node.setProperty(propertyName, new Value[0]);
+                                        for (String value : values) {
+                                            property.addValue(session.getValueFactory().createValue(value, definition.getRequiredType()));
+                                        }
+                                    } else {
+                                        JCRPropertyWrapper property = node.getProperty(propertyName);
+                                        Value[] previous = property.getValues();
+                                        for (Value value : previous) {
+                                            values.remove(value.getString());
+                                        }
+                                        for (String value : values) {
+                                            property.addValue(session.getValueFactory().createValue(value, definition.getRequiredType()));
+                                        }
+                                    }
+                                }
+                            }
+                        } catch (ItemNotFoundException e) {
+                            logger.debug("Node not found in live",e);
+                        }
+                    }
+                    session.save();
+                    return null;
+                }
+            });
+            resolvedReferences.clear();
+        }
+    }
 
 }

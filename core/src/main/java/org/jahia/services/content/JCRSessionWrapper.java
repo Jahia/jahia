@@ -162,6 +162,8 @@ public class JCRSessionWrapper implements Session {
     private Map<String, String> uuidMapping = new HashMap<String, String>();
     private Map<String, String> pathMapping = new LinkedHashMap<String, String>();
 
+    private Map<String,Object> resolvedReferences = new HashMap<String, Object>();
+
     private boolean isSystem;
     private boolean skipValidation;
     private boolean isCurrentUserSession = false;
@@ -511,6 +513,11 @@ public class JCRSessionWrapper implements Session {
                 return null;
             }
         });
+
+        if (workspace.getName().equals("default")) {
+            // If reference helper found values to update, update them in live too
+            ReferencesHelper.updateReferencesInLive(getResolvedReferences());
+        }
     }
 
     public void validate() throws ConstraintViolationException, RepositoryException {
@@ -1168,6 +1175,10 @@ public class JCRSessionWrapper implements Session {
 
     public Map<String, String> getPathMapping() {
         return pathMapping;
+    }
+
+    public Map<String, Object> getResolvedReferences() {
+        return resolvedReferences;
     }
 
     public Locale getFallbackLocale() {

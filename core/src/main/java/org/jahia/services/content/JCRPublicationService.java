@@ -282,8 +282,12 @@ public class JCRPublicationService extends JahiaService {
         if (checkPermissions) {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             for (String uuid : uuids) {
-                if (session.getNodeByIdentifier(uuid).hasPermission("publish")) {
-                    checkedUuids.add(uuid);
+                try {
+                    if (session.getNodeByIdentifier(uuid).hasPermission("publish")) {
+                        checkedUuids.add(uuid);
+                    }
+                } catch (javax.jcr.ItemNotFoundException e) {
+                    logger.debug("Impossible to publish missing node", e);
                 }
             }
         } else {

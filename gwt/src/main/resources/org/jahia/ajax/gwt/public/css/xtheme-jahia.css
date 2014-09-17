@@ -1331,7 +1331,7 @@ td.x-grid3-hd-over .x-grid3-hd-inner,td.sort-desc .x-grid3-hd-inner,td.sort-asc 
 
 
 /* menu */
-.x-menu{border:1px solid #fff;background:none;background-color:#fff;}
+.x-menu{width: auto !important;border:1px solid #fff;background:none;background-color:#fff;}
 .x-menu-item-active{background:#eaeaea url(../images/xtheme-jahia/item-over.gif) repeat-x left bottom;border:none;color:#3399ff;}
 .x-menu-item-checked .x-menu-group-item .x-menu-item-icon{background:transparent url(../images/xtheme-jahia/group-checked.gif) no-repeat center;}
 .x-menu-item-arrow{background:transparent url(../images/xtheme-jahia/menu-parent.gif) no-repeat right;}

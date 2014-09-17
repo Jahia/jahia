@@ -17,7 +17,7 @@
 
 	<c:forEach items="${assignedTags}" var="tag" varStatus="status">
             <c:if test="${not empty tag}">
-            	  <c:set var="statement" value="${statement}${operator}${'tags.[j:tagList]= '}${sign}${tag.string}${sign}${' '}" />
+            	  <c:set var="statement" value="${statement}${operator}${'tags.[j:tagList]= '}${sign}${functions:sqlencode(tag.string)}${sign}${' '}" />
             	  <c:set var="operator" value="${'or '}" />
             	  <c:set var="startQuery" value="1" />
             </c:if>

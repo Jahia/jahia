@@ -93,7 +93,7 @@ import java.util.Map;
  * Time: 8:16:07 PM
  */
 @SuppressWarnings("serial")
-public class WorkInProgressActionItem extends BasePollerActionItem implements Poller.PollListener<ProcessPollingEvent> {
+public class WorkInProgressActionItem extends BaseActionItem implements Poller.PollListener<ProcessPollingEvent> {
 
     private static WorkInProgressActionItem instance;
 

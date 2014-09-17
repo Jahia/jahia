@@ -18,7 +18,7 @@
         <property name="icon" value="workInProgress"/>
         <property name="titleKey" value="label.backgroundJobs"/>
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem" parent="basePollectActionItem"/>
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem" />
         </property>
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
@@ -31,7 +31,7 @@
         <property name="icon" value="workInProgress"/>
         <property name="titleKey" value="label.backgroundJobs"/>
         <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem" parent="basePollectActionItem">
+            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.WorkInProgressActionItem" >
                 <property name="adminMode" value="false"/>
             </bean>
         </property>
@@ -1486,8 +1486,4 @@
         <property name="icon" value="scmResolve"/>
     </bean>
     
-    <bean id="basePollectActionItem" class="org.jahia.ajax.gwt.client.widget.toolbar.action.BasePollerActionItem" abstract="true">
-        <property name="useWebsockets" value="#{jahiaProperties['server'] != 'jboss'}"/>
-    </bean>
-
 </beans>

@@ -88,7 +88,7 @@ import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
  * Time: 1:51:18 PM
  */
 @SuppressWarnings("serial")
-public class NumberOfTasksWorkflowMenuActionItem extends BasePollerActionItem implements Poller.PollListener<TaskEvent> {
+public class NumberOfTasksWorkflowMenuActionItem extends BaseActionItem implements Poller.PollListener<TaskEvent> {
 
     public void init(final GWTJahiaToolbarItem gwtToolbarItem, final Linker linker) {
         super.init(gwtToolbarItem, linker);

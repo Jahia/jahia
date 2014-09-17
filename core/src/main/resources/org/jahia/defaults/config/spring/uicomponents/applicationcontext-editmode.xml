@@ -102,7 +102,7 @@
                         </bean>
                         <bean class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
                             <property name="actionItem">
-                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem" parent="basePollectActionItem"/>
+                                <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NumberOfTasksWorkflowMenuActionItem" />
                             </property>
                             <property name="titleKey" value="label.numberoftasksforuser"/>
                         </bean>

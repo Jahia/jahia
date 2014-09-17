@@ -105,6 +105,8 @@ import org.jahia.ajax.gwt.client.util.Formatter;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
+import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowActionDialog;
 import org.jahia.ajax.gwt.client.widget.workflow.WorkflowDashboardEngine;
 
@@ -125,6 +127,8 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
     private String nodeId;
     private String locale;
+
+    private Poller.PollListener<TaskEvent> listener;
 
     /**
      * Initializes an instance of this class.
@@ -376,7 +380,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
 
         ColumnModel cm = new ColumnModel(config);
 
-        TreeGrid<GWTJahiaWorkflowHistoryItem> tree = new TreeGrid<GWTJahiaWorkflowHistoryItem>(store, cm);
+        final TreeGrid<GWTJahiaWorkflowHistoryItem> tree = new TreeGrid<GWTJahiaWorkflowHistoryItem>(store, cm);
         tree.setStateful(true);
         tree.setBorders(true);
         tree.getStyle().setNodeOpenIcon(StandardIconsProvider.STANDARD_ICONS.workflow());
@@ -385,7 +389,43 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
-        add(tree);
+        add(tree);;
+
+        listener = new Poller.PollListener<TaskEvent>() {
+            @Override
+            public void handlePollingResult(TaskEvent result) {
+                if (result.getEndedTask() != null) {
+                    for (GWTJahiaWorkflowHistoryItem item : new ArrayList<GWTJahiaWorkflowHistoryItem>(store.getAllItems())) {
+
+                        if (item instanceof GWTJahiaWorkflowHistoryProcess) {
+                            for (GWTJahiaWorkflowTask task : new ArrayList<GWTJahiaWorkflowTask>(item.getAvailableTasks())) {
+                                if (task.getId().equals(result.getEndedTask())) {
+                                    item.getAvailableTasks().remove(task);
+                                }
+                            }
+                            if (item.getAvailableTasks().isEmpty()) {
+                                store.remove(item);
+                            }
+                        } else if (item instanceof GWTJahiaWorkflowHistoryTask) {
+                            if (item.getId().equals(result.getEndedTask())) {
+                                store.remove(item);
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        Poller.getInstance().registerListener(listener, TaskEvent.class);
+
+        engine.addListener(Events.Hide, new Listener<BaseEvent>() {
+            public void handleEvent(BaseEvent be) {
+                if (listener != null) {
+                    Poller.getInstance().unregisterListener(listener, TaskEvent.class);
+                }
+            }
+        });
+
+
     }
 
 }

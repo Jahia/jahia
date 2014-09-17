@@ -113,6 +113,7 @@ public class JahiaGWTParameters {
     public static final String DEVELOPMENT_MODE = "developmentMode";
     public static final String MODULES_SOURCES_DISK_PATH = "modulesSourcesDiskPath";
     public static final String TOOLBAR_MESSAGES = "toolbarMessages";
+    public static final String USE_WEBSOCKETS = "useWebsockets";
 
     public static final String SYSTEM_USER = " system "; // org.jahia.jaas.JahiaLoginModule.SYSTEM
 
@@ -160,6 +161,10 @@ public class JahiaGWTParameters {
 
     public static String getCopyright() {
         return jahiaParamDictionary.get(COPYRIGHT);
+    }
+
+    public static Boolean isWebSockets() {
+        return Boolean.parseBoolean(jahiaParamDictionary.get(USE_WEBSOCKETS));
     }
 
     public static String getUILanguage() {

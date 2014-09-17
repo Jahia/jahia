@@ -279,6 +279,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
 
     @Override
     public void abortProcess(final String processId) {
+        List<Long> taskIds = runtimeEngine.getTaskService().getTasksByProcessInstanceId(Long.parseLong(processId));
+        for (Long taskId : taskIds) {
+            observationManager.notifyTaskEnded(key, Long.toString(taskId));
+        }
         executeCommand(new AbortProcessCommand(processId));
     }
 
@@ -461,7 +465,7 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
             pipelineEnvironment.put(AbstractPeopleAssignmentValve.ENV_JBPM_WORKFLOW_PROVIDER, this);
             peopleAssignmentPipeline.setEnvironment(pipelineEnvironment);
 
-            kieSession.addEventListener(new JBPMListener(this));
+            kieSession.addEventListener(listener);
 
             logger.info("Rebuilding KIE base took {} ms", System.currentTimeMillis() - timer);
         }

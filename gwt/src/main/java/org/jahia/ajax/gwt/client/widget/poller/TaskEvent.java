@@ -79,6 +79,7 @@ public class TaskEvent extends RPCEvent implements Serializable {
     private static final long serialVersionUID = 7742645002324255207L;
     private Integer numberOfTasks;
     private String newTask;
+    private String endedTask;
     private String endedWorkflow;
 
     public Integer getNumberOfTasks() {
@@ -95,6 +96,14 @@ public class TaskEvent extends RPCEvent implements Serializable {
 
     public void setNewTask(String newTaskDisplayName) {
         this.newTask = newTaskDisplayName;
+    }
+
+    public String getEndedTask() {
+        return endedTask;
+    }
+
+    public void setEndedTask(String endedTask) {
+        this.endedTask = endedTask;
     }
 
     public String getEndedWorkflow() {

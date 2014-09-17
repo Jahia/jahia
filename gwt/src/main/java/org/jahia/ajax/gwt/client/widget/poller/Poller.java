@@ -77,6 +77,7 @@ import com.google.gwt.core.client.Scheduler;
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,9 +94,9 @@ public class Poller {
 
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
 
-    public static Poller getInstance(boolean useWebsockets) {
+    public static Poller getInstance() {
         if (instance == null) {
-            instance = new Poller(useWebsockets);
+            instance = new Poller(JahiaGWTParameters.isWebSockets());
         }
         return instance;
     }
@@ -160,6 +161,12 @@ public class Poller {
             listeners.put(eventType, new ArrayList<PollListener>());
         }
         listeners.get(eventType).add(listener);
+    }
+
+    public void unregisterListener(PollListener listener, Class eventType) {
+        if (listeners.containsKey(eventType)) {
+            listeners.get(eventType).remove(listener);
+        }
     }
 
     public interface PollListener<T> {

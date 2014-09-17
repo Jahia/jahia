@@ -93,10 +93,12 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -227,6 +229,9 @@ public class GWTInitializer {
             params.put(JahiaGWTParameters.BASE_URL, contextPath + Render.getRenderServletPath() + "/" + params.get("workspace")  + "/" + locale.toString());
         }
         params.put(JahiaGWTParameters.TOOLBAR_MESSAGES, ToolbarWarningsService.getInstance().getMessagesValueAsString(uilocale));
+
+        Properties factoryBean = (Properties) SpringContextSingleton.getBean("jahiaProperties");
+        params.put(JahiaGWTParameters.USE_WEBSOCKETS, Boolean.toString(!"jboss".equals(factoryBean.getProperty("server"))));
 
         String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
         if (customCkeditorConfig != null) {

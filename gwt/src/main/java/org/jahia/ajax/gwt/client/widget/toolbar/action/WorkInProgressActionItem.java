@@ -110,7 +110,7 @@ public class WorkInProgressActionItem extends BasePollerActionItem implements Po
         instance = this;
         refreshStatus();
 
-        Poller.getInstance(isUseWebsockets()).registerListener(this, ProcessPollingEvent.class);
+        Poller.getInstance().registerListener(this, ProcessPollingEvent.class);
     }
 
     public void handlePollingResult(ProcessPollingEvent result) {

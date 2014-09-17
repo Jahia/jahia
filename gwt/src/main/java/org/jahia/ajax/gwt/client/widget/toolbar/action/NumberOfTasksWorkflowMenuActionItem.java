@@ -97,7 +97,7 @@ public class NumberOfTasksWorkflowMenuActionItem extends BasePollerActionItem im
                 updateLabel(result);
             }
         });
-        Poller.getInstance(isUseWebsockets()).registerListener(this, TaskEvent.class);
+        Poller.getInstance().registerListener(this, TaskEvent.class);
 
     }
 

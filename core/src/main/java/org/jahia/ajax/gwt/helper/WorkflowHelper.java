@@ -708,12 +708,8 @@ public class WorkflowHelper {
                                     taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                                 }
                                 taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser));
-<<<<<<< .working
-                                if (!newTask && jahiaUser.equals(task.getAssignee())) {
-=======
                                 if (!newTask) {
                                     taskEvent.setEndedTask(task.getId());
->>>>>>> .merge-right.r50815
                                     taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
                                 }
                             } catch (GWTJahiaServiceException e) {

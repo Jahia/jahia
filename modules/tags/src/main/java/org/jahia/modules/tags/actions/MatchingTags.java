@@ -1,13 +1,12 @@
 package org.jahia.modules.tags.actions;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Action;
 import org.jahia.bin.ActionResult;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.tags.TaggingService;
+import org.jahia.services.tags.BaseTagAction;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -21,8 +20,7 @@ import java.util.Map;
  *
  * @author kevan
  */
-public class MatchingTags extends Action{
-    private TaggingService taggingService;
+public class MatchingTags extends BaseTagAction{
 
     @Override
     public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
@@ -41,9 +39,5 @@ public class MatchingTags extends Action{
         }
         result.put("tags", tagsJSON);
         return new ActionResult(HttpServletResponse.SC_OK, null, result);
-    }
-
-    public void setTaggingService(TaggingService taggingService) {
-        this.taggingService = taggingService;
     }
 }

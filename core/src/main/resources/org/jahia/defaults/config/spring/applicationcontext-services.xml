@@ -310,4 +310,8 @@
     <bean abstract="true" id="abstractTranslationProvider" class="org.jahia.services.translation.AbstractTranslationProvider" init-method="init">
         <property name="translationService" ref="TranslationService" />
     </bean>
+
+    <bean id="BaseTagAction" class="org.jahia.services.tags.BaseTagAction" abstract="true">
+        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
+    </bean>
 </beans>

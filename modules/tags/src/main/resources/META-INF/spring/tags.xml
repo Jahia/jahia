@@ -3,20 +3,11 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean class="org.jahia.modules.tags.actions.RemoveTag" >
-        <property name="name" value="removeTag"/>
-        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
+    <bean class="org.jahia.modules.tags.actions.RemoveTag" parent="BaseTagAction" />
 
-    <bean class="org.jahia.modules.tags.actions.AddTag" >
-        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
+    <bean class="org.jahia.modules.tags.actions.AddTag" parent="BaseTagAction" />
 
-    <bean class="org.jahia.modules.tags.actions.MatchingTags" >
-        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
+    <bean class="org.jahia.modules.tags.actions.MatchingTags" parent="BaseTagAction" />
 
-    <bean class="org.jahia.modules.tags.actions.TransformTag" >
-        <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
+    <bean class="org.jahia.modules.tags.actions.TransformTag" parent="BaseTagAction" />
 </beans>

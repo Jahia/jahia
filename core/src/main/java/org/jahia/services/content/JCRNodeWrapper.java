@@ -75,6 +75,7 @@ import org.apache.commons.lang.mutable.MutableInt;
 import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.content.decorator.JCRPlaceholderNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -135,7 +136,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return the user of the current <code>Session</code>
      */
-    org.jahia.services.content.decorator.JCRUserNode getUser();
+    JCRUserNode getUser();
 
     /**
      * {@inheritDoc}

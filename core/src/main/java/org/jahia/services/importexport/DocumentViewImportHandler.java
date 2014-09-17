@@ -194,9 +194,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             } else {
                 node = (JCRNodeWrapper) session.getNode(rootPath);
             }
-            if (node.isNodeType("jnt:user")) {
-                placeHoldersMap.put("$user", "u:" + node.getName().substring(node.getPath().lastIndexOf("/") + 1));
-            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage()+ getLocation(), e);
             throw new IOException();

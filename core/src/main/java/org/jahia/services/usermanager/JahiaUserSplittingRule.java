@@ -79,4 +79,6 @@ package org.jahia.services.usermanager;
 public interface JahiaUserSplittingRule {
 
     public String getPathForUsername(String username);
+
+    public int getNumberOfSegments();
 }

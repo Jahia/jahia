@@ -81,6 +81,8 @@ import java.util.List;
  */
 public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule {
 
+    private static final int NUMBER_OF_SEGMENTS = 3;
+
     private static int round(float a) {
         // we use here the same code for Math.round() as it was in Java 6/7, because in the Java 8 the implementation has changed with the
         // side-effect of producing different results in some cases.
@@ -117,6 +119,10 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         // Additional Math.abs just in case of userNameHashcode==Integer.MIN_VALUE
         int i = Math.abs(userNameHashcode % 100);
         return Character.toString((char) ('a' + round(i / 10)))+Character.toString((char)('a'+ (i%10)));
+    }
+
+    public int getNumberOfSegments() {
+        return NUMBER_OF_SEGMENTS;
     }
 
     public void setNonSplittedUsers(List<String> nonSplittedUsers) {

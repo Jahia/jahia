@@ -86,7 +86,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -310,7 +309,6 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             objectOutput.writeUTF(givenName);
             objectOutput.writeUTF(familyName);
             objectOutput.writeUTF(businessEmail);
-            objectOutput.writeBoolean(emailNotifioncationsDisabled);
         }
 
         @Override
@@ -319,11 +317,6 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             givenName = objectInput.readUTF();
             familyName = objectInput.readUTF();
             businessEmail = objectInput.readUTF();
-            try {
-                emailNotifioncationsDisabled = objectInput.readBoolean();
-            } catch (EOFException e) {
-                // in case we are reading older version of the object
-            }
         }
     }
 

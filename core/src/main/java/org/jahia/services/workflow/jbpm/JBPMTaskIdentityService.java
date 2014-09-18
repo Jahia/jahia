@@ -74,6 +74,7 @@ package org.jahia.services.workflow.jbpm;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.task.model.Group;
@@ -86,6 +87,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -147,7 +150,9 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         for (String userKey : userKeyList) {
             JCRUserNode jahiaUser = userService.lookupUserByPath(userKey);
             try {
-                results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser.getProperty("lastName").getString(), jahiaUser.getProperty("email").getString()));
+                results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser
+                        .getProperty("lastName").getString(), jahiaUser.getProperty("email").getString(),
+                        UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -171,8 +176,9 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JCRUserNode user = service.lookupUserByPath(userId);
         if (user != null) {
-            return new UserImpl(userId, user.getPropertyAsString("j:firstName"), user.getPropertyAsString("j:lastName"),
-                    user.getPropertyAsString("j:email"));
+            return new UserImpl(userId, user.getPropertyAsString("j:firstName"),
+                    user.getPropertyAsString("j:lastName"), user.getPropertyAsString("j:email"),
+                    UserPreferencesHelper.areEmailNotificationsDisabled(user));
         }
         return null;
     }
@@ -198,15 +204,18 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         private String givenName;
         private String familyName;
         private String businessEmail;
+        private boolean emailNotifioncationsDisabled;
 
-        UserImpl(String id, String givenName, String familyName, String businessEmail) {
+        UserImpl(String id, String givenName, String familyName, String businessEmail, boolean emailNotifioncationsDisabled) {
             this.id = id;
             this.givenName = givenName;
             this.familyName = familyName;
             this.businessEmail = businessEmail;
+            this.emailNotifioncationsDisabled = emailNotifioncationsDisabled;
         }
 
         protected UserImpl() {
+            super();
         }
 
         @Id
@@ -309,6 +318,7 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             objectOutput.writeUTF(givenName);
             objectOutput.writeUTF(familyName);
             objectOutput.writeUTF(businessEmail);
+            objectOutput.writeBoolean(emailNotifioncationsDisabled);
         }
 
         @Override
@@ -317,6 +327,22 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             givenName = objectInput.readUTF();
             familyName = objectInput.readUTF();
             businessEmail = objectInput.readUTF();
+            try {
+                emailNotifioncationsDisabled = objectInput.readBoolean();
+            } catch (EOFException e) {
+                // in case we are reading older version of the object
+            }
+        }
+
+        /**
+         * Returns <code>true</code> if the user has explicitly disabled e-mail
+         * notification in the profile.
+         * 
+         * @return <code>true</code> if the user has explicitly disabled e-mail
+         *         notification in the profile
+         */
+        public boolean areEmailNotificationsDisabled() {
+            return emailNotifioncationsDisabled;
         }
     }
 

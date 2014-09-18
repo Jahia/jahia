@@ -83,6 +83,7 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 
@@ -100,6 +101,22 @@ public final class UserPreferencesHelper {
      */
     private UserPreferencesHelper() {
         super();
+    }
+
+    /**
+     * Returns <code>true</code> if the user has explicitly disabled e-mail
+     * notification in the profile.
+     * 
+     * @param user
+     *            the user to check preferences
+     * @return <code>true</code> if the user has explicitly disabled e-mail
+     *         notification in the profile
+     */
+    public static boolean areEmailNotificationsDisabled(JahiaUser user) {
+        String emailNotificationsDisabled = user
+                .getProperty("emailNotificationsDisabled");
+        return (emailNotificationsDisabled != null && "true"
+                .equals(emailNotificationsDisabled));
     }
 
     /**
@@ -208,7 +225,7 @@ public final class UserPreferencesHelper {
      */
     public static String getPersonalizedEmailAddress(String email,
             JCRUserNode user) {
-        if (email == null || email.contains("<")) {
+        if (email == null || email.length() == 0 || email.contains("<")) {
             return email;
         }
     

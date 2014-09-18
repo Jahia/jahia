@@ -79,6 +79,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.*;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
@@ -288,18 +289,26 @@ public class JBPMMailProducer {
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
                     for (JahiaPrincipal principal : principals) {
                         if (principal instanceof JahiaUser) {
-                            users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
+                            if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser) principal)) {
+                                users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
+                            }
                         } else if (principal instanceof JahiaGroup) {
                             JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                             if (groupNode != null) {
                                 for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {
-                                    users.add(taskIdentityService.getUserById(user.getPath()));
+                                    if (!UserPreferencesHelper.areEmailNotificationsDisabled(user)) {
+                                        users.add(taskIdentityService.getUserById(user.getPath()));
+                                    }
                                 }
                             }
                         }
                     }
                 } else {
-                    users.add(taskIdentityService.getUserById(userId));
+                    User userById = taskIdentityService.getUserById(userId);
+                    if (userById instanceof JBPMTaskIdentityService.UserImpl
+                            && !((JBPMTaskIdentityService.UserImpl) userById).areEmailNotificationsDisabled()) {
+                        users.add(userById);
+                    }
                 }
             }
             email.addRecipients(recipientType, getAddresses(users));
@@ -353,6 +362,9 @@ public class JBPMMailProducer {
         }
         Set<JCRUserNode> recursiveUsers = jahiaGroup.getRecursiveUserMembers();
         for (JCRUserNode user : recursiveUsers) {
+            if (UserPreferencesHelper.areEmailNotificationsDisabled(user)) {
+                continue;
+            }
             Address address = null;
             try {
                 address = getAddress(user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(), user.getProperty("j:email").getString());
@@ -489,12 +501,9 @@ public class JBPMMailProducer {
             bindings.put("currentUser", jahiaUser);
         }
         bindings.put("user", jahiaUser);
-<<<<<<< .working
-=======
         if (jahiaUser != null && !UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
             bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
         }
->>>>>>> .merge-right.r50838
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);

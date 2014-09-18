@@ -1,4 +1,4 @@
-to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
+to: #if ($userNotificationEmail) $userNotificationEmail #end
 to-users: assignableFor(
 subject: Veröffentlichungsworkflow aktzeptiert von ${currentUser.getName()}
 text: Hi,

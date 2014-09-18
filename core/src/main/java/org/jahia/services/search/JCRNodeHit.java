@@ -79,6 +79,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
@@ -101,6 +102,8 @@ import org.jahia.services.render.RenderContext;
  */
 public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
+    private static final Pattern SITES_CONTENTS_FILES = Pattern.compile("/sites/([^/]+)/(contents|files)/.*");
+    
     private static Logger logger = LoggerFactory.getLogger(JCRNodeHit.class);
     
     private String link  = null;
@@ -244,7 +247,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
        
     private boolean shouldRetrieveUsages(JCRNodeWrapper node) {
         boolean shouldRetrieveUsages = false;
-        if (node.getPath().matches("/sites/([^/]+)/(contents|files)/.*")) {
+        if (SITES_CONTENTS_FILES.matcher(node.getPath()).matches()) {
             shouldRetrieveUsages = true;
         }
         return shouldRetrieveUsages;

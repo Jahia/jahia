@@ -489,6 +489,12 @@ public class JBPMMailProducer {
             bindings.put("currentUser", jahiaUser);
         }
         bindings.put("user", jahiaUser);
+<<<<<<< .working
+=======
+        if (jahiaUser != null && !UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
+            bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
+        }
+>>>>>>> .merge-right.r50838
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);

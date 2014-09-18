@@ -1,10 +1,5 @@
-<<<<<<< .working
 to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
 subject: Publication workflow rejected by ${currentUser.getName()}
-=======
-to: #if ($userNotificationEmail) $userNotificationEmail #end
-subject: Publication workflow rejected by ${currentUser.getUsername()}
->>>>>>> .merge-right.r50828
 text: Hi,
 
 The publication of the following items has been rejected on ${date.format("short","short",$submissionDate,$locale)} by ${currentUser.getName()} :

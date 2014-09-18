@@ -460,31 +460,11 @@ public class WorkflowService implements BeanPostProcessor {
                             if (site == null) {
                                 site = node.getResolveSite();
                             }
-<<<<<<< .working
                             JahiaGroup group;
                             group = groupService.lookupGroup(site.getSiteKey(),
                                     principalName).getJahiaGroup();
                             logger.debug("group "+group.getGroupKey()+" is granted");
-=======
-                            JahiaGroup group = groupService.lookupGroup(site.getSiteKey(),
-                                    principalName);
-                            if (group == null) {
-                                group = groupService.lookupGroup(null, principalName);
-                            }
-                            if (group != null) {
-                                if (logger.isDebugEnabled()){
-                                    logger.debug("group "+group.getGroupKey()+" is granted");
-                                }
->>>>>>> .merge-right.r50828
                                 principals.add(group);
-<<<<<<< .working
-=======
-                            } else {
-                                if (logger.isDebugEnabled()){
-                                    logger.debug("Can't find group "+principalName+" on site "+site.getSiteKey() +"("+site.getID()+"). Group is not granted");
-                                }
-                            }
->>>>>>> .merge-right.r50828
                         }
                     }
                 }

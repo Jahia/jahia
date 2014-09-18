@@ -208,7 +208,7 @@ public final class UserPreferencesHelper {
      */
     public static String getPersonalizedEmailAddress(String email,
             JCRUserNode user) {
-        if (email == null || email.contains("<")) {
+        if (email == null || email.length() == 0 || email.contains("<")) {
             return email;
         }
     

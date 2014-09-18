@@ -72,20 +72,24 @@
 package org.jahia.services.workflow.jbpm;
 
 import org.jahia.registries.ServicesRegistry;
+<<<<<<< .working
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
+=======
+import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.usermanager.JahiaGroup;
+>>>>>>> .merge-right.r50828
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.task.model.Group;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -96,7 +100,6 @@ import java.util.List;
  * Identity Manager for connecting jBPM to Jahia Users
  */
 public class JBPMTaskIdentityService implements TaskIdentityService {
-    private static transient Logger logger = LoggerFactory.getLogger(JBPMTaskIdentityService.class);
     protected JahiaGroupManagerService groupService;
     protected JahiaUserManagerService userService;
 
@@ -145,12 +148,19 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<String> userKeyList = userService.getUserList();
         List<User> results = new ArrayList<User>();
         for (String userKey : userKeyList) {
+<<<<<<< .working
             JCRUserNode jahiaUser = userService.lookupUserByPath(userKey);
             try {
                 results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser.getProperty("lastName").getString(), jahiaUser.getProperty("email").getString()));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+=======
+            JahiaUser jahiaUser = userService.lookupUserByKey(userKey);
+            results.add(new UserImpl(jahiaUser.getUserKey(), jahiaUser.getProperty("firstName"), jahiaUser
+                    .getProperty("lastName"), jahiaUser.getProperty("email"), UserPreferencesHelper
+                    .areEmailNotificationsDisabled(jahiaUser)));
+>>>>>>> .merge-right.r50828
         }
         return results;
     }
@@ -171,8 +181,14 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JCRUserNode user = service.lookupUserByPath(userId);
         if (user != null) {
+<<<<<<< .working
             return new UserImpl(userId, user.getPropertyAsString("j:firstName"), user.getPropertyAsString("j:lastName"),
                     user.getPropertyAsString("j:email"));
+=======
+            Properties properties = user.getProperties();
+            return new UserImpl(userId, properties.getProperty("j:firstName"), properties.getProperty("j:lastName"),
+                    properties.getProperty("j:email"), UserPreferencesHelper.areEmailNotificationsDisabled(user));
+>>>>>>> .merge-right.r50828
         }
         return null;
     }
@@ -198,15 +214,18 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         private String givenName;
         private String familyName;
         private String businessEmail;
+        private boolean emailNotifioncationsDisabled;
 
-        UserImpl(String id, String givenName, String familyName, String businessEmail) {
+        UserImpl(String id, String givenName, String familyName, String businessEmail, boolean emailNotifioncationsDisabled) {
             this.id = id;
             this.givenName = givenName;
             this.familyName = familyName;
             this.businessEmail = businessEmail;
+            this.emailNotifioncationsDisabled = emailNotifioncationsDisabled;
         }
 
         protected UserImpl() {
+            super();
         }
 
         @Id
@@ -317,6 +336,17 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
             givenName = objectInput.readUTF();
             familyName = objectInput.readUTF();
             businessEmail = objectInput.readUTF();
+        }
+
+        /**
+         * Returns <code>true</code> if the user has explicitly disabled e-mail
+         * notification in the profile.
+         * 
+         * @return <code>true</code> if the user has explicitly disabled e-mail
+         *         notification in the profile
+         */
+        public boolean areEmailNotificationsDisabled() {
+            return emailNotifioncationsDisabled;
         }
     }
 

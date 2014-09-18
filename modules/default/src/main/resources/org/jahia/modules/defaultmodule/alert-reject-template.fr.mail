@@ -1,5 +1,10 @@
+<<<<<<< .working
 to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
 subject: Publication refusée par ${currentUser.getName()}
+=======
+to: #if ($userNotificationEmail) $userNotificationEmail #end
+subject: Publication refusée par ${currentUser.getUsername()}
+>>>>>>> .merge-right.r50828
 text: Bonjour,
 
 La publication des éléments suivants a été refusée le ${date.format("short","short",$submissionDate,$locale)} par ${currentUser.getName()}

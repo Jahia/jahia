@@ -77,9 +77,16 @@ import org.apache.velocity.tools.generic.DateTool;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
+<<<<<<< .working
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.*;
+=======
+import org.jahia.services.preferences.user.UserPreferencesHelper;
+import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUser;
+>>>>>>> .merge-right.r50828
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
@@ -288,18 +295,31 @@ public class JBPMMailProducer {
                     List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(definition, task, Long.toString(workItem.getProcessInstanceId()), session);
                     for (JahiaPrincipal principal : principals) {
                         if (principal instanceof JahiaUser) {
-                            users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
+                            if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser) principal)) {
+                                users.add(taskIdentityService.getUserById(((JahiaUser) principal).getUserKey()));
+                            }
                         } else if (principal instanceof JahiaGroup) {
+<<<<<<< .working
                             JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                             if (groupNode != null) {
                                 for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {
                                     users.add(taskIdentityService.getUserById(user.getPath()));
                                 }
+=======
+                            for (Principal user : ((JahiaGroup) principal).getRecursiveUserMembers()) {
+                                if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser)user)) {
+                                    users.add(taskIdentityService.getUserById(((JahiaUser)user).getUserKey()));
+                                }
+>>>>>>> .merge-right.r50828
                             }
                         }
                     }
                 } else {
-                    users.add(taskIdentityService.getUserById(userId));
+                    User userById = taskIdentityService.getUserById(userId);
+                    if (userById instanceof JBPMTaskIdentityService.UserImpl
+                            && !((JBPMTaskIdentityService.UserImpl) userById).areEmailNotificationsDisabled()) {
+                        users.add(userById);
+                    }
                 }
             }
             email.addRecipients(recipientType, getAddresses(users));
@@ -353,6 +373,9 @@ public class JBPMMailProducer {
         }
         Set<JCRUserNode> recursiveUsers = jahiaGroup.getRecursiveUserMembers();
         for (JCRUserNode user : recursiveUsers) {
+            if (UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
+                continue;
+            }
             Address address = null;
             try {
                 address = getAddress(user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(), user.getProperty("j:email").getString());
@@ -489,6 +512,10 @@ public class JBPMMailProducer {
             bindings.put("currentUser", jahiaUser);
         }
         bindings.put("user", jahiaUser);
+        if (jahiaUser != null && !UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)) {
+            bindings.put("userNotificationEmail", UserPreferencesHelper.getPersonalizedEmailAddress(jahiaUser));
+            
+        }
         bindings.put("date", new DateTool());
         bindings.put("submissionDate", Calendar.getInstance());
         bindings.put("locale", locale);

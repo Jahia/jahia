@@ -1,5 +1,10 @@
+<<<<<<< .working
 to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
 subject: Veröffentlichungsworkflow abgewiesen von ${currentUser.getName()}
+=======
+to: #if ($userNotificationEmail) $userNotificationEmail #end
+subject: Veröffentlichungsworkflow abgewiesen von ${currentUser.getUsername()}
+>>>>>>> .merge-right.r50828
 text: Hi,
 
 Ein Veröffentlichungsworkflow mit einem Validierungsschritten wurde am ${date.format("short","short",$submissionDate,$locale)} zurückgewiesen von ${currentUser.getName()} :

@@ -1,4 +1,8 @@
+<<<<<<< .working
 to: #if( $user.properties.get('j:email').string ) ${user.properties.get('j:email').string} #end
+=======
+to: #if ($userNotificationEmail) $userNotificationEmail #end
+>>>>>>> .merge-right.r50828
 to-users: assignableFor(review)
 subject: Publication workflow by ${currentUser.getName()}
 text: Hi,

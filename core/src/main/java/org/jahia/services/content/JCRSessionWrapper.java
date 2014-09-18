@@ -617,6 +617,11 @@ public class JCRSessionWrapper implements Session {
         }
 
         return ccve;
+
+        if (workspace.getName().equals("default")) {
+            // If reference helper found values to update, update them in live too
+            ReferencesHelper.updateReferencesInLive(getResolvedReferences());
+        }
     }
 
     private CompositeConstraintViolationException addError(CompositeConstraintViolationException ccve, ConstraintViolationException exception) {

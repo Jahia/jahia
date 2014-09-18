@@ -73,7 +73,12 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+<<<<<<< .working
 import org.jahia.services.content.*;
+=======
+import org.bouncycastle.jce.provider.JDKDSASigner;
+import org.jahia.services.content.*;
+>>>>>>> .merge-right.r50841
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 

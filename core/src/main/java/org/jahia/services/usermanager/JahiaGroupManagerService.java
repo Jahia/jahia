@@ -422,9 +422,9 @@ public class JahiaGroupManagerService extends JahiaService {
                         "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE "
                 );
                 if (siteKey == null) {
-                    query.append("ISCHILDNODE(g, '/groups')");
+                    query.append("ISDESCENDANTNODE(g, '/groups')");
                 } else {
-                    query.append("ISCHILDNODE(g, '/sites/").append(siteKey).append("/groups')");
+                    query.append("(ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')").append(" OR ISDESCENDANTNODE(g, '/groups/providers'))");
                 }
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
@@ -690,7 +690,7 @@ public class JahiaGroupManagerService extends JahiaService {
 
     private SelfPopulatingCache getGroupPathByGroupNameCache() {
         if (groupPathByGroupNameCache == null) {
-            groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new UserPathByUserNameCacheEntryFactory());
+            groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new GroupPathByGroupNameCacheEntryFactory());
         }
         return groupPathByGroupNameCache;
     }
@@ -712,7 +712,7 @@ public class JahiaGroupManagerService extends JahiaService {
         return new GroupPathByGroupNameCacheKey(siteKey, groupName);
     }
 
-    class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+    class GroupPathByGroupNameCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
             final GroupPathByGroupNameCacheKey c = (GroupPathByGroupNameCacheKey) key;

@@ -98,9 +98,20 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
     }
 
     public String getPathForUsername(String username) {
+        return getPathForUsername(username, true);
+    }
+
+    public String getRelativePathForUsername(String username) {
+        return getPathForUsername(username, false);
+    }
+
+    private String getPathForUsername(String username, boolean addUsersRootNode) {
         StringBuilder builder = new StringBuilder();
+        if (addUsersRootNode) {
+            builder.append(usersRootNode);
+        }
         if (nonSplittedUsers.contains(username)) {
-            return builder.append(usersRootNode).append("/").append(username).toString();
+            return builder.append("/").append(username).toString();
         }
         int userNameHashcode = Math.abs(username.hashCode());
         String firstFolder = getFolderName(userNameHashcode).toLowerCase();
@@ -110,7 +121,7 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         String secondFolder = getFolderName(userNameHashcode).toLowerCase();
         userNameHashcode = round(userNameHashcode/100);
         String thirdFolder = getFolderName(userNameHashcode).toLowerCase();
-        return builder.append(usersRootNode).append("/").append(firstFolder).append("/").append(secondFolder).append(
+        return builder.append("/").append(firstFolder).append("/").append(secondFolder).append(
                 "/").append(thirdFolder).append("/").append(JCRContentUtils.escapeLocalNodeName(
                 username)).toString();
     }
@@ -120,7 +131,6 @@ public class DefaultJahiaUserSplittingRuleImpl implements JahiaUserSplittingRule
         int i = Math.abs(userNameHashcode % 100);
         return Character.toString((char) ('a' + round(i / 10)))+Character.toString((char)('a'+ (i%10)));
     }
-
     public int getNumberOfSegments() {
         return NUMBER_OF_SEGMENTS;
     }

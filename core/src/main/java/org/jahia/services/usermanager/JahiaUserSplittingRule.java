@@ -80,5 +80,16 @@ public interface JahiaUserSplittingRule {
 
     public String getPathForUsername(String username);
 
+    /**
+     * Return split path without the users root node
+     * @param username
+     * @return user node path after users root
+     */
+    public String getRelativePathForUsername(String username);
+
+    /**
+     * Return the number of split folders that are added between the users root node and the user node
+     * @return number of segments
+     */
     public int getNumberOfSegments();
 }

@@ -364,6 +364,7 @@
  - j:groupsFolderConfig (string) nofulltext
  - j:groupsFolderSkeleton (string) nofulltext
  + * (jnt:group) = jnt:group
+ + * (jnt:groupsFolder)
 
 [jnt:member] > nt:base, jmix:observable
  - j:member (weakreference) < jnt:user, jnt:group

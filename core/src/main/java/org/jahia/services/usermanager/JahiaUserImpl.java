@@ -160,7 +160,7 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     @Override
     public boolean verifyPassword(String password) {
-        return StringUtils.isNotEmpty(password) && JahiaUserManagerService.encryptPassword(password).equals(getProperty(JCRUserNode.J_PASSWORD));
+        throw new UnsupportedOperationException("Method not supported here, use JCRUserNode instead");
     }
 
     @Override

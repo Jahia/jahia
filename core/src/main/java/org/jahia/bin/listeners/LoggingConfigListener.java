@@ -101,7 +101,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
         if (System.getProperty(JAHIA_LOG4J_CONFIG) == null) {
             lookup = getClass().getResource("/" + JAHIA_LOG4J_XML) != null ? "classpath:" + JAHIA_LOG4J_XML
                     : "/WEB-INF/etc/config/log4j.xml";
-            System.setProperty(JAHIA_LOG4J_CONFIG, lookup);
+            JahiaContextLoaderListener.setSystemProperty(JAHIA_LOG4J_CONFIG, lookup);
         } else {
             lookup = System.getProperty(JAHIA_LOG4J_CONFIG, lookup);
         }
@@ -181,7 +181,7 @@ public class LoggingConfigListener extends Log4jConfigListener {
                 logDir = logDir + File.separator;
             }
 
-            System.setProperty(JAHIA_LOG_DIR, logDir);
+            JahiaContextLoaderListener.setSystemProperty(JAHIA_LOG_DIR, logDir);
         }
 
         System.out.println("Logging directory set to: " + (logDir != null ? logDir : "<current>"));

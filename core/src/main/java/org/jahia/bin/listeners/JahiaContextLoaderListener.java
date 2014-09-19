@@ -110,8 +110,10 @@ import java.io.File;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Entry point and startup/shutdown listener for all Jahia services, including Spring application context, OSGi platform service etc.
@@ -147,7 +149,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static final transient Logger logger = LoggerFactory
             .getLogger(JahiaContextLoaderListener.class);
     
+    private static Set<String> addedSystemProperties = new HashSet<String>();
+    
     private static ServletContext servletContext;
+    
     private static long startupTime;
 
     private static long sessionCount = 0;
@@ -193,10 +198,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         initWebAppRoot();
         
         if (System.getProperty("jahia.config") == null) {
-            System.setProperty("jahia.config", "");
+            setSystemProperty("jahia.config", "");
         }
         if (System.getProperty("jahia.license") == null) {
-            System.setProperty("jahia.license", "");
+            setSystemProperty("jahia.license", "");
         }
         
         try {
@@ -313,7 +318,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             webAppRoot = webAppRoot.substring(0, webAppRoot.length() - 1);
         }
         try {
-            System.setProperty("jahiaWebAppRoot", webAppRoot);
+            setSystemProperty("jahiaWebAppRoot", webAppRoot);
         } catch (SecurityException se) {
             logger.error(
                     "System property jahiaWebAppRoot was NOT set to "
@@ -411,6 +416,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
         super.contextDestroyed(event);
 
+        removeAddedSystemProperties();
+        
         logger.info("Spring Root application context shut down in {} ms", (System.currentTimeMillis() - timer));
     }
 
@@ -504,6 +511,30 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     public static String getPid() {
         return pid;
+    }
+    
+    /**
+     * Sets the system property keeping track of properties, we added (there was no value present before we set it).
+     * 
+     * @param key
+     *            the property key
+     * @param value
+     *            the value to be set
+     */
+    public static void setSystemProperty(String key, String value) {
+        if (System.setProperty(key, value) == null) {
+            addedSystemProperties.add(key);
+        }
+    }
+    
+    private static void removeAddedSystemProperties() {
+        try {
+            for (String key : addedSystemProperties) {
+                System.clearProperty(key);
+            }
+        } finally {
+            addedSystemProperties.clear();
+        }
     }
 
     public void sessionWillPassivate(HttpSessionEvent se) {

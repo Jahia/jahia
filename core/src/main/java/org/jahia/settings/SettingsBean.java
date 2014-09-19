@@ -89,6 +89,8 @@
 
 package org.jahia.settings;
 
+import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
+
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -485,22 +487,22 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             settings.setFast(true);
             clusterActivated = getBoolean("cluster.activated", false);
-            System.setProperty("cluster.activated", Boolean.toString(clusterActivated));
+            setSystemProperty("cluster.activated", Boolean.toString(clusterActivated));
             if (System.getProperty("cluster.node.serverId") == null) {
-                System.setProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
+                setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
             if(clusterActivated) {
                 // First expose tcp ip binding address: use also cluster.tcp.start.ip_address for backward compatibility with Jahia 6.6
                 String bindAddress = getString("cluster.tcp.bindAddress", getString("cluster.tcp.start.ip_address", null));
                 if (StringUtils.isNotEmpty(bindAddress)) {
-                    System.setProperty("cluster.tcp.bindAddress", bindAddress);
+                    setSystemProperty("cluster.tcp.bindAddress", bindAddress);
                 }
                 // Expose binding port: use also cluster.tcp.ehcache.jahia.port for backward compatibility with Jahia 6.6
                 String bindPort = getString("cluster.tcp.bindPort", getString("cluster.tcp.ehcache.jahia.port", null));
                 if (StringUtils.isNotEmpty(bindPort)) {
-                    System.setProperty("cluster.tcp.bindPort", bindPort);
+                    setSystemProperty("cluster.tcp.bindPort", bindPort);
                 }
-                System.setProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
+                setSystemProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
             }
             
             initJcrSystemProperties();
@@ -524,17 +526,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     } // end load
 
     private void initJcrSystemProperties() {
-        System.setProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
-        System.setProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
-        System.setProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
+        setSystemProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));
+        setSystemProperty("jahia.jackrabbit.consistencyFix", String.valueOf(getBoolean("jahia.jackrabbit.consistencyFix", false)));
+        setSystemProperty("jahia.jackrabbit.onWorkspaceInconsistency", getString("jahia.jackrabbit.onWorkspaceInconsistency", "log"));
         
-        System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
-        System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
-        System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
+        setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
+        setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
+        setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
         
-        System.setProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
+        setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
         
-        System.setProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
+        setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
 
         try {
             File repoHome = getRepositoryHome();
@@ -548,16 +550,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 } else {
                     path = new File(repoHome, "datastore").getAbsolutePath();
                 }
-                System.setProperty("jahia.jackrabbit.datastore.path", path);
+                setSystemProperty("jahia.jackrabbit.datastore.path", path);
             }
             if (System.getProperty("jahia.jackrabbit.searchIndex.workspace.config") == null) {
-                System.setProperty(
+                setSystemProperty(
                         "jahia.jackrabbit.searchIndex.workspace.config",
                         getClass().getResource("/jahia/indexing_configuration.xml") != null ? "/jahia/indexing_configuration.xml"
                                 : new File(repoHome, "indexing_configuration.xml").getAbsolutePath());
             }
             if (System.getProperty("jahia.jackrabbit.searchIndex.versioning.config") == null) {
-                System.setProperty(
+                setSystemProperty(
                         "jahia.jackrabbit.searchIndex.versioning.config",
                         getClass().getResource("/jahia/indexing_configuration_version.xml") != null ? "/jahia/indexing_configuration_version.xml"
                                 : new File(repoHome, "indexing_configuration_version.xml").getAbsolutePath());
@@ -584,7 +586,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         } catch (IOException e) {
             jahiaVarDiskPath = new File(jahiaVarDiskPath).getAbsolutePath();
         }
-        System.setProperty("jahia.data.dir", jahiaVarDiskPath);
+        setSystemProperty("jahia.data.dir", jahiaVarDiskPath);
 
         jahiaEtcDiskPath = new File(convertContexted (getString("jahiaEtcDiskPath", "$context/WEB-INF/etc/"), pathResolver)).getAbsolutePath();
         tmpContentDiskPath = new File(convertContexted (getString("tmpContentDiskPath"), pathResolver)).getAbsolutePath();
@@ -725,7 +727,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
         jarsToSkip.remove("");
         if (!jarsToSkip.isEmpty()) {
-            System.setProperty("org.jahia.TldConfig.jarsToSkip", StringUtils.join(jarsToSkip, ','));
+            setSystemProperty("org.jahia.TldConfig.jarsToSkip", StringUtils.join(jarsToSkip, ','));
             logger.info(
                     "Set system property (org.jahia.TldConfig.jarsToSkip) for JARs to be skipped during TLD search, including {} JARs",
                     jarsToSkip.size());
@@ -763,15 +765,15 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 File check = new File(repoHome, "index-check");
                 File repair = new File(repoHome, "index-fix");
                 if (check.exists()) {
-                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
-                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
-                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "false");
                     FileUtils.deleteQuietly(check);
                 }
                 if (repair.exists()) {
-                    System.setProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
-                    System.setProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
-                    System.setProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "true");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "true");
+                    setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", "true");
                     FileUtils.deleteQuietly(repair);
                 } 
             }

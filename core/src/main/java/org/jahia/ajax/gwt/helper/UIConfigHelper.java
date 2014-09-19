@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import com.ibm.icu.impl.duration.impl.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
@@ -671,6 +672,12 @@ public class UIConfigHelper {
                     contextNode = session.getNode("/sites/systemsite");
                     site = contextNode.getResolveSite();
                 }
+
+                // check locale
+                if (!site.getLanguagesAsLocales().contains(locale)) {
+                    locale = Utils.localeFromString(site.getDefaultLanguage());
+                }
+
 
                 gwtConfig.setTopToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getTopToolbar()));
                 gwtConfig.setSidePanelToolbar(createGWTToolbar(contextNode, site, jahiaUser, locale, uiLocale, request, config.getSidePanelToolbar()));

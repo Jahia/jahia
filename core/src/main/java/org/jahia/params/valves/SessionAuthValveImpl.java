@@ -104,7 +104,11 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         JahiaUser jahiaUser = null;
         HttpSession session = authContext.getRequest().getSession(false);
         if (session != null) {
-            jahiaUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
+            try {
+                jahiaUser = (JahiaUser) session.getAttribute(Constants.SESSION_USER);
+            } catch (IllegalStateException ise) {
+                // ignore this error that happens if the session was invalidated
+            }
         }
         if (jahiaUser != null) {
             JCRUserNode userNode = userManagerService.lookupUser(jahiaUser.getName());
@@ -115,7 +119,9 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);
         } else {
-            authContext.setAuthRetrievedFromSession(true);
+            if (session != null) {
+                authContext.setAuthRetrievedFromSession(true);
+            }
             authContext.getSessionFactory().setCurrentUser(jahiaUser);
         }
     }

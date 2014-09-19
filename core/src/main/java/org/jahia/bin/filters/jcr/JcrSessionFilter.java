@@ -86,6 +86,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
 /**
@@ -127,12 +128,28 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
+<<<<<<< .working
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 if (userNode != null && userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
                 if (authValveContext == null || !authValveContext.isAuthRetrievedFromSession()) {
                     ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
+=======
+                HttpSession httpSession = ((HttpServletRequest) servletRequest).getSession();
+                // the following check is done to make sure that the user hasn't been logged out between the reading
+                // from the session and the writing back to it. In the case of the logout, the isAuthRetrievedFromSession
+                // will return true, but the session will not contain a user because the old session was invalidated
+                // and a new one was created. In that case we will not insert the user back into the session.
+                // In all other cases we set the user in the session, even if we read from it because this is an expected
+                // behavior in the case where the user was updated in the backend (JCR) but not yet in the session.
+                // For more information see : https://jira.jahia.org/browse/BACKLOG-5166 and https://jira.jahia.org/browse/BACKLOG-5207
+                if (authValveContext == null || !httpSession.isNew() || !authValveContext.isAuthRetrievedFromSession()) {
+                    httpSession.setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
+                    // an IllegalStateException might be raised by the setAttribute call if the session was
+                    // invalidated, which is the expected behavior because we do want to interrupt the
+                    // processing in that case.
+>>>>>>> .merge-right.r50858
                 }
             }
 

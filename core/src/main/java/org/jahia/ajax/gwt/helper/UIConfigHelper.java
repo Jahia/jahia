@@ -674,8 +674,12 @@ public class UIConfigHelper {
                 }
 
                 // check locale
-                if (!site.getLanguagesAsLocales().contains(locale)) {
-                    locale = Utils.localeFromString(site.getDefaultLanguage());
+                final List<Locale> languagesAsLocales = site.getLanguagesAsLocales();
+                if (languagesAsLocales != null && !languagesAsLocales.contains(locale)) {
+                    final String defaultLanguage = site.getDefaultLanguage();
+                    if (StringUtils.isNotEmpty(defaultLanguage)) {
+                        locale = Utils.localeFromString(defaultLanguage);
+                    }
                 }
 
 

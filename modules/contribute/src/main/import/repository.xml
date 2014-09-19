@@ -7,7 +7,7 @@
                           j:moduleType="module"
                           j:title="Jahia Contribute Mode"
                           jcr:primaryType="jnt:module">
-                
+
                 <portlets jcr:primaryType="jnt:portletFolder"/>
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
@@ -211,7 +211,8 @@
                                            j:defaultTemplate="true"
                                            j:hiddenTemplate="false"
                                            j:priority="11"
-                                           jcr:primaryType="jnt:contentTemplate">
+                                           jcr:primaryType="jnt:contentTemplate"
+                                           j:requireLoggedUser="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <custom-rows-960gs-1 customColumn="3,13" divID="content" jcr:primaryType="jnt:customRow">
                                 <custom-rows-960gs-1-col1 jcr:primaryType="jnt:contentList">
@@ -279,7 +280,8 @@
                                             j:defaultTemplate="true"
                                             j:hiddenTemplate="false"
                                             j:priority="11"
-                                            jcr:primaryType="jnt:contentTemplate">
+                                            jcr:primaryType="jnt:contentTemplate"
+                                            j:requireLoggedUser="true">
                         <pagecontent jcr:primaryType="jnt:contentList">
                             <custom-rows-960gs-1 customColumn="3,13" divID="content" jcr:primaryType="jnt:customRow">
                                 <custom-rows-960gs-1-col1 jcr:primaryType="jnt:contentList">
@@ -345,7 +347,7 @@
                     </documentFolderTemplate>
                 </base>
             </templates>
-                
+
         </contribute>
     </modules>
 </content>

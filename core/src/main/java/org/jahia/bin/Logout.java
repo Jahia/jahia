@@ -183,13 +183,13 @@ public class Logout implements Controller {
         String redirect = request.getParameter("redirect");
         if (redirect == null) {
             redirect = request.getHeader("referer");
-            if (StringUtils.isNotEmpty(redirect) && Login.isAuthorizedRedirect(request, redirect)) {
+            if (StringUtils.isNotEmpty(redirect) && Login.isAuthorizedRedirect(request, redirect, false)) {
                 redirect = redirect.startsWith("http://") ? StringUtils.substringAfter(redirect, "http://") : StringUtils.substringAfter(redirect, "https://");
                 redirect = redirect.contains("/") ? "/" + StringUtils.substringAfter(redirect, "/") : null;
             } else {
                 redirect = null;
             }
-        } else if (!Login.isAuthorizedRedirect(request, redirect)) {
+        } else if (!Login.isAuthorizedRedirect(request, redirect, false)) {
             redirect = null;
         }
         if (StringUtils.isNotBlank(redirect)) {

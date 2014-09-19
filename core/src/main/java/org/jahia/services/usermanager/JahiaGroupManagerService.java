@@ -252,7 +252,9 @@ public class JahiaGroupManagerService extends JahiaService {
     public String internalGetGroupPath(String siteKey, String name) throws RepositoryException {
         String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='"+name+"'";
         if (siteKey != null) {
-            query += "and isdescendantnode(group,'/sites/" + siteKey + "/groups')";
+            query += "and (isdescendantnode(group,'/sites/" + siteKey + "/groups') or isdescendantnode(group,'/groups/providers'))";
+        } else {
+            query += "and isdescendantnode(group,'/groups')";
         }
 
         Query q = JCRSessionFactory.getInstance().getCurrentSystemSession(null,null,null).getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
@@ -333,8 +335,8 @@ public class JahiaGroupManagerService extends JahiaService {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> groups = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String groupsFolderPath = siteKey != null ? "/sites/" + siteKey + "/groups" :  "/groups";
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE isdescendantnode(group,'" + groupsFolderPath + "') ORDER BY group.[j:nodename]";
+                String constraint = siteKey != null ? "(isdescendantnode(group,'/sites/" + siteKey + "/groups') or isdescendantnode(group,'/groups/providers'))" :  "isdescendantnode(group,'/groups')";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group WHERE " + constraint + " ORDER BY group.[j:nodename]";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();

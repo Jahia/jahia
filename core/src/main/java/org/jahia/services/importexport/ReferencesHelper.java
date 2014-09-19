@@ -96,6 +96,10 @@ public class ReferencesHelper {
     }
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper) throws RepositoryException {
+        resolveCrossReferences(session, references, useReferencesKeeper, false);
+    }
+
+    public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper, boolean keepReferencesForLive) throws RepositoryException {
         if (useReferencesKeeper) {
             resolveReferencesKeeper(session);
         }
@@ -135,6 +139,7 @@ public class ReferencesHelper {
                             r.setProperty("j:node", refuuid);
                             r.setProperty("j:propertyName", pName);
                             r.setProperty("j:originalUuid", uuid);
+                            r.setProperty("j:live", keepReferencesForLive);
                         }
                         logger.warn("Reference to " + uuid +" cannot be resolved, store it in the reference keeper");
                     } else {
@@ -150,6 +155,7 @@ public class ReferencesHelper {
                             r.setProperty("j:node", refuuid);
                             r.setProperty("j:propertyName", pName);
                             r.setProperty("j:originalUuid", uuid);
+                            r.setProperty("j:live", keepReferencesForLive);
                         }
                         logger.warn("Reference to " + uuid + " cannot be resolved, store it in the reference keeper");
                     } else {
@@ -199,11 +205,11 @@ public class ReferencesHelper {
                 String uuid = refNode.getProperty("j:originalUuid").getString();
                 if (uuidMapping.containsKey(uuid)) {
                     String pName = refNode.getProperty("j:propertyName").getString();
-                    updateProperty(session, n, pName, uuidMapping.get(uuid));
+                    updateProperty(session, n, pName, uuidMapping.get(uuid), refNode.hasProperty("j:live") && refNode.getProperty("j:live").getBoolean());
                     refNode.remove();
                 } else if (uuid.startsWith("/") && session.itemExists(uuid)) {
                     String pName = refNode.getProperty("j:propertyName").getString();
-                    updateProperty(session, n, pName, session.getNode(uuid).getIdentifier());
+                    updateProperty(session, n, pName, session.getNode(uuid).getIdentifier(), refNode.hasProperty("j:live") && refNode.getProperty("j:live").getBoolean());
                     refNode.remove();
                 }
             } catch (ItemNotFoundException e) {
@@ -220,10 +226,10 @@ public class ReferencesHelper {
                 String pName = path.substring(path.lastIndexOf("/") + 1);
                 if (pName.startsWith("@")) {
                     JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
-                    updateProperty(session, ref, "j:node", value);
+                    updateProperty(session, ref, "j:node", value, false);
                 } else {
                     try {
-                        updateProperty(session, n, pName, value);
+                        updateProperty(session, n, pName, value, false);
                     } catch (ItemNotFoundException e) {
                         logger.warn("Item not found: " + pName, e);
                     }
@@ -234,7 +240,7 @@ public class ReferencesHelper {
         }
     }
 
-    private static void updateProperty(JCRSessionWrapper session, JCRNodeWrapper n, String pName, String value)
+    private static void updateProperty(JCRSessionWrapper session, JCRNodeWrapper n, String pName, String value, boolean live)
             throws RepositoryException {
         if (pName.startsWith("[")) {
             int id = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
@@ -290,15 +296,17 @@ public class ReferencesHelper {
                     session.checkout(n);
                     JCRPropertyWrapper property = n.setProperty(pName, newValues);
 
-                    try {
-                        property.getParent().getCorrespondingNodePath("live");
-                        String key = property.getParent().getIdentifier() + "/" + property.getName();
-                        if (!session.getResolvedReferences().containsKey(key)) {
-                            session.getResolvedReferences().put(key, new HashSet<String>());
+                    if (live) {
+                        try {
+                            property.getParent().getCorrespondingNodePath("live");
+                            String key = property.getParent().getIdentifier() + "/" + property.getName();
+                            if (!session.getResolvedReferences().containsKey(key)) {
+                                session.getResolvedReferences().put(key, new HashSet<String>());
+                            }
+                            ((Set<String>) session.getResolvedReferences().get(key)).add(value);
+                        } catch (ItemNotFoundException e) {
+                            // Not in live
                         }
-                        ((Set<String>)session.getResolvedReferences().get(key)).add(value);
-                    } catch (ItemNotFoundException e) {
-                        // Not in live
                     }
                 }
             } else {
@@ -306,11 +314,13 @@ public class ReferencesHelper {
                     session.checkout(n);
                     JCRPropertyWrapper property = n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
                     String key = property.getParent().getIdentifier() + "/" + property.getName();
-                    try {
-                        property.getParent().getCorrespondingNodePath("live");
-                        session.getResolvedReferences().put(key, property.getValue().getString());
-                    } catch (ItemNotFoundException e) {
-                        // Not in live
+                    if (live) {
+                        try {
+                            property.getParent().getCorrespondingNodePath("live");
+                            session.getResolvedReferences().put(key, property.getValue().getString());
+                        } catch (ItemNotFoundException e) {
+                            // Not in live
+                        }
                     }
                 }
             }

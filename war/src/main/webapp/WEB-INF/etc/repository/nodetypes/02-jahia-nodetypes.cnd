@@ -814,6 +814,7 @@ extends = jnt:content
  - j:node (weakreference)
  - j:propertyName (string) nofulltext
  - j:originalUuid (string) nofulltext
+ - j:live (boolean)
 
 [jnt:referencesKeeper] > nt:base, jmix:nodenameInfo
  + * (jnt:reference) multiple

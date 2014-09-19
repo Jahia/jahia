@@ -1738,7 +1738,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
                         logger.debug("Resolving cross-references for " + LIVE_REPOSITORY_XML);
 
-                        ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper);
+                        ReferencesHelper.resolveCrossReferences(session, references, useReferenceKeeper, true);
 
                         logger.debug("Saving JCR session for " + LIVE_REPOSITORY_XML);
 

@@ -320,7 +320,7 @@ public class ReferencesHelper {
     public static void updateReferencesInLive(final Map<String, Object> resolvedReferences) throws RepositoryException {
         if (!resolvedReferences.isEmpty()) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",new JCRCallback<Object>() {
-                @Override
+
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (Map.Entry<String, Object> entry : resolvedReferences.entrySet()) {
                         String nodeIdentifier = StringUtils.substringBeforeLast(entry.getKey(), "/");

@@ -88,6 +88,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -177,7 +178,12 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                                 newPath = storage.getItem(gwtEditConfiguration.getName() + "_path");
                             } else {
                                 // set locale to the site locale
-                                ((EditLinker) linker).setLocale((GWTJahiaLanguage) gwtEditConfiguration.getSiteNode().get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                                String currentLocale = ((EditLinker) linker).getLocale();
+                                GWTJahiaNode siteNode = gwtEditConfiguration.getSiteNode();
+                                List<String> languages = siteNode.get("j:languages");
+                                if ((languages == null || !languages.contains(currentLocale))) {
+                                    ((EditLinker) linker).setLocale((GWTJahiaLanguage) siteNode.get(GWTJahiaNode.DEFAULT_LANGUAGE));
+                                }
                                 newPath = MainModule.getInstance().getBaseUrl() + gwtEditConfiguration.getDefaultLocation();
                             }
                             newPath = removeWebflowParameter(newPath);

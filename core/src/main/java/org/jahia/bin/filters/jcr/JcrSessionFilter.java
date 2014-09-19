@@ -128,14 +128,10 @@ public class JcrSessionFilter implements Filter {
                 sessionFactory
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
-<<<<<<< .working
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
                 if (userNode != null && userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
-                if (authValveContext == null || !authValveContext.isAuthRetrievedFromSession()) {
-                    ((HttpServletRequest) servletRequest).getSession().setAttribute(Constants.SESSION_USER, sessionFactory.getCurrentUser());
-=======
                 HttpSession httpSession = ((HttpServletRequest) servletRequest).getSession();
                 // the following check is done to make sure that the user hasn't been logged out between the reading
                 // from the session and the writing back to it. In the case of the logout, the isAuthRetrievedFromSession
@@ -149,7 +145,6 @@ public class JcrSessionFilter implements Filter {
                     // an IllegalStateException might be raised by the setAttribute call if the session was
                     // invalidated, which is the expected behavior because we do want to interrupt the
                     // processing in that case.
->>>>>>> .merge-right.r50858
                 }
             }
 

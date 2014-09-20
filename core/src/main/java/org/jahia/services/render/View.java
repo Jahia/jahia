@@ -82,6 +82,7 @@ import java.util.Properties;
  * @author Thomas Draier
  */
 public interface View {
+    public static final String VISIBLE = "visible";
     String getKey();
 
     JahiaTemplatesPackage getModule();

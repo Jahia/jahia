@@ -314,11 +314,8 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             fillProperties(map, view.getDefaultProperties());
             fillProperties(map, view.getProperties());
             boolean isStudio = site != null && site.getPath().startsWith("/modules");
-            if (!"false".equals(map.get("visible")) && (!"studioOnly".equals(map.get("visible")) || isStudio) &&
-                    ((StringUtils.isEmpty(param) && map.get("type") == null) ||
-                            param.equals(map.get("type"))) &&
-                    !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
-                    ) {
+
+            if (isVisible(param, view, map, isStudio)) {
                 String displayName = Messages.get(view.getModule(), declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()), locale, view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {
@@ -341,6 +338,15 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
         Collections.sort(vs);
         return vs;
+    }
+
+    private boolean isVisible(String param, View view, HashMap<String, Object> map, boolean isStudio) {
+        final Object visible = map.get(View.VISIBLE);
+        return !"false".equals(visible)
+                && (isStudio || !"studioOnly".equals(visible))
+                && ((StringUtils.isEmpty(param) && map.get("type") == null) || param.equals(map.get("type")))
+                && !view.getKey().startsWith("wrapper.")
+                && !view.getKey().contains("hidden.");
     }
 
     private void fillProperties(HashMap<String, Object> map, Properties properties) {

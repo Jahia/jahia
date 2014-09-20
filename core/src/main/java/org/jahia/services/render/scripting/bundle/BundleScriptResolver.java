@@ -225,9 +225,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private View resolveView(Resource resource, RenderContext renderContext) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
@@ -243,9 +240,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return resolveView(resource, nodeTypeList, renderContext);
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
@@ -292,9 +286,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         for (View view : getViewsSet(nt, site, templateType)) {
             if (view.getKey().equals(key)) {
@@ -305,9 +296,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         try {
             return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
@@ -322,7 +310,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param nt
      * @return
      * @throws NoSuchNodeTypeException
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
      */
     private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
         List<ExtendedNodeType> nodeTypeList = new LinkedList<ExtendedNodeType>();
@@ -335,9 +322,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return nodeTypeList;
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
             List<String> templateTypes) {
 
@@ -425,9 +409,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return installedModules;
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType,
                              JahiaTemplatesPackage tplPackage) {
         StringBuilder pathBuilder = new StringBuilder(64);
@@ -501,12 +482,20 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
         SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
         for (ViewResourceInfo res : allBundleScripts) {
-            if (!res.path.startsWith(pathPrefix)) {
+
+            if(!isVisible(res) || !res.path.startsWith(pathPrefix)) {
                 continue;
             }
             sortedScripts.add(res);
         }
         return sortedScripts;
+    }
+
+    private boolean isVisible(ViewResourceInfo res) {
+        final Object visible = res.getProperties().get(View.VISIBLE);
+
+        // todo: do we need to check for studioOnly here? In that case, we would need to somehow pass the RenderContext
+        return visible == null || !"true".equals(visible);
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

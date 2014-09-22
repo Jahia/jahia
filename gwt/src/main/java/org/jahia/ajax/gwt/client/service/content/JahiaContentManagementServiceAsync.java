@@ -439,13 +439,7 @@ public interface JahiaContentManagementServiceAsync {
 
     void getNamespaces(AsyncCallback<List<String>> async);
 
-    void getNodesForUsers(List<String> userKeys, AsyncCallback<List<GWTJahiaNode>> async);
-
-    void getNodesForGroups(List<String> groupKeys, AsyncCallback<List<GWTJahiaNode>> async);
-
     void getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount, AsyncCallback<List<GWTJahiaValueDisplayBean>> async);
 
     void convertTag(String tag, AsyncCallback<String> async);
-
-    void getFormattedPrincipal(String userkey, char type, String[] textpattern, AsyncCallback<String[]> async);
 }

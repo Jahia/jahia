@@ -2540,24 +2540,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 retrieveCurrentSession());
     }
 
-    public List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        for (String key : userKeys) {
-            final JCRUserNode principal = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(key);
-            nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
-        }
-        return nodes;
-    }
-
-    public List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException {
-        List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
-        for (String key : groupKeys) {
-            final JCRGroupNode principal = JahiaGroupManagerService.getInstance().lookupGroupByPath(key);
-            nodes.add(navigation.getGWTJahiaNode(principal, GWTJahiaNode.DEFAULT_FIELDS, getUILocale()));
-        }
-        return nodes;
-    }
-
     @Override
     public List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException {
         List<GWTJahiaValueDisplayBean> tags = new ArrayList<GWTJahiaValueDisplayBean>();
@@ -2610,21 +2592,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(e);
         }
         return result;
-    }
-
-    public String[] getFormattedPrincipal(String userkey, char type, String[] textpattern) {
-        PrincipalViewHelper pvh = new PrincipalViewHelper(textpattern);
-        JCRNodeWrapper p;
-
-        if (type == 'u') {
-            p = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(userkey);
-        } else {
-            p = ServicesRegistry.getInstance().getJahiaGroupManagerService().lookupGroupByPath(userkey);
-        }
-
-        String principalTextOption = pvh.getPrincipalTextOption(p);
-        principalTextOption = NBSP_PATTERN.matcher(principalTextOption).replaceAll(" ");
-        return new String[]{principalTextOption, pvh.getPrincipalValueOption(p)};
     }
 
 }

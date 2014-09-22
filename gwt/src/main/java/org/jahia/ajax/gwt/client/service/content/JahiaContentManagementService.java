@@ -515,15 +515,9 @@ public interface JahiaContentManagementService extends RemoteService {
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
 
-    List<GWTJahiaNode> getNodesForUsers(List<String> userKeys) throws GWTJahiaServiceException;
-
-    List<GWTJahiaNode> getNodesForGroups(List<String> groupKeys) throws GWTJahiaServiceException;
-
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
 
     String convertTag(String tag);
-
-    String[] getFormattedPrincipal(String key, char type, String[] textpattern);
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;

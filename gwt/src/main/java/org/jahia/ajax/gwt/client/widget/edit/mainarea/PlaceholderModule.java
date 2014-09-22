@@ -154,7 +154,7 @@ public class PlaceholderModule extends Module {
         }
 
 
-        final String resolvedNodeTypes = resolveNodeTypes();
+        final String resolvedNodeTypes = getRestrictedNodeTypes();
         String[] nodeTypesArray = resolvedNodeTypes != null ? resolvedNodeTypes.split(" ") : null;
 
         // if we have node type restrictions
@@ -259,8 +259,7 @@ public class PlaceholderModule extends Module {
     }
 
     public void updatePasteButton() {
-        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty() && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance()
-                .checkNodeType(resolveNodeTypes())) {
+        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty() && CopyPasteEngine.getInstance().checkNodeType(getRestrictedNodeTypes())) {
             pasteButton.setVisible(true);
             if (CopyPasteEngine.getInstance().canPasteAsReference()) {
                 pasteAsReferenceButton.setVisible(true);
@@ -271,20 +270,5 @@ public class PlaceholderModule extends Module {
             pasteButton.setVisible(false);
             pasteAsReferenceButton.setVisible(false);
         }
-    }
-
-    private String resolveNodeTypes() {
-        // if we defined node types here, return them
-        if (nodeTypes != null && !nodeTypes.isEmpty()) {
-            return nodeTypes;
-        } else {
-            // if we didn't define node types here, check parent
-            final String parentNodeTypes = getParentModule().getNodeTypes();
-            if (parentNodeTypes != null && !parentNodeTypes.isEmpty()) {
-                return parentNodeTypes;
-            }
-        }
-
-        return null;
     }
 }

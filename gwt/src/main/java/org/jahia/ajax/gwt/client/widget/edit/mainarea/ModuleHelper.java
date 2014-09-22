@@ -166,6 +166,23 @@ public class ModuleHelper {
                     module = new SimpleModule(id, path, divElement, mainModule, true);
                     addSimpleModule(simpleModules, path, (SimpleModule) module);
                 } else if (type.equals("placeholder")) {
+                    // if we have restrictions on nodetypes for a placeholder, we also(?) need to restrict the parent's nodetypes
+                    // since the parent will be the target for DnD
+                    if (!nodetypes.isEmpty()) {
+                        // retrieve the parent
+                        final Element parentElement = DOM.getParent(divElement);
+                        if(parentElement != null) {
+                            // if we have a parent, retrieve the associated module
+                            final String parentId = DOM.getElementAttribute(parentElement, "id");
+                            final Module parentModule = modulesById.get(parentId);
+
+                            if(parentModule != null) {
+                                // set the parent's restricted node types to the one from the placeholder
+                                parentModule.setRestrictedNodeTypes(nodetypes);
+                            }
+                        }
+                    }
+
                     module = new PlaceholderModule(id, path, divElement, mainModule);
                 }
                 allNodetypes.addAll(Arrays.asList(nodetypes.split(" ")));

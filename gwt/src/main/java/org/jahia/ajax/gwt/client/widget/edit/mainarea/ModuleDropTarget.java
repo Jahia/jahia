@@ -179,7 +179,7 @@ public class ModuleDropTarget extends DropTarget {
         Module parentModule = module.getParentModule();
         final GWTJahiaNode jahiaNode = parentModule.getNode();
         if (PermissionsUtils.isPermitted("jcr:addChildNodes", jahiaNode) && !jahiaNode.isLocked()) {
-            String nodetypes = parentModule.getNodeTypes();
+            String nodetypes = module.getRestrictedNodeTypes();
             if (targetType.equals(EditModeDNDListener.PLACEHOLDER_TYPE) &&
                     (module.getNodeTypes() != null) && (module.getNodeTypes().length() > 0)) {
                 nodetypes = module.getNodeTypes();

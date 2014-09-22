@@ -165,7 +165,7 @@ public final class RuleConditions {
             }
 
             try {
-                return ctx.getUser().getProperty(Constants.JCR_LASTLOGINDATE) != null;
+                return ctx.getUser().hasProperty(Constants.JCR_LASTLOGINDATE);
             } catch (RepositoryException e) {
                 return false;
             }
@@ -276,7 +276,7 @@ public final class RuleConditions {
             // we can only deal with the JCRUser
                 int checkedPasswordCount = getParameterIntValue(parameters, 0);
 
-                List<PasswordHistoryEntry> history = (ctx.getUser()).getPasswordHistory();
+                List<PasswordHistoryEntry> history = ctx.getUser().getPasswordHistory();
                 if (!history.isEmpty()) {
 	                String encryptedPassword = JahiaUserManagerService.encryptPassword(ctx.getPassword());
 	                if (encryptedPassword != null) {

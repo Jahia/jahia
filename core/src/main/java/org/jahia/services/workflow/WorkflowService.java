@@ -82,6 +82,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -460,12 +461,16 @@ public class WorkflowService implements BeanPostProcessor {
                             if (site == null) {
                                 site = node.getResolveSite();
                             }
-                            Group group;
-                            group = groupService.lookupGroup(site.getSiteKey(),
-                                    principalName).getJahiaGroup();
-                            if (logger.isDebugEnabled()) {
-                                logger.debug("group " + group.getGroupKey() + " is granted");
-                                principals.add(group);
+                            JCRGroupNode group = groupService.lookupGroup(site.getSiteKey(),
+                                    principalName);
+                            if (group == null) {
+                                group = groupService.lookupGroup(null, principalName);
+                            }
+                            if (group != null) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("group " + group.getGroupKey() + " is granted");
+                                    principals.add(group.getJahiaGroup());
+                                }
                             }
                         }
                     }

@@ -114,53 +114,36 @@ public class AdminPropertiesHandler implements Serializable {
         if (!StringUtils.isEmpty(adminProperties.getPassword())) {
             rootNode.setPassword(adminProperties.getPassword());
         }
+
         try {
-            if (!StringUtils.equals(rootNode.getProperty("j:lastName").getString(), adminProperties.getLastName())) {
+            if (!rootNode.hasProperty("j:lastName") || !StringUtils.equals(rootNode.getProperty("j:lastName").getString(), adminProperties.getLastName())) {
                 rootNode.setProperty("j:lastName", adminProperties.getLastName());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
-            if (!StringUtils.equals(rootNode.getProperty("j:firstName").getString(), adminProperties.getFirstName())) {
+            if (!rootNode.hasProperty("j:firstName") || !StringUtils.equals(rootNode.getProperty("j:firstName").getString(), adminProperties.getFirstName())) {
                 rootNode.setProperty("j:firstName", adminProperties.getFirstName());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
-            if (!StringUtils.equals(rootNode.getProperty("j:organization").getString(), adminProperties.getOrganization())) {
+            if (!rootNode.hasProperty("j:organization") || !StringUtils.equals(rootNode.getProperty("j:organization").getString(), adminProperties.getOrganization())) {
                 rootNode.setProperty("j:organization", adminProperties.getOrganization());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
-            if (!StringUtils.equals(rootNode.getProperty("emailNotificationsDisabled").getString(), adminProperties
+            if (!rootNode.hasProperty("emailNotificationsDisabled") || !StringUtils.equals(rootNode.getProperty("emailNotificationsDisabled").getString(), adminProperties
                     .getEmailNotificationsDisabled().toString())) {
                 rootNode.setProperty("emailNotificationsDisabled",
                         Boolean.toString(adminProperties.getEmailNotificationsDisabled()));
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
-            if (!StringUtils.equals(rootNode.getProperty("j:email").getString(), adminProperties.getEmail())) {
+            if (!rootNode.hasProperty("j:email") || !StringUtils.equals(rootNode.getProperty("j:email").getString(), adminProperties.getEmail())) {
                 rootNode.setProperty("j:email", adminProperties.getEmail());
             }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        try {
             String lang = adminProperties.getPreferredLanguage().toString();
-            if (!StringUtils.equals(rootNode.getProperty("preferredLanguage").getString(), lang)) {
+            if (!rootNode.hasProperty("preferredLanguage") || !StringUtils.equals(rootNode.getProperty("preferredLanguage").getString(), lang)) {
                 rootNode.setProperty("preferredLanguage", lang);
             }
+            messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
+
+            rootNode.save();
         } catch (RepositoryException e) {
+            messages.addMessage(new MessageBuilder().error().code("label.error").build());
             logger.error(e.getMessage(), e);
         }
-
-        messages.addMessage(new MessageBuilder().info().code("label.changeSaved").build());
     }
     public List<JCRGroupNode> getUserMembership() {
         return new LinkedList<JCRGroupNode>(User.getUserMembership(JahiaUserManagerService.getInstance().lookupRootUser().getName()).values());

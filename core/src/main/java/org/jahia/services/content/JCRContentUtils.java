@@ -1567,17 +1567,30 @@ public final class JCRContentUtils implements ServletContextAware {
             Map<String, Object> m = new HashMap<String, Object>();
             String entryKey = entry.getKey();
             if (entryKey.startsWith("u:")) {
-                JCRUserNode u = userService.lookupUser(StringUtils.substringAfter(entryKey, "u:"));
+                String name = StringUtils.substringAfter(entryKey, "u:");
+                JCRUserNode u = userService.lookupUser(name);
                 if (u == null) {
-                    logger.warn("User {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "u:"));
+                    logger.warn("User {} cannot be found. Skipping.", name);
                     continue;
                 }
                 m.put("principalType", "user");
                 m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
-                JCRGroupNode g = groupService.lookupGroupByPath(StringUtils.substringAfter(entryKey, "g:"));
+                if (siteKey == null) {
+                    try {
+                        JCRSiteNode resolveSite = node.getResolveSite();
+                        siteKey = resolveSite != null ? resolveSite.getSiteKey() : null;
+                    } catch (RepositoryException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }
+                String name = StringUtils.substringAfter(entryKey, "g:");
+                JCRGroupNode g = groupService.lookupGroup(siteKey, name);
                 if (g == null) {
-                    logger.warn("Group {} cannot be found. Skipping.", StringUtils.substringAfter(entryKey, "g:"));
+                    g = groupService.lookupGroup(null, name);
+                }
+                if (g == null) {
+                    logger.warn("Group {} cannot be found. Skipping.", name);
                     continue;
                 }
                 m.put("principalType", "group");

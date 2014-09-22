@@ -121,8 +121,7 @@ public class SimpleModule extends Module {
     private String boundProperty = "j:bindedComponent";
 
     public SimpleModule(String id, String path, Element divElement, MainModule mainModule) {
-        super(id, path, divElement, mainModule);
-        editable = !"false".equals(DOM.getElementAttribute(divElement, "editable"));
+        this(id, path, divElement, mainModule, false);
     }
 
     public SimpleModule(String id, final String path, Element divElement, final MainModule mainModule, boolean header) {

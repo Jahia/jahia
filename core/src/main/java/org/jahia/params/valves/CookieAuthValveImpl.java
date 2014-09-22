@@ -197,6 +197,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             try {
                 jahiaUser.setProperty(Constants.JCR_LASTLOGINDATE,
                         String.valueOf(System.currentTimeMillis()));
+                jahiaUser.save();
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }

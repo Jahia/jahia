@@ -139,8 +139,8 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
 
         for (String prop : groupSearchProperties) {
             try {
-                String value = "groupname".equals(prop) ? group.getName() : group
-                        .getProperty(prop).getString();
+                String value = "groupname".equals(prop) ? group.getName() :
+                        (group.hasProperty(prop) ? group.getProperty(prop).getString() : null);
                 if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
                     matches = true;
                     break;
@@ -196,7 +196,8 @@ public class FindUsersAndGroupsInAcl extends FindUsersAndGroups {
 
         for (String prop : searchProperties) {
             try {
-                String value = "username".equals(prop) ? user.getName() : user.getProperty(prop).getString();
+                String value = "username".equals(prop) ? user.getName() :
+                        (user.hasProperty(prop) ? user.getProperty(prop).getString() : null);
                 if (StringUtils.isNotEmpty(value) && pattern.matcher(value).matches()) {
                     matches = true;
                     break;

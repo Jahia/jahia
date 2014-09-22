@@ -206,9 +206,11 @@ public class FindUsersAndGroups extends FindUser {
 
         for (String key : groupDisplayProperties) {
             try {
-                String value = group.getProperty(key).getString();
-                if (value != null) {
-                    json.put(key, value);
+                if (group.hasProperty(key)) {
+                    String value = group.getProperty(key).getString();
+                    if (value != null) {
+                        json.put(key, value);
+                    }
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

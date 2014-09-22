@@ -149,13 +149,9 @@ public class JBPMTaskIdentityService implements TaskIdentityService {
         List<User> results = new ArrayList<User>();
         for (String userKey : userKeyList) {
             JCRUserNode jahiaUser = userService.lookupUserByPath(userKey);
-            try {
-                results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getProperty("firstName").getString(), jahiaUser
-                        .getProperty("lastName").getString(), jahiaUser.getProperty("email").getString(),
-                        UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)));
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+            results.add(new UserImpl(jahiaUser.getPath(), jahiaUser.getPropertyAsString("firstName"), jahiaUser
+                    .getPropertyAsString("lastName"), jahiaUser.getPropertyAsString("email"),
+                    UserPreferencesHelper.areEmailNotificationsDisabled(jahiaUser)));
         }
         return results;
     }

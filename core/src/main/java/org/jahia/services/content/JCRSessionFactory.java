@@ -226,19 +226,11 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
             } else {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
                     s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
-                    // should be done somewhere else, call can be quite expensive
-                    //Todo rewrite with new User/Group API
-                    /*if (!(user instanceof JCRUser)) {
-                        mountPoints.get("/").deployExternalUser(user);
-                    }*/
                 } else {
                     s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
                 }
                 s.setCurrentUserSession(true);
                 wsMap.put(key, s);
-                //} else {
-                // In cluster, this will perform a cluster node sync, which is an expensive operation.
-                //    s.refresh(true);
             }
         }
         return s;

@@ -782,7 +782,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     @Deprecated
     public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
         legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
-        // TODO send event
+        BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
     }
 
     /**
@@ -793,6 +793,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     @Deprecated
     public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
         legacyUserProviders.remove(jahiaUserManagerProvider.getKey());
-        // TODO send event
+        BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);
     }
 }

@@ -771,7 +771,7 @@ public class JahiaGroupManagerService extends JahiaService {
     @Deprecated
     public void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
         legacyGroupProviders.put(jahiaGroupManagerProvider.getKey(), jahiaGroupManagerProvider);
-        // TODO send event to bridge
+        BridgeEvents.sendEvent(jahiaGroupManagerProvider.getKey(), BridgeEvents.GROUP_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
     }
 
     /**
@@ -782,6 +782,6 @@ public class JahiaGroupManagerService extends JahiaService {
     @Deprecated
     public void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
         legacyGroupProviders.remove(jahiaGroupManagerProvider.getKey());
-        // TODO send event to bridge
+        BridgeEvents.sendEvent(jahiaGroupManagerProvider.getKey(), BridgeEvents.GROUP_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);
     }
 }

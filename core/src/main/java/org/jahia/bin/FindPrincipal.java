@@ -286,10 +286,10 @@ public class FindPrincipal extends BaseFindController {
             JSONObject jsonGroup = new JSONObject(jahiaGroup.getJahiaGroup());
             if (propertyMatchRegexp != null) {
                 Pattern pattern = Pattern.compile(propertyMatchRegexp, Pattern.CASE_INSENSITIVE);
-                PropertyIterator userProperties = jahiaGroup.getProperties();
+                PropertyIterator groupProperties = jahiaGroup.getProperties();
                 Set<String> matchingProperties = new HashSet<String>();
-                while(userProperties.hasNext()) {
-                    Property curProperty = userProperties.nextProperty();
+                while(groupProperties.hasNext()) {
+                    Property curProperty = groupProperties.nextProperty();
                     String curPropertyName = curProperty.getName();
                     String curPropertyValue = curProperty.getValue().getString();
                     if (pattern.matcher(curPropertyValue).matches()) {

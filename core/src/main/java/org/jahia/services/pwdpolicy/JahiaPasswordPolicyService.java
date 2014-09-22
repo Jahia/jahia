@@ -285,7 +285,6 @@ public class JahiaPasswordPolicyService extends JahiaService {
      * @return boolean {@code true} if the user comes from a read-only provider
      */
     public boolean isPasswordReadOnly(JCRUserNode user) {
-        //Todo add check again
         return user.getProvider().isReadOnly();
     }
 

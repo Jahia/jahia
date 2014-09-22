@@ -365,17 +365,8 @@ public class JBPMMailProducer {
             }
             Address address = null;
             try {
-                address = getAddress(user.getProperty("j:firstName").getString(), user.getProperty("j:lastName").getString(), user.getProperty("j:email").getString());
+                address = getAddress(user.getPropertyAsString("j:firstName"), user.getPropertyAsString("j:lastName"), user.getPropertyAsString("j:email"));
             } catch (UnsupportedEncodingException e) {
-                logger.error("Error while trying to get email address for user " + user, e);
-                address = null;
-            } catch (PathNotFoundException e) {
-                logger.error("Error while trying to get email address for user " + user, e);
-                address = null;
-            } catch (ValueFormatException e) {
-                logger.error("Error while trying to get email address for user " + user, e);
-                address = null;
-            } catch (RepositoryException e) {
                 logger.error("Error while trying to get email address for user " + user, e);
                 address = null;
             }

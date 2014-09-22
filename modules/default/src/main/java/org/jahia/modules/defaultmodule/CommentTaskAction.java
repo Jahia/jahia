@@ -103,7 +103,7 @@ public class CommentTaskAction extends Action {
         String providerKey = StringUtils.substringBefore(task, ":");
         String comment = parameters.get("comment").get(0);
 
-        workflowService.addComment(taskId, providerKey, comment, renderContext.getUser().getName());
+        workflowService.addComment(taskId, providerKey, comment, renderContext.getUser().getUserKey());
 
         return ActionResult.OK;
     }

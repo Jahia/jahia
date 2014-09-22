@@ -126,7 +126,7 @@ public class TasksForNodeTag extends AbstractJahiaTag {
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                    if (principal instanceof JahiaGroup) {
+                                    if (principal instanceof Group) {
                                         JCRGroupNode groupNode = JahiaGroupManagerService.getInstance().lookupGroupByPath(principal.getLocalPath());
                                         JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(getUser().getLocalPath());
                                         if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {

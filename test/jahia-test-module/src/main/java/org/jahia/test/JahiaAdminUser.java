@@ -74,7 +74,6 @@
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 

@@ -73,7 +73,7 @@ package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaGroup;
+import org.jahia.services.usermanager.Group;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -98,9 +98,9 @@ public class JCRGroupNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public JahiaGroup getJahiaGroup() {
+    public Group getJahiaGroup() {
         try {
-            return new JahiaGroup(getName(), getPath(), getResolveSite().getName());
+            return new Group(getName(), getPath(), getResolveSite().getName());
         } catch (RepositoryException e) {
             logger.error("Cannot get group",e);
         }

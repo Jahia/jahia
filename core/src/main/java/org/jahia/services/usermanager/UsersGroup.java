@@ -71,19 +71,12 @@
  */
  package org.jahia.services.usermanager;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRTemplate;
-
-import javax.jcr.Node;
-import java.util.*;
-import java.security.Principal;
-
 /**
  * Special user group that represents all users of the system.
  * 
  * @author Thomas Draier
  */
-public class UsersGroup extends JahiaGroup {
+public class UsersGroup extends Group {
     private static final long serialVersionUID = 8220270074777283565L;
 
     public UsersGroup(String name, String path, String siteKey) {

@@ -71,7 +71,6 @@
  */
 package org.jahia.bin;
 
-import java.security.Principal;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -91,8 +90,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

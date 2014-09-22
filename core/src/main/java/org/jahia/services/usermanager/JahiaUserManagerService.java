@@ -79,6 +79,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
@@ -88,6 +89,10 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.Patterns;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
@@ -144,6 +149,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     private String rootUserName;
 
+    private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -748,4 +754,45 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         }
     }
 
+    /**
+     * get the list of olds users providers
+     * this method is used to maintain compatibility with old users providers
+     * @deprecated
+     */
+    @Deprecated
+    public List<? extends JahiaUserManagerProvider> getProviderList (){
+        return new ArrayList<JahiaUserManagerProvider>(legacyUserProviders.values());
+    }
+
+    /**
+     * get the provider corresponding to a given key
+     * this method is used to maintain compatibility with old users providers
+     * @deprecated
+     */
+    @Deprecated
+    public JahiaUserManagerProvider getProvider(String key){
+        return legacyUserProviders.get(key);
+    }
+
+    /**
+     * register a user provider
+     * this method is used to maintain compatibility with old users providers
+     * @deprecated
+     */
+    @Deprecated
+    public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
+        legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
+        // TODO send event
+    }
+
+    /**
+     * unregister a user provider
+     * this method is used to maintain compatibility with old users providers
+     * @deprecated
+     */
+    @Deprecated
+    public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
+        legacyUserProviders.remove(jahiaUserManagerProvider.getKey());
+        // TODO send event
+    }
 }

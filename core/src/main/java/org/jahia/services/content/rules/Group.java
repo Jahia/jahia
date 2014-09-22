@@ -74,12 +74,8 @@ package org.jahia.services.content.rules;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroup;
-import org.jahia.services.usermanager.JahiaUser;
 
-import java.security.Principal;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
 import java.util.Set;
 

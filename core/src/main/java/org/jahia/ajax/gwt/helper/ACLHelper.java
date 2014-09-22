@@ -74,7 +74,6 @@ package org.jahia.ajax.gwt.helper;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 
 import java.util.HashMap;

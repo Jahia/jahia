@@ -71,7 +71,6 @@
  */
 package org.jahia.bin;
 
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -84,15 +83,10 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUser;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;

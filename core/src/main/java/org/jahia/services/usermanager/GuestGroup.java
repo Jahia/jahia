@@ -71,19 +71,12 @@
  */
  package org.jahia.services.usermanager;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRTemplate;
-
-import javax.jcr.Node;
-import java.util.*;
-import java.security.Principal;
-
 /**
  * Special user group that represents anonymous users in the system.
  * 
  * @author Thomas Draier
  */
-public class GuestGroup extends JahiaGroup {
+public class GuestGroup extends Group {
 
     private static final long serialVersionUID = -7050824816792955816L;
 

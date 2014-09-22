@@ -460,7 +460,7 @@ public class WorkflowService implements BeanPostProcessor {
                             if (site == null) {
                                 site = node.getResolveSite();
                             }
-                            JahiaGroup group;
+                            Group group;
                             group = groupService.lookupGroup(site.getSiteKey(),
                                     principalName).getJahiaGroup();
                             if (logger.isDebugEnabled()) {

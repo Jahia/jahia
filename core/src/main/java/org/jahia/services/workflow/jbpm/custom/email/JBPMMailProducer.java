@@ -87,7 +87,6 @@ import org.jahia.services.workflow.jbpm.JBPMTaskIdentityService;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.task.model.Group;
 import org.kie.api.task.model.User;
 import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
@@ -111,7 +110,6 @@ import java.io.File;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.URL;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -242,7 +240,7 @@ public class JBPMMailProducer {
         String groupList = fromTemplate.getGroups();
         if (groupList != null) {
             for (String groupId : tokenizeActors(groupList, workItem, session)) {
-                Group group = taskIdentityService.getGroupById(groupId);
+                org.kie.api.task.model.Group group = taskIdentityService.getGroupById(groupId);
                 email.addFrom(getAddresses(group));
             }
         }
@@ -292,7 +290,7 @@ public class JBPMMailProducer {
                             if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser) principal)) {
                                 users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
                             }
-                        } else if (principal instanceof JahiaGroup) {
+                        } else if (principal instanceof Group) {
                             JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                             if (groupNode != null) {
                                 for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {
@@ -318,7 +316,7 @@ public class JBPMMailProducer {
         String groupList = addressTemplate.getGroups();
         if (groupList != null) {
             for (String groupId : tokenizeActors(groupList, workItem, session)) {
-                Group group = taskIdentityService.getGroupById(groupId);
+                org.kie.api.task.model.Group group = taskIdentityService.getGroupById(groupId);
                 email.addRecipients(recipientType, getAddresses(group));
             }
         }
@@ -354,7 +352,7 @@ public class JBPMMailProducer {
         return addresses.toArray(new Address[addresses.size()]);
     }
 
-    private Address[] getAddresses(Group group) {
+    private Address[] getAddresses(org.kie.api.task.model.Group group) {
         List<Address> addresses = new ArrayList<Address>();
         JCRGroupNode jahiaGroup = JahiaGroupManagerService.getInstance().lookupGroupByPath(group.getId());
         if (jahiaGroup == null) {

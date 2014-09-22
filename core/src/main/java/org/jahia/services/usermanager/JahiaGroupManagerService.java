@@ -132,6 +132,8 @@ public class JahiaGroupManagerService extends JahiaService {
     private SelfPopulatingCache groupPathByGroupNameCache;
     private SelfPopulatingCache membershipCache;
 
+    private Map<String, JahiaGroupManagerProvider> legacyGroupProviders = new HashMap<String, JahiaGroupManagerProvider>();
+
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -739,5 +741,47 @@ public class JahiaGroupManagerService extends JahiaService {
         public Object createEntry(final Object key) throws Exception {
             return internalGetMembershipByPath((String) key);
         }
+    }
+
+    /**
+     * get the list of olds group providers
+     * this method is used to maintain compatibility with old groups providers
+     * @deprecated
+     */
+    @Deprecated
+    public List<? extends JahiaGroupManagerProvider> getProviderList (){
+        return new ArrayList<JahiaGroupManagerProvider>(legacyGroupProviders.values());
+    }
+
+    /**
+     * get the provider corresponding to a given key
+     * this method is used to maintain compatibility with old groups providers
+     * @deprecated
+     */
+    @Deprecated
+    public JahiaGroupManagerProvider getProvider(String key){
+        return legacyGroupProviders.get(key);
+    }
+
+    /**
+     * register a group provider
+     * this method is used to maintain compatibility with old groups providers
+     * @deprecated
+     */
+    @Deprecated
+    public void registerProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
+        legacyGroupProviders.put(jahiaGroupManagerProvider.getKey(), jahiaGroupManagerProvider);
+        // TODO send event to bridge
+    }
+
+    /**
+     * unregister a group provider
+     * this method is used to maintain compatibility with old groups providers
+     * @deprecated
+     */
+    @Deprecated
+    public void unregisterProvider(JahiaGroupManagerProvider jahiaGroupManagerProvider){
+        legacyGroupProviders.remove(jahiaGroupManagerProvider.getKey());
+        // TODO send event to bridge
     }
 }

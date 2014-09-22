@@ -233,7 +233,7 @@ public class PrincipalViewHelper implements Serializable {
             if (p instanceof JahiaUser) {
                 return buff.append("u").append(((JahiaUser) p).getUserKey()).toString();
             } else {
-                return buff.append("g").append(((JahiaGroup) p).getGroupKey()).toString();
+                return buff.append("g").append(((Group) p).getGroupKey()).toString();
             }
         }
         return "";
@@ -241,7 +241,7 @@ public class PrincipalViewHelper implements Serializable {
 
     /**
      * Builds the full user name, which is build the following way :
-     * - for a JahiaGroup, simply calls getDisplayName(p)
+     * - for a Group, simply calls getDisplayName(p)
      * - for a JahiaUser, if the firstName and lastName properties are defined, they are concatenated and this method
      * returns that result. If the properties don't exist, this is equivalent to getDisplayName(p)
      * @param p

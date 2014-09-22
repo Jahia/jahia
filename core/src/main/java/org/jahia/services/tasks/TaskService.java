@@ -78,11 +78,9 @@ import org.slf4j.Logger;
 import static org.jahia.api.Constants.JAHIANT_TASK;
 import static org.jahia.api.Constants.JAHIANT_TASKS;
 import org.jahia.services.content.*;
-import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.security.Principal;
 import java.util.Calendar;
 import java.util.Set;
 

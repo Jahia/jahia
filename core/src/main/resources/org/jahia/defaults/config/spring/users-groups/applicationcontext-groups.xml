@@ -18,4 +18,8 @@
             </list>
         </property>
     </bean>
+
+    <bean id="JahiaGroupManagerProvider" class="org.jahia.services.usermanager.JahiaGroupManagerProvider" parent="jahiaServiceTemplate" abstract="true">
+        <property name="groupManagerService" ref="JahiaGroupManagerService"/>
+    </bean>
 </beans>

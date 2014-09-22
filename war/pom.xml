@@ -543,6 +543,11 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.apache.felix</groupId>
+                                    <artifactId>org.apache.felix.eventadmin</artifactId>
+                                    <version>${felix.eventadmin.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.apache.felix</groupId>
                                     <artifactId>org.apache.felix.fileinstall</artifactId>
                                     <version>${felix.fileinstall.version}</version>
                                 </artifactItem>

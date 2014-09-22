@@ -20,4 +20,8 @@
         </property>
     </bean>
 
+    <bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">
+        <property name="userManagerService" ref="JahiaUserManagerService"/>
+    </bean>
+
 </beans>

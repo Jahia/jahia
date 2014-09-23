@@ -495,7 +495,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         final Object visible = res.getProperties().get(View.VISIBLE);
 
         // todo: do we need to check for studioOnly here? In that case, we would need to somehow pass the RenderContext
-        return visible == null || !"true".equals(visible);
+        return visible == null || "true".equals(visible);
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

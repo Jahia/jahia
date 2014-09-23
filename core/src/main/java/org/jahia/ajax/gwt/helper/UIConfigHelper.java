@@ -71,7 +71,6 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import com.ibm.icu.impl.duration.impl.Utils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
@@ -104,6 +103,7 @@ import org.jahia.services.uicomponents.bean.toolbar.Menu;
 import org.jahia.services.uicomponents.bean.toolbar.Property;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
@@ -678,7 +678,7 @@ public class UIConfigHelper {
                 if (languagesAsLocales != null && !languagesAsLocales.contains(locale)) {
                     final String defaultLanguage = site.getDefaultLanguage();
                     if (StringUtils.isNotEmpty(defaultLanguage)) {
-                        locale = Utils.localeFromString(defaultLanguage);
+                        locale = LanguageCodeConverters.languageCodeToLocale(defaultLanguage);
                     }
                 }
 

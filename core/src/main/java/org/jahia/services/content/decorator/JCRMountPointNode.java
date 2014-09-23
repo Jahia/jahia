@@ -140,10 +140,10 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        try {
-            getProvider().getSessionFactory().unmount(getMountProvider());
-        } catch (RepositoryException e) {
-            logger.warn("unable to unmount provider " + getProvider().getKey() + " at " + getPath() + " but node will be deleted anyway",e);
+        Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
+        JCRStoreProvider p = mountPoints != null ? mountPoints.get(getPath()) : null;
+        if (p != null) {
+            getProvider().getSessionFactory().unmount(p);
         }
         super.remove();
     }

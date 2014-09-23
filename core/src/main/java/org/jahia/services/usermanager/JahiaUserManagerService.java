@@ -75,11 +75,11 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
@@ -89,10 +89,6 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.Patterns;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
@@ -427,17 +423,52 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      *                        null to search without criterias
      * @return a Set of JCRUserNode elements that correspond to those search criterias
      */
+    public Set<JCRUserNode> searchUsers(Properties searchCriterias, String[] providers) {
+        try {
+            return searchUsers(searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            logger.error("Error while searching for users", e);
+            return new HashSet<JCRUserNode>();
+        }
+    }
+
+    /**
+     * Find users according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "username"="*test*") or
+     *                        null to search without criterias
+     * @return a Set of JCRUserNode elements that correspond to those search criterias
+     */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, JCRSessionWrapper session) {
         return searchUsers(searchCriterias, null, session);
     }
 
-    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String providerKey, JCRSessionWrapper session) {
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String[] providerKeys, JCRSessionWrapper session) {
         try {
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(128);
 
+                // Add provider to query
+                List<JCRStoreProvider> providers = getProviders(providerKeys, session);
+                if (!providers.isEmpty()) {
+                    query.append("(");
+                    for (JCRStoreProvider provider : providers) {
+                        query.append(query.length() > 1 ? " OR " : "");
+                        if (provider.isDefault()) {
+                            query.append("u.[j:external] = false");
+                        } else {
+                            query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
+                        }
+                    }
+                    query.append(")");
+                }
+
+                // Add criteria
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     Properties filters = (Properties) searchCriterias.clone();
                     String operation = " OR ";
@@ -518,6 +549,41 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             logger.error("Error while searching for users", e);
             return new HashSet<JCRUserNode>();
         }
+    }
+
+    public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session){
+        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        try {
+            providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
+            JCRNodeWrapper providersNode = session.getNode("/users/providers");
+            NodeIterator iterator = providersNode.getNodes();
+            while (iterator.hasNext()){
+                JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();
+                providers.add(providerNode.getProvider());
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving user providers", e);
+        }
+        return providers;
+    }
+
+    public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session){
+        if(ArrayUtils.isEmpty(providerKeys)){
+            return Collections.emptyList();
+        }
+
+        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        for (JCRStoreProvider provider : getProviderList(session)) {
+            if (ArrayUtils.contains(providerKeys, provider.getKey())) {
+                providers.add(provider);
+            }
+        }
+        return providers;
+    }
+
+    public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session){
+        List<JCRStoreProvider> providers = getProviders(new String[]{providerKey}, session);
+        return providers.size() == 1 ? providers.get(0) : null;
     }
 
 

@@ -56,8 +56,7 @@
     }
 </script>
 </template:addResources>
-
-<c:set var="multipleProvidersAvailable" value="false"/>
+<c:set var="multipleProvidersAvailable" value="${fn:length(providersList) > 1}"/>
 
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">
@@ -114,7 +113,6 @@
             <c:if test="${multipleProvidersAvailable}">
             <br/>
             <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
-            <%--@elvariable id="providersList" type="java.util.List"--%>
             <input type="radio" name="storedOn" id="storeOnEverywhere" value="everywhere"
                        <c:if test="${empty searchCriteria.storedOn or searchCriteria.storedOn eq 'everywhere'}">checked</c:if>
                        onclick="$('.provCheck').attr('disabled',true);">&nbsp;<label for="storeOnEverywhere"><fmt:message
@@ -125,16 +123,16 @@
                    checked </c:if>
                    onclick="$('.provCheck').removeAttr('disabled');">&nbsp;<label for="storedOn"><fmt:message key="label.providers"/></label>:&nbsp;
 
-            <%--<c:forEach items="${providersList}" var="curProvider">
-                <input type="checkbox" class="provCheck" name="providers" id="provider-${curProvider.key}" value="${curProvider.key}"
-                       <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn ne 'providers'}">disabled </c:if>
-                <c:if test="${fn:length(providersList) le 1 or (not empty searchCriteria.providers and functions:contains(searchCriteria.providers, curProvider.key))}">
-                       checked </c:if>>
-                <label for="provider-${curProvider.key}">
-                <fmt:message var="i18nProviderLabel" key="providers.${curProvider.key}.label"/>
-                ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider.key : i18nProviderLabel)}
-                </label>
-            </c:forEach>--%>
+                <c:forEach items="${providersList}" var="curProvider">
+                    <input type="checkbox" class="provCheck" name="providers" id="provider-${curProvider}" value="${curProvider}"
+                           <c:if test="${fn:length(providersList) le 1 or searchCriteria.storedOn ne 'providers'}">disabled </c:if>
+                    <c:if test="${fn:length(providersList) le 1 or (not empty searchCriteria.providers and functions:contains(searchCriteria.providers, curProvider))}">
+                           checked </c:if>>
+                    <label for="provider-${curProvider}">
+                        <fmt:message var="i18nProviderLabel" key="providers.${curProvider}.label"/>
+                            ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider : i18nProviderLabel)}
+                    </label>
+                </c:forEach>
 
             </c:if>
         </fieldset>

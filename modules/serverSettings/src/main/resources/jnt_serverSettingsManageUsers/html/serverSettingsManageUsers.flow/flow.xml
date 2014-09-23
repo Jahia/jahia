@@ -15,6 +15,7 @@
     <view-state id="search" model="searchCriteria">
         <on-render>
             <evaluate expression="flowHandler.search(searchCriteria)" result="requestScope.users"/>
+            <evaluate expression="flowHandler.providersList" result="requestScope.providersList"/>
         </on-render>
         <transition on="search" to="search"/>
         <transition on="addUser" to="createUser" bind="false" validate="false"/>

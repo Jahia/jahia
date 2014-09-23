@@ -583,6 +583,8 @@ public class PrincipalViewHelper implements Serializable {
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaUserManagerService.
                         searchUsers(searchParameters));
+            }else if ("providers".equals(storedOn)){
+                searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, providers));
             }
         }
         

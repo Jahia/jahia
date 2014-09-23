@@ -79,9 +79,7 @@ import org.jahia.modules.serversettings.users.management.CsvFile;
 import org.jahia.modules.serversettings.users.management.SearchCriteria;
 import org.jahia.modules.serversettings.users.management.UserProperties;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
@@ -467,6 +465,19 @@ public class UsersFlowHandler implements Serializable {
                     removeUser(userKey, messageContext);
                 }
                 return null;
+            }
+        });
+    }
+
+    public List<String> getProvidersList() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
+            @Override
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> providerKeys = new ArrayList<String>();
+                for(JCRStoreProvider provider : userManagerService.getProviderList(session)){
+                    providerKeys.add(provider.getKey());
+                }
+                return providerKeys;
             }
         });
     }

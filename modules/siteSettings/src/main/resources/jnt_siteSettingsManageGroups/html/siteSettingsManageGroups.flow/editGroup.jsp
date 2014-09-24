@@ -28,7 +28,7 @@
 <fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
 <fmt:message var="i18nContinue" key="label.confirmContinue"/>
 
-<c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
+<c:set var="isGroupEditable" value="${!group.provider.readOnly}"/>
 
 <c:if test="${isGroupEditable}">
 <template:addResources>

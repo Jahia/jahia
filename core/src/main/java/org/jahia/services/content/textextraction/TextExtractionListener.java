@@ -177,7 +177,7 @@ public class TextExtractionListener extends DefaultEventListener {
 
                             // is it a binary property?
                             Property p = (Property) s.getItem(eventPath);
-                            if (p.getType() != PropertyType.BINARY) {
+                            if (p.getDefinition() == null || p.getType() != PropertyType.BINARY) {
                                 continue;
                             }
 

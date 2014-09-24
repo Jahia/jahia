@@ -122,20 +122,6 @@
     </filter>
     
     <filter>
-        <filter-name>ShindigAuthFilter</filter-name>
-        <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
-        <async-supported>true</async-supported>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-        <init-param>
-            <param-name>contextAttribute</param-name>
-            <param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
-        </init-param>
-    </filter>
-
-    <filter>
         <filter-name>shiroFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
@@ -255,36 +241,6 @@
         <filter-name>CSSChannelFilter</filter-name>
         <url-pattern>*.css</url-pattern>
     </filter-mapping>
-<!-- Shindig filter mappings -->
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/social/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/ifr</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/makeRequest</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/api/rpc/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/gadgets/api/rest/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/rpc/*</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-      <filter-name>ShindigAuthFilter</filter-name>
-      <url-pattern>/rest/*</url-pattern>
-    </filter-mapping>
-<!-- End of Shindig filter mappings -->
 
     <listener>
         <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>
@@ -601,15 +557,6 @@
         <async-supported>true </async-supported>
     </servlet>
     
-    <servlet>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-        	<param-name>contextAttribute</param-name>
-        	<param-value>org.springframework.web.context.WebApplicationContext.jahiaModules</param-value>
-        </init-param>
-    </servlet>
-    
     <!-- OSGi Proxy Servlet -->
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
@@ -743,70 +690,6 @@
         <url-pattern>/cms/*</url-pattern>
     </servlet-mapping>
 
-<!-- Shindig servlet mappings -->
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/js/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/proxy/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/makeRequest</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/rpc/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/api/rpc/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/social/rpc/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/rest/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/api/rest/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/social/rest/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/concat</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/oauthcallback</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/ifr</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/accel</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/gadgets/metadata</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ShindigDispatcherServlet</servlet-name>
-        <url-pattern>/oauth/*</url-pattern>
-    </servlet-mapping>
-<!-- End of Shindig servlet mappings -->
-
-<!-- Quercus PHP mapping -->
 
     <servlet-mapping>
         <servlet-name>osgiProxy</servlet-name>

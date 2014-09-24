@@ -564,6 +564,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                         getClass().getResource("/jahia/indexing_configuration_version.xml") != null ? "/jahia/indexing_configuration_version.xml"
                                 : new File(repoHome, "indexing_configuration_version.xml").getAbsolutePath());
             }
+            if (System.getProperty("org.apache.jackrabbit.server.remoting.davex.batchread-config") == null
+                    && getClass().getResource("/jahia/batchread.properties") != null) {
+                setSystemProperty("org.apache.jackrabbit.server.remoting.davex.batchread-config",
+                        "/jahia/batchread.properties");
+            }
         } catch (IOException e) {
             logger.error("Unable to determine JCR repository home", e);
         }

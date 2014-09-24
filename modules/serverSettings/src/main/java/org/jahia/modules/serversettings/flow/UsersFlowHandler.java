@@ -116,64 +116,31 @@ public class UsersFlowHandler implements Serializable {
             propertiesToPopulate = new UserProperties();
         }
 
-        Set<String> readOnlyProperties = propertiesToPopulate.getReadOnlyProperties();
-
-        try {
-            propertiesToPopulate.setFirstName(jahiaUser.getProperty("j:firstName").getString());
-//            if (props.isReadOnly("j:firstName")) {
-//                readOnlyProperties.add("j:firstName");
-//            }
-        } catch (RepositoryException e) {
-            logger.debug(e.getMessage(), e);
-        }
-        try {
-            propertiesToPopulate.setLastName(jahiaUser.getProperty("j:lastName").getString());
-//            if (props.isReadOnly("j:lastName")) {
-//                readOnlyProperties.add("j:lastName");
-//            }
-        } catch (RepositoryException e) {
-            logger.debug(e.getMessage(), e);
-        }
+        propertiesToPopulate.setFirstName(jahiaUser.getPropertyAsString("j:firstName"));
+        propertiesToPopulate.setLastName(jahiaUser.getPropertyAsString("j:lastName"));
         propertiesToPopulate.setUsername(jahiaUser.getName());
         propertiesToPopulate.setUserKey(jahiaUser.getPath());
+        propertiesToPopulate.setEmail(jahiaUser.getPropertyAsString("j:email"));
+        propertiesToPopulate.setOrganization(jahiaUser.getPropertyAsString("j:organization"));
+
         try {
-            propertiesToPopulate.setEmail(jahiaUser.getProperty("j:email").getString());
-//            if (props.isReadOnly("j:email")) {
-//                readOnlyProperties.add("j:email");
-//            }
-        } catch (RepositoryException e) {
-            logger.debug(e.getMessage(), e);
-        }
-        try {
-            propertiesToPopulate.setOrganization(jahiaUser.getProperty("j:organization").getString());
-//            if (props.isReadOnly("j:organization")) {
-//                readOnlyProperties.add("j:organization");
-//            }
+            if (jahiaUser.hasProperty("emailNotificationsDisabled")) {
+                propertiesToPopulate.setEmailNotificationsDisabled(jahiaUser
+                        .getProperty("emailNotificationsDisabled").getBoolean());
+            }
+
+            if (jahiaUser.hasProperty("j:accountLocked")) {
+                propertiesToPopulate.setAccountLocked(jahiaUser.getProperty("j:accountLocked").getBoolean());
+            }
+
+            if (jahiaUser.hasProperty("j:external")) {
+                propertiesToPopulate.setExternal(jahiaUser.getProperty("j:external").getBoolean());
+            }
         } catch (RepositoryException e) {
             logger.debug(e.getMessage(), e);
         }
 
-        try {
-            propertiesToPopulate.setEmailNotificationsDisabled(jahiaUser
-                    .getProperty("emailNotificationsDisabled").getBoolean());
-//            if (props.isReadOnly("emailNotificationsDisabled")) {
-//                readOnlyProperties.add("emailNotificationsDisabled");
-//            }
-        } catch (RepositoryException e) {
-            logger.debug(e.getMessage(), e);
-        }
         propertiesToPopulate.setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
-//        if (props.isReadOnly("preferredLanguage")) {
-//            readOnlyProperties.add("preferredLanguage");
-//        }
-        try {
-            propertiesToPopulate.setAccountLocked(jahiaUser.getProperty("j:accountLocked").getBoolean());
-//            if (props.isReadOnly("j:accountLocked")) {
-//                readOnlyProperties.add("j:accountLocked");
-//            }
-        } catch (RepositoryException e) {
-            logger.debug(e.getMessage(), e);
-        }
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));
         propertiesToPopulate.setLocalPath(jahiaUser.getPath());

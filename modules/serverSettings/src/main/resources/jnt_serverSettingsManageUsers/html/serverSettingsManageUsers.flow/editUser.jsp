@@ -57,22 +57,24 @@
                     </div>
                 </div>
             </fieldset>
-            <fieldset title="<fmt:message key='serverSettings.user.password'/>">
-                <div class="container-fluid">
-                    <div class="row-fluid">
-                        <div class="span4">
-                            <label for="password"><fmt:message key="label.password"/></label>
-                            <input class="span12" type="password" name="password" id="password" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
-                            <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
-                        </div>
-                        <div class="span4">
-                            <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
-                            <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
-                            <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
+            <c:if test="${!(userProperties.external)}">
+                <fieldset title="<fmt:message key='serverSettings.user.password'/>">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span4">
+                                <label for="password"><fmt:message key="label.password"/></label>
+                                <input class="span12" type="password" name="password" id="password" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
+                                <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
+                            </div>
+                            <div class="span4">
+                                <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
+                                <input class="span12" type="password" name="passwordConfirm" id="passwordConfirm" value=""${userProperties.readOnly ? ' disabled="disabled"' : ''} autocomplete="off">
+                                <div style="margin-bottom:15px;" class="text-info">&nbsp;(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </fieldset>
+                </fieldset>
+            </c:if>
             <fieldset title="<fmt:message key='label.options'/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
@@ -132,7 +134,7 @@
                                 <i class="icon-ban-circle"></i>
                                 &nbsp;<fmt:message key='label.cancel'/>
                             </button>
-                            <c:if test="${!userProperties.readOnly}">
+                            <c:if test="${!userProperties.readOnly && !userProperties.external}">
                                 <button class="btn" type="submit" name="_eventId_removeUser">
                                     <i class="icon-remove"></i>
                                     &nbsp;<fmt:message key='serverSettings.user.remove'/>

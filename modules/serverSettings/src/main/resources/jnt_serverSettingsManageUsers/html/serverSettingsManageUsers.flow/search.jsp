@@ -228,7 +228,14 @@
                         <tr class="sortable-row">
                             <td>${loopStatus.count}</td>
                             <td>
-                                <input type="checkbox" name="userCheckbox" value="${fn:escapeXml(curUser.path)}" class="userCheckbox">
+                                <c:choose>
+                                    <c:when test="${user:isReadOnlyProvider(curUser)}">
+                                        &nbsp;
+                                    </c:when>
+                                    <c:otherwise>
+                                        <input type="checkbox" name="userCheckbox" value="${fn:escapeXml(curUser.path)}" class="userCheckbox">
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td><a href="#" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.path)}')">${user:displayName(curUser)}</a></td>
                             <td>${user:fullName(curUser)}</td>

@@ -207,7 +207,8 @@ public class UserProperties implements Serializable {
     private Locale preferredLanguage;
 
     private boolean readOnly;
-    
+    private boolean external;
+
     private Set<String> readOnlyProperties = new HashSet<String>();
 
     private String userKey;
@@ -290,6 +291,14 @@ public class UserProperties implements Serializable {
 
     public boolean isReadOnly() {
         return readOnly;
+    }
+
+    public boolean isExternal() {
+        return external;
+    }
+
+    public void setExternal(boolean external) {
+        this.external = external;
     }
 
     public void setAccountLocked(Boolean accountLocked) {

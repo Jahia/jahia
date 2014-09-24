@@ -643,6 +643,8 @@ public class PrincipalViewHelper implements Serializable {
             if ("everywhere".equals(storedOn) || providers == null) {
                 searchResults.addAll(jahiaGroupManagerService.
                         searchGroups(siteKey, searchParameters));
+            }else if ("providers".equals(storedOn)){
+                searchResults.addAll(jahiaGroupManagerService.searchGroups(siteKey, searchParameters, providers));
             }
         }
         return searchResults;

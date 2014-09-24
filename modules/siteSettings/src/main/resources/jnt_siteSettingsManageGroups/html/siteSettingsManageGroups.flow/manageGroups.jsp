@@ -71,11 +71,11 @@ function submitGroupForm(act, group) {
                     key="label.providers"/>
                     
                 <c:forEach items="${providers}" var="curProvider">
-                    <input type="checkbox" class="provCheck" name="providers" value="${curProvider.key}"
+                    <input type="checkbox" class="provCheck" name="providers" value="${curProvider}"
                            ${searchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
-                           ${empty searchCriteria.providers || functions:contains(searchCriteria.providers, curProvider.key) ? 'checked="checked"' : ''}/>
-                    <fmt:message var="i18nProviderLabel" key="providers.${curProvider.key}.label"/>
-                    ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider.key : i18nProviderLabel)}
+                           ${empty searchCriteria.providers || functions:contains(searchCriteria.providers, curProvider) ? 'checked="checked"' : ''}/>
+                    <fmt:message var="i18nProviderLabel" key="providers.${curProvider}.label"/>
+                    ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider : i18nProviderLabel)}
                 </c:forEach>
             </c:if>
         </fieldset>

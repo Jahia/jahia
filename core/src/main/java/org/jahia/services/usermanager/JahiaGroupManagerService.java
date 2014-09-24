@@ -75,16 +75,14 @@ package org.jahia.services.usermanager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.utils.Patterns;
@@ -416,19 +414,75 @@ public class JahiaGroupManagerService extends JahiaService {
      * @param searchCriterias a Properties object that contains search criterias
      *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
      *                        null to search without criterias
+     * @param providers       the providers key to search on
+     * @return a Set of JCRGroupNode elements that correspond to those search criterias
+     */
+    public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers) {
+        try {
+            return searchGroups(siteKey, searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+        } catch (RepositoryException e) {
+            return null;
+        }
+    }
+
+    /**
+     * Find groups according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param siteKey         site identifier
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
+     *                        null to search without criterias
      * @return a Set of JCRGroupNode elements that correspond to those search criterias
      */
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, JCRSessionWrapper session) {
+        return searchGroups(siteKey, searchCriterias, null, session);
+    }
+
+    /**
+     * Find groups according to a table of name=value properties. If the left
+     * side value is "*" for a property then it will be tested against all the
+     * properties. ie *=test* will match every property that starts with "test"
+     *
+     * @param siteKey         site identifier
+     * @param searchCriterias a Properties object that contains search criterias
+     *                        in the format name,value (for example "*"="*" or "groupname"="*test*") or
+     *                        null to search without criterias
+     * @param providers       the providers key to search on
+     * @return a Set of JCRGroupNode elements that correspond to those search criterias
+     */
+    public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers, JCRSessionWrapper session) {
         try {
             Set<JCRGroupNode> users = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(
                         "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE "
                 );
-                if (siteKey == null) {
-                    query.append("ISDESCENDANTNODE(g, '/groups')");
+                List<JCRStoreProvider> searchOnProviders = getProviders(siteKey, providers, session);
+                if (!searchOnProviders.isEmpty()) {
+                    query.append("(");
+                    int initialLength = query.length();
+                    for (JCRStoreProvider provider : searchOnProviders) {
+                        query.append(query.length() > initialLength ? " OR " : "");
+                        if (provider.isDefault()) {
+                            query.append("(g.[j:external] = false AND ");
+                            if(siteKey == null){
+                                query.append("ISDESCENDANTNODE(g, '/groups'))");
+                            } else {
+                                query.append("ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups'))");
+                            }
+                        } else {
+                            query.append("ISDESCENDANTNODE(g, '").append(provider.getMountPoint()).append("')");
+                        }
+                    }
+                    query.append(")");
                 } else {
-                    query.append("(ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')").append(" OR ISDESCENDANTNODE(g, '/groups/providers'))");
+                    if (siteKey == null) {
+                        query.append("ISDESCENDANTNODE(g, '/groups')");
+                    } else {
+                        query.append("(ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')").append(" OR ISDESCENDANTNODE(g, '/groups/providers'))");
+                    }
                 }
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
@@ -487,6 +541,63 @@ public class JahiaGroupManagerService extends JahiaService {
             logger.error("Error while searching groups", e);
             return new HashSet<JCRGroupNode>();
         }
+    }
+
+    /**
+     * Provide the list of all available groups providers
+     * @param siteKey the site to lookup on, if provided lookup under /sites/{siteKey}/groups/providers else the lookup is made under /groups/providers)
+     * @param session the session used
+     * @return list of JCRStoreProvider
+     */
+    public List<JCRStoreProvider> getProviderList(String siteKey, JCRSessionWrapper session){
+        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        try {
+            providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
+            JCRNodeWrapper providersNode = session.getNode("/groups/providers");
+            NodeIterator iterator = providersNode.getNodes();
+            while (iterator.hasNext()){
+                JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();
+                providers.add(providerNode.getProvider());
+            }
+        } catch (PathNotFoundException e) {
+            // no providers node
+        } catch (RepositoryException e) {
+            logger.error("Error while retrieving user providers", e);
+        }
+        return providers;
+    }
+
+    /**
+     * Provide the list of groups providers matching given keys
+     * @param siteKey the site to lookup on, if provided lookup under /sites/{siteKey}/groups/providers else the lookup is made under /groups/providers)
+     * @param providerKeys the keys
+     * @param session the session used
+     * @return list of JCRStoreProvider
+     */
+    public List<JCRStoreProvider> getProviders(String siteKey, String[] providerKeys, JCRSessionWrapper session){
+        if(ArrayUtils.isEmpty(providerKeys)){
+            return Collections.emptyList();
+        }
+
+        List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
+        for (JCRStoreProvider provider : getProviderList(siteKey, session)) {
+            if (ArrayUtils.contains(providerKeys, provider.getKey())) {
+                providers.add(provider);
+            }
+        }
+        return providers;
+    }
+
+    /**
+     * Retrieve the group provider corresponding to a given key
+     * @param siteKey the site to lookup on, if provided lookup under /sites/{siteKey}/groups/providers else the lookup is made under /groups/providers)
+     * @param providerKey the key
+     * @param session the session used
+     * @return JCRStoreProvider if it exist or null
+     */
+    public JCRStoreProvider getProvider(String siteKey, String providerKey, JCRSessionWrapper session){
+        List<JCRStoreProvider> providers = getProviders(siteKey, new String[]{providerKey}, session);
+        return providers.size() == 1 ? providers.get(0) : null;
     }
 
     public List<String> getUserMembership(String userName) {

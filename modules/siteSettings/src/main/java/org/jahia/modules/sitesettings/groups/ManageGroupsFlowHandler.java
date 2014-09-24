@@ -72,16 +72,7 @@
 package org.jahia.modules.sitesettings.groups;
 
 import java.io.Serializable;
-import java.security.Principal;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import javax.jcr.RepositoryException;
 
@@ -264,11 +255,17 @@ public class ManageGroupsFlowHandler implements Serializable {
      * 
      * @return a map of all group providers currently registered
      */
-    public Map<String, ? extends JCRStoreProvider> getProviders() {
-        Map<String, JCRStoreProvider> providers = new LinkedHashMap<String, JCRStoreProvider>();
-        final JCRStoreProvider provider = JCRSessionFactory.getInstance().getMountPoints().get("/");
-        providers.put(provider.getKey(), provider);
-        return providers;
+    public List<String> getProviders() throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
+            @Override
+            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                List<String> providerKeys = new ArrayList<String>();
+                for(JCRStoreProvider provider : groupManagerService.getProviderList(null, session)){
+                    providerKeys.add(provider.getKey());
+                }
+                return providerKeys;
+            }
+        });
     }
 
     private String getSiteKey(RequestContext ctx) {

@@ -551,6 +551,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         }
     }
 
+    /**
+     * Provide the list of all available users providers
+     * @param session the session used
+     * @return list of JCRStoreProvider
+     */
     public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session){
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
         try {
@@ -561,12 +566,20 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();
                 providers.add(providerNode.getProvider());
             }
+        } catch (PathNotFoundException e) {
+            // no providers node
         } catch (RepositoryException e) {
             logger.error("Error while retrieving user providers", e);
         }
         return providers;
     }
 
+    /**
+     * Provide the list of users providers matching given keys
+     * @param providerKeys the keys
+     * @param session the session used
+     * @return list of JCRStoreProvider
+     */
     public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session){
         if(ArrayUtils.isEmpty(providerKeys)){
             return Collections.emptyList();
@@ -581,6 +594,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return providers;
     }
 
+    /**
+     * Retrieve the user provider corresponding to a given key
+     * @param providerKey the key
+     * @param session the session used
+     * @return JCRStoreProvider if it exist or null
+     */
     public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session){
         List<JCRStoreProvider> providers = getProviders(new String[]{providerKey}, session);
         return providers.size() == 1 ? providers.get(0) : null;

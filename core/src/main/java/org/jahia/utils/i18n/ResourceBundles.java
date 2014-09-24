@@ -173,8 +173,10 @@ public final class ResourceBundles {
         JahiaTemplatesPackage aPackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry().getPackageForResourceBundle(bundleName);
         if (aPackage != null && aPackage.getClassLoader() != null) {
             return ResourceBundle.getBundle(bundleName, locale, aPackage.getClassLoader(), JahiaResourceBundleControl.getInstance());
-        } else {
+        } else if (bundleName != null) {
             return ResourceBundle.getBundle(bundleName, locale, JahiaResourceBundleControl.getInstance());
+        } else {
+            return getInternal(locale);
         }
     }
 

@@ -81,6 +81,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.*;
@@ -414,10 +415,13 @@ public class NavigationHelper {
                         String moduleName = sitePath.indexOf('/', "/modules/".length()) != -1 ? StringUtils
                                 .substringBetween(sitePath, "/modules/", "/") : StringUtils.substringAfter(sitePath,
                                 "/modules/");
+                        JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleName);
+                        if (module == null) {
+                            return userNodes;
+                        }
                         path = StringUtils.replace(path, "$site", sitePath
                                 + "/"
-                                + ServicesRegistry.getInstance().getJahiaTemplateManagerService()
-                                        .getTemplatePackageById(moduleName).getVersion().toString());
+                                + module.getVersion().toString());
                     } else {
                         path = StringUtils.replace(path, "$site", sitePath);
                     }

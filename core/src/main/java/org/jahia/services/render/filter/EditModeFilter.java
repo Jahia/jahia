@@ -84,7 +84,7 @@ import org.jahia.utils.Patterns;
 import org.jahia.utils.StringResponseWrapper;
 
 import javax.jcr.AccessDeniedException;
-import javax.jcr.ItemNotFoundException;
+import javax.jcr.PathNotFoundException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -138,7 +138,7 @@ public class EditModeFilter extends AbstractFilter {
         final JCRSiteNode site = resource.getNode().getResolveSite();
         final JahiaTemplatesPackage templatePackage = site.getTemplatePackage();
         if(templatePackage == null) {
-            throw new ItemNotFoundException("Couldn't find the template associated with site " + site.getName() + ". Please check that all its dependencies are started.");
+            throw new PathNotFoundException("Couldn't find the template associated with site " + site.getName() + ". Please check that all its dependencies are started.");
         }
         if (blockableModes != null && blockableModes.contains(renderContext.getMode())
                 && templatePackage.isEditModeBlocked()) {

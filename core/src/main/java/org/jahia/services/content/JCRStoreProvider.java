@@ -592,20 +592,22 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         } catch (Exception e) {
             logger.error("Repository init error", e);
         }
-        for (Resource file : files) {
-            try {
-                String propKey = file.getURL().toString() + ".lastRegistered." + key;
-                p.remove(propKey);
+        if(files != null){
+            for (Resource file : files) {
                 try {
-                    nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
+                    String propKey = file.getURL().toString() + ".lastRegistered." + key;
+                    p.remove(propKey);
+                    try {
+                        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
+                    } catch (Exception e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                    needUpdate = true;
+                    NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
+                } catch (IOException e) {
+                    logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
+                    needUpdate = true;
                 }
-                needUpdate = true;
-                NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
-            } catch (IOException e) {
-                logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
-                needUpdate = true;
             }
         }
         return needUpdate;

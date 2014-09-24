@@ -156,7 +156,7 @@ public class GWTDictionaryBuilder {
                 }
             }
             if (value != null) {
-                out.append(key.replace('.', '_')).append(":\"").append(escape(value)).append("\"");
+                out.append(normalizeKey(key)).append(":\"").append(escape(value)).append("\"");
                 if (iterator.hasNext()) {
                     out.append(",");
                 }
@@ -173,6 +173,14 @@ public class GWTDictionaryBuilder {
         out.flush();
         out.close();
         System.out.println("done");
+    }
+
+    private static String normalizeKey(String key) {
+        String normalized = key.indexOf('.') != -1 ? key.replace('.', '_') : key;
+        if (normalized.indexOf('-') != -1) {
+            normalized = normalized.replace('-', '_');
+        }
+        return normalized;
     }
 
     /**

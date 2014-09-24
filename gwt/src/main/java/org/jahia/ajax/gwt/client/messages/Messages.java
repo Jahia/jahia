@@ -113,7 +113,7 @@ public class Messages {
         if (key != null) {
             try {
                 Dictionary dict = Dictionary.getDictionary(DICTIONARY_NAME);
-                value = dict.get(key.contains(".") ? key.replace('.', '_') : key);
+                value = dict.get(normalizeKey(key));
             } catch (MissingResourceException e) {
                 if (Log.isDebugEnabled()) {
                     Log.debug("Can't retrieve [" + key + "]. Using default value: " + defaultValue, e);
@@ -128,7 +128,15 @@ public class Messages {
         }
         return value;
     }
-    
+
+    private static String normalizeKey(String key) {
+        String normalized = key.indexOf('.') != -1 ? key.replace('.', '_') : key;
+        if (normalized.indexOf('-') != -1) {
+            normalized = normalized.replace('-', '_');
+        }
+        return normalized;
+    }
+
     /**
      * Retrieves the value for the specified key from the resource bundle replacing placeholders if available.
      *

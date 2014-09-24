@@ -107,7 +107,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
 
-    private Map<String, Set<ViewResourceInfo>> availableScripts = new HashMap<String, Set<ViewResourceInfo>>(64);
+    private Map<String, Map<String, ViewResourceInfo>> availableScripts = new HashMap<String, Map<String, ViewResourceInfo>>(64);
     private Map<String, ScriptFactory> scriptFactoryMap;
     private JahiaTemplateManagerService templateManagerService;
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
@@ -152,15 +152,22 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         if (path.split("/").length != 4) {
             return;
         }
+
         ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
-            existingBundleScripts = new HashSet<ViewResourceInfo>();
+            existingBundleScripts = new HashMap<String, ViewResourceInfo>(11);
             availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
-            existingBundleScripts.add(scriptResource);
-        } else if (!existingBundleScripts.contains(scriptResource)) {
-            existingBundleScripts.add(scriptResource);
+            existingBundleScripts.put(scriptResource.path, scriptResource);
+        } else if (!existingBundleScripts.containsKey(scriptResource.path)) {
+            existingBundleScripts.put(scriptResource.path, scriptResource);
+        } else {
+            // if we already have a script resource available, retrieve it to make sure we update it with new properties
+            // this is required because it is possible that the properties file is not found when the view is first processed due to
+            // file ordering processing in ModulesDataSource.start.process method.
+            scriptResource = existingBundleScripts.get(scriptResource.path);
         }
+
         String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
@@ -174,6 +181,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         } else {
             scriptResource.setProperties(new Properties());
         }
+
+
         clearCaches();
     }
 
@@ -183,12 +192,12 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param scripts the URLs of the views to unregister
      */
     public void removeBundleScripts(Bundle bundle, List<URL> scripts) {
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
         for (URL script : scripts) {
-            existingBundleScripts.remove(new ViewResourceInfo(script.getPath()));
+            existingBundleScripts.remove(script.getPath());
         }
         clearCaches();
     }
@@ -199,11 +208,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param path the path of the view to unregister
      */
     public void removeBundleScript(Bundle bundle, String path) {
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
-        existingBundleScripts.remove(new ViewResourceInfo(path));
+        existingBundleScripts.remove(path);
         clearCaches();
     }
 
@@ -468,20 +477,14 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      *            the resource path prefix to match
      * @return a set of matching view scripts ordered by the extension (script type)
      */
-    private Set<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
-        Set<ViewResourceInfo> allBundleScripts = availableScripts.get(module);
+    private SortedSet<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
+        // todo: if we used a sorted map here, we might be able to avoid having to iterate over all values?
+        final Map<String, ViewResourceInfo> allBundleScripts = availableScripts.get(module);
         if (allBundleScripts == null || allBundleScripts.isEmpty()) {
-            return Collections.emptySet();
-        }
-        if (allBundleScripts.size() == 1) {
-            final ViewResourceInfo res = allBundleScripts.iterator().next();
-            if (!res.path.startsWith(pathPrefix)) {
-                return Collections.emptySet();
-            }
-            return allBundleScripts;
+            return new TreeSet<ViewResourceInfo>();
         }
         SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
-        for (ViewResourceInfo res : allBundleScripts) {
+        for (ViewResourceInfo res : allBundleScripts.values()) {
 
             if(!isVisible(res) || !res.path.startsWith(pathPrefix)) {
                 continue;

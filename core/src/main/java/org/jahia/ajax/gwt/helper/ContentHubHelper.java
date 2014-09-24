@@ -72,6 +72,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -87,6 +88,7 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+
 import java.util.*;
 
 /**
@@ -96,6 +98,14 @@ import java.util.*;
  */
 public class ContentHubHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
+    
+    private static final Map<String, String> MOUNT_PARENTS;
+
+    static {
+        MOUNT_PARENTS = new HashMap<String, String>();
+        MOUNT_PARENTS.put("mounts", "jnt:systemFolder");
+    }
+    
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
@@ -120,9 +130,7 @@ public class ContentHubHelper {
     }
 
     public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        Map<String,String> parents = new HashMap<String, String>();
-        parents.put("mounts","jnt:systemFolder");
-        GWTJahiaNode n = contentManager.createNode("/mounts", mountName, providerType, null, properties, session, uiLocale, parents, false);
+        GWTJahiaNode n = contentManager.createNode(getMountParentPath(properties), mountName, providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
         try {
             if (((JCRMountPointNode) session.getNode(n.getPath())).checkMountPointValidity()) {
                 session.save();
@@ -133,6 +141,28 @@ public class ContentHubHelper {
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
         }
+    }
+
+    private String getMountParentPath(List<GWTJahiaNodeProperty> properties) {
+        String path = "/mounts";
+        if (properties != null) {
+            for (GWTJahiaNodeProperty p : properties) {
+                if (p.getName().equals("mountParent")) {
+                    List<GWTJahiaNodePropertyValue> values = p.getValues();
+                    if (values != null && values.size() > 0) {
+                        GWTJahiaNodePropertyValue v = values.get(0);
+                        if (v != null && v.getNode() != null) {
+                            path = v.getNode().getPath();
+                            logger.info("Using specified mount parent path {}", path);
+                        }
+                    }
+                    break;
+                }
+
+            }
+        }
+        
+        return path;
     }
 
     public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {

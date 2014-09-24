@@ -368,7 +368,7 @@ public class UsersFlowHandler implements Serializable {
 
     private boolean setUserProperty(String propertyName, String propertyValue, String source, MessageContext context, JCRUserNode jahiaUser) {
         try {
-            String oldPropertyValue = jahiaUser.getProperty(propertyName).getString();
+            String oldPropertyValue = jahiaUser.getPropertyAsString(propertyName);
             if (oldPropertyValue == null && StringUtils.isNotEmpty(propertyValue) || oldPropertyValue != null && !StringUtils.equals(oldPropertyValue, propertyValue)) {
                 jahiaUser.setProperty(propertyName, propertyValue);
             }

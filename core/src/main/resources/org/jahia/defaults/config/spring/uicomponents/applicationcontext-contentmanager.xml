@@ -1318,7 +1318,7 @@
 
     <bean id="repository.mycontent" class="org.jahia.services.uicomponents.bean.contentmanager.Repository">
         <property name="key" value="myContentRepository"/>
-        <property name="paths" value="$user/content"/>
+        <property name="paths" value="$user/contents"/>
         <property name="titleKey"
                   value="repository.myRepository.label"/>
     </bean>

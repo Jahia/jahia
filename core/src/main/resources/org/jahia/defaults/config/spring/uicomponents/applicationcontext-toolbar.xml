@@ -638,6 +638,7 @@
                 <property name="parentTypes" value="jnt:page jnt:virtualsite jnt:moduleVersion jnt:navMenuText"/>
             </bean>
         </property>
+        <property name="requiredPermission" value="createPageAction"/>
         <property name="titleKey" value="label.newPage"/>
         <property name="icon" value="newPage"/>
         <property name="requiredPermission" value="createPageAction"/>

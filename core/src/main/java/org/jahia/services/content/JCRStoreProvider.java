@@ -920,6 +920,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         isDynamicallyMounted = dynamicallyMounted;
     }
 
+    /**
+     * Indicates if the nodes, backed by this provider, are considered during export operation.
+     * 
+     * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
+     *         they are skipped
+     */
     public boolean isExportable() {
         return true;
     }

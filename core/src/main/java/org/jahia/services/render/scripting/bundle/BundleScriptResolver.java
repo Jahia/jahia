@@ -107,7 +107,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
 
-    private Map<String, Map<String, ViewResourceInfo>> availableScripts = new HashMap<String, Map<String, ViewResourceInfo>>(64);
+    private Map<String, Set<ViewResourceInfo>> availableScripts = new HashMap<String, Set<ViewResourceInfo>>(64);
     private Map<String, ScriptFactory> scriptFactoryMap;
     private JahiaTemplateManagerService templateManagerService;
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
@@ -152,22 +152,15 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         if (path.split("/").length != 4) {
             return;
         }
-
         ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-        Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
-            existingBundleScripts = new HashMap<String, ViewResourceInfo>(11);
+            existingBundleScripts = new HashSet<ViewResourceInfo>();
             availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
-            existingBundleScripts.put(scriptResource.path, scriptResource);
-        } else if (!existingBundleScripts.containsKey(scriptResource.path)) {
-            existingBundleScripts.put(scriptResource.path, scriptResource);
-        } else {
-            // if we already have a script resource available, retrieve it to make sure we update it with new properties
-            // this is required because it is possible that the properties file is not found when the view is first processed due to
-            // file ordering processing in ModulesDataSource.start.process method.
-            scriptResource = existingBundleScripts.get(scriptResource.path);
+            existingBundleScripts.add(scriptResource);
+        } else if (!existingBundleScripts.contains(scriptResource)) {
+            existingBundleScripts.add(scriptResource);
         }
-
         String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
@@ -181,8 +174,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         } else {
             scriptResource.setProperties(new Properties());
         }
-
-
         clearCaches();
     }
 
@@ -192,12 +183,12 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param scripts the URLs of the views to unregister
      */
     public void removeBundleScripts(Bundle bundle, List<URL> scripts) {
-        final Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
         for (URL script : scripts) {
-            existingBundleScripts.remove(script.getPath());
+            existingBundleScripts.remove(new ViewResourceInfo(script.getPath()));
         }
         clearCaches();
     }
@@ -208,11 +199,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param path the path of the view to unregister
      */
     public void removeBundleScript(Bundle bundle, String path) {
-        final Map<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
-        existingBundleScripts.remove(path);
+        existingBundleScripts.remove(new ViewResourceInfo(path));
         clearCaches();
     }
 
@@ -234,6 +225,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     private View resolveView(Resource resource, RenderContext renderContext) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
@@ -249,6 +243,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return resolveView(resource, nodeTypeList, renderContext);
     }
 
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
@@ -295,6 +292,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         for (View view : getViewsSet(nt, site, templateType)) {
             if (view.getKey().equals(key)) {
@@ -305,6 +305,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         try {
             return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
@@ -319,6 +322,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param nt
      * @return
      * @throws NoSuchNodeTypeException
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
      */
     private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
         List<ExtendedNodeType> nodeTypeList = new LinkedList<ExtendedNodeType>();
@@ -331,6 +335,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return nodeTypeList;
     }
 
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
             List<String> templateTypes) {
 
@@ -418,6 +425,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return installedModules;
     }
 
+    /*
+     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
+     */
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType,
                              JahiaTemplatesPackage tplPackage) {
         StringBuilder pathBuilder = new StringBuilder(64);
@@ -477,28 +487,26 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      *            the resource path prefix to match
      * @return a set of matching view scripts ordered by the extension (script type)
      */
-    private SortedSet<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
-        // todo: if we used a sorted map here, we might be able to avoid having to iterate over all values?
-        final Map<String, ViewResourceInfo> allBundleScripts = availableScripts.get(module);
+    private Set<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
+        Set<ViewResourceInfo> allBundleScripts = availableScripts.get(module);
         if (allBundleScripts == null || allBundleScripts.isEmpty()) {
-            return new TreeSet<ViewResourceInfo>();
+            return Collections.emptySet();
+        }
+        if (allBundleScripts.size() == 1) {
+            final ViewResourceInfo res = allBundleScripts.iterator().next();
+            if (!res.path.startsWith(pathPrefix)) {
+                return Collections.emptySet();
+            }
+            return allBundleScripts;
         }
         SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
-        for (ViewResourceInfo res : allBundleScripts.values()) {
-
-            if(!isVisible(res) || !res.path.startsWith(pathPrefix)) {
+        for (ViewResourceInfo res : allBundleScripts) {
+            if (!res.path.startsWith(pathPrefix)) {
                 continue;
             }
             sortedScripts.add(res);
         }
         return sortedScripts;
-    }
-
-    private boolean isVisible(ViewResourceInfo res) {
-        final Object visible = res.getProperties().get(View.VISIBLE);
-
-        // todo: do we need to check for studioOnly here? In that case, we would need to somehow pass the RenderContext
-        return visible == null || "true".equals(visible);
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

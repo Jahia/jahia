@@ -125,7 +125,11 @@ public class CompositeFilter implements Filter {
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException,
             ServletException {
-        new VirtualFilterChain(chain, filters).doFilter(request, response);
+        if (filters.isEmpty()) {
+            chain.doFilter(request, response);
+        } else {
+            new VirtualFilterChain(chain, filters).doFilter(request, response);
+        }
     }
 
     private static class VirtualFilterChain implements FilterChain {

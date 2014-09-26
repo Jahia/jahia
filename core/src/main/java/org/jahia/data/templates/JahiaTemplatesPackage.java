@@ -90,9 +90,11 @@ import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
@@ -840,12 +842,21 @@ public class JahiaTemplatesPackage {
         if (relativePath == null) {
             return null;
         }
+        if (getSourcesFolder() != null && getSourcesFolder().exists()) {
+            try {
+                File file = new File(getSourcesFolder(), "src/main/resources/" + relativePath);
+                if (file.exists()) {
+                    return new UrlResource(file.toURI());
+                }
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+        }
         URL entryURL = bundle.getEntry(relativePath);
         if (entryURL != null) {
             return new BundleResource(entryURL, bundle);
-        } else {
-            return null;
         }
+        return null;
     }
     
     /**
@@ -860,6 +871,11 @@ public class JahiaTemplatesPackage {
         if (relativePath == null) {
             return false;
         }
+        if (getSourcesFolder() != null && getSourcesFolder().exists()) {
+            if ((new File(getSourcesFolder(), "src/main/resources/" + relativePath)).exists()) {
+                return true;
+            }
+        }
         return bundle.getEntry(relativePath) != null;
     }
 
@@ -872,13 +888,27 @@ public class JahiaTemplatesPackage {
      * @see Bundle#findEntries(String, String, boolean)
      */
     public Resource[] getResources(String relativePath) {
-        Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
         List<Resource> resources = new ArrayList<Resource>();
-        if (resourceEnum == null) {
-            return NO_RESOURCES;
+        if (getSourcesFolder() != null && getSourcesFolder().exists()) {
+            File f = new File(getSourcesFolder(), "src/main/resources/" + relativePath);
+            if (f.listFiles() == null || f.listFiles().length == 0) {
+                return NO_RESOURCES;
+            }
+            for (File file : f.listFiles()) {
+                try {
+                    resources.add(new UrlResource(file.toURI()));
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
         } else {
-            while (resourceEnum.hasMoreElements()) {
-                resources.add(new BundleResource(resourceEnum.nextElement(), bundle));
+            Enumeration<URL> resourceEnum = bundle.findEntries(relativePath, null, false);
+            if (resourceEnum == null) {
+                return NO_RESOURCES;
+            } else {
+                while (resourceEnum.hasMoreElements()) {
+                    resources.add(new BundleResource(resourceEnum.nextElement(), bundle));
+                }
             }
         }
         return resources.toArray(new Resource[resources.size()]);

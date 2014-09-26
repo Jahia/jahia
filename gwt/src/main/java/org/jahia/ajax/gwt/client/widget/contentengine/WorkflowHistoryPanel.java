@@ -389,7 +389,7 @@ public class WorkflowHistoryPanel extends LayoutContainer {
         tree.setAutoExpandColumn("displayName");
         tree.getTreeView().setRowHeight(25);
         tree.setTrackMouseOver(false);
-        add(tree);;
+        add(tree);
 
         listener = new Poller.PollListener<TaskEvent>() {
             @Override
@@ -416,15 +416,15 @@ public class WorkflowHistoryPanel extends LayoutContainer {
             }
         };
         Poller.getInstance().registerListener(listener, TaskEvent.class);
-
-        engine.addListener(Events.Hide, new Listener<BaseEvent>() {
-            public void handleEvent(BaseEvent be) {
-                if (listener != null) {
-                    Poller.getInstance().unregisterListener(listener, TaskEvent.class);
+        if (engine != null) {
+            engine.addListener(Events.Hide, new Listener<BaseEvent>() {
+                public void handleEvent(BaseEvent be) {
+                    if (listener != null) {
+                        Poller.getInstance().unregisterListener(listener, TaskEvent.class);
+                    }
                 }
-            }
-        });
-
+            });
+        }
 
     }
 

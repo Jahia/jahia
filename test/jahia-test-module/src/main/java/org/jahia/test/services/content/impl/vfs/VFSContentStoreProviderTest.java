@@ -82,7 +82,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.ContentHubHelper;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
-import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
@@ -95,7 +94,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import javax.jcr.*;
-import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import java.io.ByteArrayInputStream;
 import java.io.File;

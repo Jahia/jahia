@@ -100,6 +100,7 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
@@ -109,6 +110,7 @@ import java.util.Set;
  * User: toto
  * Date: Aug 19, 2009
  * Time: 12:03:48 PM
+ *
  */
 public class PlaceholderModule extends Module {
     private LayoutContainer panel;
@@ -116,7 +118,7 @@ public class PlaceholderModule extends Module {
     private LayoutContainer pasteAsReferenceButton;
 
     private static int MIN_WIDTH = 100;
-
+    
     public PlaceholderModule(String id, String path, Element divElement, final MainModule mainModule) {
         super(id, path, divElement, mainModule, new FlowLayout());
 
@@ -150,18 +152,26 @@ public class PlaceholderModule extends Module {
         }
 
         if (getParentModule() instanceof AreaModule && getParentModule().getChildCount() == 0 && ((AreaModule) getParentModule()).editable) {
-            ((AreaModule) getParentModule()).setEnabledEmptyArea();
+           ((AreaModule) getParentModule()).setEnabledEmptyArea();
         }
 
-
-        final String resolvedNodeTypes = getRestrictedNodeTypes();
-        String[] nodeTypesArray = resolvedNodeTypes != null ? resolvedNodeTypes.split(" ") : null;
-
-        // if we have node type restrictions
+        String[] nodeTypesArray = null;
+        if (getParentModule() != null && getParentModule().getNodeTypes() != null) {
+            nodeTypesArray = getParentModule().getNodeTypes().split(" ");
+        }
+        if ((getNodeTypes() != null) && (getNodeTypes().length() > 0)) {
+            nodeTypesArray = getNodeTypes().split(" ");
+        }
         if (nodeTypesArray != null) {
+            List filter = null;
+            if (nodeTypes != null && nodeTypes.length()>0) {
+                filter = Arrays.asList(nodeTypes.split(" "));
+            }
             final Set<String> displayedNodeTypes = new HashSet<String>(Arrays.asList(nodeTypesArray));
-            for (final String s : displayedNodeTypes) {
-
+            for (final String s : nodeTypesArray) {
+                if (filter != null && !filter.contains(s)) {
+                    continue;
+                }
                 GWTJahiaNodeType nodeType = ModuleHelper.getNodeType(s);
                 if (nodeType != null) {
                     Boolean canUseComponentForCreate = (Boolean) nodeType.get("canUseComponentForCreate");
@@ -170,10 +180,10 @@ public class PlaceholderModule extends Module {
                     }
                 }
                 Image icon = ContentModelIconProvider.getInstance().getIcon(nodeType).createImage();
-                icon.setTitle(nodeType != null ? nodeType.getLabel() : s);
+                icon.setTitle(nodeType != null ? nodeType.getLabel() : s );
                 LayoutContainer p = new HorizontalPanel();
                 p.add(icon);
-
+                
                 Text label = new Text(nodeType != null ? nodeType.getLabel() : s);
                 if (getWidth() >= MIN_WIDTH) {
                     p.add(label);
@@ -201,12 +211,12 @@ public class PlaceholderModule extends Module {
             icon.setTitle(Messages.get("label.paste", "Paste"));
             pasteButton = new HorizontalPanel();
             pasteButton.add(icon);
-
+            
             Text pasteLabel = new Text(Messages.get("label.paste", "Paste"));
             if (getWidth() >= MIN_WIDTH) {
                 pasteButton.add(pasteLabel);
             } else {
-                pasteButton.setTitle(pasteLabel.getTitle());
+            	pasteButton.setTitle(pasteLabel.getTitle());
             }
             pasteButton.sinkEvents(Event.ONCLICK);
             pasteButton.addStyleName("button-placeholder");
@@ -222,12 +232,12 @@ public class PlaceholderModule extends Module {
             AbstractImagePrototype pasteAsReferenceIcon = ToolbarIconProvider.getInstance().getIcon("pasteReference");
             pasteAsReferenceButton = new HorizontalPanel();
             pasteAsReferenceButton.add(pasteAsReferenceIcon.createImage());
-
+            
             Text pasteReferenceLabel = new Text(Messages.get("label.pasteReference", "Paste Reference"));
             if (getWidth() >= MIN_WIDTH) {
                 pasteAsReferenceButton.add(pasteReferenceLabel);
             } else {
-                pasteAsReferenceButton.setTitle(pasteReferenceLabel.getTitle());
+            	pasteAsReferenceButton.setTitle(pasteReferenceLabel.getTitle());
             }
             pasteAsReferenceButton.sinkEvents(Event.ONCLICK);
             pasteAsReferenceButton.addStyleName("button-placeholder");
@@ -259,7 +269,7 @@ public class PlaceholderModule extends Module {
     }
 
     public void updatePasteButton() {
-        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty() && CopyPasteEngine.getInstance().checkNodeType(getRestrictedNodeTypes())) {
+        if (!CopyPasteEngine.getInstance().getCopiedNodes().isEmpty() && /*CopyPasteEngine.getInstance().canCopyTo(parentModule.getNode()) &&*/ CopyPasteEngine.getInstance().checkNodeType(parentModule.getNodeTypes())) {
             pasteButton.setVisible(true);
             if (CopyPasteEngine.getInstance().canPasteAsReference()) {
                 pasteAsReferenceButton.setVisible(true);

@@ -101,7 +101,6 @@ public abstract class Module extends LayoutContainer {
     protected Module parentModule;
     protected MainModule mainModule;
     protected String nodeTypes;
-    private String restrictedNodeTypes;
     protected int listLimit = -1;
     protected String referenceTypes;
     protected boolean isDraggable = false;
@@ -295,29 +294,6 @@ public abstract class Module extends LayoutContainer {
 
     public String getNodeTypes() {
         return nodeTypes;
-    }
-
-    protected String getRestrictedNodeTypes() {
-        if(restrictedNodeTypes != null && !restrictedNodeTypes.isEmpty()) {
-            // if we have restricted node types, use that
-            return restrictedNodeTypes;
-        }
-        else if (nodeTypes != null && !nodeTypes.isEmpty()) {
-            // if we defined node types here, return them
-            return nodeTypes;
-        } else {
-            // if we didn't define node types here, check parent
-            final String parentNodeTypes = getParentModule().getNodeTypes();
-            if (parentNodeTypes != null && !parentNodeTypes.isEmpty()) {
-                return parentNodeTypes;
-            }
-        }
-
-        return null;
-    }
-
-    void setRestrictedNodeTypes(String restrictedNodeTypes) {
-        this.restrictedNodeTypes = restrictedNodeTypes;
     }
 
     public int getListLimit() {

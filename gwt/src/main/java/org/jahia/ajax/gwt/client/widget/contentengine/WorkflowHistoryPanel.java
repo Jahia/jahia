@@ -416,14 +416,6 @@ public class WorkflowHistoryPanel extends LayoutContainer {
             }
         };
         Poller.getInstance().registerListener(listener, TaskEvent.class);
-<<<<<<< .working
-        if (engine != null) {
-            engine.addListener(Events.Hide, new Listener<BaseEvent>() {
-                public void handleEvent(BaseEvent be) {
-                    if (listener != null) {
-                        Poller.getInstance().unregisterListener(listener, TaskEvent.class);
-                    }
-=======
 
         if (engine != null) {
             engine.addListener(Events.Hide, new Listener<BaseEvent>() {
@@ -431,7 +423,6 @@ public class WorkflowHistoryPanel extends LayoutContainer {
                     if (listener != null) {
                         Poller.getInstance().unregisterListener(listener, TaskEvent.class);
                     }
->>>>>>> .merge-right.r50952
                 }
             });
         }

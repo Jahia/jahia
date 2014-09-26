@@ -172,9 +172,13 @@ public class JCRPublicationService extends JahiaService {
 
     private void doLock(String id, JCRSessionWrapper session, String key)
             throws RepositoryException {
-        JCRNodeWrapper node = session.getNodeByUUID(id);
-        if (node.isLockable()) {
-            node.lockAndStoreToken("validation", " " + key + " ");
+        try {
+            JCRNodeWrapper node = session.getNodeByUUID(id);
+            if (node.isLockable()) {
+                node.lockAndStoreToken("validation", " " + key + " ");
+            }
+        } catch (ItemNotFoundException e) {
+            logger.debug("Item does not exist anymore : " + id);
         }
     }
 

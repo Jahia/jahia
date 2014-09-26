@@ -630,7 +630,18 @@ public class WorkflowService implements BeanPostProcessor {
     public String startProcess(List<String> nodeIds, JCRSessionWrapper session, String processKey, String provider,
                                Map<String, Object> args, List<String> comments) throws RepositoryException {
         WorkflowProvider providerImpl = lookupProvider(provider);
-        String mainId = nodeIds.iterator().next();
+        List<String> checkedNodeIds = new ArrayList<String>();
+        for (String nodeId : nodeIds) {
+            try {
+                checkedNodeIds.add(session.getNodeByIdentifier(nodeId).getIdentifier());
+            } catch (ItemNotFoundException e) {
+                // Item does not exist
+            }
+        }
+        if (checkedNodeIds.isEmpty()) {
+            return null;
+        }
+        String mainId = checkedNodeIds.iterator().next();
         Map<String, Object> newArgs = new HashMap<String, Object>();
         for (Map.Entry<String, Object> entry : args.entrySet()) {
             newArgs.put(entry.getKey().replaceAll(":", "_"), entry.getValue());
@@ -641,7 +652,7 @@ public class WorkflowService implements BeanPostProcessor {
         } catch (ItemNotFoundException e) {
             // Node not found
         }
-        newArgs.put("nodeIds", nodeIds);
+        newArgs.put("nodeIds", checkedNodeIds);
         newArgs.put("workspace", session.getWorkspace().getName());
         newArgs.put("locale", session.getLocale());
         newArgs.put("workflow", providerImpl.getWorkflowDefinitionByKey(processKey, session.getLocale()));
@@ -651,7 +662,7 @@ public class WorkflowService implements BeanPostProcessor {
         }
         final String processId = providerImpl.startProcess(processKey, newArgs);
         if (logger.isDebugEnabled()) {
-            logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + nodeIds +
+            logger.debug("A workflow " + processKey + " from " + provider + " has been started on nodes: " + checkedNodeIds +
                     " from workspace " + newArgs.get("workspace") + " in locale " + newArgs.get("locale") + " with id " +
                     processId);
         }

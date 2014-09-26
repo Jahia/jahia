@@ -94,10 +94,9 @@ public class EditSourceContentActionItem extends BaseActionItem {
         LinkerSelectionContext lh = linker.getSelectionContext();
         final GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection != null
-                && singleSelection.isReference()
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions())
-                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions())
-                && Boolean.TRUE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit")));
+                && PermissionsUtils.isPermitted("jcr:modifyProperties", lh.getSelectionPermissions()) && singleSelection.isReference()
+                && !Boolean.FALSE.equals(ModuleHelper.getNodeType(singleSelection.getReferencedNode().getNodeTypes().get(0)).get("canUseComponentForEdit")));
 	}
 }

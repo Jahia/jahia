@@ -320,7 +320,8 @@ class NodeHelper {
             populatePrimaryTypeLabel(n, node);
         }
 
-        if (JCRSessionFactory.getInstance().getMountPoints().containsKey(n.getPath()) && JCRSessionFactory.getInstance().getMountPoints().get(n.getPath()).isDynamicallyMounted()) {
+        JCRStoreProvider p = JCRSessionFactory.getInstance().getMountPoints().get(n.getPath());
+        if (p != null && p.isDynamicallyMounted()) {
             n.set("j:isDynamicMountPoint", Boolean.TRUE);
         }
 

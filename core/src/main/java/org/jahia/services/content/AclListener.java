@@ -336,10 +336,13 @@ public class AclListener extends DefaultEventListener {
                         List<String> rolesName = new ArrayList<String>();
                         boolean needPrivileged = false;
 
-                        String sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
-                        if (StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY)) {
-                            sql = "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '" + principal + "' and (isdescendantnode(ace, ['/sites/" + site + "']) or not isdescendantnode(ace, ['/sites']))";
-                        }
+                        String sql = StringUtils.equals(site, JahiaSitesService.SYSTEM_SITE_KEY) ? "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '"
+                                + principal
+                                + "' and (isdescendantnode(ace, ['/sites/"
+                                + site
+                                + "']) or not isdescendantnode(ace, ['/sites']))"
+                                : "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '"
+                                        + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
 
                         rolesName.addAll(getRolesName(systemSession, sql));
                         try {

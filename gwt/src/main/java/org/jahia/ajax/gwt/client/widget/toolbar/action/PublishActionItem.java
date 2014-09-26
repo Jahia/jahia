@@ -148,9 +148,9 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                         && isNodeTypeAllowed(ctx.getMultipleSelection())) {
                     setEnabled(true);
                     if (allSubTree) {
-                        updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all selected items in all languages"));
-                    } else {
                         updateTitle(Messages.get("label.publish.all.selected.items.all.languages", "Publish all under selected items in all languages"));
+                    } else {
+                        updateTitle(Messages.get("label.publish.selected.items.all.languages", "Publish all selected items in all languages"));
                     }
                 }
             } else {
@@ -159,7 +159,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
                     String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                            Messages.get("label.publish.selected.item.all.languages", "all languages");
+                            Messages.get("label.publish.all.languages", "all languages");
                     updateItem(ctx, gwtJahiaNode, title);
                 }
             }

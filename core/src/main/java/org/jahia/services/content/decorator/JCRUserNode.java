@@ -71,40 +71,30 @@
  */
 package org.jahia.services.content.decorator;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.util.ISO8601;
-import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserImpl;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.version.VersionException;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.*;
 
 /**
  * Represent a user JCR node.
  *
  * @author rincevent
- * @since JAHIA 6.5
- * Created : 17 juin 2010
  */
 public class JCRUserNode extends JCRNodeDecorator {
     private transient static Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
@@ -118,11 +108,6 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
-        try {
-            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType("jnt:user");
-        } catch (NoSuchNodeTypeException e) {
-            logger.error(e.getMessage(), e);
-        }
     }
 
     public JahiaUser getJahiaUser() {

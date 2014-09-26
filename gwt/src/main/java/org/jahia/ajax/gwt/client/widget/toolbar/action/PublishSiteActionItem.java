@@ -107,7 +107,7 @@ public class PublishSiteActionItem extends PublishActionItem {
                     setEnabled(false);
                     return;
                 }
-                updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + Messages.get("label.publish.selected.item.all.languages", "all languages"));
+                updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + Messages.get("label.publish.all.languages", "all languages"));
             } else {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + JahiaGWTParameters.getSiteKey() + " - " + JahiaGWTParameters.getLanguageDisplayName());
             }

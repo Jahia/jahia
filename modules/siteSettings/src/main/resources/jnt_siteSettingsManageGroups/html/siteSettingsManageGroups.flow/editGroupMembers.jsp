@@ -34,7 +34,7 @@
 
 <c:set var="memberDisplayLimit" value="${siteSettingsProperties.memberDisplayLimit}"/>
 
-<c:set var="isGroupEditable" value="${!providers[group.providerName].readOnly}"/>
+<c:set var="isGroupEditable" value="${!user:isReadOnlyProvider(group)}"/>
 
 <c:if test="${flowHandler.searchType eq 'users'}">
     <c:set var="prefix" value="u:"/>
@@ -146,11 +146,11 @@
                     key="label.providers"/>
 
                 <c:forEach items="${providers}" var="curProvider">
-                    <input type="checkbox" class="provCheck" name="providers" value="${curProvider.key}"
-                        ${memberSearchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
-                        ${empty memberSearchCriteria.providers || functions:contains(memberSearchCriteria.providers, curProvider.key) ? 'checked="checked"' : ''}/>
-                    <fmt:message var="i18nProviderLabel" key="providers.${curProvider.key}.label"/>
-                    ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider.key : i18nProviderLabel)}
+                    <input type="checkbox" class="provCheck" name="providers" value="${curProvider}"
+                        ${searchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
+                        ${empty searchCriteria.providers || functions:contains(searchCriteria.providers, curProvider) ? 'checked="checked"' : ''}/>
+                    <fmt:message var="i18nProviderLabel" key="providers.${curProvider}.label"/>
+                    ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider : i18nProviderLabel)}
                 </c:forEach>
             </c:if>
         </fieldset>

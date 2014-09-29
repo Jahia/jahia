@@ -440,6 +440,14 @@ public class PublicationHelper {
                     }
                 }
 
+            } else if (sub.getPath().contains("/j:translation") && (node.getStatus() == GWTJahiaPublicationInfo.MARKED_FOR_DELETION || node.getStatus() == GWTJahiaPublicationInfo.DELETED)) {
+                String key = StringUtils.substringBeforeLast(sub.getPath(), "/j:translation");
+                GWTJahiaPublicationInfo lastPub = gwtInfos.get(key);
+                if (lastPub.getDeletedI18nUuid() != null) {
+                    lastPub.setDeletedI18nUuid(lastPub.getDeletedI18nUuid() + " " + sub.getUuid());
+                } else {
+                    lastPub.setDeletedI18nUuid(sub.getUuid());
+                }
             }
         }
         references.addAll(node.getReferences());

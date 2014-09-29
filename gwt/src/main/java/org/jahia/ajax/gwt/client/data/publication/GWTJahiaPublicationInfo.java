@@ -157,8 +157,16 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
         return get("i18nUuid");
     }
 
-    public void setI18NUuid(String path) {
-        set("i18nUuid", path);
+    public void setI18NUuid(String uuid) {
+        set("i18nUuid", uuid);
+    }
+
+    public String getDeletedI18nUuid() {
+        return get("deletedI18nUuid");
+    }
+
+    public void setDeletedI18nUuid(String uuids) {
+        set("deletedI18nUuid", uuids);
     }
 
     public Integer getStatus() {

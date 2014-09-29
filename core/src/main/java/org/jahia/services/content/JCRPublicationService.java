@@ -1109,7 +1109,12 @@ public class JCRPublicationService extends JahiaService {
 
                 if (!supportsPublication(sourceSession, n)) continue;
 
-                if (languages != null && n.isNodeType("jnt:translation")) {
+                if (info.getStatus() == PublicationInfo.MARKED_FOR_DELETION || info.getStatus() == PublicationInfo.DELETED) {
+                    PublicationInfoNode child =
+                            getPublicationInfo(n, languages, includesReferences, true, true,
+                                    sourceSession, destinationSession, infosMap, infos);
+                    info.addChild(child);
+                } else if (languages != null && n.isNodeType("jnt:translation")) {
                     String translationLanguage = n.getProperty("jcr:language").getString();
                     if (languages.contains(translationLanguage)) {
                         PublicationInfoNode child =

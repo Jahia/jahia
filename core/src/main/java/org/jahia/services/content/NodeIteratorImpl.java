@@ -72,7 +72,6 @@
 package org.jahia.services.content;
 
 import javax.jcr.Node;
-import javax.jcr.NodeIterator;
 
 import java.util.Iterator;
 import java.util.LinkedList;

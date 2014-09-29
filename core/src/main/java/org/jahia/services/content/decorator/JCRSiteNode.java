@@ -86,7 +86,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.*;
@@ -111,8 +110,6 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
     
     private JCRNodeWrapper home;
     
-    private int id = -2;
-
     private Set<String> languages;
     
     private List<Locale> languagesAsLocales;

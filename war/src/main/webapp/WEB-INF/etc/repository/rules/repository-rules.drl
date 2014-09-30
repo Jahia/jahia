@@ -250,3 +250,10 @@ rule "Flush privileges in role cache"
 >       JahiaAccessManager.flushPrivilegesInRoles();
 end
 
+rule "Mount point node created"
+    when
+        A new node is created
+            - it has the type jnt:mountPoint
+    then
+        Mount node
+end

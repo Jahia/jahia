@@ -24,18 +24,6 @@ rule "Tagging"
        Tag the node with the propertyValueAsString
 end
 
-rule "Image type"
-// Assign jmix:image type for an image node
-    salience 50
-    no-loop
-    when
-        A new node is created
-             - the mimetype matches image/.*
-    then
-        Log "Assign image type (jmix:image) for node " + node.getPath()
-        Add the type jmix:image
-end
-
 rule "Image update"
     salience 25
 // Rebuild thumbnail for an updated image and update height/width
@@ -44,6 +32,7 @@ rule "Image update"
              - the mimetype matches image/.*
     then
         > long timer = System.currentTimeMillis();
+        Add the type jmix:image
         Set the property j:width of the node with the width of the image
         Set the property j:height of the node with the height of the image
         Create an image "thumbnail" of size 150

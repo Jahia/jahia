@@ -618,9 +618,16 @@ public class WorkflowHelper {
     }
 
     public int getNumberOfTasksForUser(JahiaUser user) throws GWTJahiaServiceException {
+        return getNumberOfTasksForUser(user, null);
+    }
+
+    private int getNumberOfTasksForUser(JahiaUser user, String excludedTaskId) throws GWTJahiaServiceException {
         int total = 0;
         List<WorkflowTask> tasks = service.getTasksForUser(user, null);
         for (WorkflowTask task : tasks) {
+            if (excludedTaskId != null && excludedTaskId.equals(task.getId())) {
+                continue;
+            }
             Workflow workflow = service.getWorkflow(task.getProvider(), task.getProcessId(), null);
             if (workflow != null) {
                 List<String> uuids = (List<String>) workflow.getVariables().get("nodeIds");
@@ -707,10 +714,9 @@ public class WorkflowHelper {
                                     task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
                                     taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
                                 }
-                                taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser));
+                                taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, newTask ? null : task.getId()));
                                 if (!newTask) {
                                     taskEvent.setEndedTask(task.getId());
-                                    taskEvent.setNumberOfTasks(taskEvent.getNumberOfTasks() - 1);
                                 }
                             } catch (GWTJahiaServiceException e) {
                             }

@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
@@ -172,9 +173,15 @@ public class ContentHubHelper {
             if (provider != null && provider.isDynamicallyMounted()) {
                 provider.stop();
             }
-            JCRNodeWrapper node = session.getNode(path);
-            node.remove();
-            session.save();
+            String mountNodePath = "/mounts/"+ StringUtils.substringAfterLast(path,"/");
+            if(!session.nodeExists(mountNodePath)){
+                mountNodePath = mountNodePath+"-mount";
+            }
+            if(session.nodeExists(mountNodePath)) {
+                JCRNodeWrapper node = session.getNode(mountNodePath);
+                node.remove();
+                session.save();
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(Messages.getInternal("failure.unmount.label", uiLocale) + " " + path);
         }

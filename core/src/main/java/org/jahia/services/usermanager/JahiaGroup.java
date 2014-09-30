@@ -271,7 +271,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * <code>Principal</code> class.
      *
      * @return An Iterator of the group members.
-     * @deprecated
+     * @deprecated use getMembers
      */
     public Enumeration<Principal> members () {
         throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
@@ -281,7 +281,7 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
      * @deprecated
      */
     public Collection<Principal> getMembers() {
-        throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
+        return getMembersMap();
     }
 
     /**

@@ -79,7 +79,7 @@ import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttributeException;
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
 import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
-import org.jahia.services.usermanager.Group;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.LoggerFactory;
 
@@ -408,7 +408,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
         if (logger.isDebugEnabled()) {
             logger.debug("Find node by xpath[ " + sqlRequest + " ]");
         }
-        if (p instanceof Group) {
+        if (p instanceof JahiaGroup) {
             logger.warn("Preference provider not implemented for Group");
             return null;
         }

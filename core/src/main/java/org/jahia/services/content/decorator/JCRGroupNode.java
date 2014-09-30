@@ -73,10 +73,7 @@ package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.Group;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaPrincipal;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -98,9 +95,15 @@ public class JCRGroupNode extends JCRNodeDecorator {
         super(node);
     }
 
-    public Group getJahiaGroup() {
+    public JahiaGroup getJahiaGroup() {
         try {
-            return new Group(getName(), getPath(), getResolveSite().getName());
+            Properties properties = new Properties();
+            try {
+                properties.putAll(getPropertiesAsString());
+            } catch (RepositoryException e) {
+                logger.error("Cannot read group properties",e);
+            }
+            return new JahiaGroupImpl(getName(), getPath(), getResolveSite().getName(), properties);
         } catch (RepositoryException e) {
             logger.error("Cannot get group",e);
         }

@@ -233,7 +233,7 @@ public class PrincipalViewHelper implements Serializable {
             if (p instanceof JahiaUser) {
                 return buff.append("u").append(((JahiaUser) p).getUserKey()).toString();
             } else {
-                return buff.append("g").append(((Group) p).getGroupKey()).toString();
+                return buff.append("g").append(((JahiaGroup) p).getGroupKey()).toString();
             }
         }
         return "";

@@ -151,7 +151,7 @@ public class WorkflowHelper {
                             if (participations != null) {
                                 for (WorkflowParticipation participation : participations) {
                                     JahiaPrincipal principal = participation.getJahiaPrincipal();
-                                    if (principal instanceof Group) {
+                                    if (principal instanceof JahiaGroup) {
                                         JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                                         JCRUserNode userNode = userManagerService.lookupUserByPath(session.getUser().getLocalPath());
                                         if (groupNode != null && userNode != null && groupNode.isMember(userNode)) {
@@ -692,7 +692,7 @@ public class WorkflowHelper {
                         if (u != null) {
                             users.add(u);
                         }
-                    } else if (p instanceof Group) {
+                    } else if (p instanceof JahiaGroup) {
                         JCRGroupNode g = groupManagerService.lookupGroupByPath(p.getLocalPath());
                         if (g != null) {
                             users.addAll(g.getRecursiveUserMembers());

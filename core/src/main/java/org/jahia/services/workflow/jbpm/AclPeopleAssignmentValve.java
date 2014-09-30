@@ -74,7 +74,7 @@ package org.jahia.services.workflow.jbpm;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.Group;
+import org.jahia.services.usermanager.JahiaGroup;
 import org.jahia.services.usermanager.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.workflow.WorkflowDefinition;
@@ -112,8 +112,8 @@ public class AclPeopleAssignmentValve extends AbstractPeopleAssignmentValve {
             List<OrganizationalEntity> potentialOwners = new ArrayList<OrganizationalEntity>();
             final List<JahiaPrincipal> principals = WorkflowService.getInstance().getAssignedRole(def, name, Long.toString(task.getTaskData().getProcessInstanceId()));
             for (JahiaPrincipal principal : principals) {
-                if (principal instanceof Group) {
-                    potentialOwners.add(new GroupImpl(((Group) principal).getGroupKey()));
+                if (principal instanceof JahiaGroup) {
+                    potentialOwners.add(new GroupImpl(((JahiaGroup) principal).getGroupKey()));
                 } else if (principal instanceof JahiaUser) {
                     potentialOwners.add(new UserImpl(((JahiaUser) principal).getUserKey()));
                 }

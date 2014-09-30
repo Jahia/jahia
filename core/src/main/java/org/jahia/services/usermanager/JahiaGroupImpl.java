@@ -117,7 +117,7 @@ import java.util.*;
  * @author Fulco Houkes
  * @version 2.2
  */
-public class Group implements JahiaPrincipal, java.security.acl.Group{
+public class JahiaGroupImpl extends JahiaGroup{
 
     private static final long serialVersionUID = 3192050315335252786L;
     private transient static Logger logger = LoggerFactory.getLogger(JahiaGroup.class);
@@ -133,11 +133,38 @@ public class Group implements JahiaPrincipal, java.security.acl.Group{
     protected String path;
 
     private String siteKey;
+    private final Properties properties;
 
-    public Group(String name, String path, String siteKey) {
+    public JahiaGroupImpl(String name, String path, String siteKey, Properties properties) {
         this.name = name;
         this.path = path;
         this.siteKey = siteKey;
+        this.properties = properties;
+    }
+
+    @Override
+    public Properties getProperties() {
+        return properties;
+    }
+
+    @Override
+    public String getProperty(String key) {
+        return properties.getProperty(key);
+    }
+
+    @Override
+    public boolean removeProperty(String key) {
+        throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
+    }
+
+    @Override
+    public boolean setProperty(String key, String value) {
+        throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
+    }
+
+    @Override
+    public void addMembers(Collection<Principal> principals) {
+        throw new UnsupportedOperationException("Method not supported here, use JCRGroupNode instead");
     }
 
     /**
@@ -157,6 +184,11 @@ public class Group implements JahiaPrincipal, java.security.acl.Group{
      */
     public String getName() {
         return name;
+    }
+
+    @Override
+    protected Set<Principal> getMembersMap() {
+        return null;
     }
 
 
@@ -263,7 +295,7 @@ public class Group implements JahiaPrincipal, java.security.acl.Group{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        Group that = (Group) o;
+        JahiaGroupImpl that = (JahiaGroupImpl) o;
 
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         if (path != null ? !path.equals(that.path) : that.path != null) return false;

@@ -96,9 +96,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.activation.URLDataSource;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.ValueFormatException;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -290,7 +288,7 @@ public class JBPMMailProducer {
                             if (!UserPreferencesHelper.areEmailNotificationsDisabled((JahiaUser) principal)) {
                                 users.add(taskIdentityService.getUserById(((JahiaUser)principal).getUserKey()));
                             }
-                        } else if (principal instanceof Group) {
+                        } else if (principal instanceof JahiaGroup) {
                             JCRGroupNode groupNode = groupManagerService.lookupGroupByPath(principal.getLocalPath());
                             if (groupNode != null) {
                                 for (JCRUserNode user : groupNode.getRecursiveUserMembers()) {

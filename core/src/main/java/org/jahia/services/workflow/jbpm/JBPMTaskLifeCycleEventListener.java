@@ -259,8 +259,8 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     List<Value> candidatesArray = new ArrayList<Value>();
                     ValueFactory valueFactory = session.getValueFactory();
                     for (JahiaPrincipal principal : candidates) {
-                        if (principal instanceof Group) {
-                            candidatesArray.add(valueFactory.createValue("g:" + ((Group) principal).getGroupKey()));
+                        if (principal instanceof JahiaGroup) {
+                            candidatesArray.add(valueFactory.createValue("g:" + ((JahiaGroup) principal).getGroupKey()));
                         } else if (principal instanceof JahiaUser) {
                             candidatesArray.add(valueFactory.createValue("u:" + principal.getName()));
                         }

@@ -71,17 +71,19 @@
  */
  package org.jahia.services.usermanager;
 
+import java.util.Properties;
+
 /**
  * Special user group that represents anonymous users in the system.
  * 
  * @author Thomas Draier
  */
-public class GuestGroup extends Group {
+public class GuestGroup extends JahiaGroupImpl {
 
     private static final long serialVersionUID = -7050824816792955816L;
 
-    public GuestGroup(String name, String path, String siteKey) {
-        super(name, path, siteKey);
+    public GuestGroup(String name, String path, String siteKey, Properties properties) {
+        super(name, path, siteKey, properties);
     }
 
 }

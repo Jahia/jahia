@@ -495,6 +495,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                         e.setIdentifier(eventUuid);
                                         e.setSession(s);
                                         e.setOperationType(nodeFactOperationType);
+                                        e.setTypes(JCRObservationManager.getNodeTypesForDeletedNode(event));
                                         list.add(e);
                                     } catch (PathNotFoundException e) {
                                     }

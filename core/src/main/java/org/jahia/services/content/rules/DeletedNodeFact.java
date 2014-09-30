@@ -77,15 +77,13 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NodeType;
-import java.util.ArrayList;
+
 import java.util.List;
 
 /**
  * Represents a deleted node fact.
- * User: toto
- * Date: 17 janv. 2008
- * Time: 15:17:58
+ * 
+ * @author toto
  */
 public class DeletedNodeFact implements NodeFact {
     private String path;
@@ -96,6 +94,7 @@ public class DeletedNodeFact implements NodeFact {
 
     private String workspace;
     private List<String> types;
+    private List<String> resolvedTypes;
     private String operationType;
 
     public DeletedNodeFact(AddedNodeFact nodeWrapper, KnowledgeHelper drools) throws RepositoryException {
@@ -104,9 +103,7 @@ public class DeletedNodeFact implements NodeFact {
         workspace = node.getSession().getWorkspace().getName();
 
         // collect types
-        types = new ArrayList<String>();
-        recurseOnTypes(types, node.getPrimaryNodeType());
-        recurseOnTypes(types, node.getMixinNodeTypes());
+        resolvedTypes = AbstractNodeFact.recurseOnTypes(node.getPrimaryNodeType(), node.getMixinNodeTypes());
 
         node.remove();
         drools.retract(nodeWrapper);
@@ -177,13 +174,14 @@ public class DeletedNodeFact implements NodeFact {
     }
 
     public List<String> getTypes() throws RepositoryException {
-        return types;
+        if (resolvedTypes == null && types != null) {
+            resolvedTypes = AbstractNodeFact.recurseOnTypes(types);
+        }
+
+        return resolvedTypes;
     }
 
-    private void recurseOnTypes(List<String> res, NodeType... nt) {
-        for (NodeType nodeType : nt) {
-            if (!res.contains(nodeType.getName())) res.add(nodeType.getName());
-            recurseOnTypes(res, nodeType.getSupertypes());
-        }
+    public void setTypes(List<String> types) {
+        this.types = types;
     }
 }

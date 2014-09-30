@@ -74,16 +74,59 @@ package org.jahia.services.content.rules;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 public abstract class AbstractNodeFact implements NodeFact {
+    
+    protected static List<String> recurseOnTypes(List<String> nodeTypeNames) {
+        if (nodeTypeNames == null || nodeTypeNames.size() == 0) {
+            return Collections.emptyList();
+        }
+        List<String> res = new LinkedList<String>();
+        NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
+        for (String n : nodeTypeNames) {
+            try {
+                recurseOnTypes(res, ntRegistry.getNodeType(n));
+            } catch (NoSuchNodeTypeException e) {
+                // ignore missing node type
+            }
+        }
+
+        return res;
+    }
+    
+    protected static void recurseOnTypes(List<String> res, NodeType... nt) {
+        for (NodeType nodeType : nt) {
+            if (!res.contains(nodeType.getName()))
+                res.add(nodeType.getName());
+            recurseOnTypes(res, nodeType.getSupertypes());
+        }
+    }
+
+    protected static List<String> recurseOnTypes(NodeType primaryNodeType, NodeType... mixins) {
+        List<String> res = new LinkedList<String>();
+        if (primaryNodeType != null) {
+            recurseOnTypes(res, primaryNodeType);
+        }
+        if (mixins != null) {
+            recurseOnTypes(res, mixins);
+        }
+
+        return res;
+    }
+
     protected JCRNodeWrapper node;
     protected String workspace;
 
@@ -191,17 +234,7 @@ public abstract class AbstractNodeFact implements NodeFact {
     }
 
     public List<String> getTypes() throws RepositoryException {
-        List<String> r = new ArrayList<String>();
-        recurseOnTypes(r,node.getPrimaryNodeType());
-        recurseOnTypes(r,node.getMixinNodeTypes());
-        return r;
-    }
-
-    private void recurseOnTypes(List<String> res, NodeType... nt) {
-        for (NodeType nodeType : nt) {
-            if (!res.contains(nodeType.getName())) res.add(nodeType.getName());
-            recurseOnTypes(res,nodeType.getSupertypes());
-        }
+        return recurseOnTypes(node.getPrimaryNodeType(), node.getMixinNodeTypes());
     }
 
     public AddedNodeFact getAncestor(String type) throws RepositoryException {

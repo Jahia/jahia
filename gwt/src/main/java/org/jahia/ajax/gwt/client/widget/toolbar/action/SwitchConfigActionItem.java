@@ -74,6 +74,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
+import com.google.gwt.regexp.shared.MatchResult;
+import com.google.gwt.regexp.shared.RegExp;
 import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -90,6 +92,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.List;
 import java.util.Set;
+
 
 /**
  * Toolbar action item for switching between editing modes.
@@ -176,6 +179,18 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
                         } else {
                             if (storage != null && storage.getItem(gwtEditConfiguration.getName() + "_path") != null) {
                                 newPath = storage.getItem(gwtEditConfiguration.getName() + "_path");
+                                GWTJahiaNode siteNode = gwtEditConfiguration.getSiteNode();
+                                // set locale to the locale from the url
+                                MatchResult m = RegExp.compile(gwtEditConfiguration.getDefaultUrlMapping()+"frame/default/([a-zA-Z_]+)/.*").exec(newPath);
+                                if (m != null) {
+                                    List<GWTJahiaLanguage> langs = (List<GWTJahiaLanguage>) siteNode.get(GWTJahiaNode.SITE_LANGUAGES);
+                                    for (GWTJahiaLanguage lang : langs) {
+                                        if (lang.getLanguage().equals(m.getGroup(1))) {
+                                            ((EditLinker) linker).setLocale(lang);
+                                            break;
+                                        }
+                                    }
+                                }
                             } else {
                                 // set locale to the site locale
                                 String currentLocale = ((EditLinker) linker).getLocale();

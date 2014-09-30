@@ -167,6 +167,14 @@ public class LanguageSwitcherActionItem extends BaseLanguageAwareActionItem {
                 mainComponent.setSelection(Arrays.asList((GWTJahiaLanguage) JahiaGWTParameters.getSiteNode().get("j:defaultLanguage")));
             }
         }
+        if (!JahiaGWTParameters.getLanguage().equals(mainComponent.getSelection().get(0).getLanguage())) {
+            events = false;
+            GWTJahiaLanguage language = JahiaGWTParameters.getLanguage(JahiaGWTParameters.getLanguage());
+            if (language != null) {
+                mainComponent.setSelection(Arrays.asList(language));
+            }
+            events = true;
+        }
     }
 
     @Override

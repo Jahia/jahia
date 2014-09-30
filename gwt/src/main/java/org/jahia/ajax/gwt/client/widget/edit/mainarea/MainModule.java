@@ -862,6 +862,10 @@ public class MainModule extends Module {
     }
 
     public void handleNewMainSelection(String path, String template) {
+        if (storage != null) {
+            storage.setItem(MainModule.getInstance().getConfig().getName() + "_nodePath",path);
+        }
+
         Map<String, List<String>> params = null;
         if ((this.path != null ? this.path.equals(path) : path == null) &&
                 (this.template != null ? this.template.equals(template) : template == null) &&
@@ -876,9 +880,6 @@ public class MainModule extends Module {
 
         if (head != null) {
             ((ToolbarHeader) head).handleNewLinkerSelection();
-        }
-        if (storage != null) {
-            storage.setItem(MainModule.getInstance().getConfig().getName() + "_nodePath",path);
         }
     }
 

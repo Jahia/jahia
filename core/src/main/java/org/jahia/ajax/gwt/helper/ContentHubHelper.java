@@ -130,7 +130,8 @@ public class ContentHubHelper {
     }
 
     public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        GWTJahiaNode n = contentManager.createNode(getMountParentPath(properties), mountName, providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
+        String mountPoint = getMountParentPath(properties);
+        GWTJahiaNode n = contentManager.createNode("/mounts", (mountPoint==null?mountName+"-mount":mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
         try {
             if (((JCRMountPointNode) session.getNode(n.getPath())).checkMountPointValidity()) {
                 session.save();
@@ -144,16 +145,16 @@ public class ContentHubHelper {
     }
 
     private String getMountParentPath(List<GWTJahiaNodeProperty> properties) {
-        String path = "/mounts";
+        String mountPoint = null;
         if (properties != null) {
             for (GWTJahiaNodeProperty p : properties) {
-                if (p.getName().equals("mountParent")) {
+                if (p.getName().equals("mountPoint")) {
                     List<GWTJahiaNodePropertyValue> values = p.getValues();
                     if (values != null && values.size() > 0) {
                         GWTJahiaNodePropertyValue v = values.get(0);
                         if (v != null && v.getNode() != null) {
-                            path = v.getNode().getPath();
-                            logger.info("Using specified mount parent path {}", path);
+                            mountPoint = v.getNode().getPath();
+                            logger.info("Using specified mount parent path {}", mountPoint);
                         }
                     }
                     break;
@@ -162,7 +163,7 @@ public class ContentHubHelper {
             }
         }
         
-        return path;
+        return mountPoint;
     }
 
     public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {

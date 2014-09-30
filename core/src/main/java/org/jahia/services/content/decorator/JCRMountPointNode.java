@@ -71,14 +71,15 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
-import javax.jcr.*;
-import javax.jcr.version.VersionException;
+
+import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 import java.util.Map;
-import java.io.InputStream;
 
 /**
  * A node representing a mount point for an external data provider
@@ -126,26 +127,49 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     private JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider;
         Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
-        if (mountPoints == null || !mountPoints.containsKey(getPath())) {
+        JCRVirtualMountPointNode mountPoint = new JCRVirtualMountPointNode(this);
+        String path = mountPoint.getPath();
+        if (mountPoints == null || !mountPoints.containsKey(path)) {
             ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
             if (providerFactory == null) {
                 logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
                 return null;
             }
-            provider = providerFactory.mountProvider(this);
+
+            provider = providerFactory.mountProvider(mountPoint);
         } else {
-            provider = mountPoints.get(getPath());
+            provider = mountPoints.get(path);
         }
         return provider;
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
         Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
-        JCRStoreProvider p = mountPoints != null ? mountPoints.get(getPath()) : null;
+        JCRVirtualMountPointNode mountPoint = new JCRVirtualMountPointNode(this);
+        String path = mountPoint.getPath();
+        JCRStoreProvider p = mountPoints != null ? mountPoints.get(path) : null;
         if (p != null) {
             getProvider().getSessionFactory().unmount(p);
         }
         super.remove();
     }
 
+    private class JCRVirtualMountPointNode extends JCRNodeDecorator {
+        public JCRVirtualMountPointNode(JCRMountPointNode jcrMountPointNode) {
+            super(jcrMountPointNode.getDecoratedNode());
+        }
+
+        @Override
+        public String getPath() {
+            String path = StringUtils.substringBefore(node.getPath(), "-mount");
+            try {
+                if(node.hasProperty("mountPoint")){
+                    path = node.getProperty("mountPoint").getNode().getPath()+"/"+node.getName();
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+            return path;
+        }
+    }
 }

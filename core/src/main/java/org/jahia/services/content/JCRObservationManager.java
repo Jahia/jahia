@@ -412,13 +412,7 @@ public class JCRObservationManager implements ObservationManager {
      * @throws RepositoryException
      */
     public static boolean isExtensionNode(String path) throws RepositoryException {
-        for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
-            // Handle extension nodes, return visible uuid
-            if (path.startsWith(entry.getKey()) && !entry.getKey().equals("/")) {
-                return true;
-            }
-        }
-        return false;
+        return JCRSessionFactory.getInstance().getProvider(path, false) != null;
     }
 
     private static boolean hasMatchingUuidBeenSet(String path) throws RepositoryException {
@@ -432,7 +426,17 @@ public class JCRObservationManager implements ObservationManager {
         }
         return false;
     }
-
+    
+    /**
+     * Returns a list of node types for deleted node, if this information is available in the provided event object.
+     * 
+     * @param event
+     *            the event for deleted node
+     * @return a list of node types for deleted node, if this information is available in the provided event object
+     */
+    public static List<String> getNodeTypesForDeletedNode(Event event) {
+        return (event instanceof EventWrapper) ? ((EventWrapper) event).getNodeTypes() : null;
+    }
 
     class EventConsumer {
         private JCRSessionWrapper session;

@@ -173,6 +173,7 @@ public class JCRObservationManager implements ObservationManager {
      * @param noLocal      a <code>boolean</code>.
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
+    @Override
     public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid,
                                  String[] nodeTypeName, boolean noLocal) throws RepositoryException {
         listeners.add(new EventConsumer(ws.getSession(), listener, eventTypes, absPath, isDeep, nodeTypeName, uuid, listener instanceof ExternalEventListener));
@@ -191,6 +192,7 @@ public class JCRObservationManager implements ObservationManager {
      * @param listener The listener to deregister.
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
+    @Override
     public void removeEventListener(EventListener listener) throws RepositoryException {
         EventConsumer e = null;
         for (EventConsumer eventConsumer : listeners) {
@@ -211,18 +213,22 @@ public class JCRObservationManager implements ObservationManager {
      * @return an <code>EventListenerIterator</code>.
      * @throws javax.jcr.RepositoryException
      */
+    @Override
     public EventListenerIterator getRegisteredEventListeners() throws RepositoryException {
         return new EventListenerIteratorImpl(listeners.iterator(), listeners.size());
     }
 
+    @Override
     public void setUserData(String userData) throws RepositoryException {
-
+        // do nothing
     }
 
+    @Override
     public EventJournal getEventJournal() throws RepositoryException {
         return null;
     }
 
+    @Override
     public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1)
             throws RepositoryException {
         return null;
@@ -238,7 +244,7 @@ public class JCRObservationManager implements ObservationManager {
 
     public static void addEvent(Event event, String mountPoint, String relativeRoot) {
         try {
-            if (!event.getPath().startsWith("/jcr:system") && event.getPath().startsWith(relativeRoot)) {
+            if (!event.getPath().startsWith("/jcr:system") && (event.getPath().equals(relativeRoot) || event.getPath().startsWith(relativeRoot + '/'))) {
                 if (event.getType() == Event.NODE_ADDED && isExtensionNode(event.getPath()) && hasMatchingUuidBeenSet(event.getPath())) {
                     return;
                 }
@@ -294,13 +300,15 @@ public class JCRObservationManager implements ObservationManager {
         if (Boolean.TRUE.equals(allEventListenersDisabled.get())) {
             return;
         }
+        String wspName = session.getWorkspace().getName();
+        boolean duringPublicationOnly = Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get());
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched
             // check if the events are not disabled or the listener is still available during publication
             // check if the event is not eternal or consumer accepts external events
-            if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName()) &&
-                (!Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get()) || (castListener != null && castListener.isAvailableDuringPublish()))
+            if (consumer.session.getWorkspace().getName().equals(wspName) &&
+                (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish())
                         && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)) {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {
@@ -572,6 +580,7 @@ public class JCRObservationManager implements ObservationManager {
          * @return <code>true</code> if this <code>Event</code> is equal to another
          *         object.
          */
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || this.getClass() != o.getClass()) return false;

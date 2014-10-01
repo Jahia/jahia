@@ -113,12 +113,14 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.rmi.Naming;
 import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * A store provider to handle different back-end stores within a site. There are multiple
@@ -181,6 +183,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;
+    
+    private boolean registerObservers = true;
+    
+    private boolean observersUseRelativeRoot = true;
+    
+    private Map<String, JCRSessionWrapper> observerSessions;
 
     public String getKey() {
         return key;
@@ -399,10 +407,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected void initObservers() throws RepositoryException {
+        if (!registerObservers) {
+            return;
+        }
         Set<String> workspaces = service.getListeners().keySet();
+        observerSessions = new HashMap<String, JCRSessionWrapper>(workspaces.size());
         for (String ws : workspaces) {
             // This session must not be released
             final JCRSessionWrapper session = getSystemSession(null, ws);
+            observerSessions.put(ws, session);
             final Workspace workspace = session.getProviderSession(this).getWorkspace();
 
             ObservationManager observationManager = workspace.getObservationManager();
@@ -410,9 +423,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             listener.setWorkspace(workspace.getName());
             listener.setMountPoint(mountPoint);
             listener.setRelativeRoot(relativeRoot);
-            observationManager.addEventListener(listener,
-                    Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
-                    "/", true, null, null, false);
+            observationManager.addEventListener(listener, Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED
+                    + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
+                    observersUseRelativeRoot ? StringUtils.defaultIfEmpty(relativeRoot, "/") : "/", true, null, null,
+                    false);
+            observerSessions.put(ws, session);
         }
     }
 
@@ -481,6 +496,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
+        unregisterObservers();
         getSessionFactory().removeProvider(key);
         rmiUnbind();
     }
@@ -1151,5 +1167,32 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
         this.nodeTypesDBService = nodeTypesDBService;
+    }
+
+    public void setRegisterObservers(boolean registerObservers) {
+        this.registerObservers = registerObservers;
+    }
+
+    public void setObserversUseRelativeRoot(boolean observersUseRelativePath) {
+        this.observersUseRelativeRoot = observersUseRelativePath;
+    }
+
+    protected void unregisterObservers() {
+        if (!registerObservers || observerSessions == null || observerSessions.isEmpty()) {
+            return;
+        }
+        for (Iterator<Entry<String, JCRSessionWrapper>> it = observerSessions.entrySet().iterator(); it.hasNext();) {
+            Entry<String, JCRSessionWrapper> sessionEntry = it.next();
+            try {
+                sessionEntry.getValue().logout();
+                logger.info("Closed session for provider {} and workspace {}", getMountPoint(), sessionEntry.getKey());
+            } catch (Exception e) {
+                logger.warn(
+                        "Error closing session for provider " + getMountPoint() + " and workspace "
+                                + sessionEntry.getKey(), e);
+            } finally {
+                it.remove();
+            }
+        }
     }
 }

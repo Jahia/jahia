@@ -142,7 +142,7 @@ public class WebprojectHandler implements Serializable {
 
     static Logger logger = LoggerFactory.getLogger(WebprojectHandler.class);
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml",
-            "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
+            "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip", "mounts.zip"));
     private static final Map<String, Integer> RANK;
 
     private static final long serialVersionUID = -6643519526225787438L;
@@ -156,6 +156,7 @@ public class WebprojectHandler implements Serializable {
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);
         RANK.put(JahiaSitesService.SYSTEM_SITE_KEY + ".zip", 40);
+        RANK.put("mounts.zip", 150);
     }
 
     @Autowired

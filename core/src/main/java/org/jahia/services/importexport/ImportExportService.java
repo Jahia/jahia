@@ -110,6 +110,7 @@ public interface ImportExportService {
     String INCLUDE_LIVE_EXPORT = "includeLive";
     String INCLUDE_USERS = "includeUsers";
     String INCLUDE_ROLES = "includeRoles";
+    String INCLUDE_MOUNTS = "includeMounts";
     String VIEW_CONTENT = "content";
     String VIEW_VERSION = "version";
     String VIEW_METADATA = "metadata";

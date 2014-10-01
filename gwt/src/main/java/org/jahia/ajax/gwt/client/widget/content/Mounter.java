@@ -110,7 +110,6 @@ public class Mounter extends Window {
         super() ;
         setHeadingHtml(Messages.get("label.mount"));
         setSize(500, 250);
-        setResizable(false);
         ButtonBar buttons = new ButtonBar() ;
         form.setLabelWidth(150);
         form.setFieldWidth(300);
@@ -164,7 +163,7 @@ public class Mounter extends Window {
         submit.addSelectionListener(selectionListener);
         buttons.add(submit) ;
         buttons.add(cancel) ;
-        setButtonAlign(Style.HorizontalAlignment.CENTER);
+        buttons.setAlignment(Style.HorizontalAlignment.CENTER);
         setBottomComponent(buttons);
 
         add(form);

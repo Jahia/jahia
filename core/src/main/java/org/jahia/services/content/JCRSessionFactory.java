@@ -74,7 +74,6 @@ package org.jahia.services.content;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -377,18 +376,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
      */
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
-    }
-    
-    public JCRNodeWrapper getCorrespondingMountPointNode(JCRNodeWrapper node) throws AccessDeniedException,
-            ItemNotFoundException, RepositoryException {
-        if (node.getProvider().isDynamicallyMounted() && node.getProvider().getMountPoint().equals(node.getPath())) {
-            JCRNodeWrapper parent = node.getParent();
-            return JCRStoreService.getInstance().decorate(
-                    new JCRNodeWrapperImpl(parent.getRealNode().getNode(node.getName()), "/", parent,
-                            node.getSession(), getDefaultProvider()));
-        }
-
-        return null;
     }
     
     public Map<String, JCRStoreProvider> getProviders() {

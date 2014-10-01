@@ -80,7 +80,6 @@ import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
@@ -90,7 +89,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
 
 import javax.jcr.*;
-
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -201,170 +199,147 @@ public class DocumentViewExporter {
         ch.endDocument();
     }
 
-    private void exportNode(JCRNodeWrapper nodeToBeExported) throws SAXException, RepositoryException {
-        JCRNodeWrapper node = getExportedNode(nodeToBeExported);
-        if (node == null) {
-            return;
-        }
+    private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
+        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
 
-        String path = "";
-        Node current = node;
-        while (!current.getPath().equals("/")) {
-            path = "/" + current.getName() + path;
-            current = current.getParent();
-        }
-        if (path.equals("")) {
-            path = "/";
-        }
-
-        if (!path.equals(rootNode.getPath())) {
-
-            String parentpath = path.substring(0, path.lastIndexOf('/'));
-
-            while (!stack.isEmpty() && !parentpath.startsWith(stack.peek() + "/") && !parentpath.equals(stack.peek())) {
-                String end = stack.pop();
-                if (stack.isEmpty()) {
-                    throw new RepositoryException("Node not in path : " + node.getPath());
-                }
-                String name = end.substring(end.lastIndexOf('/') + 1);
-                String encodedName = ISO9075.encode(name);
-                endElement(encodedName);
+            String path = "";
+            Node current = node;
+            while (!current.getPath().equals("/")) {
+                path = "/" + current.getName() + path;
+                current = current.getParent();
             }
-            if (stack.isEmpty() && !node.getPath().equals(rootNode.getPath())) {
-                String name = rootNode.getName();
-                String encodedName = ISO9075.encode(name);
-                AttributesImpl atts = new AttributesImpl();
-                startElement(encodedName, atts);
-                if (rootNode.getPath().equals("/")) {
-                    stack.push("");
+            if (path.equals("")) {
+                path = "/";
+            }
+
+            if (!path.equals(rootNode.getPath())) {
+
+                String parentpath = path.substring(0, path.lastIndexOf('/'));
+
+                while (!stack.isEmpty() && !parentpath.startsWith(stack.peek()+"/") && !parentpath.equals(stack.peek())) {
+                    String end = stack.pop();
+                    if (stack.isEmpty()) {
+                        throw new RepositoryException("Node not in path : " + node.getPath());
+                    }
+                    String name = end.substring(end.lastIndexOf('/') + 1);
+                    String encodedName = ISO9075.encode(name);
+                    endElement(encodedName);
+                }
+                if (stack.isEmpty() && !node.getPath().equals(rootNode.getPath())) {
+                    String name = rootNode.getName();
+                    String encodedName = ISO9075.encode(name);
+                    AttributesImpl atts = new AttributesImpl();
+                    startElement(encodedName, atts);
+                    if (rootNode.getPath().equals("/")) {
+                        stack.push("");
+                    } else {
+                        stack.push(rootNode.getPath());
+                    }
+                }
+
+                while (!stack.isEmpty() && !stack.peek().equals(parentpath)) {
+                    String peek = stack.peek();
+                    String name = parentpath.substring(peek.length() + 1);
+                    if (name.contains("/")) {
+                        name = name.substring(0, name.indexOf('/'));
+                    }
+                    String encodedName = ISO9075.encode(name);
+                    String currentpath = peek + "/" + name;
+                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
+                    AttributesImpl atts = new AttributesImpl();
+                    atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+                    startElement(encodedName, atts);
+                    stack.push(currentpath);
+                }
+            }
+            AttributesImpl atts = new AttributesImpl();
+            if (node.isNodeType("jmix:shareable")) {
+
+                if (exportedShareable.containsKey(node.getIdentifier())) {
+                    atts.addAttribute(Constants.JAHIA_NS,  "share", "j:share", CDATA, exportedShareable.get(node.getIdentifier()));
+                    String encodedName = ISO9075.encode(node.getName());
+                    startElement(encodedName, atts);
+                    endElement(encodedName);
+                    return;
                 } else {
-                    stack.push(rootNode.getPath());
+                    exportedShareable.put(node.getIdentifier(), node.getPath());
                 }
             }
-
-            while (!stack.isEmpty() && !stack.peek().equals(parentpath)) {
-                String peek = stack.peek();
-                String name = parentpath.substring(peek.length() + 1);
-                if (name.contains("/")) {
-                    name = name.substring(0, name.indexOf('/'));
-                }
-                String encodedName = ISO9075.encode(name);
-                String currentpath = peek + "/" + name;
-                String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
-                AttributesImpl atts = new AttributesImpl();
-                atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
-                startElement(encodedName, atts);
-                stack.push(currentpath);
+            PropertyIterator propsIterator = node.getRealNode().getProperties();
+            SortedSet<String> sortedProps = new TreeSet<String>();
+            while (propsIterator.hasNext()) {
+                sortedProps.add(propsIterator.nextProperty().getName());
             }
-        }
-        AttributesImpl atts = new AttributesImpl();
-        if (node.isNodeType("jmix:shareable")) {
-
-            if (exportedShareable.containsKey(node.getIdentifier())) {
-                atts.addAttribute(Constants.JAHIA_NS, "share", "j:share", CDATA,
-                        exportedShareable.get(node.getIdentifier()));
-                String encodedName = ISO9075.encode(node.getName());
-                startElement(encodedName, atts);
-                endElement(encodedName);
-                return;
-            } else {
-                exportedShareable.put(node.getIdentifier(), node.getPath());
-            }
-        }
-        PropertyIterator propsIterator = node.getRealNode().getProperties();
-        SortedSet<String> sortedProps = new TreeSet<String>();
-        while (propsIterator.hasNext()) {
-            sortedProps.add(propsIterator.nextProperty().getName());
-        }
-        for (String prop : sortedProps) {
-            try {
-                Property property = node.getRealNode().getProperty(prop);
-                if ((property.getType() != PropertyType.BINARY || !skipBinary)
-                        && !propertiestoIgnore.contains(property.getName())) {
-                    String key = property.getName();
-                    String prefix = null;
-                    String localname = key;
-                    if (key.indexOf(':') > -1) {
-                        prefix = key.substring(0, key.indexOf(':'));
-                        localname = key.substring(key.indexOf(':') + 1);
-                    }
-
-                    String attrName = ISO9075.encode(localname);
-
-                    String value;
-                    if (!property.isMultiple()) {
-                        if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE
-                                || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
-                            value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
-                        } else {
-                            value = getValue(property.getValue());
+            for (String prop : sortedProps) {
+                try {
+                    Property property = node.getRealNode().getProperty(prop);
+                    if ((property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
+                        String key = property.getName();
+                        String prefix = null;
+                        String localname = key;
+                        if (key.indexOf(':') > -1) {
+                            prefix = key.substring(0, key.indexOf(':'));
+                            localname = key.substring(key.indexOf(':') + 1);
                         }
-                    } else {
-                        Value[] vs = property.getValues();
-                        List<String> values = new ArrayList<String>();
-                        for (Value v : vs) {
-                            values.add(JCRMultipleValueUtils.encode(getValue(v)));
-                        }
-                        Collections.sort(values);
-                        StringBuffer b = new StringBuffer();
-                        for (int i = 0; i < values.size(); i++) {
-                            String v = values.get(i);
-                            b.append(v);
-                            if (i + 1 < values.size()) {
-                                b.append(" ");
+
+                        String attrName = ISO9075.encode(localname);
+
+                        String value;
+                        if (!property.isMultiple()) {
+                            if (property.getDefinition().getRequiredType() == PropertyType.REFERENCE || property.getDefinition().getRequiredType() == ExtendedPropertyType.WEAKREFERENCE) {
+                                value = JCRMultipleValueUtils.encode(getValue(property.getValue()));
+                            } else {
+                                value = getValue(property.getValue());
                             }
+                        } else {
+                            Value[] vs = property.getValues();
+                            List<String> values = new ArrayList<String>();
+                            for (Value v : vs) {
+                                values.add(JCRMultipleValueUtils.encode(getValue(v)));
+                            }
+                            Collections.sort(values);
+                            StringBuffer b = new StringBuffer();
+                            for (int i = 0; i < values.size(); i++) {
+                                String v = values.get(i);
+                                b.append(v);
+                                if (i + 1 < values.size()) {
+                                    b.append(" ");
+                                }
+                            }
+                            value = b.toString();
                         }
-                        value = b.toString();
-                    }
 
-                    if (prefix == null) {
-                        atts.addAttribute("", localname, attrName, CDATA, value);
-                    } else {
-                        atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                        if (prefix == null) {
+                            atts.addAttribute("", localname, attrName, CDATA, value);
+                        } else {
+                            atts.addAttribute(prefixes.get(prefix), localname, prefix + ":" + attrName, CDATA, value);
+                        }
                     }
+                } catch (RepositoryException e) {
+                    logger.error("Cannot export property",e);
                 }
-            } catch (RepositoryException e) {
-                logger.error("Cannot export property", e);
+            }
+            if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
+                String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
+                atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
+            }
+
+            String encodedName = ISO9075.encode(node.getName());
+            startElement(encodedName, atts);
+            if (path.equals("/")) {
+                stack.push("");
+            } else {
+                stack.push(path);
+            }
+
+            if (!noRecurse) {
+                NodeIterator ni = node.getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
+                    exportNode(c);
+                }
             }
         }
-        if (publicationStatusSession != null && node.isNodeType("jmix:publication")) {
-            String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession,
-                    null));
-            atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
-        }
-
-        String encodedName = ISO9075.encode(node.getName());
-        startElement(encodedName, atts);
-        if (path.equals("/")) {
-            stack.push("");
-        } else {
-            stack.push(path);
-        }
-
-        if (!noRecurse) {
-            NodeIterator ni = node.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                exportNode(c);
-            }
-        }
-    }
-
-    private JCRNodeWrapper getExportedNode(JCRNodeWrapper nodeToBeExported) throws RepositoryException {
-        JCRStoreProvider provider = nodeToBeExported.getProvider();
-        boolean exportable = provider.isExportable();
-        if (exportable) {
-            return !typesToIgnore.contains(nodeToBeExported.getPrimaryNodeTypeName()) ? nodeToBeExported : null;
-        } else if (provider.isDynamicallyMounted()) {
-            // we have the mount point (root of the dynamically mounted provider) -> obtain the original JCR node
-            try {
-                return provider.getSessionFactory().getCorrespondingMountPointNode(nodeToBeExported);
-            } catch (PathNotFoundException e) {
-                // TODO check why the node cannot be found here
-            }
-        }
-
-        return null;
     }
 
     private String getValue(Value v) throws RepositoryException {

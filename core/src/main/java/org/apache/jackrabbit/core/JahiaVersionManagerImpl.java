@@ -82,8 +82,6 @@ import org.apache.jackrabbit.core.value.InternalValue;
 import org.apache.jackrabbit.core.version.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameConstants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
@@ -96,10 +94,6 @@ import java.util.Set;
  * Jahia implementation for version manager
  */
 public class JahiaVersionManagerImpl extends VersionManagerImpl {
-    /**
-     * default logger
-     */
-    private static final Logger log = LoggerFactory.getLogger(VersionManagerImpl.class);
 
     public JahiaVersionManagerImpl(SessionContext context, UpdatableItemStateManager stateMgr, HierarchyManager hierMgr) {
         super(context, stateMgr, hierMgr);

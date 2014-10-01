@@ -71,8 +71,6 @@
  */
 package com.google.gwt.core.client;
 
-import com.google.gwt.core.shared.*;
-
 /**
  * This class is used for fixing class not found com.google.gwt.core.client.GWTBridge;
  *

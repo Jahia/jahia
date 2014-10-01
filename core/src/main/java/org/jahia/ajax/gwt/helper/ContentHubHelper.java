@@ -132,14 +132,9 @@ public class ContentHubHelper {
 
     public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         String mountPoint = getMountParentPath(properties);
-        GWTJahiaNode n = contentManager.createNode("/mounts", (mountPoint==null?mountName+"-mount":mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
         try {
-            if (((JCRMountPointNode) session.getNode(n.getPath())).checkMountPointValidity()) {
-                session.save();
-            } else {
-                n.removeAll();
-                throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
-            }
+            contentManager.createNode("/mounts", (mountPoint == null ? mountName + "-mount" : mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
+            session.save();
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
         }

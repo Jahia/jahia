@@ -81,6 +81,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
@@ -109,13 +110,19 @@ public class Mounter extends Window {
     public Mounter(final Linker linker) {
         super() ;
         setHeadingHtml(Messages.get("label.mount"));
-        setSize(500, 250);
+        setSize(500, 350);
         ButtonBar buttons = new ButtonBar() ;
-        form.setLabelWidth(150);
-        form.setFieldWidth(300);
-        form.setBodyBorder(false);
+        form.setLabelWidth(140);
+        form.setPadding(5);
+        form.setCollapsible(false);
+        form.setFrame(false);
+        form.setAnimCollapse(false);
         form.setBorders(false);
+        form.setBodyBorder(false);
         form.setHeaderVisible(false);
+        form.setScrollMode(Style.Scroll.AUTO);
+        form.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        form.setLayout(new FormLayout(FormPanel.LabelAlign.TOP));
         setModal(true);
         final ComboBox<GWTJahiaNodeType> factoriesTypeBox = new ComboBox<GWTJahiaNodeType>();
         factoriesTypeBox.setDisplayField("label");
@@ -174,36 +181,51 @@ public class Mounter extends Window {
         final TextField<String> mountName = new TextField<String>();
         mountName.setFieldLabel(Messages.get("label.name","name"));
         mountName.setEmptyText(Messages.get("label.enterMountNodeName", "mount node name"));
+        mountName.setAllowBlank(false);
+        mountName.setValidator(new Validator() {
+            @Override
+            public String validate(Field<?> field, String value) {
+                return value == null || !value.matches("[A-Za-z0-9_]+") ? Messages.get(
+                        "label.error.invalidNodeTypeName", "The entered node type name is not valid."
+                                + " The value should match the following pattern: [A-Za-z0-9_]+"
+                ) : null;
+            }
+        });
+        mountName.setValidateOnBlur(true);
+        form.setLayout(new FormLayout());
         form.add(mountName, new FormData());
         final PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type),new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList(GWTJahiaItemDefinition.CONTENT));
         pe.renderNewFormPanel();
+        pe.setLabelWidth(140);
         form.add(pe);
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
                 linker.loading(Messages.get("label.loading", "Loading"));
-                JahiaContentManagementService.App.getInstance().mount(
-                        mountName.getValue(),
-                        type.getName(),
-                        pe.getProperties(true, true, false),
-                        new AsyncCallback<Object>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                linker.loaded();
-                                MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
-                                hide();
-                            }
+                if(form.isValid()) {
+                    JahiaContentManagementService.App.getInstance().mount(
+                            mountName.getValue(),
+                            type.getName(),
+                            pe.getProperties(true, true, false),
+                            new AsyncCallback<Object>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    linker.loaded();
+                                    MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
+                                    hide();
+                                }
 
-                            @Override
-                            public void onSuccess(Object result) {
-                                linker.loaded();
-                                Map<String,Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_ALL, true);
-                                linker.refresh(data);
-                                MessageBox.info(Messages.get("label.information", "Information"), Messages.get("message.success", "Success"), null);
-                                hide();
-                            }
-                        });
+                                @Override
+                                public void onSuccess(Object result) {
+                                    linker.loaded();
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_ALL, true);
+                                    linker.refresh(data);
+                                    MessageBox.info(Messages.get("label.information", "Information"), Messages.get("message.success", "Success"), null);
+                                    hide();
+                                }
+                            });
+                }
             }
         });
         layout();

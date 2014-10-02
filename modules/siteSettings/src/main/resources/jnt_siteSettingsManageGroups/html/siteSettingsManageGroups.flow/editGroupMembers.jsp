@@ -34,7 +34,7 @@
 
 <c:set var="memberDisplayLimit" value="${siteSettingsProperties.memberDisplayLimit}"/>
 
-<c:set var="isGroupEditable" value="${!user:isReadOnlyProvider(group)}"/>
+<c:set var="isGroupEditable" value="${!group.properties['j:external'].boolean}"/>
 
 <c:if test="${flowHandler.searchType eq 'users'}">
     <c:set var="prefix" value="u:"/>

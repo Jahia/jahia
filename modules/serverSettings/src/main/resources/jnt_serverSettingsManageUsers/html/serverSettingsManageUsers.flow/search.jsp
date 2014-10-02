@@ -229,7 +229,7 @@
                             <td>${loopStatus.count}</td>
                             <td>
                                 <c:choose>
-                                    <c:when test="${user:isReadOnlyProvider(curUser)}">
+                                    <c:when test="${curUser.properties['j:external'].boolean}">
                                         &nbsp;
                                     </c:when>
                                     <c:otherwise>
@@ -247,7 +247,7 @@
                                 <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="doUserAction('editUser', '${fn:escapeXml(curUser.path)}')">
                                     <i class="icon-edit"></i>
                                 </a>
-                                <c:if test="${curUser.name != 'guest' && !user:isReadOnlyProvider(curUser)}">
+                                <c:if test="${curUser.name != 'guest' && !curUser.properties['j:external'].boolean}">
                                 <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="doUserAction('removeUser', '${fn:escapeXml(curUser.path)}')">
                                     <i class="icon-remove icon-white"></i>
                                 </a>

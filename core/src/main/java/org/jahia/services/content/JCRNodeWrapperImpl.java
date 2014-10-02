@@ -1196,7 +1196,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public boolean isNodeType(String type) throws RepositoryException {
-        return objectNode.isNodeType(type);
+        return "nt:base".equals(type) || objectNode.isNodeType(type);
     }
 
     /**

@@ -77,16 +77,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
+    <version>7.0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>serverSettings</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Server Settings</name>
   <description>Server settings</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/serverSettings</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/serverSettings</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/serverSettings</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/serverSettings</url>
   </scm>
   <repositories>
     <repository>

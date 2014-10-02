@@ -77,16 +77,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
+    <version>7.0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>tags</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Tags</name>
   <description>This is the custom module (Jahia Tags) for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tags</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tags</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tags</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tags</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tags</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/tags</url>
   </scm>
   <repositories>
     <repository>

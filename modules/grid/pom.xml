@@ -77,16 +77,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
+    <version>7.0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>grid</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia Grid Pages</name>
   <description>These are the custom module (jahiaPages) for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/grid</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/grid</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/grid</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/grid</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/grid</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/grid</url>
   </scm>
   <repositories>
     <repository>

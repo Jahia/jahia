@@ -77,16 +77,16 @@
   <parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
+    <version>7.0.0.3-SNAPSHOT</version>
   </parent>
   <artifactId>userDashboard</artifactId>
   <packaging>bundle</packaging>
   <name>Jahia User Dashboards</name>
   <description>User Dashboards</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/userDashboard</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/userDashboard</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/userDashboard</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/userDashboard</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/userDashboard</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/userDashboard</url>
   </scm>
   <repositories>
     <repository>

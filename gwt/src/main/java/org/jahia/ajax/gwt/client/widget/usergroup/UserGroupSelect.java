@@ -271,8 +271,11 @@ public class UserGroupSelect extends Window {
             protected void load(Object pageLoaderConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
                 String newSearch = groupSearchField.getText().trim().replace("'","''");
 
-                String path = siteKey.equals("systemsite") ? "/groups" : "/sites/"+siteKey +"/groups";
-                String query = "select * from [jnt:group] as g where isdescendantnode(g,'"+path+"') ";
+                String query = "select * from [jnt:group] as g where isdescendantnode(g,'/groups') ";
+                if (!siteKey.equals("systemsite")) {
+                    query += " or isdescendantnode(g,'/sites/"+siteKey +"/groups')";
+                }
+
                 if (newSearch.length() > 0) {
                     query += " and (CONTAINS(g.*,'*" + newSearch + "*') OR LOWER(g.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
                 }

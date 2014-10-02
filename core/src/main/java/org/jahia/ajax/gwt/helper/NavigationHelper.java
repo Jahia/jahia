@@ -189,92 +189,99 @@ public class NavigationHelper {
             nodesIterator = node.getNodes();
         }
 
-        boolean hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
-
         if (nodesIterator == null) {
             throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.children.list.is.null", uiLocale));
         }
 
         boolean licenseCheck = haveToCheckLicense(fields);
         
+        Boolean hasOrderableChildren = null;
+
         int i = 1;
         while (nodesIterator.hasNext()) {
             try {
                 JCRNodeWrapper childNode = (JCRNodeWrapper) nodesIterator.nextNode();
                 if (logger.isDebugEnabled()) {
-                    logger.debug(new StringBuilder("processing ").append(childNode.getPath()).toString());
+                    logger.debug("processing {}", childNode.getPath());
                 }
-                final RenderContext context = new RenderContext(null, null, node.getSession().getUser());
-                context.setMainResource(new Resource(childNode, "html", null, Resource.CONFIGURATION_PAGE));
-                context.setServletPath("/cms/render/live");
-                if(showOnlyNodesWithTemplates && !JCRContentUtils.isADisplayableNode(childNode, context)){
-                    continue;
+                if (showOnlyNodesWithTemplates) {
+                    // perform a check for displayable node
+                    final RenderContext context = new RenderContext(null, null, node.getSession().getUser());
+                    context.setMainResource(new Resource(childNode, "html", null, Resource.CONFIGURATION_PAGE));
+                    context.setServletPath("/cms/render/live");
+                    if (!JCRContentUtils.isADisplayableNode(childNode, context)) {
+                        continue;
+                    }
                 }
                 // in case of a folder, it allows to know if the node is selectable
                 boolean hiddenNode = false;
                 if (!displayHiddenTypes) {
-                    if (hiddenTypes != null) {
-                        for (String type : hiddenTypes) {
-                            if (childNode.getNodeTypes().contains(type)) {
-                                hiddenNode = true;
-                            }
-                        }
-                    }
                     if (hiddenRegex != null && childNode.getName().matches(hiddenRegex)) {
                         hiddenNode = true;
                     }
-                    if (childNode.getNodeTypes().contains(Constants.JAHIAMIX_HIDDEN_NODE)) {
+                    if (!hiddenNode && hiddenTypes != null && hiddenTypes.size() > 0) {
+                        hiddenNode = matchesNodeType(childNode, hiddenTypes);
+                    }
+                    if (!hiddenNode && childNode.getNodeTypes().contains(Constants.JAHIAMIX_HIDDEN_NODE)) {
                         hiddenNode = true;
                     }
                 }
-                boolean matchVisibilityFilter = !hiddenNode;
-                boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
-                if (logger.isDebugEnabled()) {
-                    logger.debug("----------");
-                    if(nodeTypes != null) {
-                    	for (String s : nodeTypes) {
-                    		logger.debug(
-                                "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
-                                        matchNodeType + "]");
-                    	}
+                if (!hiddenNode) {
+                    boolean matchNodeType = matchesNodeType(childNode, nodeTypes);
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("----------");
+                        if(nodeTypes != null) {
+                        	for (String s : nodeTypes) {
+                        		logger.debug(
+                                    "Node " + childNode.getPath() + " match with " + s + "? " + childNode.isNodeType(s) + "[" +
+                                            matchNodeType + "]");
+                        	}
+                        }
+                        logger.debug("----------"); 
                     }
-                    logger.debug("----------"); 
-                }
-                boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
-                boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
-                boolean hasNodes = false;
-                if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
-                    try {
-                        hasNodes = childNode.hasNodes();
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
-                // collection condition is available only if the parent node is not a nt:query. Else, the node has to match the node type condition
-                if (matchVisibilityFilter && matchNodeType && (mimeTypeFilter || hasNodes) && nameFilter) {
-                    if (licenseCheck && !isAllowedByLicense(childNode)) {
-                        continue;
-                    }
-                    GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
-                    gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
-                    if (hasOrderableChildren) {
-                        gwtChildNode.set("index", new Integer(i++));
-                    }
-                    if (!childNode.getProvider().isSlowConnection()) {
-                        NodeIterator ni = childNode.getNodes();
-                        gwtChildNode.setHasChildren(false);
-                        while (ni.hasNext()) {
-                            Node n = ni.nextNode();
-                            if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
-                                gwtChildNode.setHasChildren(true);
-                                break;
+                    if (matchNodeType) {
+                        boolean nameFilter = matchesFilters(childNode.getName(), nameFilters);
+                        if (nameFilter) {
+                            boolean mimeTypeFilter = matchesMimeTypeFilters(childNode, mimeTypes);
+                            boolean hasNodes = false;
+                            if (!mimeTypeFilter) { // we do not need to check for sub-nodes if the mimeTypeFilter is already true
+                                try {
+                                    hasNodes = childNode.hasNodes();
+                                } catch (RepositoryException e) {
+                                    logger.error(e.getMessage(), e);
+                                }
+                            }
+                            if (mimeTypeFilter || hasNodes) {
+                                if (licenseCheck && !isAllowedByLicense(childNode)) {
+                                    continue;
+                                }
+                                GWTJahiaNode gwtChildNode = getGWTJahiaNode(childNode, fields);
+                                gwtChildNode.setMatchFilters(matchNodeType && mimeTypeFilter);
+                                if (hasOrderableChildren == null) {
+                                    hasOrderableChildren = node.getPrimaryNodeType().hasOrderableChildNodes();
+                                }
+                                if (hasOrderableChildren) {
+                                    gwtChildNode.set("index", Integer.valueOf(i++));
+                                }
+                                if (!childNode.getProvider().isSlowConnection()) {
+                                    NodeIterator ni = childNode.getNodes();
+                                    gwtChildNode.setHasChildren(false);
+                                    while (ni.hasNext()) {
+                                        Node n = ni.nextNode();
+                                        if (matchesNodeType(n, nodeTypes) && matchesFilters(n.getName(), nameFilters)) {
+                                            gwtChildNode.setHasChildren(true);
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    gwtChildNode.setHasChildren(true);
+                                }
+                                gwtNodeChildren.add(gwtChildNode);
                             }
                         }
-                    } else {
-                        gwtChildNode.setHasChildren(true);
                     }
-                    gwtNodeChildren.add(gwtChildNode);
-                } else if (checkSubChild && childNode.hasNodes()) {
+                }
+                else if (checkSubChild && childNode.hasNodes()) {
                     getMatchingChildNodes(nodeTypes, mimeTypes, nameFilters, fields, childNode, gwtNodeChildren, checkSubChild,
                             displayHiddenTypes, hiddenTypes, hiddenRegex, showOnlyNodesWithTemplates, uiLocale);
                 }

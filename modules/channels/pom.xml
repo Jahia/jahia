@@ -84,9 +84,9 @@
   <name>Jahia Channels</name>
   <description>Jahia template module that detects and display different content depending on the channel.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/channels</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/channels</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/channels</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/channels</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/channels</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/channels</url>
   </scm>
   <repositories>
     <repository>

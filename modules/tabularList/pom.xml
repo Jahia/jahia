@@ -84,9 +84,9 @@
   <name>Jahia Tabular List</name>
   <description>This is a module for running on a Jahia server.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/tabularList</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tabularList</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tabularList</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/tabularList</url>
   </scm>
   <repositories>
     <repository>

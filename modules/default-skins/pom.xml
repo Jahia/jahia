@@ -84,9 +84,9 @@
   <name>Jahia Default Skins</name>
   <description>This module provides default skins.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/default-skins</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/default-skins</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/default-skins</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/default-skins</url>
   </scm>
   <repositories>
     <repository>

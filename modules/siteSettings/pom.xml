@@ -84,9 +84,9 @@
   <name>Jahia Site Settings</name>
   <description>Settings (groups,tools, etc) for site.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/siteSettings</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/siteSettings</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/siteSettings</url>
   </scm>
   <repositories>
     <repository>

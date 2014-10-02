@@ -84,9 +84,9 @@
   <name>Jahia Contribute Mode</name>
   <description>Default templates for the contribute mode.</description>
   <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/contribute</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/contribute</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/contribute</url>
+    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/contribute</connection>
+    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/contribute</developerConnection>
+    <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_0_0_2_RC/modules/contribute</url>
   </scm>
   <repositories>
     <repository>

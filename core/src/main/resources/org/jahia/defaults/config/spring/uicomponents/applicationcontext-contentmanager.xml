@@ -698,6 +698,7 @@
                 <value>jnt:roles</value>
                 <value>jnt:passwordPolicy</value>
                 <value>jnt:passwordHistory</value>
+                <value>jnt:mountPoint</value>
             </list>
         </property>
         <property name="componentsPaths">

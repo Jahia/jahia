@@ -1097,7 +1097,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
                 l.add(NodeTypeRegistry.getInstance().getNodeType(nodeType.getName()));
             } catch (NoSuchNodeTypeException e) {
-                logger.warn("Skipping missing mixin {}", nodeType.getName());
+                logger.debug("Skipping missing mixin {}", nodeType.getName());
             }
         }
         return l != null ? l.toArray(new ExtendedNodeType[l.size()]) : EMPTY_EXTENDED_NODE_TYPE_ARRAY;

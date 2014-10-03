@@ -848,6 +848,12 @@
         </dependency>
 
         <dependency>
+            <groupId>de.l3s.boilerpipe</groupId>
+            <artifactId>boilerpipe</artifactId>
+            <version>1.1.0-jahia1</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-core</artifactId>
             <version>1.6</version>
@@ -1423,11 +1429,17 @@
         <!-- End of OSGi dependencies -->
 
         <dependency>
+<<<<<<< .working
             <!-- We use it for bi-derectional encryption of passwords for remote publication -->
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.9.1</version>
             <classifier>lite</classifier>
+=======
+        	<groupId>net.sourceforge.nekohtml</groupId>
+        	<artifactId>nekohtml</artifactId>
+        	<version>1.9.21</version>
+>>>>>>> .merge-right.r51021
         </dependency>
 
         <dependency>

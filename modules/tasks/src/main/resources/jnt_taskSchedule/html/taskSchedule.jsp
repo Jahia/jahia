@@ -1,3 +1,4 @@
+<%@ page import="org.jahia.services.workflow.WorkflowTask"%>
 <%@ page import="org.joda.time.DateTime" %>
 <%@ page import="org.joda.time.base.BaseDateTime" %>
 <%@ page import="org.joda.time.format.DateTimeFormatter" %>
@@ -98,17 +99,19 @@
             <c:if test="${not process.completed}">
                 <workflow:workflow id="${process.processId}" provider="${process.provider}" var="active"/>
                 <c:forEach items="${active.availableActions}" var="task">
-                    <c:if test="${not empty task.dueDate and task.dueDate.time ge startDateDate.time and task.dueDate.time le endDateDate.time}">
-                        <c:set var="emptyTasks" value="false"/>
-                        <fmt:formatDate pattern="dd/MM/yyyy"
+                    <c:if test="<%=pageContext.getAttribute("task") instanceof WorkflowTask %>">                
+                        <c:if test="${not empty task.dueDate and task.dueDate.time ge startDateDate.time and task.dueDate.time le endDateDate.time}">
+                            <c:set var="emptyTasks" value="false"/>
+                            <fmt:formatDate pattern="dd/MM/yyyy"
                                         value="${task.dueDate}"
                                         var="endDate"/>
-                        <li class="scheduletask workflowtask unfinishedTask" date="${task.dueDate.time}">
-                            <span class="date value">${endDate}</span>
-                            <span class="value"><a href="${link}"><span
-                                    class="task-${fn:replace(task.name,' ','_')}">${task.displayName}</span>
-                                - ${node.name}</a></span>
-                        </li>
+                            <li class="scheduletask workflowtask unfinishedTask" date="${task.dueDate.time}">
+                                <span class="date value">${endDate}</span>
+                                <span class="value"><a href="${link}"><span
+                                        class="task-${fn:replace(task.name,' ','_')}">${task.displayName}</span>
+                                    - ${node.name}</a></span>
+                            </li>
+                        </c:if>                            
                     </c:if>
                 </c:forEach>
             </c:if>

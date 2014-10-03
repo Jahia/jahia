@@ -78,16 +78,19 @@
         if (fix) {
             if (RequestLoadAverage.getInstance().getOneMinuteLoad() > 1) {
                 println(out, "ABORTING: request load is above 1, users are using the platform and we cannot run a fix while this is the case !");
+                running = false;
                 return;
             }
             try {
                 List<JobDetail> activeJobs = ServicesRegistry.getInstance().getSchedulerService().getAllActiveJobs();
                 if (activeJobs.size() > 0) {
                     println(out, "ABORTING: background jobs are executing, cannot run fix while background jobs are present !");
+                    running = false;
                     return;
                 }
             } catch (SchedulerException se) {
                 println(out, "ABORTING: error accessing scheduler service", se, false);
+                running = false;
                 return;
             }
         }

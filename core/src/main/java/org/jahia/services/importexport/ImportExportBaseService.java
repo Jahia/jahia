@@ -593,9 +593,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 if (child.isNodeType("nt:resource")) {
                     if (!exportedFiles.contains(child.getPath())) {
                         exportedFiles.add(child.getPath());
-                        InputStream is = child.getProperty("jcr:data").getBinary().getStream();
-                        if (is != null) {
-                            try {
+                        InputStream is = null;
+                        try {
+                            is = child.getProperty("jcr:data").getBinary().getStream();
+                            if (is != null) {
                                 String path = node.getPath();
                                 if (root.getPath().equals("/")) {
                                     path = basepath + path;
@@ -611,9 +612,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 while ((bytesIn = is.read(buffer)) != -1) {
                                     zout.write(buffer, 0, bytesIn);
                                 }
-                            } finally {
-                                IOUtils.closeQuietly(is);
                             }
+                        } catch (RepositoryException ex) {
+                            logger.warn("Cannot export " + child.getPath(), ex);
+                        } catch (AssertionError ex) {
+                            logger.warn("Cannot export " + child.getPath(), ex);                            
+                        } finally {
+                            IOUtils.closeQuietly(is);
                         }
                     }
                 }
@@ -1818,7 +1823,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     documentViewImportHandler.setAttributeProcessors(attributeProcessors);
                     handleImport(zis, documentViewImportHandler, REPOSITORY_XML);
 
-                    if (importLive) {
+                    if (importLive && liveUuids != null) {
                         liveUuids.removeAll(documentViewImportHandler.getUuids());
                         Collections.reverse(liveUuids);
                         for (String uuid : liveUuids) {

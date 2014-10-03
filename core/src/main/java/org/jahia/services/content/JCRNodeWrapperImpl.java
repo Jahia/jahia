@@ -3067,7 +3067,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         for (ExtendedNodeType type : types) {
             for (ExtendedPropertyDefinition epd : type.getUnstructuredPropertyDefinitions().values()) {
                 // check type .. ?
-                if (requiredPropertyType == 0 || (epd.getRequiredType() == requiredPropertyType && isMultiple == epd.isMultiple())) {
+                if ((requiredPropertyType == 0 || epd.getRequiredType() == 0 || epd.getRequiredType() == requiredPropertyType) && isMultiple == epd.isMultiple()) {
                     result = epd;
                     applicablePropertyDefinition.put(propertyName, result);
                     return result;

@@ -1266,7 +1266,7 @@
             <!-- daisydiff dependency -->
             <groupId>net.sourceforge.nekohtml</groupId>
             <artifactId>nekohtml</artifactId>
-            <version>1.9.20</version>
+            <version>1.9.21</version>
         </dependency>
 
         <dependency>
@@ -1429,17 +1429,11 @@
         <!-- End of OSGi dependencies -->
 
         <dependency>
-<<<<<<< .working
             <!-- We use it for bi-derectional encryption of passwords for remote publication -->
             <groupId>org.jasypt</groupId>
             <artifactId>jasypt</artifactId>
             <version>1.9.1</version>
             <classifier>lite</classifier>
-=======
-        	<groupId>net.sourceforge.nekohtml</groupId>
-        	<artifactId>nekohtml</artifactId>
-        	<version>1.9.21</version>
->>>>>>> .merge-right.r51021
         </dependency>
 
         <dependency>

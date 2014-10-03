@@ -71,15 +71,24 @@
  */
 package org.jahia.services.query;
 
+<<<<<<< .working
+=======
+import java.util.Arrays;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.qom.*;
+
+>>>>>>> .merge-right.r51033
+<<<<<<< .working
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
+=======
+import org.apache.jackrabbit.spi.commons.query.qom.*;
+>>>>>>> .merge-right.r51033
 import org.apache.jackrabbit.value.ValueFactoryImpl;
-import org.jahia.api.Constants;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -107,22 +116,22 @@ import java.util.*;
  * @author Benjamin Papez
  */
 public class QueryServiceImpl extends QueryService {
-    private static transient Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
+    static transient Logger logger = org.slf4j.LoggerFactory.getLogger(QueryService.class);
 
     /**
      * The initialization mode for the first QOM traversing iteration
      */
-    private static int INITIALIZE_MODE = 1;
+    static int INITIALIZE_MODE = 1;
 
     /**
      * The check for modification mode for the second QOM traversing iteration
      */
-    private static int CHECK_FOR_MODIFICATION_MODE = 2;
+    static int CHECK_FOR_MODIFICATION_MODE = 2;
 
     /**
      * The optional modification mode for the third QOM traversing iteration only called if query modification is necessary.
      */
-    private static int MODIFY_MODE = 3;
+    static int MODIFY_MODE = 3;
 
     private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
 
@@ -184,10 +193,6 @@ public class QueryServiceImpl extends QueryService {
                 .createQuery(source, constraint, orderings, columns);
     }
 
-    protected Source getModifiedSource(Source source, ModificationInfo info) {
-        return info.getNewJoin() != null ? info.getNewJoin() : source;
-    }
-
     /**
      * We use a QOMTreeVisitor implementation to traverse through the query object model three times.
      *
@@ -199,10 +204,10 @@ public class QueryServiceImpl extends QueryService {
                                                    JCRSessionWrapper session) throws RepositoryException {
         ModificationInfo info = new ModificationInfo(qomFactory);
 
-        QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(info, source, session);
+        QOMTreeVisitor visitor = new QueryModifierAndOptimizerVisitor(getValueFactory(), info, source, session);
 
         try {
-            info.setMode(INITIALIZE_MODE);
+            info.setMode(TraversingMode.INITIALIZE_MODE);
             ((SourceImpl) source).accept(visitor, null);
 
             if (constraint != null) {
@@ -222,7 +227,7 @@ public class QueryServiceImpl extends QueryService {
             throw new RepositoryException(e);
         }
         try {
-            info.setMode(CHECK_FOR_MODIFICATION_MODE);
+            info.setMode(TraversingMode.CHECK_FOR_MODIFICATION_MODE);
             ((SourceImpl) source).accept(visitor, null);
 
             if (constraint != null) {
@@ -251,7 +256,7 @@ public class QueryServiceImpl extends QueryService {
     protected void makeModifications(Source source, Constraint constraint, Ordering[] orderings,
                                      Column[] columns, ModificationInfo info, QOMTreeVisitor visitor,
                                      QueryObjectModelFactory qomFactory) throws RepositoryException {
-        info.setMode(MODIFY_MODE);
+        info.setMode(TraversingMode.MODIFY_MODE);
 
         try {
             int i = 0;
@@ -288,26 +293,22 @@ public class QueryServiceImpl extends QueryService {
                 }
             }
 
-            Source newSource = (Source) ((SourceImpl) getModifiedSource(source, info)).accept(
+            Source newSource = (Source) ((SourceImpl) info.getModifiedSource(source)).accept(
                     visitor, null);
 
+            if (newSource == null) {
+                logger.error("New source is null! Old source: "
+                        + Arrays.toString(((SourceImpl)source).getSelectors()) + " - Modified source: "
+                        + Arrays.toString(((SourceImpl)info.getModifiedSource(source)).getSelectors())
+                        + "- Modification mode: " + info.getMode());
+            }
+            
             info.setNewQueryObjectModel(info.getQueryObjectModelFactory().createQuery(newSource,
                     newConstraint, newOrderings, newColumns));
         } catch (Exception e) {
             throw new RepositoryException(e);
         }
 
-    }
-
-    private Selector getSelector(Source source, String name) {
-        Selector foundSelector = null;
-        for (SelectorImpl selector : ((SourceImpl) source).getSelectors()) {
-            if (StringUtils.isEmpty(name) || name.equals(selector.getSelectorName())) {
-                foundSelector = selector;
-                break;
-            }
-        }
-        return foundSelector;
     }
 
     /*
@@ -318,6 +319,7 @@ public class QueryServiceImpl extends QueryService {
     public ValueFactory getValueFactory() {
         return this.valueFactory;
     }
+<<<<<<< .working
 
     /**
      * We use this QOMTreeVisitor implementation to traverse through the query object model three times.
@@ -1184,4 +1186,6 @@ public class QueryServiceImpl extends QueryService {
             return newConstraints;
         }
     }
+=======
+>>>>>>> .merge-right.r51033
 }

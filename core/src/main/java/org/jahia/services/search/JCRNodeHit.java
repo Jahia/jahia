@@ -186,7 +186,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getTitle() {
-        return resource.getDisplayableName();
+        return getDisplayableNode().getDisplayableName();
     }
     
     /**

@@ -849,7 +849,7 @@ public class JahiaTemplatesPackage {
                     return new UrlResource(file.toURI());
                 }
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                // file.toURI cannot return malformed URL
             }
         }
         URL entryURL = bundle.getEntry(relativePath);
@@ -898,7 +898,7 @@ public class JahiaTemplatesPackage {
                 try {
                     resources.add(new UrlResource(file.toURI()));
                 } catch (MalformedURLException e) {
-                    e.printStackTrace();
+                    // file.toURI cannot return malformed URL
                 }
             }
         } else {

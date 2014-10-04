@@ -136,7 +136,7 @@ public class ContentHubHelper {
             contentManager.createNode("/mounts", (mountPoint == null ? mountName + "-mount" : mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
             session.save();
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.mount.label", uiLocale, mountName, e.getMessage()));
         }
     }
 

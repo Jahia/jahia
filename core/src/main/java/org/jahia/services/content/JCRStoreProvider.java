@@ -354,30 +354,59 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void start() throws JahiaInitializationException {
+        startAndCheckAvailability();
+    }
+
+    public boolean startAndCheckAvailability() throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
-            getSessionFactory().addProvider(this);
+            final boolean available = isAvailable();
 
-            boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
-            if (isProcessingServer) {
-                initNodeTypes();
+            if (available) {
+                getSessionFactory().addProvider(this);
+
+                boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
+                if (isProcessingServer) {
+                    initNodeTypes();
+                }
+                initObservers();
+                initialized = true;
+                initContent();
+                initDynamicMountPoints();
+
+                if (groovyPatcher != null && isProcessingServer) {
+                    groovyPatcher.executeScripts("jcrStoreProviderStarted");
+                }
             }
-            initObservers();
-            initialized = true;
-            initContent();
-            initDynamicMountPoints();
 
             authenticationType = tmpAuthenticationType;
-            if (groovyPatcher != null && isProcessingServer) {
-                groovyPatcher.executeScripts("jcrStoreProviderStarted");
-            }
+
+            return available;
         } catch (Exception e) {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);
         }
     }
+
+    public boolean isAvailable() {
+        JCRSessionWrapper systemSession = null;
+        try {
+            systemSession = sessionFactory.getSystemSession();
+            final Session providerSession = systemSession.getProviderSession(this);
+            providerSession.getRootNode();
+            return true;
+        } catch (RepositoryException e) {
+            logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+            return false;
+        } finally {
+            if(systemSession != null) {
+                systemSession.logout();
+            }
+        }
+    }
+
 
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);

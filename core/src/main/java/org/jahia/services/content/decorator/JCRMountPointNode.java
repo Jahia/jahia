@@ -124,7 +124,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         }
     }
 
-    private JCRStoreProvider getMountProvider() throws RepositoryException {
+    public JCRStoreProvider getMountProvider() throws RepositoryException {
         JCRStoreProvider provider;
         Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
         JCRVirtualMountPointNode mountPoint = new JCRVirtualMountPointNode(this);
@@ -132,7 +132,8 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         if (mountPoints == null || !mountPoints.containsKey(path)) {
             ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
             if (providerFactory == null) {
-                logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
+                logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() +
+                        ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
                 return null;
             }
 

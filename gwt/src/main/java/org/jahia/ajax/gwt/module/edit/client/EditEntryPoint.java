@@ -80,22 +80,15 @@ import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.WorkInProgress;
 import org.jahia.ajax.gwt.client.widget.edit.EditPanelViewport;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupAdder;
-import org.jahia.ajax.gwt.client.widget.usergroup.UserGroupSelect;
-
-import java.util.List;
 
 /**
  * Edit mode GWT entry point.
- * User: toto
- * Date: Aug 18, 2009
- * Time: 5:53:34 PM
+ * @author toto
  */
 public class EditEntryPoint extends CommonEntryPoint {
     public void onModuleLoad() {

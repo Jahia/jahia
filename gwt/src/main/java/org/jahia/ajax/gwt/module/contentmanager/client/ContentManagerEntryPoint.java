@@ -72,8 +72,6 @@
 package org.jahia.ajax.gwt.module.contentmanager.client;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.widget.Layout;
-import com.extjs.gxt.ui.client.widget.layout.AnchorLayout;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -90,10 +88,7 @@ import org.jahia.ajax.gwt.client.widget.content.util.ContentHelper;
 import java.util.*;
 
 /**
- *
- *
  * @author rfelden
- * @version 10 juil. 2008 - 16:58:16
  */
 public class ContentManagerEntryPoint extends CommonEntryPoint {
 

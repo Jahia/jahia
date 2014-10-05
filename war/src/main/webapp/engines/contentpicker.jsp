@@ -19,7 +19,7 @@
         <title>${fn:escapeXml(title)}</title>
         <internal:gwtGenerateDictionary/>
 		<internal:gwtInit locale="${param.lang}" uilocale="${param.uilang}" />
-		<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
+		<internal:gwtImport module="manager" />
         <c:if test="${config == 'filepicker' || config == 'imagepicker'}">
             <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.min.css"/>
             <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>

@@ -23,7 +23,7 @@
     <title>${fn:escapeXml(title)}</title>
     <internal:gwtGenerateDictionary/>
     <internal:gwtInit/>
-    <internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager"/>
+    <internal:gwtImport module="manager"/>
     <c:if test="${cfg == 'filemanager' || cfg == 'repositoryexplorer' || cfg == 'editorialcontentmanager'}">
         <link rel="stylesheet" type="text/css" media="screen" href="${pageContext.request.contextPath}/modules/assets/css/jquery.Jcrop.min.css"/>
         <script type="text/javascript" src="<c:url value='/modules/jquery/javascript/jquery.min.js'/>"></script>

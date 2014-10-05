@@ -1,5 +1,5 @@
-
-<module>
+<module rename-to="manager">
     <inherits name="org.jahia.ajax.gwt.JahiaGWT"/>
     <entry-point class='org.jahia.ajax.gwt.module.contentmanager.client.ContentManagerEntryPoint'/>
+    <collapse-all-properties />
 </module>

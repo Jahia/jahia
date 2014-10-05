@@ -31,23 +31,18 @@
     <!-- GWT resources-->
     <rule>
         <note>GWT CSS</note>
-        <from>^/gwt/org\.(.*)/(.*)\.css$</from>
-        <to>/gwt/resources/$2.css</to>
+        <from>^/gwt/(manager|edit)/(.*)\.css$</from>
+        <to>/gwt/resources/$1.css</to>
     </rule>
     <rule>
         <note>GWT images</note>
-        <from>^/gwt/org\.(.*)/images/(.*)$</from>
+        <from>^/gwt/(manager|edit)/images/(.*)$</from>
         <to>/gwt/resources/images/$2</to>
     </rule>
     <rule>
         <note>GWT CSS images</note>
         <from>^/gwt/resources/css/images/(.*)$</from>
         <to>/gwt/resources/images/$1</to>
-    </rule>
-    <rule>
-        <note>GWT clear.gif image</note>
-        <from>^/gwt/org\.(.*)/clear.gif(.*)?$</from>
-        <to>/gwt/resources/clear.gif$2</to>
     </rule>
     <!-- end of GWT resources-->
 

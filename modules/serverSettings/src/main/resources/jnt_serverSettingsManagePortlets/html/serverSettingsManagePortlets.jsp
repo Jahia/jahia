@@ -18,7 +18,7 @@
 </template:addResources>
 <internal:gwtGenerateDictionary/>
 <internal:gwtInit/>
-<internal:gwtImport module="org.jahia.ajax.gwt.module.contentmanager.ContentManager" />
+<internal:gwtImport module="manager" />
 
 <template:gwtJahiaModule id="contentmanager" jahiaType="contentmanager" config="portletdefinitionmanager" embedded="true" />
 

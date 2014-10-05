@@ -245,41 +245,6 @@ your machine and setup the correct authorization on the remote machine.
        includes dependencies this is a better than letter Maven generate one
        for you.
 
- Compiling a single GWT module
-------------------------------------------------------------------------------
-GWT compilation of modules is quite a heavy operation, and it may require a
-lot of time to build an entire build. For this, we have added the possibility
-to only compile a single module by using command line parameters. The syntax
-is the following:
-
-  mvn MAVEN_GOAL -DsingleModule=true -DsingleModuleName=MODULE_NAME
-
-and an example would be:
-
-  mvn install -DsingleModule=true -DsingleModuleName=org.jahia.ajax.gwt.module.edit.Edit
-
-In order to make things even easier, we have provided script and batch files
-for UNIX and Windows, called single_module.sh and single_module.bat. With
-these the above example becomes:
-
-  ./single_module.sh install org.jahia.ajax.gwt.module.edit.Edit
-
-This executes in 1 minute instead of 20!
-
-Also, if you just don't care about GWT compilation, you can single call:
-
-  mvn install -DsingleModule=true
-
-This will compile only the org.jahia.ajax.gwt.module.edit.Edit
-module. You can also achieve the same result with the simple call:
-
-  ./single_module.sh
-
-This will call the install goal and generate the Edit module. If you still
-want to specify a Maven goal, you can simply do just that:
-
-  ./single_module.sh compile
-
  Developing and running unit tests
 ------------------------------------------------------------------------------
 Tests are all packaged in the test module. They are intended to be executed in a live jahia context, and are able to

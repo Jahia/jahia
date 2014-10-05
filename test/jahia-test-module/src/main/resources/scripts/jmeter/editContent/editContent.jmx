@@ -86,7 +86,7 @@
           <collectionProp name="Arguments.arguments">
             <elementProp name="JahiaContentManagementService" elementType="Argument">
               <stringProp name="Argument.name">JahiaContentManagementService</stringProp>
-              <stringProp name="Argument.value">${__regexFunction(.*/org.jahia.ajax.gwt.module.edit.Edit/(.*).gwt.rpc.*,$1$,1,,notFound,,JahiaContentManagementServiceFile)}</stringProp>
+              <stringProp name="Argument.value">${__regexFunction(.*/edit/(.*).gwt.rpc.*,$1$,1,,notFound,,JahiaContentManagementServiceFile)}</stringProp>
               <stringProp name="Argument.metadata">=</stringProp>
             </elementProp>
           </collectionProp>
@@ -198,7 +198,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|4|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|isValidSession|1|2|3|4|0|</stringProp>
+                        <stringProp name="Argument.value">7|0|4|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|isValidSession|1|2|3|4|0|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -256,7 +256,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -275,7 +275,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/${__P(jahia.test.jmeter.sitekey,testSite)}/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
+                        <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getEditConfiguration|java.lang.String/2004016611|/sites/${__P(jahia.test.jmeter.sitekey,testSite)}/home|editmode|1|2|3|4|2|5|5|6|7|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -333,7 +333,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -352,7 +352,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|jmix:editorialContent|1|2|3|4|3|5|6|6|7|8|1|9|1|0|</stringProp>
+                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|jmix:editorialContent|1|2|3|4|3|5|6|6|7|8|1|9|1|0|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -410,7 +410,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -429,7 +429,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|1|2|3|4|3|5|6|6|0|1|0|</stringProp>
+                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getSubNodetypes|java.util.List|Z|1|2|3|4|3|5|6|6|0|1|0|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -487,7 +487,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -506,7 +506,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPortalNodes|java.lang.String/2004016611|portal-components|1|2|3|4|1|5|6|</stringProp>
+                        <stringProp name="Argument.value">7|0|6|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPortalNodes|java.lang.String/2004016611|portal-components|1|2|3|4|1|5|6|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -564,7 +564,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -583,7 +583,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                        <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -641,7 +641,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -660,7 +660,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPollData|java.util.Set|java.util.HashSet/1594477813|java.lang.String/2004016611|numberOfTasks|activeJobs|1|2|3|4|1|5|6|2|7|8|7|9|</stringProp>
+                        <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getPollData|java.util.Set|java.util.HashSet/1594477813|java.lang.String/2004016611|numberOfTasks|activeJobs|1|2|3|4|1|5|6|2|7|8|7|9|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -718,7 +718,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -737,7 +737,7 @@
                     <collectionProp name="Arguments.arguments">
                       <elementProp name="" elementType="HTTPArgument">
                         <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                        <stringProp name="Argument.value">7|0|17|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRoot|java.util.List|Z|java.lang.String/2004016611|java.util.ArrayList/3821976829|$site|jmix:navMenuItem|jmix:visibleInPagesTree|displayName|locked|publicationInfo|childrenInfo|icon|${pageUrl}|1|2|3|4|11|5|5|5|5|5|5|5|6|6|5|7|8|1|7|9|8|2|7|10|7|11|0|0|8|5|7|12|7|13|7|14|7|15|7|16|8|1|7|17|8|0|0|0|8|0|0|</stringProp>
+                        <stringProp name="Argument.value">7|0|17|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRoot|java.util.List|Z|java.lang.String/2004016611|java.util.ArrayList/3821976829|$site|jmix:navMenuItem|jmix:visibleInPagesTree|displayName|locked|publicationInfo|childrenInfo|icon|${pageUrl}|1|2|3|4|11|5|5|5|5|5|5|5|6|6|5|7|8|1|7|9|8|2|7|10|7|11|0|0|8|5|7|12|7|13|7|14|7|15|7|16|8|1|7|17|8|0|0|0|8|0|0|</stringProp>
                         <stringProp name="Argument.metadata">=</stringProp>
                         <boolProp name="HTTPArgument.use_equals">true</boolProp>
                       </elementProp>
@@ -795,7 +795,7 @@
                       </elementProp>
                       <elementProp name="X-GWT-Module-Base" elementType="Header">
                         <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                        <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                       </elementProp>
                       <elementProp name="Accept-Encoding" elementType="Header">
                         <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -833,7 +833,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|11|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRenderedContent|java.lang.String/2004016611|java.util.Map|Z|${pageUrl}|en|gwt|editmode|1|2|3|4|8|5|5|5|5|5|6|7|5|8|0|9|0|10|0|1|11|</stringProp>
+                      <stringProp name="Argument.value">7|0|11|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getRenderedContent|java.lang.String/2004016611|java.util.Map|Z|${pageUrl}|en|gwt|editmode|1|2|3|4|8|5|5|5|5|5|6|7|5|8|0|9|0|10|0|1|11|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>
@@ -891,7 +891,7 @@
                     </elementProp>
                     <elementProp name="X-GWT-Module-Base" elementType="Header">
                       <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                     </elementProp>
                     <elementProp name="Accept-Encoding" elementType="Header">
                       <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -910,7 +910,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
+                      <stringProp name="Argument.value">7|0|36|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|getNodesAndTypes|java.util.List|java.util.ArrayList/3821976829|java.lang.String/2004016611|${pageUrl}|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/header-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/Header-right|${__regexFunction((.*)/.*,$1$,1,,,,pageUrl)}/illustration|${pageUrl}/listA|${pageUrl}/listA/bigText_1|${pageUrl}/listA/bigText_2|${pageUrl}/listA/bigText_3|${pageUrl}/listA/bigText_4|${pageUrl}/listA/bigText_5|${pageUrl}/listA/bigText_1|${pageUrl}/listA/publication|${pageUrl}/events|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter1|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter2|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter3|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/topfooter4|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-left|${__regexFunction((/[a-zA-Z0-9]*/[a-zA-Z0-9]*/[a-zA-Z0-9]*)/.*,$1$,1,,,,pageUrl)}/footer-right|java.util.Arrays$ArrayList/1243019747|[Ljava.lang.String;/2600011424|publicationInfo|workflowInfo|nt:base|jmix:navMenuItem|jmix:droppableContent||jnt:imageReference|jnt:event|1|2|3|4|3|5|5|5|6|19|7|8|7|9|7|10|7|11|7|12|7|13|7|14|7|15|7|16|7|17|7|18|7|19|7|20|7|21|7|22|7|23|7|24|7|25|7|26|27|28|2|29|30|6|6|7|31|7|32|7|33|7|34|7|35|7|36|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>
@@ -968,7 +968,7 @@
                     </elementProp>
                     <elementProp name="X-GWT-Module-Base" elementType="Header">
                       <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                     </elementProp>
                     <elementProp name="Accept-Encoding" elementType="Header">
                       <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -987,7 +987,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|initializeEditEngine|java.lang.String/2004016611|Z|${pageUrl}/listA/bigText_1|1|2|3|4|2|5|6|7|1|</stringProp>
+                      <stringProp name="Argument.value">7|0|7|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|initializeEditEngine|java.lang.String/2004016611|Z|${pageUrl}/listA/bigText_1|1|2|3|4|2|5|6|7|1|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>
@@ -1045,7 +1045,7 @@
                     </elementProp>
                     <elementProp name="X-GWT-Module-Base" elementType="Header">
                       <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                     </elementProp>
                     <elementProp name="Accept-Encoding" elementType="Header">
                       <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -1064,7 +1064,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|validateWCAG|java.util.Map|java.util.HashMap/962170901|java.lang.String/2004016611|jnt-bigText_texten-true|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|1|5|6|1|7|8|7|9|</stringProp>
+                      <stringProp name="Argument.value">7|0|9|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|validateWCAG|java.util.Map|java.util.HashMap/962170901|java.lang.String/2004016611|jnt-bigText_texten-true|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|1|5|6|1|7|8|7|9|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>
@@ -1122,7 +1122,7 @@
                     </elementProp>
                     <elementProp name="X-GWT-Module-Base" elementType="Header">
                       <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                     </elementProp>
                     <elementProp name="Accept-Encoding" elementType="Header">
                       <stringProp name="Header.name">Accept-Encoding</stringProp>
@@ -1141,7 +1141,7 @@
                   <collectionProp name="Arguments.arguments">
                     <elementProp name="" elementType="HTTPArgument">
                       <boolProp name="HTTPArgument.always_encode">false</boolProp>
-                      <stringProp name="Argument.value">7|0|102|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|saveNode|org.jahia.ajax.gwt.client.data.node.GWTJahiaNode/3656480997|java.util.List|org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL/3859937859|java.util.Map|java.util.Set|en|java.util.HashMap/962170901|bigText_1|org.jahia.ajax.gwt.client.data.node.GWTBitSet/1207593675|[J/53942082|java.lang.String/2004016611|org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo/1630255428|java.util.LinkedHashMap/1551059846|canPublish|java.lang.Boolean/476441737|locked|status|java.lang.Integer/3438268394|uuid|ab52eeb1-c791-4f65-8a68-3a501a9d31d1|com.extjs.gxt.ui.client.data.SortInfo/1143517771|com.extjs.gxt.ui.client.Style$SortDir/640452531|name|/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/cms/render/default/${LANGUAGE}${pageUrl}/listA/bigText_1.html|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo/1250493874|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType/3680752569|com.extjs.gxt.ui.client.data.RpcMap/3441186752|unpublish|displayName|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition/3723077732|id|1-step-unpublication|1 Step Unpublication Process|provider|jBPM|formResourceName|jnt:simpleWorkflow|Simple Unpublication (One Step Only)|publish|1-step-publication|1 Step Publication Process|Simple Publication (One Step Only)|java.util.ArrayList/3821976829|icon|assets/icons/jnt_bigText|lockInfos|siteKey|ACME|providerKey|default|constraints|java.util.HashSet/1594477813|jnt:translation|inheritedNodeTypes|jnt:content|nt:base|jmix:nodenameInfo|mix:referenceable|jmix:observable|jmix:basemetadata|mix:created|jmix:lockable|mix:lockable|mix:lastModified|jmix:lastPublished|jmix:i18n|jmix:originWS|mix:versionable|mix:simpleVersionable|jmix:versionInfo|jmix:description|jmix:workflow|jmix:basicContent|jmix:droppableContent|jmix:editorialContent|hasACL|thumbnails|canLock|referenceTypes||nodeTypes|jnt:bigText|jmix:renderable|file|description|aclContext|site:ACME|path|${pageUrl}/listA/bigText_1|lockable|{{Other uses}} {{Cleanup\!date=October 2008}} The word &apos;&apos;&apos;rector&apos;&apos;&apos; ( &quot;ruler...|canUnlock|siteUUID|${siteUUID}|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty/3461251655|text|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue/2699023724|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|6|5|6|7|8|6|9|5|0|0|0|0|0|10|11|0|0|12|13|14|3|P__________|P__________|D_____|0|11|1|15|10|16|17|0|2|15|18|19|1|15|20|19|0|17|0|1|15|21|22|4|17|0|1|15|23|15|24|0|0|0|0|25|26|1|27|28|1|0|1|29|11|0|11|2|30|1|31|2|27|15|32|33|-26|34|1|31|5|35|15|36|27|15|37|38|15|39|40|15|41|33|15|42|30|1|31|2|27|15|43|33|-36|34|1|31|5|35|15|44|27|15|45|38|-31|40|-32|33|15|46|0|47|0|0|1|31|22|48|15|49|50|11|0|51|15|52|53|15|54|55|56|1|15|57|58|47|21|15|59|15|60|15|61|15|62|15|63|15|64|15|65|15|66|15|67|15|68|15|69|15|70|15|71|15|72|15|73|15|74|15|75|15|76|15|77|15|78|15|79|80|-12|81|11|0|82|-10|83|15|84|85|47|2|15|86|15|87|88|-12|89|-73|27|15|12|90|15|91|92|15|93|94|-10|23|-18|20|-12|33|15|95|96|-12|97|15|98|0|0|11|1|-6|47|1|99|0|100|47|1|101|0|0|1|102|47|0|0|1|0|47|0|56|0|</stringProp>
+                      <stringProp name="Argument.value">7|0|102|${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/|${JahiaContentManagementService}|org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService|saveNode|org.jahia.ajax.gwt.client.data.node.GWTJahiaNode/3656480997|java.util.List|org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL/3859937859|java.util.Map|java.util.Set|en|java.util.HashMap/962170901|bigText_1|org.jahia.ajax.gwt.client.data.node.GWTBitSet/1207593675|[J/53942082|java.lang.String/2004016611|org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo/1630255428|java.util.LinkedHashMap/1551059846|canPublish|java.lang.Boolean/476441737|locked|status|java.lang.Integer/3438268394|uuid|ab52eeb1-c791-4f65-8a68-3a501a9d31d1|com.extjs.gxt.ui.client.data.SortInfo/1143517771|com.extjs.gxt.ui.client.Style$SortDir/640452531|name|/${__regexFunction(http://.*:[0-9]*/(.*)/.*,$1$,1,,,,URL)}/cms/render/default/${LANGUAGE}${pageUrl}/listA/bigText_1.html|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo/1250493874|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType/3680752569|com.extjs.gxt.ui.client.data.RpcMap/3441186752|unpublish|displayName|org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition/3723077732|id|1-step-unpublication|1 Step Unpublication Process|provider|jBPM|formResourceName|jnt:simpleWorkflow|Simple Unpublication (One Step Only)|publish|1-step-publication|1 Step Publication Process|Simple Publication (One Step Only)|java.util.ArrayList/3821976829|icon|assets/icons/jnt_bigText|lockInfos|siteKey|ACME|providerKey|default|constraints|java.util.HashSet/1594477813|jnt:translation|inheritedNodeTypes|jnt:content|nt:base|jmix:nodenameInfo|mix:referenceable|jmix:observable|jmix:basemetadata|mix:created|jmix:lockable|mix:lockable|mix:lastModified|jmix:lastPublished|jmix:i18n|jmix:originWS|mix:versionable|mix:simpleVersionable|jmix:versionInfo|jmix:description|jmix:workflow|jmix:basicContent|jmix:droppableContent|jmix:editorialContent|hasACL|thumbnails|canLock|referenceTypes||nodeTypes|jnt:bigText|jmix:renderable|file|description|aclContext|site:ACME|path|${pageUrl}/listA/bigText_1|lockable|{{Other uses}} {{Cleanup\!date=October 2008}} The word &apos;&apos;&apos;rector&apos;&apos;&apos; ( &quot;ruler...|canUnlock|siteUUID|${siteUUID}|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty/3461251655|text|org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue/2699023724|&lt;p&gt; 	zzzz&lt;/p&gt; |1|2|3|4|6|5|6|7|8|6|9|5|0|0|0|0|0|10|11|0|0|12|13|14|3|P__________|P__________|D_____|0|11|1|15|10|16|17|0|2|15|18|19|1|15|20|19|0|17|0|1|15|21|22|4|17|0|1|15|23|15|24|0|0|0|0|25|26|1|27|28|1|0|1|29|11|0|11|2|30|1|31|2|27|15|32|33|-26|34|1|31|5|35|15|36|27|15|37|38|15|39|40|15|41|33|15|42|30|1|31|2|27|15|43|33|-36|34|1|31|5|35|15|44|27|15|45|38|-31|40|-32|33|15|46|0|47|0|0|1|31|22|48|15|49|50|11|0|51|15|52|53|15|54|55|56|1|15|57|58|47|21|15|59|15|60|15|61|15|62|15|63|15|64|15|65|15|66|15|67|15|68|15|69|15|70|15|71|15|72|15|73|15|74|15|75|15|76|15|77|15|78|15|79|80|-12|81|11|0|82|-10|83|15|84|85|47|2|15|86|15|87|88|-12|89|-73|27|15|12|90|15|91|92|15|93|94|-10|23|-18|20|-12|33|15|95|96|-12|97|15|98|0|0|11|1|-6|47|1|99|0|100|47|1|101|0|0|1|102|47|0|0|1|0|47|0|56|0|</stringProp>
                       <stringProp name="Argument.metadata">=</stringProp>
                       <boolProp name="HTTPArgument.use_equals">true</boolProp>
                     </elementProp>
@@ -1199,7 +1199,7 @@
                     </elementProp>
                     <elementProp name="X-GWT-Module-Base" elementType="Header">
                       <stringProp name="Header.name">X-GWT-Module-Base</stringProp>
-                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/org.jahia.ajax.gwt.module.edit.Edit/</stringProp>
+                      <stringProp name="Header.value">${__regexFunction((.*)/.*,$1$,1,,,,URL)}/gwt/edit/</stringProp>
                     </elementProp>
                     <elementProp name="Accept-Encoding" elementType="Header">
                       <stringProp name="Header.name">Accept-Encoding</stringProp>

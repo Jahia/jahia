@@ -9,7 +9,7 @@ if (renderContext.mainResource.contextConfiguration == 'page') {
 	if (renderContext.editMode) {
 	    if (!renderContext.getServletPath().endsWith("frame")) {
 	        println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
-	        println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "org.jahia.ajax.gwt.module.edit.Edit");
+	        println GWTIncluder.generateGWTImport(renderContext.request,renderContext.response, "edit");
 	        println AbstractJahiaTag.getGwtDictionnaryInclude(renderContext.request,AbstractJahiaTag.getUILocale(renderContext,renderContext.request.session,renderContext.request));
 	    } else {
 	        println GWTInitializer.generateInitializerStructureForFrame(renderContext);

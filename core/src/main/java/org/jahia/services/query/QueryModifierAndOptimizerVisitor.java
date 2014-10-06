@@ -83,8 +83,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.*;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
-
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -349,17 +349,20 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                 this, data);
 
         if (getModificationInfo().getMode() == TraversingMode.MODIFY_MODE) {
-            data = returnedRight != null && !returnedRight.equals(node.getRight())
-                    || returnedLeft != null && !returnedLeft.equals(node.getLeft())
-                    || returnedJoinCondition != null
-                    && !returnedJoinCondition.equals(node.getJoinCondition()) ? getModificationInfo()
-                    .getQueryObjectModelFactory()
-                    .join(returnedLeft != null ? (Source) returnedLeft : node.getLeft(),
-                            returnedRight != null ? (Source) returnedRight : node.getRight(),
-                            node.getJoinType(),
-                            returnedJoinCondition != null ? (JoinCondition) returnedJoinCondition
-                                    : node.getJoinCondition())
-                    : node;
+            EqualsBuilder equalsBuilder = new EqualsBuilder();
+            equalsBuilder.append(returnedRight, node.getRight())
+                    .append(returnedLeft, node.getLeft())
+                    .append(returnedJoinCondition, node.getJoinCondition());
+            data = equalsBuilder.isEquals() ? node
+                    : getModificationInfo()
+                            .getQueryObjectModelFactory()
+                            .join(returnedLeft != null ? (Source) returnedLeft
+                                    : node.getLeft(),
+                                    returnedRight != null ? (Source) returnedRight
+                                            : node.getRight(),
+                                    node.getJoinType(),
+                                    returnedJoinCondition != null ? (JoinCondition) returnedJoinCondition
+                                            : node.getJoinCondition());
         }
 
         return data;
@@ -493,13 +496,15 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
             newColumnObjects[i] = (Column)node.getColumns()[i].accept(this, data);
         }
         if (getModificationInfo().getMode() == TraversingMode.MODIFY_MODE) {
-            data = newConstraint != null && !newConstraint.equals(node.getConstraint())
-                    || newOrderingObjects != null && !newOrderingObjects.equals(node.getOrderings())
-                    || newColumnObjects != null && !newColumnObjects.equals(node.getColumns()) ? getModificationInfo()
+            EqualsBuilder equalsBuilder = new EqualsBuilder();
+            equalsBuilder.append(newConstraint, node.getConstraint())
+                    .append(newOrderingObjects, node.getOrderings())
+                    .append(newColumnObjects, node.getColumns());
+            data = equalsBuilder.isEquals() ? node : getModificationInfo()
                     .getQueryObjectModelFactory().createQuery(
-                            getModificationInfo().getModifiedSource(node.getSource()),
-                            newConstraint, newOrderingObjects,
-                            newColumnObjects) : node;
+                            getModificationInfo().getModifiedSource(
+                                    node.getSource()), newConstraint,
+                            newOrderingObjects, newColumnObjects);
         }
         return data;
     }

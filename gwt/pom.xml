@@ -275,7 +275,9 @@
                         <artifactId>gwt-maven-plugin</artifactId>
                         <configuration>
                             <draftCompile>false</draftCompile>
+                            <!--
                             <enableClosureCompiler>true</enableClosureCompiler>
+                            -->
                         </configuration>
                     </plugin>
                 </plugins>

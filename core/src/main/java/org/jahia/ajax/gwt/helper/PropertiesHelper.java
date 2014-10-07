@@ -78,11 +78,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-<<<<<<< .working
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
-=======
-import org.jahia.ajax.gwt.client.messages.Messages;
->>>>>>> .merge-right.r51084
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
@@ -93,9 +89,9 @@ import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.i18n.JahiaResourceBundle;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -225,7 +221,7 @@ public class PropertiesHelper {
                     if (node.hasProperty(Constants.NODE)) {
                         JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty("j:node").getValue();
                         Node pageNode = weekReference.getNode();
-                        if(pageNode!=null) {
+                        if (pageNode != null) {
                             linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode));
                             linkNode.set(Constants.ALT, pageNode.getName());
                             linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());

@@ -90,8 +90,12 @@ import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.EncryptionUtils;
+<<<<<<< .working
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+=======
+import org.jahia.utils.i18n.JahiaResourceBundle;
+>>>>>>> .merge-right.r51091
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -227,7 +231,7 @@ public class PropertiesHelper {
                             linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());
                             linkNode.set(Constants.JCR_TITLE, ((JCRNodeWrapper) pageNode).getUrl());
                         } else {
-                            String resource = JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", uiLocale);
+                            String resource = Messages.getInternal("label.error.invalidlink", uiLocale);
                             linkNode.set(Constants.JCR_TITLE, resource);
                             linkNode.set(Constants.ALT, resource);
                         }

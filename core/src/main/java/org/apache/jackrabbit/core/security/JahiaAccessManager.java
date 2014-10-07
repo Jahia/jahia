@@ -527,23 +527,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-<<<<<<< .working
-=======
-            if (permissions.size() != 1 ||
-                    (!permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName)) &&
-                    !permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)))) {
-                if (itemExists == null) {
-                    itemExists = getSecuritySession().itemExists(jcrPath);
-                }
-                boolean newItem = !itemExists.booleanValue(); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
-                if (newItem) {
-                    // If node is new (local to the session), always grant permission
-                    pathPermissionCache.put(cacheKey, true);
-                    return true;
-                }
-            }
-
->>>>>>> .merge-right.r51088
             // Administrators are always granted
             if (jahiaPrincipal != null) {
                 if (isAdmin(jahiaPrincipal.getName(), null)) {
@@ -614,15 +597,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
 
-<<<<<<< .working
-            if (permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
-                String childNodeName = ((DefaultNamePathResolver) pr).getJCRName(absPath.getName());
-                if(childNodeName.startsWith("j:translation_") &&
-=======
             if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String childNodeName = pr.getJCRName(absPath.getName());
                 if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
->>>>>>> .merge-right.r51088
                         hasPrivileges(pr.getJCRPath(absPath), new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
                     return true;
                 }

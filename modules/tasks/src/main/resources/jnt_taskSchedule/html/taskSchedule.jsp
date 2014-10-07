@@ -99,7 +99,7 @@
             <c:if test="${not process.completed}">
                 <workflow:workflow id="${process.processId}" provider="${process.provider}" var="active"/>
                 <c:forEach items="${active.availableActions}" var="task">
-                    <c:if test="<%=pageContext.getAttribute("task") instanceof WorkflowTask %>">                
+                    <c:if test='<%=pageContext.getAttribute("task") instanceof WorkflowTask %>'>                
                         <c:if test="${not empty task.dueDate and task.dueDate.time ge startDateDate.time and task.dueDate.time le endDateDate.time}">
                             <c:set var="emptyTasks" value="false"/>
                             <fmt:formatDate pattern="dd/MM/yyyy"

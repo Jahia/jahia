@@ -78,7 +78,11 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+<<<<<<< .working
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
+=======
+import org.jahia.ajax.gwt.client.messages.Messages;
+>>>>>>> .merge-right.r51084
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
@@ -221,10 +225,16 @@ public class PropertiesHelper {
                     if (node.hasProperty(Constants.NODE)) {
                         JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty("j:node").getValue();
                         Node pageNode = weekReference.getNode();
-                        linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode));
-                        linkNode.set(Constants.ALT, pageNode.getName());
-                        linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());
-                        linkNode.set(Constants.JCR_TITLE, ((JCRNodeWrapper) pageNode).getUrl());
+                        if(pageNode!=null) {
+                            linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode));
+                            linkNode.set(Constants.ALT, pageNode.getName());
+                            linkNode.set(Constants.URL, ((JCRNodeWrapper) pageNode).getUrl());
+                            linkNode.set(Constants.JCR_TITLE, ((JCRNodeWrapper) pageNode).getUrl());
+                        } else {
+                            String resource = JahiaResourceBundle.getJahiaInternalResource("label.error.invalidlink", uiLocale);
+                            linkNode.set(Constants.JCR_TITLE, resource);
+                            linkNode.set(Constants.ALT, resource);
+                        }
 
                     }
 

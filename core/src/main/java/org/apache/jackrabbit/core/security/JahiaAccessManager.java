@@ -124,6 +124,8 @@ import javax.security.auth.Subject;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Current ACL policy :
@@ -182,6 +184,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     private boolean isAliased = false;
     private boolean globalGroupMembershipCheckActivated = false;
+    private DefaultNamePathResolver pr;
+    private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
+    private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2}(_[A-Z]{2})?)([/].*)?$");
 
     public static String getPrivilegeName(String privilegeName, String workspace) {
         if (workspace == null) {
@@ -314,6 +319,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
+        NamespaceResolver nr = new SessionNamespaceResolver(getSecuritySession());
+
+        pr = new DefaultNamePathResolver(nr,true);
         initialized = true;
     }
 
@@ -488,9 +496,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         try {
-            NamespaceResolver nr = new SessionNamespaceResolver(getSecuritySession());
-
-            PathResolver pr = new DefaultNamePathResolver(nr);
             String jcrPath = pr.getJCRPath(absPath);
 
             if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
@@ -522,6 +527,23 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
+<<<<<<< .working
+=======
+            if (permissions.size() != 1 ||
+                    (!permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName)) &&
+                    !permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)))) {
+                if (itemExists == null) {
+                    itemExists = getSecuritySession().itemExists(jcrPath);
+                }
+                boolean newItem = !itemExists.booleanValue(); // Jackrabbit checks the ADD_NODE permission on non-existing nodes
+                if (newItem) {
+                    // If node is new (local to the session), always grant permission
+                    pathPermissionCache.put(cacheKey, true);
+                    return true;
+                }
+            }
+
+>>>>>>> .merge-right.r51088
             // Administrators are always granted
             if (jahiaPrincipal != null) {
                 if (isAdmin(jahiaPrincipal.getName(), null)) {
@@ -571,20 +593,36 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             // Translation permissions
-            String name = StringUtils.substringAfterLast(jcrPath, "/");
-            if (name.startsWith("j:translation_")) {
-                String language = StringUtils.substringAfter(name, "j:translation_");
-                if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
-                    permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
-                    permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
+            if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
+                String fullPath=pr.getJCRPath(absPath);
+                if (fullPath.contains("j:translation_")) {
+                    Matcher matcher = TRANSLATION_LANGUAGE_PATTERN.matcher(fullPath);
+                    if(matcher.matches()) {
+                        String language = matcher.group(2);
+                        permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
+                        permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
+                    }
+                } else if (fullPath.contains("j:referenceInField_")) {
+                    Matcher matcher = REFERENCE_FIELD_LANGUAGE_PATTERN.matcher(fullPath);
+                    if(matcher.matches()) {
+                        String language = matcher.group(2);
+                        permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
+                        permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
+                    }
                 }
             }
 
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
 
+<<<<<<< .working
             if (permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String childNodeName = ((DefaultNamePathResolver) pr).getJCRName(absPath.getName());
                 if(childNodeName.startsWith("j:translation_") &&
+=======
+            if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
+                String childNodeName = pr.getJCRName(absPath.getName());
+                if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
+>>>>>>> .merge-right.r51088
                         hasPrivileges(pr.getJCRPath(absPath), new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
                     return true;
                 }

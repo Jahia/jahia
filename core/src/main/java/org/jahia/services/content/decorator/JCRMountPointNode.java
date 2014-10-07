@@ -94,27 +94,6 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     }
 
-    public boolean checkMountPointValidity() {
-        final JCRStoreProvider provider;
-        try {
-            provider = getMountProvider();
-        } catch (Exception e) {
-            logger.error("Couldn't retrieve provider", e);
-            return false;
-        }
-
-        try {
-            getRootNodeFrom(provider);
-            return true;
-        } catch (Exception e) {
-            logger.error("Couldn't retrieve root node", e);
-            if (provider != null) {
-                getProvider().getSessionFactory().removeProvider(provider.getKey());
-            }
-            return false;
-        }
-    }
-
     private JCRNodeWrapper getRootNodeFrom(JCRStoreProvider provider) throws RepositoryException {
         if (provider != null) {
             JCRSessionWrapper sessionWrapper = getSession();

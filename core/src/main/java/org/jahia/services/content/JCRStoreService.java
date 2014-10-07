@@ -74,7 +74,6 @@ package org.jahia.services.content;
 import com.google.common.collect.ImmutableSet;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRMountPointNode;
@@ -169,19 +168,16 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                         JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
                         if (mountPointNodeWrapper instanceof JCRMountPointNode) {
                             JCRMountPointNode mountPointNode = (JCRMountPointNode) mountPointNodeWrapper;
-                            if (!mountPointNode.checkMountPointValidity()) {
-                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                        "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
-                                continue;
+                            final JCRStoreProvider provider = externalProviderFactory.mountProvider(mountPointNode);
+                            try {
+                                if (!provider.startAndCheckAvailability()) {
+                                    logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath()
+                                            + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                }
+                            } catch (JahiaInitializationException e) {
+                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath()
+                                        + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                             }
-                        }
-                        try {
-                            mountPointNodeWrapper.getNodes();
-                        } catch (RepositoryException e) {
-                            logger.warn(
-                                    "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e
-                            );
                         }
                     }
                     return null;

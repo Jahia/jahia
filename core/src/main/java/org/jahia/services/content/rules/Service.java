@@ -73,7 +73,6 @@ package org.jahia.services.content.rules;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.drools.core.FactException;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.api.Constants;
@@ -86,7 +85,6 @@ import org.jahia.services.JahiaService;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -115,7 +113,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import javax.servlet.ServletException;
-
 import java.io.*;
 import java.text.ParseException;
 import java.util.*;
@@ -905,11 +902,4 @@ public class Service extends JahiaService {
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }
-
-    public void mount(AddedNodeFact node) {
-        if (node.getNode() instanceof JCRMountPointNode) {
-            ((JCRMountPointNode) node.getNode()).checkMountPointValidity();
-        }
-    }
-
 }

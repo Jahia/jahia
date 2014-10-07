@@ -91,8 +91,11 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.utils.EncryptionUtils;
 <<<<<<< .working
+<<<<<<< .working
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.JahiaResourceBundle;
+=======
+>>>>>>> .merge-right.r51093
 =======
 import org.jahia.utils.i18n.JahiaResourceBundle;
 >>>>>>> .merge-right.r51091

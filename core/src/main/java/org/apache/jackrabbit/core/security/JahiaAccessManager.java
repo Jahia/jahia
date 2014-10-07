@@ -584,13 +584,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             if (permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String childNodeName = ((DefaultNamePathResolver) pr).getJCRName(absPath.getName());
-<<<<<<< .working
-                if (childNodeName.startsWith("j:translation_") &&
-                        hasPrivileges(jcrPath + "/" + childNodeName, new Privilege[]{privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})) {
-=======
                 if(childNodeName.startsWith("j:translation_") &&
                         hasPrivileges(pr.getJCRPath(absPath), new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
->>>>>>> .merge-right.r51072
                     return true;
                 }
             }

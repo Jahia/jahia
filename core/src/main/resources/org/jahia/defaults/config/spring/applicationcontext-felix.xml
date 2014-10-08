@@ -133,7 +133,7 @@
                 <value>classpath*:org/jahia/defaults/config/properties/felix-framework*.properties</value>
                 <value>/WEB-INF/etc/config/felix-framework.properties</value>
                 <value>classpath*:org/jahia/config/felix-framework*.properties</value>
-                <value>classpath*jahia/felix-framework*.properties</value>
+                <value>classpath*:jahia/felix-framework*.properties</value>
             </list>
         </property>
     </bean>

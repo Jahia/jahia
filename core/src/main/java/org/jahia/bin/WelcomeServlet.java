@@ -288,7 +288,7 @@ public class WelcomeServlet extends HttpServlet {
         List<Locale> siteLanguages = Collections.emptyList();
         try {
             if (site != null) {
-                siteLanguages = site.getActiveLanguagesAsLocales();
+                siteLanguages = site.getActiveLiveLanguagesAsLocales();
             }
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales", t);

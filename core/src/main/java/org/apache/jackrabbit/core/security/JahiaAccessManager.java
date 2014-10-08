@@ -72,7 +72,6 @@
 package org.apache.jackrabbit.core.security;
 
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
@@ -90,7 +89,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
 import org.apache.jackrabbit.spi.commons.conversion.DefaultNamePathResolver;
 import org.apache.jackrabbit.spi.commons.conversion.NamePathResolver;
-import org.apache.jackrabbit.spi.commons.conversion.PathResolver;
 import org.apache.jackrabbit.spi.commons.name.PathFactoryImpl;
 import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
@@ -121,6 +119,7 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -222,26 +221,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (cacheService != null) {
                 // Jahia is initialized
                 EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.privilegesInRolesCache", new CacheEntryFactory() {
-                    @Override
-                    public Object createEntry(Object role) throws Exception {
-                        String externalPermission = null;
-                        Set<Privilege> privileges;
-                        String roleName = (String) role;
-                        if (roleName.contains("/")) {
-                            externalPermission = StringUtils.substringAfter((String) role, "/");
-                            roleName = StringUtils.substringBefore((String) role, "/");
-                        }
-
-                        Node roleNode = findRoleNode(roleName);
-                        if (roleNode != null) {
-                            privileges = getPrivileges(roleNode, externalPermission);
-                        } else {
-                            privileges = Collections.emptySet();
-                        }
-                        return privileges;
-                    }
-                });
+                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.privilegesInRolesCache", new CacheEntryFactory());
             }
         }
         if (matchingPermissions == null) {
@@ -750,26 +730,30 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
-        if (privilegesInRole != null)
-            return (Set<Privilege>) privilegesInRole.get(role).getObjectValue();
-        else {
-            Set<Privilege> privileges;
-            String externalPermission = null;
-
-            String roleName = role;
-            if (roleName.contains("/")) {
-                externalPermission = StringUtils.substringAfter(role, "/");
-                roleName = StringUtils.substringBefore(role, "/");
-            }
-
-            Node roleNode = findRoleNode(roleName);
-            if (roleNode != null) {
-                privileges = getPrivileges(roleNode, externalPermission);
-            } else {
-                privileges = Collections.EMPTY_SET;
-            }
-            return privileges;
+        if (privilegesInRole != null) {
+            return (Set<Privilege>) privilegesInRole.get(new CacheKey(this, role)).getObjectValue();
+        } else {
+            return internalGetPermissionsInRole(role);
         }
+    }
+
+    private Set<Privilege> internalGetPermissionsInRole(String role) throws RepositoryException {
+        Set<Privilege> privileges;
+        String externalPermission = null;
+
+        String roleName = role;
+        if (roleName.contains("/")) {
+            externalPermission = StringUtils.substringAfter(role, "/");
+            roleName = StringUtils.substringBefore(role, "/");
+        }
+
+        Node roleNode = findRoleNode(roleName);
+        if (roleNode != null) {
+            privileges = getPrivileges(roleNode, externalPermission);
+        } else {
+            privileges = Collections.emptySet();
+        }
+        return privileges;
     }
 
     private Node findRoleNode(String role) throws RepositoryException {
@@ -1106,6 +1090,42 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public static void flushMatchingPermissions() {
         if (matchingPermissions != null) {
             matchingPermissions.flush();
+        }
+    }
+
+
+    private static class CacheKey implements Serializable {
+        transient JahiaAccessManager accessManager;
+        String roleName;
+
+        private CacheKey(JahiaAccessManager accessManager, String roleName) {
+            this.accessManager = accessManager;
+            this.roleName = roleName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            CacheKey cacheKey = (CacheKey) o;
+
+            if (roleName != null ? !roleName.equals(cacheKey.roleName) : cacheKey.roleName != null) return false;
+
+            return true;
+        }
+
+        @Override
+        public int hashCode() {
+            return roleName != null ? roleName.hashCode() : 0;
+        }
+    }
+
+    private static class CacheEntryFactory implements net.sf.ehcache.constructs.blocking.CacheEntryFactory {
+        @Override
+        public Object createEntry(Object key) throws Exception {
+            CacheKey cacheKey = (CacheKey) key;
+            return cacheKey.accessManager.internalGetPermissionsInRole(cacheKey.roleName);
         }
     }
 }

@@ -189,7 +189,7 @@ public class UserGroupSelect extends Window {
                 String path = "/users";
                 String query = "select * from [jnt:user] as u where isdescendantnode(u,'"+path+"') ";
                 if (newSearch.length() > 0) {
-                    query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
+                    query += " and (CONTAINS(u.*,'%" + newSearch + "%') OR LOWER(u.[j:nodename]) LIKE '%" + newSearch.toLowerCase() + "%') ";
                 }
                 query += " ORDER BY u.[j:nodename]";
 
@@ -279,7 +279,7 @@ public class UserGroupSelect extends Window {
                 }
 
                 if (newSearch.length() > 0) {
-                    query += " and (CONTAINS(g.*,'*" + newSearch + "*') OR LOWER(g.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
+                    query += " and (CONTAINS(g.*,'%" + newSearch + "%') OR LOWER(g.[j:nodename]) LIKE '%" + newSearch.toLowerCase() + "%') ";
                 }
                 query += " ORDER BY g.[j:nodename]";
 

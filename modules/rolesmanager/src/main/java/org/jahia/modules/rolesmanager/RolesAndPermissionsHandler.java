@@ -492,9 +492,11 @@ public class RolesAndPermissionsHandler implements Serializable {
         } else {
             if (scope.equals("currentSite")) {
                 type = "jnt:virtualsite";
-            } else {
+            } else if(scope.startsWith("/")) {
                 try {
                     type = getSession().getNode(scope).getPrimaryNodeTypeName();
+                } catch (PathNotFoundException e) {
+                    logger.debug("Error retrieving scope", e);
                 } catch (RepositoryException e) {
                     logger.error("Error retrieving scope", e);
                 }

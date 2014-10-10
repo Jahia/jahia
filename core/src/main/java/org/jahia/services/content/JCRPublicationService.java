@@ -328,7 +328,7 @@ public class JCRPublicationService extends JahiaService {
         for (String uuid : uuidsToPublish) {
             try {
                 JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
-                if (!node.isNodeType("jmix:nolive") && !toPublish.contains(node)) {
+                if (!node.isNodeType("jmix:nolive") && !toPublish.contains(node) && supportsPublication(sourceSession, node)) {
                     toPublish.add(node);
                 }
             } catch (javax.jcr.ItemNotFoundException e) {
@@ -1312,8 +1312,8 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper ref) throws RepositoryException {
-        Value descriptorValue = sourceSession.getProviderSession(ref.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+    private boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node) throws RepositoryException {
+        Value descriptorValue = sourceSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
         if (descriptorValue == null) {
             return false;
         }

@@ -134,7 +134,6 @@ public class JCRNodeTag extends AbstractJCRTag {
                     }
                 }
             }
-            currentResource.getDependencies().add(node.getCanonicalPath());
             pageContext.setAttribute(var, node, scope);
         } catch (PathNotFoundException e) {
             if (logger.isDebugEnabled()) {

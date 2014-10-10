@@ -469,8 +469,8 @@ public class WorkflowService implements BeanPostProcessor {
                             if (group != null) {
                                 if (logger.isDebugEnabled()) {
                                     logger.debug("group " + group.getGroupKey() + " is granted");
-                                    principals.add(group.getJahiaGroup());
                                 }
+                                principals.add(group.getJahiaGroup());
                             }
                         }
                     }

@@ -200,7 +200,7 @@ public class DocumentViewExporter {
     }
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
-        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
 
             String path = "";
             Node current = node;
@@ -268,7 +268,10 @@ public class DocumentViewExporter {
             PropertyIterator propsIterator = node.getRealNode().getProperties();
             SortedSet<String> sortedProps = new TreeSet<String>();
             while (propsIterator.hasNext()) {
-                sortedProps.add(propsIterator.nextProperty().getName());
+                Property property = propsIterator.nextProperty();
+                if (node.getProvider().canExportProperty(property)) {
+                    sortedProps.add(property.getName());
+                }
             }
             for (String prop : sortedProps) {
                 try {
@@ -336,7 +339,9 @@ public class DocumentViewExporter {
                 NodeIterator ni = node.getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                    exportNode(c);
+                    if (c.getProvider().canExportNode(c)) {
+                        exportNode(c);
+                    }
                 }
             }
         }

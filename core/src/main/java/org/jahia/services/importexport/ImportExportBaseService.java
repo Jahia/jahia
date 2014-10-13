@@ -586,10 +586,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout, Set<String> typesToIgnore, byte[] buffer, String basepath, Set<String> exportedFiles) throws IOException, RepositoryException {
         int bytesIn;
-        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
-                Node child = ni.nextNode();
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.nextNode();
+                if (!child.getProvider().canExportNode(child)) {
+                    continue;
+                }
                 if (child.isNodeType("nt:resource")) {
                     if (!exportedFiles.contains(child.getPath())) {
                         exportedFiles.add(child.getPath());

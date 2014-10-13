@@ -113,7 +113,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -966,12 +965,34 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
+     * @deprecated now canExportNode and canExportProperty are used
      * Indicates if the nodes, backed by this provider, are considered during export operation.
      * 
      * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
      *         they are skipped
      */
+    @Deprecated
     public boolean isExportable() {
+        return true;
+    }
+
+    /**
+     * Indicates if the specified node, backed by this provider, is considered during export operation
+     *
+     * @return <code>true</code> if the specified node, backed by this provider, is included during the export operation
+     *         <code>false</code> if it isn't
+     */
+    public boolean canExportNode(JCRNodeWrapper node) {
+        return true;
+    }
+
+    /**
+     * Indicates if the specified property, backed by this provider, is considered during export operation
+     *
+     * @return <code>true</code> if the specified property, backed by this provider, is included during the export operation
+     *         <code>false</code> if it isn't
+     */
+    public boolean canExportProperty(Property property) {
         return true;
     }
 

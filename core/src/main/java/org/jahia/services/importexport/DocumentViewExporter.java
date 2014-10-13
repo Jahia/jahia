@@ -326,6 +326,9 @@ public class DocumentViewExporter {
                 String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
                 atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }
+            if (!"/".equals(path) && !node.getProvider().equals(node.getParent().getProvider())) {
+                atts.addAttribute("", "provider", "provider", CDATA, node.getProvider().getKey());
+            }
 
             String encodedName = ISO9075.encode(node.getName());
             startElement(encodedName, atts);

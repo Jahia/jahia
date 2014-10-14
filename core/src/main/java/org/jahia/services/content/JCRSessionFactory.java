@@ -190,12 +190,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         sessionThreadLocal.set(smap);
         String username;
 
-        if (!system && getCurrentUser() == null) {
+        JahiaUser user = getCurrentUser();
+
+        if (!system && user == null) {
             logger.error("Null thread user");
             throw new RepositoryException("Null thread user");
         }
-
-        JahiaUser user = getCurrentUser();
 
         if (JahiaUserManagerService.isGuest(user)) {
             username = JahiaLoginModule.GUEST;

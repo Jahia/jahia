@@ -439,6 +439,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
         tti.add(Constants.JAHIANT_USER);
+        tti.add("jnt:externalUser");
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);
         zout.finish();

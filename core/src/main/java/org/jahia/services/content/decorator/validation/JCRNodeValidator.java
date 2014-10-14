@@ -74,9 +74,7 @@ package org.jahia.services.content.decorator.validation;
 /**
  * An interface to identify the mechanics of validation for your specific nodes and needs.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
- *        Created : 05/09/13
+ * @author rincevent
  */
 public interface JCRNodeValidator {
 }

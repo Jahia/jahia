@@ -363,7 +363,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
             final boolean available = isAvailable();
 
-            if (available) {
+            if (available && !initialized) {
                 getSessionFactory().addProvider(this);
 
                 boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
@@ -397,7 +397,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             providerSession.getRootNode();
             return true;
         } catch (RepositoryException e) {
-            logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+            if (logger.isDebugEnabled()) {
+                logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
+            } else {
+                logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+            }
             return false;
         } finally {
             if(systemSession != null) {

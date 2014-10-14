@@ -186,7 +186,7 @@ public class Mounter extends Window {
             @Override
             public String validate(Field<?> field, String value) {
                 return value == null || !value.matches("[A-Za-z0-9_\\-]+") ? Messages.get(
-                        "label.error.invalidNodeTypeName", "The entered node type name is not valid."
+                        "label.error.invalidMountName", "The entered mount name is not valid."
                                 + " The value should match the following pattern: [A-Za-z0-9_\\-]+"
                 ) : null;
             }

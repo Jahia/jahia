@@ -1055,7 +1055,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
      */
     public static void flushPrivilegesInRoles() {
         if (privilegesInRole != null) {
-            privilegesInRole.refresh(false);
+            privilegesInRole.removeAll();
         }
         if (matchingPermissions != null) {
             matchingPermissions.flush();

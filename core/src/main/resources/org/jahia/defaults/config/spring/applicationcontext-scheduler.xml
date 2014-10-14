@@ -21,11 +21,10 @@
                 <prop key="org.quartz.jobStore.isClustered">${cluster.activated:false}</prop>
                 <prop key="org.quartz.jobStore.txIsolationLevelSerializable">false</prop>
                 <prop key="org.quartz.dataSource.jahiaDS.jndiURL">java:comp/env/jdbc/jahia</prop>
-                <prop key="org.quartz.plugin.shutdownhook.class">org.quartz.plugins.management.ShutdownHookPlugin</prop>
-                <prop key="org.quartz.plugin.shutdownhook.cleanShutdown">true</prop>
                 <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
             </props>
         </property>
+        <property name="waitForJobsToCompleteOnShutdown" value="true"/>
     </bean>
     
     <bean id="ramScheduler" class="org.jahia.services.scheduler.SchedulerService$JahiaSchedulerFactoryBean">
@@ -38,11 +37,10 @@
                 <prop key="org.quartz.threadPool.threadCount">3</prop>
                 <prop key="org.quartz.threadPool.threadPriority">3</prop>
                 <prop key="org.quartz.jobStore.class">org.quartz.simpl.RAMJobStore</prop>
-                <prop key="org.quartz.plugin.shutdownhook.class">org.quartz.plugins.management.ShutdownHookPlugin</prop>
-                <prop key="org.quartz.plugin.shutdownhook.cleanShutdown">true</prop>
                 <prop key="org.quartz.scheduler.skipUpdateCheck">true</prop>
             </props>
         </property>
+        <property name="waitForJobsToCompleteOnShutdown" value="true"/>
     </bean>
 
 	<bean id="SchedulerService" class="org.jahia.services.scheduler.SchedulerService" parent="jahiaServiceTemplate">

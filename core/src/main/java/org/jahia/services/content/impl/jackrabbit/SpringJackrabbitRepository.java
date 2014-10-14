@@ -99,8 +99,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
     
     private JackrabbitRepository repository;
 
-    private transient Thread hook;
-
     private Resource configFile;
     private Resource homeDir;
 
@@ -192,13 +190,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
             servletContext.setAttribute(servletContextAttributeName, this);
         }
 
-        hook = new Thread("SpringJackrabbitRepository") {
-            public void run() {
-                shutdown();
-            }
-        };
-        Runtime.getRuntime().addShutdownHook(hook);
-        
         if (settings.isProcessingServer() && useDataStore && dataStoreGarbageCollectorBeanId != null && dataStoreGarbageCollectorBeanId.length() > 0) {
             // this schedules the background job
             applicationContext.getBean(dataStoreGarbageCollectorBeanId);
@@ -257,11 +248,6 @@ public class SpringJackrabbitRepository extends AbstractRepository implements Ja
      */
     public void shutdown() {
         repository.shutdown();
-        try {
-            Runtime.getRuntime().removeShutdownHook(hook);
-        } catch (IllegalStateException e) {
-            // ignore. exception is thrown when hook itself calls shutdown
-        }
     }
 
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {

@@ -235,6 +235,15 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
+        if (atts.getIndex("provider") > -1) {
+            String providerKey = atts.getValue("provider");
+            Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
+            if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
+                error++;
+                return;
+            }
+        }
+
         String decodedLocalName = ISO9075.decode(localName);
 
         for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
@@ -339,7 +348,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 }
 
-                if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
+                if (!isValid || (child.getDefinition() != null && child.getDefinition().allowsSameNameSiblings())) {
                     isValid = false;
                     if (nodes.peek().hasPermission("jcr:addChildNodes")) {
                         if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {

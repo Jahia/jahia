@@ -156,11 +156,19 @@ public class TestHelper {
         JahiaUser admin = JahiaAdminUser.getAdminUser(null);
 
         JahiaSitesService service = ServicesRegistry.getInstance().getJahiaSitesService();
-        JahiaSite site = service.getSiteByKey(name);
+        try {
+            JCRSessionWrapper session = JCRSessionFactory.getInstance()
+                    .getCurrentSystemSession(null, null, null);
+            JahiaSite existingSite = service.getSiteByKey(name, session);
 
-        if (site != null) {
-            service.removeSite(site);
+            if (existingSite != null) {
+                service.removeSite(existingSite);
+                session.refresh(false);
+            }
+        } catch (RepositoryException ex) {
+            logger.debug("Error while trying to remove the site", ex);
         }
+        JahiaSite site = null;
         File siteZIPFile = null;
         File sharedZIPFile = null;
         try {

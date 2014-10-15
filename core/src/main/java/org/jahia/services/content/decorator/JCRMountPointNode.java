@@ -95,15 +95,16 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
         @Override
         public String getPath() {
-            String path = StringUtils.substringBefore(node.getPath(), "-mount");
+            String path = null;
             try {
-                if(node.hasProperty("mountPoint")){
-                    path = node.getProperty("mountPoint").getNode().getPath()+"/"+node.getName();
+                if (node.hasProperty("mountPoint")) {
+                    path = node.getProperty("mountPoint").getNode().getPath() + "/" + node.getName();
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
-            return path;
+
+            return path != null ? path : StringUtils.substringBefore(node.getPath(), "-mount");
         }
     }
 

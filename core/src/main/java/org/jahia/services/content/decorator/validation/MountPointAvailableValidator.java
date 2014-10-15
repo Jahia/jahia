@@ -78,7 +78,7 @@ import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 
 /**
- * Mount point avilability validator.
+ * Mount point availability validator.
  * 
  * @author Christophe Laprun
  */

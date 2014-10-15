@@ -288,7 +288,6 @@ public class PropertiesHelper {
         }
     }
 
-<<<<<<< .working
     public void saveI18nWorkInProgress(JCRNodeWrapper node, List<GWTJahiaNodeProperty> sharedProperties, Set<String> languages) throws RepositoryException {
         if (node.hasTranslations()) {
             GWTJahiaNodeProperty wipProperty = null;
@@ -316,7 +315,6 @@ public class PropertiesHelper {
     }
 
 
-=======
     private void removeItemFromNode(ExtendedItemDefinition item, JCRNodeWrapper objectNode, JCRSessionWrapper currentUserSession) throws RepositoryException {
         if (item.isNode()) {
             if (objectNode.hasNode(item.getName())) {
@@ -345,7 +343,6 @@ public class PropertiesHelper {
         }
     }
 
->>>>>>> .merge-right.r51132
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
         if (objectNode == null || newProps == null || newProps.isEmpty()) {
             logger.debug("node or properties are null or empty");

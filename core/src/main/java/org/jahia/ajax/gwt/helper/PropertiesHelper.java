@@ -264,17 +264,7 @@ public class PropertiesHelper {
                     if (removedTypes.contains(mixin.getName())) {
                         List<ExtendedItemDefinition> items = mixin.getItems();
                         for (ExtendedItemDefinition item : items) {
-                            if (item.isNode()) {
-                                if (objectNode.hasNode(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getNode(item.getName()).remove();
-                                }
-                            } else {
-                                if (objectNode.hasProperty(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getProperty(item.getName()).remove();
-                                }
-                            }
+                            removeItemFromNode(item, objectNode, currentUserSession);
                         }
                         objectNode.removeMixin(mixin.getName());
                     }
@@ -283,17 +273,7 @@ public class PropertiesHelper {
                     if (removedTypes.contains(mixin.getName())) {
                         List<ExtendedItemDefinition> items = mixin.getItems();
                         for (ExtendedItemDefinition item : items) {
-                            if (item.isNode()) {
-                                if (objectNode.hasNode(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getNode(item.getName()).remove();
-                                }
-                            } else {
-                                if (objectNode.hasProperty(item.getName())) {
-                                    currentUserSession.checkout(objectNode);
-                                    objectNode.getProperty(item.getName()).remove();
-                                }
-                            }
+                            removeItemFromNode(item, objectNode, currentUserSession);
                         }
                     }
                 }
@@ -308,6 +288,7 @@ public class PropertiesHelper {
         }
     }
 
+<<<<<<< .working
     public void saveI18nWorkInProgress(JCRNodeWrapper node, List<GWTJahiaNodeProperty> sharedProperties, Set<String> languages) throws RepositoryException {
         if (node.hasTranslations()) {
             GWTJahiaNodeProperty wipProperty = null;
@@ -335,6 +316,36 @@ public class PropertiesHelper {
     }
 
 
+=======
+    private void removeItemFromNode(ExtendedItemDefinition item, JCRNodeWrapper objectNode, JCRSessionWrapper currentUserSession) throws RepositoryException {
+        if (item.isNode()) {
+            if (objectNode.hasNode(item.getName())) {
+                currentUserSession.checkout(objectNode);
+                objectNode.getNode(item.getName()).remove();
+            }
+        } else {
+            if (item instanceof ExtendedPropertyDefinition){
+                ExtendedPropertyDefinition itemProperty = (ExtendedPropertyDefinition) item;
+                if(itemProperty.isInternationalized()){
+                    NodeIterator nodeIterator = objectNode.getI18Ns();
+                    while (nodeIterator.hasNext()){
+                        Node i18nNode = nodeIterator.nextNode();
+                        if (i18nNode.hasProperty(item.getName())) {
+                            currentUserSession.checkout(i18nNode);
+                            i18nNode.getProperty(item.getName()).remove();
+                        }
+                    }
+                } else {
+                    if (objectNode.hasProperty(item.getName())) {
+                        currentUserSession.checkout(objectNode);
+                        objectNode.getProperty(item.getName()).remove();
+                    }
+                }
+            }
+        }
+    }
+
+>>>>>>> .merge-right.r51132
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
         if (objectNode == null || newProps == null || newProps.isEmpty()) {
             logger.debug("node or properties are null or empty");

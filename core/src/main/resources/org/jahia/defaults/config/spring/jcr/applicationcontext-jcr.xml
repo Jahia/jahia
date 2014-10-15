@@ -206,6 +206,7 @@
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
+                        <bean class="org.jahia.services.content.MountPointListener"/>
                     </list>
                 </entry>
                 <entry key="live">

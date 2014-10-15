@@ -72,7 +72,9 @@
 package org.jahia.bin.errors;
 
 import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.statistics.StatisticsGateway;
+
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -89,6 +91,7 @@ import org.slf4j.Logger;
 
 import javax.management.*;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -578,7 +581,7 @@ public class ErrorFileDumper {
                 String[] ehcacheNames = ehcacheManager.getCacheNames();
                 java.util.Arrays.sort(ehcacheNames);
                 for (String ehcacheName : ehcacheNames) {
-                    net.sf.ehcache.Cache ehcache = ehcacheManager.getCache(ehcacheName);
+                    Ehcache ehcache = ehcacheManager.getEhcache(ehcacheName);
                     strOut.append(ehcacheName).append(": ");
                     if (ehcache != null) {
                         StatisticsGateway ehcacheStats = ehcache.getStatistics();

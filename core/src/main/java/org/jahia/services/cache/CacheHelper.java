@@ -169,7 +169,7 @@ public final class CacheHelper {
             return;
         }
         for (String cacheName : ehcacheManager.getCacheNames()) {
-            Cache cache = ehcacheManager.getCache(cacheName);
+            Ehcache cache = ehcacheManager.getEhcache(cacheName);
             if (cache != null) {
                 // flush
                 cache.removeAll(!propagateInCluster);
@@ -196,7 +196,7 @@ public final class CacheHelper {
     public static void flushEhcacheByName(String cacheName, boolean propagateInCluster) {
         logger.info("Flushing {}", cacheName);
         CacheManager ehcacheManager = getJahiaCacheManager();
-        Cache cache = ehcacheManager.getCache(cacheName);
+        Ehcache cache = ehcacheManager.getEhcache(cacheName);
         if (cache != null) {
             // flush
             cache.removeAll(!propagateInCluster);
@@ -227,7 +227,7 @@ public final class CacheHelper {
             if (!cacheName.startsWith("HTML")) {
                 continue;
             }
-            Cache cache = ehcacheManager.getCache(cacheName);
+            Ehcache cache = ehcacheManager.getEhcache(cacheName);
             if (cache != null) {
                 // flush
                 cache.removeAll(!propagateInCluster);

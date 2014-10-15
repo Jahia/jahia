@@ -73,7 +73,9 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
+
 import net.sf.saxon.TransformerFactoryImpl;
+
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -135,6 +137,7 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
+
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -391,17 +394,21 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             zzout.finish();
         }
-        if (params.containsKey(INCLUDE_MOUNTS)) {
-            // export roles
-            zout.putNextEntry(new ZipEntry("mounts.zip"));
-            ZipOutputStream zzout = new ZipOutputStream(zout);
+        if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
+            JCRNodeWrapper mounts = session.getNode("/mounts");
+            if (mounts.hasNodes()) {
+                // export mounts
+                zout.putNextEntry(new ZipEntry("mounts.zip"));
+                ZipOutputStream zzout = new ZipOutputStream(zout);
 
-            try {
-                exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/mounts")), zzout, tti, externalReferences, params);
-            } catch (Exception e) {
-                logger.error("Cannot export", e);
+                try {
+                    exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, tti,
+                            externalReferences, params);
+                } catch (Exception e) {
+                    logger.error("Cannot export", e);
+                }
+                zzout.finish();
             }
-            zzout.finish();
         }
 
         Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();

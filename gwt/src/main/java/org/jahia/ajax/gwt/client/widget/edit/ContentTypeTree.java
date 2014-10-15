@@ -154,6 +154,7 @@ public class ContentTypeTree extends LayoutContainer {
                         HorizontalPanel panel = new HorizontalPanel();
                         panel.setTableWidth("100%");
                         label = new Label(modelData.getLabel());
+                        label.setStyleName("gwt-content-label");
                         TableData tableData;
                         String descr = modelData.getDescription();
                         if (modelData != null) {

@@ -771,6 +771,7 @@ button.button-disable:hover, div.button-disable:hover {
 .accessForbidden {
     background: #FF9999;
 }
+<<<<<<< .working
 
 .x-tool-pin {
     overflow:hidden;
@@ -818,4 +819,9 @@ button.button-disable:hover, div.button-disable:hover {
 }
 .x-panel-inline-icon   {
     margin-right:5px ;
-}
+}=======
+
+/* Content tab */
+.gwt-content-label {
+	margin-left: 5px;
+}>>>>>>> .merge-right.r51136

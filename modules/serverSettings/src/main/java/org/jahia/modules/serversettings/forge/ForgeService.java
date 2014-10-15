@@ -82,6 +82,7 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.notification.HttpClientService;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -162,7 +163,7 @@ public class ForgeService {
                                 f.setId(n.getIdentifier());
                                 f.setUrl(n.getProperty("j:url").getString());
                                 f.setUser(n.getProperty("j:user").getString());
-                                f.setPassword(n.getProperty("j:password").getString());
+                                f.setPassword(n.getProperty(JCRUserNode.J_PASSWORD).getString());
                                 forges.add(f);
                             }
                         }
@@ -207,7 +208,7 @@ public class ForgeService {
                         Node forgeNode = forgesRoot.addNode(JCRContentUtils.generateNodeName(forge.getUrl()), "jnt:forgeServerSettings");
                         forgeNode.setProperty("j:url", forge.getUrl());
                         forgeNode.setProperty("j:user", forge.getUser());
-                        forgeNode.setProperty("j:password", forge.getPassword());
+                        forgeNode.setProperty(JCRUserNode.J_PASSWORD, forge.getPassword());
                         forge.setId(forgeNode.getIdentifier());
                     }
                     session.save();

@@ -104,7 +104,8 @@ public class JCRUserNode extends JCRNodeDecorator {
     public static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
-    public final List<String> publicProperties = Arrays.asList("j:external", "j:externalSource", "j:publicProperties");
+    private static final String J_PUBLIC_PROPERTIES = "j:publicProperties";
+    public final List<String> publicProperties = Arrays.asList(J_EXTERNAL, J_EXTERNAL_SOURCE, J_PUBLIC_PROPERTIES);
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
@@ -138,7 +139,7 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public boolean isPropertyEditable(String name) {
         try {
-            return !("j:external".equals(name) || Constants.CHECKIN_DATE.equals(name)) && canGetProperty(name);
+            return !(J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) && canGetProperty(name);
         } catch (RepositoryException e) {
             return false;
         }
@@ -156,10 +157,10 @@ public class JCRUserNode extends JCRNodeDecorator {
         if (publicProperties.contains(s) || hasPermission("jcr:write")) {
             return true;
         }
-        if (!super.hasProperty("j:publicProperties")) {
+        if (!super.hasProperty(J_PUBLIC_PROPERTIES)) {
             return false;
         }
-        Property p = super.getProperty("j:publicProperties");
+        Property p = super.getProperty(J_PUBLIC_PROPERTIES);
         Value[] values = p.getValues();
         for (Value value : values) {
             if (s.equals(value.getString())) {

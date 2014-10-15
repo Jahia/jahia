@@ -179,7 +179,7 @@ public class UsersFlowHandler implements Serializable {
         for (int i = 0; i < headerElementList.size(); i++) {
             String currentHeader = headerElementList.get(i);
             String currentValue = lineElementList.get(i);
-            if (!"j:nodename".equals(currentHeader) && !"j:password".equals(currentHeader)) {
+            if (!"j:nodename".equals(currentHeader) && !JCRUserNode.J_PASSWORD.equals(currentHeader)) {
                 result.setProperty(currentHeader.trim(), currentValue);
             }
         }
@@ -203,10 +203,10 @@ public class UsersFlowHandler implements Serializable {
                     String[] headerElements = csvReader.readNext();
                     List<String> headerElementList = Arrays.asList(headerElements);
                     int userNamePos = headerElementList.indexOf("j:nodename");
-                    int passwordPos = headerElementList.indexOf("j:password");
+                    int passwordPos = headerElementList.indexOf(JCRUserNode.J_PASSWORD);
                     if ((userNamePos < 0) || (passwordPos < 0)) {
                         context.addMessage(new MessageBuilder().error().code(
-                                "serverSettings.users.bulk.errors.missing.mandatory").args(new String[]{"j:nodename", "j:password"}).build());
+                                "serverSettings.users.bulk.errors.missing.mandatory").args(new String[]{"j:nodename", JCRUserNode.J_PASSWORD}).build());
                         return false;
                     }
 

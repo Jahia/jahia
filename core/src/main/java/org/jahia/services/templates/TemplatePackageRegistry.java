@@ -1002,8 +1002,10 @@ public class TemplatePackageRegistry {
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
                 List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
-                if (l.contains((CacheKeyPartGenerator) bean)) {
-                    l.remove((CacheKeyPartGenerator) bean);
+                for (CacheKeyPartGenerator generator : cacheKeyGenerator.getPartGenerators()) {
+                    if (generator.getKey().equals(((CacheKeyPartGenerator) bean).getKey())) {
+                        l.remove(generator);
+                    }
                 }
                 l.add((CacheKeyPartGenerator) bean);
                 cacheKeyGenerator.setPartGenerators(l);

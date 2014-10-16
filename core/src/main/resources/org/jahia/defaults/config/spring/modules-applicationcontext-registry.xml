@@ -20,6 +20,7 @@
         <property name="jcrStoreService" ref="JCRStoreService"/>
         <property name="compositeFilter" ref="CompositeFilter"/>
         <property name="searchService" ref="SearchService"/>
+        <property name="gwtResourceConfig" ref="GWTResourceConfig"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"

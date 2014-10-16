@@ -74,6 +74,8 @@ package org.jahia.services.templates;
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.jahia.ajax.gwt.helper.ModuleGWTResources;
+import org.jahia.ajax.gwt.utils.GWTResourceConfig;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
 import org.jahia.bin.filters.AbstractServletFilter;
@@ -690,6 +692,8 @@ public class TemplatePackageRegistry {
 
         private SearchServiceImpl searchService;
 
+        private GWTResourceConfig gwtResourceConfig;
+
         private boolean flushCaches;
 
         @Override
@@ -846,6 +850,19 @@ public class TemplatePackageRegistry {
             if (bean instanceof SearchProvider) {
                 try {
                     searchService.unregisterSearchProvider((SearchProvider) bean);
+                } catch (Exception e) {
+                    logger.error("Cannot unregistered search provider", e);
+                }
+            }
+            if (bean instanceof ModuleGWTResources) {
+                try {
+                    ModuleGWTResources moduleGWTResources = (ModuleGWTResources) bean;
+                    if (moduleGWTResources.getCSSResources() != null) {
+                        gwtResourceConfig.getCssStyles().addAll(moduleGWTResources.getCSSResources());
+                    }
+                    if (moduleGWTResources.getJavascriptResources() != null) {
+                        gwtResourceConfig.getJavaScripts().addAll(moduleGWTResources.getJavascriptResources());
+                    }
                 } catch (Exception e) {
                     logger.error("Cannot unregistered search provider", e);
                 }
@@ -1042,6 +1059,21 @@ public class TemplatePackageRegistry {
                 }
             }
 
+            if (bean instanceof ModuleGWTResources) {
+                try {
+                    ModuleGWTResources moduleGWTResources = (ModuleGWTResources) bean;
+                    if (moduleGWTResources.getCSSResources() != null) {
+                        gwtResourceConfig.getCssStyles().addAll(moduleGWTResources.getCSSResources());
+                    }
+                    if (moduleGWTResources.getJavascriptResources() != null) {
+                        gwtResourceConfig.getJavaScripts().addAll(moduleGWTResources.getJavascriptResources());
+                    }
+                } catch (Exception e) {
+                    logger.error("Cannot unregistered search provider", e);
+                }
+            }
+
+
             return bean;
         }
 
@@ -1133,6 +1165,10 @@ public class TemplatePackageRegistry {
 
         public void setSearchService(SearchServiceImpl searchService) {
             this.searchService = searchService;
+        }
+
+        public void setGwtResourceConfig(GWTResourceConfig gwtResourceConfig) {
+            this.gwtResourceConfig = gwtResourceConfig;
         }
     }
 }

@@ -68,7 +68,10 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
 
     @Override
     public void setProcessed(boolean processed) {
-        this.inited = false;
+        if (!processed) {
+            this.inited = false;
+            this.languageChanged = null;
+        }
         super.setProcessed(processed);
     }
 

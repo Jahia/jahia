@@ -139,6 +139,14 @@
     <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
 	</bean>
 
+  <bean id="ImportUpdateService" class="org.jahia.services.importexport.ImportUpdateService" factory-method="getInstance" />
+
+  <bean id="ImportFileUpdater" class="org.jahia.services.importexport.ImportFileUpdater" abstract="true" init-method="init" destroy-method="destroy">
+    <property name="importUpdateService" ref="ImportUpdateService"/>
+  </bean>
+
+  <bean class="org.jahia.services.importexport.ExternalUsersImportUpdater" parent="ImportFileUpdater"/>
+
     <bean id="org.jahia.services.templates.TemplatePackageRegistry"
           class="org.jahia.services.templates.TemplatePackageRegistry"/>
 

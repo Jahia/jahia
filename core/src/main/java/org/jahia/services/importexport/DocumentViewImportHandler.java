@@ -296,6 +296,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     String referenceValue = getReferenceValue(memberRef);
                     JCRNodeWrapper principal;
                     if (referenceValue.startsWith("/")) {
+                        for (String key : pathMapping.keySet()) {
+                            if (referenceValue.startsWith(key)) {
+                                referenceValue = StringUtils.replace(referenceValue, key, pathMapping.get(key));
+                                break;
+                            }
+                        }
                         principal = session.getNode(referenceValue);
                     } else {
                         principal = session.getNodeByIdentifier(memberRef);

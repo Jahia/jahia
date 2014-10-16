@@ -304,6 +304,7 @@ public class JahiaSitesService extends JahiaService {
             site = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<JahiaSite>() {
                 public JahiaSite doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
+                        session.getPathMapping().putAll(JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping());
                         return addSite(currentUser, title, serverName, siteKey, descr, selectedLocale, selectTmplSet, modulesToDeploy, firstImport, fileImport, fileImportName, asAJob, doImportServerPermissions, originatingJahiaRelease, legacyMappingFilePath, legacyDefinitionsFilePath, session);
                     } catch (IOException e) {
                         errors.add(e);

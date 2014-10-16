@@ -110,6 +110,7 @@ public class ImportInfo implements Serializable {
     private String templates;
     private String type;
     private ValidationResults validationResult;
+    private int originatingBuildNumber;
 
     public Map<Object, Object> asMap() {
         Map<Object, Object> map = new LinkedHashMap<Object, Object>();
@@ -340,5 +341,13 @@ public class ImportInfo implements Serializable {
 
     public void setValidationResult(ValidationResults validationResult) {
         this.validationResult = validationResult;
+    }
+
+    public void setOriginatingBuildNumber(int originatingBuildNumber) {
+        this.originatingBuildNumber = originatingBuildNumber;
+    }
+
+    public int getOriginatingBuildNumber() {
+        return originatingBuildNumber;
     }
 }

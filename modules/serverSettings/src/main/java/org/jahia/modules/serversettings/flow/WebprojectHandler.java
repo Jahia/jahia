@@ -73,13 +73,12 @@ package org.jahia.modules.serversettings.flow;
 
 import com.google.common.base.Function;
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Ordering;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.serversettings.users.management.UserProperties;
@@ -90,6 +89,7 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.ImportExportBaseService;
+import org.jahia.services.importexport.ImportUpdateService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.search.spell.CompositeSpellChecker;
@@ -597,6 +597,7 @@ public class WebprojectHandler implements Serializable {
         importInfos.setSelected(Boolean.TRUE);
         if (importProperties != null) {
             importInfos.setOriginatingJahiaRelease(importProperties.getProperty("JahiaRelease"));
+            importInfos.setOriginatingBuildNumber(Integer.parseInt(importProperties.getProperty("BuildNumber")));
         }
         if (filename.endsWith(".xml")) {
             importInfos.setType("xml");
@@ -725,11 +726,15 @@ public class WebprojectHandler implements Serializable {
 
         try {
             for (final ImportInfo infos : importsInfos.values()) {
-                final File file = infos.getImportFile();
                 if (infos.isSelected()) {
                     String type = infos.getType();
                     if (type.equals("files")) {
                         try {
+                            final File file = ImportUpdateService.getInstance().updateImport(
+                                    infos.getImportFile(),
+                                    new Version(infos.getOriginatingJahiaRelease()),
+                                    infos.getOriginatingBuildNumber());
+
                             final JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
 
                             Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
@@ -775,6 +780,11 @@ public class WebprojectHandler implements Serializable {
                         }
                         final Locale defaultLocale = determineDefaultLocale(LocaleContextHolder.getLocale(), infos);
                         try {
+                            final File file = ImportUpdateService.getInstance().updateImport(
+                                    infos.getImportFile(),
+                                    new Version(infos.getOriginatingJahiaRelease()),
+                                    infos.getOriginatingBuildNumber());
+
                             try {
                                 final String finalTpl = tpl;
                                 final String finalLegacyImportFilePath = legacyImportFilePath;

@@ -75,6 +75,7 @@ import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
@@ -87,7 +88,7 @@ import java.util.List;
  * Date: Apr 14, 2010
  * Time: 12:37:29 PM
  */
-public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean {
+public class EngineTab implements Serializable, Comparable<EngineTab>, InitializingBean, DisposableBean {
     
     private static final long serialVersionUID = -5995531303789738603L;
     
@@ -100,20 +101,11 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     private String requiredPermission;
 
     private Object parent;
+    private Object parentEditConfiguration;
+    private Object parentManagerConfiguration;
     private int position = -1;
     private String positionAfter;
     private String positionBefore;
-    
-    protected static void removeTab(List<EngineTab> tabs, String tabId) {
-        if (tabId != null && tabId.length() > 0) {
-            for (Iterator<EngineTab> iterator = tabs.iterator(); iterator.hasNext();) {
-                EngineTab tab = iterator.next();
-                if (tab.getId() != null && tab.getId().equals(tabId)) {
-                    iterator.remove();
-                }
-            }
-        }
-    }
     
     public EngineTab() {
         super();
@@ -165,33 +157,11 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void setParentEditConfiguration(EditConfiguration config) {
-        List<EngineTab> engineTabs = config.getDefaultEditConfiguration().getEngineTabs();
-        EngineTab oldTab = null;
-        for (EngineTab tab : engineTabs) {
-            if (this.getId().equals(tab.getId())) {
-                oldTab = tab;
-                break;
-            }
-        }
-        if (oldTab != null) {
-            engineTabs.remove(oldTab);
-        }
-        engineTabs.add(this);
+        this.parentEditConfiguration = config;
     }
 
     public void setParentManagerConfiguration(ManagerConfiguration config) {
-        List<EngineTab> engineTabs = config.getEngineTabs();
-        EngineTab oldTab = null;
-        for (EngineTab tab : engineTabs) {
-            if (this.getId().equals(tab.getId())) {
-                oldTab = tab;
-                break;
-            }
-        }
-        if (oldTab != null) {
-            engineTabs.remove(oldTab);
-        }
-        engineTabs.add(this);
+        this.parentManagerConfiguration = config;
     }
 
     public int getOrder() {
@@ -215,8 +185,64 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void afterPropertiesSet() throws Exception {
+        addTab(parent);
+        addTab(parentManagerConfiguration);
+        addTab(parentEditConfiguration);
+    }
+
+    public void destroy() throws Exception {
+        removeTab(getEngineTabs(parent), getId());
+        removeTab(getEngineTabs(parentEditConfiguration), getId());
+        removeTab(getEngineTabs(parentManagerConfiguration), getId());
+    }
+
+    private void addTab(Object parent) {
+        List<EngineTab> tabs = getEngineTabs(parent);
+
+        if (tabs != null) {
+            removeTab(tabs, getId());
+
+            int index = -1;
+            if (position >= 0) {
+                index = position;
+            } else if (positionBefore != null) {
+                index = tabs.indexOf(new EngineTab(positionBefore));
+            } else if (positionAfter != null) {
+                index = tabs.indexOf(new EngineTab(positionAfter));
+                if (index != -1) {
+                    index++;
+                }
+                if (index >= tabs.size()) {
+                    index = -1;
+                }
+            }
+            if (index != -1) {
+                tabs.add(index, this);
+            } else {
+                tabs.add(this);
+            }
+        } else if (this.parent != null) {
+            throw new IllegalArgumentException("Unknown parent type '"
+                    + this.parent.getClass().getName()
+                    + "'. Can accept EditConfiguration, ManagerConfiguration, Engine or"
+                    + " a String value with a beanId of the those beans");
+        }
+    }
+
+    protected static void removeTab(List<EngineTab> tabs, String tabId) {
+        if (tabs != null && tabId != null && tabId.length() > 0) {
+            for (Iterator<EngineTab> iterator = tabs.iterator(); iterator.hasNext();) {
+                EngineTab tab = iterator.next();
+                if (tab.getId() != null && tab.getId().equals(tabId)) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    private List<EngineTab> getEngineTabs(Object parent) {
         if (parent == null) {
-            return;
+            return null;
         }
         if (parent instanceof String) {
             parent = SpringContextSingleton.getBean((String) parent);
@@ -241,38 +267,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
                 ((Engine) parent).setTabs(tabs);
             }
         }
-
-        if (tabs != null) {
-            removeTab(tabs, getId());
-
-            int index = -1;
-            if (position >= 0) {
-                index = position;
-            } else if (positionBefore != null) {
-                index = tabs.indexOf(new EngineTab(positionBefore));
-            } else if (positionAfter != null) {
-                index = tabs.indexOf(new EngineTab(positionAfter));
-                if (index != -1) {
-                    index++;
-                }
-                if (index >= tabs.size()) {
-                    index = -1;
-                }
-            }
-            if (index != -1) {
-                tabs.add(index, this);
-            } else {
-                tabs.add(this);
-            }
-        } else {
-            throw new IllegalArgumentException("Unknown parent type '"
-                    + parent.getClass().getName()
-                    + "'. Can accept EditConfiguration, ManagerConfiguration, Engine or"
-                    + " a String value with a beanId of the those beans");
-        }
-
-        // clean the reference
-        parent = null;
+        return tabs;
     }
 
     public void setParent(Object parent) {

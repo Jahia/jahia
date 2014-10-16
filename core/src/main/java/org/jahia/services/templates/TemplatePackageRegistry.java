@@ -858,10 +858,10 @@ public class TemplatePackageRegistry {
                 try {
                     ModuleGWTResources moduleGWTResources = (ModuleGWTResources) bean;
                     if (moduleGWTResources.getCSSResources() != null) {
-                        gwtResourceConfig.getCssStyles().addAll(moduleGWTResources.getCSSResources());
+                        gwtResourceConfig.getCssStyles().removeAll(moduleGWTResources.getCSSResources());
                     }
                     if (moduleGWTResources.getJavascriptResources() != null) {
-                        gwtResourceConfig.getJavaScripts().addAll(moduleGWTResources.getJavascriptResources());
+                        gwtResourceConfig.getJavaScripts().removeAll(moduleGWTResources.getJavascriptResources());
                     }
                 } catch (Exception e) {
                     logger.error("Cannot unregistered search provider", e);

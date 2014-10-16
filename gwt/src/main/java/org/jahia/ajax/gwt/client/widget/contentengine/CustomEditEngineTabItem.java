@@ -5,6 +5,7 @@ import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.core.client.JavaScriptObject;
 import com.google.gwt.core.client.JsArrayString;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
@@ -20,42 +21,60 @@ import java.util.Set;
 public class CustomEditEngineTabItem extends EditEngineTabItem {
 
     private boolean handleMultipleSelection;
-
     private String onInitMethodName;
     private String onLanguageChangeMethodName;
     private String doSaveMethodName;
     private String doValidateMethodName;
 
+    private transient boolean inited = false;
+    private transient String languageChanged;
+
     @Override
     public void init(NodeHolder engine, final AsyncTabItem tab, String language) {
-        tab.setProcessed(true);
+        if (!inited || languageChanged != null) {
+            Element element = null;
 
-        Element element = null;
+            JsArrayString types = JsArrayString.createArray().cast();
+            for (GWTJahiaNodeType type : engine.getNodeTypes()) {
+                types.push(type.getName());
+            }
 
-        JsArrayString types = JsArrayString.createArray().cast();
-        for (GWTJahiaNodeType type : engine.getNodeTypes()) {
-            types.push(type.getName());
+            if (languageChanged == null) {
+                languageChanged =  JahiaGWTParameters.getLanguage();
+            }
+            String methodName = inited ? onLanguageChangeMethodName : onInitMethodName;
+
+            JavaScriptObject param = null;
+
+            if (engine.isExistingNode() && !engine.isMultipleSelection()) {
+                param = convertExistingNode(engine.getNode(), engine.getProperties(), types, language);
+            } else if (!engine.isExistingNode() && engine instanceof CreateContentEngine) {
+                param = convertNewNode(((CreateContentEngine) engine).getParentPath(), engine.getNodeName(), types, language);
+            }
+
+            element = doCall(methodName, param).cast();
+
+            if (element != null) {
+                while (tab.getElement().getChildCount() > 0) {
+                    tab.getElement().removeChild(tab.getElement().getChild(0));
+                }
+                tab.getElement().appendChild(element);
+            }
+            inited = true;
+            languageChanged = null;
         }
 
-        if (engine.isExistingNode() && !engine.isMultipleSelection()) {
-            element = onInit(convertExistingNode(engine.getNode(), engine.getProperties(), types));
-        } else if (!engine.isExistingNode() && engine instanceof CreateContentEngine) {
-            element = onInit(convertNewNode(((CreateContentEngine) engine).getParentPath(), engine.getNodeName(), types));
-        }
-        if (element != null) {
-            tab.getElement().appendChild(element);
-        }
     }
 
-    public com.google.gwt.user.client.Element onInit(JavaScriptObject param) {
-        return doCall(onInitMethodName, param).cast();
+    @Override
+    public void setProcessed(boolean processed) {
+        this.inited = false;
+        super.setProcessed(processed);
     }
 
     @Override
     public void onLanguageChange(String language, TabItem tabItem) {
-        if (onLanguageChangeMethodName != null) {
-            doCall(onLanguageChangeMethodName, language);
-        }
+        languageChanged = language;
     }
 
     @Override
@@ -129,12 +148,15 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         changedI18NProperties.get(lang).add(new GWTJahiaNodeProperty(name, value, type));
     }
 
-    public static native JavaScriptObject convertExistingNode(GWTJahiaNode node, Map<String,GWTJahiaNodeProperty> properties, JsArrayString types) /*-{
+    public static native JavaScriptObject convertExistingNode(GWTJahiaNode node, Map<String,GWTJahiaNodeProperty> properties, JsArrayString types, String language) /*-{
         var jsnode = {
             'isNewNode':false,
             'node': node,
             'getTypes' : function() {
                 return types;
+            },
+            'getLanguage' : function() {
+                return language;
             },
             'getProperty': function (property) {
                 return  @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::getProperty(Ljava/util/Map;Ljava/lang/String;)(properties, property);
@@ -152,7 +174,7 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         return jsnode;
     }-*/;
 
-    public static native JavaScriptObject convertNewNode(String parentPath, String name, JsArrayString types) /*-{
+    public static native JavaScriptObject convertNewNode(String parentPath, String name, JsArrayString types, String language) /*-{
         var jsnode = {
             'isNewNode':true,
             'getName' : function() {
@@ -160,6 +182,9 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
             },
             'getTypes' : function() {
                 return types;
+            },
+            'getLanguage' : function() {
+                return language;
             },
             'getParentPath': function () {
                 return parentPath;

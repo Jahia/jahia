@@ -86,8 +86,7 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.google.gwt.user.client.Command;
-import com.google.gwt.user.client.DeferredCommand;
+import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -312,7 +311,8 @@ public class WizardWindow extends Window {
 
 
             if (progressIndicator == Indicator.PROGRESSBAR || progressIndicator == Indicator.DOT) {
-                DeferredCommand.addCommand(new Command() {
+                Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+                    @Override
                     public void execute() {
                         indicatorBar.updateProgress(stepRatio, stepStr);
                     }

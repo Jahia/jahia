@@ -1130,7 +1130,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         @Override
         public Object createEntry(Object key) throws Exception {
             CacheKey cacheKey = (CacheKey) key;
-            return cacheKey.accessManager.internalGetPermissionsInRole(cacheKey.roleName);
+            Set<Privilege> privileges = cacheKey.accessManager.internalGetPermissionsInRole(cacheKey.roleName);
+            cacheKey.accessManager = null;
+            return privileges;
         }
     }
 }

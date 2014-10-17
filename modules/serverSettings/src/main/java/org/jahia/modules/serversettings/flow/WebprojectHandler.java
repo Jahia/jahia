@@ -148,7 +148,8 @@ public class WebprojectHandler implements Serializable {
     private static final long serialVersionUID = -6643519526225787438L;
 
     static {
-        RANK = new HashMap<String, Integer>(3);
+        RANK = new HashMap<String, Integer>(8);
+        RANK.put("mounts.zip", 4);
         RANK.put("roles.xml", 5);
         RANK.put("roles.zip", 5);
         RANK.put("users.zip", 10);
@@ -156,7 +157,6 @@ public class WebprojectHandler implements Serializable {
         RANK.put("serverPermissions.xml", 20);
         RANK.put("shared.zip", 30);
         RANK.put(JahiaSitesService.SYSTEM_SITE_KEY + ".zip", 40);
-        RANK.put("mounts.zip", 150);
     }
 
     @Autowired

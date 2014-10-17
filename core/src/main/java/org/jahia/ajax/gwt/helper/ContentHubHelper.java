@@ -130,13 +130,17 @@ public class ContentHubHelper {
         }
     }
 
-    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties,
+            JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         String mountPoint = getMountParentPath(properties);
         try {
-            contentManager.createNode("/mounts", (mountPoint == null ? mountName + "-mount" : mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
+            GWTJahiaNode mount = contentManager.createNode("/mounts", (mountPoint == null ? mountName + "-mount"
+                    : mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
             session.save();
+            ((JCRMountPointNode) session.getNode(mount.getPath())).getMountProvider();
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.mount.label", uiLocale, mountName, e.getMessage()));
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.mount.label", uiLocale,
+                    mountName, e.getMessage()));
         }
     }
 

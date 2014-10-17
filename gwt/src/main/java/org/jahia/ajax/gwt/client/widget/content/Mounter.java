@@ -212,7 +212,6 @@ public class Mounter extends Window {
                                 public void onFailure(Throwable caught) {
                                     linker.loaded();
                                     MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
-                                    hide();
                                 }
 
                                 @Override

@@ -1439,23 +1439,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return getI18N(locale, false);
         } catch (RepositoryException e) {
-            if (!hasPermission("jcr:addChildNodes")) {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getName(), session.getWorkspace().getName(),new JCRCallback<Object>() {
-                    @Override
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        session.getNodeByIdentifier(getIdentifier()).getOrCreateI18N(locale);
-                        session.save();
-                        return null;
-                    }
-                });
-                return getI18N(locale, false);
-            } else {
-                Node t = objectNode.addNode("j:translation_" + locale, Constants.JAHIANT_TRANSLATION);
-                t.setProperty("jcr:language", locale.toString());
-
-                i18NobjectNodes.put(locale, t);
-                return t;
-            }
+            Node t = objectNode.addNode("j:translation_" + locale, Constants.JAHIANT_TRANSLATION);
+            t.setProperty("jcr:language", locale.toString());
+            i18NobjectNodes.put(locale, t);
+            return t;
         }
     }
 

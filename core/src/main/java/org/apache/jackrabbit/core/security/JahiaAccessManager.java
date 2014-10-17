@@ -444,7 +444,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         Set<String> privs = new HashSet<String>();
 
         if (permissions == Permission.ADD_NODE || permissions == Permission.SET_PROPERTY || permissions == Permission.REMOVE_PROPERTY) {
-            absPath = absPath.getAncestor(1);
+            String fullPath=pr.getJCRPath(absPath);
+            if (permissions == Permission.ADD_NODE && (fullPath.contains("j:translation_") || fullPath.contains("j:referenceInField_"))) {
+                permissions = Permission.SET_PROPERTY;
+            } else {
+                absPath = absPath.getAncestor(1);
+            }
         }
 
         for (Privilege privilege : privilegeRegistry.getPrivileges(permissions, workspaceName)) {

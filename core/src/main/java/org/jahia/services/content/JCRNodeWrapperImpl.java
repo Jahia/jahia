@@ -3509,11 +3509,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
         } catch (PathNotFoundException e) {
-<<<<<<< .working
-=======
-            logger.debug("Cannot resolve site for node " + this.getPath(), e);
-        } catch (ItemNotFoundException e) {
->>>>>>> .merge-right.r51160
             logger.debug("Cannot resolve site for node " + this.getPath(), e);
         }
         logger.debug("Cannot resolve site for node " + this.getPath());

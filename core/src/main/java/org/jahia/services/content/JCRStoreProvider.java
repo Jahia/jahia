@@ -531,6 +531,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         unregisterObservers();
         getSessionFactory().removeProvider(key);
         rmiUnbind();
+        initialized = false;
     }
 
     protected void rmiUnbind() {

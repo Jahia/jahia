@@ -83,6 +83,7 @@ import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
 import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -201,8 +202,10 @@ public class Mounter extends Window {
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                linker.loading(Messages.get("label.loading", "Loading"));
                 if(form.isValid()) {
+                    String i18nLoading = Messages.get("label.loading", "Loading");
+                    linker.loading(i18nLoading);
+                    mask(i18nLoading, "x-mask-loading");
                     JahiaContentManagementService.App.getInstance().mount(
                             mountName.getValue(),
                             type.getName(),
@@ -211,12 +214,14 @@ public class Mounter extends Window {
                                 @Override
                                 public void onFailure(Throwable caught) {
                                     linker.loaded();
+                                    unmask();
                                     MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
                                 }
 
                                 @Override
                                 public void onSuccess(Object result) {
                                     linker.loaded();
+                                    unmask();
                                     Map<String, Object> data = new HashMap<String, Object>();
                                     data.put(Linker.REFRESH_ALL, true);
                                     linker.refresh(data);

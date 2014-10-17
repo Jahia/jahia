@@ -3502,13 +3502,21 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     return (site = (JCRSiteNode) (getSession().getNode(index == -1 ? path : path.substring(0, index))));
                 } catch (ClassCastException e) {
+                    logger.debug("Cannot resolve site for node " + this.getPath(), e);
                     // if node is not a site ( eg ACL / workflow )
                 }
             }
 
             return (site = (JCRSiteNode) (getSession().getNode(JCRContentUtils.getSystemSitePath())));
         } catch (PathNotFoundException e) {
+<<<<<<< .working
+=======
+            logger.debug("Cannot resolve site for node " + this.getPath(), e);
+        } catch (ItemNotFoundException e) {
+>>>>>>> .merge-right.r51160
+            logger.debug("Cannot resolve site for node " + this.getPath(), e);
         }
+        logger.debug("Cannot resolve site for node " + this.getPath());
         return null;
 //        return ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite();
     }

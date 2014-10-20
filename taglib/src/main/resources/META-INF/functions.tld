@@ -73,7 +73,7 @@
 
     <function>
         <description><![CDATA[
-            Does a URL encoding of the <code>path</code>. The characters that don't need encoding are those defined 'unreserved' in section 2.3
+            Does a URL encoding of the &lt;code&gt;path&lt;/code&gt;. The characters that don't need encoding are those defined 'unreserved' in section 2.3
             of the 'URI generic syntax' RFC 2396. Not the entire path string is escaped, but every individual part (i.e. the slashes are not
             escaped).
             ]]>         

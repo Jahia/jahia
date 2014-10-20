@@ -237,6 +237,14 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
         if (atts.getIndex("provider") > -1) {
             String providerKey = atts.getValue("provider");
+            if (providerKey.startsWith("/")) {
+                try {
+                    providerKey = session.getNode(providerKey).getIdentifier();
+                } catch (RepositoryException e) {
+                    error++;
+                    return;
+                }
+            }
             Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
             if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
                 error++;
@@ -289,8 +297,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 }
             }
 
+            String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
+
             // Create missing structure for group members
-            if ("jnt:member".equals(atts.getValue("jcr:primaryType")) && nodes.peek().isNodeType("jnt:members") && "j:members".equals(nodes.peek().getName())) {
+            if ("jnt:member".equals(pt) && nodes.peek().isNodeType("jnt:members") && "j:members".equals(nodes.peek().getName())) {
                 String memberRef = atts.getValue("j:member");
                 if (memberRef != null) {
                     String referenceValue = getReferenceValue(memberRef);
@@ -315,8 +325,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     return;
                 }
             }
-
-            String pt = atts.getValue(Constants.JCR_PRIMARYTYPE);
 
             if (pathMapping.containsKey(path + "/")) {
                 path = StringUtils.substringBeforeLast(pathMapping.get(path + "/"), "/");
@@ -465,6 +473,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         uuids.add(child.getIdentifier());
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
+                        }
+                        if (child.isNodeType("jnt:mountPoint")) {
+                            session.save();
                         }
 //                    }
                     } else {

@@ -327,7 +327,12 @@ public class DocumentViewExporter {
                 atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }
             if (!"/".equals(path) && !node.getProvider().equals(node.getParent().getProvider())) {
-                atts.addAttribute("", "provider", "provider", CDATA, node.getProvider().getKey());
+                if (node.getProvider().isDynamicallyMounted()) {
+                    JCRNodeWrapper mountPoint = session.getNodeByIdentifier(node.getProvider().getKey());
+                    atts.addAttribute("", "provider", "provider", CDATA, mountPoint.getPath());
+                } else {
+                    atts.addAttribute("", "provider", "provider", CDATA, node.getProvider().getKey());
+                }
             }
 
             String encodedName = ISO9075.encode(node.getName());
@@ -339,11 +344,20 @@ public class DocumentViewExporter {
             }
 
             if (!noRecurse) {
+                List<String> alreadyExported = new ArrayList<String>();
                 NodeIterator ni = node.getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                    if (c.getProvider().canExportNode(c)) {
+                    if (c.getProvider().canExportNode(c) && !alreadyExported.contains(c.getName())) {
+                        if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
+                            String mountPointName = c.getName() + "-mount";
+                            if (node.hasNode(mountPointName) && !alreadyExported.contains(mountPointName)) { // mounted from a dynamic mountPoint
+                                exportNode(node.getNode(mountPointName));
+                                alreadyExported.add(mountPointName);
+                            }
+                        }
                         exportNode(c);
+                        alreadyExported.add(c.getName());
                     }
                 }
             }

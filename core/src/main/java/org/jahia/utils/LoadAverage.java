@@ -86,6 +86,11 @@ public abstract class LoadAverage implements Runnable {
     private long calcFreqMillis = 5000;
     private double loggingTriggerValue;
 
+    /**
+     * Sets the value above which logging will be triggered for load averages.
+     *
+     * @param loggingTriggerValue the value above which logging will be triggered
+     */
     public void setLoggingTriggerValue(double loggingTriggerValue) {
         this.loggingTriggerValue = loggingTriggerValue;
     }
@@ -94,6 +99,10 @@ public abstract class LoadAverage implements Runnable {
         return loggingTriggerValue;
     }
 
+    /**
+     * Sets the frequency, in milliseconds, at which the calculation of averages occurs.
+     * @param millisec how many milliseconds between average calculations
+     */
     public void setCalcFrequencyInMillisec(long millisec) {
         this.calcFreqMillis = millisec;
     }

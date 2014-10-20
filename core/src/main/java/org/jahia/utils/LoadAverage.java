@@ -83,35 +83,54 @@ public abstract class LoadAverage implements Runnable {
     protected double fiveMinuteLoad = 0.0;
     protected double fifteenMinuteLoad = 0.0;
 
-    private double calcFreqDouble = 5.0;
     private long calcFreqMillis = 5000;
+    private double loggingTriggerValue;
+
+    public void setLoggingTriggerValue(double loggingTriggerValue) {
+        this.loggingTriggerValue = loggingTriggerValue;
+    }
+
+    public double getLoggingTriggerValue() {
+        return loggingTriggerValue;
+    }
+
+    public void setCalcFrequencyInMillisec(long millisec) {
+        this.calcFreqMillis = millisec;
+    }
 
     public abstract double getCount();
     public abstract void tickCallback();
 
-    protected Thread loadCalcThread;
+    private Thread loadCalcThread;
+    private final String threadName;
     private boolean running = false;
 
     public LoadAverage(String threadName) {
-        loadCalcThread = new Thread(this, threadName);
-        loadCalcThread.setDaemon(true); 
+        this.threadName = threadName;
     }
 
     public void start() {
-        running = true;
-        loadCalcThread.start();
+        if (calcFreqMillis > 0) {
+            loadCalcThread = new Thread(this, threadName);
+            loadCalcThread.setDaemon(true);
+            running = true;
+            loadCalcThread.start();
+        }
     }
 
     public void stop() {
-        running = false;
-        loadCalcThread.interrupt();
-        try {
-            loadCalcThread.join(200);
-        } catch (InterruptedException e) {
+        if (running) {
+            running = false;
+            loadCalcThread.interrupt();
+            try {
+                loadCalcThread.join(200);
+            } catch (InterruptedException e) {
+            }
         }
     }
 
     public void run() {
+        double calcFreqDouble = calcFreqMillis / 1000;
         while (running) {
             double timeInMinutes = 1;
             oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));

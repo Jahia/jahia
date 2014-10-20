@@ -119,7 +119,7 @@ public class RequestLoadAverage extends LoadAverage {
 
     @Override
     public void tickCallback() {
-        if (oneMinuteLoad > 2.0) {
+        if (oneMinuteLoad > getLoggingTriggerValue()) {
             logger.info("Jahia Request Load = " + oneMinuteLoad + " " + fiveMinuteLoad + " " + fifteenMinuteLoad);
         }
     }

@@ -737,7 +737,7 @@ public class WebprojectHandler implements Serializable {
 
                             final JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
 
-                            Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
+                            final Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
                                     .getPathMapping();
                             pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                             pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
@@ -745,6 +745,7 @@ public class WebprojectHandler implements Serializable {
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
+                                        session.getPathMapping().putAll(pathMapping);
                                         importExportBaseService.importSiteZip(file == null ? null : new FileSystemResource(file),
                                                 system, infos.asMap(),null,null,session);
                                     } catch (Exception e) {

@@ -306,15 +306,9 @@ public class JCRObservationManager implements ObservationManager {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched
             // check if the events are not disabled or the listener is still available during publication
-<<<<<<< .working
             // check if the event is not external or consumer accepts external events
             if (consumer.session.getWorkspace().getName().equals(wspName) &&
                 (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish())
-=======
-            // check if the event is not eternal or consumer accepts external events
-            if (consumer.session.getWorkspace().getName().equals(wspName) &&
-                (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish())
->>>>>>> .merge-right.r51182
                         && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)) {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {

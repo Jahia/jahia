@@ -111,12 +111,7 @@ public class Mounter extends Window {
     public Mounter(final Linker linker) {
         super() ;
         setHeadingHtml(Messages.get("label.mount"));
-<<<<<<< .working
         setSize(500, 350);
-=======
-        setSize(500, 350);
-        setResizable(false);
->>>>>>> .merge-right.r51182
         ButtonBar buttons = new ButtonBar() ;
         form.setLabelWidth(140);
         form.setPadding(5);
@@ -187,7 +182,6 @@ public class Mounter extends Window {
         final TextField<String> mountName = new TextField<String>();
         mountName.setFieldLabel(Messages.get("label.name","name"));
         mountName.setEmptyText(Messages.get("label.enterMountNodeName", "mount node name"));
-<<<<<<< .working
         mountName.setAllowBlank(false);
         mountName.setValidator(new Validator() {
             @Override
@@ -200,20 +194,6 @@ public class Mounter extends Window {
         });
         mountName.setValidateOnBlur(true);
         form.setLayout(new FormLayout());
-=======
-        mountName.setAllowBlank(false);
-        mountName.setValidator(new Validator() {
-            @Override
-            public String validate(Field<?> field, String value) {
-                return value == null || !value.matches("[A-Za-z0-9_]+") ? Messages.get(
-                        "label.error.invalidMountName", "The entered mount name is not valid."
-                                + " The value should match the following pattern: [A-Za-z0-9_]+"
-                ) : null;
-            }
-        });
-        mountName.setValidateOnBlur(true);
-        form.setLayout(new FormLayout());
->>>>>>> .merge-right.r51182
         form.add(mountName, new FormData());
         final PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type),new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList(GWTJahiaItemDefinition.CONTENT));
         pe.renderNewFormPanel();

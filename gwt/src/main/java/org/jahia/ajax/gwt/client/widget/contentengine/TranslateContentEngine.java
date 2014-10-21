@@ -72,7 +72,6 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
@@ -107,6 +106,7 @@ import java.util.*;
  */
 public class TranslateContentEngine extends Window {
     public static final int BUTTON_HEIGHT = 24;
+    
     private GWTJahiaNode node;
     private final GWTJahiaLanguage srcLanguage;
     private final GWTJahiaLanguage destLanguage;
@@ -253,9 +253,6 @@ public class TranslateContentEngine extends Window {
     @Override
     public void focus() {
         // do nothing to prevent menu to disappear when mouse over
-        if (!GXT.isGecko) {
-            super.focus();
-        }
     }
 }
 

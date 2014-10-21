@@ -98,6 +98,7 @@ import java.util.*;
  * Time: 2:47:08 PM
  */
 public class ContentHubHelper {
+<<<<<<< .working
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
     
     private static final Map<String, String> MOUNT_PARENTS;
@@ -107,6 +108,18 @@ public class ContentHubHelper {
         MOUNT_PARENTS.put("mounts", "jnt:systemFolder");
     }
     
+=======
+
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
+
+    private static final Map<String, String> MOUNT_PARENTS;
+
+    static {
+        MOUNT_PARENTS = new HashMap<String, String>();
+        MOUNT_PARENTS.put("mounts", "jnt:systemFolder");
+    }
+    
+>>>>>>> .merge-right.r51182
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;

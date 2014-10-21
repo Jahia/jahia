@@ -205,8 +205,12 @@
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
+<<<<<<< .working
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
                         <bean class="org.jahia.services.content.MountPointListener"/>
+=======
+                        <bean class="org.jahia.services.content.MountPointListener"/>
+>>>>>>> .merge-right.r51182
                     </list>
                 </entry>
                 <entry key="live">

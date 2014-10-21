@@ -87,7 +87,9 @@ import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ReferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.xml.sax.ContentHandler;
@@ -195,7 +197,11 @@ public class JCRSessionWrapper implements Session {
         this.fallbackLocale = fallbackLocale;
         this.sessionFactory = sessionFactory;
         activeSessions.incrementAndGet();
-        thisSessionTrace = new Exception();
+        if(SettingsBean.getInstance().isDevelopmentMode()) {
+            thisSessionTrace = new Exception("Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
+        } else {
+            thisSessionTrace = new Exception("Session: " + uuid);
+        }
         activeSessionsObjects.put(uuid, this);
     }
 

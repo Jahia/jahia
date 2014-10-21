@@ -596,7 +596,10 @@ public class JahiaSitesService extends JahiaService {
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String groupPath : groupService.getGroupList(siteKey)) {
-                        groupService.deleteGroup(groupPath, session);
+                        if (StringUtils.startsWith(groupPath, site.getJCRLocalPath()  + "/groups/")
+                                && !StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/providers/")) {
+                            groupService.deleteGroup(groupPath, session);
+                        }
                     }
                     session.save();
                     return true;

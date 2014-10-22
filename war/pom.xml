@@ -790,6 +790,35 @@
             </plugin>
 
             <plugin>
+<<<<<<< .working
+=======
+                <groupId>com.samaxes.maven</groupId>
+                <artifactId>maven-minify-plugin</artifactId>
+                <version>1.3.5</version>
+                <executions>
+                    <execution>
+                        <phase>process-classes</phase>
+                        <goals>
+                            <goal>minify</goal>
+                        </goals>
+                        <configuration>
+                            <webappSourceDir>${project.build.directory}/${project.build.finalName}</webappSourceDir>
+                            <cssSourceDir>gwt/resources/css</cssSourceDir>
+                            <cssSourceFiles>
+                                <cssSourceFile>jahia-ext-all.css</cssSourceFile>
+                                <cssSourceFile>xtheme-jahia.css</cssSourceFile>
+                                <cssSourceFile>edit.css</cssSourceFile>
+                                <cssSourceFile>jahia-gwt-engines.css</cssSourceFile>
+                                <cssSourceFile>diff.css</cssSourceFile>
+                            </cssSourceFiles>
+                            <cssTargetDir>gwt/resources/css</cssTargetDir>
+                            <cssFinalFile>gwt-1.5.css</cssFinalFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+>>>>>>> .merge-right.r51196
                 <artifactId>maven-site-plugin</artifactId>
                 <executions>
                     <execution>

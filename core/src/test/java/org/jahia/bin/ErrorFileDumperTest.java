@@ -108,6 +108,7 @@ public class ErrorFileDumperTest {
     public static void oneTimeSetUp() throws Exception {
         Date now = new Date();
         todaysDirectory = new File(SettingsBean.getErrorDir(), ErrorFileDumper.DATE_FORMAT_DIRECTORY.format(now));
+        logger.info("Error directory is " + todaysDirectory.getAbsolutePath());
     }
 
     @AfterClass

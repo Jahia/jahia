@@ -196,11 +196,13 @@ public class JCRSessionWrapper implements Session {
         this.locale = locale;
         this.fallbackLocale = fallbackLocale;
         this.sessionFactory = sessionFactory;
-        activeSessions.incrementAndGet();
+        if(!isSystem) {
+            activeSessions.incrementAndGet();
+        }
         if(SettingsBean.getInstance().isDevelopmentMode()) {
-            thisSessionTrace = new Exception("Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
+            thisSessionTrace = new Exception((isSystem?"System ":"")+"Session: " + uuid + " Thread: " + Thread.currentThread().getName() + "_" + Thread.currentThread().getId() + " created " + new DateTime().toString());
         } else {
-            thisSessionTrace = new Exception("Session: " + uuid);
+            thisSessionTrace = new Exception((isSystem?"System ":"")+"Session: " + uuid);
         }
         activeSessionsObjects.put(uuid, this);
     }
@@ -787,15 +789,17 @@ public class JCRSessionWrapper implements Session {
             JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
         }
         isLive = false;
-        long actives = activeSessions.decrementAndGet();
         if (activeSessionsObjects.remove(uuid) == null) {
             logger.error("Could not removed session " + this + " opened here \n", thisSessionTrace);
         }
-        if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
-            Map<UUID, JCRSessionWrapper> copyActives = new HashMap<UUID, JCRSessionWrapper>(activeSessionsObjects);
-            logger.debug("There is " + actives + " sessions but " + copyActives.size() + " is retained");
-            for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
-                logger.debug("Active Session " + entry.getKey() + " is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
+        if(!isSystem) {
+            long actives = activeSessions.decrementAndGet();
+            if (logger.isDebugEnabled() && actives < activeSessionsObjects.size()) {
+                Map<UUID, JCRSessionWrapper> copyActives = new HashMap<UUID, JCRSessionWrapper>(activeSessionsObjects);
+                logger.debug("There is " + actives + " sessions but " + copyActives.size() + " is retained");
+                for (Map.Entry<UUID, JCRSessionWrapper> entry : copyActives.entrySet()) {
+                    logger.debug("Active Session " + entry.getKey() + " is" + (entry.getValue().isLive() ? "" : " not") + " live", entry.getValue().getSessionTrace());
+                }
             }
         }
     }

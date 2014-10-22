@@ -18,8 +18,8 @@
 <body>
 <h1>JCR Sessions</h1>
 
-<p>There are currently <%= JCRSessionWrapper.getActiveSessions() %> open sessions and we are
-    retaining <%= JCRSessionWrapper.getActiveSessionsObjects().size() %>.</p>
+<p>There are currently <%= JCRSessionWrapper.getActiveSessionsObjects().size() %> open sessions.<br/>
+There is <%= JCRSessionWrapper.getActiveSessions() %> non system and active sessions.</p>
 
 <p>List of session not hold/created by this page/request:</p>
 <script type="text/javascript">

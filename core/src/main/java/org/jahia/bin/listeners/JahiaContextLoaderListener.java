@@ -114,6 +114,7 @@ import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Entry point and startup/shutdown listener for all Jahia services, including Spring application context, OSGi platform service etc.
@@ -486,7 +487,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionDestroyedEvent(se.getSession()));
         }
     }
-
+    private static Pattern httpMethod = Pattern.compile("POST|PUT|GET|DELETE");
     public void requestDestroyed(ServletRequestEvent sre) {
         requestTimes.remove(sre.getServletRequest());
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
@@ -495,9 +496,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void requestInitialized(ServletRequestEvent sre) {
-        requestTimes.put(sre.getServletRequest(), System.currentTimeMillis());
+        ServletRequest servletRequest = sre.getServletRequest();
+        if(servletRequest instanceof HttpServletRequest && httpMethod.matcher(((HttpServletRequest)servletRequest).getMethod().toUpperCase()).matches()) {
+            requestTimes.put(servletRequest, System.currentTimeMillis());
+        }
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
-            SpringContextSingleton.getInstance().publishEvent(new ServletRequestInitializedEvent(sre.getServletRequest()));
+            SpringContextSingleton.getInstance().publishEvent(new ServletRequestInitializedEvent(servletRequest));
         }
     }
 

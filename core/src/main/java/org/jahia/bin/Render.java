@@ -282,12 +282,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         String out = renderService.render(resource, renderContext).trim();
         if (renderContext.getRedirect() != null && !resp.isCommitted()) {
             resp.sendRedirect(renderContext.getRedirect());
-        } else {
+        } else if (!renderContext.isPortletActionRequest()) {
             resp.setContentType(
                     renderContext.getContentType() != null ? renderContext.getContentType() : getDefaultContentType(resource.getTemplateType()));
-//            resp.setContentLength(out.getBytes("UTF-8").length);
             resp.getWriter().print(out);
-//            resp.getWriter().close();
         }
         String sessionID = "";
         HttpSession httpSession = req.getSession(false);

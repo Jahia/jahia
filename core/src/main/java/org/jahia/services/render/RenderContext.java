@@ -127,9 +127,14 @@ public class RenderContext {
 
     // the current rendering channel, for example "iphone", "ipad", "android", etc...
     private Channel channel = null;
+<<<<<<< .working
     private String mode;
     private SiteInfo siteInfo;
     private boolean forceUILocaleForJCRSession;
+=======
+    
+    private boolean portletActionRequest;
+>>>>>>> .merge-right.r51203
 
     public RenderContext(HttpServletRequest request, HttpServletResponse response, JahiaUser user) {
         this.request = request;
@@ -362,6 +367,7 @@ public class RenderContext {
     public void setChannel(Channel channel) {
         this.channel = channel;
     }
+<<<<<<< .working
 
 
     /**
@@ -432,4 +438,14 @@ public class RenderContext {
     public boolean isForceUILocaleForJCRSession() {
         return forceUILocaleForJCRSession;
     }
+=======
+
+    public boolean isPortletActionRequest() {
+        return portletActionRequest;
+    }
+
+    public void setPortletActionRequest(boolean portletActionRequest) {
+        this.portletActionRequest = portletActionRequest;
+    }
+>>>>>>> .merge-right.r51203
 }

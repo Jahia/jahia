@@ -80,7 +80,6 @@ import org.apache.pluto.driver.services.portal.PortletWindowConfig;
 import org.apache.pluto.driver.url.PortalURL;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.applications.EntryPointInstance;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortletUtil;
 import org.jahia.services.applications.pluto.JahiaUserRequestWrapper;
@@ -88,27 +87,24 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.portlet.MimeResponse;
 import javax.portlet.PortletException;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * 
- * User: ktlili
- * Date: Dec 21, 2009
- * Time: 3:37:12 PM
- * 
+ * Rendering filter for portlet actions and resource serving requests.
+ *  
+ * @author ktlili
  */
 public class PlutoProcessActionFilter extends AbstractFilter {
-    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PlutoProcessActionFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(PlutoProcessActionFilter.class);
 
     @Override
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception {
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         try {
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest(), renderContext.getMainResource().getWorkspace());
             final HttpServletResponse response = renderContext.getResponse();
@@ -131,10 +127,9 @@ public class PlutoProcessActionFilter extends AbstractFilter {
             // Action window config will only exist if there is an action request.
             if (actionWindowConfig != null) {
                 PortletWindowImpl portletWindow = new PortletWindowImpl(container, actionWindowConfig, portalURL);
-                //if (logger.isDebugEnabled()) {
-                logger.debug("Processing action request for window: "
-                        + portletWindow.getId().getStringId());
-                //}
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Processing action request for window: " + portletWindow.getId().getStringId());
+                }
 
                 EntryPointInstance entryPointInstance = ServicesRegistry.getInstance().getApplicationsManagerService().getEntryPointInstance(actionWindowConfig.getMetaInfo(), renderContext.getMainResource().getWorkspace());
                 if (entryPointInstance != null) {
@@ -148,6 +143,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
                 try {
                     container.doAction(portletWindow, request, renderContext.getResponse());
+                    renderContext.setPortletActionRequest(true);
                     JahiaPortletUtil.copySharedMapFromPortletToJahia(renderContext.getRequest().getSession(), request, portletWindow);
                 } catch (PortletContainerException ex) {
                     throw new ServletException(ex);
@@ -170,6 +166,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                 }
                 try {
                     container.doServeResource(portletWindow, request, response);
+                    renderContext.setPortletActionRequest(true);
                 } catch (PortletContainerException ex) {
                     logger.error(ex.getMessage(), ex);
                     throw new ServletException(ex);
@@ -178,7 +175,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                     throw new ServletException(ex);
                 }
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Resource serving request processed.\n\n");
+                    logger.debug("Resource serving request processed.");
                 }
                 return "";
             }
@@ -188,6 +185,10 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         if (logger.isDebugEnabled()) {
             logger.debug(renderContext.getRequest().getRequestURI() + " is a renderURL");
         }
-        return previousOut;
+        return null;
     }
+<<<<<<< .working
  }
+=======
+}
+>>>>>>> .merge-right.r51203

@@ -244,7 +244,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public JCRSiteNode getSiteByServerName(String serverName, JCRSessionWrapper session) throws RepositoryException {
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where lower(s.[j:serverName])='" + StringUtils.lowerCase(serverName) + "'", Query.JCR_SQL2);
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where lower(s.[j:serverName])='" + StringUtils.lowerCase(serverName) + "' and ischildnode(s, '/sites/')", Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
             return (JCRSiteNode) ni.next();
@@ -346,68 +346,57 @@ public class JahiaSitesService extends JahiaService {
                 final JahiaTemplatesPackage templateSet = templateService.getAnyDeployedTemplatePackage(selectTmplSet);
                 final String templatePackage = templateSet.getId();
 
-                Query q = session.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:virtualsitesFolder]", Query.JCR_SQL2);
-                QueryResult qr = q.execute();
-                NodeIterator ni = qr.getNodes();
+                JCRNodeWrapper sitesFolder = session.getNode("/sites");
 
-                while (ni.hasNext()) {
-                    JCRNodeWrapper sitesFolder = (JCRNodeWrapper) ni.nextNode();
-                    String options = "";
-                    if (sitesFolder.hasProperty("j:virtualsitesFolderConfig")) {
-                        options = sitesFolder.getProperty("j:virtualsitesFolderConfig").getString();
+                try {
+                    sitesFolder.getNode(siteKey);
+                    throw new IOException("site already exists");
+                } catch (PathNotFoundException e) {
+                    JCRNodeWrapper siteNode = sitesFolder.addNode(siteKey, "jnt:virtualsite");
+
+                    if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
+                        String skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString();
+                        try {
+                            JCRContentUtils.importSkeletons(skeletons, sitesFolder.getPath() + "/" + siteKey, session);
+                        } catch (Exception importEx) {
+                            logger.error("Unable to import data using site skeleton " + skeletons, importEx);
+                        }
                     }
 
-                    JCRNodeWrapper f = JCRContentUtils.getPathFolder(sitesFolder, siteKey, options, "jnt:virtualsitesFolder");
-                    try {
-                        f.getNode(siteKey);
-                        throw new IOException("site already exists");
-                    } catch (PathNotFoundException e) {
-                        JCRNodeWrapper siteNode = f.addNode(siteKey, "jnt:virtualsite");
+                    siteNode.setProperty("j:title", title);
+                    siteNode.setProperty("j:description", descr);
+                    siteNode.setProperty("j:serverName", serverName);
+                    siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
+                    siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
+                    siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
+                    siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[]{});
+                    siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[]{});
+                    siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[]{});
+                    siteNode.setProperty("j:templatesSet", templatePackage);
 
-                        if (sitesFolder.hasProperty("j:virtualsitesFolderSkeleton")) {
-                            String skeletons = sitesFolder.getProperty("j:virtualsitesFolderSkeleton").getString();
+                    siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
+
+                    String target = getTargetString(siteKey);
+
+                    deployModules(target, modulesToDeploy, templateSet, session, templateService);
+
+                    //Auto deploy all modules that define this behavior on site creation
+                    final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
+                    for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
+                        String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
+                        if (autoDeployOnSite != null
+                                && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
+                            String source = "/modules/" + availableTemplatePackage.getId();
                             try {
-                                JCRContentUtils.importSkeletons(skeletons, f.getPath() + "/" + siteKey, session);
-                            } catch (Exception importEx) {
-                                logger.error("Unable to import data using site skeleton " + skeletons, importEx);
+                                logger.info("Deploying module {} to {}", source, target);
+                                templateService.installModule(availableTemplatePackage, target, session);
+                            } catch (RepositoryException re) {
+                                logger.error("Unable to deploy module " + source + " to " + target + ". Cause: "
+                                        + re.getMessage(), re);
                             }
                         }
-
-                        siteNode.setProperty("j:title", title);
-                        siteNode.setProperty("j:description", descr);
-                        siteNode.setProperty("j:serverName", serverName);
-                        siteNode.setProperty(SitesSettings.DEFAULT_LANGUAGE, selectedLocale.toString());
-                        siteNode.setProperty(SitesSettings.MIX_LANGUAGES_ACTIVE, false);
-                        siteNode.setProperty(SitesSettings.LANGUAGES, new String[]{selectedLocale.toString()});
-                        siteNode.setProperty(SitesSettings.INACTIVE_LIVE_LANGUAGES, new String[]{});
-                        siteNode.setProperty(SitesSettings.INACTIVE_LANGUAGES, new String[]{});
-                        siteNode.setProperty(SitesSettings.MANDATORY_LANGUAGES, new String[]{});
-                        siteNode.setProperty("j:templatesSet", templatePackage);
-
-                        siteNode.setProperty("j:installedModules", new Value[]{session.getValueFactory().createValue(templatePackage /*+ ":" + aPackage.getLastVersion()*/)});
-
-                        String target = getTargetString(siteKey);
-
-                        deployModules(target, modulesToDeploy, templateSet, session, templateService);
-
-                        //Auto deploy all modules that define this behavior on site creation
-                        final List<JahiaTemplatesPackage> availableTemplatePackages = templateService.getAvailableTemplatePackages();
-                        for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
-                            String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
-                            if (autoDeployOnSite != null
-                                    && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
-                                String source = "/modules/" + availableTemplatePackage.getId();
-                                try {
-                                    logger.info("Deploying module {} to {}", source, target);
-                                    templateService.installModule(availableTemplatePackage, target, session);
-                                } catch (RepositoryException re) {
-                                    logger.error("Unable to deploy module " + source + " to " + target + ". Cause: "
-                                            + re.getMessage(), re);
-                                }
-                            }
-                        }
-                        site = (JCRSiteNode) siteNode;
                     }
+                    site = (JCRSiteNode) siteNode;
                 }
 
                 session.save();
@@ -596,7 +585,7 @@ public class JahiaSitesService extends JahiaService {
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String groupPath : groupService.getGroupList(siteKey)) {
-                        if (StringUtils.startsWith(groupPath, site.getJCRLocalPath()  + "/groups/")
+                        if (StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/")
                                 && !StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/providers/")) {
                             groupService.deleteGroup(groupPath, session);
                         }

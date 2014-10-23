@@ -276,7 +276,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private String internalGetUserPath(String name) throws RepositoryException {
-        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "'", Query.JCR_SQL2);
+        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('/users/')", Query.JCR_SQL2);
         RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {
             return null;
@@ -346,7 +346,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username)";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username) and isdescendantnode(username,'/users/')";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -377,7 +377,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             Set<String> users = new TreeSet<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "]";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] where isdescendantnode('/users/')";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -526,7 +526,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 if (query.length() > 0) {
                     query.insert(0, "WHERE ");
                 }
-                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u ");
+                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'/users/')");
                 query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());

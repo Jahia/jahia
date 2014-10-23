@@ -509,7 +509,7 @@ public class PrincipalViewHelper implements Serializable {
         } else {
             final JCRGroupNode group = (JCRGroupNode) p;
             // Find some group members for properties
-            final List<JCRNodeWrapper> grpMembers = group.getMembers();
+            final List<JCRNodeWrapper> grpMembers =  group.getProviderName().equals("default") ? group.getMembers() : null;
             final StringBuilder members = new StringBuilder().append("(");
             if (grpMembers != null) {
                 for (JCRNodeWrapper member : grpMembers) {

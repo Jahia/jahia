@@ -72,9 +72,8 @@
 package org.jahia.bin;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
 
@@ -87,8 +86,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
+import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
@@ -106,6 +105,7 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
@@ -113,9 +113,8 @@ import org.slf4j.Logger;
 /**
  * Servlet for the first entry point in Jahia portal that performs a client-side redirect
  * to the home page of the appropriate site.
- * User: toto
- * Date: Apr 26, 2010
- * Time: 5:49:14 PM
+ * 
+ * @author toto
  */
 public class WelcomeServlet extends HttpServlet {
 
@@ -284,68 +283,72 @@ public class WelcomeServlet extends HttpServlet {
     
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user)
             throws JahiaException {
-        final List<Locale> newLocaleList = new ArrayList<Locale>();
-        List<Locale> siteLanguages = Collections.emptyList();
+        if (site == null) {
+            // if we have no site, just use fallback
+            return StringUtils.defaultIfEmpty(SettingsBean.getInstance().getDefaultLanguageCode(), DEFAULT_LOCALE);
+        }
+
+        List<Locale> siteLanguages = null;
         try {
-            if (site != null) {
-                siteLanguages = site.getActiveLiveLanguagesAsLocales();
-            }
+            siteLanguages = site.getActiveLiveLanguagesAsLocales();
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales", t);
+            siteLanguages = Collections.emptyList();
         }
 
+        // first we will check the preferred user locale (if it is among the
         Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
-        if (preferredLocale != null) {
-            addLocale(site, newLocaleList, preferredLocale);
+        if (preferredLocale != null && siteLanguages.contains(preferredLocale)
+                && ensureHomePageExists(site, preferredLocale)) {
+            return preferredLocale.toString();
         }
 
-        // retrieve the browser locales
-        for (@SuppressWarnings("unchecked")
-        Iterator<Locale> browserLocales = new EnumerationIterator(request.getLocales()); browserLocales
-                .hasNext();) {
-            final Locale curLocale = browserLocales.next();
-            if (siteLanguages.contains(curLocale)) {
-                addLocale(site, newLocaleList, curLocale);
-            } else if (!StringUtils.isEmpty(curLocale.getCountry())) {
-                final Locale langOnlyLocale = new Locale(curLocale.getLanguage());
-                if (siteLanguages.contains(langOnlyLocale)) {
-                    addLocale(site, newLocaleList, langOnlyLocale);
+        // retrieve the browser locales, but if Accept-Language header is missing we won't fallback to the default system locale
+        for (Enumeration<?> requestLocales = Util.getRequestLocales(request); requestLocales.hasMoreElements();) {
+            final Locale curLocale = (Locale) requestLocales.nextElement();
+            // check that the site contains the language and the home page exists in live for that language
+            if (curLocale != null && siteLanguages.contains(curLocale) && ensureHomePageExists(site, curLocale)) {
+                return curLocale.toString();
+            }
+            if (!StringUtils.isEmpty(curLocale.getCountry())) {
+                // check the same but for language only
+                final Locale langOnlyLocale = LanguageCodeConverters.languageCodeToLocale(curLocale.getLanguage());
+                if (siteLanguages.contains(langOnlyLocale) && ensureHomePageExists(site, langOnlyLocale)) {
+                    return langOnlyLocale.toString();
                 }
             }
         }
 
-        String language = DEFAULT_LOCALE;
-        if (!newLocaleList.isEmpty()) {
-            language = newLocaleList.get(0).toString();
-        } else if (site!=null){
-            language = site.getDefaultLanguage();
-        } else if (!StringUtils.isEmpty(SettingsBean.getInstance().getDefaultLanguageCode())) {
-            language = SettingsBean.getInstance().getDefaultLanguageCode();
+        String lang = site.getDefaultLanguage();
+        if (lang != null) {
+            // use site's default language
+            return lang;
         }
-        return language;
+
+        // nothing matches -> fallback to default
+        return StringUtils.defaultIfEmpty(SettingsBean.getInstance().getDefaultLanguageCode(), DEFAULT_LOCALE);
     }
 
-    private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
+    private boolean ensureHomePageExists(final JCRSiteNode site, final Locale curLocale) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        if(site!=null) {
-                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
-                            JCRNodeWrapper home = nodeByIdentifier.getHome();
-                            if (home!=null && !newLocaleList.contains(curLocale)) {
-                                newLocaleList.add(curLocale);
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, curLocale,
+                    new JCRCallback<Boolean>() {
+                        public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            try {
+                                JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site
+                                        .getIdentifier());
+                                return nodeByIdentifier.getHome() != null;
+                            } catch (RepositoryException e) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("This site does not have a published home in language " + curLocale, e);
+                                }
                             }
+                            return Boolean.FALSE;
                         }
-                    } catch (RepositoryException e) {
-                        logger.debug("This site does not have a published home in language "+curLocale,e);
-                    }
-                    return null;
-                }
-            });
+                    });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
+        return false;
     }
 }

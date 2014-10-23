@@ -153,11 +153,11 @@ import java.util.regex.Pattern;
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
-
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
             "application/zip", "application/xml", "text/xml");
 
     private static final String FILESACL_XML = "filesacl.xml";
+
     private static final String REPOSITORY_XML = "repository.xml";
     private static final String LIVE_REPOSITORY_XML = "live-repository.xml";
     private static final String CATEGORIES_XML = "categories.xml";
@@ -168,6 +168,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
 
+    protected static final String PROVIDER_KEY_ATTR = "__provider__";
 
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;

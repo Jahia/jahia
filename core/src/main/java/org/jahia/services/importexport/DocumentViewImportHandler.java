@@ -235,8 +235,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        if (atts.getIndex("provider") > -1) {
-            String providerKey = atts.getValue("provider");
+        if (atts.getIndex(ImportExportBaseService.PROVIDER_KEY_ATTR) > -1) {
+            String providerKey = atts.getValue(ImportExportBaseService.PROVIDER_KEY_ATTR);
             if (providerKey.startsWith("/")) {
                 try {
                     providerKey = session.getNode(providerKey).getIdentifier();

@@ -329,9 +329,9 @@ public class DocumentViewExporter {
             if (!"/".equals(path) && !node.getProvider().equals(node.getParent().getProvider())) {
                 if (node.getProvider().isDynamicallyMounted()) {
                     JCRNodeWrapper mountPoint = session.getNodeByIdentifier(node.getProvider().getKey());
-                    atts.addAttribute("", "provider", "provider", CDATA, mountPoint.getPath());
+                    atts.addAttribute("", ImportExportBaseService.PROVIDER_KEY_ATTR, ImportExportBaseService.PROVIDER_KEY_ATTR, CDATA, mountPoint.getPath());
                 } else {
-                    atts.addAttribute("", "provider", "provider", CDATA, node.getProvider().getKey());
+                    atts.addAttribute("", ImportExportBaseService.PROVIDER_KEY_ATTR, ImportExportBaseService.PROVIDER_KEY_ATTR, CDATA, node.getProvider().getKey());
                 }
             }
 

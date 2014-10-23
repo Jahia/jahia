@@ -284,7 +284,7 @@ public class WelcomeServlet extends HttpServlet {
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user)
             throws JahiaException {
         if (site == null) {
-            // if we have not site, just use fallback
+            // if we have no site, just use fallback
             return StringUtils.defaultIfEmpty(SettingsBean.getInstance().getDefaultLanguageCode(), DEFAULT_LOCALE);
         }
 

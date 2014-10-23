@@ -104,7 +104,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                 logger.error(e.getMessage(), e);
             }
 
-            return path != null ? path : StringUtils.substringBefore(node.getPath(), "-mount");
+            return path != null ? path : StringUtils.removeEnd(node.getPath(), "-mount");
         }
     }
 

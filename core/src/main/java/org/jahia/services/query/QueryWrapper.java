@@ -195,10 +195,25 @@ public class QueryWrapper implements Query {
                 query = qm.createQuery(statement, language);
             }
             QueryObjectModelFactory factory = qm.getQOMFactory();
-            if (!jcrStoreProvider.getMountPoint().equals("/") && query instanceof QueryObjectModel) {
+            if (!jcrStoreProvider.getMountPoint().equals("/")) {
                 try {
-                    QueryObjectModel qom = (QueryObjectModel) query;
-                    query = factory.createQuery(qom.getSource(), convertPath(qom.getConstraint(), jcrStoreProvider.getMountPoint(), factory), qom.getOrderings(), qom.getColumns());
+                    QueryObjectModel qom;
+                    if (query instanceof QueryObjectModel) {
+                        qom = (QueryObjectModel) query;
+                    } else if (language.equals(Query.JCR_SQL2)) {
+                        qom = (QueryObjectModel) service.getDefaultProvider().getQueryManager(session).createQuery(statement, language);
+                    } else if (sqlStatement != null) {
+                        qom = (QueryObjectModel) service.getDefaultProvider().getQueryManager(session).createQuery(sqlStatement, Query.JCR_SQL2);
+                    } else {
+                        // Cannot create query on provider, skip
+                        return null;
+                    }
+                    Constraint constraint = convertPath(qom.getConstraint(), jcrStoreProvider.getMountPoint(), jcrStoreProvider.getRelativeRoot(), factory);
+                    if (!jcrStoreProvider.getRelativeRoot().equals("")) {
+                        Constraint addRelativeRootConstraint = addRelativeRootConstraint(factory, jcrStoreProvider.getRelativeRoot(), qom.getSource());
+                        constraint = (constraint == null) ? addRelativeRootConstraint : factory.and(addRelativeRootConstraint, constraint);
+                    }
+                    query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
                 } catch (ConstraintViolationException e) {
                     // Provider path incompatible with constraints, skip query
                     return null;
@@ -225,6 +240,16 @@ public class QueryWrapper implements Query {
         return query;
     }
 
+    private Constraint addRelativeRootConstraint(QueryObjectModelFactory f, String relativeRoot, Source source) throws RepositoryException {
+        if (source instanceof Selector) {
+            String selectorName = ((Selector)source).getSelectorName();
+            return f.or(f.sameNode(selectorName,relativeRoot), f.descendantNode(selectorName, relativeRoot));
+        } else if (source instanceof Join) {
+            return f.and(addRelativeRootConstraint(f,relativeRoot,((Join) source).getLeft()), addRelativeRootConstraint(f,relativeRoot, ((Join) source).getRight()));
+        }
+        throw new RepositoryException("Cannot parse source : "+source);
+    }
+
     private Constraint filterMountPoints(Constraint constraint, Source source, QueryObjectModelFactory f) throws RepositoryException {
         if (source instanceof Selector) {
             Constraint c = f.not(f.propertyExistence(((Selector) source).getSelectorName(), "j:isExternalProviderRoot"));
@@ -240,26 +265,26 @@ public class QueryWrapper implements Query {
         return constraint;
     }
 
-    private Constraint convertPath(Constraint constraint, String mountPoint, QueryObjectModelFactory f) throws RepositoryException {
+    private Constraint convertPath(Constraint constraint, String mountPoint, String relativeRoot, QueryObjectModelFactory f) throws RepositoryException {
         if (constraint instanceof ChildNode) {
             String root = ((ChildNode) constraint).getParentPath();
             String rootWithSlash = root.endsWith("/") ? root : root + "/";
             String rootNoSlash = root.endsWith("/") ? root.substring(0, root.length() - 1) : root;
             if (mountPoint.equals(rootNoSlash)) {
                 // Path constraint is the mount point -> create new constraint on root child nodes only
-                return f.childNode(((ChildNode) constraint).getSelectorName(), "/");
+                return f.childNode(((ChildNode) constraint).getSelectorName(), relativeRoot.equals("") ? "/" : relativeRoot);
             }
             if (mountPoint.startsWith(rootWithSlash)) {
                 if (root.equals(StringUtils.substringBeforeLast(mountPoint, "/"))) {
                     // Asked for root node
-                    return f.sameNode(((ChildNode) constraint).getSelectorName(), "/");
+                    return f.sameNode(((ChildNode) constraint).getSelectorName(), relativeRoot.equals("") ? "/" : relativeRoot);
                 }
                 // Mount point in under path constraint -> do not search
                 throw new ConstraintViolationException();
             }
             if (rootWithSlash.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
-                return f.childNode(((ChildNode) constraint).getSelectorName(), rootNoSlash.substring(mountPoint.length()));
+                return f.childNode(((ChildNode) constraint).getSelectorName(), relativeRoot + rootNoSlash.substring(mountPoint.length()));
             }
             // Path constraint incompatible with mount point
             throw new ConstraintViolationException();
@@ -269,17 +294,27 @@ public class QueryWrapper implements Query {
             String rootNoSlash = root.endsWith("/") ? root.substring(0, root.length() - 1) : root;
             if (mountPoint.startsWith(rootWithSlash) || mountPoint.equals(rootNoSlash)) {
                 // Mount point in under path constraint -> remove constraint
-                return null;
+                if (!relativeRoot.equals("")) {
+                    return f.descendantNode(((DescendantNode) constraint).getSelectorName(), relativeRoot);
+                } else {
+                    return null;
+                }
             }
             if (rootWithSlash.startsWith(mountPoint)) {
                 // Path constraint is under mount point -> create new constraint with local path
-                return f.descendantNode(((DescendantNode) constraint).getSelectorName(), root.substring(mountPoint.length()));
+                return f.descendantNode(((DescendantNode) constraint).getSelectorName(), relativeRoot + root.substring(mountPoint.length()));
             }
             // Path constraint incompatible with mount point
             throw new ConstraintViolationException();
+        } else if (constraint instanceof SameNode) {
+            String root = ((SameNode) constraint).getPath();
+            if (root.startsWith(mountPoint)) {
+                return f.sameNode(((SameNode) constraint).getSelectorName(),relativeRoot + root.substring(mountPoint.length()));
+            }
+            throw new ConstraintViolationException();
         } else if (constraint instanceof And) {
-            Constraint c1 = convertPath(((And) constraint).getConstraint1(), mountPoint, f);
-            Constraint c2 = convertPath(((And) constraint).getConstraint2(), mountPoint, f);
+            Constraint c1 = convertPath(((And) constraint).getConstraint1(), mountPoint, relativeRoot, f);
+            Constraint c2 = convertPath(((And) constraint).getConstraint2(), mountPoint, relativeRoot, f);
             if (c1 == null) {
                 return c2;
             }
@@ -290,13 +325,13 @@ public class QueryWrapper implements Query {
         } else if (constraint instanceof Or) {
             Constraint c1 = null;
             try {
-                c1 = convertPath(((Or) constraint).getConstraint1(), mountPoint, f);
+                c1 = convertPath(((Or) constraint).getConstraint1(), mountPoint, relativeRoot, f);
             } catch (ConstraintViolationException e) {
-                return convertPath(((Or) constraint).getConstraint2(), mountPoint, f);
+                return convertPath(((Or) constraint).getConstraint2(), mountPoint, relativeRoot, f);
             }
             Constraint c2 = null;
             try {
-                c2 = convertPath(((Or) constraint).getConstraint2(), mountPoint, f);
+                c2 = convertPath(((Or) constraint).getConstraint2(), mountPoint, relativeRoot, f);
             } catch (ConstraintViolationException e) {
                 return c1;
             }
@@ -307,7 +342,7 @@ public class QueryWrapper implements Query {
         } else if (constraint instanceof Not) {
             Constraint notConstraint = null;
             try {
-                notConstraint = convertPath(((Not) constraint).getConstraint(), mountPoint, f);
+                notConstraint = convertPath(((Not) constraint).getConstraint(), mountPoint, relativeRoot, f);
             } catch (ConstraintViolationException e) {
                 return null;
             }

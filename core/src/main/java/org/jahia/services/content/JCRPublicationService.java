@@ -313,6 +313,9 @@ public class JCRPublicationService extends JahiaService {
                     return null;
                 }
             });
+            // Refresh this user sessions after publication
+            sessionFactory.getCurrentUserSession(sourceWorkspace).refresh(false);
+            sessionFactory.getCurrentUserSession(destinationWorkspace).refresh(false);
         }
     }
 
@@ -479,6 +482,9 @@ public class JCRPublicationService extends JahiaService {
                         destinationSession.getWorkspace().getName(), commentBuf != null ? commentBuf.toString() : "");
             }
         }
+        // Refresh this user system sessions after publication
+        sourceSession.refresh(false);
+        destinationSession.refresh(false);
     }
 
     private CloneResult ensureNodeInDestinationWorkspace(final JCRNodeWrapper node,

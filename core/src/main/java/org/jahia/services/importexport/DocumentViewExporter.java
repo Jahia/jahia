@@ -346,20 +346,25 @@ public class DocumentViewExporter {
             }
 
             if (!noRecurse) {
-                List<String> alreadyExported = new ArrayList<String>();
+                List<String> exportedMountPointNodes = new ArrayList<String>();
                 NodeIterator ni = node.getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                    if (c.getProvider().canExportNode(c) && !alreadyExported.contains(c.getName())) {
+                    if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
                         if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
                             String mountPointName = c.getName() + "-mount";
-                            if (node.hasNode(mountPointName) && !alreadyExported.contains(mountPointName)) { // mounted from a dynamic mountPoint
-                                exportNode(node.getNode(mountPointName));
-                                alreadyExported.add(mountPointName);
+                            if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
+                                JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
+                                if (mountPointNode.isNodeType("jnt:mountPoint")) {
+                                    exportNode(mountPointNode);
+                                    exportedMountPointNodes.add(mountPointName);
+                                }
                             }
                         }
                         exportNode(c);
-                        alreadyExported.add(c.getName());
+                        if (c.getName().endsWith("-mount") && c.isNodeType("jnt:mountPoint")) {
+                            exportedMountPointNodes.add(c.getName());
+                        }
                     }
                 }
             }

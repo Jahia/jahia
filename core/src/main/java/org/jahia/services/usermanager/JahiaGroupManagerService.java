@@ -766,6 +766,18 @@ public class JahiaGroupManagerService extends JahiaService {
 
     public void flushMembershipCache(String memberPath) {
         final String key = StringUtils.substringAfter(memberPath, "/j:members/");
+
+        try {
+            // If member is a group, recurse on all members
+            JCRGroupNode groupNode = lookupGroupByPath("/" + key);
+            if (groupNode != null) {
+                for (JCRNodeWrapper member : groupNode.getMembers()) {
+                    flushMembershipCache("/" + key + "/j:members" + member.getPath());
+                }
+            }
+        } catch (ClassCastException e) {
+            // Member is not a group
+        }
         if (key.contains("/")) {
             getMembershipCache().refresh("/" + key);
         } else {

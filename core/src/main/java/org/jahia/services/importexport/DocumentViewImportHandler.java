@@ -235,18 +235,23 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        if (atts.getIndex(ImportExportBaseService.PROVIDER_KEY_ATTR) > -1) {
-            String providerKey = atts.getValue(ImportExportBaseService.PROVIDER_KEY_ATTR);
-            if (providerKey.startsWith("/")) {
-                try {
-                    providerKey = session.getNode(providerKey).getIdentifier();
-                } catch (RepositoryException e) {
+        if (atts.getIndex(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR) > -1) {
+            String providerKey = atts.getValue(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR);
+            Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
+            if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
+                error++;
+                return;
+            }
+        }
+        if (atts.getIndex(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR) > -1) {
+            try {
+                String providerKey = session.getNode(atts.getValue(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR)).getIdentifier();
+                Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
+                if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
                     error++;
                     return;
                 }
-            }
-            Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
-            if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
+            } catch (RepositoryException e) {
                 error++;
                 return;
             }
@@ -494,7 +499,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (originalUuid != null) {
                     uuidMapping.put(originalUuid, child.getIdentifier());
                 }
-                if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")) {
+                if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")
+                        && !JCRSessionFactory.getInstance().getMountPoints().containsKey(child.getPath())) {
                     nodes.peek().orderBefore(decodedQName,null);
                 }
             }

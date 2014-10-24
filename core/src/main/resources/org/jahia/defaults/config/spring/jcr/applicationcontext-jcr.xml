@@ -536,6 +536,8 @@
         <value>j:locktoken</value>
         <value>j:lockTypes</value>
         <value>j:processId</value>
+        <value>j:staticMountPointProviderKey</value>
+        <value>j:dynamicMountPointProviderPath</value>
     </util:set>
     
     <util:map id="ImportDefinitionsMappingMetadata">

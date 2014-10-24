@@ -168,7 +168,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
 
-    public static final String PROVIDER_KEY_ATTR = "__provider__";
+    public static final String STATIC_MOUNT_POINT_ATTR = "j:staticMountPointProviderKey";
+    public static final String DYNAMIC_MOUNT_POINT_ATTR = "j:dynamicMountPointProviderPath";
 
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;

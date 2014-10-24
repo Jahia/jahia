@@ -247,9 +247,11 @@ public class DocumentViewExporter {
                     }
                     String encodedName = ISO9075.encode(name);
                     String currentpath = peek + "/" + name;
-                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
+                    JCRNodeWrapper n = session.getNode(currentpath);
+                    String pt = n.getPrimaryNodeTypeName();
                     AttributesImpl atts = new AttributesImpl();
                     atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+                    setProviderRootAttribute(n, atts);
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }
@@ -328,14 +330,7 @@ public class DocumentViewExporter {
                 String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
                 atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }
-            if (!"/".equals(path) && !node.getProvider().equals(node.getParent().getProvider())) {
-                if (node.getProvider().isDynamicallyMounted()) {
-                    JCRNodeWrapper mountPoint = session.getNodeByIdentifier(node.getProvider().getKey());
-                    atts.addAttribute("", ImportExportBaseService.PROVIDER_KEY_ATTR, ImportExportBaseService.PROVIDER_KEY_ATTR, CDATA, mountPoint.getPath());
-                } else {
-                    atts.addAttribute("", ImportExportBaseService.PROVIDER_KEY_ATTR, ImportExportBaseService.PROVIDER_KEY_ATTR, CDATA, node.getProvider().getKey());
-                }
-            }
+            setProviderRootAttribute(node, atts);
 
             String encodedName = ISO9075.encode(node.getName());
             startElement(encodedName, atts);
@@ -367,6 +362,17 @@ public class DocumentViewExporter {
                         }
                     }
                 }
+            }
+        }
+    }
+
+    private void setProviderRootAttribute(JCRNodeWrapper node, AttributesImpl atts) throws RepositoryException {
+        if (!"/".equals(node.getPath()) && !node.getProvider().equals(node.getParent().getProvider())) {
+            if (node.getProvider().isDynamicallyMounted()) {
+                JCRNodeWrapper mountPoint = session.getNodeByIdentifier(node.getProvider().getKey());
+                atts.addAttribute("", ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR, ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR, CDATA, mountPoint.getPath());
+            } else {
+                atts.addAttribute("", ImportExportBaseService.STATIC_MOUNT_POINT_ATTR, ImportExportBaseService.STATIC_MOUNT_POINT_ATTR, CDATA, node.getProvider().getKey());
             }
         }
     }

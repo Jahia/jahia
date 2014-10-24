@@ -247,8 +247,8 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
                 parent = n;
             }
             if (parent == null) continue;
-            String mappingSrc = getNodePath(parent);
-            String mappingDst = getNodePath(parent);
+            StringBuilder mappingSrc = new StringBuilder(getNodePath(parent));
+            StringBuilder mappingDst = new StringBuilder(getNodePath(parent));
 
             NodeList nodeList = ((Element) parent).getElementsByTagName("providers");
             if (nodeList.getLength() == 0) {
@@ -262,7 +262,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             } else {
                 parent = nodeList.item(0);
             }
-            mappingDst += "/" + parent.getNodeName();
+            mappingDst.append("/").append(parent.getNodeName());
 
             nodeList = ((Element) parent).getElementsByTagName(externalSource);
             if (nodeList.getLength() == 0) {
@@ -275,12 +275,12 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             } else {
                 parent = nodeList.item(0);
             }
-            mappingDst += "/" + parent.getNodeName();
+            mappingDst.append("/").append(parent.getNodeName());
 
             for (Node n : tree) {
                 String nodeName = n.getNodeName();
-                mappingSrc += "/" + nodeName;
-                mappingDst += "/" + nodeName;
+                mappingSrc.append("/").append(nodeName);
+                mappingDst.append("/").append(nodeName);
                 nodeList = ((Element) parent).getElementsByTagName(nodeName);
                 if (nodeList.getLength() == 0) {
                     Node node = parent.appendChild(n);
@@ -289,7 +289,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
                     parent = nodeList.item(0);
                 }
             }
-            pathMapping.put(mappingSrc, mappingDst);
+            pathMapping.put(mappingSrc.toString(), mappingDst.toString());
         }
 
         Transformer xformer = TransformerFactory.newInstance().newTransformer();

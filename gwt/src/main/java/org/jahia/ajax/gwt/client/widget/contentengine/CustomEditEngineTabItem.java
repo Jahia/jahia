@@ -83,8 +83,7 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
     @Override
     public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
         if (doValidateMethodName != null) {
-            JavaScriptObject javaScriptObject = getValidateOperations(validateResult, engine, selectedLanguage, changedI18NProperties);
-            doCall(doValidateMethodName, null);
+            doCall(doValidateMethodName, getValidateOperations(validateResult, engine, selectedLanguage, changedI18NProperties));
         }
     }
 

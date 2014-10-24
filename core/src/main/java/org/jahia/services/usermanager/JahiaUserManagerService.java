@@ -527,9 +527,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                     }
                 }
                 if (query.length() > 0) {
-                    query.insert(0, "WHERE ");
+                    query.insert(0, "and ");
                 }
-                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'/users/')");
+                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'/users/') ");
                 query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());

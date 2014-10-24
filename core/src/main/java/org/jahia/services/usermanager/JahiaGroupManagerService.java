@@ -200,7 +200,11 @@ public class JahiaGroupManagerService extends JahiaService {
     public JCRGroupNode lookupGroupByPath(String groupPath, JCRSessionWrapper session) {
         try {
             return (JCRGroupNode) session.getNode(groupPath);
+        } catch (ClassCastException e) {
+            // Not a group
+            return null;
         } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
             return null;
         }
     }
@@ -767,17 +771,14 @@ public class JahiaGroupManagerService extends JahiaService {
     public void flushMembershipCache(String memberPath) {
         final String key = StringUtils.substringAfter(memberPath, "/j:members/");
 
-        try {
-            // If member is a group, recurse on all members
-            JCRGroupNode groupNode = lookupGroupByPath("/" + key);
-            if (groupNode != null) {
-                for (JCRNodeWrapper member : groupNode.getMembers()) {
-                    flushMembershipCache("/" + key + "/j:members" + member.getPath());
-                }
+        // If member is a group, recurse on all members
+        JCRGroupNode groupNode = lookupGroupByPath("/" + key);
+        if (groupNode != null) {
+            for (JCRNodeWrapper member : groupNode.getMembers()) {
+                flushMembershipCache("/" + key + "/j:members" + member.getPath());
             }
-        } catch (ClassCastException e) {
-            // Member is not a group
         }
+
         if (key.contains("/")) {
             getMembershipCache().refresh("/" + key);
         } else {

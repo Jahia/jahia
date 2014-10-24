@@ -107,6 +107,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
+import org.springframework.binding.message.MessageResolver;
 import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
@@ -648,9 +649,13 @@ public class WebprojectHandler implements Serializable {
                                 logger.error(
                                         "Failed validation {}/{} validated in {} ms: {}",
                                         messageParams);
-                                messageContext.addMessage(new MessageBuilder()
-                                        .error()
-                                        .code("serverSettings.manageWebProjects.import.failed.validation")
+                                MessageBuilder messageBuilder = new MessageBuilder();
+                                if (validationResults.isBlocking()) {
+                                    messageBuilder = messageBuilder.error();
+                                } else {
+                                    messageBuilder = messageBuilder.warning();
+                                }
+                                messageContext.addMessage(messageBuilder.code("serverSettings.manageWebProjects.import.failed.validation")
                                         .args(messageParams)
                                         .build());
                             } else {

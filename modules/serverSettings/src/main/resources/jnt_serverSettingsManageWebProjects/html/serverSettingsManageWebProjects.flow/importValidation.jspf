@@ -26,7 +26,7 @@
                 <fmt:message key="failure.import.missingTemplateSet" var="errorSummary">
                     <fmt:param value="${checks.targetTemplateSet}"/>
                 </fmt:message>
-                <div class="alert alert-error">
+                <div class="alert${checks.blocking ? ' alert-error' : ''}">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     ${fn:escapeXml(errorSummary)}
                 </div>
@@ -36,7 +36,7 @@
                     <fmt:param value="${fn:length(checks.missingModules)}"/>
                 </fmt:message>
                 <div>
-                    <div class="alert alert-error">
+                    <div class="alert${checks.blocking ? ' alert-error' : ''}">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
                             ${fn:escapeXml(errorSummary)}
                     </div>
@@ -62,7 +62,7 @@
                 <fmt:param value="${fn:length(checks.missingMixins)}"/>
             </fmt:message>
             <div>
-                <div class="alert alert-error">
+                <div class="alert${checks.blocking ? ' alert-error' : ''}">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                         ${fn:escapeXml(errorSummary)}
                 </div>
@@ -129,7 +129,7 @@
                 <fmt:param value="${fn:length(checks.missingTemplates)}"/>
             </fmt:message>
             <div style="display: block">
-                <div class="alert alert-error">
+                <div class="alert${checks.blocking ? ' alert-error' : ''}">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                         ${fn:escapeXml(errorSummary)}
                 </div>
@@ -168,7 +168,7 @@
                 <fmt:param value="${fn:length(checks.missingPortlets)}"/>
             </fmt:message>
             <div style="display: block">
-                <div class="alert alert-error">
+                <div class="alert${checks.blocking ? ' alert-error' : ''}">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                         ${fn:escapeXml(errorSummary)}
                 </div>
@@ -191,5 +191,29 @@
     <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.MissingTemplatesValidationResult'}">
         <c:set var="templateSetsMissingCounts" value="${checks.templateSetsMissingCounts}"
                scope="request"/>
+    </c:if>
+    <c:if test="${checks.class.name == 'org.jahia.services.importexport.validation.ProviderAvailabilityValidatorResult'}">
+        <fmt:message key="serverSettings.manageWebProjects.import.unavailableProviders" var="errorSummary">
+            <fmt:param value="${fn:length(checks.unavailableProviders)}"/>
+        </fmt:message>
+        <div style="display: block">
+            <div class="alert${checks.blocking ? ' alert-error' : ''}">
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+                    ${fn:escapeXml(errorSummary)}
+            </div>
+
+            <fmt:message key="label.detailed" var="i18nHelp"/><c:set var="i18nHelp"
+                                                                     value="${fn:escapeXml(i18nHelp)}"/>
+            <a class="btn btn-info" href="#details"
+               onclick="$('#validationErrorsDetailsProviders${importInfoMap.value.siteKey}').toggle(); return false;"
+               title="${i18nHelp}"><i class="icon-info-sign icon-white"></i>&nbsp;${i18nHelp}</a>
+        </div>
+        <div id="validationErrorsDetailsProviders${importInfoMap.value.siteKey}" style="display: none">
+            <ul>
+                <c:forEach var="provider" items="${checks.unavailableProviders}">
+                    <li>${fn:escapeXml(provider)}</li>
+                </c:forEach>
+            </ul>
+        </div>
     </c:if>
 </c:forEach>

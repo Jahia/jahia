@@ -143,6 +143,20 @@ public class ValidationResults implements Serializable {
     }
 
     /**
+     * Returns <code>true</code> if the current validation blocks the import.
+     *
+     * @return <code>true</code> if the current validation result is blocking.
+     */
+    public boolean isBlocking() {
+        for (ValidationResult result : results) {
+            if (!result.isSuccessful() && result.isBlocking()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Merges the results with the provided and returns a new instance of the {@link ValidationResults} object having "merged" results.
      * 
      * @param toBeMergedWith

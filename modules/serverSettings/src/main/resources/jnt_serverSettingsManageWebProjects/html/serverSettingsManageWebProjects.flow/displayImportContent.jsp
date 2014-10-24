@@ -29,8 +29,8 @@
 </template:addResources>
 
     <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-        <c:if test="${message.severity eq 'ERROR'}">
-            <div class="alert alert-error">
+        <c:if test="${message.severity eq 'ERROR' or message.severity eq 'WARNING'}">
+            <div class="alert${message.severity eq 'ERROR' ? ' alert-error' : ''}">
                 <button type="button" class="close" data-dismiss="alert">&times;</button>
                     ${message.text}
             </div>
@@ -42,7 +42,7 @@
             <jsp:useBean id="validationErrors" class="java.util.HashMap" scope="request"/>
             <c:forEach items="${webprojectHandler.importsInfos}" var="importInfoMap">
                     <label for="${importInfoMap.key}">
-                        <input type="checkbox" class="importCheckbox" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
+                        <input type="checkbox" class="importCheckbox${importInfoMap.value.validationResult.blocking ? ' importBlocking' : ''}" id="${importInfoMap.key}" name="importsInfos['${importInfoMap.key}'].selected" value="true"
                                <c:if test="${importInfoMap.value.selected}">checked="checked"</c:if>/> ${importInfoMap.key}
                         <input type="hidden" id="${importInfoMap.key}" name="_importsInfos['${importInfoMap.key}'].selected"/>
                     </label>
@@ -132,25 +132,15 @@
 <c:if test="${not empty validationErrors}">
 <script type="text/javascript">
     $(document).ready(function () {
-        var importErrors = [<c:forEach items="${validationErrors}" var="error" varStatus="status">"${functions:escapeJavaScript(error.key)}"<c:if test="${not status.last}">, </c:if></c:forEach>];
-        $(".importCheckbox").change(function() {
-            var checkedImports = [];
-            $(".importCheckbox:checked").each(function() {
-                checkedImports.push($(this).attr('id'));
-            });
-            var disabled = false;
-            $.each(importErrors, function( index, value ) {
-               if ($.inArray(value, checkedImports) > -1) {
-                   disabled = true;
-                   return false;
-               }
-            });
-            if (disabled) {
-                $("#${currentNode.identifier}-processImport").attr("disabled", "disabled");
-            } else {
+        function checkBlockingImports() {
+            if ($(".importBlocking:checked").length == 0) {
                 $("#${currentNode.identifier}-processImport").removeAttr("disabled");
+            } else {
+                $("#${currentNode.identifier}-processImport").attr("disabled", "disabled");
             }
-        });
+        }
+        checkBlockingImports();
+        $(".importBlocking").change(checkBlockingImports);
     });
 </script>
 </c:if>

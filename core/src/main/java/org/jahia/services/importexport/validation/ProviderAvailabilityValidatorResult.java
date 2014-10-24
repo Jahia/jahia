@@ -71,28 +71,36 @@
  */
 package org.jahia.services.importexport.validation;
 
+import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Properties;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-/**
- * Validator that gets the list of all sites and sites properties from the xml import file
- */
-public class SitesValidatorResult implements ValidationResult, Serializable {
-    private static final long serialVersionUID = -6775149135043628858L;
-    private Map<String, Properties> sitesProperties;
+public class ProviderAvailabilityValidatorResult implements ValidationResult, Serializable {
 
-    public SitesValidatorResult(Map<String, Properties> sitesProperties) {
-        this.sitesProperties = sitesProperties;
+    private final Set<String> unavailableProviders;
+
+    public ProviderAvailabilityValidatorResult(Set<String> unavailableProviders) {
+        this.unavailableProviders = unavailableProviders;
     }
 
+    public ProviderAvailabilityValidatorResult(ProviderAvailabilityValidatorResult result, ProviderAvailabilityValidatorResult toBeMergedWith) {
+        this.unavailableProviders = new LinkedHashSet<String>(result.getUnavailableProviders());
+        this.unavailableProviders.addAll(toBeMergedWith.getUnavailableProviders());
+    }
+
+    @Override
     public boolean isSuccessful() {
-        return true;
+        return unavailableProviders.isEmpty();
     }
 
+    @Override
     public ValidationResult merge(ValidationResult toBeMergedWith) {
-        return toBeMergedWith;
+        return toBeMergedWith == null || toBeMergedWith.isSuccessful()
+                || !(toBeMergedWith instanceof ProviderAvailabilityValidatorResult) ? this
+                : new ProviderAvailabilityValidatorResult(this,
+                (ProviderAvailabilityValidatorResult) toBeMergedWith);
     }
 
     @Override
@@ -100,7 +108,18 @@ public class SitesValidatorResult implements ValidationResult, Serializable {
         return false;
     }
 
-    public Map<String, Properties> getSitesProperties() {
-        return sitesProperties;
+    @Override
+    public String toString() {
+        StringBuilder out = new StringBuilder(128);
+        out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))
+                .append("=").append(isSuccessful() ? "successful" : "failure");
+        out.append(", unavailableProviders=").append(unavailableProviders);
+        out.append("]");
+
+        return out.toString();
+    }
+
+    public Set<String> getUnavailableProviders() {
+        return unavailableProviders;
     }
 }

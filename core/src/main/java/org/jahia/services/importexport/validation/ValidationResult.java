@@ -96,6 +96,13 @@ public interface ValidationResult {
      */
     ValidationResult merge(ValidationResult toBeMergedWith);
 
+    /**
+     * Returns <code>true</code> if the current validation blocks the import.
+     *
+     * @return <code>true</code> if the current validation result is blocking.
+     */
+    boolean isBlocking();
+
     class FailedValidationResult implements ValidationResult, Serializable {
         private final Exception exception;
 
@@ -111,6 +118,11 @@ public interface ValidationResult {
         @Override
         public ValidationResult merge(ValidationResult toBeMergedWith) {
             return toBeMergedWith;
+        }
+
+        @Override
+        public boolean isBlocking() {
+            return true;
         }
 
         @Override

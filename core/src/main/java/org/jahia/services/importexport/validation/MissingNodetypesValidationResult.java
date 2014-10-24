@@ -177,6 +177,11 @@ public class MissingNodetypesValidationResult implements ValidationResult, Seria
     }
 
     @Override
+    public boolean isBlocking() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
         out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))

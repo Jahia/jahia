@@ -168,7 +168,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
 
-    protected static final String PROVIDER_KEY_ATTR = "__provider__";
+    public static final String PROVIDER_KEY_ATTR = "__provider__";
 
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;

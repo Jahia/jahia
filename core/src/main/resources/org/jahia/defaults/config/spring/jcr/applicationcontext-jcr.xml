@@ -600,6 +600,9 @@
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
                 <bean class="org.jahia.services.importexport.validation.MissingPortletsValidator"/>
+                <bean class="org.jahia.services.importexport.validation.ProviderAvailabilityValidator">
+                    <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
+                </bean>
             </list>
         </property>
     </bean>

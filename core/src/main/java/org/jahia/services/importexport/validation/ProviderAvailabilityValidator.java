@@ -72,35 +72,79 @@
 package org.jahia.services.importexport.validation;
 
 
-import java.io.Serializable;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.importexport.ImportExportBaseService;
+import org.xml.sax.Attributes;
+
+import javax.jcr.RepositoryException;
+import java.util.LinkedHashSet;
 import java.util.Map;
-import java.util.Properties;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
- * Validator that gets the list of all sites and sites properties from the xml import file
+ * Import validator that checks if providers needed for this import are available
  */
-public class SitesValidatorResult implements ValidationResult, Serializable {
-    private static final long serialVersionUID = -6775149135043628858L;
-    private Map<String, Properties> sitesProperties;
+public class ProviderAvailabilityValidator implements ImportValidator {
 
-    public SitesValidatorResult(Map<String, Properties> sitesProperties) {
-        this.sitesProperties = sitesProperties;
-    }
+    private JCRSessionFactory jcrSessionFactory;
 
-    public boolean isSuccessful() {
-        return true;
-    }
+    private JCRSessionWrapper currentUserSession;
 
-    public ValidationResult merge(ValidationResult toBeMergedWith) {
-        return toBeMergedWith;
+    private Set<String> visitedPaths = new TreeSet<String>();
+
+    private Set<String> neededProviders = new LinkedHashSet<String>();
+
+    @Override
+    public ValidationResult getResult() {
+        try {
+            Map<String, JCRStoreProvider> providers = jcrSessionFactory.getProviders();
+            Set<String> unavailableProviders = new LinkedHashSet<String>();
+            for (String p : neededProviders) {
+                if (StringUtils.startsWith(p, "/")) {
+                    if (visitedPaths.contains(p)) {
+                        continue;
+                    }
+                    if (getCurrentUserSession().nodeExists(p)) {
+                        String identifier = getCurrentUserSession().getNode(p).getIdentifier();
+                        if (providers.containsKey(identifier) && providers.get(identifier).isAvailable()) {
+                            continue;
+                        }
+                    }
+                } else if (providers.containsKey(p) && providers.get(p).isAvailable()) {
+                    continue;
+                }
+
+                unavailableProviders.add(p);
+            }
+            return new ProviderAvailabilityValidatorResult(unavailableProviders);
+        } catch (RepositoryException e) {
+            return new ValidationResult.FailedValidationResult(e);
+        }
     }
 
     @Override
-    public boolean isBlocking() {
-        return false;
+    public void validate(String decodedLocalName, String decodedQName, String currentPath, Attributes atts) {
+        String path = StringUtils.removeStart(currentPath, "/content");
+        if (StringUtils.isNotBlank(path)) {
+            visitedPaths.add(path);
+        }
+        if (atts.getIndex(ImportExportBaseService.PROVIDER_KEY_ATTR) > -1) {
+            neededProviders.add(atts.getValue(ImportExportBaseService.PROVIDER_KEY_ATTR));
+        }
     }
 
-    public Map<String, Properties> getSitesProperties() {
-        return sitesProperties;
+    private JCRSessionWrapper getCurrentUserSession() throws RepositoryException {
+        if (currentUserSession == null) {
+            currentUserSession = jcrSessionFactory.getCurrentUserSession();
+        }
+        return currentUserSession;
+    }
+
+    public void setJcrSessionFactory(JCRSessionFactory jcrSessionFactory) {
+        this.jcrSessionFactory = jcrSessionFactory;
     }
 }

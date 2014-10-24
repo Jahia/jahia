@@ -178,6 +178,11 @@ public class MissingModulesValidationResult implements ValidationResult, Seriali
     }
 
     @Override
+    public boolean isBlocking() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         StringBuilder out = new StringBuilder(128);
         out.append("[").append(StringUtils.substringAfterLast(getClass().getName(), "."))

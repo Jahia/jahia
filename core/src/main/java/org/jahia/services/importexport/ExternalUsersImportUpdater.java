@@ -71,7 +71,8 @@
  */
 package org.jahia.services.importexport;
 
-import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.services.content.JCRSessionFactory;
@@ -117,25 +118,21 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
         return version.compareTo(sevenOne) < 0 || ( version.compareTo(sevenOne) == 0 && buildNumber < 50366);  // User & group refactoring
     }
 
-    public File updateImport(File importFile)  {
+    public File updateImport(File importFile, String fileName, String fileType)  {
         Map<String, String> pathMapping = new HashMap<String, String>();
         File newImportFile = null;
         FileInputStream in = null;
         NoCloseZipInputStream zin = null;
         OutputStream out = null;
         ZipOutputStream zout = null;
+        boolean updated = false;
         try {
             newImportFile = File.createTempFile("import", ".zip");
             in = new FileInputStream(importFile);
             zin = new NoCloseZipInputStream(new BufferedInputStream(in));
             out = new FileOutputStream(newImportFile);
             zout = new ZipOutputStream(out);
-        } catch (IOException e) {
-            logger.error("Cannot update import file", e);
-            return importFile;
-        }
 
-        try {
             while (true) {
                 ZipEntry zipentry = zin.getNextEntry();
                 if (zipentry == null) break;
@@ -143,11 +140,16 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
                 if (LIVE_REPOSITORY_XML.equals(name) || REPOSITORY_XML.equals(name)) {
                     zout.putNextEntry(new ZipEntry(name));
-                    transform(zin, zout, pathMapping);
+                    if ("users.zip".equalsIgnoreCase(fileName)) {
+                        updated |= transform(zin, zout, pathMapping);
+                    } else {
+                        updated |= clean(zin, zout, pathMapping);
+                    }
                 }
 
             }
-            if (pathMapping.isEmpty()) {
+            if (!updated) {
+                FileUtils.deleteQuietly(newImportFile);
                 return importFile;
             }
 
@@ -211,19 +213,34 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             }
         }
 
+        FileUtils.deleteQuietly(newImportFile);
         return importFile;
     }
 
 
+    private boolean clean(InputStream inputStream, OutputStream outputStream, Map<String, String> pathMapping) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, TransformerException {
+        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
 
-    private void transform(InputStream inputStream, OutputStream outputStream, Map<String, String> pathMapping) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, TransformerException {
+        XPath xpath = XPathFactory.newInstance().newXPath();
+        NodeList nodes = (NodeList) xpath.evaluate("//*[@*[name()='jcr:primaryType'] = 'jnt:usersFolder']", doc, XPathConstants.NODESET);
+
+        for (int i = 0; i < nodes.getLength(); i++) {
+            Node legacyExtUser = nodes.item(i);
+            Node parent = legacyExtUser.getParentNode();
+            parent.removeChild(legacyExtUser);
+        }
+
+        Transformer xformer = TransformerFactory.newInstance().newTransformer();
+        xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
+
+        return nodes.getLength() > 0;
+    }
+
+    private boolean transform(InputStream inputStream, OutputStream outputStream, Map<String, String> pathMapping) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, TransformerException {
         Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList nodes = (NodeList) xpath.evaluate("//*[@*[name()='jcr:primaryType'] = 'jnt:user' and @*[name()='j:external'] = 'true']", doc, XPathConstants.NODESET);
-        if (nodes.getLength() == 0) {
-            return;
-        }
 
         for (int i = 0; i < nodes.getLength(); i++) {
             Node legacyExtUser = nodes.item(i);
@@ -294,6 +311,8 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
         Transformer xformer = TransformerFactory.newInstance().newTransformer();
         xformer.transform(new DOMSource(doc), new StreamResult(outputStream));
+
+        return nodes.getLength() > 0;
     }
 
     private boolean hasChildElement(Node node) {

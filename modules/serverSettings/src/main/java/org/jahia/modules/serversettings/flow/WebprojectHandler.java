@@ -107,7 +107,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
-import org.springframework.binding.message.MessageResolver;
 import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.io.FileSystemResource;
@@ -729,6 +728,11 @@ public class WebprojectHandler implements Serializable {
             }
         }
 
+        Set<File> files = new HashSet<File>();
+        for (ImportInfo infos : importsInfos.values()) {
+            files.add(infos.getImportFile());
+        }
+
         try {
             for (final ImportInfo infos : importsInfos.values()) {
                 if (infos.isSelected()) {
@@ -737,9 +741,9 @@ public class WebprojectHandler implements Serializable {
                         try {
                             final File file = ImportUpdateService.getInstance().updateImport(
                                     infos.getImportFile(),
-                                    new Version(infos.getOriginatingJahiaRelease()),
+                                    infos.getImportFileName(), infos.getType(), new Version(infos.getOriginatingJahiaRelease()),
                                     infos.getOriginatingBuildNumber());
-
+                            files.add(file);
                             final JahiaSite system = sitesService.getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
 
                             final Map<String, String> pathMapping = JCRSessionFactory.getInstance().getCurrentUserSession()
@@ -788,9 +792,9 @@ public class WebprojectHandler implements Serializable {
                         try {
                             final File file = ImportUpdateService.getInstance().updateImport(
                                     infos.getImportFile(),
-                                    new Version(infos.getOriginatingJahiaRelease()),
+                                    infos.getImportFileName(), infos.getType(), new Version(infos.getOriginatingJahiaRelease()),
                                     infos.getOriginatingBuildNumber());
-
+                            files.add(file);
                             try {
                                 final String finalTpl = tpl;
                                 final String finalLegacyImportFilePath = legacyImportFilePath;
@@ -837,8 +841,8 @@ public class WebprojectHandler implements Serializable {
                 }
             }
         } finally {
-            for (ImportInfo infos : importsInfos.values()) {
-                FileUtils.deleteQuietly(infos.getImportFile());
+            for (File file : files) {
+                FileUtils.deleteQuietly(file);
             }
         }
 

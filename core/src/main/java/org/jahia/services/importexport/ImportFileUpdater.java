@@ -93,9 +93,11 @@ public abstract class ImportFileUpdater {
     /**
      * Method used to update an import zip file
      * @param importFile
+     * @param fileName
+     * @param fileType
      * @return the updated zip file
      */
-    public abstract File updateImport(File importFile);
+    public abstract File updateImport(File importFile, String fileName, String fileType);
 
     public void init() {
         importUpdateService.registerUpdater(this);

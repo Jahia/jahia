@@ -112,15 +112,16 @@ public class ImportUpdateService {
     /**
      * Method used to update if necessary an import zip file based on the originating version and build number
      * @param importFile
+     * @param fileName
+     * @param fileType @return updated file OR the original file if no updates have been performed
      * @param version
      * @param buildNumber
-     * @return updated file OR the original file if no updates have been performed
      */
-    public File updateImport(File importFile, Version version, int buildNumber) {
+    public File updateImport(File importFile, String fileName, String fileType, Version version, int buildNumber) {
         File file = importFile;
         for (ImportFileUpdater updater : updaters) {
             if (updater.mustUpdate(version, buildNumber)) {
-                file = updater.updateImport(file);
+                file = updater.updateImport(file, fileName, fileType);
             }
         }
         return file;

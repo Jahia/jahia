@@ -987,7 +987,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @return <code>true</code> if the specified node, backed by this provider, is included during the export operation
      *         <code>false</code> if it isn't
      */
-    public boolean canExportNode(JCRNodeWrapper node) {
+    public boolean canExportNode(Node node) {
         return true;
     }
 

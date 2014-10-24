@@ -183,7 +183,9 @@ public class DocumentViewExporter {
             Collections.sort(subList, nodes.comparator());
             nodesList.removeAll(subList);
             nodesList.addAll(subList);
-            exportNode(nodesList.get(i));
+            if (nodesList.get(i).getProvider().canExportNode(nodesList.get(i))) {
+                exportNode(nodesList.get(i));
+            }
         }
 //        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
 //            JCRNodeWrapper node = iterator.next();

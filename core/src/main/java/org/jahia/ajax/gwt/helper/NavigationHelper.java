@@ -570,11 +570,13 @@ public class NavigationHelper {
                         new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
             }
             try {
-                NodeIterator usages = node.getSharedSet();
-                while (usages.hasNext()) {
-                    JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
-                    if (!usage.getPath().equals(node.getPath()) && !usage.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
-                        addUsage(result, usage, "shared");
+                if (node.isNodeType("mix:shareable")) {
+                    NodeIterator usages = node.getSharedSet();
+                    while (usages.hasNext()) {
+                        JCRNodeWrapper usage = (JCRNodeWrapper) usages.next();
+                        if (!usage.getPath().equals(node.getPath()) && !usage.getPath().startsWith("/"+Constants.JCR_SYSTEM)) {
+                            addUsage(result, usage, "shared");
+                        }
                     }
                 }
             } catch (RepositoryException e) {

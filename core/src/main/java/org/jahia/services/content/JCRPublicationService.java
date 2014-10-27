@@ -314,8 +314,10 @@ public class JCRPublicationService extends JahiaService {
                 }
             });
             // Refresh this user sessions after publication
-            sessionFactory.getCurrentUserSession(sourceWorkspace).refresh(false);
-            sessionFactory.getCurrentUserSession(destinationWorkspace).refresh(false);
+            if (sessionFactory.getCurrentUser() != null) {
+                sessionFactory.getCurrentUserSession(sourceWorkspace).refresh(false);
+                sessionFactory.getCurrentUserSession(destinationWorkspace).refresh(false);
+            }
         }
     }
 

@@ -79,7 +79,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.Event;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -88,34 +87,23 @@ import java.util.List;
  * This listener gets all event from the repository synchronously and store them in the observation manager.
  * Events will be consumed by all listeners when JCRObservationManager.consume() is called.
  *
- * @author toto
+ * User: toto
+ * Date: Nov 25, 2009
+ * Time: 1:59:20 PM
  */
 public class JCRObservationManagerDispatcher implements SynchronousEventListener {
     
     private static final Logger logger = LoggerFactory.getLogger(JCRObservationManagerDispatcher.class);
 
+    private JCRStoreProvider provider;
     private String workspace;
-    private String mountPoint;
-    private String relativeRoot;
+
+    public void setProvider(JCRStoreProvider provider) {
+        this.provider = provider;
+    }
 
     public void setWorkspace(String workspace) {
         this.workspace = workspace;
-    }
-
-    public String getMountPoint() {
-        return mountPoint;
-    }
-
-    public void setMountPoint(String mountPoint) {
-        this.mountPoint = mountPoint;
-    }
-
-    public String getRelativeRoot() {
-        return relativeRoot;
-    }
-
-    public void setRelativeRoot(String relativeRoot) {
-        this.relativeRoot = relativeRoot;
     }
 
     /**
@@ -135,13 +123,12 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
      *
      * @param events The event set received.
      */
-    @Override
     public void onEvent(EventIterator events) {
         List<Event> external = null;
         while (events.hasNext()) {
-            Event event = events.nextEvent();
-            if (event instanceof EventImpl && !((EventImpl)event).isExternal()) {
-                JCRObservationManager.addEvent(event, mountPoint, relativeRoot);
+            EventImpl event = (EventImpl) events.next();
+            if (!event.isExternal()) {
+                JCRObservationManager.addEvent(event);
             } else {
                 if (external == null) {
                     external = new ArrayList<Event>();
@@ -157,9 +144,7 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<JCRObservationManager.EventWrapper>();
                         for (Event event : fexternal) {
-                            if (event.getPath().equals(relativeRoot) || event.getPath().startsWith(relativeRoot + '/')) {
-                                eventWrappers.add(JCRObservationManager.getEventWrapper(event, session, mountPoint, relativeRoot));
-                            }
+                            eventWrappers.add(JCRObservationManager.getEventWrapper(event,session));
                         }
                         JCRObservationManager.consume(eventWrappers, session, JCRObservationManager.EXTERNAL_SYNC, JCRObservationManager.EXTERNAL_SYNC);
                         return null;

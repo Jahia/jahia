@@ -218,7 +218,6 @@ public class Export extends JahiaController implements ServletContextAware {
                         params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
 //                    }
                     params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
-                    params.put(ImportExportService.INCLUDE_MOUNTS, Boolean.TRUE);
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);
                     params.put(ImportExportService.XSL_PATH, cleanupXsl);
 

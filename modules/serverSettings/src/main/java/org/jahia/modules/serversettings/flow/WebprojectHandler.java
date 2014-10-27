@@ -142,14 +142,13 @@ public class WebprojectHandler implements Serializable {
 
     static Logger logger = LoggerFactory.getLogger(WebprojectHandler.class);
     private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml",
-            "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip", "mounts.zip"));
+            "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip"));
     private static final Map<String, Integer> RANK;
 
     private static final long serialVersionUID = -6643519526225787438L;
 
     static {
-        RANK = new HashMap<String, Integer>(8);
-        RANK.put("mounts.zip", 4);
+        RANK = new HashMap<String, Integer>(3);
         RANK.put("roles.xml", 5);
         RANK.put("roles.zip", 5);
         RANK.put("users.zip", 10);

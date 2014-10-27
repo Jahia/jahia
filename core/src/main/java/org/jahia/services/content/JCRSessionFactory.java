@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
@@ -377,7 +378,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     public Map<String, JCRStoreProvider> getMountPoints() {
         return mountPoints;
     }
-    
+
     public Map<String, JCRStoreProvider> getProviders() {
         return providers;
     }
@@ -473,7 +474,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         for (JCRStoreProvider p : providerList) {
             providerMap.put(p.getKey(), p);
         }
-        providers = Collections.unmodifiableMap(providerMap);
+        providers = UnmodifiableMap.decorate(providerMap);
     }
 
     /**
@@ -514,40 +515,11 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         }
     }
 
-    /**
-     * Returns the provider which is handling the provided node path. If there is no other provider which can handle the specified node
-     * path, the default Jackrabbit ("/") provider is returned.
-     * 
-     * @param path
-     *            the node path to be checked
-     * @return the provider which handles the provided node path or the default provider if there is no other provider which can handle the
-     *         specified node path
-     */
     public JCRStoreProvider getProvider(String path) {
-        return getProvider(path, true);
-    }
-
-    /**
-     * Returns the provider which is handling the provided node path.
-     * 
-     * @param path
-     *            the node path to be checked
-     * @param includeDefault
-     *            if <code>true</code> the default provider is considered; otherwise only the non-default providers (others that "/") are
-     *            checked.
-     * @return the provider which handles the provided node path or null if there is no such provider; note, please, if
-     *         <code>includeDefault</code> parameter is passed with true value the default provider is returned if there is no other
-     *         provider which can handle the specified node path
-     */
-    public JCRStoreProvider getProvider(String path, boolean includeDefault) {
         Map<String, JCRStoreProvider> currentMountPoints = getMountPoints();
-        if (includeDefault && currentMountPoints.size() == 1) {
-            return getDefaultProvider();
-        }
-        for (Map.Entry<String, JCRStoreProvider> mp : currentMountPoints.entrySet()) {
-            if ((includeDefault && mp.getValue().isDefault()) || path.equals(mp.getKey())
-                    || path.startsWith(mp.getKey() + "/")) {
-                return mp.getValue();
+        for (String mp : currentMountPoints.keySet()) {
+            if (mp.equals("/") || path.equals(mp) || path.startsWith(mp + "/")) {
+                return currentMountPoints.get(mp);
             }
         }
         return null;
@@ -620,15 +592,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
     public void setValidatorFactoryBean(LocalValidatorFactoryBean validatorFactoryBean) {
         this.validatorFactoryBean = validatorFactoryBean;
-    }
-
-    /**
-     * Returns <code>true</code> if more than one (default) mount points are registered.
-     * 
-     * @return <code>true</code> if more than one (default) mount points are registered; <code>false</code> otherwise
-     */
-    public boolean areMultipleMountPointsRegistered() {
-        return mountPoints.size() > 1;
     }
 
 }

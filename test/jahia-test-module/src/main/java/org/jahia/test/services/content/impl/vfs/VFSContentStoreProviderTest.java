@@ -229,21 +229,9 @@ public class VFSContentStoreProviderTest {
             createFolder(session, "folder1", mountNode);
             JCRNodeWrapper folder1Node = getNode(session, MOUNTS_DYNAMIC_MOUNT_POINT + "/folder1");
             assertNode(folder1Node, 0);
-            
-            assertTrue("Node schould exist using session.nodeExists", session.nodeExists(MOUNTS_DYNAMIC_MOUNT_POINT + "/folder1"));
-            assertTrue("Node schould exist using node.hasNode(simpleName)", session.getNode(MOUNTS_DYNAMIC_MOUNT_POINT).hasNode("folder1"));
-            assertTrue("Node schould exist using parent.hasNode(relativePath)", session.getNode(mountNode.getParent().getPath()).hasNode(mountNode.getName() + "/folder1"));
-            
             session.checkout(folder1Node);
             folder1Node.remove();
             session.save();
-            
-            // get mount point node from parent
-            JCRNodeWrapper sameMountNode = mountNode.getParent().getNode(mountNode.getName());
-            assertEquals("Node objects are not the same", mountNode, sameMountNode);
-            assertEquals("Node wrappers/decorators are not of the same class", mountNode.getClass(),
-                    sameMountNode.getClass());
-            assertEquals("Real nodes are not the same", mountNode.getRealNode(), sameMountNode.getRealNode());
 
             unMountDynamicMountPoint(jahiaRootUser);
 
@@ -542,4 +530,5 @@ public class VFSContentStoreProviderTest {
         node.addNode(name, "jnt:folder");
         session.save();
     }
+
 }

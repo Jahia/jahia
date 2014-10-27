@@ -532,11 +532,10 @@
 // Repository mounts
 //---------------------------------------------------------
 
-[jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable
+[jnt:mountPoint] > nt:hierarchyNode, jmix:nodenameInfo, jmix:basemetadata, jmix:publication
 // j:root and j:provider deprecated
  - j:root (string) indexed=no hidden
  - j:provider (string) indexed=no hidden
- - mountPoint (weakreference, picker[type='editoriallink']) nofulltext < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
 
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (nt:base)

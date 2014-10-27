@@ -902,4 +902,6 @@ public class Service extends JahiaService {
     public void setGroupManagerService(JahiaGroupManagerService groupManagerService) {
         this.groupManagerService = groupManagerService;
     }
+
+
 }

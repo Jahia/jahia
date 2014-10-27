@@ -119,7 +119,6 @@ import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.rmi.Naming;
 import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * A store provider to handle different back-end stores within a site. There are multiple
@@ -182,12 +181,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;
-    
-    private boolean registerObservers = true;
-    
-    private boolean observersUseRelativeRoot = true;
-    
-    private Map<String, JCRSessionWrapper> observerSessions;
 
     public String getKey() {
         return key;
@@ -353,63 +346,30 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void start() throws JahiaInitializationException {
-        startAndCheckAvailability();
-    }
-
-    public boolean startAndCheckAvailability() throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
-            final boolean available = isAvailable();
+            getSessionFactory().addProvider(this);
 
-            if (available && !initialized) {
-                getSessionFactory().addProvider(this);
-
-                boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
-                if (isProcessingServer) {
-                    initNodeTypes();
-                }
-                initObservers();
-                initialized = true;
-                initContent();
-                initDynamicMountPoints();
-
-                if (groovyPatcher != null && isProcessingServer) {
-                    groovyPatcher.executeScripts("jcrStoreProviderStarted");
-                }
+            boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
+            if (isProcessingServer) {
+                initNodeTypes();
             }
+            initObservers();
+            initialized = true;
+            initContent();
+            initDynamicMountPoints();
 
             authenticationType = tmpAuthenticationType;
-
-            return available;
+            if (groovyPatcher != null && isProcessingServer) {
+                groovyPatcher.executeScripts("jcrStoreProviderStarted");
+            }
         } catch (Exception e) {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);
         }
     }
-
-    public boolean isAvailable() {
-        JCRSessionWrapper systemSession = null;
-        try {
-            systemSession = sessionFactory.getSystemSession();
-            final Session providerSession = systemSession.getProviderSession(this);
-            providerSession.getRootNode();
-            return true;
-        } catch (RepositoryException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
-            } else {
-                logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
-            }
-            return false;
-        } finally {
-            if(systemSession != null) {
-                systemSession.logout();
-            }
-        }
-    }
-
 
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
@@ -439,27 +399,18 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected void initObservers() throws RepositoryException {
-        if (!registerObservers) {
-            return;
-        }
         Set<String> workspaces = service.getListeners().keySet();
-        observerSessions = new HashMap<String, JCRSessionWrapper>(workspaces.size());
         for (String ws : workspaces) {
             // This session must not be released
             final JCRSessionWrapper session = getSystemSession(null, ws);
-            observerSessions.put(ws, session);
             final Workspace workspace = session.getProviderSession(this).getWorkspace();
 
             ObservationManager observationManager = workspace.getObservationManager();
             JCRObservationManagerDispatcher listener = new JCRObservationManagerDispatcher();
             listener.setWorkspace(workspace.getName());
-            listener.setMountPoint(mountPoint);
-            listener.setRelativeRoot(relativeRoot);
-            observationManager.addEventListener(listener, Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED
-                    + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
-                    observersUseRelativeRoot ? StringUtils.defaultIfEmpty(relativeRoot, "/") : "/", true, null, null,
-                    false);
-            observerSessions.put(ws, session);
+            observationManager.addEventListener(listener,
+                    Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
+                    "/", true, null, null, false);
         }
     }
 
@@ -528,7 +479,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
-        unregisterObservers();
         getSessionFactory().removeProvider(key);
         rmiUnbind();
         initialized = false;
@@ -802,9 +752,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public JCRNodeWrapper getNodeWrapper(final Node objectNode, String path, JCRNodeWrapper parent, JCRSessionWrapper session) throws RepositoryException {
-        if (!objectNode.getPath().startsWith(relativeRoot)) {
-            throw new PathNotFoundException("Invalid node : " + objectNode.getPath());
-        }
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
             JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
@@ -969,35 +916,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         isDynamicallyMounted = dynamicallyMounted;
     }
 
-    /**
-     * @deprecated now canExportNode and canExportProperty are used
-     * Indicates if the nodes, backed by this provider, are considered during export operation.
-     * 
-     * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
-     *         they are skipped
-     */
-    @Deprecated
     public boolean isExportable() {
-        return true;
-    }
-
-    /**
-     * Indicates if the specified node, backed by this provider, is considered during export operation
-     *
-     * @return <code>true</code> if the specified node, backed by this provider, is included during the export operation
-     *         <code>false</code> if it isn't
-     */
-    public boolean canExportNode(Node node) {
-        return true;
-    }
-
-    /**
-     * Indicates if the specified property, backed by this provider, is considered during export operation
-     *
-     * @return <code>true</code> if the specified property, backed by this provider, is included during the export operation
-     *         <code>false</code> if it isn't
-     */
-    public boolean canExportProperty(Property property) {
         return true;
     }
 
@@ -1222,32 +1141,5 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
         this.nodeTypesDBService = nodeTypesDBService;
-    }
-
-    public void setRegisterObservers(boolean registerObservers) {
-        this.registerObservers = registerObservers;
-    }
-
-    public void setObserversUseRelativeRoot(boolean observersUseRelativePath) {
-        this.observersUseRelativeRoot = observersUseRelativePath;
-    }
-
-    protected void unregisterObservers() {
-        if (!registerObservers || observerSessions == null || observerSessions.isEmpty()) {
-            return;
-        }
-        for (Iterator<Entry<String, JCRSessionWrapper>> it = observerSessions.entrySet().iterator(); it.hasNext();) {
-            Entry<String, JCRSessionWrapper> sessionEntry = it.next();
-            try {
-                sessionEntry.getValue().logout();
-                logger.info("Closed session for provider {} and workspace {}", getMountPoint(), sessionEntry.getKey());
-            } catch (Exception e) {
-                logger.warn(
-                        "Error closing session for provider " + getMountPoint() + " and workspace "
-                                + sessionEntry.getKey(), e);
-            } finally {
-                it.remove();
-            }
-        }
     }
 }

@@ -235,28 +235,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
             }
         }
 
-        if (atts.getIndex(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR) > -1) {
-            String providerKey = atts.getValue(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR);
-            Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
-            if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
-                error++;
-                return;
-            }
-        }
-        if (atts.getIndex(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR) > -1) {
-            try {
-                String providerKey = session.getNode(atts.getValue(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR)).getIdentifier();
-                Map<String, JCRStoreProvider> providers = JCRSessionFactory.getInstance().getProviders();
-                if (!providers.containsKey(providerKey) || !providers.get(providerKey).isAvailable()) {
-                    error++;
-                    return;
-                }
-            } catch (RepositoryException e) {
-                error++;
-                return;
-            }
-        }
-
         String decodedLocalName = ISO9075.decode(localName);
 
         for (Map.Entry<Pattern, String> entry : replacements.entrySet()) {
@@ -367,7 +345,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     }
                 }
 
-                if (!isValid || (child.getDefinition() != null && child.getDefinition().allowsSameNameSiblings())) {
+                if (!isValid || child.getDefinition().allowsSameNameSiblings()) {
                     isValid = false;
                     if (nodes.peek().hasPermission("jcr:addChildNodes")) {
                         if ("jnt:acl".equals(pt) && !nodes.peek().isNodeType("jmix:accessControlled")) {
@@ -479,9 +457,6 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                         if (child.isFile() && currentFilePath == null) {
                             currentFilePath = child.getPath();
                         }
-                        if (child.isNodeType("jnt:mountPoint")) {
-                            session.save();
-                        }
 //                    }
                     } else {
                         throw new AccessDeniedException("Missing jcr:addChildNodes permission for user "+session.getUser().getName());
@@ -499,8 +474,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (originalUuid != null) {
                     uuidMapping.put(originalUuid, child.getIdentifier());
                 }
-                if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")
-                        && !JCRSessionFactory.getInstance().getMountPoints().containsKey(child.getPath())) {
+                if (nodes.peek().getPrimaryNodeType().hasOrderableChildNodes() && nodes.peek().hasPermission("jcr:write")) {
                     nodes.peek().orderBefore(decodedQName,null);
                 }
             }

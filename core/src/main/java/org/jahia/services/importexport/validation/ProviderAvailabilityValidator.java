@@ -96,31 +96,26 @@ public class ProviderAvailabilityValidator implements ImportValidator {
 
     private Set<String> visitedPaths = new TreeSet<String>();
 
-    private Set<String> neededStaticProviders = new LinkedHashSet<String>();
-
-    private Set<String> neededDynamicProviders = new LinkedHashSet<String>();
+    private Set<String> neededProviders = new LinkedHashSet<String>();
 
     @Override
     public ValidationResult getResult() {
         try {
             Map<String, JCRStoreProvider> providers = jcrSessionFactory.getProviders();
             Set<String> unavailableProviders = new LinkedHashSet<String>();
-            for (String p : neededStaticProviders) {
-                if (providers.containsKey(p) && providers.get(p).isAvailable()) {
-                    continue;
-                }
-
-                unavailableProviders.add(p);
-            }
-            for (String p : neededDynamicProviders) {
-                if (visitedPaths.contains(p)) {
-                    continue;
-                }
-                if (getCurrentUserSession().nodeExists(p)) {
-                    String identifier = getCurrentUserSession().getNode(p).getIdentifier();
-                    if (providers.containsKey(identifier) && providers.get(identifier).isAvailable()) {
+            for (String p : neededProviders) {
+                if (StringUtils.startsWith(p, "/")) {
+                    if (visitedPaths.contains(p)) {
                         continue;
                     }
+                    if (getCurrentUserSession().nodeExists(p)) {
+                        String identifier = getCurrentUserSession().getNode(p).getIdentifier();
+                        if (providers.containsKey(identifier) && providers.get(identifier).isAvailable()) {
+                            continue;
+                        }
+                    }
+                } else if (providers.containsKey(p) && providers.get(p).isAvailable()) {
+                    continue;
                 }
 
                 unavailableProviders.add(p);
@@ -137,11 +132,8 @@ public class ProviderAvailabilityValidator implements ImportValidator {
         if (StringUtils.isNotBlank(path)) {
             visitedPaths.add(path);
         }
-        if (atts.getIndex(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR) > -1) {
-            neededStaticProviders.add(atts.getValue(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR));
-        }
-        if (atts.getIndex(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR) > -1) {
-            neededDynamicProviders.add(atts.getValue(ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR));
+        if (atts.getIndex(ImportExportBaseService.PROVIDER_KEY_ATTR) > -1) {
+            neededProviders.add(atts.getValue(ImportExportBaseService.PROVIDER_KEY_ATTR));
         }
     }
 

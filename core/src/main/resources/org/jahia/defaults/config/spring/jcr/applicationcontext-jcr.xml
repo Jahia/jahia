@@ -205,8 +205,11 @@
                             <property name="schedulerService" ref="SchedulerService"/>
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
+<<<<<<< .working
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
                         <bean class="org.jahia.services.content.MountPointListener"/>
+=======
+>>>>>>> .merge-right.r51247
                     </list>
                 </entry>
                 <entry key="live">
@@ -287,7 +290,6 @@
                             <property name="operationTypes">
                                 <set value-type="java.lang.Integer">
                                     <value type="java.lang.Integer">1</value>
-                                    <value type="java.lang.Integer">12</value>
                                     <value type="java.lang.Integer">13</value>
                                     <value type="java.lang.Integer">4</value>
                                 </set>
@@ -536,8 +538,6 @@
         <value>j:locktoken</value>
         <value>j:lockTypes</value>
         <value>j:processId</value>
-        <value>j:staticMountPointProviderKey</value>
-        <value>j:dynamicMountPointProviderPath</value>
     </util:set>
     
     <util:map id="ImportDefinitionsMappingMetadata">
@@ -608,4 +608,5 @@
             </list>
         </property>
     </bean>
+
 </beans>

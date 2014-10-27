@@ -742,6 +742,9 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
@@ -750,51 +753,45 @@ public class Activator implements BundleActivator {
             return;
         }
         
-        if (JahiaContextLoaderListener.isRunning()) {
-            flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
-    
-            final String symbolicName = bundle.getSymbolicName();
-            for (JahiaTemplatesPackage dependant : templatePackageRegistry.getDependantModules(jahiaTemplatesPackage)) {
-                final Bundle dependantBundle = dependant.getBundle();
-                addToBeStarted(dependantBundle, symbolicName);
-                setModuleState(dependantBundle, ModuleState.State.STOPPING, symbolicName);
-                stopping(dependantBundle);
-                setModuleState(dependantBundle, ModuleState.State.WAITING_TO_BE_STARTED, symbolicName);
+        flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
+
+        final String symbolicName = bundle.getSymbolicName();
+        for (JahiaTemplatesPackage dependant : templatePackageRegistry.getDependantModules(jahiaTemplatesPackage)) {
+            final Bundle dependantBundle = dependant.getBundle();
+            addToBeStarted(dependantBundle, symbolicName);
+            setModuleState(dependantBundle, ModuleState.State.STOPPING, symbolicName);
+            stopping(dependantBundle);
+            setModuleState(dependantBundle, ModuleState.State.WAITING_TO_BE_STARTED, symbolicName);
+        }
+
+        templatePackageRegistry.unregister(jahiaTemplatesPackage);
+        jahiaTemplatesPackage.setActiveVersion(false);
+        templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
+
+        if (jahiaTemplatesPackage.getContext() != null) {
+            jahiaTemplatesPackage.getContext().close();
+            final ModuleState state = getModuleState(bundle);
+            BundleUtils.setContextToStartForModule(bundle,jahiaTemplatesPackage.getContext());
+            jahiaTemplatesPackage.setContext(null);
+        }
+        jahiaTemplatesPackage.setClassLoader(null);
+
+        // scan for resource and call observers
+        for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
+            List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
             }
-    
-            templatePackageRegistry.unregister(jahiaTemplatesPackage);
-            jahiaTemplatesPackage.setActiveVersion(false);
-            templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
-    
-            if (jahiaTemplatesPackage.getContext() != null) {
-                jahiaTemplatesPackage.getContext().close();
-                final ModuleState state = getModuleState(bundle);
-                BundleUtils.setContextToStartForModule(bundle,jahiaTemplatesPackage.getContext());
-                jahiaTemplatesPackage.setContext(null);
-            }
-            jahiaTemplatesPackage.setClassLoader(null);
-    
-            // scan for resource and call observers
-            for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
-                List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
-                if (!foundURLs.isEmpty()) {
-                    scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
-                }
-            }
-    
-            if (bundleHttpServiceTrackers.containsKey(bundle)) {
-                bundleHttpServiceTrackers.remove(bundle).close();
-            }
-    
-            setModuleState(bundle, ModuleState.State.STOPPED, null);
-        } else {
-            if (jahiaTemplatesPackage.getContext() != null) {
-                jahiaTemplatesPackage.getContext().close();
-            }
+        }
+
+        if (bundleHttpServiceTrackers.containsKey(bundle)) {
+            bundleHttpServiceTrackers.remove(bundle).close();
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
         logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+
+        setModuleState(bundle, ModuleState.State.STOPPED, null);
     }
 
     private void flushOutputCachesForModule(Bundle bundle, final JahiaTemplatesPackage pkg) {

@@ -159,7 +159,7 @@ public class ContentTest {
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
                 providerRoot = "/sites/systemsite";
-            } else if (providerRoot.startsWith("/modules/")) {
+            } else if (providerRoot.startsWith("/modules/") || providerRoot.startsWith("/external-")) {
                 continue;
             }
             Object[] parameter = new Object[1];

@@ -79,6 +79,7 @@ import java.util.*;
 /**
  * Simple implementation of ModelData which can be serialized
  */
+@SuppressWarnings("unchecked")
 public class SerializableBaseModel implements ModelData, Serializable {
     private static final long serialVersionUID = 1L;
 

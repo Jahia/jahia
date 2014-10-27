@@ -72,6 +72,7 @@
 package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
+
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -91,6 +92,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -161,26 +163,23 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query query = session.getWorkspace().getQueryManager().createQuery(
-                            "select * from [" + externalProviderFactory.getNodeTypeName() + "] as mount", Query.JCR_SQL2);
+                            "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
-                        JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
-                        if (mountPointNodeWrapper instanceof JCRMountPointNode) {
-                            JCRMountPointNode mountPointNode = (JCRMountPointNode) mountPointNodeWrapper;
-                            if (!mountPointNode.checkMountPointValidity()) {
-                                logger.warn("Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                        "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
-                                continue;
+                        JCRNodeWrapper node = (JCRNodeWrapper) queryResultNodes.next();
+                        if (node instanceof JCRMountPointNode && externalProviderFactory.getNodeTypeName().equals(node.getPrimaryNodeTypeName())) {
+                            JCRNodeWrapper mountPointNode = ((JCRMountPointNode) node).getVirtualMountPointNode();
+                            final JCRStoreProvider provider = externalProviderFactory.mountProvider(mountPointNode);
+                            try {
+                                if (!provider.startAndCheckAvailability()) {
+                                    logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
+                                            + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                }
+                            } catch (JahiaInitializationException e) {
+                                logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
+                                        + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                             }
-                        }
-                        try {
-                            mountPointNodeWrapper.getNodes();
-                        } catch (RepositoryException e) {
-                            logger.warn(
-                                    "Issue while trying to mount an external provider (" + mountPointNodeWrapper.getPath() + ") upon startup, all references " +
-                                            "to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed", e
-                            );
                         }
                     }
                     return null;
@@ -198,14 +197,17 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from [" + externalProviderFactory.getNodeTypeName() + "] as mount", Query.JCR_SQL2);
+                                "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator queryResultNodes = queryResult.getNodes();
                         while (queryResultNodes.hasNext()) {
-                            JCRNodeWrapper mountPointNodeWrapper = (JCRNodeWrapper) queryResultNodes.next();
-                            JCRStoreProvider provider = JCRSessionFactory.getInstance().getMountPoints().get(mountPointNodeWrapper.getPath());
-                            if (provider != null && provider.isDynamicallyMounted()) {
-                                provider.stop();
+                            JCRNodeWrapper node = (JCRNodeWrapper) queryResultNodes.next();
+                            if (node.getPrimaryNodeTypeName().equals(
+                                    externalProviderFactory.getNodeTypeName()) && node instanceof JCRMountPointNode) {
+                                JCRStoreProvider provider = ((JCRMountPointNode) node).getMountProvider(false);
+                                if (provider != null && provider.isDynamicallyMounted()) {
+                                    provider.stop();
+                                }
                             }
                         }
                         return null;
@@ -464,5 +466,21 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public Map<String, Constructor<?>> getValidators() {
         return validatorCreators;
+    }
+    
+    @SuppressWarnings("unchecked")
+    public void setValidators(Map<String, String> validators) {
+        if (validators == null) {
+            return;
+        }
+        for (Map.Entry<String, String> validator : validators.entrySet()) {
+            try {
+                addValidator(validator.getKey(),
+                        (Class<? extends JCRNodeValidator>) Class.forName(validator.getValue()));
+            } catch (ClassNotFoundException e) {
+                logger.error("Unable to find the validator class " + validator.getClass() + " defined for node type "
+                        + validator.getKey(), e);
+            }
+        }
     }
 }

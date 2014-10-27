@@ -549,7 +549,7 @@ public class ImportExportTest {
     }
 
     private void exportImportAndCheck(JCRSessionWrapper editSession) throws RepositoryException {
-        File createdZip = exportSite();
+        File createdZip = exportSite(TESTSITE_NAME);
         assertNotNull("Export failed - see console log for detailed exception", createdZip);
         String targetSiteName = TARGET_TESTSITE_NAME;
 
@@ -580,7 +580,7 @@ public class ImportExportTest {
         }
     }
 
-    private File exportSite() throws RepositoryException {
+    public static File exportSite(String siteName) throws RepositoryException {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put(ImportExportService.VIEW_ACL, Boolean.TRUE);
         params.put(ImportExportService.VIEW_CONTENT, Boolean.TRUE);
@@ -598,7 +598,7 @@ public class ImportExportTest {
         try {
             zipFile = File.createTempFile("simpleimportexporttest", ".zip");
             OutputStream outputStream = new FileOutputStream(zipFile);
-            List<JCRSiteNode> sites = Lists.newArrayList((JCRSiteNode)ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(TESTSITE_NAME));
+            List<JCRSiteNode> sites = Lists.newArrayList((JCRSiteNode)ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(siteName));
             importExportService.exportSites(outputStream, params, sites);
             outputStream.close();
         } catch (FileNotFoundException e) {

@@ -249,4 +249,3 @@ rule "Flush privileges in role cache"
     then
 >       JahiaAccessManager.flushPrivilegesInRoles();
 end
-

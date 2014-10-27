@@ -71,7 +71,9 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -83,9 +85,11 @@ import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+
 import java.util.*;
 
 /**
@@ -94,7 +98,6 @@ import java.util.*;
  * Time: 2:47:08 PM
  */
 public class ContentHubHelper {
-<<<<<<< .working
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
     
     private static final Map<String, String> MOUNT_PARENTS;
@@ -104,8 +107,6 @@ public class ContentHubHelper {
         MOUNT_PARENTS.put("mounts", "jnt:systemFolder");
     }
     
-=======
->>>>>>> .merge-right.r51247
     private JCRSessionFactory sessionFactory;
     private JCRStoreService jcrStoreService;
     private ContentDefinitionHelper definitionHelper;
@@ -129,20 +130,40 @@ public class ContentHubHelper {
         }
     }
 
-    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        Map<String,String> parents = new HashMap<String, String>();
-        parents.put("mounts","jnt:systemFolder");
-        GWTJahiaNode n = contentManager.createNode("/mounts", mountName, providerType, null, properties, session, uiLocale, parents, false);
+    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties,
+            JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+        String mountPoint = getMountParentPath(properties);
         try {
-            if (((JCRMountPointNode) session.getNode(n.getPath())).checkMountPointValidity()) {
-                session.save();
-            } else {
-                n.removeAll();
-                throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
-            }
+            GWTJahiaNode mount = contentManager.createNode("/mounts", (mountPoint == null ? mountName + "-mount"
+                    : mountName), providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
+            session.save();
+            ((JCRMountPointNode) session.getNode(mount.getPath())).getMountProvider();
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(Messages.getInternal("failure.mount.label", uiLocale) + " " + mountName);
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.mount.label", uiLocale,
+                    mountName, e.getMessage()));
         }
+    }
+
+    private String getMountParentPath(List<GWTJahiaNodeProperty> properties) {
+        String mountPoint = null;
+        if (properties != null) {
+            for (GWTJahiaNodeProperty p : properties) {
+                if (p.getName().equals("mountPoint")) {
+                    List<GWTJahiaNodePropertyValue> values = p.getValues();
+                    if (values != null && values.size() > 0) {
+                        GWTJahiaNodePropertyValue v = values.get(0);
+                        if (v != null && v.getNode() != null) {
+                            mountPoint = v.getNode().getPath();
+                            logger.info("Using specified mount parent path {}", mountPoint);
+                        }
+                    }
+                    break;
+                }
+
+            }
+        }
+        
+        return mountPoint;
     }
 
     public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
@@ -151,9 +172,15 @@ public class ContentHubHelper {
             if (provider != null && provider.isDynamicallyMounted()) {
                 provider.stop();
             }
-            JCRNodeWrapper node = session.getNode(path);
-            node.remove();
-            session.save();
+            String mountNodePath = "/mounts/"+ StringUtils.substringAfterLast(path,"/");
+            if(!session.nodeExists(mountNodePath)){
+                mountNodePath = mountNodePath+"-mount";
+            }
+            if(session.nodeExists(mountNodePath)) {
+                JCRNodeWrapper node = session.getNode(mountNodePath);
+                node.remove();
+                session.save();
+            }
         } catch (RepositoryException e) {
             throw new GWTJahiaServiceException(Messages.getInternal("failure.unmount.label", uiLocale) + " " + path);
         }

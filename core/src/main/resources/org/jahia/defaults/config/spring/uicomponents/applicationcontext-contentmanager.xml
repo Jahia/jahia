@@ -70,7 +70,6 @@
             <list>
                 <value>nt:file</value>
                 <value>nt:folder</value>
-                <value>jnt:mountPoint</value>
                 <value>jnt:user</value>
             </list>
         </property>
@@ -78,7 +77,6 @@
             <list>
                 <value>jnt:virtualsite</value>
                 <value>nt:folder</value>
-                <value>jnt:mountPoint</value>
                 <value>jnt:user</value>
                 <value>jnt:usersFolder</value>
             </list>

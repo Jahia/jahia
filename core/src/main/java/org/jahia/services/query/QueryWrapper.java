@@ -220,7 +220,7 @@ public class QueryWrapper implements Query {
                 }
             }
             if (query != null && query instanceof QueryObjectModel) {
-                if (Query.JCR_SQL2.equals(language)) {
+                if (Query.JCR_SQL2.equals(language) && query instanceof QueryObjectModel ) {
                     QueryObjectModel qom = QueryServiceImpl.getInstance().modifyAndOptimizeQuery((QueryObjectModel) query, factory, session);
                     Constraint constraint;
                     if (jcrStoreProvider.isDefault()) {

@@ -81,7 +81,9 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.rpc.AsyncCallback;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -109,13 +111,19 @@ public class Mounter extends Window {
     public Mounter(final Linker linker) {
         super() ;
         setHeadingHtml(Messages.get("label.mount"));
-        setSize(500, 250);
+        setSize(500, 350);
         ButtonBar buttons = new ButtonBar() ;
-        form.setLabelWidth(150);
-        form.setFieldWidth(300);
-        form.setBodyBorder(false);
+        form.setLabelWidth(140);
+        form.setPadding(5);
+        form.setCollapsible(false);
+        form.setFrame(false);
+        form.setAnimCollapse(false);
         form.setBorders(false);
+        form.setBodyBorder(false);
         form.setHeaderVisible(false);
+        form.setScrollMode(Style.Scroll.AUTO);
+        form.setButtonAlign(Style.HorizontalAlignment.CENTER);
+        form.setLayout(new FormLayout(FormPanel.LabelAlign.TOP));
         setModal(true);
         final ComboBox<GWTJahiaNodeType> factoriesTypeBox = new ComboBox<GWTJahiaNodeType>();
         factoriesTypeBox.setDisplayField("label");
@@ -174,7 +182,6 @@ public class Mounter extends Window {
         final TextField<String> mountName = new TextField<String>();
         mountName.setFieldLabel(Messages.get("label.name","name"));
         mountName.setEmptyText(Messages.get("label.enterMountNodeName", "mount node name"));
-<<<<<<< .working
         mountName.setAllowBlank(false);
         mountName.setValidator(new Validator() {
             @Override
@@ -187,38 +194,42 @@ public class Mounter extends Window {
         });
         mountName.setValidateOnBlur(true);
         form.setLayout(new FormLayout());
-=======
->>>>>>> .merge-right.r51247
         form.add(mountName, new FormData());
         final PropertiesEditor pe = new PropertiesEditor(Arrays.asList(type),new HashMap<String, GWTJahiaNodeProperty>(), Arrays.asList(GWTJahiaItemDefinition.CONTENT));
         pe.renderNewFormPanel();
+        pe.setLabelWidth(140);
         form.add(pe);
         submit.addSelectionListener(new SelectionListener<ButtonEvent>() {
             @Override
             public void componentSelected(ButtonEvent ce) {
-                linker.loading(Messages.get("label.loading", "Loading"));
-                JahiaContentManagementService.App.getInstance().mount(
-                        mountName.getValue(),
-                        type.getName(),
-                        pe.getProperties(true, true, false),
-                        new AsyncCallback<Object>() {
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                linker.loaded();
-                                MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
-                                hide();
-                            }
+                if(form.isValid()) {
+                    String i18nLoading = Messages.get("label.loading", "Loading");
+                    linker.loading(i18nLoading);
+                    mask(i18nLoading, "x-mask-loading");
+                    JahiaContentManagementService.App.getInstance().mount(
+                            mountName.getValue(),
+                            type.getName(),
+                            pe.getProperties(true, true, false),
+                            new AsyncCallback<Object>() {
+                                @Override
+                                public void onFailure(Throwable caught) {
+                                    linker.loaded();
+                                    unmask();
+                                    MessageBox.alert(Messages.get("label.error", "error"), caught.getMessage(), null);
+                                }
 
-                            @Override
-                            public void onSuccess(Object result) {
-                                linker.loaded();
-                                Map<String,Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_ALL, true);
-                                linker.refresh(data);
-                                MessageBox.info(Messages.get("label.information", "Information"), Messages.get("message.success", "Success"), null);
-                                hide();
-                            }
-                        });
+                                @Override
+                                public void onSuccess(Object result) {
+                                    linker.loaded();
+                                    unmask();
+                                    Map<String, Object> data = new HashMap<String, Object>();
+                                    data.put(Linker.REFRESH_ALL, true);
+                                    linker.refresh(data);
+                                    MessageBox.info(Messages.get("label.information", "Information"), Messages.get("message.success", "Success"), null);
+                                    hide();
+                                }
+                            });
+                }
             }
         });
         layout();

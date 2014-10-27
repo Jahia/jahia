@@ -71,10 +71,24 @@
  */
 package org.jahia.services.content.decorator.validation;
 
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRMountPointNode;
+
 /**
- * An interface to identify the mechanics of validation for your specific nodes and needs.
- *
- * @author rincevent
+ * Validator for the mount point node.
+ * 
+ * @author Christophe Laprun
  */
-public interface JCRNodeValidator {
+@MountPointAvailable
+public class JCRMountPointAvailabilityValidator implements JCRNodeValidator {
+
+    private JCRMountPointNode node;
+
+    public JCRMountPointAvailabilityValidator(JCRNodeWrapper node) {
+        this.node = (JCRMountPointNode) node;
+    }
+
+    protected JCRMountPointNode getNode() {
+        return node;
+    }
 }

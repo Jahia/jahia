@@ -69,12 +69,86 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.services.content.decorator.validation;
+package org.jahia.services.content;
+
+import java.util.Map;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+
+import org.jahia.api.Constants;
+import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
- * An interface to identify the mechanics of validation for your specific nodes and needs.
+ * External listener for the creation and deletion of a mount point nodes on other DF nodes to be able to mount/unmount the provider
+ * locally.
  *
- * @author rincevent
+ * @author Sergiy Shyrkov
  */
-public interface JCRNodeValidator {
+public class MountPointListener extends DefaultEventListener implements ExternalEventListener {
+
+    private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
+
+    public MountPointListener() {
+        super();
+        setWorkspace(Constants.EDIT_WORKSPACE);
+    }
+
+    @Override
+    public int getEventTypes() {
+        return Event.NODE_ADDED + Event.NODE_REMOVED;
+    }
+
+    @Override
+    public String getPath() {
+        return "/mounts";
+    }
+
+    @Override
+    public void onEvent(EventIterator events) {
+        while (events.hasNext()) {
+            Event evt = events.nextEvent();
+            if (!isExternal(evt)) {
+                // skip local events
+                continue;
+            }
+            try {
+                final String path = evt.getPath();
+                final int evtType = evt.getType();
+                final String uuid = evt.getIdentifier();
+                if (evtType != Event.NODE_ADDED && evtType != Event.NODE_REMOVED) {
+                    logger.warn("Skipped unexpected event type {} for path {}", evtType, path);
+                    continue;
+                }
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                    @Override
+                    public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        if (evtType == Event.NODE_ADDED) {
+                            logger.info("Mount point added at {}. Mounting the provider...", path);
+                            JCRNodeWrapper node = session.getNode(path);
+                            if (node instanceof JCRMountPointNode) {
+                                // perform mount of the provider
+                                final JCRStoreProvider mountProvider = ((JCRMountPointNode) node).getMountProvider();
+                                // check the availability of the provider back-end
+                                mountProvider.isAvailable();
+                            }
+                        } else {
+                            logger.info("Mount point removed at {}. Unmounting the provider with key {}", path, uuid);
+                            JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders()
+                                    .get(uuid);
+                            if (p != null) {
+                                p.getSessionFactory().unmount(p);
+                            }
+                        }
+                        return true;
+                    }
+                });
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
 }

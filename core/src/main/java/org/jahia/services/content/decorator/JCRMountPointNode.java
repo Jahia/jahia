@@ -71,14 +71,15 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.*;
-import javax.jcr.*;
-import javax.jcr.version.VersionException;
+
+import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 import java.util.Map;
-import java.io.InputStream;
 
 /**
  * A node representing a mount point for an external data provider
@@ -86,66 +87,82 @@ import java.io.InputStream;
  * Time: 2:19:40 PM
  */
 public class JCRMountPointNode extends JCRNodeDecorator {
+    
+    private class JCRVirtualMountPointNode extends JCRNodeDecorator {
+        private JCRVirtualMountPointNode(JCRMountPointNode jcrMountPointNode) {
+            super(jcrMountPointNode.getDecoratedNode());
+        }
+
+        @Override
+        public String getPath() {
+            String path = null;
+            try {
+                if (node.hasProperty("mountPoint")) {
+                    path = node.getProperty("mountPoint").getNode().getPath() + "/" + node.getName();
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+
+            return path != null ? path : StringUtils.removeEnd(node.getPath(), "-mount");
+        }
+    }
+
     private transient static Logger logger = Logger.getLogger(JCRMountPointNode.class);
 
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param node
+     *            the node to be decorated
+     */
     public JCRMountPointNode(JCRNodeWrapper node) {
         super(node);
-
     }
 
-    public boolean checkMountPointValidity() {
-        final JCRStoreProvider provider;
-        try {
-            provider = getMountProvider();
-        } catch (Exception e) {
-            logger.error("Couldn't retrieve provider", e);
-            return false;
-        }
-
-        try {
-            getRootNodeFrom(provider);
-            return true;
-        } catch (Exception e) {
-            logger.error("Couldn't retrieve root node", e);
-            if (provider != null) {
-                getProvider().getSessionFactory().removeProvider(provider.getKey());
-            }
-            return false;
-        }
+    public JCRStoreProvider getMountProvider() throws RepositoryException {
+        return getMountProvider(true);
     }
 
-    private JCRNodeWrapper getRootNodeFrom(JCRStoreProvider provider) throws RepositoryException {
-        if (provider != null) {
-            JCRSessionWrapper sessionWrapper = getSession();
-            return provider.getNodeWrapper(sessionWrapper.getProviderSession(provider).getRootNode(), sessionWrapper);
-        } else {
-            throw new RepositoryException("No provider found for mount point " + getPath() + " of type " + getPrimaryNodeTypeName());
-        }
-    }
-
-    private JCRStoreProvider getMountProvider() throws RepositoryException {
-        JCRStoreProvider provider;
+    public JCRStoreProvider getMountProvider(boolean mountIfNotMountedYet) throws RepositoryException {
         Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
-        if (mountPoints == null || !mountPoints.containsKey(getPath())) {
-            ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(getPrimaryNodeTypeName());
+        JCRVirtualMountPointNode mountPoint = new JCRVirtualMountPointNode(this);
+        String path = mountPoint.getPath();
+        JCRStoreProvider provider = mountPoints.get(path);
+        if (provider == null && mountIfNotMountedYet) {
+            ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories()
+                    .get(getPrimaryNodeTypeName());
             if (providerFactory == null) {
-                logger.warn("Couldn't find a provider factory for type " + getPrimaryNodeTypeName() + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
+                logger.warn("Couldn't find a provider factory for type "
+                        + getPrimaryNodeTypeName()
+                        + ". Please make sure a factory is deployed and active for this node type before the mount can be performed.");
                 return null;
             }
-            provider = providerFactory.mountProvider(this);
-        } else {
-            provider = mountPoints.get(getPath());
+
+            provider = providerFactory.mountProvider(mountPoint);
         }
+
         return provider;
     }
+    
+    /**
+     * Returns a special wrapper which is transparently handling the path of the mount point.
+     * 
+     * @return a special wrapper which is transparently handling the path of the mount point
+     */
+    public JCRNodeWrapper getVirtualMountPointNode() {
+        return new JCRVirtualMountPointNode(this);
+    }
 
+    @Override
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
-        try {
-            getProvider().getSessionFactory().unmount(getMountProvider());
-        } catch (RepositoryException e) {
-            logger.warn("unable to unmount provider " + getProvider().getKey() + " at " + getPath() + " but node will be deleted anyway",e);
+        Map<String, JCRStoreProvider> mountPoints = getProvider().getSessionFactory().getMountPoints();
+        JCRVirtualMountPointNode mountPoint = new JCRVirtualMountPointNode(this);
+        String path = mountPoint.getPath();
+        JCRStoreProvider p = mountPoints != null ? mountPoints.get(path) : null;
+        if (p != null) {
+            getProvider().getSessionFactory().unmount(p);
         }
         super.remove();
     }
-
 }

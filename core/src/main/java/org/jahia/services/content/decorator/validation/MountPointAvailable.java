@@ -71,10 +71,29 @@
  */
 package org.jahia.services.content.decorator.validation;
 
+import static java.lang.annotation.ElementType.TYPE;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.Target;
+
+import javax.validation.Constraint;
+import javax.validation.Payload;
+
 /**
- * An interface to identify the mechanics of validation for your specific nodes and needs.
- *
- * @author rincevent
+ * Mount point availability constraint.
+ * 
+ * @author Christophe Laprun
  */
-public interface JCRNodeValidator {
+@Target({ TYPE })
+@Retention(RUNTIME)
+@Constraint(validatedBy = MountPointAvailableValidator.class)
+@Documented
+public @interface MountPointAvailable {
+    String message() default "{validation.constraints.mount.available}";
+
+    Class<?>[] groups() default {};
+
+    Class<? extends Payload>[] payload() default {};
 }

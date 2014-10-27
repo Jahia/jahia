@@ -183,7 +183,9 @@ public class DocumentViewExporter {
             Collections.sort(subList, nodes.comparator());
             nodesList.removeAll(subList);
             nodesList.addAll(subList);
-            exportNode(nodesList.get(i));
+            if (nodesList.get(i).getProvider().canExportNode(nodesList.get(i))) {
+                exportNode(nodesList.get(i));
+            }
         }
 //        for (Iterator<JCRNodeWrapper> iterator = nodes.iterator(); iterator.hasNext();) {
 //            JCRNodeWrapper node = iterator.next();
@@ -200,7 +202,7 @@ public class DocumentViewExporter {
     }
 
     private void exportNode(JCRNodeWrapper node) throws SAXException, RepositoryException {
-        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
 
             String path = "";
             Node current = node;
@@ -245,9 +247,11 @@ public class DocumentViewExporter {
                     }
                     String encodedName = ISO9075.encode(name);
                     String currentpath = peek + "/" + name;
-                    String pt = session.getNode(currentpath).getPrimaryNodeTypeName();
+                    JCRNodeWrapper n = session.getNode(currentpath);
+                    String pt = n.getPrimaryNodeTypeName();
                     AttributesImpl atts = new AttributesImpl();
                     atts.addAttribute(Name.NS_JCR_URI, "primaryType", "jcr:primaryType", CDATA, pt);
+                    setProviderRootAttribute(n, atts);
                     startElement(encodedName, atts);
                     stack.push(currentpath);
                 }
@@ -268,7 +272,10 @@ public class DocumentViewExporter {
             PropertyIterator propsIterator = node.getRealNode().getProperties();
             SortedSet<String> sortedProps = new TreeSet<String>();
             while (propsIterator.hasNext()) {
-                sortedProps.add(propsIterator.nextProperty().getName());
+                Property property = propsIterator.nextProperty();
+                if (node.getProvider().canExportProperty(property)) {
+                    sortedProps.add(property.getName());
+                }
             }
             for (String prop : sortedProps) {
                 try {
@@ -323,6 +330,7 @@ public class DocumentViewExporter {
                 String s = Integer.toString(JCRPublicationService.getInstance().getStatus(node, publicationStatusSession, null));
                 atts.addAttribute(prefixes.get("j"), "publicationStatus", "j:publicationStatus", CDATA, s);
             }
+            setProviderRootAttribute(node, atts);
 
             String encodedName = ISO9075.encode(node.getName());
             startElement(encodedName, atts);
@@ -333,11 +341,38 @@ public class DocumentViewExporter {
             }
 
             if (!noRecurse) {
+                List<String> exportedMountPointNodes = new ArrayList<String>();
                 NodeIterator ni = node.getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
-                    exportNode(c);
+                    if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
+                        if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
+                            String mountPointName = c.getName() + "-mount";
+                            if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
+                                JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
+                                if (mountPointNode.isNodeType("jnt:mountPoint")) {
+                                    exportNode(mountPointNode);
+                                    exportedMountPointNodes.add(mountPointName);
+                                }
+                            }
+                        }
+                        exportNode(c);
+                        if (c.getName().endsWith("-mount") && c.isNodeType("jnt:mountPoint")) {
+                            exportedMountPointNodes.add(c.getName());
+                        }
+                    }
                 }
+            }
+        }
+    }
+
+    private void setProviderRootAttribute(JCRNodeWrapper node, AttributesImpl atts) throws RepositoryException {
+        if (!"/".equals(node.getPath()) && !node.getProvider().equals(node.getParent().getProvider())) {
+            if (node.getProvider().isDynamicallyMounted()) {
+                JCRNodeWrapper mountPoint = session.getNodeByIdentifier(node.getProvider().getKey());
+                atts.addAttribute("", ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR, ImportExportBaseService.DYNAMIC_MOUNT_POINT_ATTR, CDATA, mountPoint.getPath());
+            } else {
+                atts.addAttribute("", ImportExportBaseService.STATIC_MOUNT_POINT_ATTR, ImportExportBaseService.STATIC_MOUNT_POINT_ATTR, CDATA, node.getProvider().getKey());
             }
         }
     }

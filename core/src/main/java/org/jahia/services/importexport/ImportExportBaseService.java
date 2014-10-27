@@ -153,11 +153,11 @@ import java.util.regex.Pattern;
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
-
     private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
             "application/zip", "application/xml", "text/xml");
 
     private static final String FILESACL_XML = "filesacl.xml";
+
     private static final String REPOSITORY_XML = "repository.xml";
     private static final String LIVE_REPOSITORY_XML = "live-repository.xml";
     private static final String CATEGORIES_XML = "categories.xml";
@@ -168,6 +168,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private static final String DEFINITIONS_CND = "definitions.cnd";
     private static final String DEFINITIONS_MAP = "definitions.map";
 
+    public static final String STATIC_MOUNT_POINT_ATTR = "j:staticMountPointProviderKey";
+    public static final String DYNAMIC_MOUNT_POINT_ATTR = "j:dynamicMountPointProviderPath";
 
     private JahiaSitesService sitesService;
     private JahiaFileWatcherService fileWatcherService;
@@ -394,17 +396,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
             zzout.finish();
         }
-<<<<<<< .working
         if (params.containsKey(INCLUDE_MOUNTS) && session.nodeExists("/mounts")) {
             JCRNodeWrapper mounts = session.getNode("/mounts");
             if (mounts.hasNodes()) {
                 // export mounts
                 zout.putNextEntry(new ZipEntry("mounts.zip"));
                 ZipOutputStream zzout = new ZipOutputStream(zout);
-=======
->>>>>>> .merge-right.r51247
 
-<<<<<<< .working
                 try {
                     exportNodesWithBinaries(session.getRootNode(), Collections.singleton(mounts), zzout, tti,
                             externalReferences, params);
@@ -415,8 +413,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-=======
->>>>>>> .merge-right.r51247
         Set<JCRNodeWrapper> refs = new HashSet<JCRNodeWrapper>();
         for (String reference : externalReferences) {
             JCRNodeWrapper node = session.getNodeByUUID(reference);
@@ -452,6 +448,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
         tti.add(Constants.JAHIANT_USER);
+        tti.add("jnt:externalUser");
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);
         zout.finish();
@@ -599,45 +596,49 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportNodeBinary(JCRNodeWrapper root, JCRNodeWrapper node, ZipOutputStream zout, Set<String> typesToIgnore, byte[] buffer, String basepath, Set<String> exportedFiles) throws IOException, RepositoryException {
         int bytesIn;
-        if (node.getProvider().isExportable() && !typesToIgnore.contains(node.getPrimaryNodeTypeName())) {
+        if (!typesToIgnore.contains(node.getPrimaryNodeTypeName()) && node.getProvider().canExportNode(node)) {
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
-                Node child = ni.nextNode();
+                JCRNodeWrapper child = (JCRNodeWrapper) ni.nextNode();
+                if (!child.getProvider().canExportNode(child)) {
+                    continue;
+                }
                 if (child.isNodeType("nt:resource")) {
                     if (!exportedFiles.contains(child.getPath())) {
                         exportedFiles.add(child.getPath());
                         InputStream is = null;
                         try {
-                            is = child.getProperty("jcr:data").getBinary().getStream();
-                            if (is != null) {
-                                String path = node.getPath();
-                                if (root.getPath().equals("/")) {
-                                    path = basepath + path;
-                                } else {
-                                    path = basepath + path.substring(root.getParent().getPath().length());
-                                }
-                                String name = JCRContentUtils.replaceColon(child.getName());
-                                if (child.getName().equals("jcr:content")) {
-                                    name = node.getName();
-                                }
-                                path += "/" + name;
-                                zout.putNextEntry(new ZipEntry(path.substring(1)));
-                                while ((bytesIn = is.read(buffer)) != -1) {
-                                    zout.write(buffer, 0, bytesIn);
+                            JCRPropertyWrapper property = child.getProperty("jcr:data");
+                            if (child.getProvider().canExportProperty(property)) {
+                                is = property.getBinary().getStream();
+                                if (is != null) {
+                                    String path = node.getPath();
+                                    if (root.getPath().equals("/")) {
+                                        path = basepath + path;
+                                    } else {
+                                        path = basepath + path.substring(root.getParent().getPath().length());
+                                    }
+                                    String name = JCRContentUtils.replaceColon(child.getName());
+                                    if (child.getName().equals("jcr:content")) {
+                                        name = node.getName();
+                                    }
+                                    path += "/" + name;
+                                    zout.putNextEntry(new ZipEntry(path.substring(1)));
+                                    while ((bytesIn = is.read(buffer)) != -1) {
+                                        zout.write(buffer, 0, bytesIn);
+                                    }
                                 }
                             }
-                        } catch (RepositoryException ex) {
+                        } catch(RepositoryException ex){
                             logger.warn("Cannot export " + child.getPath(), ex);
-                        } catch (AssertionError ex) {
-                            logger.warn("Cannot export " + child.getPath(), ex);                            
-                        } finally {
+                        }catch(AssertionError ex){
+                            logger.warn("Cannot export " + child.getPath(), ex);
+                        }finally{
                             IOUtils.closeQuietly(is);
                         }
                     }
                 }
-                if (child instanceof JCRNodeWrapper) {
-                    exportNodeBinary(root, (JCRNodeWrapper) child, zout, typesToIgnore, buffer, basepath, exportedFiles);
-                }
+                exportNodeBinary(root, child, zout, typesToIgnore, buffer, basepath, exportedFiles);
             }
         }
     }

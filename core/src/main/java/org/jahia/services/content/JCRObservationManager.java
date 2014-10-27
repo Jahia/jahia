@@ -173,6 +173,7 @@ public class JCRObservationManager implements ObservationManager {
      * @param noLocal      a <code>boolean</code>.
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
+    @Override
     public void addEventListener(EventListener listener, int eventTypes, String absPath, boolean isDeep, String[] uuid,
                                  String[] nodeTypeName, boolean noLocal) throws RepositoryException {
         listeners.add(new EventConsumer(ws.getSession(), listener, eventTypes, absPath, isDeep, nodeTypeName, uuid, listener instanceof ExternalEventListener));
@@ -191,6 +192,7 @@ public class JCRObservationManager implements ObservationManager {
      * @param listener The listener to deregister.
      * @throws javax.jcr.RepositoryException If an error occurs.
      */
+    @Override
     public void removeEventListener(EventListener listener) throws RepositoryException {
         EventConsumer e = null;
         for (EventConsumer eventConsumer : listeners) {
@@ -211,18 +213,22 @@ public class JCRObservationManager implements ObservationManager {
      * @return an <code>EventListenerIterator</code>.
      * @throws javax.jcr.RepositoryException
      */
+    @Override
     public EventListenerIterator getRegisteredEventListeners() throws RepositoryException {
         return new EventListenerIteratorImpl(listeners.iterator(), listeners.size());
     }
 
+    @Override
     public void setUserData(String userData) throws RepositoryException {
-
+        // do nothing
     }
 
+    @Override
     public EventJournal getEventJournal() throws RepositoryException {
         return null;
     }
 
+    @Override
     public EventJournal getEventJournal(int i, String s, boolean b, String[] strings, String[] strings1)
             throws RepositoryException {
         return null;
@@ -236,9 +242,9 @@ public class JCRObservationManager implements ObservationManager {
         JCRObservationManager.allEventListenersDisabled.set(eventsDisabled);
     }
 
-    public static void addEvent(Event event) {
+    public static void addEvent(Event event, String mountPoint, String relativeRoot) {
         try {
-            if (!event.getPath().startsWith("/jcr:system")) {
+            if (!event.getPath().startsWith("/jcr:system") && (event.getPath().equals(relativeRoot) || event.getPath().startsWith(relativeRoot + '/'))) {
                 if (event.getType() == Event.NODE_ADDED && isExtensionNode(event.getPath()) && hasMatchingUuidBeenSet(event.getPath())) {
                     return;
                 }
@@ -253,7 +259,7 @@ public class JCRObservationManager implements ObservationManager {
                         map.put(session, new ArrayList<EventWrapper>());
                     }
                     List<EventWrapper> list = map.get(session);
-                    list.add(getEventWrapper(event, session));
+                    list.add(getEventWrapper(event, session, mountPoint, relativeRoot));
                 }
             }
         } catch (RepositoryException e) {
@@ -261,21 +267,21 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session) {
-        final EventImpl eventImpl = (EventImpl) event;
-        if (event.getType() == Event.NODE_REMOVED && eventImpl.getPrimaryNodeTypeName() != null) {
+    public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session, String mountPoint, String relativeRoot) {
+        if (event.getType() == Event.NODE_REMOVED && event instanceof EventImpl && ((EventImpl)event).getPrimaryNodeTypeName() != null) {
             try {
+                EventImpl eventImpl = (EventImpl)event;
                 List<String> typeNames = new ArrayList<String>();
                 typeNames.add(JCRContentUtils.getJCRName(eventImpl.getPrimaryNodeTypeName().toString(), session.getWorkspace().getNamespaceRegistry()));
                 for (Name name :eventImpl.getMixinTypeNames()) {
                     typeNames.add(JCRContentUtils.getJCRName(name.toString(), session.getWorkspace().getNamespaceRegistry()));
                 }
-                return new EventWrapper(event, typeNames, session);
+                return new EventWrapper(event, typeNames, mountPoint, relativeRoot, session);
             } catch (RepositoryException e) {
                 logger.error("Cannot parse type for event on " +event);
             }
         }
-        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), session);
+        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), mountPoint, relativeRoot, session);
     }
 
     private static void consume(JCRSessionWrapper session, int lastOperationType) throws RepositoryException {
@@ -294,13 +300,15 @@ public class JCRObservationManager implements ObservationManager {
         if (Boolean.TRUE.equals(allEventListenersDisabled.get())) {
             return;
         }
+        String wspName = session.getWorkspace().getName();
+        boolean duringPublicationOnly = Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get());
         for (EventConsumer consumer : listeners) {
             DefaultEventListener castListener = consumer.listener instanceof DefaultEventListener ? (DefaultEventListener) consumer.listener : null;
             // check if the required workspace condition is matched
             // check if the events are not disabled or the listener is still available during publication
             // check if the event is not external or consumer accepts external events
-            if (consumer.session.getWorkspace().getName().equals(session.getWorkspace().getName()) &&
-                (!Boolean.TRUE.equals(eventListenersAvailableDuringPublishOnly.get()) || (castListener != null && castListener.isAvailableDuringPublish()))
+            if (consumer.session.getWorkspace().getName().equals(wspName) &&
+                (!duringPublicationOnly || castListener == null || castListener.isAvailableDuringPublish())
                         && (consumer.useExternalEvents || operationType != EXTERNAL_SYNC)) {
                     List<EventWrapper> filteredEvents = new ArrayList<EventWrapper>();
                     for (EventWrapper event : list) {
@@ -412,13 +420,7 @@ public class JCRObservationManager implements ObservationManager {
      * @throws RepositoryException
      */
     public static boolean isExtensionNode(String path) throws RepositoryException {
-        for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
-            // Handle extension nodes, return visible uuid
-            if (path.startsWith(entry.getKey()) && !entry.getKey().equals("/")) {
-                return true;
-            }
-        }
-        return false;
+        return JCRSessionFactory.getInstance().getProvider(path, false) != null;
     }
 
     private static boolean hasMatchingUuidBeenSet(String path) throws RepositoryException {
@@ -432,7 +434,17 @@ public class JCRObservationManager implements ObservationManager {
         }
         return false;
     }
-
+    
+    /**
+     * Returns a list of node types for deleted node, if this information is available in the provided event object.
+     * 
+     * @param event
+     *            the event for deleted node
+     * @return a list of node types for deleted node, if this information is available in the provided event object
+     */
+    public static List<String> getNodeTypesForDeletedNode(Event event) {
+        return (event instanceof EventWrapper) ? ((EventWrapper) event).getNodeTypes() : null;
+    }
 
     class EventConsumer {
         private JCRSessionWrapper session;
@@ -483,11 +495,15 @@ public class JCRObservationManager implements ObservationManager {
         private List<String> nodeTypes;
         private String identifier;
         private JCRSessionWrapper session;
+        private String mountPoint;
+        private String relativeRoot;
 
-        EventWrapper(Event event, List<String> nodeTypes, JCRSessionWrapper session) {
+        EventWrapper(Event event, List<String> nodeTypes, String mountPoint, String relativeRoot, JCRSessionWrapper session) {
             this.event = event;
             this.nodeTypes = nodeTypes;
             this.session = session;
+            this.mountPoint = mountPoint;
+            this.relativeRoot = relativeRoot;
         }
 
         public int getType() {
@@ -495,6 +511,9 @@ public class JCRObservationManager implements ObservationManager {
         }
 
         public String getPath() throws RepositoryException {
+            if (!mountPoint.equals("/")) {
+                return mountPoint + event.getPath().substring(relativeRoot.length());
+            }
             return event.getPath();
         }
 
@@ -504,11 +523,11 @@ public class JCRObservationManager implements ObservationManager {
 
         public String getIdentifier() throws RepositoryException {
             if (identifier == null) {
-                String path = event.getPath();
+                String path = getPath();
                 if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
                     path = StringUtils.substringBeforeLast(path,"/");
                 }
-                if (isExtensionNode(event.getPath())) {
+                if (isExtensionNode(getPath())) {
                     try {
                         identifier = session.getNode(path).getIdentifier();
                     } catch (RepositoryException e) {
@@ -561,6 +580,7 @@ public class JCRObservationManager implements ObservationManager {
          * @return <code>true</code> if this <code>Event</code> is equal to another
          *         object.
          */
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || this.getClass() != o.getClass()) return false;

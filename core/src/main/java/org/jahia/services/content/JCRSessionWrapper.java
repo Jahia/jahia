@@ -354,15 +354,14 @@ public class JCRSessionWrapper implements Session {
             JCRNodeWrapper parent = (JCRNodeWrapper) getItem(StringUtils.substringBeforeLast(path, DEREF_SEPARATOR), checkVersion);
             return dereference(parent, StringUtils.substringAfterLast(path, DEREF_SEPARATOR));
         }
-        Map<String, JCRStoreProvider> mountPoints = sessionFactory.getMountPoints();
-        final List<String> keys = new ArrayList<String>(mountPoints.keySet());
-        for (String key : keys) {
-            if (key.equals("/") || path.equals(key) || path.startsWith(key + "/")) {
+        for (Map.Entry<String, JCRStoreProvider> mp : sessionFactory.getMountPoints().entrySet()) {
+            String key = mp.getKey();
+            JCRStoreProvider provider = mp.getValue();
+            if (provider.isDefault() || path.equals(key) || path.startsWith(key + "/")) {
                 String localPath = path;
                 if (!key.equals("/")) {
                     localPath = localPath.substring(key.length());
                 }
-                JCRStoreProvider provider = mountPoints.get(key);
                 if (localPath.equals("")) {
                     localPath = "/";
                 }
@@ -785,6 +784,7 @@ public class JCRSessionWrapper implements Session {
                 session.logout();
             }
         }
+        sessions.clear();
         if (credentials instanceof SimpleCredentials) {
             SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
             JahiaLoginModule.removeToken(simpleCredentials.getUserID(), new String(simpleCredentials.getPassword()));
@@ -859,6 +859,9 @@ public class JCRSessionWrapper implements Session {
     }
 
     public Session getProviderSession(JCRStoreProvider provider, boolean create) throws RepositoryException {
+        if (sessions.get(provider) != null && !sessions.get(provider).isLive()) {
+            sessions.remove(provider);
+        }
         if (sessions.get(provider) == null && create) {
             Session s = null;
 

@@ -353,15 +353,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void start() throws JahiaInitializationException {
-        startAndCheckAvailability();
+        start(true);
     }
 
-    public boolean startAndCheckAvailability() throws JahiaInitializationException {
+    protected boolean start(boolean checkAvailability) throws JahiaInitializationException {
         try {
             String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
-            final boolean available = isAvailable();
+            final boolean available = !checkAvailability || isAvailable();
 
             if (available && !initialized) {
                 getSessionFactory().addProvider(this);
@@ -387,6 +387,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             logger.error("Repository init error", e);
             throw new JahiaInitializationException("Repository init error", e);
         }
+    }
+
+    public boolean startAndCheckAvailability() throws JahiaInitializationException {
+        return start(true);
     }
 
     public boolean isAvailable() {

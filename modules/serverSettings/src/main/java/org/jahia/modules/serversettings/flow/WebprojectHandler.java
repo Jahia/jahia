@@ -648,15 +648,6 @@ public class WebprojectHandler implements Serializable {
                                 logger.error(
                                         "Failed validation {}/{} validated in {} ms: {}",
                                         messageParams);
-                                MessageBuilder messageBuilder = new MessageBuilder();
-                                if (validationResults.isBlocking()) {
-                                    messageBuilder = messageBuilder.error();
-                                } else {
-                                    messageBuilder = messageBuilder.warning();
-                                }
-                                messageContext.addMessage(messageBuilder.code("serverSettings.manageWebProjects.import.failed.validation")
-                                        .args(messageParams)
-                                        .build());
                             } else {
                                 logger.info("Successful Import {}/{} validated in {} ms: {}", messageParams);
                             }

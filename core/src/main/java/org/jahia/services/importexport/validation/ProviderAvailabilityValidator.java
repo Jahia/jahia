@@ -73,13 +73,17 @@ package org.jahia.services.importexport.validation;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.importexport.ImportExportBaseService;
 import org.xml.sax.Attributes;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -99,6 +103,8 @@ public class ProviderAvailabilityValidator implements ImportValidator {
     private Set<String> neededStaticProviders = new LinkedHashSet<String>();
 
     private Set<String> neededDynamicProviders = new LinkedHashSet<String>();
+
+    private Set<String> neededMountPoint = new LinkedHashSet<String>();
 
     @Override
     public ValidationResult getResult() {
@@ -125,6 +131,11 @@ public class ProviderAvailabilityValidator implements ImportValidator {
 
                 unavailableProviders.add(p);
             }
+            for (String type : neededMountPoint) {
+                if (JCRStoreService.getInstance().getProviderFactories().get(type) == null) {
+                    unavailableProviders.add(type);
+                }
+            }
             return new ProviderAvailabilityValidatorResult(unavailableProviders);
         } catch (RepositoryException e) {
             return new ValidationResult.FailedValidationResult(e);
@@ -136,6 +147,14 @@ public class ProviderAvailabilityValidator implements ImportValidator {
         String path = StringUtils.removeStart(currentPath, "/content");
         if (StringUtils.isNotBlank(path)) {
             visitedPaths.add(path);
+        }
+        String type = atts.getValue("jcr:primaryType");
+        try {
+            if (type != null && NodeTypeRegistry.getInstance().getNodeType(type).isNodeType("jnt:mountPoint")) {
+                neededMountPoint.add(type);
+            }
+        } catch (NoSuchNodeTypeException e) {
+            // Ignore
         }
         if (atts.getIndex(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR) > -1) {
             neededStaticProviders.add(atts.getValue(ImportExportBaseService.STATIC_MOUNT_POINT_ATTR));

@@ -87,7 +87,7 @@ import javax.jcr.observation.EventIterator;
  *
  * @author Sergiy Shyrkov
  */
-public class MountPointListener extends DefaultEventListener {
+public class MountPointListener extends DefaultEventListener implements ExternalEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
     private static final String[] NODETYPES = new String[]{"jnt:mountPoint"};

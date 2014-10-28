@@ -498,7 +498,8 @@
  + * (jnt:virtualsite)
 
 [jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, jmix:workflow
- - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext
+ - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext hidden
+ - j:defaultTemplateName (string, choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary
  - j:serverName (string) protected nofulltext
  - j:description (string) protected
@@ -740,7 +741,8 @@ extends = jnt:content
 
 [jnt:moduleVersion] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:observable, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS
  + j:versionInfo (jnt:versionInfo)
- - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext
+ - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext hidden
+ - j:defaultTemplateName (string, choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary
  - j:description (string) protected
  - j:installedModules (string) multiple protected nofulltext

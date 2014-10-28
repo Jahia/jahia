@@ -136,9 +136,9 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
             Set<String> installedModules = ((JCRSiteNode) site).getInstalledModulesWithAllDependencies();
 
             // get default template
-            JCRNodeWrapper defaultTemplate = null;
+            String defaultTemplate = null;
             try {
-                defaultTemplate = site.hasProperty("j:defaultTemplate") ? (JCRNodeWrapper) site.getProperty("j:defaultTemplate").getNode() : null;
+                defaultTemplate = site.hasProperty("j:defaultTemplateName") ? site.getProperty("j:defaultTemplateName").getString() : null;
             } catch (ItemNotFoundException e) {
                 logger.warn("A default template has been set on site '" + site.getName() + "' but the template has been deleted");
             }
@@ -157,7 +157,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
         return vs;
     }
 
-    private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, JCRNodeWrapper defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
+    private void addTemplates(List<ChoiceListValue> vs, String path, JCRSessionWrapper session, JCRNodeWrapper node, ExtendedNodeType nodetype, String templateType, String defaultTemplate, ExtendedPropertyDefinition propertyDefinition, Locale locale, Map<String, Object> context) throws RepositoryException {
         List<JCRNodeWrapper> nodes = RenderService.getInstance().getTemplateNodes(null, path, "jnt:"+templateType, false, session);
         for (JCRNodeWrapper templateNode : nodes) {
             boolean ok = true;
@@ -216,7 +216,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 } else {
                     v = new ChoiceListValue(templateName, null, session.getValueFactory().createValue(templateNode.getIdentifier(), PropertyType.WEAKREFERENCE));
                 }
-                if (defaultTemplate != null && templateNode.getPath().equals(defaultTemplate.getPath())) {
+                if (StringUtils.equals(templateNode.getName(), defaultTemplate)) {
                     v.addProperty("defaultProperty", true);
                 }
                 vs.add(v);

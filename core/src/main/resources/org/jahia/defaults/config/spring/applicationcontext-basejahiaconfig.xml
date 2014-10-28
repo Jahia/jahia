@@ -253,12 +253,12 @@
 
     <bean id="RequestLoadAverage" class="org.jahia.utils.RequestLoadAverage" init-method="start" destroy-method="stop">
         <constructor-arg index="0" value="request-loadaverage"/>
-        <property name="loggingTriggerValue" value="2.0"/>
+        <property name="loggingTriggerValue" value="${requestLoadAverage.loggingTriggerValue:2.0}"/>
     </bean>
 
     <bean id="JCRSessionLoadAverage" class="org.jahia.utils.JCRSessionLoadAverage" init-method="start" destroy-method="stop">
         <constructor-arg index="0" value="jcrsession-loadaverage"/>
-        <property name="loggingTriggerValue" value="10.0"/>
+        <property name="loggingTriggerValue" value="${jcrSessionLoadAverage.loggingTriggerValue:10.0}"/>
     </bean>
 
 

@@ -71,16 +71,15 @@
  */
 package org.jahia.services.content;
 
-import java.util.Map;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-
-import org.jahia.api.Constants;
-import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * External listener for the creation and deletion of a mount point nodes on other DF nodes to be able to mount/unmount the provider
@@ -88,60 +87,68 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
-public class MountPointListener extends DefaultEventListener implements ExternalEventListener {
+public class MountPointListener extends DefaultEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
-
-    public MountPointListener() {
-        super();
-        setWorkspace(Constants.EDIT_WORKSPACE);
-    }
+    private static final String[] NODETYPES = new String[]{"jnt:mountPoint"};
 
     @Override
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED;
+        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED + Event.NODE_MOVED;
     }
 
     @Override
-    public String getPath() {
-        return "/mounts";
+    public String[] getNodeTypes() {
+        return NODETYPES;
     }
 
     @Override
     public void onEvent(EventIterator events) {
+        final boolean[] alreadyMounted = {false};
         while (events.hasNext()) {
             Event evt = events.nextEvent();
-            if (!isExternal(evt)) {
-                // skip local events
-                continue;
-            }
             try {
-                final String path = evt.getPath();
                 final int evtType = evt.getType();
-                final String uuid = evt.getIdentifier();
-                if (evtType != Event.NODE_ADDED && evtType != Event.NODE_REMOVED) {
-                    logger.warn("Skipped unexpected event type {} for path {}", evtType, path);
-                    continue;
+                final String path;
+                if (evtType == Event.PROPERTY_REMOVED || evtType == Event.PROPERTY_CHANGED || evtType == Event.PROPERTY_ADDED) {
+                    String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
+                    if (propertiesToIgnore.contains(propertyName)) {
+                        continue;
+                    }
+                    path = StringUtils.substringBeforeLast(evt.getPath(), "/");
+                } else {
+                    path = evt.getPath();
                 }
+
+                final String uuid = evt.getIdentifier();
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                     @Override
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        if (evtType == Event.NODE_ADDED) {
-                            logger.info("Mount point added at {}. Mounting the provider...", path);
+                        if (evtType != Event.NODE_REMOVED && !alreadyMounted[0]) {
                             JCRNodeWrapper node = session.getNode(path);
                             if (node instanceof JCRMountPointNode) {
+                                unmount(path, uuid);
                                 // perform mount of the provider
-                                final JCRStoreProvider mountProvider = ((JCRMountPointNode) node).getMountProvider();
-                                // check the availability of the provider back-end
-                                mountProvider.isAvailable();
+                                ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(node.getPrimaryNodeTypeName());
+                                if (providerFactory != null) {
+                                    JCRNodeWrapper mountPointNode = ((JCRMountPointNode) node).getVirtualMountPointNode();
+                                    logger.info("Mounting the provider {} to {}", path, mountPointNode.getPath());
+                                    final JCRStoreProvider provider = providerFactory.mountProvider(mountPointNode);
+                                    try {
+                                        if (!provider.startAndCheckAvailability()) {
+                                            logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
+                                                    + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                        }
+                                    } catch (JahiaInitializationException e) {
+                                        logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
+                                                + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                    }
+                                    alreadyMounted[0] = true;
+                                }
                             }
                         } else {
-                            logger.info("Mount point removed at {}. Unmounting the provider with key {}", path, uuid);
-                            JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders()
-                                    .get(uuid);
-                            if (p != null) {
-                                p.getSessionFactory().unmount(p);
-                            }
+                            unmount(path, uuid);
+                            alreadyMounted[0] = false;
                         }
                         return true;
                     }
@@ -149,6 +156,15 @@ public class MountPointListener extends DefaultEventListener implements External
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
+        }
+    }
+
+    private void unmount(String path, String uuid) {
+        JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders()
+                .get(uuid);
+        if (p != null) {
+            logger.info("Unmounting the provider {} with key {}", path, uuid);
+            p.getSessionFactory().unmount(p);
         }
     }
 }

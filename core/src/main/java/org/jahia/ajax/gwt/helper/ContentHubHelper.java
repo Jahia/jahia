@@ -167,23 +167,10 @@ public class ContentHubHelper {
     }
 
     public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        try {
             JCRStoreProvider provider = JCRSessionFactory.getInstance().getMountPoints().get(path);
             if (provider != null && provider.isDynamicallyMounted()) {
                 provider.stop();
             }
-            String mountNodePath = "/mounts/"+ StringUtils.substringAfterLast(path,"/");
-            if(!session.nodeExists(mountNodePath)){
-                mountNodePath = mountNodePath+"-mount";
-            }
-            if(session.nodeExists(mountNodePath)) {
-                JCRNodeWrapper node = session.getNode(mountNodePath);
-                node.remove();
-                session.save();
-            }
-        } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(Messages.getInternal("failure.unmount.label", uiLocale) + " " + path);
-        }
     }
 
     public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {

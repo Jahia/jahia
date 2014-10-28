@@ -204,7 +204,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                             JCRNodeWrapper node = (JCRNodeWrapper) queryResultNodes.next();
                             if (node.getPrimaryNodeTypeName().equals(
                                     externalProviderFactory.getNodeTypeName()) && node instanceof JCRMountPointNode) {
-                                JCRStoreProvider provider = ((JCRMountPointNode) node).getMountProvider(false);
+                                JCRStoreProvider provider = ((JCRMountPointNode) node).getMountProvider();
                                 if (provider != null && provider.isDynamicallyMounted()) {
                                     provider.stop();
                                 }

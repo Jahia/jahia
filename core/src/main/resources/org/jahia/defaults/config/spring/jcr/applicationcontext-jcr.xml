@@ -206,7 +206,14 @@
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
-                        <bean class="org.jahia.services.content.MountPointListener"/>
+                        <bean class="org.jahia.services.content.MountPointListener">
+                            <property name="operationTypes">
+                                <set value-type="java.lang.Integer">
+                                    <value type="java.lang.Integer">1</value>
+                                    <value type="java.lang.Integer">13</value>
+                                </set>
+                            </property>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">

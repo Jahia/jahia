@@ -139,7 +139,7 @@ public abstract class LoadAverage implements Runnable {
     }
 
     public void run() {
-        double calcFreqDouble = calcFreqMillis / 1000;
+        double calcFreqDouble = calcFreqMillis / 1000d;
         while (running) {
             double timeInMinutes = 1;
             oneMinuteLoad = oneMinuteLoad * Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)) + getCount() * (1 - Math.exp(-calcFreqDouble / (60.0 * timeInMinutes)));

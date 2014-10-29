@@ -306,15 +306,17 @@ public class WelcomeServlet extends HttpServlet {
         // retrieve the browser locales, but if Accept-Language header is missing we won't fallback to the default system locale
         for (Enumeration<?> requestLocales = Util.getRequestLocales(request); requestLocales.hasMoreElements();) {
             final Locale curLocale = (Locale) requestLocales.nextElement();
-            // check that the site contains the language and the home page exists in live for that language
-            if (curLocale != null && siteLanguages.contains(curLocale) && ensureHomePageExists(site, curLocale)) {
-                return curLocale.toString();
-            }
-            if (!StringUtils.isEmpty(curLocale.getCountry())) {
-                // check the same but for language only
-                final Locale langOnlyLocale = LanguageCodeConverters.languageCodeToLocale(curLocale.getLanguage());
-                if (siteLanguages.contains(langOnlyLocale) && ensureHomePageExists(site, langOnlyLocale)) {
-                    return langOnlyLocale.toString();
+            if (curLocale != null) { 
+                // check that the site contains the language and the home page exists in live for that language
+                if (siteLanguages.contains(curLocale) && ensureHomePageExists(site, curLocale)) {
+                    return curLocale.toString();
+                }
+                if (!StringUtils.isEmpty(curLocale.getCountry())) {
+                    // check the same but for language only
+                    final Locale langOnlyLocale = LanguageCodeConverters.languageCodeToLocale(curLocale.getLanguage());
+                    if (siteLanguages.contains(langOnlyLocale) && ensureHomePageExists(site, langOnlyLocale)) {
+                        return langOnlyLocale.toString();
+                    }
                 }
             }
         }

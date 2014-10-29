@@ -71,7 +71,6 @@
  */
 package org.jahia.services.cache.ehcache;
 
-import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 
 /**
@@ -99,7 +98,7 @@ public class CacheInfo extends BaseCacheInfo {
         return cache;
     }
 
-    public void setCache(Cache cache) {
+    public void setCache(Ehcache cache) {
         this.cache = cache;
     }
 }

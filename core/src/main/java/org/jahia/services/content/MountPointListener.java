@@ -124,26 +124,35 @@ public class MountPointListener extends DefaultEventListener implements External
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                     @Override
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        if (evtType != Event.NODE_REMOVED && !alreadyMounted[0]) {
+                        if (evtType != Event.NODE_REMOVED ) {
                             JCRNodeWrapper node = session.getNode(path);
                             if (node instanceof JCRMountPointNode) {
-                                unmount(path, uuid);
                                 // perform mount of the provider
                                 ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(node.getPrimaryNodeTypeName());
                                 if (providerFactory != null) {
                                     JCRNodeWrapper mountPointNode = ((JCRMountPointNode) node).getVirtualMountPointNode();
-                                    logger.info("Mounting the provider {} to {}", path, mountPointNode.getPath());
-                                    final JCRStoreProvider provider = providerFactory.mountProvider(mountPointNode);
-                                    try {
-                                        if (!provider.startAndCheckAvailability()) {
+                                    JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders()
+                                            .get(uuid);
+                                    if(alreadyMounted[0] && p!=null && !p.getMountPoint().equals(mountPointNode.getPath())) {
+                                        unmount(path, uuid);
+                                        alreadyMounted[0] = false;
+                                    } else if(!alreadyMounted[0]){
+                                        unmount(path,uuid);
+                                    }
+                                    if(!alreadyMounted[0]) {
+                                        logger.info("Mounting the provider {} to {}", path, mountPointNode.getPath());
+                                        final JCRStoreProvider provider = providerFactory.mountProvider(mountPointNode);
+                                        try {
+                                            if (!provider.startAndCheckAvailability()) {
+                                                logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
+                                                        + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                            }
+                                        } catch (JahiaInitializationException e) {
                                             logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
                                                     + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                                         }
-                                    } catch (JahiaInitializationException e) {
-                                        logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
-                                                + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                        alreadyMounted[0] = true;
                                     }
-                                    alreadyMounted[0] = true;
                                 }
                             }
                         } else {

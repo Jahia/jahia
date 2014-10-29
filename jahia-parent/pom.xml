@@ -117,7 +117,7 @@
         <drools.version>${jbpm.version}</drools.version>
         <hibernate.version>4.2.7.SP1</hibernate.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
-        <camel.version>2.12.3</camel.version>
+        <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
         <atmosphere.version>2.1.5</atmosphere.version>

@@ -394,6 +394,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public boolean isAvailable() {
+        return isAvailable(false);
+    }
+
+    public boolean isAvailable(boolean silent) {
         JCRSessionWrapper systemSession = null;
         try {
             systemSession = sessionFactory.getSystemSession();
@@ -401,10 +405,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             providerSession.getRootNode();
             return true;
         } catch (RepositoryException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
-            } else {
-                logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+            if (!silent) {
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
+                } else {
+                    logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+                }
             }
             return false;
         } finally {

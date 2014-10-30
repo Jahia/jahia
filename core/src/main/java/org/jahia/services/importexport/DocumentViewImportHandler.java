@@ -480,7 +480,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             currentFilePath = child.getPath();
                         }
                         if (child.isNodeType("jnt:mountPoint")) {
-                            session.save();
+                            session.save(JCRObservationManager.IMPORT);
                         }
 //                    }
                     } else {

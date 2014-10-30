@@ -385,6 +385,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             return available;
         } catch (Exception e) {
             logger.error("Repository init error", e);
+            stop();
             throw new JahiaInitializationException("Repository init error", e);
         }
     }

@@ -162,14 +162,15 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    Query query = session.getWorkspace().getQueryManager().createQuery(
+                    Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
                             "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
-                        JCRNodeWrapper node = (JCRNodeWrapper) queryResultNodes.next();
-                        if (node instanceof JCRMountPointNode && externalProviderFactory.getNodeTypeName().equals(node.getPrimaryNodeTypeName())) {
-                            JCRNodeWrapper mountPointNode = ((JCRMountPointNode) node).getVirtualMountPointNode();
+                        Node node = (Node) queryResultNodes.next();
+                        JCRNodeWrapper jcrNodeWrapper = session.getNodeByIdentifier(node.getIdentifier());
+                        if (jcrNodeWrapper instanceof JCRMountPointNode && externalProviderFactory.getNodeTypeName().equals(jcrNodeWrapper.getPrimaryNodeTypeName())) {
+                            JCRNodeWrapper mountPointNode = ((JCRMountPointNode) jcrNodeWrapper).getVirtualMountPointNode();
                             final JCRStoreProvider provider = externalProviderFactory.mountProvider(mountPointNode);
                             try {
                                 if (!provider.startAndCheckAvailability()) {
@@ -196,15 +197,16 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        Query query = session.getWorkspace().getQueryManager().createQuery(
+                        Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
                                 "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator queryResultNodes = queryResult.getNodes();
                         while (queryResultNodes.hasNext()) {
-                            JCRNodeWrapper node = (JCRNodeWrapper) queryResultNodes.next();
-                            if (node.getPrimaryNodeTypeName().equals(
-                                    externalProviderFactory.getNodeTypeName()) && node instanceof JCRMountPointNode) {
-                                JCRStoreProvider provider = ((JCRMountPointNode) node).getMountProvider();
+                            Node node = (Node) queryResultNodes.next();
+                            JCRNodeWrapper jcrNodeWrapper = session.getNodeByIdentifier(node.getIdentifier());
+                            if (jcrNodeWrapper.getPrimaryNodeTypeName().equals(
+                                    externalProviderFactory.getNodeTypeName()) && jcrNodeWrapper instanceof JCRMountPointNode) {
+                                JCRStoreProvider provider = ((JCRMountPointNode) jcrNodeWrapper).getMountProvider();
                                 if (provider != null && provider.isDynamicallyMounted()) {
                                     provider.stop();
                                 }

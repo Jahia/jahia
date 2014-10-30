@@ -118,7 +118,7 @@ public class RemoteJCRProviderTest {
     @SuppressWarnings("unchecked")
     @BeforeClass
     public static void oneTimeSetup() throws Exception {
-        TestHelper.createSite(TESTSITE_NAME);
+        TestHelper.createSite(TESTSITE_NAME, "sample-bootstrap-templates");
         // this will throw an exception if the node type is not available
         NodeTypeRegistry.getInstance().getNodeType("jnt:remoteJcrMountPoint");
 
@@ -219,14 +219,14 @@ public class RemoteJCRProviderTest {
         JCRNodeWrapper contents = i18nSession.getNode("/sites/" + TESTSITE_NAME + "/contents");
         i18nSession.checkout(contents);
         JCRNodeWrapper refNode = contents.addNode("reference-1", "jnt:fileReference");
-        String imagePath = mountPath + "/aaa1/1live.png";
+        String imagePath = mountPath + "/Images/Logos/genius.png";
         refNode.setProperty("j:node", i18nSession.getNode(imagePath));
         i18nSession.save();
         assertEquals("Number of references is wrong", 1, i18nSession.getNode(imagePath).getWeakReferences().getSize());
 
         JCRNodeWrapper contentNode = contents.addNode("rich-text-1", "jnt:bigText");
         contentNode.setProperty("text", "<p><a href=\"/files/{workspace}" + mountPath
-                + "/aaa1/1live.png\" title=\"1live.png\">Link</a></p>");
+                + "/Images/Logos/genius.png\" title=\"genius\">Link</a></p>");
         i18nSession.save();
         assertEquals("Number of references is wrong", 2, i18nSession.getNode(imagePath).getWeakReferences().getSize());
 
@@ -243,11 +243,11 @@ public class RemoteJCRProviderTest {
     @Test
     public void testMountUnderFiles() throws Exception {
         // mount
-        String mountNodePath = mount("remote", "/sites/systemsite/files");
+        String mountNodePath = mount("remote", "/sites/" + TESTSITE_NAME + "/files");
 
         // ensure the mount is there
         assertTrue("Mount point node does not exist", session.nodeExists(mountNodePath));
-        String mountPath = "/sites/systemsite/files/remote";
+        String mountPath = "/sites/" + TESTSITE_NAME + "/files/remote";
         assertTrue("Mounted path node found", session.nodeExists(mountPath));
         assertNotNull("Mount point is not registered", JCRStoreService.getInstance().getSessionFactory()
                 .getMountPoints().get(mountPath));

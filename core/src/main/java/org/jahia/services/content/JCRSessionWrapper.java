@@ -79,6 +79,9 @@ import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.content.decorator.validation.AdvancedGroup;
+import org.jahia.services.content.decorator.validation.AdvancedSkipOnImportGroup;
+import org.jahia.services.content.decorator.validation.DefaultSkipOnImportGroup;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -92,6 +95,7 @@ import org.jahia.utils.i18n.Messages;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -108,6 +112,7 @@ import javax.jcr.version.VersionException;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
+import javax.validation.groups.Default;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
@@ -117,6 +122,7 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;
 import javax.xml.transform.stream.StreamResult;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -508,7 +514,7 @@ public class JCRSessionWrapper implements Session {
     public void save(final int operationType)
             throws AccessDeniedException, ItemExistsException, ConstraintViolationException, InvalidItemStateException,
             VersionException, LockException, NoSuchNodeTypeException, RepositoryException {
-        validate();
+        validate(operationType);
         newNodes.clear();
         changedNodes.clear();
 
@@ -528,9 +534,13 @@ public class JCRSessionWrapper implements Session {
     }
 
     public void validate() throws ConstraintViolationException, RepositoryException {
+        validate(JCRObservationManager.SESSION_SAVE);
+    }
+
+    protected void validate(final int operationType) throws ConstraintViolationException, RepositoryException {
         if (!skipValidation) {
-            CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null);
-            exception = validateNodes(changedNodes.values(), exception);
+            CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null, operationType);
+            exception = validateNodes(changedNodes.values(), exception, operationType);
             if (exception != null) {
                 refresh(false);
                 throw exception;
@@ -538,7 +548,8 @@ public class JCRSessionWrapper implements Session {
         }
     }
 
-    protected CompositeConstraintViolationException validateNodes(Collection<JCRNodeWrapper> nodes, CompositeConstraintViolationException ccve) throws ConstraintViolationException, RepositoryException {
+    protected CompositeConstraintViolationException validateNodes(Collection<JCRNodeWrapper> nodes, CompositeConstraintViolationException ccve, final int operationType) throws ConstraintViolationException, RepositoryException {
+        boolean isImportOperation = operationType == JCRObservationManager.IMPORT;
         for (JCRNodeWrapper node : nodes) {
             try {
                 for (String s : node.getNodeTypes()) {
@@ -577,8 +588,25 @@ public class JCRSessionWrapper implements Session {
                 if (node.isNodeType(validatorEntry.getKey())) {
                     try {
                         JCRNodeValidator validatorDecoratedNode = (JCRNodeValidator) validatorEntry.getValue().newInstance(node);
-                        Set<ConstraintViolation<JCRNodeValidator>> validate = sessionFactory.getValidatorFactoryBean().validate(
-                                validatorDecoratedNode);
+                        LocalValidatorFactoryBean validatorFactoryBean = sessionFactory.getValidatorFactoryBean();
+                        
+                        // if we are in non-import operation we enforce Default and DefaultSkipOnImportGroup;
+                        // if we are in an import operation we do not enforce the DefaultSkipOnImportGroup, but rather only the Default one
+                        Set<ConstraintViolation<JCRNodeValidator>> validate = !isImportOperation ? validatorFactoryBean
+                                .validate(validatorDecoratedNode, Default.class, DefaultSkipOnImportGroup.class)
+                                : validatorFactoryBean.validate(validatorDecoratedNode, Default.class);
+
+                        if (validate.isEmpty()) {
+                            // we enforce advanced validations only in case the default group succeeds
+
+                            // if we are in non-import operation we enforce both AdvancedGroup and AdvancedSkipOnImportGroup;
+                            // if we are in an import operation we do not enforce the AdvancedSkipOnImportGroup, but rather only the
+                            // AdvancedGroup one
+                            validate = !isImportOperation ? validatorFactoryBean.validate(validatorDecoratedNode,
+                                    AdvancedGroup.class, AdvancedSkipOnImportGroup.class) : validatorFactoryBean
+                                    .validate(validatorDecoratedNode, AdvancedGroup.class);
+                        }
+                        
                         constraintViolations.addAll(validate);
                     } catch (InstantiationException e) {
                         logger.error(e.getMessage(), e);

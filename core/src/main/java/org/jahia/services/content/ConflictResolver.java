@@ -305,7 +305,7 @@ public class ConflictResolver {
             NodeIterator ni = targetNode.getNodes();
             while (ni.hasNext()) {
                 JCRNodeWrapper sub = (JCRNodeWrapper) ni.next();
-                if (sourceNode.hasNode(sub.getName()) && !sub.isVersioned() && !sourceNode.getNode(sub.getName()).isVersioned()) {
+                if (sourceNode.hasNode(sub.getName()) && !sub.isVersioned() && !sourceNode.getNode(sub.getName()).isVersioned() && JCRPublicationService.supportsPublication(sub.getSession(), sub)) {
                     diffs.addAll(compare(sourceNode.getNode(sub.getName()), sub, addPath(basePath, sub.getName())));
                 }
             }
@@ -329,12 +329,12 @@ public class ConflictResolver {
     }
 
     private ListOrderedMap getChildEntries(JCRNodeWrapper node, JCRSessionWrapper session) throws RepositoryException {
-        NodeIterator ni1 = node.getNodes();
         ListOrderedMap childEntries = new ListOrderedMap();
-        while (ni1.hasNext()) {
-            Node child = (Node) ni1.next();
+        for (JCRNodeWrapper child : node.getNodes()) {
             try {
-                if (!child.isNodeType("jmix:nolive") && !(session.getWorkspace().getName().equals("live") && child.hasProperty("j:originWS") && child.getProperty("j:originWS").getString().equals("live"))) {
+                if (!child.isNodeType("jmix:nolive") &&
+                        JCRPublicationService.supportsPublication(session, child) &&
+                        !(session.getWorkspace().getName().equals("live") && child.hasProperty("j:originWS") && child.getProperty("j:originWS").getString().equals("live"))) {
                     session.getNodeByUUID(child.getIdentifier());
                     childEntries.put(child.getIdentifier(), child.getName());
                 }

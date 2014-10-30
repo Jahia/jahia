@@ -409,7 +409,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
                 } else {
-                    logger.warn("Provider '" + key + "' is not accessible and will not be available", e.getMessage());
+                    logger.warn("Provider '" + key + "' is not accessible and will not be available. Cause: {}", e.getMessage());
                 }
             }
             return false;

@@ -48,9 +48,7 @@
                 <value>org.jahia.test.services.notification.CamelNotificationServiceTest</value>
                 <value>org.jahia.test.services.notification.HtmlExternalizationServiceTest</value>
                 <value>org.jahia.test.services.providers.ModulesProviderTest</value>
-                <!--
                 <value>org.jahia.test.services.providers.RemoteJCRProviderTest</value>
-                -->
                 <value>org.jahia.test.services.publication.PublicationTest</value>
                 <value>org.jahia.test.services.query.FacetedQueryTest</value>
                 <value>org.jahia.test.services.query.IndexOptionsTest</value>
@@ -418,7 +416,7 @@
     </bean>
     
     <util:map id="RemoteJCRProviderTestProperties" key-type="java.lang.String" value-type="java.lang.String">
-        <entry key="url" value="${remoteJcrTest.url:}"/>
+        <entry key="url" value="${remoteJcrTest.url:rqa4.jahia.com:9090/jahia7postgresql/server}"/>
         <entry key="relativeRoot" value="${remoteJcrTest.relativeRoot:/sites/ACMESPACE/files}"/>
         <entry key="user" value="${remoteJcrTest.user:mathias}"/>
         <entry key="password" value="${remoteJcrTest.password:password}"/>

@@ -243,11 +243,11 @@ public class RemoteJCRProviderTest {
     @Test
     public void testMountUnderFiles() throws Exception {
         // mount
-        String mountNodePath = mount("remote", "/sites/" + TESTSITE_NAME + "/files");
+        String mountNodePath = mount("mount2", "/sites/" + TESTSITE_NAME + "/files");
 
         // ensure the mount is there
         assertTrue("Mount point node does not exist", session.nodeExists(mountNodePath));
-        String mountPath = "/sites/" + TESTSITE_NAME + "/files/remote";
+        String mountPath = "/sites/" + TESTSITE_NAME + "/files/mount2";
         assertTrue("Mounted path node found", session.nodeExists(mountPath));
         assertNotNull("Mount point is not registered", JCRStoreService.getInstance().getSessionFactory()
                 .getMountPoints().get(mountPath));

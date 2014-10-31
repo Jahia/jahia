@@ -96,8 +96,8 @@
                                         <select class="span12" id="${importInfoMap.value.siteKey}legacyMapping"
                                                 name="importsInfos['${importInfoMap.key}'].selectedLegacyMapping">
                                             <c:forEach items="${importInfoMap.value.legacyMappings}" var="module">
-                                                <option value="${module.absolutePath}" <c:if
-                                                        test="${importInfoMap.value.selectedLegacyMapping eq module.name}"> selected="selected"</c:if>>${module.name}</option>
+                                                <option value="${module}" <c:if
+                                                        test="${importInfoMap.value.selectedLegacyMapping eq module}"> selected="selected"</c:if>>${module}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -108,8 +108,8 @@
                                         <select class="span12" id="${importInfoMap.value.siteKey}legacyDefinitions"
                                                 name="importsInfos['${importInfoMap.key}'].selectedLegacyDefinitions">
                                             <c:forEach items="${importInfoMap.value.legacyDefinitions}" var="module">
-                                                <option value="${module.absolutePath}" <c:if
-                                                        test="${importInfoMap.value.selectedLegacyDefinitions eq module.name}"> selected="selected"</c:if>>${module.name}</option>
+                                                <option value="${module}" <c:if
+                                                        test="${importInfoMap.value.selectedLegacyDefinitions eq module}"> selected="selected"</c:if>>${module}</option>
                                             </c:forEach>
                                         </select>
                                     </div>

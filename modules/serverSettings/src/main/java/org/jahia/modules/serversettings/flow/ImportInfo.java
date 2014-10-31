@@ -91,9 +91,9 @@ public class ImportInfo implements Serializable {
     private String description;
     private File fileToBeImported;
     private String importFileName;
-    private Collection<File> legacyDefinitions;
+    private Collection<String> legacyDefinitions;
     private boolean legacyImport;
-    private Collection<File> legacyMappings;
+    private Collection<String> legacyMappings;
     private Boolean mixLanguage;
     private String oldSiteKey;
     private String originatingJahiaRelease;
@@ -144,11 +144,11 @@ public class ImportInfo implements Serializable {
         return importFileName;
     }
 
-    public Collection<File> getLegacyDefinitions() {
+    public Collection<String> getLegacyDefinitions() {
         return legacyDefinitions;
     }
 
-    public Collection<File> getLegacyMappings() {
+    public Collection<String> getLegacyMappings() {
         return legacyMappings;
     }
 
@@ -252,7 +252,7 @@ public class ImportInfo implements Serializable {
         this.importFileName = importFileName;
     }
 
-    public void setLegacyDefinitions(Collection<File> legacyDefinitions) {
+    public void setLegacyDefinitions(Collection<String> legacyDefinitions) {
         this.legacyDefinitions = legacyDefinitions;
     }
 
@@ -275,7 +275,7 @@ public class ImportInfo implements Serializable {
         }
     }
 
-    public void setLegacyMappings(Collection<File> legacyMappings) {
+    public void setLegacyMappings(Collection<String> legacyMappings) {
         this.legacyMappings = legacyMappings;
     }
 

@@ -296,7 +296,7 @@ public class JahiaSitesService extends JahiaService {
 
     public JahiaSite addSite(final JahiaUser currentUser, final String title, final String serverName, final String siteKey, final String descr,
                              final Locale selectedLocale, final String selectTmplSet, final String[] modulesToDeploy, final String firstImport, final Resource fileImport, final String fileImportName,
-                             final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final String legacyMappingFilePath, final String legacyDefinitionsFilePath) throws JahiaException, IOException {
+                             final Boolean asAJob, final Boolean doImportServerPermissions, final String originatingJahiaRelease, final Resource legacyMappingFilePath, final Resource legacyDefinitionsFilePath) throws JahiaException, IOException {
 
         JahiaSite site = null;
         final List<Exception> errors = new ArrayList<Exception>(1);
@@ -335,7 +335,7 @@ public class JahiaSitesService extends JahiaService {
 
     public JahiaSite addSite(JahiaUser currentUser, String title, String serverName, String siteKey, String descr,
                              Locale selectedLocale, String selectTmplSet, final String[] modulesToDeploy, String firstImport, Resource fileImport, String fileImportName,
-                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
+                             Boolean asAJob, Boolean doImportServerPermissions, String originatingJahiaRelease, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws JahiaException, IOException {
         // check there is no site with same server name before adding
         boolean importingSystemSite = false;
         final JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();

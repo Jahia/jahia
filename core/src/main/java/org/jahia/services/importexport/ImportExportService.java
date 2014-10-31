@@ -337,7 +337,7 @@ public interface ImportExportService {
      * @throws RepositoryException
      * @throws IOException
      */
-    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException;
+    void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException;
 
     /**
      * Performs the import of categories from the provided import stream into the specified root category.

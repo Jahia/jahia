@@ -779,7 +779,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     @Override
-    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath) throws RepositoryException, IOException {
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath) throws RepositoryException, IOException {
         importSiteZip(file, site, infos, legacyMappingFilePath, legacyDefinitionsFilePath, jcrStoreService.getSessionFactory().getCurrentUserSession(null, null, null));
     }
 
@@ -797,7 +797,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @throws RepositoryException
      * @throws IOException
      */
-    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, String legacyMappingFilePath, String legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
+    public void importSiteZip(Resource file, JahiaSite site, Map<Object, Object> infos, Resource legacyMappingFilePath, Resource legacyDefinitionsFilePath, JCRSessionWrapper session) throws RepositoryException, IOException {
         long timerSite = System.currentTimeMillis();
         logger.info("Start import for site {}", site != null ? site.getSiteKey() : "");
 
@@ -1012,7 +1012,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             logger.info("Start legacy import, source version is " + originatingJahiaRelease);
             if (legacyMappingFilePath != null) {
                 mapping = new DefinitionsMapping();
-                final FileInputStream fileInputStream = new FileInputStream(legacyMappingFilePath);
+                final InputStream fileInputStream = legacyMappingFilePath.getInputStream();
                 try {
                     mapping.load(fileInputStream);
                 } finally {
@@ -1054,9 +1054,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
                 InputStreamReader streamReader = null;
                 try {
-                    File cndFile = new File(legacyDefinitionsFilePath);
-                    streamReader = new InputStreamReader(new FileInputStream(legacyDefinitionsFilePath), "UTF-8");
-                    JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(streamReader, cndFile.getName(),
+                    streamReader = new InputStreamReader(legacyDefinitionsFilePath.getInputStream(), "UTF-8");
+                    JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(streamReader, legacyDefinitionsFilePath.getFilename(),
                             file.getURL().getPath(), reg);
                     r.parse();
                 } catch (ParseException e) {

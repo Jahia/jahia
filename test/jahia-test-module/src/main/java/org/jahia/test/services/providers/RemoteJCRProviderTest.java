@@ -82,6 +82,7 @@ import java.util.Map;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 
+import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -225,7 +226,7 @@ public class RemoteJCRProviderTest {
         assertEquals("Number of references is wrong", 1, i18nSession.getNode(imagePath).getWeakReferences().getSize());
 
         JCRNodeWrapper contentNode = contents.addNode("rich-text-1", "jnt:bigText");
-        contentNode.setProperty("text", "<p><a href=\"/files/{workspace}" + mountPath
+        contentNode.setProperty("text", "<p><a href=\"" + Jahia.getContextPath() + "/files/{workspace}" + mountPath
                 + "/Images/Logos/genius.png\" title=\"genius\">Link</a></p>");
         i18nSession.save();
         assertEquals("Number of references is wrong", 2, i18nSession.getNode(imagePath).getWeakReferences().getSize());

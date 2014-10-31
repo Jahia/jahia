@@ -51,10 +51,10 @@
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     Rooted in Open Source CMS, Jahia's Digital Industrialization paradigm is about
  *     streamlining Enterprise digital projects across channels to truly control
  *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     Putting an end to "the Tunnel effect", the Jahia Studio enables IT and
  *     marketing teams to collaboratively and iteratively build cutting-edge
  *     online business solutions.
  *     These, in turn, are securely and easily deployed as modules and apps,
@@ -268,7 +268,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                     if (drl.length() > 0) {
                         drl.append("\n");
                     }
-                    if (line.length() > 0 && line.trim().charAt(0) == '#') {
+                    if (line.trim().length() > 0 && line.trim().charAt(0) == '#') {
                         drl.append(StringUtils.replaceOnce(line, "#", "//"));
                     } else {
                         drl.append(line);

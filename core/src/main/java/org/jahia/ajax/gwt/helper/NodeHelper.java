@@ -235,7 +235,9 @@ class NodeHelper {
         }
 
         if (fields.contains(GWTJahiaNode.LOCKS_INFO)) {
-            populateLocksInfo(n, node);
+            if (!node.getProvider().isSlowConnection()) {
+                populateLocksInfo(n, node);
+            }
         }
 
         if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
@@ -281,7 +283,9 @@ class NodeHelper {
             populateIcon(n, node);
         }
 
-        populateThumbnails(n, node);
+        if (!node.getProvider().isSlowConnection()) {
+            populateThumbnails(n, node);
+        }
 
         // count
         if (fields.contains(GWTJahiaNode.COUNT)) {

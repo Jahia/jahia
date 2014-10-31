@@ -750,7 +750,7 @@ public class NavigationHelper {
                     // use for pickers
                     boolean hasNodes = false;
                     try {
-                        hasNodes = n.hasNodes();
+                        hasNodes = n.getProvider().isSlowConnection() || n.hasNodes();
                     } catch (RepositoryException e) {
                         logger.error(e.getMessage(), e);
                     }

@@ -72,7 +72,7 @@ package org.jahia.services.content.decorator.validation;
 /**
  * Defines the default group for validation constraints, which is skipped in the import operation.<br/>
  * 
- * This one is useful to define constraints, which are enforced during normal content create/update operations but are skipped during buld
+ * This one is useful to define constraints, which are enforced during normal content create/update operations but are skipped during bulk
  * import.
  * 
  * @author Sergiy Shyrkov

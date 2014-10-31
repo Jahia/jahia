@@ -90,6 +90,8 @@ import java.util.Map;
  */
 public class JCRMountPointNode extends JCRNodeDecorator {
 
+    public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
+
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
         private JCRVirtualMountPointNode(JCRMountPointNode jcrMountPointNode) {
             super(jcrMountPointNode.getDecoratedNode());
@@ -99,8 +101,8 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         public String getPath() {
             String path = null;
             try {
-                if (node.hasProperty("mountPoint")) {
-                    path = node.getProperty("mountPoint").getNode().getPath() + "/" + node.getName();
+                if (node.hasProperty(MOUNT_POINT_PROPERTY_NAME)) {
+                    path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + node.getName();
                 } else if (node.getPath().endsWith("-mount")) {
                     path = StringUtils.removeEnd(node.getPath(), "-mount");
                 } else {

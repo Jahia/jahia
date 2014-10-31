@@ -350,14 +350,14 @@ public class DocumentViewExporter {
                             String mountPointName = c.getName() + "-mount";
                             if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
                                 JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
-                                if (mountPointNode.isNodeType("jnt:mountPoint")) {
+                                if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                                     exportNode(mountPointNode);
                                     exportedMountPointNodes.add(mountPointName);
                                 }
                             }
                         }
                         exportNode(c);
-                        if (c.getName().endsWith("-mount") && c.isNodeType("jnt:mountPoint")) {
+                        if (c.getName().endsWith("-mount") && c.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                             exportedMountPointNodes.add(c.getName());
                         }
                     }

@@ -73,6 +73,7 @@ package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
 
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -105,6 +106,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
 
+    private static final String SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "] as mount";
     private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -163,7 +165,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
-                            "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
+                            SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT, Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
@@ -198,7 +200,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:mountPoint] as mount", Query.JCR_SQL2);
+                                SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT, Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator queryResultNodes = queryResult.getNodes();
                         while (queryResultNodes.hasNext()) {

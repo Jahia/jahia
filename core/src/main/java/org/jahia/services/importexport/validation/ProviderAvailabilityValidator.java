@@ -73,6 +73,7 @@ package org.jahia.services.importexport.validation;
 
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -150,7 +151,7 @@ public class ProviderAvailabilityValidator implements ImportValidator {
         }
         String type = atts.getValue("jcr:primaryType");
         try {
-            if (type != null && NodeTypeRegistry.getInstance().getNodeType(type).isNodeType("jnt:mountPoint")) {
+            if (type != null && NodeTypeRegistry.getInstance().getNodeType(type).isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                 neededMountPoint.add(type);
             }
         } catch (NoSuchNodeTypeException e) {

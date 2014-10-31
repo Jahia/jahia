@@ -132,6 +132,7 @@ import java.util.Map.Entry;
  */
 public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
+    private static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private static String httpPath;
@@ -515,11 +516,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         JCRSessionWrapper session = null;
         try {
             session = sessionFactory.getSystemSession();
-            List<JCRNodeWrapper> result = queryFolders(session, "select * from [jnt:mountPoint]");
+            List<JCRNodeWrapper> result = queryFolders(session, SELECT_ALL_MOUNT_POINTS);
             for (JCRNodeWrapper mountPointNode : result) {
                 if (mountPointNode instanceof JCRMountPointNode) {
                     try {
-                        if (((JCRMountPointNode) mountPointNode).checkValidity()) {
+                        if (mountPointNode.checkValidity()) {
                             logger.info("Registered mount point: " + mountPointNode.getPath());
                         } else {
                             throw new RepositoryException("Couldn't mount dynamic mount point " + mountPointNode.getPath());

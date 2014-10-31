@@ -72,6 +72,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.slf4j.Logger;
@@ -90,7 +91,7 @@ import javax.jcr.observation.EventIterator;
 public class MountPointListener extends DefaultEventListener implements ExternalEventListener {
 
     private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
-    private static final String[] NODETYPES = new String[]{"jnt:mountPoint"};
+    private static final String[] NODETYPES = new String[]{Constants.JAHIANT_MOUNTPOINT};
 
     @Override
     public int getEventTypes() {

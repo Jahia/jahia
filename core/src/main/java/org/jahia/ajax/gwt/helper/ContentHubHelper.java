@@ -148,7 +148,7 @@ public class ContentHubHelper {
         String mountPoint = null;
         if (properties != null) {
             for (GWTJahiaNodeProperty p : properties) {
-                if (p.getName().equals("mountPoint")) {
+                if (p.getName().equals(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME)) {
                     List<GWTJahiaNodePropertyValue> values = p.getValues();
                     if (values != null && values.size() > 0) {
                         GWTJahiaNodePropertyValue v = values.get(0);

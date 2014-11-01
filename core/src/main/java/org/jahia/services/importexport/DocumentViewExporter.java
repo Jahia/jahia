@@ -80,6 +80,7 @@ import org.jahia.services.content.JCRMultipleValueUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
@@ -347,7 +348,7 @@ public class DocumentViewExporter {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
                     if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
                         if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
-                            String mountPointName = c.getName() + "-mount";
+                            String mountPointName = c.getName() + JCRMountPointNode.MOUNT_POINT_SUFFIX;
                             if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
                                 JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
                                 if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
@@ -357,7 +358,7 @@ public class DocumentViewExporter {
                             }
                         }
                         exportNode(c);
-                        if (c.getName().endsWith("-mount") && c.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
+                        if (c.getName().endsWith(JCRMountPointNode.MOUNT_SUFFIX) && c.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {
                             exportedMountPointNodes.add(c.getName());
                         }
                     }

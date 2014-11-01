@@ -91,6 +91,8 @@ import java.util.Map;
 public class JCRMountPointNode extends JCRNodeDecorator {
 
     public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
+    public static final String MOUNT_SUFFIX = "-mount";
+    public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
 
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
         private JCRVirtualMountPointNode(JCRMountPointNode jcrMountPointNode) {
@@ -99,18 +101,18 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
         @Override
         public String getPath() {
-            String path = null;
+            String path;
             try {
                 if (node.hasProperty(MOUNT_POINT_PROPERTY_NAME)) {
                     path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + node.getName();
-                } else if (node.getPath().endsWith("-mount")) {
-                    path = StringUtils.removeEnd(node.getPath(), "-mount");
+                } else if (node.getPath().endsWith(MOUNT_SUFFIX)) {
+                    path = StringUtils.removeEnd(node.getPath(), MOUNT_SUFFIX);
                 } else {
-                    path = node.getPath() + "-mountPoint";
+                    path = node.getPath() + MOUNT_POINT_SUFFIX;
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
-                path = node.getPath() + "-mountPoint";
+                path = node.getPath() + MOUNT_POINT_SUFFIX;
             }
 
             return path;

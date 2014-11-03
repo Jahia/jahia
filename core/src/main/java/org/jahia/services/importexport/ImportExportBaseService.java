@@ -582,7 +582,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             templates = new TransformerFactoryImpl().newTemplates(new StreamSource(new File(xsl)));
             xsltTemplates.put(xsl, templates);
         }
-        
+
         return templates.newTransformer();
     }
 
@@ -631,9 +631,15 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             }
                         } catch(RepositoryException ex){
                             logger.warn("Cannot export " + child.getPath(), ex);
+<<<<<<< .working
                         }catch(AssertionError ex){
                             logger.warn("Cannot export " + child.getPath(), ex);
                         }finally{
+=======
+                        } catch (AssertionError ex) {
+                            logger.warn("Cannot export " + child.getPath(), ex);
+                        } finally {
+>>>>>>> .merge-right.r51297
                             IOUtils.closeQuietly(is);
                         }
                     }
@@ -1020,7 +1026,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 }
             }
             if (legacyDefinitionsFilePath != null) {
-                reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
+                reg = new NodeTypeRegistry();
                 if ("6.1".equals(originatingJahiaRelease)) {
                     logger.info("Loading the built in 6.1 definitions before processing the provided custom ones");
                     final List<String> builtInLegacyDefs = Arrays.asList(
@@ -1051,6 +1057,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             IOUtils.closeQuietly(inputStreamReader);
                         }
                     }
+                } else {
+                    reg.initSystemDefinitions();
                 }
                 InputStreamReader streamReader = null;
                 try {
@@ -1961,7 +1969,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         sizes.put(name, i);
                     } finally {
-                        IOUtils.closeQuietly(br);  
+                        IOUtils.closeQuietly(br);
                     }
                 } else {
                     sizes.put(name, zipentry.getSize());
@@ -2003,7 +2011,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private List<XMLContentTransformer> xmlContentTransformers;
-    
+
     private Map<String, Templates> xsltTemplates = new ConcurrentHashMap<String, Templates>(2);
 
     public void setXmlContentTransformers(final List<XMLContentTransformer> xmlContentTransformers) {

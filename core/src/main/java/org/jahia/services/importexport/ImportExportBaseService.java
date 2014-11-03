@@ -631,15 +631,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                             }
                         } catch(RepositoryException ex){
                             logger.warn("Cannot export " + child.getPath(), ex);
-<<<<<<< .working
-                        }catch(AssertionError ex){
-                            logger.warn("Cannot export " + child.getPath(), ex);
-                        }finally{
-=======
                         } catch (AssertionError ex) {
                             logger.warn("Cannot export " + child.getPath(), ex);
                         } finally {
->>>>>>> .merge-right.r51297
                             IOUtils.closeQuietly(is);
                         }
                     }

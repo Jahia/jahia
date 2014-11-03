@@ -294,11 +294,6 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 }
                 setPropertiesEditorByLang(language);
 
-                if (changedProperties.containsKey(language)) {
-                    for (Map.Entry<String, GWTJahiaNodeProperty> entry : changedProperties.get(language).entrySet()) {
-                        propertiesEditor.getFieldsMap().get(entry.getKey()).setDirty(true);
-                    }
-                }
                 if (engine.getPresetProperties() != null && !engine.getPresetProperties().isEmpty()) {
                     for (String k : engine.getPresetProperties().keySet()) {
                         if (propertiesEditor.getFieldsMap().containsKey(k))  {
@@ -330,9 +325,20 @@ public class PropertiesTabItem extends EditEngineTabItem {
                 for (String addedType : previousAddedTypes) {
                     f.get(addedType).expand();
                 }
-                for (String addedType : previousRemovedTypes) {
-                    f.get(addedType).collapse();
+                for (String removedType : previousRemovedTypes) {
+                    if (f.containsKey(removedType)) {
+                        f.get(removedType).collapse();
+                    }
                 }
+            }
+
+            if (changedProperties.containsKey(language)) {
+                for (Map.Entry<String, GWTJahiaNodeProperty> entry : changedProperties.get(language).entrySet()) {
+                    if (propertiesEditor.getFieldsMap().containsKey(entry.getKey())) {
+                        propertiesEditor.getFieldsMap().get(entry.getKey()).setDirty(true);
+                    }
+                }
+                changedProperties.get(language).clear();
             }
 
             propertiesEditor.setVisible(true);

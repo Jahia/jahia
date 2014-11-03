@@ -633,9 +633,9 @@ public class LegacyImportHandler extends DefaultHandler {
                     Constants.JAHIANT_PAGE, null, created, createdBy, lastModified, lastModifiedBy);
             node.getOrCreateI18N(locale, created, createdBy, lastModified, lastModifiedBy);
 
-            if (template != null) {
-                node.setProperty("j:templateName", template);
-            }
+        }
+        if (template != null) {
+            node.setProperty("j:templateName", template);
         }
         return node;
     }

@@ -442,6 +442,9 @@ public class WebprojectHandler implements Serializable {
                 List<File> importList = new ArrayList<File>();
                 List<String> emptyFiles = new ArrayList<String>();
                 while ((z = zis.getNextEntry()) != null) {
+                    if (z.isDirectory()) {
+                        continue;
+                    }
                     File i = File.createTempFile("import", ".zip");
                     OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
                     try {

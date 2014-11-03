@@ -348,7 +348,7 @@ public class DocumentViewExporter {
                     JCRNodeWrapper c = (JCRNodeWrapper) ni.next();
                     if (c.getProvider().canExportNode(c) && !exportedMountPointNodes.contains(c.getName())) {
                         if (!"/".equals(path) && !c.getProvider().equals(node.getProvider())) { // is external provider root
-                            String mountPointName = c.getName() + JCRMountPointNode.MOUNT_POINT_SUFFIX;
+                            String mountPointName = c.getName() + JCRMountPointNode.MOUNT_SUFFIX;
                             if (node.hasNode(mountPointName) && !exportedMountPointNodes.contains(mountPointName)) { // mounted from a dynamic mountPoint
                                 JCRNodeWrapper mountPointNode = node.getNode(mountPointName);
                                 if (mountPointNode.isNodeType(Constants.JAHIANT_MOUNTPOINT)) {

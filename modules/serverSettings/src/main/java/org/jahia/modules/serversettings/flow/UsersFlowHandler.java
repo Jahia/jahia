@@ -108,6 +108,7 @@ import java.util.*;
 public class UsersFlowHandler implements Serializable {
     private static Logger logger = LoggerFactory.getLogger(UsersFlowHandler.class);
     private static final long serialVersionUID = -7240178997123886031L;
+    private static final String[] BASIC_USER_PROPERTIES = new String[]{"j:firstName", "j:lastName", "j:email", "j:organization", "emailNotificationsDisabled", "j:accountLocked", "preferredLanguage"};
 
     public static UserProperties populateUser(String userKey, UserProperties propertiesToPopulate) {
         JahiaUserManagerService service = ServicesRegistry.getInstance().getJahiaUserManagerService();
@@ -144,6 +145,14 @@ public class UsersFlowHandler implements Serializable {
         propertiesToPopulate.setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser,
                 LocaleContextHolder.getLocale()));
         propertiesToPopulate.setLocalPath(jahiaUser.getPath());
+
+        Set<String> readOnlyProperties = new HashSet<String>();
+        for (String p : BASIC_USER_PROPERTIES) {
+            if (!jahiaUser.isPropertyEditable(p)) {
+                readOnlyProperties.add(p);
+            }
+        }
+        propertiesToPopulate.setReadOnlyProperties(readOnlyProperties);
 
         return propertiesToPopulate;
     }

@@ -272,6 +272,10 @@ public class UserProperties implements Serializable {
         return readOnlyProperties;
     }
 
+    public void setReadOnlyProperties(Set<String> readOnlyProperties) {
+        this.readOnlyProperties = readOnlyProperties;
+    }
+
     public String getUserKey() {
         return userKey;
     }

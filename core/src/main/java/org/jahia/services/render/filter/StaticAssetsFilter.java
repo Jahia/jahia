@@ -140,14 +140,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             "<!-- jahia:temp value=\".*?\" -->");
 
     private static final FastHashMap RANK;
+<<<<<<< .working
 
     private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( (?!data:image/)");
+=======
+>>>>>>> .merge-right.r51315
 
-    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"([^/])");
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
 
-    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('([^/])");
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"(?!(/|http:|https:|data:))");
 
-    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!data:image/)([^'\"/])");
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
+
+    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
     private String jahiaContext = null;
     
@@ -606,12 +611,17 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     IOUtils.copy(is, stream);
                                     IOUtils.closeQuietly(is);
                                     String s = stream.toString("UTF-8");
+<<<<<<< .working
 
                                     String url = StringUtils.substringBeforeLast(entry.getKey(), "/");
+=======
+
+                                    String url = StringUtils.substringBeforeLast(pathsToAggregate.get(minifiedPaths.indexOf(minifiedFile)), "/") + "/";
+>>>>>>> .merge-right.r51315
                                     s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url + "/$1");
-                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url + "/$1");
-                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url + "/$1");
+                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
+                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
+                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
                                     is = new ByteArrayInputStream(s.getBytes("UTF-8"));
                                 }
                                 IOUtils.copy(is, outMerged);

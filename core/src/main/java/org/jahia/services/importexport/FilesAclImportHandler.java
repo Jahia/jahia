@@ -120,6 +120,7 @@ public class FilesAclImportHandler extends DefaultHandler {
     private Map<String, String> davPropertiesMapping = initializeDavPropertiesMapping();
 
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern(ImportExportService.DATE_FORMAT);
+    public static final DateTimeFormatter DATE_FORMAT_Z = DateTimeFormat.forPattern(ImportExportService.DATE_FORMAT+"'Z'");
 
     public FilesAclImportHandler(JahiaSite site, DefinitionsMapping mapping, Resource archive, List<String> fileList, Map<String, File> filePath) {
         this.site = site;
@@ -177,12 +178,22 @@ public class FilesAclImportHandler extends DefaultHandler {
 
 
                 Calendar created = new GregorianCalendar();
-                if (attributes.getValue("dav:creationdate") != null) {
-                    created.setTime(DATE_FORMAT.parseDateTime(attributes.getValue("dav:creationdate")).toDate());
+                String creationDate = attributes.getValue("dav:creationdate");
+                if (creationDate != null) {
+                    if (creationDate.endsWith("Z")) {
+                        created.setTime(DATE_FORMAT_Z.parseDateTime(creationDate).toDate());
+                    } else {
+                        created.setTime(DATE_FORMAT.parseDateTime(creationDate).toDate());
+                    }
                 }
                 Calendar lastModified = new GregorianCalendar();
-                if (attributes.getValue("dav:modificationdate") != null) {
-                    lastModified.setTime(DATE_FORMAT.parseDateTime(attributes.getValue("dav:modificationdate")).toDate());
+                String modificationDate = attributes.getValue("dav:modificationdate");
+                if (modificationDate != null) {
+                    if (modificationDate.endsWith("Z")) {
+                        created.setTime(DATE_FORMAT_Z.parseDateTime(creationDate).toDate());
+                    } else {
+                        lastModified.setTime(DATE_FORMAT.parseDateTime(modificationDate).toDate());
+                    }
                 }
                 String createdBy = attributes.getValue("dav:creationuser");
                 String lastModifiedBy = attributes.getValue("dav:modificationuser");

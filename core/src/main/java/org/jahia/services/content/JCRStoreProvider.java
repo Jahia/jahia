@@ -422,6 +422,27 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
+    public void unmount(JCRSessionWrapper session) throws RepositoryException {
+        stop();
+
+        setMountStatus(session, JCRMountPointNode.MountStatus.unmounted);
+    }
+
+    public void setMountStatus(JCRSessionWrapper session, JCRMountPointNode.MountStatus status) throws RepositoryException {
+        final JCRNodeWrapper node = session.getNodeByIdentifier(getKey());
+        if (node instanceof JCRMountPointNode) {
+            JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
+            mountPointNode.setMountStatus(status);
+        }
+    }
+
+    public void mount(JCRSessionWrapper session) throws JahiaInitializationException, RepositoryException {
+        start();
+
+        setMountStatus(session, JCRMountPointNode.MountStatus.mounted);
+
+    }
+
 
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);

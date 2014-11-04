@@ -75,6 +75,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 
 import javax.jcr.RepositoryException;
@@ -91,8 +92,20 @@ import java.util.Map;
 public class JCRMountPointNode extends JCRNodeDecorator {
 
     public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
+    public static final String MOUNT_STATUS_PROPERTY_NAME = "mountStatus";
     public static final String MOUNT_SUFFIX = "-mount";
     public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
+
+    public static enum MountStatus {
+        mounted("mounted"), unmounted("unmounted"), waiting("waiting"), error("error"), unknown("unknown");
+        private final String status;
+
+        MountStatus(String status) {
+            this.status = status;
+        }
+
+
+    }
 
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
         private JCRVirtualMountPointNode(JCRMountPointNode jcrMountPointNode) {
@@ -155,5 +168,44 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             getProvider().getSessionFactory().unmount(p);
         }
         super.remove();
+    }
+
+    public boolean shouldBeMounted() {
+        final MountStatus mountStatus = getMountStatus();
+        return !(MountStatus.unmounted.equals(mountStatus) || MountStatus.error.equals(mountStatus));
+    }
+
+    public MountStatus getMountStatus() {
+        final String status = getPropertyAsString(MOUNT_STATUS_PROPERTY_NAME);
+        return status == null ? MountStatus.unknown : MountStatus.valueOf(status);
+    }
+
+    public void setMountStatus(String status) {
+        // convert to MountStatus first to check if it's a valid status
+        final MountStatus mountStatus = MountStatus.valueOf(status);
+        setMountStatus(mountStatus);
+    }
+
+    public void setMountStatus(MountStatus mountStatus) {
+        if (mountStatus != null) {
+            JCRSessionWrapper session = null;
+            Boolean isValidationSkipped = null;
+            try {
+                session = getSession();
+                isValidationSkipped = session.isSkipValidation();
+                session.setSkipValidation(true);
+                setProperty(MOUNT_STATUS_PROPERTY_NAME, mountStatus.name());
+                session.save();
+            } catch (RepositoryException e) {
+                logger.error("Couldn't save mount status for node " + node.getName(), e);
+            } finally {
+                if (session != null && isValidationSkipped != null) {
+                    session.setSkipValidation(isValidationSkipped);
+                }
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Should pass a non-null status");
+        }
     }
 }

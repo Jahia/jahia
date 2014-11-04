@@ -91,7 +91,7 @@ import java.util.Map;
 @SuppressWarnings("serial")
 public class UnmountActionItem extends BaseActionItem  {
     public void onComponentSelection() {
-        GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
+        final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
             if (selection.isLocked()) {
                 Window.alert(Messages.get("failure.unmountLock1.label") + " " + selection.getName() + Messages.get("failure.unmountLock2.label") + " " + selection.getLockInfos());
@@ -99,7 +99,8 @@ public class UnmountActionItem extends BaseActionItem  {
                 linker.loading(Messages.get("statusbar.unmounting.label"));
                 JahiaContentManagementService.App.getInstance().unmount(selection.getPath(), new BaseAsyncCallback<Object>() {
                     public void onApplicationFailure(Throwable throwable) {
-                        Window.alert(Messages.get("failure.unmount.label") + "\n" + throwable.getLocalizedMessage());
+                        Window.alert(Messages.getWithArgs("failure.unmount.label", "Unmount failed for server {0}. Cause: {1}",
+                                new String[] {selection.getName(), throwable.getLocalizedMessage()}));
                         linker.loaded();
                     }
 

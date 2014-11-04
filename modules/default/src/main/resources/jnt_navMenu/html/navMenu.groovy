@@ -48,11 +48,21 @@ printMenu = { node, navMenuLevel, omitFormatting ->
         def closeUl = false;
         children.eachWithIndex() { menuItem, index ->
           try {
-            itemPath = menuItem.path
-            inpath = renderContext.mainResource.node.path == itemPath || renderContext.mainResource.node.path.startsWith(itemPath+"/")
-            selected = menuItem.isNodeType("jmix:nodeReference") ?
-                       renderContext.mainResource.node.path == menuItem.properties['j:node'].node.path :
-                       renderContext.mainResource.node.path == itemPath
+              itemPath = menuItem.path;
+              inpath = renderContext.mainResource.node.path == itemPath || renderContext.mainResource.node.path.startsWith(itemPath + "/");
+              if (menuItem.isNodeType("jmix:nodeReference")) {
+                  try {
+                      if (menuItem.properties['j:node'].node != null) {
+                          selected = renderContext.mainResource.node.path == menuItem.properties['j:node'].node.path;
+                      } else {
+                          selected = false;
+                      }
+                  } catch (ItemNotFoundException e) {
+                      selected = false;
+                  }
+              } else {
+                  selected = renderContext.mainResource.node.path == itemPath
+              }
             correctType = true
             if(menuItem.isNodeType("jmix:navMenu")){
                 correctType = false

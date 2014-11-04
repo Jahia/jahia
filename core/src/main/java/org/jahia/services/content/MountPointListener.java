@@ -113,7 +113,7 @@ public class MountPointListener extends DefaultEventListener implements External
                 final String path;
                 if (evtType == Event.PROPERTY_REMOVED || evtType == Event.PROPERTY_CHANGED || evtType == Event.PROPERTY_ADDED) {
                     String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
-                    if (propertiesToIgnore.contains(propertyName)) {
+                    if (JCRMountPointNode.MOUNT_STATUS_PROPERTY_NAME.equals(propertyName) || propertiesToIgnore.contains(propertyName)) {
                         continue;
                     }
                     path = StringUtils.substringBeforeLast(evt.getPath(), "/");
@@ -144,15 +144,11 @@ public class MountPointListener extends DefaultEventListener implements External
                                         if (jcrMountPointNode.shouldBeMounted()) {
                                             logger.info("Mounting the provider {} to {}", path, mountPointNode.getPath());
                                             final JCRStoreProvider provider = providerFactory.mountProvider(mountPointNode);
-                                            try {
-                                                if (!provider.startAndCheckAvailability()) {
-                                                    logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
-                                                            + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
-                                                }
-                                            } catch (JahiaInitializationException e) {
+                                            if (!provider.isAvailable(true)) {
                                                 logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
                                                         + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                                             }
+
                                             alreadyMounted[0] = true;
                                         }
                                     }
@@ -175,7 +171,7 @@ public class MountPointListener extends DefaultEventListener implements External
         JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
         if (p != null) {
             logger.info("Unmounting the provider {} with key {}", path, uuid);
-            p.getSessionFactory().unmount(p);
+            p.unmount();
         }
     }
 }

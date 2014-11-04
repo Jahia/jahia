@@ -105,8 +105,6 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author toto
  */
 public class JCRStoreService extends JahiaService implements JahiaAfterInitializationService {
-
-    private static final String SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "] as mount";
     private static Logger logger = LoggerFactory.getLogger(JCRStoreService.class);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -165,7 +163,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 @Override
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
-                            SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT, Query.JCR_SQL2);
+                            JCRStoreProvider.SELECT_ALL_MOUNT_POINTS, Query.JCR_SQL2);
                     QueryResult queryResult = query.execute();
                     NodeIterator queryResultNodes = queryResult.getNodes();
                     while (queryResultNodes.hasNext()) {
@@ -176,12 +174,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                             if (jcrMountPointNode.shouldBeMounted()) {
                                 JCRNodeWrapper mountPointNode = jcrMountPointNode.getVirtualMountPointNode();
                                 final JCRStoreProvider provider = externalProviderFactory.mountProvider(mountPointNode);
-                                try {
-                                    if (!provider.startAndCheckAvailability()) {
-                                        logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
-                                                + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
-                                    }
-                                } catch (JahiaInitializationException e) {
+                                if (!provider.isAvailable(true)) {
                                     logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
                                             + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                                 }
@@ -203,7 +196,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                     @Override
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getProviderSession(session.getNode("/").getProvider()).getWorkspace().getQueryManager().createQuery(
-                                SELECT_FROM_JNT_MOUNT_POINT_AS_MOUNT, Query.JCR_SQL2);
+                                JCRStoreProvider.SELECT_ALL_MOUNT_POINTS, Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator queryResultNodes = queryResult.getNodes();
                         while (queryResultNodes.hasNext()) {
@@ -225,6 +218,20 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             }
             providerFactories.remove(nodeType);
         }
+    }
+
+    /**
+     * Retrieves all mount points with the given status or all mount points if no status is specified.
+     *
+     * @param status <code>null</code> to retrieve all mount points or the status that the mount points must have to be retrieved
+     * @return a NodeIterator of the mount points matching the given status or all mount points if no status was specified
+     */
+    public NodeIterator getKnownMountPointsWithStatus(JCRMountPointNode.MountStatus status) throws RepositoryException {
+        final String sql = status == null ? JCRStoreProvider.SELECT_ALL_MOUNT_POINTS : JCRStoreProvider.SELECT_ALL_MOUNT_POINTS + " as mount where ["
+                + JCRMountPointNode.MOUNT_STATUS_PROPERTY_NAME + "] = '" + status.name() + "'";
+        Query query = getSessionFactory().getSystemSession().getWorkspace().getQueryManager().createQuery(sql, Query.JCR_SQL2);
+        QueryResult queryResult = query.execute();
+        return queryResult.getNodes();
     }
 
     public JCRNodeWrapper decorate(JCRNodeWrapper w) {

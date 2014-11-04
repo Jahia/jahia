@@ -84,7 +84,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
@@ -155,7 +154,7 @@ public class ContentHubHelper {
 
             // mount provider
             final JCRStoreProvider provider = mountPointNode.getMountProvider();
-            provider.mount(session);
+            provider.mount();
 
             return path;
         } catch (Exception e) {
@@ -189,10 +188,9 @@ public class ContentHubHelper {
     public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
         final JCRStoreProvider provider = sessionFactory.getProvider(path);
         if (provider != null) {
-            try {
-                provider.unmount(session);
-            } catch (RepositoryException e) {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.unmount.label", uiLocale, provider.getMountPoint(), e.getMessage()));
+            if (!provider.unmount()) {
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.unmount.label", uiLocale, provider.getMountPoint(),
+                        "Provider might not have been dynamically mounted"));
             }
         }
     }

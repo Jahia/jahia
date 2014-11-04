@@ -132,7 +132,7 @@ import java.util.Map.Entry;
  */
 public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
-    private static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
+    static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private static String httpPath;
@@ -391,10 +391,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    public boolean startAndCheckAvailability() throws JahiaInitializationException {
-        return start(true);
-    }
-
     public boolean isAvailable() {
         return isAvailable(false);
     }
@@ -422,25 +418,53 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    public void unmount(JCRSessionWrapper session) throws RepositoryException {
-        stop();
-
-        setMountStatus(session, JCRMountPointNode.MountStatus.unmounted);
+    public boolean unmount() {
+        return unmount(JCRMountPointNode.MountStatus.unmounted);
     }
 
-    public void setMountStatus(JCRSessionWrapper session, JCRMountPointNode.MountStatus status) throws RepositoryException {
-        final JCRNodeWrapper node = session.getNodeByIdentifier(getKey());
-        if (node instanceof JCRMountPointNode) {
-            JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
-            mountPointNode.setMountStatus(status);
+    public boolean unmount(JCRMountPointNode.MountStatus status) {
+        if (isDynamicallyMounted()) {
+            logger.info("Stopping provider of mount point {}", getMountPoint());
+            stop();
+
+            setMountStatus(status);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    protected void setMountStatus(JCRMountPointNode.MountStatus status) {
+        try {
+            final JCRNodeWrapper node = getSystemSession().getNodeByIdentifier(getKey());
+            if (node instanceof JCRMountPointNode) {
+                JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
+                mountPointNode.setMountStatus(status);
+            }
+        } catch (RepositoryException e) {
+            logger.error("Couldn't retrieve session to update mount point status", e);
         }
     }
 
-    public void mount(JCRSessionWrapper session) throws JahiaInitializationException, RepositoryException {
-        start();
+    public void mount() {
+        mount(true);
+    }
 
-        setMountStatus(session, JCRMountPointNode.MountStatus.mounted);
+    public boolean mount(boolean checkAvailability) {
+        try {
+            final boolean didStart = start(checkAvailability);
 
+            if (didStart) {
+                setMountStatus(JCRMountPointNode.MountStatus.mounted);
+            }
+
+            return didStart;
+        } catch (Exception e) {
+            logger.error("Couldn't mount provider " + getUrl(), e);
+            setMountStatus(JCRMountPointNode.MountStatus.error);
+            return false;
+        }
     }
 
 

@@ -97,14 +97,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
 
     public static enum MountStatus {
-        mounted("mounted"), unmounted("unmounted"), waiting("waiting"), error("error"), unknown("unknown");
-        private final String status;
-
-        MountStatus(String status) {
-            this.status = status;
-        }
-
-
+        mounted, unmounted, waiting, error, unknown
     }
 
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
@@ -165,7 +158,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         String path = mountPoint.getPath();
         JCRStoreProvider p = mountPoints != null ? mountPoints.get(path) : null;
         if (p != null) {
-            getProvider().getSessionFactory().unmount(p);
+            getProvider().unmount();
         }
         super.remove();
     }

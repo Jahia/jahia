@@ -554,12 +554,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     public boolean unmount(JCRStoreProvider p) {
-        if (p != null && p.isDynamicallyMounted()) {
-            logger.info("Stopping provider of mount point {}", p.getMountPoint());
-            p.stop();
-            return true;
-        }
-        return false;
+        return p != null && p.unmount();
     }
 
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {

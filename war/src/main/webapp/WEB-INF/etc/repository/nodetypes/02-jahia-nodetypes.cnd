@@ -538,7 +538,7 @@
  - j:root (string) indexed=no hidden
  - j:provider (string) indexed=no hidden
  - mountPoint (weakreference, picker[type='editoriallink']) nofulltext < jmix:droppableContent, jnt:page, jnt:contentFolder, jnt:folder
- - mountStatus (string) indexed=no < 'mounted', 'unmounted', 'waiting', 'error', 'unknown'
+ - mountStatus (string) nofulltext < 'mounted', 'unmounted', 'waiting', 'error', 'unknown'
 
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (nt:base)

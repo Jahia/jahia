@@ -467,18 +467,16 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @param status the new status of this provider
      */
     protected void setMountStatus(JCRMountPointNode.MountStatus status) {
-        if(status == null) {
-            status = JCRMountPointNode.MountStatus.unknown;
-        }
-
-        try {
-            final JCRNodeWrapper node = getSystemSession().getNodeByIdentifier(getKey());
-            if (node instanceof JCRMountPointNode) {
-                JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
-                mountPointNode.setMountStatus(status);
+        if (status != null && isDynamicallyMounted()) {
+            try {
+                final JCRNodeWrapper node = getSystemSession().getNodeByIdentifier(getKey());
+                if (node instanceof JCRMountPointNode) {
+                    JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
+                    mountPointNode.setMountStatus(status);
+                }
+            } catch (RepositoryException e) {
+                logger.error("Couldn't retrieve session to update mount point status", e);
             }
-        } catch (RepositoryException e) {
-            logger.error("Couldn't retrieve session to update mount point status", e);
         }
     }
 
@@ -621,14 +619,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
-        stop(JCRMountPointNode.MountStatus.unmounted);
+        stop(null);
     }
 
     private void stop(JCRMountPointNode.MountStatus status) {
-        if(status == null) {
-            status = JCRMountPointNode.MountStatus.unmounted;
-        }
-
         logger.info("Unmounting provider of mount point {}", getMountPoint());
         unregisterObservers();
         getSessionFactory().removeProvider(key);

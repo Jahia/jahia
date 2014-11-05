@@ -184,11 +184,6 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         super.stop();
     }
 
-    @Override
-    protected void setMountStatus(JCRMountPointNode.MountStatus status) {
-        // this provider should always be available so we should never change its status
-    }
-
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
         long timer = System.currentTimeMillis();

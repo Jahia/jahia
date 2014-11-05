@@ -178,9 +178,11 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     }
 
     public void setMountStatus(String status) {
-        // convert to MountStatus first to check if it's a valid status
-        final MountStatus mountStatus = MountStatus.valueOf(status);
-        setMountStatus(mountStatus);
+        if (status != null) {
+            // convert to MountStatus first to check if it's a valid status
+            final MountStatus mountStatus = MountStatus.valueOf(status);
+            setMountStatus(mountStatus);
+        }
     }
 
     public void setMountStatus(MountStatus mountStatus) {
@@ -200,9 +202,6 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                     session.setSkipValidation(isValidationSkipped);
                 }
             }
-        }
-        else {
-            throw new IllegalArgumentException("Should pass a non-null status");
         }
     }
 }

@@ -619,25 +619,26 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         ExtendedNodeType[] existingMixinNodeTypes = child.getMixinNodeTypes();
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
-        Set<String> addedMixins = m != null ? new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")))
-                : Collections.<String> emptySet();
-        // first we remove existing mixins that are no longer present in added mixins
-        for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
-            String existingMixinName = existingMixin.getName();
-            if (!addedMixins.contains(existingMixinName)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Removing mixin {} from node {}", existingMixinName, child.getPath());
+        if(m!=null){
+            Set<String> addedMixins =  new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")));
+            // first we remove existing mixins that are no longer present in added mixins
+            for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
+                String existingMixinName = existingMixin.getName();
+                if (!addedMixins.contains(existingMixinName)) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Removing mixin {} from node {}", existingMixinName, child.getPath());
+                    }
+                    child.removeMixin(existingMixinName);
                 }
-                child.removeMixin(existingMixinName);
             }
-        }
 
-        // and now we add the mixins
-        for (String addedMixin : addedMixins) {
-            try {
-                child.addMixin(addedMixin);
-            } catch (NoSuchNodeTypeException e) {
-                logger.warn("Cannot add node type " + e.getMessage());
+            // and now we add the mixins
+            for (String addedMixin : addedMixins) {
+                try {
+                    child.addMixin(addedMixin);
+                } catch (NoSuchNodeTypeException e) {
+                    logger.warn("Cannot add node type " + e.getMessage());
+                }
             }
         }
     }

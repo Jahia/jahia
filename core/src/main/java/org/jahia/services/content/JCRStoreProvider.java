@@ -379,15 +379,17 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (groovyPatcher != null && isProcessingServer) {
                     groovyPatcher.executeScripts("jcrStoreProviderStarted");
                 }
+
+                setMountStatus(JCRMountPointNode.MountStatus.mounted);
             }
 
             authenticationType = tmpAuthenticationType;
 
             return available;
         } catch (Exception e) {
-            logger.error("Repository init error", e);
-            stop();
-            throw new JahiaInitializationException("Repository init error", e);
+            logger.error("Couldn't mount provider " + getUrl(), e);
+            stop(JCRMountPointNode.MountStatus.error);
+            throw new JahiaInitializationException("Couldn't mount provider " + getUrl(), e);
         }
     }
 
@@ -418,24 +420,41 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
+    /**
+     * Unmounts this provider if it's not dynamically mounted. Same as <code>unmount(JCRMountPointNode.MountStatus.unmounted)</code>.
+     *
+     * @return whether the unmount was successful
+     */
     public boolean unmount() {
         return unmount(JCRMountPointNode.MountStatus.unmounted);
     }
 
+    /**
+     * Unmounts this provider if it's not dynamically mounted specifying which mount status the provider should have.
+     *
+     * @param status the MountStatus status the provider should have once it's unmounted
+     * @return whether the unmount was successful. If this provider was dynamically mounted, this method will do nothing and return <code>false</code>.
+     */
     public boolean unmount(JCRMountPointNode.MountStatus status) {
         if (isDynamicallyMounted()) {
-            logger.info("Stopping provider of mount point {}", getMountPoint());
-            stop();
-
-            setMountStatus(status);
-
+            stop(status);
             return true;
         }
 
+        logger.info("Provider of mount point {} was not dynamically mounted and was therefore not unmounted", getMountPoint());
         return false;
     }
 
+    /**
+     * Sets the mount status of this provider to the specified one.
+     *
+     * @param status the new status of this provider
+     */
     protected void setMountStatus(JCRMountPointNode.MountStatus status) {
+        if(status == null) {
+            status = JCRMountPointNode.MountStatus.unknown;
+        }
+
         try {
             final JCRNodeWrapper node = getSystemSession().getNodeByIdentifier(getKey());
             if (node instanceof JCRMountPointNode) {
@@ -447,22 +466,22 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    public void mount() {
-        mount(true);
+    /**
+     * Mounts this provider making it available to serve content.
+     */
+    public boolean mount() {
+        return mount(true);
     }
 
+    /**
+     * Mounts this provider making it available to serve content, checking whether it's available or not.
+     * @param checkAvailability whether to check this provider's availability
+     * @return whether the mount was succesful or not
+     */
     public boolean mount(boolean checkAvailability) {
         try {
-            final boolean didStart = start(checkAvailability);
-
-            if (didStart) {
-                setMountStatus(JCRMountPointNode.MountStatus.mounted);
-            }
-
-            return didStart;
-        } catch (Exception e) {
-            logger.error("Couldn't mount provider " + getUrl(), e);
-            setMountStatus(JCRMountPointNode.MountStatus.error);
+            return start(checkAvailability);
+        } catch (JahiaInitializationException e) {
             return false;
         }
     }
@@ -585,8 +604,18 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
+        stop(JCRMountPointNode.MountStatus.unmounted);
+    }
+
+    private void stop(JCRMountPointNode.MountStatus status) {
+        if(status == null) {
+            status = JCRMountPointNode.MountStatus.unmounted;
+        }
+
+        logger.info("Unmounting provider of mount point {}", getMountPoint());
         unregisterObservers();
         getSessionFactory().removeProvider(key);
+        setMountStatus(status);
         rmiUnbind();
         initialized = false;
     }

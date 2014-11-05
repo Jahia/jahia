@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content;
 
+import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
@@ -83,10 +84,8 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.security.auth.Subject;
-import javax.security.auth.callback.*;
 import javax.servlet.ServletContext;
 
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -300,21 +299,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
 
         JahiaLoginModule m = new JahiaLoginModule();
         Subject s = new Subject();
-        HashMap<String, ?> sharedState = new HashMap<String, Object>();
-        HashMap<String, ?> options = new HashMap<String, Object>();
-        m.initialize(s, new CallbackHandler() {
-            public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
-                for (Callback callback : callbacks) {
-                    if (callback instanceof NameCallback) {
-                        ((NameCallback) callback).setName(simpleCreds.getUserID());
-                    } else if (callback instanceof PasswordCallback) {
-                        ((PasswordCallback) callback).setPassword(simpleCreds.getPassword());
-                    } else {
-                        throw new UnsupportedCallbackException(callback);
-                    }
-                }
-            }
-        }, sharedState, options);
+        m.initialize(s, new JahiaCallbackHandler(simpleCreds), null, null);
 
         try {
             JahiaLoginModule.Token t = JahiaLoginModule.getToken(simpleCreds.getUserID(), new String(

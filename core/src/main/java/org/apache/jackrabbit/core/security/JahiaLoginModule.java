@@ -75,11 +75,10 @@ import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.Credentials;
 import javax.jcr.SimpleCredentials;
@@ -88,6 +87,7 @@ import javax.security.auth.callback.*;
 import javax.security.auth.login.FailedLoginException;
 import javax.security.auth.login.LoginException;
 import javax.security.auth.spi.LoginModule;
+
 import java.security.Principal;
 import java.util.HashSet;
 import java.util.List;
@@ -96,17 +96,16 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Digital Factory specific implementation of the login module.
  * 
- * User: toto
- * Date: 27 févr. 2006
- * Time: 12:00:21
- * 
+ * @author toto
  */
 public class JahiaLoginModule implements LoginModule {
-     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(JahiaLoginModule.class);
+     private static final Logger logger = LoggerFactory.getLogger(JahiaLoginModule.class);
 
     public static final String SYSTEM = " system ";
     public static final String GUEST = " guest ";
+    public static final String IMPERSONATOR = " impersonator ";
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
     private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
@@ -114,23 +113,38 @@ public class JahiaLoginModule implements LoginModule {
     private Subject subject;
     private Set<Principal> principals = new HashSet<Principal>();
     private CallbackHandler callbackHandler;
-    private Map sharedState;
-    private Map options;
 
-    public void initialize(Subject subject, CallbackHandler callbackHandler, Map sharedState, Map options) {
+    @Override
+    public void initialize(Subject subject, CallbackHandler callbackHandler, Map<String,?> sharedState, Map<String,?> options) {
         this.subject = subject;
         this.callbackHandler = callbackHandler;
-        this.sharedState = sharedState;
-        this.options = options;
     }
 
+    @Override
     public boolean login() throws LoginException {
         try {
-            Callback[] callbacks = new Callback[] { new NameCallback("name?"), new PasswordCallback("pass?",false) } ;
-            callbackHandler.handle(callbacks);
+            String name = null;
+            char[] pass = null;
+            String impersonatorName = null;
+            char[] impersonatorPass = null;
+            if (callbackHandler instanceof JahiaCallbackHandler) {
+                JahiaCallbackHandler handler = (JahiaCallbackHandler) callbackHandler;
+                name = handler.getCredentials().getUserID();
+                pass = handler.getCredentials().getPassword();
+                SimpleCredentials impersonatorCredentials = (SimpleCredentials) handler.getCredentials().getAttribute(
+                        SecurityConstants.IMPERSONATOR_ATTRIBUTE);
+                if (impersonatorCredentials != null) {
+                    // there were impersonator credentials supplied -> will use them
+                    impersonatorName = impersonatorCredentials.getUserID();
+                    impersonatorPass = impersonatorCredentials.getPassword();
+                }
+            } else {
+                Callback[] callbacks = new Callback[] { new NameCallback("name?"), new PasswordCallback("pass?", false) };
+                callbackHandler.handle(callbacks);
 
-            String name = ((NameCallback)callbacks[0]).getName();
-            char[] pass = ((PasswordCallback)callbacks[1]).getPassword();
+                name = ((NameCallback) callbacks[0]).getName();
+                pass = ((PasswordCallback) callbacks[1]).getPassword();
+            }
             if (name != null) {
                 if (SYSTEM.equals(name)) {
                     String key = new String(pass);
@@ -150,10 +164,11 @@ public class JahiaLoginModule implements LoginModule {
                     principals.add(new JahiaPrincipal(GUEST, false, true));
                     principals.add(new AnonymousPrincipal());
                 } else {
-                    String key = new String(pass);
-                    Token token = removeToken(name, key);
+                    String key = new String(impersonatorPass != null ? impersonatorPass : pass);
+                    String lookupUser = impersonatorName != null ? impersonatorName : name;
+                    Token token = removeToken(lookupUser, key);
 
-                    if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(name).verifyPassword(key)) {
+                    if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key)) {
                         principals.add(new JahiaPrincipal(name));
                         if (JahiaGroupManagerService.getInstance().isAdminMember(name, null)) {
                             principals.add(new AdminPrincipal(name));
@@ -186,6 +201,7 @@ public class JahiaLoginModule implements LoginModule {
         return null;
     }
 
+    @Override
     public boolean commit() throws LoginException {
         if (principals.isEmpty()) {
             return false;
@@ -196,6 +212,7 @@ public class JahiaLoginModule implements LoginModule {
         }
     }
 
+    @Override
     public boolean abort() throws LoginException {
         if (principals.isEmpty()) {
             return false;

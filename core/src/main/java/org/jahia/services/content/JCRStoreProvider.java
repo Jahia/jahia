@@ -71,6 +71,9 @@
  */
 package org.jahia.services.content;
 
+import static org.apache.jackrabbit.core.security.JahiaLoginModule.GUEST;
+import static org.apache.jackrabbit.core.security.JahiaLoginModule.SYSTEM;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -113,6 +116,7 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -150,8 +154,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     protected String systemUser;
     protected String systemPassword;
+    private SimpleCredentials systemCredentials;
+
     protected String guestUser;
     protected String guestPassword;
+    private SimpleCredentials guestCredentials;
 
     protected String authenticationType = null;
 
@@ -358,8 +365,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected boolean start(boolean checkAvailability) throws JahiaInitializationException {
+        String tmpAuthenticationType = authenticationType;
         try {
-            String tmpAuthenticationType = authenticationType;
             authenticationType = "shared";
 
             final boolean available = !checkAvailability || isAvailable();
@@ -383,13 +390,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 setMountStatus(JCRMountPointNode.MountStatus.mounted);
             }
 
-            authenticationType = tmpAuthenticationType;
-
             return available;
         } catch (Exception e) {
             logger.error("Couldn't mount provider " + getUrl(), e);
             stop(JCRMountPointNode.MountStatus.error);
             throw new JahiaInitializationException("Couldn't mount provider " + getUrl(), e);
+        } finally {
+            authenticationType = tmpAuthenticationType;
         }
     }
 
@@ -494,6 +501,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             return false;
         }
     }
+    
 
 
     protected void initNodeTypes() throws RepositoryException, IOException {
@@ -835,53 +843,41 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public Session getSession(Credentials credentials, String workspace) throws RepositoryException {
-        Session s;
+        return getRepository().login(getCredentials(credentials), workspace);
+    }
 
-        if (credentials instanceof SimpleCredentials) {
-            String username = ((SimpleCredentials) credentials).getUserID();
-
-            if ("shared".equals(authenticationType)) {
-                if (guestUser == null || username.startsWith(" system ")) {
-                    credentials = JahiaLoginModule.getSystemCredentials();
-                } else {
-                    credentials = JahiaLoginModule.getGuestCredentials();
-                }
-                username = ((SimpleCredentials) credentials).getUserID();
-            }
-
-            if (systemUser != null && username.startsWith(" system ")) {
-                if (systemPassword != null) {
-                    credentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
-                } else {
-                    credentials = JahiaLoginModule.getCredentials(systemUser);
-                }
-            } else if (guestUser != null && username.startsWith(" guest ")) {
-                if (guestPassword != null) {
-                    credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
-                } else {
-                    credentials = JahiaLoginModule.getCredentials(guestUser);
-                }
-            } else if ("storedPasswords".equals(authenticationType)) {
-                JCRUserNode user = userManagerService.lookupUser(username);
-                username = user.getPropertyAsString("storedUsername_" + getKey());
-                JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
-                if (passProp != null) {
-                    credentials = new SimpleCredentials(username, passProp.getString().toCharArray());
-                } else {
-                    if (guestPassword != null) {
-                        credentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
-                    } else {
-                        credentials = JahiaLoginModule.getCredentials(guestUser);
-                    }
-                }
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Login for {} as {}", getKey(), ((SimpleCredentials) credentials).getUserID());
-            }
+    protected Credentials getCredentials(Credentials originalCredentials) throws PathNotFoundException,
+            RepositoryException, ValueFormatException {
+        if (!(originalCredentials instanceof SimpleCredentials)) {
+            return originalCredentials;
         }
 
-        s = getRepository().login(credentials, workspace);
-        return s;
+        Credentials credentials = originalCredentials;
+        String username = ((SimpleCredentials) originalCredentials).getUserID();
+
+        if ("shared".equals(authenticationType)) {
+            credentials = username.startsWith(GUEST) ? getGuestCredentials() : getSystemCredentials();
+        } else if ("storedPasswords".equals(authenticationType)) {
+            JCRUserNode user = userManagerService.lookupUser(username);
+            username = user.getPropertyAsString("storedUsername_" + getKey());
+            JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
+            if (passProp != null) {
+                credentials = new SimpleCredentials(username, passProp.getString().toCharArray());
+            } else {
+                credentials = getGuestCredentials();
+            }
+        } else {
+            if (systemUser != null && username.startsWith(SYSTEM)) {
+                credentials = getSystemCredentials();
+            } else if (guestUser != null && username.startsWith(GUEST)) {
+                credentials = getGuestCredentials();
+            }
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Login for {} as {}", getKey(), username);
+        }
+
+        return credentials;
     }
 
     public JCRItemWrapper getItemWrapper(Item item, JCRSessionWrapper session) throws RepositoryException {
@@ -1344,5 +1340,37 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 it.remove();
             }
         }
+    }
+
+    protected Credentials getGuestCredentials() {
+        if (guestCredentials == null) {
+            if (guestUser != null) {
+                if (guestPassword != null) {
+                    guestCredentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
+                } else {
+                    return JahiaLoginModule.getCredentials(guestUser);
+                }
+            } else {
+                return JahiaLoginModule.getGuestCredentials();
+            }
+        }
+
+        return guestCredentials;
+    }
+    
+    protected Credentials getSystemCredentials() {
+        if (systemCredentials == null) {
+            if (systemUser != null) {
+                if (systemPassword != null) {
+                    systemCredentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
+                } else {
+                    return JahiaLoginModule.getCredentials(systemUser);
+                }
+            } else {
+                return JahiaLoginModule.getSystemCredentials();
+            }
+        }
+
+        return systemCredentials;
     }
 }

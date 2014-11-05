@@ -383,7 +383,7 @@
             The servlet used to remote JCR calls over HTTP.
         </description>
         <servlet-name>JCRWebdavServer</servlet-name>
-        <servlet-class>org.apache.jackrabbit.j2ee.JcrRemotingServlet</servlet-class>
+        <servlet-class>org.apache.jackrabbit.j2ee.JahiaJcrRemotingServlet</servlet-class>
         <init-param>
             <description>
                 Defines how a missing authorization header should be handled.

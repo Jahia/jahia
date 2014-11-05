@@ -232,7 +232,11 @@ public class AreaTag extends ModuleTag implements ParamParent {
             boolean stillInWrapper = false;
             return renderContext.isEditMode() && editable && !stillInWrapper &&
                     renderContext.getRequest().getAttribute("inArea") == null;
-        } else {
+        } else if(node !=null){
+            return renderContext.isEditMode() && editable &&
+                    renderContext.getRequest().getAttribute("inArea") == null && node.getPath().equals(renderContext.getMainResource().getNode().getPath());
+        }
+        else {
             return super.canEdit(renderContext);
         }
     }

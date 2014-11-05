@@ -396,7 +396,13 @@ public class JCRSessionWrapper implements Session {
 
                     return wrapper;
                 } else {
-                    return provider.getPropertyWrapper((Property) item, this);
+                    // because of https://jira.jahia.org/browse/QA-6810, we retrieve the property from the parent
+                    // node to make sure that we go through any filtering that is implemented at a node decorator level,
+                    // as it is the case for the JCRUserNode. A more complete solution would involve implementing
+                    // the same decorator system around properties but this is much more complex and risky to do
+                    // than this (simple) method.
+                    JCRPropertyWrapper jcrPropertyWrapper = provider.getPropertyWrapper((Property) item, this);
+                    return jcrPropertyWrapper.getParent().getProperty(jcrPropertyWrapper.getName());
                 }
             }
         }

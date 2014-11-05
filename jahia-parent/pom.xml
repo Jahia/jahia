@@ -149,6 +149,7 @@
         <jahia.svn.base.url>https://devtools.jahia.com/svn/jahia/trunk</jahia.svn.base.url>
 		<jahia.license.header>header.txt</jahia.license.header>
 		<jahia.license.style>style.xml</jahia.license.style>
+        <jahia.sign.storepass>password</jahia.sign.storepass>
 
         <!-- plugin versions -->
         <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
@@ -681,11 +682,11 @@
                         </execution>
                     </executions>
                     <configuration>
-                        <keystore>${user.home}/.codesign/jahia-spc.pfx</keystore>
+                        <archive>${project.build.directory}/${installer.filename}.jar</archive>
+                        <keystore>${user.home}/.codesign/jahia_code_signing_certificate.p12</keystore>
                         <storetype>pkcs12</storetype>
-                        <storepass>password</storepass>
-                        <keypass>password</keypass>
-                        <alias>pvktmp:a44e906a-87b9-4e26-b6d1-16e94c75b607</alias>
+                        <storepass>${jahia.sign.storepass}</storepass>
+                        <alias>jahia solutions group sa's godaddy.com, inc. id</alias>
                         <sigfile>jahia</sigfile>
                         <tsa>http://tsa.starfieldtech.com/</tsa>
                     </configuration>
@@ -748,7 +749,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production,installer,windows-installer</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production,installer,sign-installer-jar,windows-installer</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>

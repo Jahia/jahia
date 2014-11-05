@@ -165,7 +165,11 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     public boolean shouldBeMounted() {
         final MountStatus mountStatus = getMountStatus();
-        return !(MountStatus.unmounted.equals(mountStatus) || MountStatus.error.equals(mountStatus));
+        final boolean shouldBeMounted = !(MountStatus.unmounted.equals(mountStatus) || MountStatus.error.equals(mountStatus));
+        if (!shouldBeMounted) {
+            logger.info("Provider of mount point " + getVirtualMountPointNode().getPath() + " has status '" + mountStatus.name() + "' and will not be automatically mounted.");
+        }
+        return shouldBeMounted;
     }
 
     public MountStatus getMountStatus() {

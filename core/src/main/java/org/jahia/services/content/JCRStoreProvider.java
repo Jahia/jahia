@@ -393,10 +393,19 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
+    /**
+     * Same as <code>isAvailable(false)</code>
+     * @return whether this provider is available to serve content
+     */
     public boolean isAvailable() {
         return isAvailable(false);
     }
 
+    /**
+     * Checks whether this provider is available to serve content.
+     * @param silent <code>true</code> if the check should be done silently (i.e. without outputting information on the console), <code>false</code> otherwise
+     * @return <code>true</code> if this provider can serve content, <code>false</code> otherwise.
+     */
     public boolean isAvailable(boolean silent) {
         JCRSessionWrapper systemSession = null;
         try {

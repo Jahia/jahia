@@ -86,6 +86,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -127,7 +128,9 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 jrWs.createWorkspace(Constants.LIVE_WORKSPACE);
                 liveWorkspaceCreated = true;
             } finally {
-                session.logout();
+                if (session != null) {
+                    session.logout();
+                }
             }
             super.start();
             if (liveWorkspaceCreated) {
@@ -179,6 +182,11 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     public void stop() {
         super.stop();
+    }
+
+    @Override
+    protected void setMountStatus(JCRMountPointNode.MountStatus status) {
+        // this provider should always be available so we should never change its status
     }
 
     protected void registerCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {

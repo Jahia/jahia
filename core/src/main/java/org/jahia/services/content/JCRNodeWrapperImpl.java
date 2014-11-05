@@ -2127,6 +2127,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             String typeName = getPrimaryNodeTypeName();
             try {
                 copy = dest.addNode(name, typeName);
+            } catch (ItemExistsException e) {
+                copy = dest.getNode(name);
             } catch (ConstraintViolationException e) {
                 logger.error("Cannot copy node", e);
                 return false;

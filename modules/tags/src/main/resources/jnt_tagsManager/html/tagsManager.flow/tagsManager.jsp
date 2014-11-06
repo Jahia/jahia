@@ -24,10 +24,21 @@
 <template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="tagsManager.js"/>
+
+<fmt:message key="label.cancel" var="labelCancel"/>
+<fmt:message key="label.ok" var="labelOk"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 
 <template:addResources type="inlinejavascript">
     <script>
+        var jsVarMap = {
+            labelCancel: '${functions:escapeJavaScript(labelCancel)}',
+            labelOk: '${functions:escapeJavaScript(labelOk)}',
+            i18nWaiting: '${functions:escapeJavaScript(i18nWaiting)}'
+        };
+
         $(document).ready(function () {
             $('#tableTagsList').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'>>",
@@ -75,7 +86,11 @@
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-pencil"></i><fmt:message key="label.rename"/></a></li>
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbRenameTag('${functions:escapeJavaScript(tag.key)}')">
+                                            <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
+                                        </a>
+                                    </li>
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-trash"></i><fmt:message key="label.delete"/></a></li>
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-search"></i><fmt:message key="jnt_tagsManager.label.viewUsages"/></a></li>
                                 </ul>
@@ -85,5 +100,12 @@
                 </c:forEach>
             </tbody>
         </table>
+    </div>
+    <div class="row hide">
+        <form:form id="formTagsManagement" action="${flowExecutionUrl}" method="post">
+            <input type="hidden" id="eventInput" name="_eventId_">
+            <input type="hidden" id="selectedTag" name="selectedTag">
+            <input type="hidden" id="tagNewName" name="tagNewName">
+        </form:form>
     </div>
 </div>

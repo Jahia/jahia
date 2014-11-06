@@ -9,6 +9,11 @@
         <on-render>
             <evaluate expression="flowHandler.getTagsList(externalContext.requestMap.renderContext)" result="flowScope.tagsList"/>
         </on-render>
+        <transition on="renameAllTags" to="renameAllTags"/>
     </view-state>
 
+    <action-state id="renameAllTags">
+        <evaluate expression="flowHandler.renameAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag, requestParameters.tagNewName)"/>
+        <transition to="tagsManager"/>
+    </action-state>
 </flow>

@@ -10,10 +10,16 @@
             <evaluate expression="flowHandler.getTagsList(externalContext.requestMap.renderContext)" result="flowScope.tagsList"/>
         </on-render>
         <transition on="renameAllTags" to="renameAllTags"/>
+        <transition on="deleteAllTags" to="deleteAllTags"/>
     </view-state>
 
     <action-state id="renameAllTags">
         <evaluate expression="flowHandler.renameAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag, requestParameters.tagNewName)"/>
+        <transition to="tagsManager"/>
+    </action-state>
+
+    <action-state id="deleteAllTags">
+        <evaluate expression="flowHandler.deleteAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag)"/>
         <transition to="tagsManager"/>
     </action-state>
 </flow>

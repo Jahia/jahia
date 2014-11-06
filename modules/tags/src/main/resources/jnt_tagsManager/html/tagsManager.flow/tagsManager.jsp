@@ -30,9 +30,11 @@
 <fmt:message key="label.cancel" var="labelCancel"/>
 <fmt:message key="label.ok" var="labelOk"/>
 <fmt:message key="label.rename" var="labelRename"/>
+<fmt:message key="label.delete" var="labelDelete"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 <fmt:message key="jnt_tagsManager.label.tagNewName" var="labelTagNewName"/>
 <fmt:message key="jnt_tagsManager.modal.rename" var="modalRename"/>
+<fmt:message key="jnt_tagsManager.modal.delete" var="modalDelete"/>
 
 <template:addResources type="inlinejavascript">
     <script>
@@ -40,9 +42,11 @@
             labelCancel: '${functions:escapeJavaScript(labelCancel)}',
             labelOk: '${functions:escapeJavaScript(labelOk)}',
             labelRename: '${functions:escapeJavaScript(labelRename)}',
+            labelDelete: '${functions:escapeJavaScript(labelDelete)}',
             i18nWaiting: '${functions:escapeJavaScript(i18nWaiting)}',
             labelTagNewName: '${functions:escapeJavaScript(labelTagNewName)}',
-            modalRename: '${functions:escapeJavaScript(modalRename)}'
+            modalRename: '${functions:escapeJavaScript(modalRename)}',
+            modalDelete: '${functions:escapeJavaScript(modalDelete)}'
         };
 
         $(document).ready(function () {
@@ -87,8 +91,7 @@
                         <td>
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
-                                    <i class="fa fa-list-ul"></i>
-                                    <fmt:message key="label.actions"/>
+                                    <i class="fa fa-list-ul"></i>&nbsp;<fmt:message key="label.actions"/>
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
@@ -97,7 +100,11 @@
                                             <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
                                         </a>
                                     </li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-trash"></i><fmt:message key="label.delete"/></a></li>
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbDeleteTag('${functions:escapeJavaScript(tag.key)}')">
+                                            <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
+                                        </a>
+                                    </li>
                                     <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-search"></i><fmt:message key="jnt_tagsManager.label.viewUsages"/></a></li>
                                 </ul>
                             </div>

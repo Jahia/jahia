@@ -69,9 +69,6 @@ public class TagsFlowHandler implements Serializable {
     }
 
     public void renameAllTags(RenderContext renderContext, String selectedTag, String tagNewName) {
-        logger.info("Selected Tag : " + selectedTag);
-        logger.info("Tag New Name : " + tagNewName);
-
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
 
@@ -97,6 +94,32 @@ public class TagsFlowHandler implements Serializable {
             session.save();
         } catch (RepositoryException e) {
             logger.error("renameAllTags() cannot rename all tags '" + selectedTag + "' by '" + tagNewName + "'");
+        }
+    }
+
+    public void deleteAllTags(RenderContext renderContext, String selectedTag) {
+        try {
+            JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
+
+            String query = "SELECT * FROM [nt:base] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
+            QueryManager qm = session.getWorkspace().getQueryManager();
+            Query q = qm.createQuery(query, Query.JCR_SQL2);
+            NodeIterator ni = q.execute().getNodes();
+            while (ni.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
+                Set<String> newValues = new TreeSet<String>();
+                JCRValueWrapper[] tags = node.getProperty("j:tagList").getValues();
+                for (JCRValueWrapper tag : tags) {
+                    String tagValue = tag.getString();
+                    if (!tagValue.equals(selectedTag)) {
+                        newValues.add(tagValue);
+                    }
+                }
+                node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
+            }
+            session.save();
+        } catch (RepositoryException e) {
+            logger.error("deleteAllTags() cannot delete all tags '" + selectedTag + "'");
         }
     }
 }

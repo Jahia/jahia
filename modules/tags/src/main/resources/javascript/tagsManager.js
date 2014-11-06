@@ -52,3 +52,27 @@ function bbRenameTag(oldName) {
         }
     });
 }
+
+function bbDeleteTag(selectedTag) {
+    bootbox.dialog({
+        title: "<h3>" + jsVarMap.labelDelete + " : " + selectedTag + "<h3>",
+        message: "<p>" + jsVarMap.modalDelete + "</p>",
+        buttons: {
+            danger: {
+                label: jsVarMap.labelCancel,
+                className: "btn-default",
+                callback: function() {}
+            },
+            success: {
+                label: jsVarMap.labelDelete,
+                className: "btn-danger",
+                callback: function() {
+                    callWorkInProgress();
+                    $("#eventInput").attr("name", "_eventId_deleteAllTags");
+                    $("#selectedTag").val(selectedTag);
+                    $("#formTagsManagement").submit();
+                }
+            }
+        }
+    });
+}

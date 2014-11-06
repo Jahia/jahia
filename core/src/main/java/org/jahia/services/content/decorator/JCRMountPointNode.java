@@ -158,7 +158,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         String path = mountPoint.getPath();
         JCRStoreProvider p = mountPoints != null ? mountPoints.get(path) : null;
         if (p != null) {
-            getProvider().unmount();
+            p.unmount();
         }
         super.remove();
     }

@@ -48,13 +48,13 @@
             <thead>
                 <tr>
                     <th>
-                        Tag Name
+                        <fmt:message key="jnt_tagsManager.label.tag"/>
                     </th>
                     <th>
-                        Occurences
+                        <fmt:message key="jnt_tagsManager.label.occurrences"/>
                     </th>
                     <th>
-                        Actions
+                        <fmt:message key="label.actions"/>
                     </th>
                 </tr>
             </thead>
@@ -71,13 +71,13 @@
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
                                     <i class="fa fa-list-ul"></i>
-                                    Actions
+                                    <fmt:message key="label.actions"/>
                                     <span class="caret"></span>
                                 </button>
                                 <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-pencil"></i>Rename</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-trash"></i>Delete</a></li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-search"></i>View Usages</a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-pencil"></i><fmt:message key="label.rename"/></a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-trash"></i><fmt:message key="label.delete"/></a></li>
+                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-search"></i><fmt:message key="jnt_tagsManager.label.viewUsages"/></a></li>
                                 </ul>
                             </div>
                         </td>

@@ -76,3 +76,10 @@ function bbDeleteTag(selectedTag) {
         }
     });
 }
+
+function viewUsages(selectedTag) {
+    callWorkInProgress();
+    $("#eventInput").attr("name", "_eventId_viewUsagesTag");
+    $("#selectedTag").val(selectedTag);
+    $("#formTagsManagement").submit();
+}

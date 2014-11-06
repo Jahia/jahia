@@ -105,7 +105,11 @@
                                             <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
                                         </a>
                                     </li>
-                                    <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><i class="fa fa-search"></i><fmt:message key="jnt_tagsManager.label.viewUsages"/></a></li>
+                                    <li role="presentation">
+                                        <a role="menuitem" tabindex="-1" href="#" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
+                                            <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
+                                        </a>
+                                    </li>
                                 </ul>
                             </div>
                         </td>

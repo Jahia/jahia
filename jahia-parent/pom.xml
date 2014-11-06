@@ -673,14 +673,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jarsigner-plugin</artifactId>
                     <version>1.3.2</version>
-                    <executions>
-                        <execution>
-                            <id>sign</id>
-                            <goals>
-                                <goal>sign</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                     <configuration>
                         <archive>${project.build.directory}/${installer.filename}.jar</archive>
                         <keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</keystore>

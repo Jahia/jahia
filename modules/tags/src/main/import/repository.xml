@@ -13,6 +13,21 @@
                 <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
                     <files jcr:primaryType="jnt:folder"/>
                     <contents jcr:primaryType="jnt:contentFolder"/>
+                    <site-settings-base j:view="siteSettings"
+                                        jcr:mixinTypes="jmix:useUILocale"
+                                        jcr:primaryType="jnt:template">
+                        <tagsManager j:applyOn="jnt:virtualsite"
+                                     j:defaultTemplate="false"
+                                     j:hiddenTemplate="false"
+                                     j:requiredPermissionNames="tagsManager"
+                                     j:titleKey="jnt_tagsManager"
+                                     jcr:mixinTypes="jmix:rbTitle"
+                                     jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <formCenterBuilder jcr:primaryType="jnt:tagsManager"/>
+                            </pagecontent>
+                        </tagsManager>
+                    </site-settings-base>
                 </templates>
                 
             </tags>

@@ -23,17 +23,17 @@
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="tagsManager.js"/>
 
 <template:addResources type="inlinejavascript">
     <script>
         $(document).ready(function () {
             $('#tableTagsList').dataTable({
-                "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'p>>",
+                "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'>>",
+                "bPaginate": false,
                 "iDisplayLength":25,
-                "sPaginationType": "bootstrap",
-                "aaSorting": [] //this option disable sort by default, the user steal can use column names to sort the table
+                "aaSorting": [[0, 'desc']]
             });
         });
     </script>

@@ -29,14 +29,20 @@
 
 <fmt:message key="label.cancel" var="labelCancel"/>
 <fmt:message key="label.ok" var="labelOk"/>
+<fmt:message key="label.rename" var="labelRename"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
+<fmt:message key="jnt_tagsManager.label.tagNewName" var="labelTagNewName"/>
+<fmt:message key="jnt_tagsManager.modal.rename" var="modalRename"/>
 
 <template:addResources type="inlinejavascript">
     <script>
         var jsVarMap = {
             labelCancel: '${functions:escapeJavaScript(labelCancel)}',
             labelOk: '${functions:escapeJavaScript(labelOk)}',
-            i18nWaiting: '${functions:escapeJavaScript(i18nWaiting)}'
+            labelRename: '${functions:escapeJavaScript(labelRename)}',
+            i18nWaiting: '${functions:escapeJavaScript(i18nWaiting)}',
+            labelTagNewName: '${functions:escapeJavaScript(labelTagNewName)}',
+            modalRename: '${functions:escapeJavaScript(modalRename)}'
         };
 
         $(document).ready(function () {

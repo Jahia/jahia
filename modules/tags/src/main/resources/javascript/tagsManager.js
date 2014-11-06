@@ -16,19 +16,22 @@ function callWorkInProgress(){
 
 function bbRenameTag(oldName) {
     bootbox.dialog({
-        title: "<h3>Rename : " + oldName + "<h3>",
-        message: "<p>New name :" +
-            "</p><input id='renameTag' type='text'>" +
-            "<script>" +
-                "$('.renameButton').attr('disabled', 'disabled');" +
-                "$('#renameTag').keypress(function() {" +
-                    "if ($('#renameTag').val() != '') {" +
-                        "$('.renameButton').removeAttr('disabled');" +
-                    "} else {" +
-                        "$('.renameButton').attr('disabled', 'disabled');" +
-                    "}" +
-                "});" +
-            "</script>",
+        title: "<h3>" + jsVarMap.labelRename + " : " + oldName + "<h3>",
+        message: "<p>" + jsVarMap.labelTagNewName +
+                 "</p><input id='renameTag' type='text'>" +
+                 "<script>" +
+                     "$('.renameButton').attr('disabled', 'disabled');" +
+                     "$('#renameTag').keypress(function() {" +
+                         "if ($('#renameTag').val() != '') {" +
+                             "$('.renameButton').removeAttr('disabled');" +
+                         "} else {" +
+                             "$('.renameButton').attr('disabled', 'disabled');" +
+                         "}" +
+                     "});" +
+                 "</script>" +
+                 "<br /><br /><p>" +
+                 jsVarMap.modalRename +
+                 "</p>",
         buttons: {
             danger: {
                 label: jsVarMap.labelCancel,
@@ -36,7 +39,7 @@ function bbRenameTag(oldName) {
                 callback: function() {}
             },
             success: {
-                label: jsVarMap.labelOk,
+                label: jsVarMap.labelRename,
                 className: "btn-primary renameButton",
                 callback: function() {
                     callWorkInProgress();

@@ -67,6 +67,7 @@
             <adminTemplates jcr:primaryType="jnt:permission" />
             <adminSystemInfos jcr:primaryType="jnt:permission" />
             <adminManageMemory jcr:primaryType="jnt:permission" />
+            <adminMountPoints jcr:primaryType="jnt:permission" />
         </admin>
 
         <site-admin jcr:primaryType="jnt:permission" >

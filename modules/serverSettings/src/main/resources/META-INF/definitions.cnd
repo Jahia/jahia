@@ -32,3 +32,5 @@
 [jnt:serverSettingsManageWebProjects] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
 [jnt:serverSettingsSearchConfig] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
+
+[jnt:serverSettingsMountPoints] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

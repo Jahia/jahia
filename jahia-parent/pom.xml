@@ -150,6 +150,7 @@
 		<jahia.license.header>header.txt</jahia.license.header>
 		<jahia.license.style>style.xml</jahia.license.style>
         <jahia.sign.storepass>password</jahia.sign.storepass>
+        <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
 
         <!-- plugin versions -->
         <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
@@ -675,7 +676,7 @@
                     <version>1.3.2</version>
                     <configuration>
                         <archive>${project.build.directory}/${installer.filename}.jar</archive>
-                        <keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</keystore>
+                        <keystore>${jahia.sign.keystore}</keystore>
                         <storetype>pkcs12</storetype>
                         <storepass>${jahia.sign.storepass}</storepass>
                         <alias>jahia</alias>
@@ -741,7 +742,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production,installer,sign-installer-jar,windows-installer</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>

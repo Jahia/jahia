@@ -15,20 +15,33 @@
     </view-state>
 
     <view-state id="tagUsages">
+        <transition on="backToTagsList" to="tagsManager"/>
+        <transition on="renameTagOnNode" to="renameTagOnNode"/>
+        <transition on="deleteTagOnNode" to="deleteTagOnNode"/>
     </view-state>
 
     <action-state id="renameAllTags">
-        <evaluate expression="flowHandler.renameAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag, requestParameters.tagNewName)"/>
+        <evaluate expression="flowHandler.renameAllTags(externalContext.requestMap.renderContext, messageContext, requestParameters.selectedTag, requestParameters.tagNewName)"/>
         <transition to="tagsManager"/>
     </action-state>
 
     <action-state id="deleteAllTags">
-        <evaluate expression="flowHandler.deleteAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag)"/>
+        <evaluate expression="flowHandler.deleteAllTags(externalContext.requestMap.renderContext, messageContext, requestParameters.selectedTag)"/>
         <transition to="tagsManager"/>
     </action-state>
 
     <action-state id="getTagDetails">
         <evaluate expression="flowHandler.getTagDetails(externalContext.requestMap.renderContext, requestParameters.selectedTag)" result="flowScope.tagDetails"/>
         <transition to="tagUsages"/>
+    </action-state>
+
+    <action-state id="renameTagOnNode">
+        <evaluate expression="flowHandler.renameTagOnNode(externalContext.requestMap.renderContext, messageContext, requestParameters.selectedTag, requestParameters.tagNewName, requestParameters.nodeToUpdateId)"/>
+        <transition to="getTagDetails"/>
+    </action-state>
+
+    <action-state id="deleteTagOnNode">
+        <evaluate expression="flowHandler.deleteTagOnNode(externalContext.requestMap.renderContext, messageContext, requestParameters.selectedTag, requestParameters.nodeToUpdateId)"/>
+        <transition to="getTagDetails"/>
     </action-state>
 </flow>

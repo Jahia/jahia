@@ -53,7 +53,7 @@
             $('#tableTagsList').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'>>",
                 "bPaginate": false,
-                "aaSorting": [[0, 'desc']]
+                "aaSorting": [[0, 'asc']]
             });
         });
     </script>
@@ -64,7 +64,23 @@
         <h1><fmt:message key="jnt_tagsManager"/></h1>
     </div>
     <div class="row well">
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="tableTagsList">
+        <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+            <div class="alert <c:choose><c:when test="${message.severity eq 'ERROR'}">alert-danger</c:when><c:otherwise>alert-success</c:otherwise></c:choose> alert-dismissible" role="alert">
+                <button type="button" class="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <c:choose>
+                    <c:when test="${message.severity eq 'ERROR'}">
+                        <i class="fa fa-exclamation"></i>&nbsp;<strong><fmt:message key="label.error"/></strong>&nbsp;
+                    </c:when>
+                    <c:otherwise>
+                        <i class="fa fa-info"></i>&nbsp;
+                    </c:otherwise>
+                </c:choose>
+                ${message.text}
+            </div>
+        </c:forEach>
+        <table class="table table-hover table-bordered table-striped" id="tableTagsList">
             <thead>
                 <tr>
                     <th>
@@ -88,25 +104,22 @@
                             ${tag.value}
                         </td>
                         <td>
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
-                                    <i class="fa fa-list-ul"></i>&nbsp;<fmt:message key="label.actions"/>
-                                    <span class="caret"></span>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
+                                    <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
                                 </button>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbRenameTag('${functions:escapeJavaScript(tag.key)}')">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li>
+                                        <a href="#" onclick="bbRenameTag('${functions:escapeJavaScript(tag.key)}')">
                                             <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
                                         </a>
                                     </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbDeleteTag('${functions:escapeJavaScript(tag.key)}')">
+                                    <li>
+                                        <a href="#" class="text-danger" onclick="bbDeleteTag('${functions:escapeJavaScript(tag.key)}')">
                                             <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
-                                            <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
                                         </a>
                                     </li>
                                 </ul>

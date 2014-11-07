@@ -69,56 +69,76 @@
         <h1><fmt:message key="jnt_tagsManager"/></h1>
     </div>
     <div class="row well">
-        <h3><fmt:message key="jnt_tagsManager.title.detailsForTag"/>&nbsp;${currentTagName}</h3>
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="tableTagDetails">
-            <thead>
-            <tr>
-                <th>
-                    <fmt:message key="label.page"/>
-                </th>
-                <th>
-                    <fmt:message key="label.path"/>
-                </th>
-                <th>
-                    <fmt:message key="label.actions"/>
-                </th>
-            </tr>
-            </thead>
-            <tbody>
-            <c:forEach items="${currentTagValue}" var="nodeId">
-                <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
-                <tr>
-                    <td>
-                        <jcr:node var="tagPage" path="${jcr:getParentOfType(currentNodeTag, 'jnt:page').path}"/>
-                        <p class="lead">${tagPage.displayableName}</p>
-                    </td>
-                    <td>
-                        ${currentNodeTag.path}
-                    </td>
-                    <td>
-                        <div class="dropdown">
-                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
-                                <i class="fa fa-list-ul"></i>&nbsp;<fmt:message key="label.actions"/>
-                                <span class="caret"></span>
-                            </button>
-                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
-                                <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" href="#" onclick="bbRenameTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
-                                        <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
-                                    </a>
-                                </li>
-                                <li role="presentation">
-                                    <a role="menuitem" tabindex="-1" href="#" onclick="bbDeleteTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
-                                        <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </td>
-                </tr>
+        <div class="row">
+            <button type="button" class="btn btn-default" onclick="backToTagManager()">
+                <i class="fa fa-home"></i>&nbsp;<fmt:message key="jnt_tagsManager.button.backToTagsList"/>
+            </button>
+        </div>
+        <div class="row">
+            <h3><fmt:message key="jnt_tagsManager.title.detailsForTag"><fmt:param value="${currentTagName}"/><fmt:param value="${fn:length(currentTagValue)}"/><fmt:param value="${workspace}"/></fmt:message></h3>
+            <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+                <div class="alert <c:choose><c:when test="${message.severity eq 'ERROR'}">alert-danger</c:when><c:otherwise>alert-success</c:otherwise></c:choose> alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <c:choose>
+                        <c:when test="${message.severity eq 'ERROR'}">
+                            <i class="fa fa-exclamation"></i>&nbsp;<strong><fmt:message key="label.error"/></strong>&nbsp;
+                        </c:when>
+                        <c:otherwise>
+                            <i class="fa fa-info"></i>&nbsp;
+                        </c:otherwise>
+                    </c:choose>
+                    ${message.text}
+                </div>
             </c:forEach>
-            </tbody>
-        </table>
+            <table class="table table-hover table-bordered table-striped" id="tableTagDetails">
+                <thead>
+                <tr>
+                    <th>
+                        <fmt:message key="label.page"/>
+                    </th>
+                    <th>
+                        <fmt:message key="label.path"/>
+                    </th>
+                    <th>
+                        <fmt:message key="label.actions"/>
+                    </th>
+                </tr>
+                </thead>
+                <tbody>
+                <c:forEach items="${currentTagValue}" var="nodeId">
+                    <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
+                    <tr>
+                        <td>
+                            <jcr:node var="tagPage" path="${jcr:getParentOfType(currentNodeTag, 'jnt:page').path}"/>
+                            <p class="lead">${tagPage.displayableName}</p>
+                        </td>
+                        <td>
+                            ${currentNodeTag.path}
+                        </td>
+                        <td>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger" onclick="bbDeleteTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
+                                    <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
+                                </button>
+                                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
+                                    <i class="fa fa-caret-down"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a href="#" onclick="bbRenameTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
+                                            <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                </c:forEach>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="row hide">
         <form:form id="formTagManagement" action="${flowExecutionUrl}" method="post">

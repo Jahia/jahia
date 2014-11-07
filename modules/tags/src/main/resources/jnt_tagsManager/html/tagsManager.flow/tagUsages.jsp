@@ -53,7 +53,7 @@
             $('#tableTagDetails').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'>>",
                 "bPaginate": false,
-                "aaSorting": [[1, 'desc']]
+                "aaSorting": [[1, 'asc']]
             });
         });
     </script>
@@ -89,7 +89,8 @@
                 <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
                 <tr>
                     <td>
-                        <%--${currentNodeTag.page}--%>
+                        <jcr:node var="tagPage" path="${jcr:getParentOfType(currentNodeTag, 'jnt:page').path}"/>
+                        <p class="lead">${tagPage.displayableName}</p>
                     </td>
                     <td>
                         ${currentNodeTag.path}

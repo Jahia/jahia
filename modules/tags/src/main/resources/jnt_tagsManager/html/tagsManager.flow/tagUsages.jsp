@@ -25,7 +25,7 @@
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
-<template:addResources type="javascript" resources="tagsManager.js"/>
+<template:addResources type="javascript" resources="tagUsages.js"/>
 
 <fmt:message key="label.cancel" var="labelCancel"/>
 <fmt:message key="label.ok" var="labelOk"/>
@@ -33,8 +33,8 @@
 <fmt:message key="label.delete" var="labelDelete"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/>
 <fmt:message key="jnt_tagsManager.label.tagNewName" var="labelTagNewName"/>
-<fmt:message key="jnt_tagsManager.modal.renameAll" var="modalRenameAll"/>
-<fmt:message key="jnt_tagsManager.modal.deleteAll" var="modalDeleteAll"/>
+<fmt:message key="jnt_tagsManager.modal.rename" var="modalRename"/>
+<fmt:message key="jnt_tagsManager.modal.delete" var="modalDelete"/>
 
 <template:addResources type="inlinejavascript">
     <script>
@@ -45,82 +45,85 @@
             labelDelete: '${functions:escapeJavaScript(labelDelete)}',
             i18nWaiting: '${functions:escapeJavaScript(i18nWaiting)}',
             labelTagNewName: '${functions:escapeJavaScript(labelTagNewName)}',
-            modalRenameAll: '${functions:escapeJavaScript(modalRenameAll)}',
-            modalDeleteAll: '${functions:escapeJavaScript(modalDeleteAll)}'
+            modalRename: '${functions:escapeJavaScript(modalRename)}',
+            modalDelete: '${functions:escapeJavaScript(modalDelete)}'
         };
 
         $(document).ready(function () {
-            $('#tableTagsList').dataTable({
+            $('#tableTagDetails').dataTable({
                 "sDom": "<'row-fluid'<'span6'l><'span6 text-right'f>r>t<'row-fluid'<'span6'i><'span6 text-right'>>",
                 "bPaginate": false,
-                "aaSorting": [[0, 'desc']]
+                "aaSorting": [[1, 'desc']]
             });
         });
     </script>
 </template:addResources>
+
+<c:forEach items="${tagDetails}" var="tag">
+    <c:set value="${tag.key}" var="currentTagName"/>
+    <c:set value="${tag.value}" var="currentTagValue"/>
+</c:forEach>
 
 <div class="container-fluid">
     <div class="row">
         <h1><fmt:message key="jnt_tagsManager"/></h1>
     </div>
     <div class="row well">
-        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="tableTagsList">
+        <h3><fmt:message key="jnt_tagsManager.title.detailsForTag"/>&nbsp;${currentTagName}</h3>
+        <table cellpadding="0" cellspacing="0" border="0" class="table table-hover table-bordered table-striped" id="tableTagDetails">
             <thead>
-                <tr>
-                    <th>
-                        <fmt:message key="jnt_tagsManager.label.tag"/>
-                    </th>
-                    <th>
-                        <fmt:message key="jnt_tagsManager.label.occurrences"/>
-                    </th>
-                    <th>
-                        <fmt:message key="label.actions"/>
-                    </th>
-                </tr>
+            <tr>
+                <th>
+                    <fmt:message key="label.page"/>
+                </th>
+                <th>
+                    <fmt:message key="label.path"/>
+                </th>
+                <th>
+                    <fmt:message key="label.actions"/>
+                </th>
+            </tr>
             </thead>
             <tbody>
-                <c:forEach items="${tagsList}" var="tag">
-                    <tr>
-                        <td>
-                            ${tag.key}
-                        </td>
-                        <td>
-                            ${tag.value}
-                        </td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
-                                    <i class="fa fa-list-ul"></i>&nbsp;<fmt:message key="label.actions"/>
-                                    <span class="caret"></span>
-                                </button>
-                                <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbRenameTag('${functions:escapeJavaScript(tag.key)}')">
-                                            <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="bbDeleteTag('${functions:escapeJavaScript(tag.key)}')">
-                                            <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
-                                        </a>
-                                    </li>
-                                    <li role="presentation">
-                                        <a role="menuitem" tabindex="-1" href="#" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
-                                            <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                </c:forEach>
+            <c:forEach items="${currentTagValue}" var="nodeId">
+                <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
+                <tr>
+                    <td>
+                        <%--${currentNodeTag.page}--%>
+                    </td>
+                    <td>
+                        ${currentNodeTag.path}
+                    </td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuActions" data-toggle="dropdown">
+                                <i class="fa fa-list-ul"></i>&nbsp;<fmt:message key="label.actions"/>
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenuActions">
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" href="#" onclick="bbRenameTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
+                                        <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
+                                    </a>
+                                </li>
+                                <li role="presentation">
+                                    <a role="menuitem" tabindex="-1" href="#" onclick="bbDeleteTag('${functions:escapeJavaScript(currentNodeTag.identifier)}')">
+                                        <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </td>
+                </tr>
+            </c:forEach>
             </tbody>
         </table>
     </div>
     <div class="row hide">
-        <form:form id="formTagsManagement" action="${flowExecutionUrl}" method="post">
+        <form:form id="formTagManagement" action="${flowExecutionUrl}" method="post">
             <input type="hidden" id="eventInput" name="_eventId_">
-            <input type="hidden" id="selectedTag" name="selectedTag">
+            <input type="hidden" name="selectedTag" value="${currentTagName}">
+            <input type="hidden" id="nodeToUpdateId" name="nodeToUpdateId"/>
             <input type="hidden" id="tagNewName" name="tagNewName">
         </form:form>
     </div>

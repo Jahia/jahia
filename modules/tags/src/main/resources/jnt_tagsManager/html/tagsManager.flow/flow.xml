@@ -11,6 +11,10 @@
         </on-render>
         <transition on="renameAllTags" to="renameAllTags"/>
         <transition on="deleteAllTags" to="deleteAllTags"/>
+        <transition on="viewTagUsages" to="getTagDetails"/>
+    </view-state>
+
+    <view-state id="tagUsages">
     </view-state>
 
     <action-state id="renameAllTags">
@@ -21,5 +25,10 @@
     <action-state id="deleteAllTags">
         <evaluate expression="flowHandler.deleteAllTags(externalContext.requestMap.renderContext, requestParameters.selectedTag)"/>
         <transition to="tagsManager"/>
+    </action-state>
+
+    <action-state id="getTagDetails">
+        <evaluate expression="flowHandler.getTagDetails(externalContext.requestMap.renderContext, requestParameters.selectedTag)" result="flowScope.tagDetails"/>
+        <transition to="tagUsages"/>
     </action-state>
 </flow>

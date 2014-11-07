@@ -122,4 +122,28 @@ public class TagsFlowHandler implements Serializable {
             logger.error("deleteAllTags() cannot delete all tags '" + selectedTag + "'");
         }
     }
+
+    public Map<String, List<String>> getTagDetails(RenderContext renderContext, String selectedTag) {
+        Map<String, List<String>> tagDetails = new HashMap<String, List<String>>();
+        try {
+            JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
+
+            String query = "SELECT * FROM [nt:base] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
+            QueryManager qm = session.getWorkspace().getQueryManager();
+            Query q = qm.createQuery(query, Query.JCR_SQL2);
+
+            NodeIterator ni = q.execute().getNodes();
+            List<String> nodeList = new ArrayList<String>();
+            while (ni.hasNext()) {
+                JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
+                nodeList.add(node.getIdentifier());
+            }
+
+            tagDetails.put(selectedTag, nodeList);
+            return tagDetails;
+        } catch (RepositoryException e) {
+            logger.error("getTagDetails() cannot get tag '" + selectedTag + "' details");
+            return tagDetails;
+        }
+    }
 }

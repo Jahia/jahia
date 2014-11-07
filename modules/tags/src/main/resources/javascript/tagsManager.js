@@ -30,7 +30,7 @@ function bbRenameTag(oldName) {
                      "});" +
                  "</script>" +
                  "<br /><br /><p>" +
-                 jsVarMap.modalRename +
+                 jsVarMap.modalRenameAll +
                  "</p>",
         buttons: {
             danger: {
@@ -56,7 +56,7 @@ function bbRenameTag(oldName) {
 function bbDeleteTag(selectedTag) {
     bootbox.dialog({
         title: "<h3>" + jsVarMap.labelDelete + " : " + selectedTag + "<h3>",
-        message: "<p>" + jsVarMap.modalDelete + "</p>",
+        message: "<p>" + jsVarMap.modalDeleteAll + "</p>",
         buttons: {
             danger: {
                 label: jsVarMap.labelCancel,
@@ -79,7 +79,7 @@ function bbDeleteTag(selectedTag) {
 
 function viewUsages(selectedTag) {
     callWorkInProgress();
-    $("#eventInput").attr("name", "_eventId_viewUsagesTag");
+    $("#eventInput").attr("name", "_eventId_viewTagUsages");
     $("#selectedTag").val(selectedTag);
     $("#formTagsManagement").submit();
 }

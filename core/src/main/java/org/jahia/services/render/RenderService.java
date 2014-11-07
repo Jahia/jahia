@@ -568,8 +568,13 @@ public class RenderService {
         return !invert;
     }
 
-    public void flushCache() {
-        templatesCache.flushAll(true);
+    public void flushCache(String group) {
+        Collection<String> keys = new HashSet<String>(templatesCache.getKeys());
+        for (String s : keys) {
+            if (s.startsWith(group)) {
+                templatesCache.remove(s);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")

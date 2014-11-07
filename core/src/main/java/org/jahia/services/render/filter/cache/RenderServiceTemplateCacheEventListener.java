@@ -71,6 +71,7 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.render.RenderService;
@@ -79,6 +80,8 @@ import org.slf4j.Logger;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Output cache invalidation listener.
@@ -94,6 +97,16 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
     private RenderService renderService;
 
     @Override
+    public String getPath() {
+        return "/modules";
+    }
+
+    @Override
+    public String[] getNodeTypes() {
+        return new String[] { "jnt:template" };
+    }
+
+    @Override
     public int getEventTypes() {
         return Event.NODE_ADDED + Event.PROPERTY_ADDED + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED +
                Event.NODE_MOVED + Event.NODE_REMOVED;
@@ -105,29 +118,28 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
-
+        Set<String> modulesToFlush = new HashSet<String>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
             try {
                 String path = event.getPath();
-                if (!path.startsWith("/jcr:system")) {
-                    final int type = event.getType();
-                    if (renderService == null) {
-                        renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
-                    }
-                    if (renderService != null) {
-                        if (path.startsWith("/modules")) {
-                            renderService.flushCache();
-                        }
-                        if (path.contains("j:templateName")) {
-                            renderService.flushCache();
-                        }
+                if (renderService == null) {
+                    renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
+                }
+                if (renderService != null) {
+                    int index = path.indexOf("/","/modules/".length());
+                    index = path.indexOf("/", index + 1);
+                    if (index > -1) {
+                        modulesToFlush.add(path.substring(0,index));
                     }
                 }
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
 
+        }
+        for (String s : modulesToFlush) {
+            renderService.flushCache(s);
         }
     }
 

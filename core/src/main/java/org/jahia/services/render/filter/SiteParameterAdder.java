@@ -73,6 +73,7 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.HtmlTagAttributeTraverser.HtmlTagAttributeVisitor;
 import org.jahia.services.seo.VanityUrl;
@@ -142,7 +143,11 @@ public class SiteParameterAdder implements HtmlTagAttributeVisitor {
                     }
                     if (jsite == null) {
                         try {
-                            jsite = resource.getNode().getResolveSite().getIdentifier();
+                            JCRSiteNode resolveSite = resource.getNode().getResolveSite();
+                            if (!resolveSite.getPath().startsWith("/sites/")) {
+                                return value;
+                            }
+                            jsite = resolveSite.getIdentifier();
                         } catch (RepositoryException e) {
                             return value;
                         }

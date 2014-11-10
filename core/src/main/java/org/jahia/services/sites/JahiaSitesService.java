@@ -836,10 +836,16 @@ public class JahiaSitesService extends JahiaService {
 
     private void flushCaches() {
         if (siteKeyByServerNameCache != null) {
-            siteKeyByServerNameCache.refresh(false);
+            siteKeyByServerNameCache.removeAll(false);
         }
+<<<<<<< .working
+=======
+        if (siteKeyByIdCache != null) {
+            siteKeyByIdCache.removeAll(false);
+        }
+>>>>>>> .merge-right.r51397
         if (siteDefaultLanguageBySiteKey != null) {
-            siteDefaultLanguageBySiteKey.refresh(false);
+            siteDefaultLanguageBySiteKey.removeAll(false);
         }
     }
 

@@ -6,7 +6,6 @@ import org.jahia.services.content.*;
 import org.jahia.services.query.ScrollableQuery;
 import org.jahia.services.query.ScrollableQueryCallback;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -18,7 +17,6 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
 
@@ -35,6 +33,9 @@ public class TagsFlowHandler implements Serializable {
 
     @Autowired
     private transient TaggingService taggingService;
+
+    @Autowired
+    private transient JCRSessionFactory sessionFactory;
 
     public Map<String,Integer> getTagsList(RenderContext renderContext) {
         try {
@@ -79,23 +80,17 @@ public class TagsFlowHandler implements Serializable {
 
     public void renameAllTags(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) {
         if (StringUtils.isNotEmpty(tagNewName)) {
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             try {
-                JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
-
                 // remove Capital and special character from tag
                 tagNewName = taggingService.getTagHandler().execute(tagNewName);
 
-                String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
-                QueryManager qm = session.getWorkspace().getQueryManager();
-                Query q = qm.createQuery(query, Query.JCR_SQL2);
-                NodeIterator ni = q.execute().getNodes();
-                while (ni.hasNext()) {
-                    JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
-
-                    updateTagsList(renderContext, messageContext, node, selectedTag, tagNewName);
-                }
+                executeActionWithLiveSession(renderContext, messageContext, selectedTag, tagNewName);
+                executeActionWithDefaultSession(renderContext, messageContext, selectedTag, tagNewName);
             } catch (RepositoryException e) {
                 logger.error("renameAllTags() cannot rename all tags '" + selectedTag + "' by '" + tagNewName + "'");
+            } finally {
+                JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
         } else {
             messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaTags", "jnt_tagsManager.error.newNameEmpty", renderContext.getUILocale())).build());
@@ -103,20 +98,14 @@ public class TagsFlowHandler implements Serializable {
     }
 
     public void deleteAllTags(RenderContext renderContext, MessageContext messageContext, String selectedTag) {
+        JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
         try {
-            JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
-
-            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
-            QueryManager qm = session.getWorkspace().getQueryManager();
-            Query q = qm.createQuery(query, Query.JCR_SQL2);
-            NodeIterator ni = q.execute().getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
-
-                updateTagsList(renderContext, messageContext, node, selectedTag, null);
-            }
+            executeActionWithLiveSession(renderContext, messageContext, selectedTag, null);
+            executeActionWithDefaultSession(renderContext, messageContext, selectedTag, null);
         } catch (RepositoryException e) {
             logger.error("deleteAllTags() cannot delete all tags '" + selectedTag + "'");
+        } finally {
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
     }
 
@@ -146,6 +135,7 @@ public class TagsFlowHandler implements Serializable {
 
     public void renameTagOnNode(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName, String nodeID) {
         if (StringUtils.isNotEmpty(tagNewName)) {
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             try {
                 JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
 
@@ -156,6 +146,8 @@ public class TagsFlowHandler implements Serializable {
                 updateTagsList(renderContext, messageContext, node, selectedTag, tagNewName);
             } catch (RepositoryException e) {
                 logger.error("renameTagOnNode() cannot rename tag '" + selectedTag + "'");
+            } finally {
+                JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
         } else {
             messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaTags", "jnt_tagsManager.error.newNameEmpty", renderContext.getUILocale())).build());
@@ -163,6 +155,7 @@ public class TagsFlowHandler implements Serializable {
     }
 
     public void deleteTagOnNode(RenderContext renderContext, MessageContext messageContext, String selectedTag, String nodeID) {
+        JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
 
@@ -171,6 +164,37 @@ public class TagsFlowHandler implements Serializable {
             updateTagsList(renderContext, messageContext, node, selectedTag, null);
         } catch (RepositoryException e) {
             logger.error("deleteTagOnNode() cannot delete tag '" + selectedTag + "'");
+        } finally {
+            JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
+        }
+    }
+
+    private void executeAction(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName, JCRSessionWrapper session) throws RepositoryException {
+        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
+        QueryManager qm = session.getWorkspace().getQueryManager();
+        Query q = qm.createQuery(query, Query.JCR_SQL2);
+        NodeIterator ni = q.execute().getNodes();
+        while (ni.hasNext()) {
+            JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
+            updateTagsList(renderContext, messageContext, node, selectedTag, tagNewName);
+        }
+    }
+
+    private void executeActionWithDefaultSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
+        JCRSessionWrapper session = getSessionCurrentWorkspace(renderContext, Constants.EDIT_WORKSPACE);
+        executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
+    }
+
+    private void executeActionWithLiveSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
+        JCRSessionWrapper session = getSessionCurrentWorkspace(renderContext, Constants.LIVE_WORKSPACE);
+        executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
+    }
+
+    private JCRSessionWrapper getSessionCurrentWorkspace(RenderContext renderContext, String selectedWorkspace) throws RepositoryException {
+        if (renderContext.getWorkspace().equals(selectedWorkspace)) {
+            return renderContext.getMainResource().getNode().getSession();
+        } else {
+            return sessionFactory.getCurrentUserSession(selectedWorkspace);
         }
     }
 

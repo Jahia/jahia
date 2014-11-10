@@ -159,4 +159,11 @@ public interface JCRPropertyWrapper extends Property, JCRItemWrapper {
     boolean removeValues(Value[] values) throws ValueFormatException, VersionException,
             LockException, ConstraintViolationException, RepositoryException;
 
+    /**
+     * Gets the real <code>Property</code> wrapped by this <code>JCRPropertyWrapper</code>
+     *
+     * @return the real JCR <code>Property</code>
+     */
+    Property getRealProperty();
+
 }

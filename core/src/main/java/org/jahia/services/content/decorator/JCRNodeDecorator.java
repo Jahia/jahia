@@ -283,7 +283,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public JCRPropertyWrapper setProperty(String namespace, String name, String value) throws RepositoryException {
-        return node.setProperty(namespace, name, value);
+        return decorateProperty(node.setProperty(namespace, name, value));
     }
 
     public List<JCRItemWrapper> getAncestors() throws RepositoryException {
@@ -421,67 +421,67 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public JCRPropertyWrapper setProperty(String s, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, value);
+        return decorateProperty(node.setProperty(s, value));
     }
 
     public JCRPropertyWrapper setProperty(String s, Value value, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, value, i);
+        return decorateProperty(node.setProperty(s, value, i));
     }
 
     public JCRPropertyWrapper setProperty(String s, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, values);
+        return decorateProperty(node.setProperty(s, values));
     }
 
     public JCRPropertyWrapper setProperty(String s, Value[] values, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, values, i);
+        return decorateProperty(node.setProperty(s, values, i));
     }
 
     public JCRPropertyWrapper setProperty(String s, String[] strings) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, strings);
+        return decorateProperty(node.setProperty(s, strings));
     }
 
     public JCRPropertyWrapper setProperty(String s, String[] strings, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, strings, i);
+        return decorateProperty(node.setProperty(s, strings, i));
     }
 
     public JCRPropertyWrapper setProperty(String s, String s1) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, s1);
+        return decorateProperty(node.setProperty(s, s1));
     }
 
     public JCRPropertyWrapper setProperty(String s, String s1, int i) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, s1, i);
+        return decorateProperty(node.setProperty(s, s1, i));
     }
 
     public JCRPropertyWrapper setProperty(String s, InputStream inputStream) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, inputStream);
+        return decorateProperty(node.setProperty(s, inputStream));
     }
 
     public JCRPropertyWrapper setProperty(String name, Binary value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(name, value);
+        return decorateProperty(node.setProperty(name, value));
     }
 
     public JCRPropertyWrapper setProperty(String s, boolean b) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, b);
+        return decorateProperty(node.setProperty(s, b));
     }
 
     public JCRPropertyWrapper setProperty(String s, double v) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, v);
+        return decorateProperty(node.setProperty(s, v));
     }
 
     public JCRPropertyWrapper setProperty(String name, BigDecimal value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(name, value);
+        return decorateProperty(node.setProperty(name, value));
     }
 
     public JCRPropertyWrapper setProperty(String s, long l) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, l);
+        return decorateProperty(node.setProperty(s, l));
     }
 
     public JCRPropertyWrapper setProperty(String s, Calendar calendar) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return node.setProperty(s, calendar);
+        return decorateProperty(node.setProperty(s, calendar));
     }
 
     public JCRPropertyWrapper setProperty(String s, Node node) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        return this.node.setProperty(s, node);
+        return decorateProperty(this.node.setProperty(s, node));
     }
 
     public JCRNodeWrapper getNode(String s) throws PathNotFoundException, RepositoryException {
@@ -501,19 +501,31 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
 
     public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-        return node.getProperty(s);
+        return decorateProperty(node.getProperty(s));
     }
 
     public PropertyIterator getProperties() throws RepositoryException {
-        return node.getProperties();
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale);
+        }
+        return new LazyPropertyIterator(this, null);
     }
 
     public PropertyIterator getProperties(String s) throws RepositoryException {
-        return node.getProperties(s);
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale, s);
+        }
+        return new LazyPropertyIterator(this, null, s);
     }
 
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        return node.getProperties(strings);
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale, strings);
+        }
+        return new LazyPropertyIterator(this, null, strings);
     }
 
     public JCRItemWrapper getPrimaryItem() throws ItemNotFoundException, RepositoryException {
@@ -879,5 +891,25 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
 
     public JCRNodeWrapper getDecoratedNode() {
         return node;
+    }
+
+    public JCRPropertyWrapper decorateProperty(final Property property) throws RepositoryException {
+        if (property == null) {
+            return null;
+        }
+        Property decoratedProperty = property;
+        ExtendedPropertyDefinition extendedPropertyDefinition = null;
+        while (decoratedProperty instanceof JCRPropertyWrapper) {
+            JCRPropertyWrapper jcrPropertyWrapper = (JCRPropertyWrapper) decoratedProperty;
+            if (extendedPropertyDefinition == null) {
+                extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
+            }
+            decoratedProperty = jcrPropertyWrapper.getRealProperty();
+        }
+        if (extendedPropertyDefinition != null) {
+            return new JCRPropertyWrapperImpl(this, decoratedProperty, getSession(), getProvider(), extendedPropertyDefinition);
+        } else {
+            throw new ConstraintViolationException("Couldn't find definition for property " + property.getPath());
+        }
     }
 }

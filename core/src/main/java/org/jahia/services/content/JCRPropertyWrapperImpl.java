@@ -523,4 +523,9 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
         return updated;
     }
 
+    @Override
+    public Property getRealProperty() {
+        return property;
+    }
+
 }

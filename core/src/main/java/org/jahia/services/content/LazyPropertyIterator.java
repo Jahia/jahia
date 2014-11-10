@@ -85,7 +85,8 @@ import java.util.*;
 public class LazyPropertyIterator implements PropertyIterator, Map {
     protected JCRNodeWrapper node;
     protected Locale locale;
-    protected String pattern;
+    protected String singlePattern = null;
+    protected String[] patternArray = null;
     protected PropertyIterator propertyIterator;
     protected PropertyIterator i18nPropertyIterator;
     protected Property tempNext = null;
@@ -100,10 +101,16 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         this.locale = locale;
     }
 
-    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String pattern) {
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String singlePattern) {
         this.node = node;
         this.locale = locale;
-        this.pattern = pattern;
+        this.singlePattern = singlePattern;
+    }
+
+    public LazyPropertyIterator(JCRNodeWrapper node, Locale locale, String[] patternArray) {
+        this.node = node;
+        this.locale = locale;
+        this.patternArray = patternArray;
     }
 
     public int size() {
@@ -113,10 +120,12 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     protected PropertyIterator getPropertiesIterator() {
         if (propertyIterator == null) {
             try {
-                if (pattern == null) {
+                if (patternArray != null) {
+                    propertyIterator = node.getRealNode().getProperties(patternArray);
+                } else if (singlePattern == null) {
                     propertyIterator = node.getRealNode().getProperties();
                 } else {
-                    propertyIterator = node.getRealNode().getProperties(pattern);
+                    propertyIterator = node.getRealNode().getProperties(singlePattern);
                 }
             } catch (RepositoryException e) {
                 throw new RuntimeException("getI18NPropertyIterator",e);
@@ -131,10 +140,12 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                 if (locale != null) {
                     final Node localizedNode = node.getI18N(locale);
                     fallbackLocale = localizedNode.getProperty("jcr:language").getString();
-                    if (pattern == null) {
+                    if (patternArray != null) {
+                        i18nPropertyIterator = localizedNode.getProperties(patternArray);
+                    } else if (singlePattern == null) {
                         i18nPropertyIterator = localizedNode.getProperties();
                     } else {
-                        i18nPropertyIterator = localizedNode.getProperties(pattern);
+                        i18nPropertyIterator = localizedNode.getProperties(singlePattern);
                     }
                 } else {
                     i18nPropertyIterator = new EmptyPropertyIterator();

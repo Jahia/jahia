@@ -1739,8 +1739,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd.isInternationalized()) {
+                if (values == null) {
+                    getOrCreateI18N(locale).setProperty(name, (Value[]) null);
+                    return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
+                }
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values), session, provider, epd, name);
             }
+        }
+
+        if (values == null) {
+            objectNode.setProperty(name, (Value[]) null);
+            return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
         }
 
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, values), session, provider, epd);
@@ -1775,10 +1784,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd.isInternationalized()) {
+                if (values == null) {
+                    getOrCreateI18N(locale).setProperty(name, (Value[]) null);
+                    return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
+                }
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, values, type), session, provider, epd, name);
             }
         }
 
+        if (values == null) {
+            objectNode.setProperty(name, (Value[]) null);
+            return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
+        }
         return new JCRPropertyWrapperImpl(this, objectNode.setProperty(name, values, type), session, provider, epd);
     }
 
@@ -3213,11 +3230,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     /**
      * {@inheritDoc}
-     *
-     * @throws UnsupportedRepositoryOperationException as long as Jahia doesn't support it
      */
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        throw new UnsupportedRepositoryOperationException();
+        final Locale locale = getSession().getLocale();
+        if (locale != null) {
+            return new LazyPropertyIterator(this, locale, strings);
+        }
+        return new LazyPropertyIterator(this, null, strings);
     }
 
     /**

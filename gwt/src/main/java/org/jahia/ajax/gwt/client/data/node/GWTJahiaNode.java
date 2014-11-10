@@ -374,10 +374,12 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
         return get(PREVIEW);
     }
 
+    @Deprecated
     public void setThumbnailsMap(Map<String, String> preview) {
         set(THUMBNAILS, preview);
     }
 
+    @Deprecated
     public Map<String, String> getThumbnailsMap() {
         return get(THUMBNAILS);
     }

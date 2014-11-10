@@ -73,6 +73,7 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -108,6 +109,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
+
 import java.io.File;
 import java.util.*;
 
@@ -224,20 +226,19 @@ class NodeHelper {
         n.setPath(node.getPath());
         n.setUrl(node.getUrl());
         populateNodeTypes(n, node);
-        if (node.getProvider().isDynamicallyMounted()) {
-            n.setProviderKey(StringUtils.substringAfterLast(node.getProvider().getMountPoint(), "/"));
+        JCRStoreProvider provider = node.getProvider();
+        if (provider.isDynamicallyMounted()) {
+            n.setProviderKey(StringUtils.substringAfterLast(provider.getMountPoint(), "/"));
         } else {
-            n.setProviderKey(node.getProvider().getKey());
+            n.setProviderKey(provider.getKey());
         }
 
         if (fields.contains(GWTJahiaNode.PERMISSIONS)) {
             populatePermissions(n, node);
         }
 
-        if (fields.contains(GWTJahiaNode.LOCKS_INFO)) {
-            if (!node.getProvider().isSlowConnection()) {
-                populateLocksInfo(n, node);
-            }
+        if (fields.contains(GWTJahiaNode.LOCKS_INFO) && !provider.isSlowConnection()) {
+            populateLocksInfo(n, node);
         }
 
         if (fields.contains(GWTJahiaNode.VISIBILITY_INFO)) {
@@ -283,9 +284,7 @@ class NodeHelper {
             populateIcon(n, node);
         }
 
-        if (!node.getProvider().isSlowConnection()) {
-            populateThumbnails(n, node);
-        }
+        populateThumbnails(n, node);
 
         // count
         if (fields.contains(GWTJahiaNode.COUNT)) {
@@ -920,27 +919,14 @@ class NodeHelper {
     }
 
     private void populateThumbnails(GWTJahiaNode n, JCRNodeWrapper node) {
-        if (!n.isNodeType("jmix:thumbnail")) {
-            n.setThumbnailsMap(new HashMap<String, String>(0));
-            return;
-        }
-        n.setThumbnailsMap(new HashMap<String, String>(1));
         try {
-            if (!node.hasNode("thumbnail")) {
+            if (!n.isNodeType("jmix:thumbnail") || !node.hasNode("thumbnail")) {
                 return;
             }
-        } catch (RepositoryException e) {
-            logger.warn("Error checking thumbnails for node " + n.getPath(), e);
-        }
-
-        // thumbnails
-        List<String> names = node.getThumbnails();
-        if (names.contains("thumbnail")) {
             n.setPreview(node.getThumbnailUrl("thumbnail"));
             n.setDisplayable(true);
-        }
-        for (String name : names) {
-            n.getThumbnailsMap().put(name, node.getThumbnailUrl(name));
+        } catch (RepositoryException e) {
+            logger.warn("Error checking thumbnails for node " + n.getPath(), e);
         }
     }
 

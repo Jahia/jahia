@@ -63,7 +63,7 @@ public class MountPointsManagementFlowHandler {
     public List<MountPoint> getMountPoints() {
         try {
             final NodeIterator nodeIterator = service.getKnownMountPointsWithStatus(null);
-            List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
+            List<MountPoint> mountPoints = new ArrayList<>((int) nodeIterator.getSize());
             while (nodeIterator.hasNext()) {
                 JCRMountPointNode mountPointNode = (JCRMountPointNode) nodeIterator.next();
                 mountPoints.add(new MountPoint(mountPointNode));
@@ -76,4 +76,21 @@ public class MountPointsManagementFlowHandler {
 
     public void init(RequestContext requestContext, RenderContext renderContext) {
     }
+
+    public MountPoint getMountPoint(String localMountPoint) {
+        return null;
+    }
+
+    public void createMountPoint(MountPoint point) {
+
+    }
+
+    public void updateMountPoint(String originalMountPoint, MountPoint newPoint) {
+
+    }
+
+    public void deleteMountPoint(MountPoint point) {
+
+    }
+
 }

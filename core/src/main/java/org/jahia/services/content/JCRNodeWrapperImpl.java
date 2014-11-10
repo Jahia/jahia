@@ -977,25 +977,19 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     && ChildrenCollectorFilter.matches(name, nameGlobs))) {
                                 JCRStoreProvider storeProvider = entry.getValue();
                                 String root = storeProvider.getRelativeRoot();
-<<<<<<< .working
-                                final Node node = session.getProviderSession(storeProvider).getNode(
-                                        root.length() == 0 ? "/" : root);
-                                if (list == null) {
-                                    list = new LinkedList<JCRNodeWrapper>();
-                                    mounts = new LinkedList<String>();
-                                }
-                                list.add(storeProvider.getNodeWrapper(node, "/", this, session));
-                                mounts.add(name);
-=======
+
                                 try {
                                     final Node node = session.getProviderSession(storeProvider).getNode(
                                             root.length() == 0 ? "/" : root);
+                                    if (list == null) {
+                                        list = new LinkedList<JCRNodeWrapper>();
+                                        mounts = new LinkedList<String>();
+                                    }
                                     list.add(storeProvider.getNodeWrapper(node, "/", this, session));
                                     mounts.add(name);
                                 } catch (PathNotFoundException e) {
                                     // current session does'nt have the right to read the mounted node
                                 }
->>>>>>> .merge-right.r51385
                             }
                         }
                     }

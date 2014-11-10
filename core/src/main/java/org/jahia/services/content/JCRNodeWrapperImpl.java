@@ -3231,10 +3231,66 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
+<<<<<<< .working
     public PropertyIterator getProperties(String[] strings) throws RepositoryException {
         final Locale locale = getSession().getLocale();
         if (locale != null) {
             return new LazyPropertyIterator(this, locale, strings);
+=======
+    public NodeIterator getNodes() throws RepositoryException {
+        return getNodes(null, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NodeIterator getNodes(String namePattern) throws RepositoryException {
+        return getNodes(namePattern, null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public NodeIterator getNodes(String[] nameGlobs) throws RepositoryException {
+        return getNodes(null, nameGlobs);
+    }
+
+    protected NodeIterator getNodes(String namePattern, String[] nameGlobs) throws RepositoryException {
+        List<JCRNodeWrapper> list = new LinkedList<JCRNodeWrapper>();
+        if (provider.getService() != null) {
+            Map<String, JCRStoreProvider> mountPoints = provider.getSessionFactory().getMountPoints();
+            if (mountPoints.size() > 1) {
+                // if we have any registered mount points (except the default one, which is "/")
+                String path = getPath();
+                for (Map.Entry<String, JCRStoreProvider> entry : mountPoints.entrySet()) {
+                    String key = entry.getKey();
+                    // skip default provider and those, whose mount point path does not start with the path of this node
+                    if (!key.equals("/") && key.startsWith(path)) {
+                        int pos = key.lastIndexOf('/');
+                        String mpp = pos > 0 ? key.substring(0, pos) : "/";
+                        if (mpp.equals(path)) {
+                            // mount point matches the path; check name patterns if they were specified
+                            if (namePattern == null
+                                    && nameGlobs == null
+                                    || key.length() > pos + 1
+                                    && (namePattern != null
+                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), namePattern) || nameGlobs != null
+                                            && ChildrenCollectorFilter.matches(key.substring(pos + 1), nameGlobs))) {
+                                JCRStoreProvider storeProvider = entry.getValue();
+                                String root = storeProvider.getRelativeRoot();
+                                try {
+                                    final Node node = session.getProviderSession(storeProvider).getNode(
+                                            root.length() == 0 ? "/" : root);
+                                    list.add(storeProvider.getNodeWrapper(node, "/", this, session));
+                                } catch (PathNotFoundException e) {
+                                    // current session does'nt have the right to read the mounted node
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+>>>>>>> .merge-right.r51382
         }
         return new LazyPropertyIterator(this, null, strings);
     }

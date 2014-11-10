@@ -319,6 +319,7 @@ public class RenderService {
 
                     String packageName = "templates-system";
                     if (parent.hasProperty("j:templateSetContext")) {
+                        renderContext.setSite((JCRSiteNode) parent.getProperty("j:templateSetContext").getNode());
                         packageName = parent.getProperty("j:templateSetContext").getNode().getName();
                     }
                     Set<String> installed = new LinkedHashSet<String>();

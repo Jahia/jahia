@@ -92,6 +92,16 @@
                                     <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                 </system_components.png>
+                                <mounts jcr:primaryType="jnt:folder">
+                                    <mountPoints.png j:height="16"
+                                         j:width="16"
+                                         jcr:mixinTypes="jmix:image"
+                                         jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </mountPoints.png>
+                                </mounts>
                             </system_x0020_components>
                             <system_x0020_health jcr:primaryType="jnt:folder">
                                 <cache jcr:primaryType="jnt:folder"/>
@@ -315,6 +325,7 @@
                           <manageMountPoints j:applyOn="jnt:globalSettings"
                                              j:defaultTemplate="false"
                                              j:hiddenTemplate="false"
+                                     j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/mounts/mountPoints.png"
                                              j:requiredPermissionNames="adminMountPoints"
                                              j:titleKey="serverSettings.manageMountPoints"
                                              jcr:mixinTypes="jmix:rbTitle"

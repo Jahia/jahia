@@ -71,7 +71,6 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.render.RenderService;
@@ -91,6 +90,8 @@ import java.util.Set;
  *        Created : 12 janv. 2010
  */
 public class RenderServiceTemplateCacheEventListener extends DefaultEventListener {
+    private static final int MODULES_LENGTH = "/modules/".length();
+
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(
             RenderServiceTemplateCacheEventListener.class);
 
@@ -127,7 +128,7 @@ public class RenderServiceTemplateCacheEventListener extends DefaultEventListene
                     renderService = (RenderService) SpringContextSingleton.getBean("RenderService");
                 }
                 if (renderService != null) {
-                    int index = path.indexOf("/","/modules/".length());
+                    int index = path.indexOf("/", MODULES_LENGTH);
                     index = path.indexOf("/", index + 1);
                     if (index > -1) {
                         modulesToFlush.add(path.substring(0,index));

@@ -1,10 +1,12 @@
 package org.jahia.modules.tags.webflow;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.query.ScrollableQuery;
 import org.jahia.services.query.ScrollableQueryCallback;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -16,6 +18,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.*;
 
@@ -33,14 +36,10 @@ public class TagsFlowHandler implements Serializable {
     @Autowired
     private transient TaggingService taggingService;
 
-    @Autowired
-    private transient JCRSessionFactory sessionFactory;
-
     public Map<String,Integer> getTagsList(RenderContext renderContext) {
-        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] IS NOT NULL)";
-
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
+            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] IS NOT NULL)";
             QueryManager qm = session.getWorkspace().getQueryManager();
             Query q = qm.createQuery(query, Query.JCR_SQL2);
             ScrollableQuery scrollableQuery = new ScrollableQuery(100, q);

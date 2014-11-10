@@ -16,20 +16,32 @@
                     <site-settings-base j:view="siteSettings"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
-                        <tagsManager j:applyOn="jnt:virtualsite"
+                        <tagsManager_default j:applyOn="jnt:virtualsite"
                                      j:defaultTemplate="false"
-                                     j:hiddenTemplate="false"
+                                    j:hiddenTemplate="true"
                                      j:requiredPermissionNames="tagsManager"
                                      j:titleKey="jnt_tagsManager"
                                      jcr:mixinTypes="jmix:rbTitle"
                                      jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                                <formCenterBuilder jcr:primaryType="jnt:tagsManager"/>
+                                <tagsManager jcr:primaryType="jnt:tagsManager"/>
                             </pagecontent>
-                        </tagsManager>
+                        </tagsManager_default>
+                        <tagsManager_live j:applyOn="jnt:virtualsite"
+                                          j:defaultTemplate="false"
+                                          j:hiddenTemplate="true"
+                                          j:requiredPermissionNames="tagsManager"
+                                          j:titleKey="jnt_tagsManager"
+                                          jcr:mixinTypes="jmix:rbTitle"
+                                          jcr:primaryType="jnt:contentTemplate">
+                            <pagecontent jcr:primaryType="jnt:contentList">
+                                <workspaceswitch jcr:primaryType="jnt:workspaceSwitch" workspace="live">
+                                    <tagsManager jcr:primaryType="jnt:tagsManager"/>
+                                </workspaceswitch>
+                            </pagecontent>
+                        </tagsManager_live>
                     </site-settings-base>
                 </templates>
-                
             </tags>
     </modules>
 </content>

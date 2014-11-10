@@ -11,4 +11,7 @@
     <evaluate expression="flowHandler.init(flowRequestContext, externalContext.requestMap.renderContext)"/>
   </on-start>
 
+    <view-state id="index">
+    </view-state>
+
 </flow>

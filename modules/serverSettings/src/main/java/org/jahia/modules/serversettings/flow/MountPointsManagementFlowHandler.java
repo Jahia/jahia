@@ -39,6 +39,7 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -55,15 +56,16 @@ import org.springframework.webflow.execution.RequestContext;
 /**
  * @author Christophe Laprun
  */
-public class MountPointsManagementFlowHandler {
+public class MountPointsManagementFlowHandler implements Serializable{
+    private static final long serialVersionUID = 1436197019769187454L;
 
     @Autowired
-    private JCRStoreService service;
+    private transient JCRStoreService service;
 
     public List<MountPoint> getMountPoints() {
         try {
             final NodeIterator nodeIterator = service.getKnownMountPointsWithStatus(null);
-            List<MountPoint> mountPoints = new ArrayList<>((int) nodeIterator.getSize());
+            List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
             while (nodeIterator.hasNext()) {
                 JCRMountPointNode mountPointNode = (JCRMountPointNode) nodeIterator.next();
                 mountPoints.add(new MountPoint(mountPointNode));

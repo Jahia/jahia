@@ -44,10 +44,14 @@ import javax.jcr.RepositoryException;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.utils.EncryptionUtils;
 
+import java.io.Serializable;
+
 /**
  * @author Christophe Laprun
  */
-public class MountPoint {
+public class MountPoint implements Serializable{
+    private static final long serialVersionUID = -6530134014786873505L;
+
     private String url;
 
     private String relativeRoot;

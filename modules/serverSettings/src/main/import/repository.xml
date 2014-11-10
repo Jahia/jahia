@@ -6,6 +6,7 @@
                       j:modulePriority="0"
                       j:moduleType="module"
                       j:title="Jahia Server Settings"
+                      jcr:mixinTypes="jmix:hasExternalProviderExtension"
                       jcr:primaryType="jnt:module">
                 
                 <portlets jcr:primaryType="jnt:portletFolder"/>
@@ -316,11 +317,10 @@
                                              j:hiddenTemplate="false"
                                              j:requiredPermissionNames="adminMountPoints"
                                              j:titleKey="serverSettings.manageMountPoints"
-                                             j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_components/mountPoints/mountPoints.png"
                                              jcr:mixinTypes="jmix:rbTitle"
                                              jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
-                              <manage-mountPoints jcr:primaryType="jnt:serverSettingsMountPoints"/>
+                                    <serversettingsmanagemountpoints jcr:primaryType="jnt:serverSettingsManageMountPoints"/>
                             </pagecontent>
                           </manageMountPoints>
                         </system-components>

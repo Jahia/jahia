@@ -24,16 +24,15 @@ function bbRenameTag(nodeID) {
     bootbox.dialog({
         title: "<h3>" + jsVarMap.labelRename + " : " + $('#selectedTag').val() + "<h3>",
         message: "<p>" + jsVarMap.labelTagNewName +
-            "</p><input id='renameTag' type='text'> value='" + $('#selectedTag').val() + "'" +
+            "</p><input id='renameTag' type='text' value='" + $('#selectedTag').val() + "'>" +
             "<script>" +
-            "$('.renameButton').attr('disabled', 'disabled');" +
-            "$('#renameTag').keypress(function() {" +
-            "if ($('#renameTag').val() != '') {" +
-            "$('.renameButton').removeAttr('disabled');" +
-            "} else {" +
-            "$('.renameButton').attr('disabled', 'disabled');" +
-            "}" +
-            "});" +
+                "$('#renameTag').keyup(function() {" +
+                    "if ($('#renameTag').val() != '') {" +
+                        "$('.renameButton').removeAttr('disabled');" +
+                    "} else {" +
+                        "$('.renameButton').attr('disabled', 'disabled');" +
+                    "}" +
+                "});" +
             "</script>" +
             "<br /><br /><p>" +
             jsVarMap.modalRename +

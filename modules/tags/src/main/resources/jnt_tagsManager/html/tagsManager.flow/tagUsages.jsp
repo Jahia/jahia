@@ -121,7 +121,19 @@
                         <tr>
                             <td>
                                 <jcr:node var="tagPage" path="${jcr:getParentOfType(currentNodeTag, 'jnt:page').path}"/>
-                                <p class="lead">${tagPage.displayableName}</p>
+                                <i class="fa fa-external-link"></i>
+                                <c:choose>
+                                    <c:when test="${workspace eq 'default'}">
+                                        <a href="<c:url value="${url.basePreview}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
+                                            ${tagPage.displayableName}
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="<c:url value="${url.baseLive}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
+                                            ${tagPage.displayableName}
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
                             </td>
                             <td>
                                 ${currentNodeTag.path}

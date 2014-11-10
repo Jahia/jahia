@@ -71,7 +71,7 @@
             <div class="col-md-6 text-right">
                 <c:choose>
                     <c:when test="${workspace eq 'default'}">
-                        <a class="btn btn-primary" href="<c:url value="${url.context}${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_live.html"/>">
+                        <a class="btn btn-primary" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_live.html"/>">
                             <fmt:message key="jnt_tagsManager.button.switchToDefault"/>&nbsp;<i class="fa fa-external-link"></i>
                         </a>
                     </c:when>

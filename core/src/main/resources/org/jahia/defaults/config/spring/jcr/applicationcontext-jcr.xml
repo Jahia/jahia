@@ -154,6 +154,7 @@
                         <bean class="org.jahia.services.content.LastModifiedListener">
                             <property name="publicationService" ref="jcrPublicationService"/>
                         </bean>
+                        <bean class="org.apache.jackrabbit.core.security.PrivilegesListener"/>
                         <bean class="org.jahia.services.content.rules.RulesListener" init-method="start">
                             <property name="ruleFiles">
                                 <set>

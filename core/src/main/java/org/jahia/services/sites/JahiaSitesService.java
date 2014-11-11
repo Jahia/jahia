@@ -838,12 +838,6 @@ public class JahiaSitesService extends JahiaService {
         if (siteKeyByServerNameCache != null) {
             siteKeyByServerNameCache.removeAll(false);
         }
-<<<<<<< .working
-=======
-        if (siteKeyByIdCache != null) {
-            siteKeyByIdCache.removeAll(false);
-        }
->>>>>>> .merge-right.r51397
         if (siteDefaultLanguageBySiteKey != null) {
             siteDefaultLanguageBySiteKey.removeAll(false);
         }

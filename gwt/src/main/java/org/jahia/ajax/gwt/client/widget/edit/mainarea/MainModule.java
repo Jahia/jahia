@@ -310,10 +310,8 @@ public class MainModule extends Module {
                     makeSelected();
 
                     if (editLinker.getSelectionContext().getSingleSelection() == editLinker.getSelectionContext().getMainNode()) {
-                        if(editLinker.getConfig().getName().equals("editmode") && editLinker.getSelectedModule()!=null && editLinker.getSelectedModule() instanceof SimpleModule) {
-                            return super.beforeShow();
-                        }
-                        return false;
+                        Module selectedModule = editLinker.getSelectedModule();
+                        return selectedModule != null && selectedModule instanceof SimpleModule && super.beforeShow();
                     }
                     return super.beforeShow();
                 }

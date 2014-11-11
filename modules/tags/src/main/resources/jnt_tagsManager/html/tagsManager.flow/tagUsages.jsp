@@ -19,12 +19,14 @@
 
 <template:addResources type="css" resources="admin-bootstrap-v3.2.min.css"/>
 <template:addResources type="css" resources="admin-font-awesome-v4.2.0.min.css"/>
+<template:addResources type="css" resources="typeahead.css"/>
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
+<template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagUsages.js"/>
 
 <fmt:message key="label.cancel" var="labelCancel"/>
@@ -49,12 +51,37 @@
             modalDelete: '${functions:escapeJavaScript(modalDelete)}'
         };
 
+        var tagsSuggester = new Bloodhound({
+            datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+            queryTokenizer: Bloodhound.tokenizers.whitespace,
+            limit: 10,
+            remote: {
+                <c:choose>
+                <c:when test="${workspace eq 'default'}">
+                url: '${url.context}${url.baseEdit}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
+                </c:when>
+                <c:otherwise>
+                url: '${url.context}${url.baseLive}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
+                </c:otherwise>
+                </c:choose>
+                filter: function (list) {
+                    return $.map(list.tags, function (tag) {
+                        return {
+                            "value": tag.name
+                        };
+                    });
+                }
+            }
+        });
+
         $(document).ready(function () {
             $('#tableTagDetails').dataTable({
                 "sDom": "<'row'<'col-md-6'l><'col-md-6 text-right'f>r>t<'row'<'col-md-6'i><'col-md-6 text-right'>>",
                 "bPaginate": false,
                 "aaSorting": [[1, 'asc']]
             });
+
+            tagsSuggester.initialize();
         });
     </script>
 </template:addResources>

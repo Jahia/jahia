@@ -24,7 +24,7 @@ function bbRenameTag(nodeID) {
     bootbox.dialog({
         title: "<h3>" + jsVarMap.labelRename + " : " + $('#selectedTag').val() + "<h3>",
         message: "<p>" + jsVarMap.labelTagNewName +
-            "</p><input id='renameTag' type='text' value='" + $('#selectedTag').val() + "'>" +
+            "</p><input id='renameTag' class='typeahead' type='text' value='" + $('#selectedTag').val() + "'>" +
             "<script>" +
                 "$('#renameTag').keyup(function() {" +
                     "if ($('#renameTag').val() != '') {" +
@@ -32,6 +32,9 @@ function bbRenameTag(nodeID) {
                     "} else {" +
                         "$('.renameButton').attr('disabled', 'disabled');" +
                     "}" +
+                "});" +
+                "$('#renameTag').typeahead(null, {" +
+                    "source: tagsSuggester.ttAdapter()" +
                 "});" +
             "</script>" +
             "<br /><br /><p>" +

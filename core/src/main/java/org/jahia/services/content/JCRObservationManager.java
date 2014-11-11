@@ -497,6 +497,7 @@ public class JCRObservationManager implements ObservationManager {
         private JCRSessionWrapper session;
         private String mountPoint;
         private String relativeRoot;
+        private String effectivePath;
 
         EventWrapper(Event event, List<String> nodeTypes, String mountPoint, String relativeRoot, JCRSessionWrapper session) {
             this.event = event;
@@ -511,10 +512,12 @@ public class JCRObservationManager implements ObservationManager {
         }
 
         public String getPath() throws RepositoryException {
-            if (!mountPoint.equals("/")) {
-                return mountPoint + event.getPath().substring(relativeRoot.length());
+            if (effectivePath == null) {
+                effectivePath = !mountPoint.equals("/") ? (mountPoint + event.getPath()
+                        .substring(relativeRoot.length())) : event.getPath();
             }
-            return event.getPath();
+
+            return effectivePath;
         }
 
         public String getUserID() {
@@ -523,22 +526,22 @@ public class JCRObservationManager implements ObservationManager {
 
         public String getIdentifier() throws RepositoryException {
             if (identifier == null) {
-                String path = getPath();
-                if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
-                    path = StringUtils.substringBeforeLast(path,"/");
-                }
                 if (isExtensionNode(getPath())) {
+                    String path = getPath();
+                    if (event.getType() == PROPERTY_ADDED || event.getType() == PROPERTY_REMOVED || event.getType() == PROPERTY_CHANGED) {
+                        path = StringUtils.substringBeforeLast(path,"/");
+                    }
                     try {
                         identifier = session.getNode(path).getIdentifier();
                     } catch (RepositoryException e) {
                         identifier = null;
                     }
-                    return identifier;
+                } else {
+                    identifier = event.getIdentifier();
                 }
-                identifier = event.getIdentifier();
             }
+            
             return identifier;
-
         }
 
         @SuppressWarnings("rawtypes")

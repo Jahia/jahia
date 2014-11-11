@@ -50,30 +50,33 @@ printMenu = { node, navMenuLevel, omitFormatting ->
           try {
               itemPath = menuItem.path;
               inpath = renderContext.mainResource.node.path == itemPath || renderContext.mainResource.node.path.startsWith(itemPath + "/");
+              def referenceIsBroken = false;
               if (menuItem.isNodeType("jmix:nodeReference")) {
                   try {
                       if (menuItem.properties['j:node'].node != null) {
                           selected = renderContext.mainResource.node.path == menuItem.properties['j:node'].node.path;
                       } else {
                           selected = false;
+                          referenceIsBroken = true;
                       }
                   } catch (ItemNotFoundException e) {
                       selected = false;
+                      referenceIsBroken = true;
                   }
               } else {
                   selected = renderContext.mainResource.node.path == itemPath
               }
-            correctType = true
-            if(menuItem.isNodeType("jmix:navMenu")){
-                correctType = false
-            }
-            if (menuItem.properties['j:displayInMenuName']) {
-                correctType = false
-                menuItem.properties['j:displayInMenuName'].each() {
-                    correctType |= (it.string == currentNode.name)
-                }
-            }
-            if ((startLevelValue < navMenuLevel || inpath) && correctType) {
+              correctType = true
+              if(menuItem.isNodeType("jmix:navMenu")){
+                  correctType = false
+              }
+              if (menuItem.properties['j:displayInMenuName']) {
+                  correctType = false
+                  menuItem.properties['j:displayInMenuName'].each() {
+                      correctType |= (it.string == currentNode.name)
+                  }
+              }
+              if (!referenceIsBroken && correctType && (startLevelValue < navMenuLevel || inpath)) {
                 hasChildren = navMenuLevel < maxDepth.long && JCRTagUtils.hasChildrenOfType(menuItem, "jnt:page,jnt:nodeLink,jnt:externalLink")
                 if (startLevelValue < navMenuLevel) {
 

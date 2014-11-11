@@ -78,10 +78,12 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
 
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+
 import java.util.Map;
 
 /**
@@ -117,7 +119,9 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                     path = node.getPath() + MOUNT_POINT_SUFFIX;
                 }
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                if (!(e instanceof ItemNotFoundException)) {
+                    logger.error(e.getMessage(), e);
+                }
                 path = node.getPath() + MOUNT_POINT_SUFFIX;
             }
 

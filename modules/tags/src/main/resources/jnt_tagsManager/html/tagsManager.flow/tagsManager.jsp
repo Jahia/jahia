@@ -19,12 +19,14 @@
 
 <template:addResources type="css" resources="admin-bootstrap-v3.2.min.css"/>
 <template:addResources type="css" resources="admin-font-awesome-v4.2.0.min.css"/>
+<template:addResources type="css" resources="dataTables.bootstrap.css"/>
 <template:addResources type="css" resources="typeahead.css"/>
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="jquery.dataTables.min.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="dataTables.bootstrap.min.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagsManager.js"/>
@@ -75,10 +77,8 @@
         });
 
         $(document).ready(function () {
-            $('#tableTagsList').dataTable({
-                "sDom": "<'row'<'col-md-6'l><'col-md-6 text-right'f>r>t<'row'<'col-md-6'i><'col-md-6 text-right'>>",
-                "bPaginate": false,
-                "aaSorting": [[0, 'asc']]
+            $(document).ready(function () {
+                $('#tableTagsList').DataTable();
             });
 
             tagsSuggester.initialize();
@@ -89,7 +89,6 @@
 <div class="container-fluid">
     <div class="row">
         <h1><fmt:message key="jnt_tagsManager"/></h1>
-        <input>
     </div>
     <div class="row well">
         <div class="row">
@@ -133,7 +132,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-hover table-bordered table-striped" id="tableTagsList">
+                <table class="table table-bordered table-striped table-hover" id="tableTagsList" style="background-color: white">
                     <thead>
                     <tr>
                         <th>
@@ -151,18 +150,19 @@
                     <c:forEach items="${tagsList}" var="tag">
                         <tr>
                             <td>
-                                <p class="lead">${tag.key}</p>
+                                ${tag.key}
                             </td>
                             <td>
-                                    ${tag.value}
+                                ${tag.value}
                             </td>
                             <td class="text-right">
                                 <div class="btn-group">
                                     <button type="button" class="btn btn-primary" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
                                         <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
                                     </button>
-                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="font-size: 16px;">
+                                    <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="font-size: 16px">
                                         <i class="fa fa-caret-down"></i>
+                                        <%--<span class="caret"></span>--%>
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>

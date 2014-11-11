@@ -19,12 +19,14 @@
 
 <template:addResources type="css" resources="admin-bootstrap-v3.2.min.css"/>
 <template:addResources type="css" resources="admin-font-awesome-v4.2.0.min.css"/>
+<template:addResources type="css" resources="dataTables.bootstrap.css"/>
 <template:addResources type="css" resources="typeahead.css"/>
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
 <template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="jquery.dataTables.min.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="dataTables.bootstrap.min.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagUsages.js"/>
@@ -76,8 +78,6 @@
 
         $(document).ready(function () {
             $('#tableTagDetails').dataTable({
-                "sDom": "<'row'<'col-md-6'l><'col-md-6 text-right'f>r>t<'row'<'col-md-6'i><'col-md-6 text-right'>>",
-                "bPaginate": false,
                 "aaSorting": [[1, 'asc']]
             });
 
@@ -128,7 +128,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <table class="table table-hover table-bordered table-striped" id="tableTagDetails">
+                <table class="table table-hover table-bordered table-striped" id="tableTagDetails" style="background-color: white">
                     <thead>
                     <tr>
                         <th>

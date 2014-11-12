@@ -110,7 +110,7 @@ public class MetricsLoggingJCReventListener extends DefaultEventListener {
     }
 
     public String[] getNodeTypes() {
-        return nodeTypesList == null ? null : nodeTypesList.toArray(new String[nodeTypesList.size()]);
+        return nodeTypesList == null || nodeTypesList.isEmpty() ? null : nodeTypesList.toArray(new String[nodeTypesList.size()]);
     }
 
     /**

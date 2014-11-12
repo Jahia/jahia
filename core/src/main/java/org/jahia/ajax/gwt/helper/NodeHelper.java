@@ -808,8 +808,8 @@ class NodeHelper {
     private void populateReference(GWTJahiaNode n, JCRNodeWrapper node) {
         // references
         try {
-            if (node.isNodeType("jmix:nodeReference") && node.hasProperty("j:node")) {
-                JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty("j:node")
+            if (node.isNodeType("jmix:nodeReference") && node.hasProperty(Constants.NODE)) {
+                JCRNodeWrapper referencedNode = (JCRNodeWrapper) node.getProperty(Constants.NODE)
                         .getNode();
                 n.setReferencedNode(n.getUUID().equals(referencedNode.getIdentifier()) ? n
                         : getGWTJahiaNode(referencedNode));

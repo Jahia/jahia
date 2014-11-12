@@ -72,6 +72,7 @@
 package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.utils.i18n.Messages;
@@ -206,14 +207,14 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                 param = nextParam;
             } else if ("reference".equals(param)) {
                 if (propertyName == null) {
-                    propertyName = "j:node";
+                    propertyName = Constants.NODE;
                 }
                 if (context.containsKey(propertyName)) {
                     JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
                     List<String> refNodeUuids = (List<String>)context.get(propertyName);
                     for (String refNodeUuid : refNodeUuids) {
                         try {
-                            JCRNodeWrapper refNode = (JCRNodeWrapper) session.getNodeByUUID(refNodeUuid);
+                            JCRNodeWrapper refNode = session.getNodeByUUID(refNodeUuid);
                             nodeTypeList.addAll(refNode.getNodeTypes());
                         } catch (Exception e) {
                             logger.warn("Referenced node not found to retrieve its nodetype for initializer", e);
@@ -225,10 +226,9 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
                         nodeTypeList.addAll(refNode.getNodeTypes());
                     } catch (ItemNotFoundException e) {
                     }
-                } else if (node != null && !"j:node".equals(propertyName) && node.hasProperty("j:node")) {
+                } else if (node != null && !Constants.NODE.equals(propertyName) && node.hasProperty(Constants.NODE)) {
                     try {
-                        JCRNodeWrapper refNode = (JCRNodeWrapper) node.getProperty("j:node")
-                                .getNode();
+                        JCRNodeWrapper refNode = (JCRNodeWrapper) node.getProperty(Constants.NODE).getNode();
                         nodeTypeList.addAll(refNode.getNodeTypes());
                     } catch (ItemNotFoundException e) {
                     }

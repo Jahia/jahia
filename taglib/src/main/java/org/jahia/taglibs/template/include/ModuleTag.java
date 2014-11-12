@@ -256,9 +256,9 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                             boolean found = false;
                             Node displayedNode = node;
-                            if (node.isNodeType("jnt:contentReference") && node.hasProperty("j:node")) {
+                            if (node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE)) {
                                 try {
-                                    displayedNode = node.getProperty("j:node").getNode();
+                                    displayedNode = node.getProperty(Constants.NODE).getNode();
                                 } catch (ItemNotFoundException e) {
                                     return EVAL_PAGE;
                                 }

@@ -324,25 +324,25 @@ public class VFSContentStoreProviderTest {
             // simple external referencing testing, with no language specified...
 
             JCRNodeWrapper fileReferenceNode = siteNode.addNode("externalReferenceNode", "jnt:fileReference");
-            fileReferenceNode.setProperty("j:node", vfsTestFile1);
+            fileReferenceNode.setProperty(Constants.NODE, vfsTestFile1);
             session.save();
 
-            Property externalReferenceProperty = fileReferenceNode.getProperty("j:node");
+            Property externalReferenceProperty = fileReferenceNode.getProperty(Constants.NODE);
             Node externalNode = externalReferenceProperty.getNode();
             assertEquals("External node identifier retrieved from reference do not match", vfsTestFile1.getIdentifier(),
                     externalNode.getIdentifier());
-            PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences("j:node");
+            PropertyIterator weakReferenceProperties = vfsTestFile1.getWeakReferences(Constants.NODE);
             boolean foundWeakReferenceProperty = false;
             while (weakReferenceProperties.hasNext()) {
                 Property property = weakReferenceProperties.nextProperty();
-                if (property.getName().equals("j:node") && property.getParent().getIdentifier().equals(fileReferenceNode.getIdentifier())) {
+                if (property.getName().equals(Constants.NODE) && property.getParent().getIdentifier().equals(fileReferenceNode.getIdentifier())) {
                     foundWeakReferenceProperty = true;
                     break;
                 }
             }
             assertTrue("Expected to find weak reference property j:node but it wasn't found !", foundWeakReferenceProperty);
             assertTrue("Expected to find j:node property when testing for it's presence but it wasn't found.",
-                    fileReferenceNode.hasProperty("j:node"));
+                    fileReferenceNode.hasProperty(Constants.NODE));
 
             // Now let's test accessing using property iterator
 
@@ -350,7 +350,7 @@ public class VFSContentStoreProviderTest {
             PropertyIterator fileReferenceProperties = fileReferenceNode.getProperties();
             while (fileReferenceProperties.hasNext()) {
                 Property property = fileReferenceProperties.nextProperty();
-                if (property.getName().equals("j:node")) {
+                if (property.getName().equals(Constants.NODE)) {
                     foundReferenceProperty = true;
                     break;
                 }
@@ -360,7 +360,7 @@ public class VFSContentStoreProviderTest {
             fileReferenceProperties = fileReferenceNode.getProperties("j:nod* | j:*ode");
             while (fileReferenceProperties.hasNext()) {
                 Property property = fileReferenceProperties.nextProperty();
-                if (property.getName().equals("j:node")) {
+                if (property.getName().equals(Constants.NODE)) {
                     foundReferenceProperty = true;
                     break;
                 }
@@ -370,8 +370,8 @@ public class VFSContentStoreProviderTest {
             // as our own property iterators also support the Map interface, we will test that now.
             Map fileReferencePropertiesMap = (Map) fileReferenceNode.getProperties("j:nod* | j:*ode");
             assertTrue("Properties used as a map do not have the reference property j:node",
-                    fileReferencePropertiesMap.containsKey("j:node"));
-            Value refValue = (Value) fileReferencePropertiesMap.get("j:node");
+                    fileReferencePropertiesMap.containsKey(Constants.NODE));
+            Value refValue = (Value) fileReferencePropertiesMap.get(Constants.NODE);
             assertTrue("Reference property could not be found in properties used as a map", refValue != null);
             assertEquals("Reference property retrieved from properties used as a map does not contain proper reference",
                     vfsTestFile1.getIdentifier(), refValue.getString());

@@ -180,7 +180,7 @@ public class MissingPortletsValidator implements ImportValidator {
                 }
             } else if ("jnt:portletReference".equals(pt)) {
                 // here we check for missing portlet instances
-                final String nodeRef = ISO9075.decode(StringUtils.defaultString(resolveRefPath(rootPath, currentSitePath, atts.getValue("j:node"))));
+                final String nodeRef = ISO9075.decode(StringUtils.defaultString(resolveRefPath(rootPath, currentSitePath, atts.getValue(Constants.NODE))));
                 if (importedPortletInstancePaths.contains(nodeRef)) {
                     // normal case, we are referencing a portlet instance that's being imported.
                 } else {

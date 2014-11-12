@@ -502,7 +502,7 @@ public class ContentManagerHelper {
                 }
             } else {
                 Node ref = targetNode.addNode(name, "jnt:contentReference");
-                ref.setProperty("j:node", node.getIdentifier());
+                ref.setProperty(Constants.NODE, node.getIdentifier());
             }
         } else {
             JCRSiteNode sourceSite = node.getResolveSite();

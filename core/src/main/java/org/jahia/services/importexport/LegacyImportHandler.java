@@ -591,7 +591,7 @@ public class LegacyImportHandler extends DefaultHandler {
             if (!references.containsKey(reference)) {
                 references.put(reference, new ArrayList<String>());
             }
-            references.get(reference).add(sub.getIdentifier() + "/j:node");
+            references.get(reference).add(sub.getIdentifier() + "/" + Constants.NODE);
             uuidMapping.put(uuid, sub.getIdentifier());
         }
 
@@ -600,12 +600,12 @@ public class LegacyImportHandler extends DefaultHandler {
             if (!translation.isCheckedOut()) {
                 session.checkout(translation);
             }
-            translation.setProperty("jcr:title", title);
+            translation.setProperty(Constants.JCR_TITLE, title);
         }
         if (!sub.isCheckedOut()) {
             session.checkout(sub);
         }
-        sub.setProperty("jcr:title", title);
+        sub.setProperty(Constants.JCR_TITLE, title);
     }
 
 
@@ -1016,15 +1016,15 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title", title);
+                    translation.setProperty(Constants.JCR_TITLE, title);
                 }
 
-                sub.setProperty("jcr:title", title);
+                sub.setProperty(Constants.JCR_TITLE, title);
 
                 if (!references.containsKey(reference)) {
                     references.put(reference, new ArrayList<String>());
                 }
-                references.get(reference).add(sub.getIdentifier() + "/j:node");
+                references.get(reference).add(sub.getIdentifier() + "/" + Constants.NODE);
             } else if (isProperty && !node.hasProperty(propertyName)) {
                 if (!references.containsKey(reference)) {
                     references.put(reference, new ArrayList<String>());
@@ -1040,7 +1040,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
                 Node translation = sub.getOrCreateI18N(locale);
                 if (title != null && title.length() > 0) {
-                    translation.setProperty("jcr:title", title);
+                    translation.setProperty(Constants.JCR_TITLE, title);
                 }
 
                 sub.setProperty("j:url", value);

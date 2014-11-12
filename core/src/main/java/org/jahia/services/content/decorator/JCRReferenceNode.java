@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 
@@ -91,14 +92,14 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     }
 
     public Node getNode() throws RepositoryException {
-        if (hasProperty("j:node")) {
-            return getProperty("j:node").getNode();
+        if (hasProperty(Constants.NODE)) {
+            return getProperty(Constants.NODE).getNode();
         }
         return null;
     }
 
     public void setNode(JCRNodeWrapper node) throws RepositoryException {
-        setProperty("j:node", node);
+        setProperty(Constants.NODE, node);
     }
 
     @Override
@@ -115,9 +116,9 @@ public class JCRReferenceNode extends JCRNodeDecorator {
     }
     
     public Node getContextualizedNode() throws RepositoryException {
-        if (hasProperty("j:node")) {
+        if (hasProperty(Constants.NODE)) {
             try {
-                return getProperty("j:node").getContextualizedNode();
+                return getProperty(Constants.NODE).getContextualizedNode();
             } catch (ItemNotFoundException e) {
                 return null;
             }

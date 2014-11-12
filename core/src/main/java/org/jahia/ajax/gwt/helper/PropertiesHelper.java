@@ -218,7 +218,7 @@ public class PropertiesHelper {
                     }
 
                     if (node.hasProperty(Constants.NODE)) {
-                        JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty("j:node").getValue();
+                        JCRValueWrapper weekReference = (JCRValueWrapper) node.getProperty(Constants.NODE).getValue();
                         Node pageNode = weekReference.getNode();
                         if (pageNode != null) {
                             linkNode.set(Constants.NODE, navigation.getGWTJahiaNode((JCRNodeWrapper) pageNode));
@@ -416,7 +416,7 @@ public class PropertiesHelper {
                                 String linkTitle = gwtJahiaNode.get(Constants.JCR_TITLE);
                                 String alt = gwtJahiaNode.get(Constants.ALT);
                                 String linkType = gwtJahiaNode.get("linkType");
-                                GWTJahiaNode nodeReference = gwtJahiaNode.get("j:node");
+                                GWTJahiaNode nodeReference = gwtJahiaNode.get(Constants.NODE);
 
                                 // case of external
                                 if (linkType.equalsIgnoreCase("external") && linkUrl != null) {

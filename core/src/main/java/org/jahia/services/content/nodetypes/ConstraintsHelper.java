@@ -184,13 +184,13 @@ public class ConstraintsHelper {
         }
         final String[] constraintsArray = Patterns.SPACE.split(constraints);
         for (ExtendedNodeType ref : refs) {
-            if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
+            if (ref.getPropertyDefinitionsAsMap().get(Constants.NODE) != null) {
                 for (String s : constraintsArray) {
-                    if (s.equals("nt:base") && constraintsArray.length > 1) {
+                    if (s.equals(Constants.NT_BASE) && constraintsArray.length > 1) {
                         continue;
                     }
                     if (ref.isNodeType(s)) {
-                        String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
+                        String[] refConstraints = ref.getPropertyDefinitionsAsMap().get(Constants.NODE).getValueConstraints();
                         if (refConstraints.length == 0) {
                             refConstraints = new String[]{"jmix:droppableContent"};
                         }
@@ -227,8 +227,8 @@ public class ConstraintsHelper {
             }
         }
         for (ExtendedNodeType ref : referencesNodeTypesList) {
-            if (ref.getPropertyDefinitionsAsMap().get("j:node") != null) {
-                String[] refConstraints = ref.getPropertyDefinitionsAsMap().get("j:node").getValueConstraints();
+            if (ref.getPropertyDefinitionsAsMap().get(Constants.NODE) != null) {
+                String[] refConstraints = ref.getPropertyDefinitionsAsMap().get(Constants.NODE).getValueConstraints();
                 buffer.append(ref.getName());
                 buffer.append("[");
                 if (refConstraints.length > 0) {

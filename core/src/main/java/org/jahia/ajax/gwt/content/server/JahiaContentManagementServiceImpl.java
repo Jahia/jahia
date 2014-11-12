@@ -2063,8 +2063,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRSessionWrapper session = retrieveCurrentSession();
             JCRNodeWrapper node = session.getNodeByIdentifier(referenceIdentifier);
-            if (node.hasProperty("j:node")) {
-                JCRNodeWrapper source = (JCRNodeWrapper) node.getProperty("j:node").getNode();
+            if (node.hasProperty(Constants.NODE)) {
+                JCRNodeWrapper source = (JCRNodeWrapper) node.getProperty(Constants.NODE).getNode();
                 if (source != null) {
                     gwtSourceNode = navigation.getGWTJahiaNode(source);
                 }

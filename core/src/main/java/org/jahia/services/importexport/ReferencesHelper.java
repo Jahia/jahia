@@ -73,6 +73,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
@@ -136,7 +137,7 @@ public class ReferencesHelper {
                             JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
                             String refuuid = path.substring(0, path.lastIndexOf("/"));
                             String pName = path.substring(path.lastIndexOf("/") + 1);
-                            r.setProperty("j:node", refuuid);
+                            r.setProperty(Constants.NODE, refuuid);
                             r.setProperty("j:propertyName", pName);
                             r.setProperty("j:originalUuid", uuid);
                             r.setProperty("j:live", keepReferencesForLive);
@@ -152,7 +153,7 @@ public class ReferencesHelper {
                             JCRNodeWrapper r = refRoot.addNode("j:reference" + UUID.randomUUID().toString(), "jnt:reference");
                             String refuuid = path.substring(0, path.lastIndexOf("/"));
                             String pName = path.substring(path.lastIndexOf("/") + 1);
-                            r.setProperty("j:node", refuuid);
+                            r.setProperty(Constants.NODE, refuuid);
                             r.setProperty("j:propertyName", pName);
                             r.setProperty("j:originalUuid", uuid);
                             r.setProperty("j:live", keepReferencesForLive);
@@ -198,7 +199,7 @@ public class ReferencesHelper {
             }
 
             Node refNode = ni.nextNode();
-            String refuuid = refNode.getProperty("j:node").getString();
+            String refuuid = refNode.getProperty(Constants.NODE).getString();
 
             try {
                 JCRNodeWrapper n = session.getNodeByUUID(refuuid);
@@ -226,7 +227,7 @@ public class ReferencesHelper {
                 String pName = path.substring(path.lastIndexOf("/") + 1);
                 if (pName.startsWith("@")) {
                     JCRNodeWrapper ref = n.addNode(pName.substring(1), "jnt:contentReference");
-                    updateProperty(session, ref, "j:node", value, false);
+                    updateProperty(session, ref, Constants.NODE, value, false);
                 } else {
                     try {
                         updateProperty(session, n, pName, value, false);

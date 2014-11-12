@@ -78,6 +78,7 @@
 
         $(document).ready(function () {
             $('#tableTagDetails').dataTable({
+                "iDisplayLength": 100,
                 "aaSorting": [[1, 'asc']]
             });
 

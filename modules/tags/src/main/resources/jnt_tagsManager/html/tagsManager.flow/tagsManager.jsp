@@ -78,7 +78,9 @@
 
         $(document).ready(function () {
             $(document).ready(function () {
-                $('#tableTagsList').DataTable();
+                $('#tableTagsList').DataTable({
+                    "iDisplayLength": 100
+                });
             });
 
             tagsSuggester.initialize();

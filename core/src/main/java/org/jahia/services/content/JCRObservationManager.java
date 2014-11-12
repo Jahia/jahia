@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content;
 
+import javax.jcr.NamespaceRegistry;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.*;
 import javax.jcr.observation.EventListener;
@@ -78,7 +79,8 @@ import javax.jcr.observation.EventListener;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.apache.jackrabbit.spi.Name;
-import org.apache.jackrabbit.core.observation.EventImpl;
+import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
+import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
@@ -267,21 +269,54 @@ public class JCRObservationManager implements ObservationManager {
         }
     }
 
-    public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session, String mountPoint, String relativeRoot) {
-        if (event.getType() == Event.NODE_REMOVED && event instanceof EventImpl && ((EventImpl)event).getPrimaryNodeTypeName() != null) {
-            try {
-                EventImpl eventImpl = (EventImpl)event;
-                List<String> typeNames = new ArrayList<String>();
-                typeNames.add(JCRContentUtils.getJCRName(eventImpl.getPrimaryNodeTypeName().toString(), session.getWorkspace().getNamespaceRegistry()));
-                for (Name name :eventImpl.getMixinTypeNames()) {
-                    typeNames.add(JCRContentUtils.getJCRName(name.toString(), session.getWorkspace().getNamespaceRegistry()));
+    public static EventWrapper getEventWrapper(Event event, JCRSessionWrapper session, String mountPoint,
+            String relativeRoot) {
+        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : getNodeTypesForRemovedNode(event,
+                session), mountPoint, relativeRoot, session);
+    }
+
+    private static List<String> getNodeTypesForRemovedNode(Event event, JCRSessionWrapper session) {
+        List<String> typeNames = new LinkedList<String>();
+        try {
+            NamespaceRegistry nsRegistry = session.getWorkspace().getNamespaceRegistry();
+            String ntName = null;
+            Map<?, ?> info = event.getInfo();
+            if (info != null && !info.isEmpty()) {
+                ntName = (String) info.get(Constants.JCR_PRIMARYTYPE);
+                if (ntName != null) {
+                    typeNames.add(JCRContentUtils.getJCRName(ntName, nsRegistry));
                 }
-                return new EventWrapper(event, typeNames, mountPoint, relativeRoot, session);
-            } catch (RepositoryException e) {
-                logger.error("Cannot parse type for event on " +event);
+                String mixins = (String) info.get(Constants.JCR_MIXINTYPES);
+                if (mixins != null && mixins.length() > 0) {
+                    if (mixins.indexOf(' ') == -1) {
+                        typeNames.add(JCRContentUtils.getJCRName(mixins, nsRegistry));
+                    } else {
+                        for (String m : StringUtils.split(mixins, ' ')) {
+                            typeNames.add(JCRContentUtils.getJCRName(m, nsRegistry));
+                        }
+                    }
+                }
+            }
+            if (ntName == null && (event instanceof AdditionalEventInfo)) {
+                AdditionalEventInfo advEvent = (AdditionalEventInfo) event;
+                ntName = advEvent.getPrimaryNodeTypeName().toString();
+                typeNames.add(JCRContentUtils.getJCRName(ntName, nsRegistry));
+
+                if (typeNames.size() == 1) {
+                    for (Name name : advEvent.getMixinTypeNames()) {
+                        typeNames.add(JCRContentUtils.getJCRName(name.toString(), nsRegistry));
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Cannot parse type for event " + event, e);
+            } else {
+                logger.warn("Cannot parse type for event {}. Cause: {}", event, e.getMessage());
             }
         }
-        return new EventWrapper(event, event.getType() != Event.NODE_REMOVED ? null : Collections.<String>emptyList(), mountPoint, relativeRoot, session);
+
+        return typeNames;
     }
 
     private static void consume(JCRSessionWrapper session, int lastOperationType) throws RepositoryException {

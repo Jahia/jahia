@@ -20,7 +20,7 @@
                                      j:defaultTemplate="false"
                                     j:hiddenTemplate="true"
                                      j:requiredPermissionNames="tagsManager"
-                                     j:titleKey="jnt_tagsManager"
+                                     j:titleKey="jnt_tagsManager.default"
                                      jcr:mixinTypes="jmix:rbTitle"
                                      jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
@@ -31,7 +31,7 @@
                                           j:defaultTemplate="false"
                                           j:hiddenTemplate="true"
                                           j:requiredPermissionNames="tagsManager"
-                                          j:titleKey="jnt_tagsManager"
+                                          j:titleKey="jnt_tagsManager.live"
                                           jcr:mixinTypes="jmix:rbTitle"
                                           jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">

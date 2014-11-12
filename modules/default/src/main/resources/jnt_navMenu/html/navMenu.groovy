@@ -53,6 +53,10 @@ printMenu = { node, navMenuLevel, omitFormatting ->
               def referenceIsBroken = false;
               if (menuItem.isNodeType("jmix:nodeReference")) {
                   try {
+                      currentResource.dependencies.add(menuItem.properties['j:node'].string);
+                  } catch (ItemNotFoundException e) {
+                  }
+                  try {
                       if (menuItem.properties['j:node'].node != null) {
                           selected = renderContext.mainResource.node.path == menuItem.properties['j:node'].node.path;
                       } else {

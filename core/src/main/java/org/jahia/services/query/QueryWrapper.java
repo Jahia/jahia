@@ -282,7 +282,7 @@ public class QueryWrapper implements Query {
                 // Mount point in under path constraint -> do not search
                 throw new ConstraintViolationException();
             }
-            if (rootWithSlash.startsWith(mountPoint)) {
+            if (rootWithSlash.startsWith(mountPoint + "/")) {
                 // Path constraint is under mount point -> create new constraint with local path
                 return f.childNode(((ChildNode) constraint).getSelectorName(), relativeRoot + rootNoSlash.substring(mountPoint.length()));
             }
@@ -300,7 +300,7 @@ public class QueryWrapper implements Query {
                     return null;
                 }
             }
-            if (rootWithSlash.startsWith(mountPoint)) {
+            if (rootWithSlash.startsWith(mountPoint + "/")) {
                 // Path constraint is under mount point -> create new constraint with local path
                 return f.descendantNode(((DescendantNode) constraint).getSelectorName(), relativeRoot + root.substring(mountPoint.length()));
             }

@@ -425,7 +425,7 @@ public class RenderService {
         String key = new StringBuilder(path)
                 .append(type)
                 .append(defaultOnly)
-                .append(templateName != null ? templateName : "default").toString();
+                .append(templateName != null ? templateName : "*all*").toString();
 
         List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
         List<String> nodeIds =  templatesCache.get(key);

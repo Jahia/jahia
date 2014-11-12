@@ -43,56 +43,180 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
 
-import org.jahia.modules.serversettings.mountPointsManagement.MountPoint;
-import org.jahia.services.content.JCRStoreService;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.modules.serversettings.mount.MountPoint;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
-import org.jahia.services.render.RenderContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.webflow.execution.RequestContext;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
- * @author Christophe Laprun
+ * @author kevan
  */
 public class MountPointsManagementFlowHandler implements Serializable{
     private static final long serialVersionUID = 1436197019769187454L;
-
-    @Autowired
-    private transient JCRStoreService service;
+    private static Logger logger = LoggerFactory.getLogger(MountPointsManagementFlowHandler.class);
+    private static final String BUNDLE = "resources.JahiaServerSettings";
+    public static enum Actions {
+        mount, unmount, delete
+    }
 
     public List<MountPoint> getMountPoints() {
         try {
-            final NodeIterator nodeIterator = service.getKnownMountPointsWithStatus(null);
-            List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
-            while (nodeIterator.hasNext()) {
-                JCRMountPointNode mountPointNode = (JCRMountPointNode) nodeIterator.next();
-                mountPoints.add(new MountPoint(mountPointNode));
-            }
-            return mountPoints;
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<MountPoint>>() {
+                @Override
+                public List<MountPoint> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    final NodeIterator nodeIterator = getMountPoints(session);
+                    List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
+                    while (nodeIterator.hasNext()) {
+                        JCRMountPointNode mountPointNode = (JCRMountPointNode) nodeIterator.next();
+                        mountPoints.add(new MountPoint(mountPointNode));
+                    }
+                    return mountPoints;
+
+                }
+            });
         } catch (RepositoryException e) {
+            logger.error("Error retrieving mount points", e);
             return Collections.emptyList();
         }
     }
 
-    public void init(RequestContext requestContext, RenderContext renderContext) {
+    public void doAction(final String mountPointName, Actions action, MessageContext messageContext){
+        boolean success = false;
+
+        switch (action){
+            case mount:
+                success = mount(mountPointName);
+                break;
+            case unmount:
+                success = unmount(mountPointName);
+                break;
+            case delete:
+                success = delete(mountPointName);
+                break;
+        }
+
+        handleMessages(messageContext, action, mountPointName, success);
     }
 
-    public MountPoint getMountPoint(String localMountPoint) {
-        return null;
+    private boolean mount(final String mountPointName) {
+        boolean success = false;
+        try {
+            success = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRMountPointNode mountPointNode = getMountPoint(session, mountPointName);
+                    if(mountPointNode != null){
+                        if(mountPointNode.getMountStatus() != JCRMountPointNode.MountStatus.unmounted) {
+                            String detail = "Can't mount " + mountPointName + ", mount status of the mount point is not unmounted";
+                            logger.error(detail);
+                            return false;
+                        }
+                        ProviderFactory providerFactory = JCRStoreService.getInstance().getProviderFactories().get(mountPointNode.getPrimaryNodeTypeName());
+                        JCRStoreProvider mountProvider = providerFactory.mountProvider(mountPointNode.getVirtualMountPointNode());
+                        return mountProvider.isAvailable();
+                    } else {
+                        logger.error("Can't mount " + mountPointName + ", no mount point node found");
+                        return false;
+                    }
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error trying to mount " + mountPointName, e);
+        }
+        return success;
     }
 
-    public void createMountPoint(MountPoint point) {
+    private boolean unmount(final String mountPointName) {
+        boolean success = false;
+        try {
+            success = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRMountPointNode mountPointNode = getMountPoint(session, mountPointName);
+                    if(mountPointNode != null){
+                        if(mountPointNode.getMountStatus() != JCRMountPointNode.MountStatus.mounted) {
+                            logger.error("Can't mount " + mountPointName + ", current mount status of the mount point is not mounted");
+                            return false;
+                        }
 
+                        return mountPointNode.getMountProvider().unmount();
+                    } else {
+                        logger.error("Can't mount " + mountPointName + ", no mount point node found");
+                        return false;
+                    }
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error trying to unmount " + mountPointName, e);
+        }
+        return success;
     }
 
-    public void updateMountPoint(String originalMountPoint, MountPoint newPoint) {
-
+    private boolean delete(final String mountPointName) {
+        boolean success = false;
+        try {
+            success = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                @Override
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRMountPointNode mountPointNode = getMountPoint(session, mountPointName);
+                    if(mountPointNode != null){
+                        mountPointNode.remove();
+                        session.save();
+                        return getMountPoint(session, mountPointName) == null;
+                    } else {
+                        logger.error("Can't delete " + mountPointName + ", no mount point node found");
+                        return false;
+                    }
+                }
+            });
+        } catch (RepositoryException e) {
+            logger.error("Error trying to delete " + mountPointName, e);
+        }
+        return success;
     }
 
-    public void deleteMountPoint(MountPoint point) {
-
+    private void handleMessages(MessageContext messageContext, Actions action, String mountPoint, boolean success) {
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = Messages.getWithArgs(BUNDLE, "serverSettings.mountPointsManagement.action." + (success ? "successMessage" : "failMessage"), locale,
+                action, mountPoint);
+        MessageBuilder messageBuilder = new MessageBuilder();
+        if (success) {
+            messageBuilder.info().defaultText(message);
+        } else {
+            messageBuilder.error().defaultText(message);
+        }
+        messageContext.addMessage(messageBuilder.build());
     }
 
+    private JCRMountPointNode getMountPoint(JCRSessionWrapper sessionWrapper, String name) throws RepositoryException {
+        Query query = sessionWrapper.getWorkspace().getQueryManager().createQuery(getMountPointQuery(name), Query.JCR_SQL2);
+        QueryResult queryResult = query.execute();
+        return queryResult.getNodes().getSize() > 0 ? (JCRMountPointNode) queryResult.getNodes().next() : null;
+    }
+
+    private NodeIterator getMountPoints(JCRSessionWrapper sessionWrapper) throws RepositoryException {
+        Query query = sessionWrapper.getWorkspace().getQueryManager().createQuery(getMountPointQuery(null), Query.JCR_SQL2);
+        return query.execute().getNodes();
+    }
+
+    private String getMountPointQuery(String name) {
+        String query = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "] as mount";
+        if(StringUtils.isNotEmpty(name)) {
+            query += (" where ['j:nodename'] = '" + name + "'");
+        }
+        return query;
+    }
 }

@@ -5,13 +5,17 @@
       xsi:schemaLocation="http://www.springframework.org/schema/webflow
                           http://www.springframework.org/schema/webflow/spring-webflow-2.0.xsd">
 
-  <var name="flowHandler" class="org.jahia.modules.serversettings.flow.MountPointsManagementFlowHandler"/>
-
-  <on-start>
-    <evaluate expression="flowHandler.init(flowRequestContext, externalContext.requestMap.renderContext)"/>
-  </on-start>
+    <var name="flowHandler" class="org.jahia.modules.serversettings.flow.MountPointsManagementFlowHandler"/>
 
     <view-state id="index">
+        <on-entry>
+            <evaluate expression="flowHandler.mountPoints" result="flowScope.mountPoints"/>
+        </on-entry>
+        <transition on="doAction" to="doAction"/>
     </view-state>
 
+    <action-state id="doAction">
+        <evaluate expression="flowHandler.doAction(requestParameters.name, requestParameters.action, messageContext)"/>
+        <transition to="index"/>
+    </action-state>
 </flow>

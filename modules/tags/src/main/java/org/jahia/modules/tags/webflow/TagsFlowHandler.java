@@ -181,21 +181,17 @@ public class TagsFlowHandler implements Serializable {
     }
 
     private void executeActionWithDefaultSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
-        JCRSessionWrapper session = getSessionCurrentWorkspace(renderContext, Constants.EDIT_WORKSPACE);
+        JCRSessionWrapper session = getSystemSessionWorkspace(renderContext, Constants.EDIT_WORKSPACE);
         executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
     }
 
     private void executeActionWithLiveSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
-        JCRSessionWrapper session = getSessionCurrentWorkspace(renderContext, Constants.LIVE_WORKSPACE);
+        JCRSessionWrapper session = getSystemSessionWorkspace(renderContext, Constants.LIVE_WORKSPACE);
         executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
     }
 
-    private JCRSessionWrapper getSessionCurrentWorkspace(RenderContext renderContext, String selectedWorkspace) throws RepositoryException {
-        if (renderContext.getWorkspace().equals(selectedWorkspace)) {
-            return renderContext.getMainResource().getNode().getSession();
-        } else {
-            return sessionFactory.getCurrentUserSession(selectedWorkspace);
-        }
+    private JCRSessionWrapper getSystemSessionWorkspace(RenderContext renderContext, String selectedWorkspace) throws RepositoryException {
+        return sessionFactory.getCurrentSystemSession(selectedWorkspace, renderContext.getMainResourceLocale(), renderContext.getFallbackLocale());
     }
 
     private static void updateTagsList(RenderContext renderContext, MessageContext messageContext, JCRNodeWrapper node, String selectedTag, String tagNewName) {

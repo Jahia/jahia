@@ -71,9 +71,6 @@
  */
 package org.jahia.services.content;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -81,30 +78,24 @@ import javax.jcr.observation.EventIterator;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.decorator.JCRMountPointNode.MountStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * External listener for the creation and deletion of a mount point nodes on other DF nodes to be able to mount/unmount the provider
- * locally.
+ * External listener for the mounting / unmounting providers, depending on the mount status property. locally.
  *
  * @author Sergiy Shyrkov
  */
-public class MountPointListener extends DefaultEventListener implements ExternalEventListener {
+public class MountPointStatusListener extends DefaultEventListener implements ExternalEventListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(MountPointStatusListener.class);
 
     private static final String[] NODETYPES = new String[] { Constants.JAHIANT_MOUNTPOINT };
 
-    public MountPointListener() {
-        super();
-        propertiesToIgnore.add(JCRMountPointNode.MOUNT_STATUS_PROPERTY_NAME);
-    }
-
     @Override
     public int getEventTypes() {
-        return Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED
-                + Event.PROPERTY_REMOVED;
+        return Event.PROPERTY_CHANGED;
     }
 
     @Override
@@ -112,7 +103,44 @@ public class MountPointListener extends DefaultEventListener implements External
         return NODETYPES;
     }
 
-    private void mount(final String uuid) {
+    void mount(final String uuid, ProviderFactory providerFactory, JCRMountPointNode mountPoint)
+            throws RepositoryException {
+        JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
+        if (p == null) {
+            // not mounted yet -> mounting
+            JCRNodeWrapper mountPointTarget = mountPoint.getVirtualMountPointNode();
+            logger.info("Mounting the provider {} to {}", uuid, mountPointTarget.getPath());
+            final JCRStoreProvider provider = providerFactory.mountProvider(mountPointTarget);
+            if (!provider.isAvailable(true)) {
+                logger.warn("Issue while trying to mount an external provider ({}) upon startup,"
+                        + " all references to file coming from this mount won't be"
+                        + " available until it is fixed. If you migrating from Jahia 6.6 this"
+                        + " might be normal until the migration scripts have been completed.",
+                        mountPointTarget.getPath());
+            }
+        }
+    }
+
+    @Override
+    public void onEvent(EventIterator events) {
+        while (events.hasNext()) {
+            try {
+                final Event evt = events.nextEvent();
+                String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
+                if (!isExternal(evt) || !JCRMountPointNode.MOUNT_STATUS_PROPERTY_NAME.equals(propertyName)) {
+                    continue;
+                }
+                logger.info("Operation type {} - {}event {}",
+                        new Object[] { JCRObservationManager.getCurrentOperationType(),
+                                isExternal(evt) ? "External " : "", evt });
+                statusUpdated(evt.getIdentifier());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void statusUpdated(final String uuid) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -131,17 +159,15 @@ public class MountPointListener extends DefaultEventListener implements External
 
                     JCRMountPointNode mountPoint = (JCRMountPointNode) node;
 
-                    if (mountPoint.shouldBeMounted()) {
-                        JCRNodeWrapper mountPointTarget = mountPoint.getVirtualMountPointNode();
-                        logger.info("Mounting the provider {} to {}", uuid, mountPointTarget.getPath());
-                        final JCRStoreProvider provider = providerFactory.mountProvider(mountPointTarget);
-                        if (!provider.isAvailable(true)) {
-                            logger.warn("Issue while trying to mount an external provider ({}) upon startup,"
-                                    + " all references to file coming from this mount won't be"
-                                    + " available until it is fixed. If you migrating from Jahia 6.6 this"
-                                    + " might be normal until the migration scripts have been completed.",
-                                    mountPointTarget.getPath());
-                        }
+                    MountStatus mountStatus = mountPoint.getMountStatus();
+
+                    logger.info("Received external event about mount status update ({}) for provider provider {}",
+                            mountStatus, mountPoint.getProvider().getKey());
+
+                    if (MountStatus.mounted == mountStatus) {
+                        mount(uuid, providerFactory, mountPoint);
+                    } else if (MountStatus.unmounted == mountStatus) {
+                        unmount(uuid);
                     }
 
                     return true;
@@ -149,48 +175,6 @@ public class MountPointListener extends DefaultEventListener implements External
             });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-        }
-    }
-
-    @Override
-    public void onEvent(EventIterator events) {
-        Map<String, Integer> changeLog = new LinkedHashMap<String, Integer>(1);
-        while (events.hasNext()) {
-            try {
-                final Event evt = events.nextEvent();
-                final int evtType = evt.getType();
-                if ((evtType & (Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED)) != 0) {
-                    // if property-level event -> check ignored properties
-                    String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
-                    if (propertiesToIgnore.contains(propertyName)) {
-                        continue;
-                    }
-                }
-                setStatus(changeLog, evt.getIdentifier(), evtType);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        for (Map.Entry<String, Integer> change : changeLog.entrySet()) {
-            String uuid = change.getKey();
-            Integer status = change.getValue();
-            unmount(uuid);
-            if (status != Event.NODE_REMOVED) {
-                mount(uuid);
-            }
-        }
-    }
-
-    private void setStatus(Map<String, Integer> changeLog, String identifier, int evtType) {
-        Integer status = changeLog.get(identifier);
-        if (status == null) {
-            changeLog.put(identifier, evtType);
-        } else {
-            if ((evtType & (Event.NODE_ADDED + Event.NODE_REMOVED)) != 0) {
-                // override change status only in case of node-level event type
-                changeLog.put(identifier, evtType);
-            }
         }
     }
 

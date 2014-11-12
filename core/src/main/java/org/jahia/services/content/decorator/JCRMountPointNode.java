@@ -77,7 +77,9 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.settings.SettingsBean;
 
+import javax.jcr.InvalidItemStateException;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
@@ -194,11 +196,19 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             JCRSessionWrapper session = null;
             Boolean isValidationSkipped = null;
             try {
-                session = getSession();
-                isValidationSkipped = session.isSkipValidation();
-                session.setSkipValidation(true);
-                setProperty(MOUNT_STATUS_PROPERTY_NAME, mountStatus.name());
-                session.save();
+                if (!hasProperty(MOUNT_STATUS_PROPERTY_NAME)
+                        || !getProperty(MOUNT_STATUS_PROPERTY_NAME).getValue().getString().equals(mountStatus.name())) {
+                    session = getSession();
+                    isValidationSkipped = session.isSkipValidation();
+                    session.setSkipValidation(true);
+                    setProperty(MOUNT_STATUS_PROPERTY_NAME, mountStatus.name());
+                    session.save();
+                }
+            } catch (InvalidItemStateException ise) {
+                // ignore in cluster mode as servers could modify the mountStatus concurrently
+                if (!SettingsBean.getInstance().isClusterActivated()) {
+                    logger.error("Couldn't save mount status for node " + node.getName(), ise);
+                }
             } catch (RepositoryException e) {
                 logger.error("Couldn't save mount status for node " + node.getName(), e);
             } finally {

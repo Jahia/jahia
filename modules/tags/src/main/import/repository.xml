@@ -16,7 +16,7 @@
                     <site-settings-base j:view="siteSettings"
                                         jcr:mixinTypes="jmix:useUILocale"
                                         jcr:primaryType="jnt:template">
-                        <tagsManager_default j:applyOn="jnt:virtualsite"
+                        <tagsManager j:applyOn="jnt:virtualsite"
                                      j:defaultTemplate="false"
                                     j:hiddenTemplate="true"
                                      j:requiredPermissionNames="tagsManager"
@@ -26,13 +26,13 @@
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <tagsManager jcr:primaryType="jnt:tagsManager"/>
                             </pagecontent>
-                        </tagsManager_default>
+                        </tagsManager>
                         <tagsManager_live j:applyOn="jnt:virtualsite"
                                           j:defaultTemplate="false"
                                           j:hiddenTemplate="true"
                                           j:requiredPermissionNames="tagsManager"
                                           j:titleKey="jnt_tagsManager.live"
-                                          jcr:mixinTypes="jmix:rbTitle"
+                                          jcr:mixinTypes="jmix:rbTitle jmix:hiddenNode"
                                           jcr:primaryType="jnt:contentTemplate">
                             <pagecontent jcr:primaryType="jnt:contentList">
                                 <workspaceswitch jcr:primaryType="jnt:workspaceSwitch" workspace="live">

@@ -15,14 +15,16 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<%--@elvariable id="mountPoint" type="org.jahia.modules.serversettings.mount.MountPoint"--%>
+<%--@elvariable id="mountPoints" type="org.jahia.modules.serversettings.mount.MountPoints"--%>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
+<template:addResources type="javascript"
+                       resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
-<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="javascript"
+                       resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
+    $(document).ready(function () {
         var mountsTable = $('#mountsTable');
 
         mountsTable.dataTable({
@@ -40,7 +42,7 @@
     }
 
     function submitEventWithConfirm(action, mountPoint, message) {
-        if(confirm(message)){
+        if (confirm(message)) {
             submitEvent(action, mountPoint);
         }
     }
@@ -53,6 +55,21 @@
 </form>
 
 <h2><fmt:message key="serverSettings.mountPointsManagement"/></h2>
+
+<div class="box-1">
+    <h2><fmt:message key="serverSettings.mountPointsManagement.add"/></h2>
+    <form style="margin: 0;">
+        <select>
+            <c:forEach var="providerFactory" items="${mountPoints.providerFactoryTypes}">
+                <option value="${providerFactory.key}">${providerFactory.value}</option>
+            </c:forEach>
+        </select>
+
+        <button class="btn btn-primary" type="button">
+            <i class="icon-plus  icon-white"></i>&nbsp;<span><fmt:message key="label.add"/></span>
+        </button>
+    </form>
+</div>
 
 <p>
 <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
@@ -90,7 +107,7 @@
     </thead>
 
     <tbody>
-    <c:forEach items="${mountPoints}" var="mountPoint" varStatus="loopStatus">
+    <c:forEach items="${mountPoints.mountPoints}" var="mountPoint" varStatus="loopStatus">
         <tr>
             <td>
                     ${mountPoint.name}
@@ -117,7 +134,8 @@
                 <fmt:message var="confirmDelete" key="serverSettings.mountPointsManagement.action.confirmDelete">
                     <fmt:param value="${mountPoint.name}"/>
                 </fmt:message>
-                <button class="btn btn-danger" type="button" onclick="submitEventWithConfirm('delete', '${mountPoint.name}', '${functions:escapeJavaScript(confirmDelete)}')">
+                <button class="btn btn-danger" type="button"
+                        onclick="submitEventWithConfirm('delete', '${mountPoint.name}', '${functions:escapeJavaScript(confirmDelete)}')">
                     <i class=" "></i>&nbsp;<fmt:message key="label.delete"/>
                 </button>
             </td>

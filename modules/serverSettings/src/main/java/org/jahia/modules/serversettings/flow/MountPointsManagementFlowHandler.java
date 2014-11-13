@@ -40,23 +40,25 @@
 package org.jahia.modules.serversettings.flow;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.modules.serversettings.mount.MountPoint;
+import org.jahia.modules.serversettings.mount.MountPoints;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -72,24 +74,32 @@ public class MountPointsManagementFlowHandler implements Serializable{
         mount, unmount, delete
     }
 
-    public List<MountPoint> getMountPoints() {
+    @Autowired
+    private transient JCRStoreService jcrStoreService;
+
+    public MountPoints getMountPoints() {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<MountPoint>>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<MountPoints>() {
                 @Override
-                public List<MountPoint> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public MountPoints doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    // get mount points
                     final NodeIterator nodeIterator = getMountPoints(session);
                     List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
                     while (nodeIterator.hasNext()) {
                         JCRMountPointNode mountPointNode = (JCRMountPointNode) nodeIterator.next();
                         mountPoints.add(new MountPoint(mountPointNode));
                     }
-                    return mountPoints;
+                    
+                    // get provider factory types
+                    Map<String, String> providerFactoryTypes = getProviderFactoriesType();
 
+                    // return model
+                    return new MountPoints(providerFactoryTypes, mountPoints);
                 }
             });
         } catch (RepositoryException e) {
             logger.error("Error retrieving mount points", e);
-            return Collections.emptyList();
+            return new MountPoints();
         }
     }
 
@@ -201,6 +211,15 @@ public class MountPointsManagementFlowHandler implements Serializable{
         messageContext.addMessage(messageBuilder.build());
     }
 
+    private Map<String, String> getProviderFactoriesType() throws NoSuchNodeTypeException {
+        Map<String, String> providerFactoriesType = new HashMap<String, String>();
+        for (ProviderFactory factory : jcrStoreService.getProviderFactories().values()) {
+            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
+            providerFactoriesType.put(type.getName(), type.getLabel(LocaleContextHolder.getLocale()));
+        }
+        return providerFactoriesType;
+    }
+
     private JCRMountPointNode getMountPoint(JCRSessionWrapper sessionWrapper, String name) throws RepositoryException {
         Query query = sessionWrapper.getWorkspace().getQueryManager().createQuery(getMountPointQuery(name), Query.JCR_SQL2);
         QueryResult queryResult = query.execute();
@@ -218,5 +237,9 @@ public class MountPointsManagementFlowHandler implements Serializable{
             query += (" where ['j:nodename'] = '" + name + "'");
         }
         return query;
+    }
+
+    public void setJcrStoreService(JCRStoreService jcrStoreService) {
+        this.jcrStoreService = jcrStoreService;
     }
 }

@@ -543,6 +543,8 @@
 [jnt:mounts] > nt:base, jmix:nodenameInfo, jmix:systemNode
  + * (nt:base)
 
+[jmix:mountPointFactory] mixin
+
 //---------------------------------------------------------
 // Definition Content
 //---------------------------------------------------------

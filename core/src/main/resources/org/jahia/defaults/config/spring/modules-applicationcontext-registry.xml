@@ -29,6 +29,7 @@
         <property name="locations">
             <list>
                 <value>classpath*:jahia-modules-*.properties</value>
+                <value>classpath*:jahia/jahia-modules-*.properties</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>

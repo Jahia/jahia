@@ -26,6 +26,7 @@ function bbRenameTag(nodeID) {
         message: "<p>" + jsVarMap.labelTagNewName +
             "</p><input id='renameTag' class='typeahead' type='text' value='" + $('#selectedTag').val() + "'>" +
             "<script>" +
+                "$('.modal-body').css('overflow', 'visible');" +
                 "$('#renameTag').keyup(function() {" +
                     "if ($('#renameTag').val() != '') {" +
                         "$('.renameButton').removeAttr('disabled');" +

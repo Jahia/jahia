@@ -20,6 +20,7 @@ function bbRenameTag(oldName) {
         message: "<p>" + jsVarMap.labelTagNewName +
                  "</p><input id='renameTag' class='typeahead' type='text' value='" + oldName + "'>" +
                  "<script>" +
+                     "$('.modal-body').css('overflow', 'visible');" +
                      "$('#renameTag').keyup(function() {" +
                          "if ($('#renameTag').val() != '') {" +
                              "$('.renameButton').removeAttr('disabled');" +

@@ -1,47 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <tags j:dependencies="default"
+        <tags j:dependencies="default siteSettings"
             j:modulePriority="0"
             j:moduleType="module"
             j:title="Jahia Tags"
             jcr:primaryType="jnt:module">
-                
-                <portlets jcr:primaryType="jnt:portletFolder"/>
+            <portlets jcr:primaryType="jnt:portletFolder"/>
+            <files jcr:primaryType="jnt:folder"/>
+            <contents jcr:primaryType="jnt:contentFolder"/>
+            <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
                 <files jcr:primaryType="jnt:folder"/>
                 <contents jcr:primaryType="jnt:contentFolder"/>
-                <templates j:rootTemplatePath="/base" jcr:primaryType="jnt:templatesFolder">
-                    <files jcr:primaryType="jnt:folder"/>
-                    <contents jcr:primaryType="jnt:contentFolder"/>
-                    <site-settings-base j:view="siteSettings"
-                                        jcr:mixinTypes="jmix:useUILocale"
-                                        jcr:primaryType="jnt:template">
-                        <tagsManager j:applyOn="jnt:virtualsite"
-                                     j:defaultTemplate="false"
-                                    j:hiddenTemplate="true"
-                                     j:requiredPermissionNames="tagsManager"
-                                     j:titleKey="jnt_tagsManager"
-                                     jcr:mixinTypes="jmix:rbTitle"
-                                     jcr:primaryType="jnt:contentTemplate">
-                            <pagecontent jcr:primaryType="jnt:contentList">
+                <site-settings-base j:view="siteSettings"
+                                    jcr:mixinTypes="jmix:useUILocale"
+                                    jcr:primaryType="jnt:template">
+                    <tagsManager j:applyOn="jnt:virtualsite"
+                                 j:defaultTemplate="false"
+                                 j:hiddenTemplate="true"
+                                 j:requiredPermissionNames="tagsManager"
+                                 j:titleKey="jnt_tagsManager"
+                                 jcr:mixinTypes="jmix:rbTitle"
+                                 jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <tagsManager jcr:primaryType="jnt:tagsManager"/>
+                        </pagecontent>
+                    </tagsManager>
+                    <tagsManager_live j:applyOn="jnt:virtualsite"
+                                      j:defaultTemplate="false"
+                                      j:hiddenTemplate="true"
+                                      j:requiredPermissionNames="tagsManager"
+                                      j:titleKey="jnt_tagsManager"
+                                      jcr:mixinTypes="jmix:rbTitle jmix:hiddenNode"
+                                      jcr:primaryType="jnt:contentTemplate">
+                        <pagecontent jcr:primaryType="jnt:contentList">
+                            <workspaceswitch jcr:primaryType="jnt:workspaceSwitch" workspace="live">
                                 <tagsManager jcr:primaryType="jnt:tagsManager"/>
-                            </pagecontent>
-                        </tagsManager>
-                        <tagsManager_live j:applyOn="jnt:virtualsite"
-                                          j:defaultTemplate="false"
-                                          j:hiddenTemplate="true"
-                                          j:requiredPermissionNames="tagsManager"
-                                          j:titleKey="jnt_tagsManager"
-                                          jcr:mixinTypes="jmix:rbTitle jmix:hiddenNode"
-                                          jcr:primaryType="jnt:contentTemplate">
-                            <pagecontent jcr:primaryType="jnt:contentList">
-                                <workspaceswitch jcr:primaryType="jnt:workspaceSwitch" workspace="live">
-                                    <tagsManager jcr:primaryType="jnt:tagsManager"/>
-                                </workspaceswitch>
-                            </pagecontent>
-                        </tagsManager_live>
-                    </site-settings-base>
-                </templates>
-            </tags>
+                            </workspaceswitch>
+                        </pagecontent>
+                    </tagsManager_live>
+                </site-settings-base>
+            </templates>
+        </tags>
     </modules>
 </content>

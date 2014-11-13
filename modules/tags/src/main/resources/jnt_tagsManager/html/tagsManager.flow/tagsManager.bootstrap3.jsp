@@ -17,14 +17,16 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="workspace" type="java.lang.String"--%>
 
+<template:addResources type="css" resources="admin-bootstrap-v3.2.min.css"/>
 <template:addResources type="css" resources="admin-font-awesome-v4.2.0.min.css"/>
-<template:addResources type="css" resources="datatables/css/bootstrap-theme.css"/>
+<template:addResources type="css" resources="dataTables.bootstrap.css"/>
 <template:addResources type="css" resources="typeahead.css"/>
 
 <template:addResources type="javascript" resources="jquery.min.js"/>
-<template:addResources type="javascript" resources="admin-bootstrap.js"/>
+<template:addResources type="javascript" resources="admin-bootstrap-v3.2.min.js"/>
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
-<template:addResources type="javascript" resources="datatables/jquery.dataTables.min.js,datatables/dataTables.bootstrap-ext.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="jquery.dataTables.min.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
+<template:addResources type="javascript" resources="dataTables.bootstrap.min.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
 <template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagsManager.js"/>
@@ -57,12 +59,12 @@
             limit: 10,
             remote: {
                 <c:choose>
-                <c:when test="${workspace eq 'default'}">
-                url: '${url.context}${url.baseEdit}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
-                </c:when>
-                <c:otherwise>
-                url: '${url.context}${url.baseLive}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
-                </c:otherwise>
+                    <c:when test="${workspace eq 'default'}">
+                        url: '${url.context}${url.baseEdit}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
+                    </c:when>
+                    <c:otherwise>
+                        url: '${url.context}${url.baseLive}${renderContext.siteInfo.sitePath}.matchingTags.do' + '?q=%QUERY',
+                    </c:otherwise>
                 </c:choose>
                 filter: function (list) {
                     return $.map(list.tags, function (tag) {
@@ -76,10 +78,8 @@
 
         $(document).ready(function () {
             $(document).ready(function () {
-                $('#tableTagsList').dataTable({
-                    "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
-                    "iDisplayLength": 100,
-                    "sPaginationType": "bootstrap"
+                $('#tableTagsList').DataTable({
+                    "iDisplayLength": 100
                 });
             });
 
@@ -88,32 +88,32 @@
     </script>
 </template:addResources>
 
-<div class="row-fluid">
-    <div class="span6">
-        <h3><fmt:message key="jnt_tagsManager.title.ListOgTags"><fmt:param value="${workspace}"/></fmt:message></h3>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <h3><fmt:message key="jnt_tagsManager.title.ListOgTags"><fmt:param value="${workspace}"/></fmt:message></h3>
+        </div>
+        <div class="col-md-6 text-right">
+            <c:choose>
+                <c:when test="${workspace eq 'default'}">
+                    <a class="btn btn-primary" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_live.html"/>">
+                        <fmt:message key="jnt_tagsManager.button.switchToDefault"/>&nbsp;<i class="fa fa-external-link"></i>
+                    </a>
+                </c:when>
+                <c:otherwise>
+                    <a class="btn btn-primary" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_default.html"/>">
+                        <fmt:message key="jnt_tagsManager.button.switchToLive"/>&nbsp;<i class="fa fa-external-link"></i>
+                    </a>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </div>
-    <div class="span6">
-        <c:choose>
-            <c:when test="${workspace eq 'default'}">
-                <a class="btn btn-primary pull-right" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_live.html"/>">
-                    <fmt:message key="jnt_tagsManager.button.switchToDefault"/>&nbsp;<i class="fa fa-external-link"></i>
-                </a>
-            </c:when>
-            <c:otherwise>
-                <a class="btn btn-primary pull-right" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_default.html"/>">
-                    <fmt:message key="jnt_tagsManager.button.switchToLive"/>&nbsp;<i class="fa fa-external-link"></i>
-                </a>
-            </c:otherwise>
-        </c:choose>
-    </div>
-</div>
-<div class="box-1">
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             <c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
-                <div class="alert <c:choose><c:when test="${message.severity eq 'ERROR'}">alert-error</c:when><c:otherwise>alert-success</c:otherwise></c:choose>">
+                <div class="alert <c:choose><c:when test="${message.severity eq 'ERROR'}">alert-danger</c:when><c:otherwise>alert-success</c:otherwise></c:choose> alert-dismissible" role="alert">
                     <button type="button" class="close" data-dismiss="alert">
-                        &times;
+                        <span aria-hidden="true">&times;</span>
                     </button>
                     <c:choose>
                         <c:when test="${message.severity eq 'ERROR'}">
@@ -128,8 +128,8 @@
             </c:forEach>
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             <table class="table table-bordered table-striped table-hover" id="tableTagsList">
                 <thead>
                 <tr>
@@ -153,8 +153,8 @@
                         <td>
                             ${tag.value}
                         </td>
-                        <td>
-                            <div class="btn-group pull-right">
+                        <td class="text-right">
+                            <div class="btn-group">
                                 <button type="button" class="btn btn-primary" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
                                     <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
                                 </button>
@@ -181,11 +181,11 @@
             </table>
         </div>
     </div>
-</div>
-<div class="row-fluid hide">
-    <form:form id="formTagsManagement" action="${flowExecutionUrl}" method="post">
-        <input type="hidden" id="eventInput" name="_eventId_">
-        <input type="hidden" id="selectedTag" name="selectedTag">
-        <input type="hidden" id="tagNewName" name="tagNewName">
-    </form:form>
+    <div class="row hide">
+        <form:form id="formTagsManagement" action="${flowExecutionUrl}" method="post">
+            <input type="hidden" id="eventInput" name="_eventId_">
+            <input type="hidden" id="selectedTag" name="selectedTag">
+            <input type="hidden" id="tagNewName" name="tagNewName">
+        </form:form>
+    </div>
 </div>

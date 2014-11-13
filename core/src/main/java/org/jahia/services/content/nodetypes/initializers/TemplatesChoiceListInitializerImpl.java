@@ -103,6 +103,7 @@ import java.util.*;
  *        Created : 17 nov. 2009
  */
 public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer {
+
     /**
      * We use this View wrapper because for filtering common views we just want to compare the keys, not all the attributes like in
      * View.equals()
@@ -314,11 +315,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
             fillProperties(map, view.getDefaultProperties());
             fillProperties(map, view.getProperties());
             boolean isStudio = site != null && site.getPath().startsWith("/modules");
-            if (!"false".equals(map.get("visible")) && (!"studioOnly".equals(map.get("visible")) || isStudio) &&
-                    ((StringUtils.isEmpty(param) && map.get("type") == null) ||
-                            param.equals(map.get("type"))) &&
-                    !view.getKey().startsWith("wrapper.") && !view.getKey().contains("hidden.")
-                    ) {
+            if (isViewVisible(view.getKey(), param, map, isStudio)) {
                 String displayName = Messages.get(view.getModule(), declaringPropertyDefinition.getResourceBundleKey() + "." + JCRContentUtils.replaceColon(view.getKey()), locale, view.getKey());
                 ChoiceListValue c =  new ChoiceListValue(displayName, map, new ValueImpl(view.getKey(), PropertyType.STRING, false));
                 try {
@@ -341,6 +338,16 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
         }
         Collections.sort(vs);
         return vs;
+    }
+
+    private boolean isViewVisible(String viewKey, String param, HashMap<String, Object> viewProperties, boolean isStudio) {
+        final Object visible = viewProperties.get(View.VISIBLE_KEY);
+        final Object type = viewProperties.get(View.TYPE_KEY);
+        return !View.VISIBLE_FALSE.equals(visible)
+                && (!View.VISIBLE_STUDIO_ONLY.equals(visible) || isStudio)
+                && ((type == null && StringUtils.isEmpty(param)) || param.equals(type))
+                && !viewKey.startsWith("wrapper.")
+                && !viewKey.contains("hidden.");
     }
 
     private void fillProperties(HashMap<String, Object> map, Properties properties) {

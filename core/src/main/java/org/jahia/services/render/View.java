@@ -82,6 +82,12 @@ import java.util.Properties;
  * @author Thomas Draier
  */
 public interface View {
+    String VISIBLE_KEY = "visible";
+    String VISIBLE_FALSE = "false";
+    String VISIBLE_STUDIO_ONLY = "studioOnly";
+    String TYPE_KEY = "type";
+    String DEFAULT_VIEW_KEY = "default";
+
     String getKey();
 
     JahiaTemplatesPackage getModule();

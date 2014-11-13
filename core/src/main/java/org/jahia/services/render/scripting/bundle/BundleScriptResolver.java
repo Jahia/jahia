@@ -107,7 +107,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
 
-    private Map<String, Set<ViewResourceInfo>> availableScripts = new HashMap<String, Set<ViewResourceInfo>>(64);
+    private Map<String, SortedMap<String, ViewResourceInfo>> availableScripts = new HashMap<String, SortedMap<String, ViewResourceInfo>>(64);
     private Map<String, ScriptFactory> scriptFactoryMap;
     private JahiaTemplateManagerService templateManagerService;
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
@@ -153,14 +153,20 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             return;
         }
         ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
-            existingBundleScripts = new HashSet<ViewResourceInfo>();
+            existingBundleScripts = new TreeMap<String, ViewResourceInfo>();
             availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
-            existingBundleScripts.add(scriptResource);
-        } else if (!existingBundleScripts.contains(scriptResource)) {
-            existingBundleScripts.add(scriptResource);
+            existingBundleScripts.put(scriptResource.path, scriptResource);
+        } else if (!existingBundleScripts.containsKey(scriptResource.path)) {
+            existingBundleScripts.put(scriptResource.path, scriptResource);
+        } else {
+            // if we already have a script resource available, retrieve it to make sure we update it with new properties
+            // this is required because it is possible that the properties file is not found when the view is first processed due to
+            // file ordering processing in ModulesDataSource.start.process method.
+            scriptResource = existingBundleScripts.get(scriptResource.path);
         }
+
         String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
@@ -183,12 +189,12 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param scripts the URLs of the views to unregister
      */
     public void removeBundleScripts(Bundle bundle, List<URL> scripts) {
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
         for (URL script : scripts) {
-            existingBundleScripts.remove(new ViewResourceInfo(script.getPath()));
+            existingBundleScripts.remove(script.getPath());
         }
         clearCaches();
     }
@@ -199,11 +205,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param path the path of the view to unregister
      */
     public void removeBundleScript(Bundle bundle, String path) {
-        Set<ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
         if (existingBundleScripts == null) {
             return;
         }
-        existingBundleScripts.remove(new ViewResourceInfo(path));
+        existingBundleScripts.remove(path);
         clearCaches();
     }
 
@@ -225,9 +231,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private View resolveView(Resource resource, RenderContext renderContext) throws RepositoryException {
         ExtendedNodeType nt = resource.getNode().getPrimaryNodeType();
         List<ExtendedNodeType> nodeTypeList = getNodeTypeList(nt);
@@ -243,9 +246,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return resolveView(resource, nodeTypeList, renderContext);
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
         try {
@@ -292,9 +292,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     public boolean hasView(ExtendedNodeType nt, String key, JCRSiteNode site, String templateType) {
         for (View view : getViewsSet(nt, site, templateType)) {
             if (view.getKey().equals(key)) {
@@ -305,9 +302,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     @Override
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         try {
             return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
@@ -322,7 +316,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param nt
      * @return
      * @throws NoSuchNodeTypeException
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
      */
     private List<ExtendedNodeType> getNodeTypeList(ExtendedNodeType nt) throws NoSuchNodeTypeException {
         List<ExtendedNodeType> nodeTypeList = new LinkedList<ExtendedNodeType>();
@@ -335,9 +328,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return nodeTypeList;
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
             List<String> templateTypes) {
 
@@ -425,9 +415,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         return installedModules;
     }
 
-    /*
-     * @todo copied from FileSystemScriptResolver, we should refactor this into an abstract parent class
-     */
     private void getViewsSet(ExtendedNodeType nt, Map<String, View> views, String templateType,
                              JahiaTemplatesPackage tplPackage) {
         StringBuilder pathBuilder = new StringBuilder(64);
@@ -450,14 +437,14 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             if (!aPackage.getId().equals(tplPackage.getId())) {
                 Set<ViewResourceInfo> defaultScripts = findBundleScripts(aPackage.getId(), pathBuilder.toString());
                 for (ViewResourceInfo defaultScript : defaultScripts) {
-                    if (defaultScript.viewKey.equals("default")) {
+                    if (defaultScript.viewKey.equals(View.DEFAULT_VIEW_KEY)) {
                         defaultProperties.putAll(defaultScript.getProperties());
                         break;
                     }
                 }
             }
             for (ViewResourceInfo defaultScript : sortedScripts) {
-                if (defaultScript.viewKey.equals("default")) {
+                if (defaultScript.viewKey.equals(View.DEFAULT_VIEW_KEY)) {
                     defaultProperties.putAll(defaultScript.getProperties());
                     break;
                 }
@@ -488,25 +475,36 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @return a set of matching view scripts ordered by the extension (script type)
      */
     private Set<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
-        Set<ViewResourceInfo> allBundleScripts = availableScripts.get(module);
+        final SortedMap<String, ViewResourceInfo> allBundleScripts = availableScripts.get(module);
         if (allBundleScripts == null || allBundleScripts.isEmpty()) {
-            return Collections.emptySet();
+            return new TreeSet<ViewResourceInfo>();
         }
-        if (allBundleScripts.size() == 1) {
-            final ViewResourceInfo res = allBundleScripts.iterator().next();
-            if (!res.path.startsWith(pathPrefix)) {
-                return Collections.emptySet();
+
+        // get all the ViewResourceInfos which path is greater than or equal to the given prefix
+        final SortedMap<String, ViewResourceInfo> viewInfosWithPathGTEThanPrefix = allBundleScripts.tailMap(pathPrefix);
+
+        // if the tail map is empty, we won't find the path prefix in the available scripts so return an empty set
+        if(viewInfosWithPathGTEThanPrefix.isEmpty()) {
+            return new TreeSet<ViewResourceInfo>();
+        }
+
+        // check if the first key contains the prefix. If not, the prefix will not match any entries so return an empty set
+        if(!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
+            return new TreeSet<ViewResourceInfo>();
+        }
+        else {
+            SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
+            for (String path : viewInfosWithPathGTEThanPrefix.keySet()) {
+                // we should have only few values to look at
+                if(path.startsWith(pathPrefix)) {
+                    sortedScripts.add(viewInfosWithPathGTEThanPrefix.get(path));
+                } else {
+                    // as soon as the path doesn't start with the given prefix anymore, we won't have a match in the remaining so return
+                    return sortedScripts;
+                }
             }
-            return allBundleScripts;
+            return sortedScripts;
         }
-        SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
-        for (ViewResourceInfo res : allBundleScripts) {
-            if (!res.path.startsWith(pathPrefix)) {
-                continue;
-            }
-            sortedScripts.add(res);
-        }
-        return sortedScripts;
     }
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {

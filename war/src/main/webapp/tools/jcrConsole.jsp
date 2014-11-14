@@ -296,7 +296,7 @@ code.append("import ucar.nc2.util.net.*\n");
 code.append("\n");
 code.append("def log = log;\n");
 code.append("def logger = log;\n");
-code.append("JCRTemplate.getInstance().doExecuteWithSystemSession((JahiaUser) null, \"").append(pageContext.getAttribute("workspace")).append("\", LanguageCodeConverters.getLocaleFromCode(\"").append(pageContext.getAttribute("locale")).append("\"), new JCRCallback<Boolean>() {\n");
+code.append("JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, \"").append(pageContext.getAttribute("workspace")).append("\", LanguageCodeConverters.getLocaleFromCode(\"").append(pageContext.getAttribute("locale")).append("\"), new JCRCallback<Boolean>() {\n");
 code.append("public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {\n");
 code.append(request.getParameter("script"));
 code.append("}\n");

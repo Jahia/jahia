@@ -18,10 +18,10 @@
 
 
 <c:if test="${empty currentNode.properties['typeOfContent'] or currentNode.properties['typeOfContent'].string eq 'website'}">
-    <c:set var="query" value="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites') and localname(site) <> 'systemsite'" />
+    <c:set var="query" value="select * from [jnt:virtualsite] as site where ischildnode(site,'/sites') and localname(site) <> 'systemsite'" />
 </c:if>
 <c:if test="${not empty currentNode.properties['typeOfContent'] and currentNode.properties['typeOfContent'].string ne 'website'}">
-    <c:set var="query" value="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')" />
+    <c:set var="query" value="select * from [jnt:virtualsite] as site where ischildnode(site,'/sites')" />
 </c:if>
 <jcr:nodeProperty node="${currentNode}" name="templatesSets" var="templatesSets"/>
 <c:forEach items="${templatesSets}" var="templatesSet" varStatus="status">

@@ -38,7 +38,7 @@
             <c:set var="icon" value="repositoryExplorer"/>
         </c:if>
         <c:if test="${multisite}">
-            <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where isdescendantnode(site,'/sites')"/>
+            <jcr:sql var="result" sql="select * from [jnt:virtualsite] as site where ischildnode(site,'/sites')"/>
             <ul class="gotomanager">
                 <c:forEach items="${result.nodes}" var="node">
                     <jcr:node var="home" path="${node.home.path}"/>

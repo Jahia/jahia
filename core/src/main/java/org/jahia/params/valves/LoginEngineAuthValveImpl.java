@@ -244,7 +244,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
                     logger.error(e.getMessage(), e);
                 }
                 // now let's save the same identifier in the cookie.
-                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey);
+                String realm = theUser.getRealm();
+                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
                 authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
                         httpServletRequest.getContextPath() : "/");
                 authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());

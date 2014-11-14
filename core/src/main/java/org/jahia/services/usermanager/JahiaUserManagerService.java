@@ -71,9 +71,6 @@
  */
 package org.jahia.services.usermanager;
 
-import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
-import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -83,10 +80,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
-import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.query.QueryWrapper;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -99,6 +94,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import javax.servlet.ServletContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -112,6 +108,7 @@ import java.util.regex.Pattern;
  * services throughout the product (administration, login, ACL popups, etc..)
  */
 public class JahiaUserManagerService extends JahiaService implements JahiaAfterInitializationService, ServletContextAware {
+    
     private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
     private static final String ROOT_PWD_RESET_FILE = "root.pwd";
     private static final String ROOT_PWD_RESET_FILE_PATH = "/WEB-INF/etc/config/" + ROOT_PWD_RESET_FILE;
@@ -138,14 +135,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private JahiaUserSplittingRule userSplittingRule;
     private ServletContext servletContext;
 
-    private EhCacheProvider ehCacheProvider;
-    private SelfPopulatingCache userPathByUserNameCache;
-
-    private int timeToLiveForEmptyPath = 600;
-
     private String rootUserName;
 
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
+    
+    private UserPathCache userPathCache;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -168,26 +162,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         this.servletContext = servletContext;
     }
 
-    public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
-        this.ehCacheProvider = ehCacheProvider;
-    }
-
-    public int getTimeToLiveForEmptyPath() {
-        return timeToLiveForEmptyPath;
-    }
-
-    public void setTimeToLiveForEmptyPath(int timeToLiveForEmptyPath) {
-        this.timeToLiveForEmptyPath = timeToLiveForEmptyPath;
-    }
-
     @Override
     public void start() throws JahiaInitializationException {
-
+        // do nothing
     }
 
     @Override
     public void stop() throws JahiaException {
-
+        // do nothing
     }
 
 
@@ -290,20 +272,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public String getUserPath(String name, String site) {
-        final String value = (String) getUserPathByUserNameCache().get(new String[]{name, StringUtils.isEmpty(site) ? "" : "/sites/" + site}).getObjectValue();
-        if (value.equals("")) {
-            return null;
-        }
-        return value;
-    }
-
-    private String internalGetUserPath(String name, String path) throws RepositoryException {
-        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('" + path + "/users/')", Query.JCR_SQL2);
-        RowIterator it = query.execute().getRows();
-        if (!it.hasNext()) {
-            return null;
-        }
-        return it.nextRow().getPath();
+        return userPathCache.getUserPath(name, site);
     }
 
     /**
@@ -843,34 +812,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return pwd != null ? StringUtils.chomp(pwd).trim() : null;
     }
 
-    private SelfPopulatingCache getUserPathByUserNameCache() {
-        if (userPathByUserNameCache == null) {
-            userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
-        }
-        return userPathByUserNameCache;
-    }
-
     public void updatePathCacheAdded(String userPath) {
-        String sitePath = userPath.startsWith("/sites/") ? "/sites/" + StringUtils.substringBetween(userPath, "/sites/", "/") : "";
-        getUserPathByUserNameCache().put(new Element(new String[]{StringUtils.substringAfterLast(userPath, "/"), sitePath}, userPath));
+        userPathCache.updateAdded(userPath);
     }
 
     public void updatePathCacheRemoved(String userPath) {
-        String sitePath = userPath.startsWith("/sites/") ? "/sites/" + StringUtils.substringBetween(userPath, "/sites/", "/") : "";
-        getUserPathByUserNameCache().put(new Element(new String[]{StringUtils.substringAfterLast(userPath, "/"), sitePath}, "", 0, timeToLiveForEmptyPath));
-    }
-
-    class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
-        @Override
-        public Object createEntry(final Object key) throws Exception {
-            String[] skey = (String[]) key;
-            String path = internalGetUserPath(skey[0], skey[1]);
-            if (path != null) {
-                return new Element(key, path);
-            } else {
-                return new Element(key, "", 0, timeToLiveForEmptyPath);
-            }
-        }
+        userPathCache.updateRemoved(userPath);
     }
 
     /**
@@ -917,5 +864,13 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.remove(jahiaUserManagerProvider.getKey());
         BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);
+    }
+
+    public void setUserPathCache(UserPathCache userPathCache) {
+        this.userPathCache = userPathCache;
+    }
+
+    public int getTimeToLiveForEmptyPath() {
+        return userPathCache.getTimeToLiveForEmptyPath();
     }
 }

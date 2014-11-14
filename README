@@ -253,6 +253,10 @@ test any stuff on the server side, from a simple DAO to a high end service.
 Adding a new test simply consist in adding a TestCase class in the test module. All tests commited in the test module
 will be executed automatically after each build on the Bamboo server.
 
+The existing tests are using the templates-web module, which needs to be deployed on your Jahia server. The module
+can be downloaded here: https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/templates-web/ 
+The source of the templates-web module is on github: https://github.com/Jahia/templates-web 
+
 To manually run the tests:
 
 - Go to the test module, execute:

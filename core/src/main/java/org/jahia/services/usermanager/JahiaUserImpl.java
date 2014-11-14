@@ -91,6 +91,10 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
     private final boolean isRoot;
     private final String providerName;
 
+    public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName) {
+        this(name, path, properties, isRoot, providerName, null);
+    }
+
     public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName, String realm) {
         this.name = name;
         this.path = path;

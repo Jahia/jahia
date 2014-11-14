@@ -73,6 +73,7 @@ package org.apache.jackrabbit.core.security;
 
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
+import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -101,11 +102,12 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author toto
  */
 public class JahiaLoginModule implements LoginModule {
-     private static final Logger logger = LoggerFactory.getLogger(JahiaLoginModule.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaLoginModule.class);
 
     public static final String SYSTEM = " system ";
     public static final String GUEST = " guest ";
     public static final String IMPERSONATOR = " impersonator ";
+    public static final String REALM_ATTRIBUTE = "org.jahia.realm";
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();
     private static Map<String, Token> systemPass = new ConcurrentHashMap<String, Token>();
@@ -125,13 +127,20 @@ public class JahiaLoginModule implements LoginModule {
         try {
             String name = null;
             char[] pass = null;
+            String realm = null;
             String impersonatorName = null;
             char[] impersonatorPass = null;
-            if (callbackHandler instanceof JahiaCallbackHandler) {
-                JahiaCallbackHandler handler = (JahiaCallbackHandler) callbackHandler;
-                name = handler.getCredentials().getUserID();
-                pass = handler.getCredentials().getPassword();
-                SimpleCredentials impersonatorCredentials = (SimpleCredentials) handler.getCredentials().getAttribute(
+            Callback[] callbacks = new Callback[] { new CredentialsCallback() };
+            callbackHandler.handle(callbacks);
+            Credentials credentials = ((CredentialsCallback)callbacks[0]).getCredentials();
+
+            if (credentials instanceof SimpleCredentials) {
+                SimpleCredentials simpleCredentials = (SimpleCredentials) credentials;
+                name = simpleCredentials.getUserID();
+                pass = simpleCredentials.getPassword();
+                realm = (String) simpleCredentials.getAttribute(REALM_ATTRIBUTE);
+
+                SimpleCredentials impersonatorCredentials = (SimpleCredentials) simpleCredentials.getAttribute(
                         SecurityConstants.IMPERSONATOR_ATTRIBUTE);
                 if (impersonatorCredentials != null) {
                     // there were impersonator credentials supplied -> will use them
@@ -139,7 +148,7 @@ public class JahiaLoginModule implements LoginModule {
                     impersonatorPass = impersonatorCredentials.getPassword();
                 }
             } else {
-                Callback[] callbacks = new Callback[] { new NameCallback("name?"), new PasswordCallback("pass?", false) };
+                callbacks = new Callback[] { new NameCallback("name?"), new PasswordCallback("pass?", false)};
                 callbackHandler.handle(callbacks);
 
                 name = ((NameCallback) callbacks[0]).getName();
@@ -150,18 +159,18 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        principals.add(new JahiaPrincipal(SYSTEM, true, false));
+                        principals.add(new JahiaPrincipal(SYSTEM, realm, true, false));
                         principals.add(new SystemPrincipal());
                     }
                 } else if (name.startsWith(SYSTEM)) {
                     String key = new String(pass);
                     Token token = removeToken(name, key);
                     if (token != null) {
-                        principals.add(new JahiaPrincipal(name.substring(SYSTEM.length()), true, false));
+                        principals.add(new JahiaPrincipal(name.substring(SYSTEM.length()), realm, true, false));
                         principals.add(new SystemPrincipal());
                     }
                 } else if (GUEST.equals(name)) {
-                    principals.add(new JahiaPrincipal(GUEST, false, true));
+                    principals.add(new JahiaPrincipal(GUEST, null, false, true));
                     principals.add(new AnonymousPrincipal());
                 } else {
                     String key = new String(impersonatorPass != null ? impersonatorPass : pass);
@@ -169,9 +178,11 @@ public class JahiaLoginModule implements LoginModule {
                     Token token = removeToken(lookupUser, key);
 
                     if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key)) {
-                        principals.add(new JahiaPrincipal(name));
-                        if (JahiaGroupManagerService.getInstance().isAdminMember(name, null)) {
-                            principals.add(new AdminPrincipal(name));
+                        principals.add(new JahiaPrincipal(name,realm, false,false));
+                        if (realm == null) {
+                            if (JahiaGroupManagerService.getInstance().isAdminMember(name, null, null)) {
+                                principals.add(new AdminPrincipal(name));
+                            }
                         }
                     }
                 }
@@ -242,28 +253,34 @@ public class JahiaLoginModule implements LoginModule {
         if (username == null) {
             return getSystemCredentials();
         }
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(
-                JahiaLoginModule.SYSTEM + username, null).toCharArray());
+        String userID = JahiaLoginModule.SYSTEM + username;
+        return new SimpleCredentials(userID, getSystemPass(userID, null).toCharArray());
     }
 
     public static Credentials getSystemCredentials(String username, List<String> deniedPathes) {
         if (username == null) {
             return getSystemCredentials();
         }
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM + username, getSystemPass(
-                JahiaLoginModule.SYSTEM + username, deniedPathes).toCharArray());
+        String userID = JahiaLoginModule.SYSTEM + username;
+        return new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
     }
 
     public static Credentials getGuestCredentials() {
         return new SimpleCredentials(JahiaLoginModule.GUEST, new char[0]);
     }
 
-    public static Credentials getCredentials(String username) {
-        return new SimpleCredentials(username, getSystemPass(username, null).toCharArray());
+    public static Credentials getCredentials(String username, String realm) {
+        String userID = username;
+        SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, null).toCharArray());
+        credentials.setAttribute(REALM_ATTRIBUTE, realm);
+        return credentials;
     }
 
-    public static Credentials getCredentials(String username, List<String> deniedPathes) {
-        return new SimpleCredentials(username, getSystemPass(username, deniedPathes).toCharArray());
+    public static Credentials getCredentials(String username, String realm, List<String> deniedPathes) {
+        String userID = username;
+        SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
+        credentials.setAttribute(REALM_ATTRIBUTE, realm);
+        return credentials;
     }
 
     public static class Token {

@@ -223,7 +223,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 wsMap.put(key, s);
             } else {
                 if (!JahiaLoginModule.GUEST.equals(username)) {
-                    s = login(JahiaLoginModule.getCredentials(username), workspace, locale, fallbackLocale);
+                    s = login(JahiaLoginModule.getCredentials(username, user.getRealm()), workspace, locale, fallbackLocale);
                 } else {
                     s = login(JahiaLoginModule.getGuestCredentials(), workspace, locale, fallbackLocale);
                 }
@@ -251,11 +251,11 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     }
 
     protected JCRSessionWrapper getUserSession(String username, String workspace) throws RepositoryException {
-        return login(JahiaLoginModule.getCredentials(username), workspace);
+        return login(JahiaLoginModule.getCredentials(username, null), workspace);
     }
 
     protected JCRSessionWrapper getUserSession(String username, String workspace, Locale locale) throws RepositoryException {
-        return login(JahiaLoginModule.getCredentials(username), workspace, locale, locale != null ? getFallbackLocale() : null);
+        return login(JahiaLoginModule.getCredentials(username, null), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
     public String[] getDescriptorKeys() {
@@ -306,7 +306,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     simpleCreds.getPassword()));
             m.login();
             m.commit();
-            credentials = JahiaLoginModule.getCredentials(simpleCreds.getUserID(), t != null ? t.deniedPath : null);
+            credentials = JahiaLoginModule.getCredentials(simpleCreds.getUserID(), (String) simpleCreds.getAttribute(JahiaLoginModule.REALM_ATTRIBUTE), t != null ? t.deniedPath : null);
         } catch (javax.security.auth.login.LoginException e) {
             throw new LoginException(e);
         }
@@ -318,7 +318,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 if (jahiaPrincipal.isGuest()) {
                     user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser();
                 } else {
-                    user = userService.lookupUser(jahiaPrincipal.getName()).getJahiaUser();
+                    user = userService.lookupUser(jahiaPrincipal.getName(), jahiaPrincipal.getRealm()).getJahiaUser();
                 }
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);

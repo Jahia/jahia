@@ -118,7 +118,7 @@ public class JCRUserNode extends JCRNodeDecorator {
         } catch (RepositoryException e) {
             logger.error("Cannot read user properties",e);
         }
-        return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName());
+        return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName(), getPath().startsWith("/sites/") ? StringUtils.substringBetween(getPath(),"/sites/","/"): null);
 
     }
 
@@ -211,7 +211,7 @@ public class JCRUserNode extends JCRNodeDecorator {
         return JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) ||
                 JahiaGroupManagerService.USERS_GROUPNAME.equals(name) ||
                 (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) ||
-                JahiaGroupManagerService.getInstance().isMember(getName(), name, siteKey);
+                JahiaGroupManagerService.getInstance().isMember(getName(), getPath().startsWith("/sites/") ? StringUtils.substringBetween(getPath(), "/sites/","/") : null, name, siteKey);
     }
 
     /**

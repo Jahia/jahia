@@ -69,10 +69,13 @@
  */
 package org.apache.jackrabbit.core.security;
 
+import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
+
 import java.io.IOException;
 
 import javax.jcr.SimpleCredentials;
 import javax.security.auth.callback.*;
+import javax.security.sasl.RealmCallback;
 
 /**
  * Digital Factory specific login callback handler.
@@ -100,10 +103,14 @@ public class JahiaCallbackHandler implements CallbackHandler {
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
         for (Callback callback : callbacks) {
-            if (callback instanceof NameCallback) {
+            if (callback instanceof CredentialsCallback) {
+                ((CredentialsCallback) callback).setCredentials(credentials);
+            } else if (callback instanceof NameCallback) {
                 ((NameCallback) callback).setName(credentials.getUserID());
             } else if (callback instanceof PasswordCallback) {
                 ((PasswordCallback) callback).setPassword(credentials.getPassword());
+            } else if (callback instanceof RealmCallback) {
+                ((RealmCallback)callback).setText((String) credentials.getAttribute(JahiaLoginModule.REALM_ATTRIBUTE));
             } else {
                 throw new UnsupportedCallbackException(callback);
             }

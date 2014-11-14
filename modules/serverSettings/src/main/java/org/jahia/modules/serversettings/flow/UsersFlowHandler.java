@@ -270,7 +270,7 @@ public class UsersFlowHandler implements Serializable {
     }
 
     public Set<JCRUserNode> init() {
-        return PrincipalViewHelper.getSearchResult(null, null, null, null, null);
+        return PrincipalViewHelper.getSearchResult(null, null, null, null, null, null);
     }
 
     public SearchCriteria initCriteria() {
@@ -322,7 +322,7 @@ public class UsersFlowHandler implements Serializable {
         }
         searchCriteria.setNumberOfRemovedJahiaAdministrators(0);
         Set<JCRUserNode> searchResult = PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                searchTerm, searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                null, searchTerm, searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                 searchCriteria.getProviders());
         int searchSize = searchResult.size();
         searchResult = PrincipalViewHelper.removeJahiaAdministrators(searchResult);

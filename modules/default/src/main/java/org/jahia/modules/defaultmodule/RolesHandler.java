@@ -315,7 +315,7 @@ public class RolesHandler implements Serializable {
         Set<JCRNodeWrapper> searchResult;
         if (searchType.equals("users")) {
             searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                    searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                    null, searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders()));
         } else {
             String siteKey = null;

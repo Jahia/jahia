@@ -481,7 +481,7 @@ public class ManageGroupsFlowHandler implements Serializable {
         boolean searchForUsers = searchType.equals("users");
         if (searchForUsers) {
             searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                    searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                    searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders()));
         } else {
             searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),

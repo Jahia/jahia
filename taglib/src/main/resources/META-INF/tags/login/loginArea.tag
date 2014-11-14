@@ -13,6 +13,7 @@
     <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'loginForm')}"/>
 	<c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
     <form ${functions:attributes(attributes)}>
+        <input type="hidden" name="site" value="${renderContext.site.name}"/>
         <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
         <c:if test="${not empty redirectTo}">
             <input type="hidden" name="redirect" value="${fn:escapeXml(redirectTo)}"/>

@@ -79,6 +79,7 @@ import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.*;
@@ -550,14 +551,12 @@ public class PrincipalViewHelper implements Serializable {
         final String storedOn = request.getParameter("storedOn");
         final String[] providers = request.getParameterValues("providers");
 
-        return getSearchResult(searchIn, searchString, searchInProps, storedOn, providers);
+        return getSearchResult(searchIn, null, searchString, searchInProps, storedOn, providers);
     }
 
-    public static Set<JCRUserNode> getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn,
-                                      String[] providers) {
+    public static Set<JCRUserNode> getSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
-        final Set<JCRUserNode> searchResults = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
         if(countLimit > 0) {
            logger.info("Just first {} users are returned from Jahia JCR repository...", countLimit);
@@ -566,8 +565,7 @@ public class PrincipalViewHelper implements Serializable {
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
-            searchResults.addAll(jahiaUserManagerService.
-                    searchUsers(searchParameters));
+            return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters);
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -581,13 +579,26 @@ public class PrincipalViewHelper implements Serializable {
                 }
             }
             if ("everywhere".equals(storedOn) || providers == null) {
-                searchResults.addAll(jahiaUserManagerService.
-                        searchUsers(searchParameters));
-            }else if ("providers".equals(storedOn)){
-                searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, providers));
+                return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters);
+            } else if ("providers".equals(storedOn)){
+                return getSearchResult(siteKey, providers, jahiaUserManagerService, searchParameters);
             }
         }
         
+        return new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
+    }
+
+    private static  Set<JCRUserNode> getSearchResult(String siteKey, String[] providers, JahiaUserManagerService jahiaUserManagerService, Properties searchParameters) {
+        final Set<JCRUserNode> searchResults = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
+        try {
+            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, null, providers, systemSession));
+            if (siteKey != null) {
+                searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, siteKey, providers, systemSession));
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while searching for users", e);
+        }
         return searchResults;
     }
 

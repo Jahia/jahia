@@ -169,10 +169,14 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
 
             final String username = httpServletRequest.getParameter("username");
             final String password = httpServletRequest.getParameter("password");
+            final String site = httpServletRequest.getParameter("site");
 
             if ((username != null) && (password != null)) {
                 // Check if the user has site access ( even though it is not a user of this site )
                 theUser = userManagerService.lookupUser(username);
+                if (theUser == null && site != null) {
+                    theUser = userManagerService.lookupUser(username, site);
+                }
                 if (theUser != null) {
                     if (theUser.verifyPassword(password)) {
                         if (!theUser.isAccountLocked()) {

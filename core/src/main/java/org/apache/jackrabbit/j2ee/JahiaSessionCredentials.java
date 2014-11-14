@@ -73,13 +73,13 @@ package org.apache.jackrabbit.j2ee;
 
 import org.apache.jackrabbit.server.BasicCredentialsProvider;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.SimpleCredentials;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
 
 /**
  * 
@@ -94,10 +94,10 @@ public class JahiaSessionCredentials extends BasicCredentialsProvider {
     }
 
     public Credentials getCredentials(HttpServletRequest request) throws LoginException, ServletException {
-        Principal jahiaUser = (Principal) request.getSession(true).getAttribute("org.jahia.usermanager.jahiauser");
+        JahiaUser jahiaUser = (JahiaUser) request.getSession(true).getAttribute("org.jahia.usermanager.jahiauser");
         if (jahiaUser != null) {
             request.setAttribute("isGuest", Boolean.FALSE);
-            return JahiaLoginModule.getCredentials(jahiaUser.getName());
+            return JahiaLoginModule.getCredentials(jahiaUser.getName(), jahiaUser.getRealm());
         } else {
             SimpleCredentials c = (SimpleCredentials) super.getCredentials(request);
 

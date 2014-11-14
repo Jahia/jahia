@@ -514,7 +514,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
-                if (isAdmin(jahiaPrincipal.getName(), null)) {
+                if (isAdmin(null)) {
                     pathPermissionCache.put(cacheKey, true);
                     return true;
                 }
@@ -941,7 +941,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public Privilege[] getPrivileges(String absPath) throws PathNotFoundException, RepositoryException {
-        if (isAdmin(jahiaPrincipal.getName(), null)) {
+        if (isAdmin(null)) {
             return getSupportedPrivileges(absPath);
         }
 
@@ -969,13 +969,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         isAliased = aliased;
     }
 
-    public boolean isAdmin(String username, String siteKey) {
+    public boolean isAdmin(String siteKey) {
         if (isAdmin == null) {
             // optimize away guest, we assume he can never be site administrator.
-            if (JahiaLoginModule.GUEST.equals(username)) {
+            if (JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName())) {
                 return false;
             }
-            return isAdmin = groupService.isAdminMember(username,siteKey);
+            return isAdmin = groupService.isAdminMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), siteKey);
         }
         return isAdmin;
     }
@@ -984,7 +984,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean isUserMemberOf(String groupname, String site) {
         return  (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) ||
                 (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname)) ||
-                (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), groupname, null)));
+                (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, null)));
     }
 
     public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {

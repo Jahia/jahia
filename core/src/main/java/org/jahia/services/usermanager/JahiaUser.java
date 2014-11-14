@@ -240,4 +240,11 @@ public interface JahiaUser extends JahiaPrincipal {
      * @return true if the account is locked
      */
     boolean isAccountLocked();
+
+    /**
+     * Get the realm name this user belongs to.
+     * @return
+     */
+    String getRealm();
+
 }

@@ -273,4 +273,9 @@ public abstract class BaseJahiaExternalUser implements JahiaUser {
     public boolean isAccountLocked() {
         return false;
     }
+
+    @Override
+    public String getRealm() {
+        return null;
+    }
 }

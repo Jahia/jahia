@@ -86,13 +86,15 @@ public class JahiaPrincipal implements Principal {
     private boolean isGuest = false;
 
     private String name;
-    
+    private String realm;
+
     private Map<String, Map<String, Boolean>> roleCache = new HashMap<String, Map<String, Boolean>>();
 
-    public JahiaPrincipal(String name, boolean system, boolean guest) {
+    public JahiaPrincipal(String name, String realm, boolean system, boolean guest) {
         this.name = name;
-        isSystem = system;
-        isGuest = guest;
+        this.realm = realm;
+        this.isSystem = system;
+        this.isGuest = guest;
     }
 
     public JahiaPrincipal(String name) {
@@ -109,6 +111,14 @@ public class JahiaPrincipal implements Principal {
 
     public boolean isGuest() {
         return isGuest;
+    }
+
+    public String getRealm() {
+        return realm;
+    }
+
+    public void setRealm(String realm) {
+        this.realm = realm;
     }
 
     public Map<String /* siteKey */, Map<String /* role */, Boolean /* evaluation */>> getRoleCache() {

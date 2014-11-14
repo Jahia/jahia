@@ -604,8 +604,8 @@ public class JahiaGroupManagerService extends JahiaService {
         return providers.size() == 1 ? providers.get(0) : null;
     }
 
-    public List<String> getUserMembership(String userName) {
-        final String userPath = userManagerService.getUserPath(userName);
+    public List<String> getUserMembership(String userName, String site) {
+        final String userPath = userManagerService.getUserPath(userName, site);
         if (userPath == null) {
             return null;
         }
@@ -667,14 +667,24 @@ public class JahiaGroupManagerService extends JahiaService {
             }
         }
     }
-    public boolean isMember(String username, String groupname, String siteKey) {
-        final List<String> userMembership = getUserMembership(username);
-        return userMembership != null && userMembership.contains(getGroupPath(siteKey, groupname));
+
+
+    public boolean isMember(String username, String groupname, String groupSite) {
+        return isMember(username, null, groupname, groupSite);
+    }
+
+    public boolean isMember(String username, String userSite, String groupname, String groupSite) {
+        final List<String> userMembership = getUserMembership(username, userSite);
+        return userMembership != null && userMembership.contains(getGroupPath(groupSite, groupname));
     }
 
     public boolean isAdminMember(String username, String siteKey) {
+        return isAdminMember(username, null, siteKey);
+    }
+
+    public boolean isAdminMember(String username, String userSite, String siteKey) {
         return username.equals(userManagerService.getRootUserName()) ||
-                isMember(username, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, siteKey);
+                isMember(username, userSite, siteKey == null ? JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, siteKey);
     }
 
        /**

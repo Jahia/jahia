@@ -243,8 +243,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUser(String name) {
+        return lookupUser(name, (String) null);
+    }
+
+    public JCRUserNode lookupUser(String name, String site) {
         try {
-            return lookupUser(name,JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            return lookupUser(name, site, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -259,11 +263,22 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUser(String name, JCRSessionWrapper session) {
+        return lookupUser(name, null, session);
+    }
+
+    /**
+     * Load all the user data and attributes. On success a reference on the user
+     * is returned, otherwise NULL is returned.
+     *
+     * @param name User's identification name.
+     * @return Return a reference on a new created JCRUserNode object.
+     */
+    public JCRUserNode lookupUser(String name, String site, JCRSessionWrapper session) {
         if (StringUtils.isBlank(name)) {
             logger.error("Should not be looking for empty name user");
             return null;
         }
-        final String path = getUserPath(name);
+        final String path = getUserPath(name, site);
         if (path == null) {
             return null;
         }
@@ -271,15 +286,19 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public String getUserPath(String name) {
-        final String value = (String) getUserPathByUserNameCache().get(name).getObjectValue();
+        return getUserPath(name, "");
+    }
+
+    public String getUserPath(String name, String site) {
+        final String value = (String) getUserPathByUserNameCache().get(new String[]{name, StringUtils.isEmpty(site) ? "" : "/sites/" + site}).getObjectValue();
         if (value.equals("")) {
             return null;
         }
         return value;
     }
 
-    private String internalGetUserPath(String name) throws RepositoryException {
-        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('/users/')", Query.JCR_SQL2);
+    private String internalGetUserPath(String name, String path) throws RepositoryException {
+        final QueryWrapper query = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace().getQueryManager().createQuery("SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('" + path + "/users/')", Query.JCR_SQL2);
         RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {
             return null;
@@ -450,6 +469,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, final String[] providerKeys, JCRSessionWrapper session) {
+        return searchUsers(searchCriterias, null, providerKeys, session);
+    }
+
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, JCRSessionWrapper session) {
         try {
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
@@ -529,7 +552,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 if (query.length() > 0) {
                     query.insert(0, "and ");
                 }
-                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'/users/') ");
+                String s = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
+                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'" + s + "')");
                 query.append(" ORDER BY u.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
@@ -556,16 +580,17 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     /**
      * Provide the list of all available users providers
+     *
      * @param session the session used
      * @return list of JCRStoreProvider
      */
-    public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session){
+    public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session) {
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
         try {
             providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
             JCRNodeWrapper providersNode = session.getNode("/users/providers");
             NodeIterator iterator = providersNode.getNodes();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();
                 providers.add(providerNode.getProvider());
             }
@@ -579,12 +604,13 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     /**
      * Provide the list of users providers matching given keys
+     *
      * @param providerKeys the keys
-     * @param session the session used
+     * @param session      the session used
      * @return list of JCRStoreProvider
      */
-    public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session){
-        if(ArrayUtils.isEmpty(providerKeys)){
+    public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session) {
+        if (ArrayUtils.isEmpty(providerKeys)) {
             return Collections.emptyList();
         }
 
@@ -599,11 +625,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     /**
      * Retrieve the user provider corresponding to a given key
+     *
      * @param providerKey the key
-     * @param session the session used
+     * @param session     the session used
      * @return JCRStoreProvider if it exist or null
      */
-    public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session){
+    public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session) {
         List<JCRStoreProvider> providers = getProviders(new String[]{providerKey}, session);
         return providers.size() == 1 ? providers.get(0) : null;
     }
@@ -612,7 +639,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     /**
      * This is the method that creates a new user in the system, with all the
      * specified properties.
-     *  @param name       User identification name.
+     *
+     * @param name       User identification name.
      * @param password   User password
      * @param properties User additional parameters. If the user has no additional
      * @param session
@@ -823,17 +851,20 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public void updatePathCacheAdded(String userPath) {
-        getUserPathByUserNameCache().put(new Element(StringUtils.substringAfterLast(userPath, "/"), userPath));
+        String sitePath = userPath.startsWith("/sites/") ? "/sites/" + StringUtils.substringBetween(userPath, "/sites/", "/") : "";
+        getUserPathByUserNameCache().put(new Element(new String[]{StringUtils.substringAfterLast(userPath, "/"), sitePath}, userPath));
     }
 
     public void updatePathCacheRemoved(String userPath) {
-        getUserPathByUserNameCache().put(new Element(StringUtils.substringAfterLast(userPath, "/"), "", 0, timeToLiveForEmptyPath));
+        String sitePath = userPath.startsWith("/sites/") ? "/sites/" + StringUtils.substringBetween(userPath, "/sites/", "/") : "";
+        getUserPathByUserNameCache().put(new Element(new String[]{StringUtils.substringAfterLast(userPath, "/"), sitePath}, "", 0, timeToLiveForEmptyPath));
     }
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
         @Override
         public Object createEntry(final Object key) throws Exception {
-            String path = internalGetUserPath((String) key);
+            String[] skey = (String[]) key;
+            String path = internalGetUserPath(skey[0], skey[1]);
             if (path != null) {
                 return new Element(key, path);
             } else {
@@ -845,30 +876,33 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     /**
      * get the list of olds users providers
      * this method is used to maintain compatibility with old users providers
+     *
      * @deprecated
      */
     @Deprecated
-    public List<? extends JahiaUserManagerProvider> getProviderList (){
+    public List<? extends JahiaUserManagerProvider> getProviderList() {
         return new ArrayList<JahiaUserManagerProvider>(legacyUserProviders.values());
     }
 
     /**
      * get the provider corresponding to a given key
      * this method is used to maintain compatibility with old users providers
+     *
      * @deprecated
      */
     @Deprecated
-    public JahiaUserManagerProvider getProvider(String key){
+    public JahiaUserManagerProvider getProvider(String key) {
         return legacyUserProviders.get(key);
     }
 
     /**
      * register a user provider
      * this method is used to maintain compatibility with old users providers
+     *
      * @deprecated
      */
     @Deprecated
-    public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
+    public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
         BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
     }
@@ -876,10 +910,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     /**
      * unregister a user provider
      * this method is used to maintain compatibility with old users providers
+     *
      * @deprecated
      */
     @Deprecated
-    public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider){
+    public void unregisterProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.remove(jahiaUserManagerProvider.getKey());
         BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);
     }

@@ -86,16 +86,18 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
 
     private final String name;
     private final String path;
+    private final String realm;
     private final Properties properties;
     private final boolean isRoot;
     private final String providerName;
 
-    public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName) {
+    public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName, String realm) {
         this.name = name;
         this.path = path;
         this.properties = properties;
         this.isRoot = isRoot;
         this.providerName = providerName;
+        this.realm = realm;
     }
 
     @Override
@@ -181,5 +183,10 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
     @Override
     public boolean isAccountLocked() {
         return !isRoot() && Boolean.valueOf(getProperty("j:accountLocked"));
+    }
+
+    @Override
+    public String getRealm() {
+        return realm;
     }
 }

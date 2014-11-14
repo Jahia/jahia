@@ -1342,7 +1342,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (guestPassword != null) {
                     guestCredentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
                 } else {
-                    return JahiaLoginModule.getCredentials(guestUser);
+                    return JahiaLoginModule.getCredentials(guestUser, null);
                 }
             } else {
                 return JahiaLoginModule.getGuestCredentials();
@@ -1358,7 +1358,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (systemPassword != null) {
                     systemCredentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
                 } else {
-                    return JahiaLoginModule.getCredentials(systemUser);
+                    return JahiaLoginModule.getCredentials(systemUser, null);
                 }
             } else {
                 return JahiaLoginModule.getSystemCredentials();

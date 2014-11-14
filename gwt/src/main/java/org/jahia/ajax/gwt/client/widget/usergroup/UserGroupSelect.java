@@ -186,8 +186,7 @@ public class UserGroupSelect extends Window {
                 JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                 String newSearch = userSearchField.getText().trim().replace("'","''");
 
-                String path = "/users";
-                String query = "select * from [jnt:user] as u where isdescendantnode(u,'"+path+"') ";
+                String query = "select * from [jnt:user] as u where isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/"+siteKey+"/users/')";
                 if (newSearch.length() > 0) {
                     query += " and (CONTAINS(u.*,'%" + newSearch + "%') OR LOWER(u.[j:nodename]) LIKE '%" + newSearch.toLowerCase() + "%') ";
                 }

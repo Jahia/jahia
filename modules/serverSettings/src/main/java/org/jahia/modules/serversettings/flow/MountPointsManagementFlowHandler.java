@@ -43,14 +43,15 @@ import java.io.Serializable;
 import java.util.*;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.modules.serversettings.mount.MountPoint;
-import org.jahia.modules.serversettings.mount.MountPoints;
+import org.jahia.modules.serversettings.mount.MountPointFactory;
+import org.jahia.modules.serversettings.mount.MountPointManager;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -77,11 +78,11 @@ public class MountPointsManagementFlowHandler implements Serializable{
     @Autowired
     private transient JCRStoreService jcrStoreService;
 
-    public MountPoints getMountPoints() {
+    public MountPointManager getMountPointManagerModel() {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<MountPoints>() {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<MountPointManager>() {
                 @Override
-                public MountPoints doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public MountPointManager doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     // get mount points
                     final NodeIterator nodeIterator = getMountPoints(session);
                     List<MountPoint> mountPoints = new ArrayList<MountPoint>((int) nodeIterator.getSize());
@@ -90,16 +91,35 @@ public class MountPointsManagementFlowHandler implements Serializable{
                         mountPoints.add(new MountPoint(mountPointNode));
                     }
                     
-                    // get provider factory types
-                    Map<String, String> providerFactoryTypes = getProviderFactoriesType();
+                    // get provider factories
+                    Map<String, ProviderFactory> providerFactories = jcrStoreService.getProviderFactories();
+                    List<MountPointFactory> mountPointFactories = new ArrayList<MountPointFactory>(providerFactories.size());
+                    for (ProviderFactory factory : providerFactories.values()) {
+                        ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
+
+                        // calcul the factory URL
+                        String queryString = "select * from [jmix:mountPointFactory] as factory where ['j:mountPointType'] = '" + type.getName() + "'";
+                        Query query = session.getWorkspace().getQueryManager().createQuery(queryString, Query.JCR_SQL2);
+                        QueryResult queryResult = query.execute();
+                        String endOfURL = null;
+                        if(queryResult.getNodes().getSize() > 0){
+                            JCRNodeWrapper factoryNode = (JCRNodeWrapper) queryResult.getNodes().next();
+                            String templateName = factoryNode.getPropertyAsString("j:templateName");
+                            if(StringUtils.isNotEmpty(templateName)){
+                                endOfURL = Text.escapePath(factoryNode.getPath()) + "." + templateName + ".html";
+                            }
+                        }
+
+                        mountPointFactories.add(new MountPointFactory(type.getName(), type.getLabel(LocaleContextHolder.getLocale()), endOfURL));
+                    }
 
                     // return model
-                    return new MountPoints(providerFactoryTypes, mountPoints);
+                    return new MountPointManager(mountPointFactories, mountPoints);
                 }
             });
         } catch (RepositoryException e) {
             logger.error("Error retrieving mount points", e);
-            return new MountPoints();
+            return new MountPointManager();
         }
     }
 
@@ -209,15 +229,6 @@ public class MountPointsManagementFlowHandler implements Serializable{
             messageBuilder.error().defaultText(message);
         }
         messageContext.addMessage(messageBuilder.build());
-    }
-
-    private Map<String, String> getProviderFactoriesType() throws NoSuchNodeTypeException {
-        Map<String, String> providerFactoriesType = new HashMap<String, String>();
-        for (ProviderFactory factory : jcrStoreService.getProviderFactories().values()) {
-            ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
-            providerFactoriesType.put(type.getName(), type.getLabel(LocaleContextHolder.getLocale()));
-        }
-        return providerFactoriesType;
     }
 
     private JCRMountPointNode getMountPoint(JCRSessionWrapper sessionWrapper, String name) throws RepositoryException {

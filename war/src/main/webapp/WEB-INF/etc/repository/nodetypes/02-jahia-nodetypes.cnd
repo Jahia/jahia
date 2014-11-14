@@ -544,6 +544,8 @@
  + * (nt:base)
 
 [jmix:mountPointFactory] mixin
+- j:mountPointType (string, choicelist[subnodetypes = 'jnt:mountPoint']) nofulltext mandatory
+- j:templateName (string,choicelist[templatesNode]) mandatory nofulltext
 
 //---------------------------------------------------------
 // Definition Content

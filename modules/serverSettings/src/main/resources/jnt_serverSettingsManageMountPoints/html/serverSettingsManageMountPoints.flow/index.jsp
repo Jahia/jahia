@@ -15,7 +15,7 @@
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
-<%--@elvariable id="mountPoints" type="org.jahia.modules.serversettings.mount.MountPoints"--%>
+<%--@elvariable id="mountPointManager" type="org.jahia.modules.serversettings.mount.MountPointManager"--%>
 
 <template:addResources type="javascript"
                        resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
@@ -46,6 +46,13 @@
             submitEvent(action, mountPoint);
         }
     }
+
+    function goToFactory(){
+        var url = $("#mountPointFactory").val();
+        if(url) {
+            window.parent.goToUrl(url);
+        }
+    }
 </script>
 
 <form style="margin: 0; display: none;" action="${flowExecutionUrl}" method="post" id="MPForm">
@@ -59,15 +66,17 @@
 <div class="box-1">
     <h2><fmt:message key="serverSettings.mountPointsManagement.add"/></h2>
     <form style="margin: 0;">
-        <select>
-            <c:forEach var="providerFactory" items="${mountPoints.providerFactoryTypes}">
-                <option value="${providerFactory.key}">${providerFactory.value}</option>
+        <select id="mountPointFactory">
+            <c:forEach var="providerFactory" items="${mountPointManager.mountPointFactories}">
+                <c:if test="${not empty providerFactory.endOfURL}">
+                    <option value="<c:url value='${url.base}${providerFactory.endOfURL}'/>">${providerFactory.displayableName}</option>
+                </c:if>
             </c:forEach>
         </select>
 
-        <button class="btn btn-primary" type="button">
+        <a class="btn btn-primary" href="#" onclick="goToFactory()">
             <i class="icon-plus  icon-white"></i>&nbsp;<span><fmt:message key="label.add"/></span>
-        </button>
+        </a>
     </form>
 </div>
 
@@ -107,7 +116,7 @@
     </thead>
 
     <tbody>
-    <c:forEach items="${mountPoints.mountPoints}" var="mountPoint" varStatus="loopStatus">
+    <c:forEach items="${mountPointManager.mountPoints}" var="mountPoint" varStatus="loopStatus">
         <tr>
             <td>
                     ${mountPoint.name}

@@ -9,7 +9,7 @@
 
     <view-state id="index">
         <on-entry>
-            <evaluate expression="flowHandler.mountPoints" result="flowScope.mountPoints"/>
+            <evaluate expression="flowHandler.mountPointManagerModel" result="flowScope.mountPointManager"/>
         </on-entry>
         <transition on="doAction" to="doAction"/>
     </view-state>

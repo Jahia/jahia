@@ -268,7 +268,7 @@ public class VFSContentStoreProviderTest {
 
     private static void unMountDynamicMountPoint(JahiaUser jahiaRootUser) throws RepositoryException {
         // now let's unmount.
-        JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaRootUser.getName(), new JCRCallback<Object>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(jahiaRootUser, null, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper mountNode = null;
                 try {

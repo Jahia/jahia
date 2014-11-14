@@ -190,7 +190,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                 String modificationDate = attributes.getValue("dav:modificationdate");
                 if (modificationDate != null) {
                     if (modificationDate.endsWith("Z")) {
-                        created.setTime(DATE_FORMAT_Z.parseDateTime(creationDate).toDate());
+                        lastModified.setTime(DATE_FORMAT_Z.parseDateTime(modificationDate).toDate());
                     } else {
                         lastModified.setTime(DATE_FORMAT.parseDateTime(modificationDate).toDate());
                     }

@@ -208,6 +208,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public JCRUserNode lookupUserByPath(String userKey, JCRSessionWrapper session) {
         try {
             return (JCRUserNode) session.getNode(userKey);
+        } catch (PathNotFoundException e) {
+            // Does not exist anymore
+            return null;
         } catch (ClassCastException e) {
             // Not a user
             return null;

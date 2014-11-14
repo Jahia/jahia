@@ -435,6 +435,9 @@ public class AclListener extends DefaultEventListener {
         String principalName = principal.substring(2);
         if (principal.startsWith("u:")) {
             p = userService.lookupUser(principalName);
+            if (p == null) {
+                p = userService.lookupUser(principalName, site);
+            }
         } else if (principal.startsWith("g:")) {
             p = groupService.lookupGroup(site, principalName);
             if (p == null) {

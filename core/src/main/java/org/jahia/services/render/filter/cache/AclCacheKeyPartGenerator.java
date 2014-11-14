@@ -231,7 +231,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         if (keyPart.equals(PER_USER)) {
-            keyPart = renderContext.getUser().getName();
+            keyPart = renderContext.getUser().getUserKey();
         } else {
             String[] paths = keyPart.split(",");
             SortedSet<String> aclKeys = new TreeSet<String>();
@@ -270,7 +270,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             throws RepositoryException {
         List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-        l.add(getPrincipalAcl("u:" + principal.getName(), null));
+        l.add(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
 
         List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
 
@@ -364,7 +364,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
                         while (rowIterator.hasNext()) {
                             JCRNodeWrapper node = (JCRNodeWrapper) rowIterator.next();
-                            if (aclKey.startsWith("g:") && !node.getResolveSite().getName().equals(siteKey) && (!node.getResolveSite().getSiteKey().equals(JahiaSitesService.SYSTEM_SITE_KEY) || siteKey != null)) {
+                            if (siteKey != null && !node.getResolveSite().getName().equals(siteKey)) {
                                 continue;
                             }
                             String path = node.getParent().getParent().getPath();

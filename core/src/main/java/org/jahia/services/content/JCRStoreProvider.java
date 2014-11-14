@@ -129,7 +129,7 @@ import java.util.Map.Entry;
  * A store provider to handle different back-end stores within a site. There are multiple
  * subclasses for the different repository vendors.
  * <p/>
- * The main and default repository in Jahia is based on the {@link JackrabbitStoreProvider},
+ * The main and default repository in Jahia is based on the {@link org.jahia.services.content.impl.jackrabbit.JackrabbitStoreProvider},
  * but you can have different repositories mounted, which are based on other store providers.
  *
  * @author toto
@@ -537,7 +537,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         observerSessions = new HashMap<String, JCRSessionWrapper>(workspaces.size());
         for (String ws : workspaces) {
             // This session must not be released
-            final JCRSessionWrapper session = getSystemSession(null, ws);
+            final JCRSessionWrapper session = getSystemSession(ws);
             observerSessions.put(ws, session);
             final Workspace workspace = session.getProviderSession(this).getWorkspace();
 
@@ -892,7 +892,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
-            JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser().getUsername(),
+            JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             try {
@@ -1124,8 +1124,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return sessionFactory.getSystemSession();
     }
 
-    public JCRSessionWrapper getSystemSession(String user, String workspace) throws RepositoryException {
-        return sessionFactory.getSystemSession(user, workspace);
+    public JCRSessionWrapper getSystemSession(String workspace) throws RepositoryException {
+        return sessionFactory.getSystemSession(null, null, workspace, null);
     }
 
     public boolean isInitialized() {
@@ -1342,7 +1342,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (guestPassword != null) {
                     guestCredentials = new SimpleCredentials(guestUser, guestPassword.toCharArray());
                 } else {
-                    return JahiaLoginModule.getCredentials(guestUser, null);
+                    return JahiaLoginModule.getCredentials(guestUser, null, null);
                 }
             } else {
                 return JahiaLoginModule.getGuestCredentials();
@@ -1358,7 +1358,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (systemPassword != null) {
                     systemCredentials = new SimpleCredentials(systemUser, systemPassword.toCharArray());
                 } else {
-                    return JahiaLoginModule.getCredentials(systemUser, null);
+                    return JahiaLoginModule.getCredentials(systemUser, null, null);
                 }
             } else {
                 return JahiaLoginModule.getSystemCredentials();

@@ -121,7 +121,7 @@ public class JBPMListener extends DefaultProcessEventListener {
         final long executionId = workflowProcessInstance.getId();
 
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                     new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             if (ids != null) {
@@ -162,7 +162,7 @@ public class JBPMListener extends DefaultProcessEventListener {
         final long executionId = workflowProcessInstance.getId();
 
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                     new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             if (ids != null) {

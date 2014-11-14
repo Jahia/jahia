@@ -72,8 +72,8 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,17 +101,12 @@ public class LastModifiedListener extends DefaultEventListener {
 
     public void onEvent(final EventIterator eventIterator) {
         try {
-            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
+            final JahiaUser user = ((JCREventIterator)eventIterator).getSession().getUser();
             final int type = ((JCREventIterator)eventIterator).getOperationType();
 
             if (type == JCRObservationManager.NODE_CHECKOUT || type == JCRObservationManager.NODE_CHECKIN) {
                 return;
             }
-
-            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
-                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
-            }
-            final String finalUserId = userId;
 
             final Set<Session> sessions = new HashSet<Session>();
             final Set<String> nodes = new HashSet<String>();
@@ -125,7 +120,7 @@ public class LastModifiedListener extends DefaultEventListener {
                 autoPublishedIds = null;
             }
 
-            JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, workspace, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     Calendar c = GregorianCalendar.getInstance();
                     while (eventIterator.hasNext()) {
@@ -135,10 +130,10 @@ public class LastModifiedListener extends DefaultEventListener {
                                 session.getNodeByIdentifier(event.getIdentifier());
                             } catch (ItemNotFoundException infe) {
                                 try {
-                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(),"/"));
+                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(), "/"));
                                     if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
                                         // Test if published and has lastPublished property
-                                        boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSession(finalUserId, Constants.LIVE_WORKSPACE, new JCRCallback<Boolean>() {
+                                        boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, Constants.LIVE_WORKSPACE, null, new JCRCallback<Boolean>() {
                                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                                 return session.getNodeByIdentifier(event.getIdentifier()).hasProperty("j:lastPublished");
                                             }
@@ -149,7 +144,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                                 parent.addMixin("jmix:deletedChildren");
                                                 parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
                                             } else if (!parent.hasProperty("j:deletedChildren")) {
-                                                parent.setProperty("j:deletedChildren", new String[] {event.getIdentifier()});
+                                                parent.setProperty("j:deletedChildren", new String[]{event.getIdentifier()});
                                             } else {
                                                 parent.getProperty("j:deletedChildren").addValue(event.getIdentifier());
                                             }
@@ -178,7 +173,7 @@ public class LastModifiedListener extends DefaultEventListener {
                             }
                         }
                         if (logger.isDebugEnabled()) {
-                        	logger.debug("Receiving event for lastModified date for : " + path);
+                            logger.debug("Receiving event for lastModified date for : " + path);
                         }
                         if (event.getType() == Event.NODE_ADDED) {
                             addedNodes.add(path);
@@ -192,9 +187,9 @@ public class LastModifiedListener extends DefaultEventListener {
                                 // this case is a node reordering in it's parent
                                 reorderedNodes.add(path);
                             }
-                            nodes.add(StringUtils.substringBeforeLast(path,"/"));
+                            nodes.add(StringUtils.substringBeforeLast(path, "/"));
                         } else {
-                            nodes.add(StringUtils.substringBeforeLast(path,"/"));
+                            nodes.add(StringUtils.substringBeforeLast(path, "/"));
                         }
                     }
                     if (reorderedNodes.size() > 0) {
@@ -204,17 +199,17 @@ public class LastModifiedListener extends DefaultEventListener {
                         nodes.removeAll(addedNodes);
                     }
                     if (!nodes.isEmpty() || !addedNodes.isEmpty()) {
-                        if(logger.isDebugEnabled()) {
-                            logger.debug("Updating lastModified date for existing nodes : "+
-                                         Arrays.deepToString(nodes.toArray(new String[nodes.size()])));
-                            logger.debug("Updating lastModified date for added nodes : "+
-                                         Arrays.deepToString(addedNodes.toArray(new String[addedNodes.size()])));
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Updating lastModified date for existing nodes : " +
+                                    Arrays.deepToString(nodes.toArray(new String[nodes.size()])));
+                            logger.debug("Updating lastModified date for added nodes : " +
+                                    Arrays.deepToString(addedNodes.toArray(new String[addedNodes.size()])));
                         }
                         for (String node : nodes) {
                             try {
                                 JCRNodeWrapper n = session.getNode(node);
                                 sessions.add(n.getRealNode().getSession());
-                                updateProperty(n, c, finalUserId, autoPublishedIds, type);
+                                updateProperty(n, c, user, autoPublishedIds, type);
                             } catch (UnsupportedRepositoryOperationException e) {
                                 // Cannot write property
                             } catch (PathNotFoundException e) {
@@ -228,7 +223,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                 if (!n.hasProperty("j:originWS") && n.isNodeType("jmix:originWS")) {
                                     n.setProperty("j:originWS", workspace);
                                 }
-                                updateProperty(n, c, finalUserId, autoPublishedIds, type);
+                                updateProperty(n, c, user, autoPublishedIds, type);
                             } catch (UnsupportedRepositoryOperationException e) {
                                 // Cannot write property
                             } catch (PathNotFoundException e) {
@@ -259,7 +254,7 @@ public class LastModifiedListener extends DefaultEventListener {
 
     }
 
-    private void updateProperty(JCRNodeWrapper n, Calendar c, String userId, List<String> autoPublished, int type) throws RepositoryException {
+    private void updateProperty(JCRNodeWrapper n, Calendar c, JahiaUser user, List<String> autoPublished, int type) throws RepositoryException {
         while (!n.isNodeType(MIX_LAST_MODIFIED)) {
             addAutoPublish(n, autoPublished);
             try {
@@ -274,12 +269,12 @@ public class LastModifiedListener extends DefaultEventListener {
         if (type != JCRObservationManager.IMPORT || isAutoPublished) {
             n.getSession().checkout(n);
             n.setProperty(JCR_LASTMODIFIED,c);
-            n.setProperty(JCR_LASTMODIFIEDBY, userId);
+            n.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");
             if (n.isNodeType("nt:resource")) {
                 JCRNodeWrapper parent = n.getParent();
                 if (parent.isNodeType(MIX_LAST_MODIFIED)) {
                     parent.setProperty(JCR_LASTMODIFIED, c);
-                    parent.setProperty(JCR_LASTMODIFIEDBY, userId);
+                    parent.setProperty(JCR_LASTMODIFIEDBY, user != null ? user.getUsername() : "");
                 }
             }
         }

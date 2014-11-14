@@ -185,7 +185,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @throws RepositoryException in case of an error
      */
     public static void clearAllLocks(final String path, final boolean processChildNodes, final String workspace) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 clearAllLocks(path, processChildNodes, session);
                 return null;

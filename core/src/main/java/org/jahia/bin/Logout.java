@@ -82,7 +82,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.CookieAuthConfig;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -157,23 +156,23 @@ public class Logout implements Controller {
 
     private void addLocale(final JCRSiteNode site, final List<Locale> newLocaleList, final Locale curLocale) {
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                    Constants.LIVE_WORKSPACE,curLocale,new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        if(site!=null) {
-                            JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
-                            JCRNodeWrapper home = nodeByIdentifier.getHome();
-                            if (home!=null && !newLocaleList.contains(curLocale)) {
-                                newLocaleList.add(curLocale);
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
+                    Constants.LIVE_WORKSPACE, curLocale, new JCRCallback<Object>() {
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            try {
+                                if (site != null) {
+                                    JCRSiteNode nodeByIdentifier = (JCRSiteNode) session.getNodeByIdentifier(site.getIdentifier());
+                                    JCRNodeWrapper home = nodeByIdentifier.getHome();
+                                    if (home != null && !newLocaleList.contains(curLocale)) {
+                                        newLocaleList.add(curLocale);
+                                    }
+                                }
+                            } catch (RepositoryException e) {
+                                logger.debug("This site does not have a published home in language " + curLocale, e);
                             }
+                            return null;
                         }
-                    } catch (RepositoryException e) {
-                        logger.debug("This site does not have a published home in language "+curLocale,e);
-                    }
-                    return null;
-                }
-            });
+                    });
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

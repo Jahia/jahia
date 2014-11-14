@@ -173,7 +173,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 final List<String> perms = new ArrayList<String>();
                 if (node.hasProperty("j:requiredPermissions") && !node.hasProperty("j:requiredPermissionNames")) {
                     final Value[] values = node.getProperty("j:requiredPermissions").getValues();
-                    perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                    perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                         public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             List<String> permissionNames = new ArrayList<String>();
                             for (Value value : values) {
@@ -211,7 +211,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
 
                 if (aliasedUser != null) {
-                    if (!JCRTemplate.getInstance().doExecuteWithUserSession(aliasedUser.getUsername(), node.getSession().getWorkspace().getName(),
+                    if (!JCRTemplate.getInstance().doExecuteWithUserSession(aliasedUser, node.getSession().getWorkspace().getName(), null,
                             new JCRCallback<Boolean>() {
                                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     JCRNodeWrapper aliasedNode = session.getNode(resource.getNode().getPath());

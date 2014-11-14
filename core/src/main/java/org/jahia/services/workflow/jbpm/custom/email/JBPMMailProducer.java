@@ -162,7 +162,7 @@ public class JBPMMailProducer {
         if (template != null) {
             final MailTemplate usedTemplate = template;
             try {
-                return JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, locale, new JCRCallback<Collection<Message>>() {
+                return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, locale, new JCRCallback<Collection<Message>>() {
                     public Collection<Message> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             scriptEngine = ScriptEngineUtils.getInstance().getEngineByName(usedTemplate.getLanguage());

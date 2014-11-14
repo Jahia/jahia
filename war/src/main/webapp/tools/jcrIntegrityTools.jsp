@@ -16,6 +16,7 @@
 <%@ page import="java.io.PrintWriter" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -125,7 +126,7 @@
             startTime = System.currentTimeMillis();
             for (String workspaceName : workspaces) {
                 if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspaceName, null, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
                             JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
                             Node jcrRootNode = jahiaRootNode.getRealNode();

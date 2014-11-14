@@ -72,7 +72,7 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import static org.jahia.api.Constants.*;
 
@@ -100,11 +100,8 @@ public class NodenameListener extends DefaultEventListener {
 
     public void onEvent(final EventIterator eventIterator) {
         try {
-            String userId = ((JCREventIterator)eventIterator).getSession().getUserID();
-            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
-                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
-            }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
+            JahiaUser user = ((JCREventIterator)eventIterator).getSession().getUser();
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     final Set<Session> sessions = new HashSet<Session>();
 
@@ -117,8 +114,8 @@ public class NodenameListener extends DefaultEventListener {
 
                         String path = event.getPath();
                         if (event.getType() == Event.NODE_ADDED) {
-                            if(logger.isDebugEnabled()) {
-                                logger.debug("Node has been added, we are updating its fullpath properties : "+path);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Node has been added, we are updating its fullpath properties : " + path);
                             }
                             try {
                                 JCRNodeWrapper item = (JCRNodeWrapper) session.getItem(path);

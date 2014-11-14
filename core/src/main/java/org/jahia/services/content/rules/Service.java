@@ -507,6 +507,7 @@ public class Service extends JahiaService {
         map.put(RuleJob.JOB_RULE_TO_EXECUTE, ruleToExecute);
         map.put(RuleJob.JOB_NODE_UUID, uuid);
         map.put(RuleJob.JOB_USER, ((User) drools.getWorkingMemory().getGlobal("user")).getName());
+        map.put(RuleJob.JOB_USER_REALM, ((User) drools.getWorkingMemory().getGlobal("user")).getRealm());
         map.put(RuleJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
 
         // cancel the scheduled job if exists 

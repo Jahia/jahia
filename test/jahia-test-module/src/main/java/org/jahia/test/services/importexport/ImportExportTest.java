@@ -285,7 +285,7 @@ public class ImportExportTest {
     public void testSimpleExportImport() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -301,7 +301,7 @@ public class ImportExportTest {
     public void testSimpleExportImportWithLive() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
@@ -314,7 +314,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -330,7 +330,7 @@ public class ImportExportTest {
     public void testExportImportWithComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -409,7 +409,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -418,7 +418,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         // Now publish everything and check again
@@ -432,7 +432,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -448,7 +448,7 @@ public class ImportExportTest {
     public void testExportImportWithUGCComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.LIVE_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -537,7 +537,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -1062,7 +1062,7 @@ public class ImportExportTest {
     public void testImportValidation() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser().getName(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);

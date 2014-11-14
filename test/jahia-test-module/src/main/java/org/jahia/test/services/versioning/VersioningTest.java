@@ -180,7 +180,7 @@ public class VersioningTest extends JahiaTestCase {
                 final String versionName = curVersionInfo.getVersion().getName();
                 if (curVersionInfo.getLabel() != null && !"".equals(curVersionInfo.getLabel()) &&
                     !curVersionInfo.getLabel().contains(",")) {
-                    JCRTemplate.getInstance().doExecuteWithUserSession("root", Constants.LIVE_WORKSPACE, Locale.ENGLISH,
+                    JCRTemplate.getInstance().doExecuteWithUserSession("root", null, Constants.LIVE_WORKSPACE, Locale.ENGLISH,
                             new JCRCallback<Object>() {
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     JCRNodeWrapper versionNode = null;

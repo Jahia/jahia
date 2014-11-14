@@ -86,6 +86,7 @@ public class RuleJob extends BackgroundJob {
     public static final String JOB_RULE_TO_EXECUTE = "ruleToExecute";
     public static final String JOB_WORKSPACE = "workspace";
     public static final String JOB_USER = "user";
+    public static final String JOB_USER_REALM = "userrealm";
 
     @Override
     public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
@@ -96,7 +97,7 @@ public class RuleJob extends BackgroundJob {
         wrapper = new AddedNodeFact(jcrSessionWrapper.getNodeByUUID(map.getString(JOB_NODE_UUID)));
         list.add(new JobRuleExecution(map.getString(JOB_RULE_TO_EXECUTE), wrapper));
         final RulesListener listener = RulesListener.getInstance(map.getString(JOB_WORKSPACE));
-        listener.executeRules(list, listener.getGlobals(map.getString(JOB_USER), new ArrayList<Updateable>()));
+        listener.executeRules(list, listener.getGlobals(map.getString(JOB_USER), map.getString(JOB_USER_REALM), new ArrayList<Updateable>()));
         jcrSessionWrapper.save();
     }
 }

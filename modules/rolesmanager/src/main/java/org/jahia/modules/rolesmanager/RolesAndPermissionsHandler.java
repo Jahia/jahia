@@ -214,23 +214,23 @@ public class RolesAndPermissionsHandler implements Serializable {
 
     public boolean copyRole(final String roleName, final String deepCopy, final String uuid, final MessageContext messageContext) throws RepositoryException {
         final JCRSessionWrapper currentUserSession = getSession();
-        boolean copy = JCRTemplate.getInstance().doExecuteWithSystemSession(currentUserSession.getUser().getName(), currentUserSession.getWorkspace().getName(), new JCRCallback<Boolean>() {
+        boolean copy = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), null, new JCRCallback<Boolean>() {
             @Override
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 JCRNodeWrapper roleToCopy = session.getNodeByIdentifier(uuid);
 
                 String newRoleName = StringUtils.isNotEmpty(roleName) ? JCRContentUtils.generateNodeName(roleName) : roleName;
-                if(!testRoleName(newRoleName, messageContext, session)){
+                if (!testRoleName(newRoleName, messageContext, session)) {
                     return false;
                 }
 
                 boolean copy = roleToCopy.copy(roleToCopy.getParent().getPath(), newRoleName);
-                if(StringUtils.isEmpty(deepCopy)){
+                if (StringUtils.isEmpty(deepCopy)) {
                     JCRNodeWrapper copiedNode = session.getNode(roleToCopy.getParent().getPath() + "/" + newRoleName);
                     NodeIterator iterator = copiedNode.getNodes();
-                    while (iterator.hasNext()){
+                    while (iterator.hasNext()) {
                         JCRNodeWrapper subNode = (JCRNodeWrapper) iterator.next();
-                        if(subNode.isNodeType("jnt:role")){
+                        if (subNode.isNodeType("jnt:role")) {
                             subNode.remove();
                         }
                     }

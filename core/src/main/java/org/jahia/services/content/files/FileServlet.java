@@ -530,7 +530,7 @@ public class FileServlet extends HttpServlet {
         if (!n.getSession().getUserID().equals(JahiaUserManagerService.GUEST_USERNAME)) {
             if (cacheForLoggedUsers) {
                 try {
-                    getInstance().doExecuteWithUserSession(JahiaUserManagerService.GUEST_USERNAME, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<JCRNodeWrapper>() {
+                    getInstance().doExecuteWithUserSession(JahiaUserManagerService.GUEST_USERNAME, null, n.getSession().getWorkspace().getName(), n.getSession().getLocale(), new JCRCallback<JCRNodeWrapper>() {
                         public JCRNodeWrapper doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             return session.getNodeByIdentifier(nodeId);

@@ -333,7 +333,7 @@ public class WelcomeServlet extends HttpServlet {
 
     private boolean ensureHomePageExists(final JCRSiteNode site, final Locale curLocale) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, curLocale,
+            return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, curLocale,
                     new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             try {

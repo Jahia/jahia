@@ -92,12 +92,12 @@ public abstract class SystemAction extends Action {
 
     public ActionResult doExecute(final HttpServletRequest req, final RenderContext renderContext, final Resource resource,
                                   JCRSessionWrapper session, final Map<String, List<String>> parameters, final URLResolver urlResolver) throws Exception {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(JCRSessionFactory.getInstance().getCurrentUser().getUsername(), session.getWorkspace().getName(), session.getLocale(), new JCRCallback<ActionResult>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(JCRSessionFactory.getInstance().getCurrentUser(), session.getWorkspace().getName(), session.getLocale(), new JCRCallback<ActionResult>() {
             public ActionResult doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     Resource systemResource = null;
                     if (resource != null) {
-                        systemResource = new Resource(session.getNode(resource.getNode().getPath()), resource.getTemplateType(), resource.getTemplate() , resource.getContextConfiguration());
+                        systemResource = new Resource(session.getNode(resource.getNode().getPath()), resource.getTemplateType(), resource.getTemplate(), resource.getContextConfiguration());
                     }
                     return doExecuteAsSystem(req, renderContext, session, systemResource, parameters, urlResolver);
                 } catch (Exception e) {

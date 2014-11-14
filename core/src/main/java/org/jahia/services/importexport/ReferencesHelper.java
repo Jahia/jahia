@@ -330,7 +330,7 @@ public class ReferencesHelper {
 
     public static void updateReferencesInLive(final Map<String, Object> resolvedReferences) throws RepositoryException {
         if (!resolvedReferences.isEmpty()) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null,"live",new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, "live", null, new JCRCallback<Object>() {
 
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (Map.Entry<String, Object> entry : resolvedReferences.entrySet()) {
@@ -365,7 +365,7 @@ public class ReferencesHelper {
                                 }
                             }
                         } catch (ItemNotFoundException e) {
-                            logger.debug("Node not found in live",e);
+                            logger.debug("Node not found in live", e);
                         }
                     }
                     session.save();

@@ -421,7 +421,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
 
         final String path = "/" + WebUtils.urlDecode(pathPart);
 
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 String ext = null;
@@ -470,7 +470,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
                         value = DOC_CONTEXT_PLACEHOLDER + StringUtils.substringAfter(value, dmsContext);
                     }
                 } catch (PathNotFoundException e) {
-                    throw new PropertyConstraintViolationException(node,  Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null,definition);
+                    throw new PropertyConstraintViolationException(node, Messages.getInternal("label.error.invalidlink", LocaleContextHolder.getLocale(), "Invalid link") + path, definition.isInternationalized() ? locale : null, definition);
                 }
                 String id = reference.getIdentifier();
                 if (!newRefs.containsKey(id)) {
@@ -525,7 +525,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         }
 
         final String path = "/" + pathPart;
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<String>() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspaceName, null, new JCRCallback<String>() {
             public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 String value = originalValue;
                 try {

@@ -204,7 +204,7 @@ public class TemplatePackageDeployer {
     }
 
     private synchronized void cloneModuleInLive(final JahiaTemplatesPackage pack) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, "live", new JCRCallback<Object>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, "live", null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     JCRObservationManager.setEventListenersAvailableDuringPublishOnly(true);
@@ -226,7 +226,7 @@ public class TemplatePackageDeployer {
                     JCRObservationManager.setEventListenersAvailableDuringPublishOnly(false);
                     JahiaAccessManager.setDeniedPaths(null);
                 }
-               return null;
+                return null;
             }
         });
     }

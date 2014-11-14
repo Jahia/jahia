@@ -1083,7 +1083,7 @@ public class TemplatePackageRegistry {
             final DefaultEventListener eventListener = (DefaultEventListener) bean;
             if (eventListener.getEventTypes() > 0) {
                 try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, eventListener.getWorkspace(), new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, eventListener.getWorkspace(), null, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             final Workspace workspace = session.getWorkspace();
 

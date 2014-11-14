@@ -289,7 +289,7 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
         settings = new SearchSettings();
         try {
             // read search settings
-            settings = JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, new JCRCallback<SearchSettings>() {
+            settings = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null, new JCRCallback<SearchSettings>() {
                 public SearchSettings doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     SearchSettings cfg = new SearchSettings();
 

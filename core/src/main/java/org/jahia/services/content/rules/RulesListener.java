@@ -336,6 +336,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
         final JCRSessionWrapper session = ((JCREventIterator) eventIterator).getSession();
         final String userId = session.getUser() != null ? session.getUser().getName() : null;
+        final String userRealm = session.getUser() != null ? session.getUser().getRealm() : null;
         final Locale locale = session.getLocale();
 
         final Map<String, AddedNodeFact> eventsMap = new HashMap<String, AddedNodeFact>();
@@ -367,15 +368,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         }
         
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, locale, new JCRCallback<Object>() {
-                
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), workspace, locale, new JCRCallback<Object>() {
+
                 Map<String, String> copies = null;
-                
+
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Iterator<Event> it = events.iterator();
 
                     final List<Object> list = new ArrayList<Object>();
-                    
+
                     String nodeFactOperationType = getNodeFactOperationType(operationType);
                     while (it.hasNext()) {
                         Event event = it.next();
@@ -393,7 +394,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             rn = getFact(n, session);
                                             rn.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 rn.setInstalledModules(new ArrayList<String>());
@@ -433,7 +434,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                         rn = type == Event.PROPERTY_ADDED ? getFact(parent, session) : new AddedNodeFact(parent);
                                                         rn.setOperationType(nodeFactOperationType);
                                                         final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                        if (resolveSite!=null) {
+                                                        if (resolveSite != null) {
                                                             rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                         } else {
                                                             rn.setInstalledModules(new ArrayList<String>());
@@ -444,7 +445,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                     rn = new AddedNodeFact(parent);
                                                     rn.setOperationType(nodeFactOperationType);
                                                     final JCRSiteNode resolveSite = parent.getResolveSite();
-                                                    if (resolveSite!=null) {
+                                                    if (resolveSite != null) {
                                                         rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                     } else {
                                                         rn.setInstalledModules(new ArrayList<String>());
@@ -464,7 +465,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             final PublishedNodeFact e = new PublishedNodeFact(n);
                                             e.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = n.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 e.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 e.setInstalledModules(new ArrayList<String>());
@@ -483,7 +484,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                             w = new AddedNodeFact(parent);
                                             w.setOperationType(nodeFactOperationType);
                                             final JCRSiteNode resolveSite = parent.getResolveSite();
-                                            if (resolveSite!=null) {
+                                            if (resolveSite != null) {
                                                 w.setInstalledModules(resolveSite.getAllInstalledModules());
                                             } else {
                                                 w.setInstalledModules(new ArrayList<String>());
@@ -513,7 +514,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                 rn = new AddedNodeFact(n);
                                                 rn.setOperationType(nodeFactOperationType);
                                                 final JCRSiteNode resolveSite = n.getResolveSite();
-                                                if (resolveSite!=null) {
+                                                if (resolveSite != null) {
                                                     rn.setInstalledModules(resolveSite.getAllInstalledModules());
                                                 } else {
                                                     rn.setInstalledModules(new ArrayList<String>());
@@ -528,10 +529,10 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                 } else if (type == Event.NODE_MOVED) {
                                     JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);
                                     if (n.isNodeType("jmix:observable") && !n.isNodeType("jnt:translation")) {
-                                        final MovedNodeFact e = new MovedNodeFact(n,(String) event.getInfo().get("srcAbsPath"));
+                                        final MovedNodeFact e = new MovedNodeFact(n, (String) event.getInfo().get("srcAbsPath"));
                                         e.setOperationType(nodeFactOperationType);
                                         final JCRSiteNode resolveSite = n.getResolveSite();
-                                        if (resolveSite!=null) {
+                                        if (resolveSite != null) {
                                             e.setInstalledModules(resolveSite.getAllInstalledModules());
                                         } else {
                                             e.setInstalledModules(new ArrayList<String>());
@@ -545,7 +546,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                     path, pnfe);
                         } catch (ItemNotFoundException infe) {
                             logger.debug("Error when executing event. Unable to find node or property for item: " +
-                                    event.getIdentifier() , infe);
+                                    event.getIdentifier(), infe);
                         } catch (Exception e) {
                             logger.error("Error when executing event", e);
                         }
@@ -564,7 +565,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         final List<Updateable> delayedUpdates = new ArrayList<Updateable>();
 
 
-                        Map<String, Object> globals = getGlobals(userId, delayedUpdates);
+                        Map<String, Object> globals = getGlobals(userId, userRealm, delayedUpdates);
 
                         try {
                             inRules.set(Boolean.TRUE);
@@ -588,7 +589,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         }
 
                         if (!delayedUpdates.isEmpty()) {
-                            TimerTask t = new DelayedUpdatesTimerTask(userId, delayedUpdates);
+                            TimerTask t = new DelayedUpdatesTimerTask(userId, userRealm, delayedUpdates);
                             rulesTimer.schedule(t, UPDATE_DELAY_FOR_LOCKED_NODE);
                         }
                     }
@@ -601,9 +602,9 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                         copies = session.getUuidMapping().isEmpty() ? Collections.<String, String>emptyMap() : MapUtils.invertMap(session.getUuidMapping());
                     }
                     String sourceUuid = !copies.isEmpty() ? copies.get(node.getIdentifier()) : null;
-                            return sourceUuid != null ? new CopiedNodeFact(node, sourceUuid,
-                                    session.getUuidMapping().containsKey("top-" + sourceUuid))
-                                    : new AddedNodeFact(node);
+                    return sourceUuid != null ? new CopiedNodeFact(node, sourceUuid,
+                            session.getUuidMapping().containsKey("top-" + sourceUuid))
+                            : new AddedNodeFact(node);
                 }
             });
         } catch (Exception e) {
@@ -611,11 +612,11 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         }
     }
 
-    public Map<String, Object> getGlobals(String username, List<Updateable> delayedUpdates) {
+    public Map<String, Object> getGlobals(String username, String userRealm, List<Updateable> delayedUpdates) {
         Map<String, Object> globals = new HashMap<String, Object>();
 
         globals.put("logger", logger);
-        globals.put("user", new User(username));
+        globals.put("user", new User(username, userRealm));
         globals.put("workspace", workspace);
         globals.put("delayedUpdates", delayedUpdates);
         for (Map.Entry<String, Object> entry : globalObjects.entrySet()) {
@@ -646,16 +647,19 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     class DelayedUpdatesTimerTask extends TimerTask {
         private String username;
+        private String userRealm;
         private List<Updateable> updates;
         private int count = 1;
 
-        DelayedUpdatesTimerTask(String username, List<Updateable> updates) {
+        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates) {
             this.username = username;
+            this.userRealm = userRealm;
             this.updates = updates;
         }
 
-        DelayedUpdatesTimerTask(String username, List<Updateable> updates, int count) {
+        DelayedUpdatesTimerTask(String username, String userRealm, List<Updateable> updates, int count) {
             this.username = username;
+            this.userRealm = userRealm;
             this.updates = updates;
             this.count = count;
         }
@@ -675,7 +679,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                             if (!newDelayed.isEmpty()) {
                                 updates = newDelayed;
                                 if (count < 3) {
-                                    rulesTimer.schedule(new DelayedUpdatesTimerTask(username, newDelayed, count + 1),
+                                    rulesTimer.schedule(new DelayedUpdatesTimerTask(username, userRealm, newDelayed, count + 1),
                                             UPDATE_DELAY_FOR_LOCKED_NODE * count);
                                 } else {
                                     logger.error("Node still locked, max count reached, forget pending changes");

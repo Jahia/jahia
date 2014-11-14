@@ -74,6 +74,7 @@ package org.jahia.services.workflow.jbpm.custom;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.usermanager.JahiaUser;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -96,7 +97,7 @@ public class SetPropertyWorkItemHandler extends AbstractWorkItemHandler implemen
         final String value = (String) workItem.getParameter("value");
 
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String uuid : uuids) {
                         session.getNodeByUUID(uuid).setProperty(propertyName, value);

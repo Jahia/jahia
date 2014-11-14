@@ -71,12 +71,12 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
@@ -112,24 +112,22 @@ public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler impleme
         String workspace = (String) workItem.getParameter("workspace");
         String userKey = (String) workItem.getParameter("user");
         JCRUserNode user = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
-        String username;
+        JahiaUser jahiaUser = null;
         if (user != null) {
-            username = user.getName();
-        } else {
-            username = StringUtils.substringAfterLast(userKey, "/");
+            jahiaUser = user.getJahiaUser();
         }
         final String type = (String) workItem.getParameter("type");
 
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(username,
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(jahiaUser,
                     workspace, null, new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String id : uuids) {
-                        doUnlock(id, session, "process-" + workItem.getProcessInstanceId(), type);
-                    }
-                    return null;
-                }
-            });
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            for (String id : uuids) {
+                                doUnlock(id, session, "process-" + workItem.getProcessInstanceId(), type);
+                            }
+                            return null;
+                        }
+                    });
         } catch (RepositoryException e) {
             throw new RuntimeException(e);
         }

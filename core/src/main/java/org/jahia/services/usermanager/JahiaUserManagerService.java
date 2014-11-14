@@ -333,11 +333,16 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a List of strings holding the user identification key .
      */
     public List<String> getUserList() {
+        return getUserList(null);
+    }
+
+    public List<String> getUserList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username) and isdescendantnode(username,'/users/')";
+                String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username) and isdescendantnode(username,'"+usersPath+"')";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -364,11 +369,21 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a List of strings holding the user identification names.
      */
     public List<String> getUsernameList() {
+        return getUsernameList(null);
+    }
+
+    /**
+     * This method returns the list of all the user names registered in the system.
+     *
+     * @return Return a List of strings holding the user identification names.
+     */
+    public List<String> getUsernameList(String siteKey) {
         try {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
             Set<String> users = new TreeSet<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] where isdescendantnode('/users/')";
+                String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
+                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] where isdescendantnode('" + usersPath + "')";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -616,19 +631,32 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode createUser(final String name, final String password,
                                   final Properties properties, JCRSessionWrapper session) {
+        return createUser(name, null, password, properties, session);
+    }
+
+    /**
+     * This is the method that creates a new user in the system, with all the
+     * specified properties.
+     *
+     * @param name       User identification name.
+     * @param password   User password
+     * @param properties User additional parameters. If the user has no additional
+     * @param session
+     */
+    public JCRUserNode createUser(final String name, String siteKey, final String password,
+                                  final Properties properties, JCRSessionWrapper session) {
         try {
             String jcrUsernamePath[] = Patterns.SLASH.split(StringUtils.substringAfter(
                     ServicesRegistry.getInstance().getJahiaUserManagerService().getUserSplittingRule().getPathForUsername(
                             name), "/"
             ));
-            JCRNodeWrapper startNode = session.getNode("/" + jcrUsernamePath[0]);
+            JCRNodeWrapper startNode = session.getNode(((siteKey == null) ? "/" : "/sites/" + siteKey));
             int length = jcrUsernamePath.length;
-            for (int i = 1; i < length; i++) {
+            for (int i = 0; i < length; i++) {
                 try {
                     startNode = startNode.getNode(jcrUsernamePath[i]);
                 } catch (PathNotFoundException e) {
                     try {
-                        session.checkout(startNode);
                         if (i == (length - 1)) {
                             JCRNodeWrapper userNode = startNode.addNode(name, Constants.JAHIANT_USER);
                             userNode.grantRoles("u:" + name, Collections.singleton("owner"));

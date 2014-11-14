@@ -99,7 +99,6 @@ import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
 import java.io.IOException;
 import java.util.*;
 
@@ -595,7 +594,7 @@ public class JahiaSitesService extends JahiaService {
                 }
             });
             // Now let's delete the live workspace site.
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, deleteCallback);
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, deleteCallback);
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

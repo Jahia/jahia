@@ -522,7 +522,7 @@ public class RenderService {
             final List<String> perms = new ArrayList<String>();
             if (templateNode.hasProperty("j:requiredPermissions") && !templateNode.hasProperty("j:requiredPermissionNames")) {
                 final Value[] values = templateNode.getProperty("j:requiredPermissions").getValues();
-                perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(null, new JCRCallback<List<String>>() {
+                perms.addAll(JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
                     public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<String> permissionNames = new ArrayList<String>();
                         for (Value value : values) {

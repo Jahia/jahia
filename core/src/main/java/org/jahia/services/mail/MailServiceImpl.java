@@ -445,7 +445,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         settings = new MailSettings();
         try {
             // read mail settings
-            settings = JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, new JCRCallback<MailSettings>() {
+            settings = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.EDIT_WORKSPACE, null, new JCRCallback<MailSettings>() {
                 public MailSettings doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     MailSettings cfg = new MailSettings();
 

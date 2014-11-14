@@ -625,8 +625,8 @@ public class VanityUrlManager {
 
     private void checkUniqueConstraint(final JCRNodeWrapper contentNode, final VanityUrl vanityUrl,
             final List<Map.Entry<String, VanityUrl>> toDelete) throws RepositoryException, NonUniqueUrlMappingException {
-        NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
-                Constants.EDIT_WORKSPACE, new JCRCallback<NonUniqueUrlMappingException>() {
+        NonUniqueUrlMappingException ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
+                Constants.EDIT_WORKSPACE, null, new JCRCallback<NonUniqueUrlMappingException>() {
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {
                             checkUniqueConstraint(contentNode, vanityUrl, toDelete, session);
@@ -639,7 +639,7 @@ public class VanityUrlManager {
         if (ex != null) {
             throw ex;
         }
-        ex = JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE,
+        ex = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null,
                 new JCRCallback<NonUniqueUrlMappingException>() {
                     public NonUniqueUrlMappingException doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         try {

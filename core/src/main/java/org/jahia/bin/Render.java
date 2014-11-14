@@ -86,7 +86,6 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -380,21 +379,21 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         } else {
             final String path = urlResolver.getPath();
 
-            String resourcePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+            String resourcePath = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
                     urlResolver.getWorkspace(), urlResolver.getLocale(), new JCRCallback<String>() {
-                public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    String resourcePath = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
-                    do {
-                        try {
-                            session.getNode(resourcePath);
-                            break;
-                        } catch (PathNotFoundException e) {
-                            resourcePath = StringUtils.substringBeforeLast(resourcePath, "/");
+                        public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            String resourcePath = path.endsWith("*") ? StringUtils.substringBeforeLast(path, "/") : path;
+                            do {
+                                try {
+                                    session.getNode(resourcePath);
+                                    break;
+                                } catch (PathNotFoundException e) {
+                                    resourcePath = StringUtils.substringBeforeLast(resourcePath, "/");
+                                }
+                            } while (resourcePath.contains("/"));
+                            return resourcePath;
                         }
-                    } while (resourcePath.contains("/"));
-                    return resourcePath;
-                }
-            });
+                    });
 
             resource = urlResolver.getResource(resourcePath + ".html");
             renderContext.setMainResource(resource);

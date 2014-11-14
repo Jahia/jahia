@@ -246,34 +246,65 @@ public class JahiaLoginModule implements LoginModule {
     }
 
     public static Credentials getSystemCredentials() {
-        return new SimpleCredentials(JahiaLoginModule.SYSTEM, getSystemPass(JahiaLoginModule.SYSTEM, null).toCharArray());
+        return getSystemCredentials(null,null,null);
     }
 
+    /**
+     * @deprecated Use method with realm
+     */
+    @Deprecated
     public static Credentials getSystemCredentials(String username) {
-        if (username == null) {
-            return getSystemCredentials();
-        }
-        String userID = JahiaLoginModule.SYSTEM + username;
-        return new SimpleCredentials(userID, getSystemPass(userID, null).toCharArray());
+        logger.warn("Getting system credentials with empty realm for "+username);
+        return getSystemCredentials(username, null, null);
     }
 
+    public static Credentials getSystemCredentials(String username, String realm) {
+        return getSystemCredentials(username, realm, null);
+    }
+
+    /**
+     * @deprecated Use method with realm
+     */
+    @Deprecated
     public static Credentials getSystemCredentials(String username, List<String> deniedPathes) {
+        logger.warn("Getting system credentials with empty realm for "+username);
+        return getSystemCredentials(username, null, deniedPathes);
+    }
+
+    public static Credentials getSystemCredentials(String username, String realm, List<String> deniedPathes) {
         if (username == null) {
-            return getSystemCredentials();
+            return new SimpleCredentials(JahiaLoginModule.SYSTEM, getSystemPass(JahiaLoginModule.SYSTEM, deniedPathes).toCharArray());
         }
         String userID = JahiaLoginModule.SYSTEM + username;
-        return new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
+        SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, deniedPathes).toCharArray());
+        credentials.setAttribute(REALM_ATTRIBUTE, realm);
+        return credentials;
     }
 
     public static Credentials getGuestCredentials() {
         return new SimpleCredentials(JahiaLoginModule.GUEST, new char[0]);
     }
 
+    /**
+     * @deprecated Use method with realm
+     */
+    @Deprecated
+    public static Credentials getCredentials(String username) {
+        logger.warn("Getting credentials with empty realm for "+username);
+        return getCredentials(username, null, null);
+    }
+
     public static Credentials getCredentials(String username, String realm) {
-        String userID = username;
-        SimpleCredentials credentials = new SimpleCredentials(userID, getSystemPass(userID, null).toCharArray());
-        credentials.setAttribute(REALM_ATTRIBUTE, realm);
-        return credentials;
+        return getCredentials(username, realm, null);
+    }
+
+    /**
+     * @deprecated Use method with realm
+     */
+    @Deprecated
+    public static Credentials getCredentials(String username, List<String> deniedPathes) {
+        logger.warn("Getting credentials with empty realm for "+username);
+        return getCredentials(username, null, deniedPathes);
     }
 
     public static Credentials getCredentials(String username, String realm, List<String> deniedPathes) {

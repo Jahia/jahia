@@ -198,7 +198,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (type == Event.NODE_MOVED) {
                     if (cacheKeyGenerator != null) {
                         final String fPath = path;
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                             @Override
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 final QueryManagerWrapper queryManager = session.getWorkspace().getQueryManager();

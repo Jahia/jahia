@@ -350,7 +350,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 logger.debug("Getting ACL for " + cacheKey);
                 long l = System.currentTimeMillis();
 
-                Map<String, Set<String>> map = template.doExecuteWithSystemSession(null, Constants.LIVE_WORKSPACE, new JCRCallback<Map<String, Set<String>>>() {
+                Map<String, Set<String>> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, Set<String>>>() {
                     @SuppressWarnings("unchecked")
                     public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(

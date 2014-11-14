@@ -223,7 +223,7 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
             if (workspace == null) {
                 workspace = (String) workflow.getVariables().get("workspace");
             }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), workspace, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user.getJahiaUser(), workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
                     JCRNodeWrapper n = session.getNode(user.getPath());

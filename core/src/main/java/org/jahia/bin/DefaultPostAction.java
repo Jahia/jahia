@@ -211,11 +211,11 @@ public class DefaultPostAction extends Action {
 
             final String nodeId = newNode.getIdentifier();
             if (parameters.containsKey(Render.AUTO_ASSIGN_ROLE) && !JahiaUserManagerService.isGuest(session.getUser())) {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(session.getUser().getName(),session.getWorkspace().getName(),new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), session.getWorkspace().getName(), null, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper rootSession) throws RepositoryException {
                         JCRNodeWrapper createdNode = rootSession.getNodeByUUID(nodeId);
                         List<String> roles = parameters.get(Render.AUTO_ASSIGN_ROLE);
-                        createdNode.grantRoles("u:"+session.getUser().getName(), new HashSet<String>(roles));
+                        createdNode.grantRoles("u:" + session.getUser().getName(), new HashSet<String>(roles));
                         rootSession.save();
                         return null;
                     }

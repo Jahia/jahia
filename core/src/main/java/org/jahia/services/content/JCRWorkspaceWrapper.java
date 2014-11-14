@@ -265,11 +265,16 @@ public class JCRWorkspaceWrapper implements Workspace {
                 if (sessionMove) {
                     callback.doInJCR(session);
                 } else {
-                    JCRTemplate.getInstance().doExecute(session.isSystem(), session.getUser().getName(), getName(), session.getLocale(), new JCRCallback<Object>() {
+                    JCRCallback<Object> jcrCallback = new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             return JCRObservationManager.doWorkspaceWriteCall(session, JCRObservationManager.WORKSPACE_MOVE, callback);
                         }
-                    });
+                    };
+                    if (session.isSystem()) {
+                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), getName(), session.getLocale(), jcrCallback);
+                    } else {
+                        JCRTemplate.getInstance().doExecuteWithUserSession(session.getUser(), getName(), session.getLocale(), jcrCallback);
+                    }
                 }
             } else {
                 if (sessionMove) {

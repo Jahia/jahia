@@ -109,7 +109,7 @@ public class ReferencesToDependenciesFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, final Resource resource, RenderChain chain) throws Exception {
         if (resource.getNode().isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, resource.getNode().getSession().getWorkspace().getName(), null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     NodeIterator ni = session.getNodeByIdentifier(resource.getNode().getIdentifier()).getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
                     while (ni.hasNext()) {

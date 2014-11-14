@@ -153,7 +153,7 @@ public class JCRObservationManagerDispatcher implements SynchronousEventListener
             final List<Event> fexternal = external;
 
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         List<JCRObservationManager.EventWrapper> eventWrappers = new ArrayList<JCRObservationManager.EventWrapper>();
                         for (Event event : fexternal) {

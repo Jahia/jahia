@@ -110,7 +110,7 @@ public class VisibilityActionPurgeJob extends BackgroundJob {
         final String workspace = StringUtils.defaultIfEmpty(data.getString("workspace"),
                 Constants.LIVE_WORKSPACE);
 
-        Integer[] counts = JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace,
+        Integer[] counts = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                 new JCRCallback<Integer[]>() {
                     @SuppressWarnings("unchecked")
                     public Integer[] doInJCR(JCRSessionWrapper session) throws RepositoryException {

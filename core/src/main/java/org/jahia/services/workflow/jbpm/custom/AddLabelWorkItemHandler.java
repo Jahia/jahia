@@ -73,6 +73,7 @@ package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.services.content.*;
+import org.jahia.services.usermanager.JahiaUser;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.api.runtime.process.WorkItemHandler;
 import org.kie.api.runtime.process.WorkItemManager;
@@ -90,7 +91,7 @@ public class AddLabelWorkItemHandler extends AbstractWorkItemHandler implements 
         String workspace = (String) workItem.getParameter("workspace");
         final String label = (String) workItem.getParameter("label");
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     for (String id : nodeIds) {
                         JCRNodeWrapper node = session.getNodeByIdentifier(id);

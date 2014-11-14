@@ -746,13 +746,13 @@ public class WebprojectHandler implements Serializable {
                                     .getPathMapping();
                             pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                             pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
-                            JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
+                            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
                                         session.getPathMapping().putAll(pathMapping);
                                         importExportBaseService.importSiteZip(file == null ? null : new FileSystemResource(file),
-                                                system, infos.asMap(),null,null,session);
+                                                system, infos.asMap(), null, null, session);
                                     } catch (Exception e) {
                                         logger.error("Error when getting templates", e);
                                     }

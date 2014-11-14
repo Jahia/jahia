@@ -117,7 +117,7 @@ public class CompleteTaskCommand extends BaseCommand<Object> {
         if (uuid != null) {
             String workspace = (String) taskInputParameters.get("workspace");
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(jahiaUser != null ? jahiaUser.getUsername() : null, workspace, new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(jahiaUser, workspace, null, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         if (!session.getNodeByUUID(uuid).hasProperty("state") ||
                                 !session.getNodeByUUID(uuid).getProperty("state").getString().equals("finished")) {

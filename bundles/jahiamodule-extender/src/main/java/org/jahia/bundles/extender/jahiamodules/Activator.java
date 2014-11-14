@@ -397,7 +397,7 @@ public class Activator implements BundleActivator {
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage != null) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         templatePackageDeployer.clearModuleNodes(jahiaTemplatesPackage, session);
                         return null;
@@ -514,7 +514,7 @@ public class Activator implements BundleActivator {
             if (SettingsBean.getInstance().isProcessingServer()) {
                 try {
                     JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser() != null ? JCRSessionFactory.getInstance().getCurrentUser() : JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(user.getName(), null, null, new JCRCallback<Boolean>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Boolean>() {
                         public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             templatePackageDeployer.initializeModuleContent(pkg, session);
                             return null;
@@ -627,7 +627,7 @@ public class Activator implements BundleActivator {
 
         final String id = jahiaTemplatesPackage.getId();
         try {
-            boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+            boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     return session.itemExists("/modules/" + id + "/" + jahiaTemplatesPackage.getVersion());
                 }
@@ -663,7 +663,7 @@ public class Activator implements BundleActivator {
         if (initializedBundles.remove(bundle)) {
             //auto deploy bundle according to bundle configuration
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, null, null, new JCRCallback<Boolean>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
                     public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         templatesService.autoInstallModulesToSites(jahiaTemplatesPackage, session);
                         session.save();

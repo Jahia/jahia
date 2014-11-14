@@ -21,6 +21,7 @@
 <%@ page import="org.apache.commons.lang.StringUtils" %>
 <%@ page import="org.apache.jackrabbit.core.id.NodeId" %>
 <%@ page import="org.apache.jackrabbit.core.lock.LockInfo" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -117,7 +118,7 @@
             final List<File> lockFiles = fix ? new LinkedList<File>() : null;
             for (String workspaceName : workspaces) {
                 if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession((JahiaUser) null, workspaceName, null new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
                             JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
                             Node jcrRootNode = jahiaRootNode.getRealNode();

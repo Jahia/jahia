@@ -127,12 +127,12 @@ public class JCRPortletNode extends JCRNodeDecorator {
             // Set the applicationReference now
             final String finalContext = context;
             final String uuid = getUUID();
-            JCRTemplate.getInstance().doExecuteWithSystemSession(null,this.getSession().getWorkspace().getName(),this.getSession().getLocale(),new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, this.getSession().getWorkspace().getName(), this.getSession().getLocale(), new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     try {
                         final ApplicationBean applicationByContext = ServicesRegistry.getInstance().getApplicationsManagerService().getApplicationByContext(
                                 finalContext);
-                        if(applicationByContext!=null){
+                        if (applicationByContext != null) {
                             JCRNodeWrapper nodeByUUID = session.getNodeByUUID(uuid);
                             session.checkout(nodeByUUID);
                             nodeByUUID.setProperty("j:applicationRef", applicationByContext.getID());
@@ -140,7 +140,7 @@ public class JCRPortletNode extends JCRNodeDecorator {
                             session.save();
                         }
                     } catch (JahiaException e1) {
-                        logger.error(e1.getMessage(),e1);
+                        logger.error(e1.getMessage(), e1);
                     }
                     return null;
                 }

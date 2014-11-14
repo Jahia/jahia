@@ -86,7 +86,6 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -116,7 +115,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         JCRSessionWrapper livesession = null;
         try {
             try {
-                session = getSystemSession(null, Constants.LIVE_WORKSPACE);
+                session = getSystemSession(Constants.LIVE_WORKSPACE);
                 session.getProviderSession(this);
             } catch (NoSuchWorkspaceException e) {
                 if (session != null && session.isLive()) {
@@ -139,7 +138,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 Node n = providerSession.getNode("/");
                 recurseCheckin(n, providerSession.getWorkspace().getVersionManager());
                 NodeIterator ni = n.getNodes();
-                livesession = getSystemSession(null, Constants.LIVE_WORKSPACE);
+                livesession = getSystemSession(Constants.LIVE_WORKSPACE);
 
                 Session liveProviderSession = livesession.getProviderSession(this);
                 Node liveRootNode = liveProviderSession.getRootNode();

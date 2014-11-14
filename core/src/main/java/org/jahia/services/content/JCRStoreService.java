@@ -73,7 +73,6 @@ package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
 
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -322,7 +321,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 List<DefaultEventListener> l = listeners.get(ws);
 
                 // This session must not be released
-                final Session session = getSessionFactory().getSystemSession(null, ws);
+                final Session session = getSessionFactory().getSystemSession(null, null, ws, null);
                 try {
                     final Workspace workspace = session.getWorkspace();
 

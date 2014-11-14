@@ -17,6 +17,7 @@
 <%@ page import="org.jahia.services.content.nodetypes.NodeTypeRegistry" %>
 <%@ page import="org.jahia.services.SpringContextSingleton" %>
 <%@ page import="org.jahia.registries.ServicesRegistry" %>
+<%@ page import="org.jahia.services.usermanager.JahiaUser" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
@@ -93,7 +94,7 @@
         for (String workspaceName : workspaces) {
             if (StringUtils.isBlank(chosenWorkspace) || chosenWorkspace.equals(workspaceName)) {
                 try {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspaceName, null, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
                             try {
                                 return runConsistencyCheck(sessionWrapper, fix, out);

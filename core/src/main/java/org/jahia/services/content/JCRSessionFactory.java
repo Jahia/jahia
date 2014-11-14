@@ -75,6 +75,7 @@ import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.jaas.JahiaPrincipal;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -238,24 +239,12 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return login(JahiaLoginModule.getSystemCredentials());
     }
 
-    protected JCRSessionWrapper getSystemSession(String username) throws RepositoryException {
-        return login(JahiaLoginModule.getSystemCredentials(username));
+    protected JCRSessionWrapper getSystemSession(String username, String realm, String workspace, Locale locale) throws RepositoryException {
+        return login(JahiaLoginModule.getSystemCredentials(username, realm), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
-    protected JCRSessionWrapper getSystemSession(String username, String workspace) throws RepositoryException {
-        return login(JahiaLoginModule.getSystemCredentials(username), workspace);
-    }
-
-    protected JCRSessionWrapper getSystemSession(String username, String workspace, Locale locale) throws RepositoryException {
-        return login(JahiaLoginModule.getSystemCredentials(username), workspace, locale, locale != null ? getFallbackLocale() : null);
-    }
-
-    protected JCRSessionWrapper getUserSession(String username, String workspace) throws RepositoryException {
-        return login(JahiaLoginModule.getCredentials(username, null), workspace);
-    }
-
-    protected JCRSessionWrapper getUserSession(String username, String workspace, Locale locale) throws RepositoryException {
-        return login(JahiaLoginModule.getCredentials(username, null), workspace, locale, locale != null ? getFallbackLocale() : null);
+    protected JCRSessionWrapper getUserSession(String username, String realm, String workspace, Locale locale) throws RepositoryException {
+        return login(JahiaLoginModule.getCredentials(username, realm), workspace, locale, locale != null ? getFallbackLocale() : null);
     }
 
     public String[] getDescriptorKeys() {
@@ -315,10 +304,16 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         for (JahiaPrincipal jahiaPrincipal : p) {
             JahiaUser user = null;
             if (!jahiaPrincipal.getName().startsWith(JahiaLoginModule.SYSTEM)) {
+                JCRUserNode userNode;
                 if (jahiaPrincipal.isGuest()) {
-                    user = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME).getJahiaUser();
+                    userNode = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
                 } else {
-                    user = userService.lookupUser(jahiaPrincipal.getName(), jahiaPrincipal.getRealm()).getJahiaUser();
+                    userNode = userService.lookupUser(jahiaPrincipal.getName(), jahiaPrincipal.getRealm());
+                }
+                if (userNode != null) {
+                    user = userNode.getJahiaUser();
+                } else {
+                    logger.warn("Cannot find user "+jahiaPrincipal.getName() + "@" + jahiaPrincipal.getRealm());
                 }
             }
             return new JCRSessionWrapper(user, credentials, jahiaPrincipal.isSystem(), workspace, locale, this, fallbackLocale);

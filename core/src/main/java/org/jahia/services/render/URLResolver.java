@@ -74,8 +74,6 @@ package org.jahia.services.render;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.cache.Cache;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
@@ -90,12 +88,8 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.jahia.utils.Url;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
@@ -502,15 +496,15 @@ public class URLResolver {
             siteInfo = (SiteInfo) element.getObjectValue();
         }
         if (nodePath == null || siteInfo == null) {
-            nodePath = JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, locale,
+            nodePath = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, locale,
                     new JCRCallback<String>() {
                         public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             String nodePath = JCRContentUtils.escapeNodePath(path.endsWith("/*") ? path.substring(0,
                                     path.lastIndexOf("/*")) : path);
 
-                            String siteName = StringUtils.substringBetween(nodePath,"/sites/","/");
-                            if (siteName != null && session.itemExists("/sites/"+siteName)) {
-                                siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/"+siteName));
+                            String siteName = StringUtils.substringBetween(nodePath, "/sites/", "/");
+                            if (siteName != null && session.itemExists("/sites/" + siteName)) {
+                                siteInfo = new SiteInfo((JCRSiteNode) session.getNode("/sites/" + siteName));
 
                                 if (siteInfo.isMixLanguagesActive() && siteInfo.getDefaultLanguage() != null) {
                                     session.setFallbackLocale(LanguageCodeConverters.getLocaleFromCode(siteInfo.getDefaultLanguage()));
@@ -518,7 +512,7 @@ public class URLResolver {
                             }
                             if (logger.isDebugEnabled()) {
                                 logger.debug(cacheKey + " has not been found in the cache, still looking for node " +
-                                             nodePath);
+                                        nodePath);
                             }
                             JCRNodeWrapper node = null;
                             while (true) {
@@ -601,7 +595,7 @@ public class URLResolver {
             throw new PathNotFoundException("Unknown locale");
         }
         final URLResolver urlResolver = this;
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(null,
+        return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
                 workspace, locale, new JCRCallback<Resource>() {
                     public Resource doInJCR(JCRSessionWrapper session)
                             throws RepositoryException {
@@ -648,12 +642,12 @@ public class URLResolver {
 
                         final Element element = siteInfoCache.get(getCacheKey(workspace, locale, path));
                         SiteInfo siteInfo = null;
-                        if(element!=null) {
+                        if (element != null) {
                             siteInfo = (SiteInfo) element.getObjectValue();
                         }
                         boolean mixLanguagesActive = false;
                         String defaultLanguage = null;
-                        if(siteInfo==null){
+                        if (siteInfo == null) {
                             JCRSiteNode site = node.getResolveSite();
                             if (site != null) {
                                 defaultLanguage = site.getDefaultLanguage();
@@ -673,9 +667,9 @@ public class URLResolver {
                             userSession = JCRSessionFactory.getInstance().getCurrentUserSession(workspace, locale);
                         }
 
-                        if(userSession.getVersionDate()==null)
+                        if (userSession.getVersionDate() == null)
                             userSession.setVersionDate(versionDate);
-                        if(userSession.getVersionLabel()==null)
+                        if (userSession.getVersionLabel() == null)
                             userSession.setVersionLabel(versionLabel);
 
                         try {

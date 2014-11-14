@@ -92,7 +92,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.DynamicValueImpl;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
@@ -100,6 +99,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
+import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -121,11 +121,8 @@ public class DefaultValueListener extends DefaultEventListener {
             // todo : may need to move the dynamic default values generation to JahiaNodeTypeInstanceHandler
             JCRSessionWrapper eventSession = ((JCREventIterator)eventIterator).getSession();
             final Locale sessionLocale = eventSession.getLocale();
-            String userId = eventSession.getUserID();
-            if (userId.startsWith(JahiaLoginModule.SYSTEM)) {
-                userId = userId.substring(JahiaLoginModule.SYSTEM.length());
-            }
-            JCRTemplate.getInstance().doExecuteWithSystemSession(userId, workspace, new JCRCallback<Object>() {
+            JahiaUser user = eventSession.getUser();
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, workspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     Set<Session> sessions = null;
                     while (eventIterator.hasNext()) {
@@ -154,7 +151,7 @@ public class DefaultValueListener extends DefaultEventListener {
                                 l.add(nt);
                                 NodeType mixin[] = n.getMixinNodeTypes();
                                 l.addAll(Arrays.asList(mixin));
-                                for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext();) {
+                                for (Iterator<NodeType> iterator = l.iterator(); iterator.hasNext(); ) {
                                     NodeType nodeType = iterator.next();
                                     ExtendedNodeType ent = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
                                     if (ent != null) {

@@ -285,11 +285,11 @@ public class JCRVersionService extends JahiaService {
     }
 
     public void restoreVersionLabel(final JCRNodeWrapper node, final Date versionDate, final String label, final boolean allSubTree) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, node.getSession().getWorkspace().getName(), null,
                 new JCRCallback<Object>() {
                     public Object doInJCR(final JCRSessionWrapper session) throws RepositoryException {
-                        String workspace = label!=null?StringUtils.substringBefore(label, "_"):"live";
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null,
+                        String workspace = label != null ? StringUtils.substringBefore(label, "_") : "live";
+                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null,
                                 new JCRCallback<Object>() {
                                     public Object doInJCR(final JCRSessionWrapper frozensession) throws RepositoryException {
                                         JCRNodeWrapper destinationNode = session.getNodeByUUID(node.getIdentifier());
@@ -304,8 +304,8 @@ public class JCRVersionService extends JahiaService {
                                         frozensession.setVersionDate(versionDate);
                                         JCRNodeWrapper frozenVersionAsRegular = frozensession.getNodeByUUID(destinationNode.getIdentifier());
 
-                                        if(frozenVersionAsRegular==null) {
-                                            throw new RepositoryException("label version " + label + " could not be found on node "+destinationNode.getPath());
+                                        if (frozenVersionAsRegular == null) {
+                                            throw new RepositoryException("label version " + label + " could not be found on node " + destinationNode.getPath());
                                         }
                                         synchronizeNode(frozenVersionAsRegular, destinationNode, session, allSubTree);
                                         session.save();
@@ -469,7 +469,7 @@ public class JCRVersionService extends JahiaService {
     }
 
     public void addVersionLabel(final JCRNodeWrapper node, final String label) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, node.getSession().getWorkspace().getName(), null,
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, node.getSession().getWorkspace().getName(), null,
                 new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper nodeWrapper = session.getNodeByUUID(node.getIdentifier());
@@ -493,7 +493,7 @@ public class JCRVersionService extends JahiaService {
 
     public void addVersionLabel(final List<String> allUuids, final String label, final String workspace)
             throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, null, new JCRCallback<Object>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 VersionManager versionManager = session.getWorkspace().getVersionManager();
                 for (String allUuid : allUuids) {

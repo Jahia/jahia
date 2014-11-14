@@ -95,14 +95,16 @@ public class User {
     private static Logger log = LoggerFactory.getLogger(User.class);
 
     private String username;
+    private String realm;
     private JCRUserNode user;
 
     public User(JCRUserNode user) {
         this.user = user;
     }
 
-    public User(String username) {
+    public User(String username, String realm) {
         this.username = username;
+        this.realm = realm;
     }
 
     public String getName() {
@@ -111,6 +113,16 @@ public class User {
         }
         if (user != null) {
             return user.getName();
+        }
+        return null;
+    }
+
+    public String getRealm() {
+        if (realm != null) {
+            return realm;
+        }
+        if (user != null) {
+            return user.getRealm();
         }
         return null;
     }
@@ -149,7 +161,7 @@ public class User {
     public JCRUserNode getUserNode() {
         if (user == null && username != null) {
             if (!username.equals(JahiaLoginModule.SYSTEM) && !username.equals(JahiaLoginModule.GUEST)) {
-                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username, realm);
             }
         }
         return user;

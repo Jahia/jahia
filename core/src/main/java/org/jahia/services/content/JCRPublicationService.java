@@ -158,7 +158,7 @@ public class JCRPublicationService extends JahiaService {
     public void lockForPublication(final List<String> publicationInfo, final String workspace,
                                    final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getName(),
+                .doExecuteWithSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
                         workspace, null, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 for (String id : publicationInfo) {
@@ -185,7 +185,7 @@ public class JCRPublicationService extends JahiaService {
     public void unlockForPublication(final List<String> publicationInfo, final String workspace,
                                      final String key) throws RepositoryException {
         JCRTemplate.getInstance()
-                .doExecute(true, getSessionFactory().getCurrentUserSession(workspace).getUser().getName(),
+                .doExecuteWithSystemSessionAsUser(getSessionFactory().getCurrentUserSession(workspace).getUser(),
                         workspace, null, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 for (String id : publicationInfo) {
@@ -280,7 +280,6 @@ public class JCRPublicationService extends JahiaService {
             return;
 
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        final String username = user != null ? user.getUsername() : null;
 
         final List<String> checkedUuids = new ArrayList<String>();
         if (checkPermissions) {
@@ -299,9 +298,9 @@ public class JCRPublicationService extends JahiaService {
         }
 
         if (!checkedUuids.isEmpty()) {
-            JCRTemplate.getInstance().doExecute(true, username, sourceWorkspace, null, new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, sourceWorkspace, null, new JCRCallback<Object>() {
                 public Object doInJCR(final JCRSessionWrapper sourceSession) throws RepositoryException {
-                    JCRTemplate.getInstance().doExecute(true, username, destinationWorkspace, new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, destinationWorkspace, null, new JCRCallback<Object>() {
                         public Object doInJCR(final JCRSessionWrapper destinationSession) throws RepositoryException {
                             sourceSession.setSkipValidation(true);
                             destinationSession.setSkipValidation(true);
@@ -495,12 +494,12 @@ public class JCRPublicationService extends JahiaService {
         if (!destinationSession.isSystem()) {
             final String nodePath = node.getPath();
             final String destinationWorkspace = destinationSession.getWorkspace().getName();
-            return JCRTemplate.getInstance().doExecute(true, node.getUser().getName(),
+            return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(node.getUser().getJahiaUser(),
                     node.getSession().getWorkspace().getName(), null, new JCRCallback<CloneResult>() {
                         public CloneResult doInJCR(final JCRSessionWrapper sourceSession)
                                 throws RepositoryException {
-                            return JCRTemplate.getInstance().doExecute(true,
-                                    node.getUser().getName(), destinationWorkspace,
+                            return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(
+                                    node.getUser().getJahiaUser(), destinationWorkspace, null,
                                     new JCRCallback<CloneResult>() {
                                         public CloneResult doInJCR(
                                                 final JCRSessionWrapper destinationSession)
@@ -893,13 +892,7 @@ public class JCRPublicationService extends JahiaService {
      * @throws javax.jcr.RepositoryException
      */
     public void unpublish(final List<String> uuids, boolean checkPermissions) throws RepositoryException {
-        final String username;
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
-        if (user != null) {
-            username = user.getUsername();
-        } else {
-            username = null;
-        }
 
         final List<String> checkedUuids = new ArrayList<String>();
         if (checkPermissions) {
@@ -942,8 +935,8 @@ public class JCRPublicationService extends JahiaService {
                 return null;
             }
         };
-        JCRTemplate.getInstance().doExecute(true, username, EDIT_WORKSPACE, null, callback);
-        JCRTemplate.getInstance().doExecute(true, username, LIVE_WORKSPACE, null, callback);
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, EDIT_WORKSPACE, null, callback);
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, LIVE_WORKSPACE, null, callback);
     }
 
     public List<PublicationInfo> getPublicationInfos(List<String> uuids, Set<String> languages,

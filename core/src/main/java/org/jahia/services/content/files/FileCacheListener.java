@@ -158,7 +158,7 @@ public class FileCacheListener extends DefaultEventListener {
         }
         if (!nodes.isEmpty()) {
             try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         for (String s : nodes) {
                             try {
@@ -180,7 +180,7 @@ public class FileCacheListener extends DefaultEventListener {
     }
 
     private void flushSubNodes(final String nodePath, final String srcAbsPath, final String destAbsPath) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspace, new JCRCallback<Object>() {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 try {
                     JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(nodePath);
@@ -193,7 +193,7 @@ public class FileCacheListener extends DefaultEventListener {
                         String replace = path.replace(destAbsPath, srcAbsPath);
                         cacheManager.invalidate(workspace, replace);
                         moduleCacheProvider.invalidate(replace);
-                        flushSubNodes(path,srcAbsPath, destAbsPath);
+                        flushSubNodes(path, srcAbsPath, destAbsPath);
                     }
                 } catch (Exception e) {
                     cacheManager.invalidate(workspace, srcAbsPath);

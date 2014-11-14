@@ -290,7 +290,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     try {
                         JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
                         JCRSessionFactory.getInstance().setCurrentUser(user);
-                        JCRTemplate.getInstance().doExecuteWithSystemSession(user.getUsername(), new JCRCallback<Object>() {
+                        JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {

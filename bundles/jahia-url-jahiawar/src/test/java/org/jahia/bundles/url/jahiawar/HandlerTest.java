@@ -111,7 +111,8 @@ public class HandlerTest {
 
         Map<String,String[]> contentChecks = new HashMap<String,String[]>();
 
-        JarInputStream jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/forum/1.3/forum-1.3.war", contentChecks);
+        URL forumWarUrl = this.getClass().getClassLoader().getResource("forum-1.3.war");
+        JarInputStream jarInputStream = processWar(forumWarUrl.toExternalForm(), contentChecks);
         Attributes mainAttributes = jarInputStream.getManifest().getMainAttributes();
 
         Assert.assertEquals("Bundle-SymbolicName", "forum", mainAttributes.getValue("Bundle-SymbolicName"));
@@ -136,7 +137,8 @@ public class HandlerTest {
         String modulePath = firstModuleURI.getPath();
 
         // now let's try with another module
-        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/translateworkflow/1.2/translateworkflow-1.2.war", contentChecks);
+        URL translateWorkflowWarUrl = this.getClass().getClassLoader().getResource("translateworkflow-1.2.war");
+        jarInputStream = processWar(translateWorkflowWarUrl.toExternalForm(), contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
 
         importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));
@@ -146,10 +148,12 @@ public class HandlerTest {
         });
 
 
-        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/ldap/1.3/ldap-1.3.war", contentChecks);
+        URL ldapWarUrl = this.getClass().getClassLoader().getResource("ldap-1.3.war");
+        jarInputStream = processWar(ldapWarUrl.toExternalForm(), contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
 
-        jarInputStream = processWar("https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/social/1.5/social-1.5.war", contentChecks);
+        URL socialWarUrl = this.getClass().getClassLoader().getResource("social-1.5.war");
+        jarInputStream = processWar(socialWarUrl.toExternalForm(), contentChecks);
         mainAttributes = jarInputStream.getManifest().getMainAttributes();
 
         importPackageHeaderClauses = BundleUtils.getHeaderClauses("Import-Package", mainAttributes.getValue("Import-Package"));

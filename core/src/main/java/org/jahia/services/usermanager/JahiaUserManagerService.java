@@ -900,8 +900,4 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public void setUserPathCache(UserPathCache userPathCache) {
         this.userPathCache = userPathCache;
     }
-
-    public int getTimeToLiveForEmptyPath() {
-        return userPathCache.getTimeToLiveForEmptyPath();
-    }
 }

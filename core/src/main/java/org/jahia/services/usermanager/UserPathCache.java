@@ -69,6 +69,8 @@
  */
 package org.jahia.services.usermanager;
 
+import java.io.Serializable;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
@@ -102,7 +104,8 @@ public class UserPathCache {
         }
     }
 
-    static final class UserPathCacheKey {
+    static final class UserPathCacheKey implements Serializable {
+        private static final long serialVersionUID = -727853070149556455L;
         final int hash;
         final String site;
         final String user;

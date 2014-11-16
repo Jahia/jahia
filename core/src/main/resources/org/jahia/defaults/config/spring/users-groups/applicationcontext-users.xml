@@ -17,7 +17,7 @@
                 </property>
             </bean>
         </property>
-        <property name="userPathCache" >
+        <property name="userPathCache">
             <bean class="org.jahia.services.usermanager.UserPathCache">
                 <property name="ehCacheProvider" ref="ehCacheProvider"/>
             </bean>

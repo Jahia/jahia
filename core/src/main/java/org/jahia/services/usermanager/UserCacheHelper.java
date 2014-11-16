@@ -89,7 +89,7 @@ import org.jahia.services.query.QueryWrapper;
  * 
  * @author Sergiy Shyrkov
  */
-public class UserPathCache {
+public class UserCacheHelper {
 
     class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
         @Override

@@ -139,7 +139,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
     
-    private UserPathCache userPathCache;
+    private UserCacheHelper cacheHelper;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -275,7 +275,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public String getUserPath(String name, String site) {
-        return userPathCache.getUserPath(name, site);
+        return cacheHelper.getUserPath(name, site);
     }
 
     /**
@@ -844,11 +844,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public void updatePathCacheAdded(String userPath) {
-        userPathCache.updateAdded(userPath);
+        cacheHelper.updateAdded(userPath);
     }
 
     public void updatePathCacheRemoved(String userPath) {
-        userPathCache.updateRemoved(userPath);
+        cacheHelper.updateRemoved(userPath);
     }
 
     /**
@@ -897,7 +897,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_UNREGISTER_BRIDGE_EVENT_KEY);
     }
 
-    public void setUserPathCache(UserPathCache userPathCache) {
-        this.userPathCache = userPathCache;
+    public void setCacheHelper(UserCacheHelper userPathCache) {
+        this.cacheHelper = userPathCache;
     }
 }

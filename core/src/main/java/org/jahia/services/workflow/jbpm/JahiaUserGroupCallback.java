@@ -98,7 +98,7 @@ public class JahiaUserGroupCallback implements UserGroupCallback {
 
     @Override
     public boolean existsGroup(String groupId) {
-        return !"Administrator".equals(groupId) &&  groupService.lookupGroupByPath(groupId) != null;
+        return !"Administrators".equals(groupId) &&  groupService.lookupGroupByPath(groupId) != null;
     }
 
     @Override

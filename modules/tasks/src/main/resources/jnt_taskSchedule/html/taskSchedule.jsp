@@ -55,12 +55,12 @@
     %>
     <c:set value="" var="todayDisplayed" scope="request"/>
     <jcr:node var="user" path="${renderContext.user.localPath}"/>
-    <c:set value=" and (((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='u:${functions:sqlencode(user.name)}' "
+    <c:set value=" and (((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='${functions:sqlencode(user.path)}' "
            var="sql"/>
     <c:forEach items="${user:getUserMembership(user)}" var="membership">
-        <c:set value="${sql} or task.candidates='g:${functions:sqlencode(membership.key)}'" var="sql"/>
+        <c:set value="${sql} or task.candidates='${functions:sqlencode(membership.key)}'" var="sql"/>
     </c:forEach>
-    <c:set value="${sql} )) or task.assigneeUserKey='${functions:sqlencode(user.name)}')" var="sql"/>
+    <c:set value="${sql} )) or task.assigneeUserKey='${functions:sqlencode(user.path)}')" var="sql"/>
     <query:definition var="listQuery"
                       statement="select * from [jnt:task] as task where isdescendantnode(task,['${functions:sqlencode(bindedComponent)}']) and
                       (([dueDate] is not null and [dueDate] > '${startDate}' and [dueDate] <= '${currentDate}' and state <> 'finished')

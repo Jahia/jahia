@@ -15,23 +15,23 @@
 
 <c:set value="" var="sql"/>
 <c:if test="${currentNode.properties['filterOnAssignee'].string eq 'assignedToMe'}">
-    <c:set value="${sql} and task.assigneeUserKey='${functions:sqlencode(user.name)}'" var="sql"/>
+    <c:set value="${sql} and task.assigneeUserKey='${functions:sqlencode(user.path)}'" var="sql"/>
 </c:if>
 
 <c:if test="${not user.root and currentNode.properties['filterOnAssignee'].string eq 'unassigned'}">
-    <c:set value="${sql} and ((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='u:${functions:sqlencode(user.name)}' " var="sql"/>
+    <c:set value="${sql} and ((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='${functions:sqlencode(user.path)}' " var="sql"/>
 	<c:forEach items="${user:getUserMembership(user)}" var="membership">
-	    <c:set value="${sql} or task.candidates='g:${functions:sqlencode(membership.key)}'" var="sql"/>
+	    <c:set value="${sql} or task.candidates='${functions:sqlencode(membership.key)}'" var="sql"/>
 	</c:forEach>
     <c:set value="${sql} ))" var="sql"/>
 </c:if>
 
 <c:if test="${not user.root and currentNode.properties['filterOnAssignee'].string eq 'assignedToMeOrUnassigned'}">
-    <c:set value="${sql} and (((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='u:${functions:sqlencode(user.name)}' " var="sql"/>
+    <c:set value="${sql} and (((task.assigneeUserKey is null or task.assigneeUserKey='') and (task.candidates is null or task.candidates='${functions:sqlencode(user.path)}' " var="sql"/>
 	<c:forEach items="${user:getUserMembership(user)}" var="membership">
-	    <c:set value="${sql} or task.candidates='g:${functions:sqlencode(membership.key)}'" var="sql"/>
+	    <c:set value="${sql} or task.candidates='${functions:sqlencode(membership.key)}'" var="sql"/>
 	</c:forEach>
-    <c:set value="${sql} )) or task.assigneeUserKey='${functions:sqlencode(user.name)}')" var="sql"/>
+    <c:set value="${sql} )) or task.assigneeUserKey='${functions:sqlencode(user.path)}')" var="sql"/>
 </c:if>
 
 <c:if test="${currentNode.properties['filterOnCreator'].string eq 'createdByMe'}">

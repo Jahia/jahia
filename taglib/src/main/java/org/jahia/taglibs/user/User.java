@@ -162,11 +162,14 @@ public class User {
                 .getJahiaUserManagerService().lookupUser(user);
     }
 
-    public static Map<String, JCRGroupNode> getUserMembership(String username) {
+    public static Map<String, JCRGroupNode> getUserMembership(String user) {
+        return getUserMembership(lookupUser(user));
+    }
+
+    public static Map<String, JCRGroupNode> getUserMembership(JCRNodeWrapper user) {
         Map<String, JCRGroupNode> map = new LinkedHashMap<String, JCRGroupNode>();
-        final JCRUserNode jahiaUser = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-        final List<String> userMembership = managerService.getMembershipByPath(jahiaUser.getPath());
+        final List<String> userMembership = managerService.getMembershipByPath(user.getPath());
         for (String groupPath : userMembership) {
             if(!groupPath.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
                     !groupPath.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
@@ -175,10 +178,6 @@ public class User {
             }
         }
         return map;
-    }
-
-    public static Map<String, JCRGroupNode> getUserMembership(JCRNodeWrapper user) {
-        return getUserMembership(user.getName());
     }
 
     /**
@@ -197,8 +196,8 @@ public class User {
                 final JahiaGroupManagerService managerService = ServicesRegistry.getInstance()
                         .getJahiaGroupManagerService();
 
-                // candidates are using the u:userName or g:groupName format
-                final String formattedUserName = "u:" + user.getName();
+                // candidates are using the path
+                final String formattedUserName = user.getUserKey();
 
                 // look at all the candidates for assignment
                 final Value[] candidatesValues = task.getProperty("candidates").getValues();
@@ -212,16 +211,15 @@ public class User {
                     } else {
                         // otherwise, check if we're looking at a group, extract the group name and check whether the user is a member of
                         // that group
-                        if (candidate.startsWith("g:")) {
-                            final String groupPath = candidate.substring(2);
-                            JCRGroupNode candidateGroup = managerService.lookupGroupByPath(groupPath);
+                        if (candidate.contains("/groups/")) {
+                            JCRGroupNode candidateGroup = managerService.lookupGroupByPath(candidate);
                             if (candidateGroup != null) {
                                 if (candidateGroup.isMember(user.getLocalPath())) {
                                     return true;
                                 }
                             } else {
                                 logger.info("Unable to lookup group for key {}."
-                                        + " Skipping it when checking task assignee candidates.", groupPath);
+                                        + " Skipping it when checking task assignee candidates.", candidate);
                             }
                         }
                     }

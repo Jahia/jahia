@@ -449,7 +449,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
                         if (user != null) {
                             if (!nodeByUUID.hasProperty("assigneeUserKey") ||
                                     !nodeByUUID.getProperty("assigneeUserKey").getString().equals(user.getName())) {
-                                nodeByUUID.setProperty("assigneeUserKey", user.getName());
+                                nodeByUUID.setProperty("assigneeUserKey", user.getLocalPath());
                                 session.save();
                             }
                         } else {

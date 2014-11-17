@@ -154,12 +154,12 @@ public class Tasks {
     }
 
     public void assignTask(AddedNodeFact node, String username) {
-        JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username);
+        JCRUserNode user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUserByPath(username);
         try {
             JCRNodeWrapper jcrNodeWrapper = node.getNode();
             String taskId = jcrNodeWrapper.getProperty("taskId").getString();
             String provider = jcrNodeWrapper.getProperty("provider").getString();
-            WorkflowService.getInstance().assignTask(taskId, provider, user.getJahiaUser());
+            WorkflowService.getInstance().assignTask(taskId, provider, user != null ? user.getJahiaUser() : null);
         } catch (RepositoryException e) {
             logger.error("cannot assign task", e);
         }

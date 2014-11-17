@@ -51,13 +51,13 @@
                     </form>
                 </template:tokenizedForm>
                 <c:set var="assignable" value="true"/>
-                <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.name}">
+                <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.path}">
                     <c:set var="assignable" value="false"/>
                     <c:set var="candidates" value=""/>
                     <c:forEach items="${task.properties['candidates']}" var="candidate">
                         <c:set var="candidates" value=" ${candidate.string} ${candidates} "/>
                     </c:forEach>
-                    <c:set var="userKey" value="u:${user.name}"/>
+                    <c:set var="userKey" value="${user.path}"/>
                     <c:if test="${fn:contains(candidates, userKey)}">
                         <c:set var="assignable" value="true"/>
                     </c:if>
@@ -71,13 +71,13 @@
                     </c:if>
                 </c:if>
                 <c:choose>
-                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.name and assignable eq 'true'}">
-                        <a class="btn btn-primary btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','${user.name}');return false;" title="assign to me">
+                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string ne user.path and assignable eq 'true'}">
+                        <a class="btn btn-primary btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','${user.path}');return false;" title="assign to me">
                             <i class="icon-check icon-white"></i>
                             <fmt:message key="label.actions.assigneToMe"/>
                         </a>
                     </c:when>
-                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
+                    <c:when test="${task.properties.state.string == 'active' and task.properties['assigneeUserKey'].string eq user.path}">
                         <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
                             <fmt:message key="label.actions.unassign"/>
@@ -87,7 +87,7 @@
                             <fmt:message key="label.actions.start"/>
                         </a>
                     </c:when>
-                    <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
+                    <c:when test="${task.properties.state.string == 'started' and task.properties['assigneeUserKey'].string eq user.path}">
                         <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
                             <fmt:message key="label.actions.unassign"/>
@@ -132,7 +132,7 @@
                         <i class="icon-ok"></i>
                         &nbsp;<fmt:message key="label.actions.completed"/>
                     </c:when>
-                    <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
+                    <c:when test="${task.properties.state.string == 'suspended' and task.properties['assigneeUserKey'].string eq user.path}">
                         <a class="btn btn-danger btn-small" href="#" onclick="sendNewAssignee('${task.identifier}','${task.path}','');return false;" title="Unassign">
                             <i class="icon-stop icon-white"></i>
                             <fmt:message key="label.actions.unassign"/>
@@ -157,7 +157,10 @@
         </td>
         <c:if test="${dispAssignee}">
             <td headers="Assigned">
-                    ${task.properties['assigneeUserKey'].string}
+                <c:if test="${not empty currentNode.properties['assigneeUserKey'].string}">
+                    <jcr:node var="assigneeNode" path="${currentNode.properties['assigneeUserKey'].string}"/>
+                    ${assigneeNode.name}
+                </c:if>
             </td>
         </c:if>
         <c:if test="${dispCreator}">

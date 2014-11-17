@@ -74,7 +74,7 @@
                         if (!item) {
                             return;
                         }
-                    $('#assignee_hidden').val(item['username'])
+                    $('#assignee_hidden').val(item['userKey'])
                     });
 
         $("#createTaskForm").validate({

@@ -1,5 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
 <%--@elvariable id="url" type="org.jahia.services.render.URLGenerator"--%>
@@ -52,7 +53,7 @@
 <c:set target="${renderContext}" property="contentType" value="text/calendar;charset=UTF-8" />BEGIN:VCALENDAR
 VERSION:2.0
 BEGIN:VTODO
-<c:set var="assignee" value="${currentNode.properties['assigneeUserKey'].string}" /><%= getUserContentLine((String)pageContext.getAttribute("assignee"), "ATTENDEE")%><c:if test="${not empty currentNode.properties['priority'].string}">PRIORITY:${priorities[currentNode.properties['priority'].string]}
+<c:if test="${not empty currentNode.properties['assigneeUserKey'].string}"><jcr:node var="assigneeNode" path="${currentNode.properties['assigneeUserKey'].string}"/></c:if><c:set var="assignee" value="${assigneeNode.name}" /><%= getUserContentLine((String)pageContext.getAttribute("assignee"), "ATTENDEE")%><c:if test="${not empty currentNode.properties['priority'].string}">PRIORITY:${priorities[currentNode.properties['priority'].string]}
 </c:if><c:set var="creator" value="${currentNode.properties['jcr:createdBy'].string}" /><%= getUserContentLine((String)pageContext.getAttribute("creator"), "ORGANIZER")%>DTSTAMP:<fmt:formatDate value="${currentNode.properties['jcr:created'].date.time}" pattern="yyyyMMdd'T'HHmmss'Z'" timeZone="GMT" />
 URL;VALUE=URI:<c:url value="${url.server}${url.context}${url.baseLive}${renderContext.user.localPath}.user-tasks.html"/>
 SUMMARY:${currentNode.properties['jcr:title'].string}

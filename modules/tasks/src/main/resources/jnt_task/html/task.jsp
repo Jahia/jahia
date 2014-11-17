@@ -52,7 +52,7 @@
                 <label class="left">
                     <fmt:message key="jnt_task.assignee"/>
                     :</label>
-                <span class="right value">${currentNode.properties.assigneeUserKey.string}</span>
+                <span class="right value"><c:if test="${not empty currentNode.properties['assigneeUserKey'].string}"><jcr:node var="assigneeNode" path="${currentNode.properties['assigneeUserKey'].string}"/>${assigneeNode.name}</c:if></span>
 
             </p>
 

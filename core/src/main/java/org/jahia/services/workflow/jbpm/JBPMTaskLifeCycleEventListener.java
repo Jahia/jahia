@@ -260,9 +260,9 @@ public class JBPMTaskLifeCycleEventListener extends AbstractTaskLifeCycleEventLi
                     ValueFactory valueFactory = session.getValueFactory();
                     for (JahiaPrincipal principal : candidates) {
                         if (principal instanceof JahiaGroup) {
-                            candidatesArray.add(valueFactory.createValue("g:" + ((JahiaGroup) principal).getGroupKey()));
+                            candidatesArray.add(valueFactory.createValue(((JahiaGroup) principal).getGroupKey()));
                         } else if (principal instanceof JahiaUser) {
-                            candidatesArray.add(valueFactory.createValue("u:" + principal.getName()));
+                            candidatesArray.add(valueFactory.createValue(((JahiaUser) principal).getUserKey()));
                         }
                     }
                     jcrTask.setProperty("candidates", candidatesArray.toArray(new Value[candidatesArray.size()]));

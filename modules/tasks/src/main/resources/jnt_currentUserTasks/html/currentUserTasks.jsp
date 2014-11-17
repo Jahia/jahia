@@ -186,13 +186,13 @@
                             </template:tokenizedForm>
                             <ul class="taskactionslist">
                                 <c:set var="assignable" value="true" />
-                                <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.name}">
+                                <c:if test="${not empty task.properties['candidates'] and task.properties['assigneeUserKey'].string ne user.path}">
                                     <c:set var="assignable" value="false" />
                                     <c:set var="candidates" value=""/>
                                     <c:forEach items="${task.properties['candidates']}" var="candidate">
                                         <c:set var="candidates" value=" ${candidate.string} ${candidates} "/>
                                     </c:forEach>
-                                    <c:set var="userKey" value="u:${user.name}" />
+                                    <c:set var="userKey" value="${user.path}" />
                                     <c:if test="${fn:contains(candidates, userKey)}">
                                         <c:set var="assignable" value="true" />
                                     </c:if>
@@ -206,14 +206,14 @@
                                     </c:if>
                                 </c:if>
                                 <c:choose>
-                                    <c:when test="${taskStatus == 'active' and task.properties['assigneeUserKey'].string ne user.name and assignable eq 'true'}">
-                                        <li><a class="taskaction taskaction-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.name}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
+                                    <c:when test="${taskStatus == 'active' and task.properties['assigneeUserKey'].string ne user.path and assignable eq 'true'}">
+                                        <li><a class="taskaction taskaction-assign" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','${user.path}')" title="assign to me"><fmt:message key="label.actions.assigneToMe"/></a></li>
                                     </c:when>
-                                    <c:when test="${taskStatus == 'active' and task.properties['assigneeUserKey'].string eq user.name}">
+                                    <c:when test="${taskStatus == 'active' and task.properties['assigneeUserKey'].string eq user.path}">
                                         <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
                                         <li><a class="taskaction taskaction-start" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.start"/></a></li>
                                     </c:when>
-                                    <c:when test="${taskStatus == 'started' and task.properties['assigneeUserKey'].string eq user.name}">
+                                    <c:when test="${taskStatus == 'started' and task.properties['assigneeUserKey'].string eq user.path}">
                                         <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
                                         <li><a class="taskaction taskaction-suspend" href="javascript:sendNewStatus('${task.identifier}','${task.path}','suspended')" title="suspend"><fmt:message key="label.actions.suspend"/></a></li>
                                         <utility:setBundle basename="${task.properties['taskBundle'].string}" var="taskBundle"  />
@@ -242,7 +242,7 @@
                                     <c:when test="${taskStatus == 'finished'}">
                                         <li><div class="taskaction-complete"><input name="Completed" type="checkbox" disabled="disabled" checked="checked" value="Completed" />&nbsp;<fmt:message key="label.actions.completed"/></div></li>
                                     </c:when>
-                                    <c:when test="${taskStatus == 'suspended' and task.properties['assigneeUserKey'].string eq user.name}">
+                                    <c:when test="${taskStatus == 'suspended' and task.properties['assigneeUserKey'].string eq user.path}">
                                         <li><a class="taskaction taskaction-refuse" href="javascript:sendNewAssignee('${task.identifier}','${task.path}','')" title="Refuse"><fmt:message key="label.actions.refuse"/></a></li>
                                         <li><a class="taskaction taskaction-continue" href="javascript:sendNewStatus('${task.identifier}','${task.path}','started')" title="start"><fmt:message key="label.actions.resume"/></a></li>
                                     </c:when>
@@ -253,7 +253,11 @@
                             </ul>
                         </div>
                     </td>
-                    <c:if test="${dispAssignee}"><td headers="Assigned">${task.properties['assigneeUserKey'].string}</td></c:if>
+                    <c:if test="${dispAssignee}"><td headers="Assigned">
+                        <c:if test="${not empty currentNode.properties['assigneeUserKey'].string}">
+                            <jcr:node var="assigneeNode" path="${currentNode.properties['assigneeUserKey'].string}"/>${assigneeNode.name}
+                        </c:if>
+                    </td></c:if>
                     <c:if test="${dispCreator}"><td headers="CreatedBy">${task.properties['jcr:createdBy'].string}</td></c:if>
                     <c:if test="${dispState}"><td class="center" headers="State">
                         <span class="task-status task-status-${taskStatus}"><fmt:message key="jnt_task.state.${taskStatus}"/></span>

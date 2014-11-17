@@ -132,10 +132,10 @@
                     <th>
                         <fmt:message key="label.page"/>
                     </th>
-                    <th>
+                    <th width="50%">
                         <fmt:message key="label.path"/>
                     </th>
-                    <th>
+                    <th width="25%">
                         <fmt:message key="label.actions"/>
                     </th>
                 </tr>

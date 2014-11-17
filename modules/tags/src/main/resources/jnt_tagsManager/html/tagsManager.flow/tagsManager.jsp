@@ -136,10 +136,10 @@
                     <th>
                         <fmt:message key="jnt_tagsManager.label.tag"/>
                     </th>
-                    <th>
+                    <th width="15%">
                         <fmt:message key="jnt_tagsManager.label.occurrences"/>
                     </th>
-                    <th>
+                    <th width="25%">
                         <fmt:message key="label.actions"/>
                     </th>
                 </tr>

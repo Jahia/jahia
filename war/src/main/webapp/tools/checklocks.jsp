@@ -118,7 +118,7 @@
             final List<File> lockFiles = fix ? new LinkedList<File>() : null;
             for (String workspaceName : workspaces) {
                 if (chosenWorkspace == null || chosenWorkspace.isEmpty() || chosenWorkspace.equals(workspaceName)) {
-                    JCRTemplate.getInstance().doExecuteWithSystemSession((JahiaUser) null, workspaceName, null new JCRCallback<Object>() {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(null, workspaceName, null, new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper sessionWrapper) throws RepositoryException {
                             JCRNodeWrapper jahiaRootNode = sessionWrapper.getRootNode();
                             Node jcrRootNode = jahiaRootNode.getRealNode();

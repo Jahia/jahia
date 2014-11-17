@@ -227,7 +227,9 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
         for (int i = 0; i < nodes.getLength(); i++) {
             Node legacyExtUser = nodes.item(i);
             Node parent = legacyExtUser.getParentNode();
-            parent.removeChild(legacyExtUser);
+            if (!getNodePath(parent).startsWith("/sites/")) {
+                parent.removeChild(legacyExtUser);
+            }
         }
 
         Transformer xformer = TransformerFactory.newInstance().newTransformer();

@@ -143,11 +143,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
     public SearchResponse search(SearchCriteria criteria, RenderContext context) {
         SearchResponse response = new SearchResponse();
-        List<Hit<?>> results = new LinkedList<Hit<?>>();
+        List<Hit<?>> results = new ArrayList<Hit<?>>();
         response.setResults(results);
-
-        Map<String, JCRNodeHit> addedHits = new HashMap<String, JCRNodeHit>();
-        Set<String> addedNodes = new HashSet<String>();
 
         try {
             JCRSessionWrapper session = ServicesRegistry
@@ -161,7 +158,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             final int limit = criteria.getLimit() <= 0 ? Integer.MAX_VALUE : (int) criteria.getLimit();
             response.setOffset(offset);
             response.setLimit(limit);
-            int index = 0;
             int count = 0;
             if (query != null) {
                 if (logger.isDebugEnabled()) {
@@ -187,6 +183,11 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 Set<String> usageFilterSites = !criteria.getSites().isEmpty() && !criteria.getSites().getValue().equals("-all-")
                         && !criteria.getSitesForReferences().isEmpty() ? Sets.newHashSet(criteria.getSites().getValues()) : null;
 
+                Set<String> addedNodes = new HashSet<String>();
+                Map<String, JCRNodeHit> addedHits = new HashMap<String, JCRNodeHit>();
+                List<JCRNodeHit> hitsToAdd = new ArrayList<JCRNodeHit>();
+                final int requiredHits = limit + offset;
+                
                 while (it.hasNext()) {
                     count++;
                     Row row = it.nextRow();
@@ -206,28 +207,24 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 skipNode = hit.getUsages().isEmpty();
                             }
                             if (!skipNode) {
-                                SearchServiceImpl.executeURLModificationRules(hit, context);
-
-                                if (!addedHits.containsKey(hit.getLink())) {
-                                    addedHits.put(hit.getLink(), hit);
-                                    if (index >= offset) {
-                                        if (index >= limit + offset) {
-                                            response.setHasMore(true);
-                                            if (it.getSize() > 0) {
-                                                int approxCount = ((int) it.getSize() * addedHits.size() / count);
-                                                approxCount = (int) Math.ceil(MathUtils.round(approxCount,
-                                                        approxCount < 1000 ? -1 : (approxCount < 10000 ? -2
-                                                                : -3), BigDecimal.ROUND_UP));
-                                                response.setApproxCount(approxCount);
-                                            }
-                                            return response;
+                                hitsToAdd.add(hit);
+                                
+                                if (hitsToAdd.size() + addedHits.size() >= requiredHits) {
+                                    SearchServiceImpl.executeURLModificationRules(hitsToAdd, context);
+                                    addHitsToResults(hitsToAdd, results, addedHits, offset);
+                                    hitsToAdd.clear();
+                                    
+                                    if (addedHits.size() >= requiredHits) {
+                                        response.setHasMore(true);
+                                        if (it.getSize() > 0) {
+                                            int approxCount = ((int) it.getSize() * addedHits.size() / count);
+                                            approxCount = (int) Math.ceil(MathUtils.round(approxCount,
+                                                    approxCount < 1000 ? -1 : (approxCount < 10000 ? -2
+                                                            : -3), BigDecimal.ROUND_UP));
+                                            response.setApproxCount(approxCount);
                                         }
-                                        results.add(hit);
+                                        return response;
                                     }
-                                    index++;
-                                } else {
-                                    hit = addedHits.get(hit.getLink());
-                                    hit.addRow(row);
                                 }
                             }
                         }
@@ -242,6 +239,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     } catch (Exception e) {
                         logger.warn("Error resolving search hit", e);
                     }
+                }
+                if (hitsToAdd.size() > 0) {
+                    SearchServiceImpl.executeURLModificationRules(hitsToAdd, context);
+                    addHitsToResults(hitsToAdd, results, addedHits, offset);
                 }
             }
         } catch (RepositoryException e) {
@@ -262,6 +263,24 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         return response;
     }
 
+    private void addHitsToResults(List<JCRNodeHit> collectedHits,
+            List<Hit<?>> results, Map<String, JCRNodeHit> addedHits,
+            int offset) {
+        for (JCRNodeHit hit : collectedHits) {
+            if (!addedHits.containsKey(hit.getLink())) {
+                addedHits.put(hit.getLink(), hit);
+                if (addedHits.size() >= offset) {
+                    results.add(hit);
+                }
+            } else {
+                JCRNodeHit previousHit = addedHits.get(hit.getLink());
+                for (Row row : hit.getRows()) {
+                    previousHit.addRow(row);
+                }
+            }
+        }
+    }
+    
     private boolean isNodeToSkip(JCRNodeWrapper node, SearchCriteria criteria, Set<String> languages) {
         boolean skipNode = false;
         try {

@@ -226,4 +226,15 @@ public abstract class AbstractHit<T> implements Hit<T> {
         }
         rows.add(row);
     }
+    
+    /**
+     * Returns the row objects from the query/search linked to this hit. Multiple query results (row) can be linked to a
+     * hit, because some nodes cannot be displayed on its own as they have no template, so the hit's link URL points to a 
+     * parent node having a template, which can aggregate several sub-nodes. 
+     * 
+     * @return list of Row objects
+     */
+    public List<Row> getRows() {
+        return rows;
+    }
 }

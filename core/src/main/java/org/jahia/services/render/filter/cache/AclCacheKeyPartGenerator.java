@@ -347,7 +347,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     return (Map<String, Set<String>>) element.getObjectValue();
                 }
 
-                logger.debug("Getting ACL for " + cacheKey);
+                logger.debug("Getting ACL for {}", cacheKey);
                 long l = System.currentTimeMillis();
 
                 Map<String, Set<String>> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, Set<String>>>() {
@@ -406,7 +406,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 element = new Element(cacheKey, map);
                 element.setEternal(true);
                 cache.put(element);
-                logger.debug("Getting ACL for " + cacheKey + " took " + (System.currentTimeMillis() - l) + "ms");
+                logger.debug("Getting ACL for {} took {} ms", cacheKey, System.currentTimeMillis() - l);
             } catch (InterruptedException e) {
                 logger.debug(e.getMessage(), e);
             } finally {

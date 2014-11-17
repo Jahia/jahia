@@ -11,6 +11,7 @@
         <property name="defaultUrlMapping" value="/cms/dashboard"/>
         <property name="defaultLocation" value="$user.projects.html"/>
         <property name="sitesLocation" value="/sites/systemsite"/>
+        <property name="forcedSite" value="/sites/systemsite"/>
         <property name="loadSitesList" value="false"/>
         <property name="topToolbar">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">

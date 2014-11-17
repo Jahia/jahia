@@ -84,6 +84,7 @@ import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.usermanager.*;
@@ -454,13 +455,22 @@ public class WorkflowService implements BeanPostProcessor {
                     if (strings[1].equals("GRANT") && roles.contains(strings[2]) || strings[1].equals("EXTERNAL") && extPerms.contains(strings[2])) {
                         String principal = entry.getKey();
                         final String principalName = principal.substring(2);
+                        if (site == null) {
+                            site = node.getResolveSite();
+                        }
                         if (principal.charAt(0) == 'u') {
-                            JahiaUser jahiaUser = userService.lookupUser(principalName).getJahiaUser();
-                            principals.add(jahiaUser);
-                        } else if (principal.charAt(0) == 'g') {
-                            if (site == null) {
-                                site = node.getResolveSite();
+                            JCRUserNode userNode = userService.lookupUser(principalName);
+                            if (userNode == null && strings[0].startsWith("/sites/")) {
+                                userNode = userService.lookupUser(principalName,site.getSiteKey());
                             }
+                            if (userNode != null) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("user " + userNode.getUserKey() + " is granted");
+                                }
+                                JahiaUser jahiaUser = userNode.getJahiaUser();
+                                principals.add(jahiaUser);
+                            }
+                        } else if (principal.charAt(0) == 'g') {
                             JCRGroupNode group = groupService.lookupGroup(site.getSiteKey(),
                                     principalName);
                             if (group == null) {

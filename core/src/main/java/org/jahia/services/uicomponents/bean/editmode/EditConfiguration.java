@@ -103,6 +103,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
     private String defaultLocation;
 
     private String sitesLocation;
+    private String forcedSite;
 
     private boolean enableDragAndDrop = true;
 
@@ -214,6 +215,14 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     public void setSitesLocation(String sitesLocation) {
         this.sitesLocation = sitesLocation;
+    }
+
+    public String getForcedSite() {
+        return forcedSite;
+    }
+
+    public void setForcedSite(String forcedSite) {
+        this.forcedSite = forcedSite;
     }
 
     public boolean isEnableDragAndDrop() {

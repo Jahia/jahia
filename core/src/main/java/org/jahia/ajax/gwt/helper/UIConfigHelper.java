@@ -668,6 +668,11 @@ public class UIConfigHelper {
                         site = contextNode.getResolveSite();
                     }
                 }
+
+                if (config.getForcedSite() != null) {
+                    site = (JCRSiteNode) session.getNode(config.getForcedSite());
+                }
+
                 if (site == null) {
                     contextNode = session.getNode("/sites/systemsite");
                     site = contextNode.getResolveSite();

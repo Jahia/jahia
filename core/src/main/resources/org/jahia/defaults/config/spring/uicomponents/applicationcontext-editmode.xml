@@ -717,7 +717,6 @@
                 <ref bean="Toolbar.Item.PortletManager"/>
                 <ref bean="Toolbar.Item.RepositoryExplorer"/>
                 <ref bean="Toolbar.Item.CategoryManager"/>
-                <ref bean="Toolbar.Item.TagManager"/>
                 <ref bean="Toolbar.Item.SiteManager"/>
             </list>
         </property>

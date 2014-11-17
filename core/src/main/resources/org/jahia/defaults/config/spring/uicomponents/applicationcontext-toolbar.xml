@@ -529,32 +529,6 @@
         </property>
     </bean>
 
-    <!-- Tag Manager -->
-    <bean id="Toolbar.Item.TagManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.OpenWindowActionItem"/>
-        </property>
-        <property name="titleKey" value="label.tagmanager"/>
-        <property name="icon" value="tagManager"/>
-        <property name="requiredPermission" value="tagManager"/>
-        <property name="properties">
-            <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="url"/>
-                    <property name="value" value="$context/engines/manager.jsp?conf=tagmanager&amp;site=$siteuuid&amp;lang=$lang"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="width"/>
-                    <property name="value" value="1020"/>
-                </bean>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
-                    <property name="name" value="height"/>
-                    <property name="value" value="730"/>
-                </bean>
-            </list>
-        </property>
-    </bean>
-
     <!-- Site Manager -->
     <bean id="Toolbar.Item.SiteManager" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

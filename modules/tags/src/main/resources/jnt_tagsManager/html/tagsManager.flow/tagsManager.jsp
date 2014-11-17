@@ -100,7 +100,7 @@
                 </a>
             </c:when>
             <c:otherwise>
-                <a class="btn btn-primary pull-right" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager_default.html"/>">
+                <a class="btn btn-primary pull-right" href="<c:url value="${url.baseEdit}${renderContext.siteInfo.sitePath}.tagsManager.html"/>">
                     <fmt:message key="jnt_tagsManager.button.switchToLive"/>&nbsp;<i class="fa fa-external-link"></i>
                 </a>
             </c:otherwise>

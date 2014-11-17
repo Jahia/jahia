@@ -153,7 +153,6 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
         return getCurrentProvider().search(criteria, context);
     }
 
-<<<<<<< .working
     @Override
     public void start() throws JahiaInitializationException {
         // do nothing
@@ -169,14 +168,12 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
         return getCurrentProvider().suggest(originalQuery, context, maxTermsToSuggest);
     }
 
-=======
     /**
      * Execute rules on the list of hit objects.
      * 
      * @param searchHits, list of JCRNodeHit objects
      * @param context, current rendering context 
      */
->>>>>>> .merge-right.r51473
     public static void executeURLModificationRules(
             List<JCRNodeHit> searchHits, RenderContext context) {
         Map<String, Object> globals = new HashMap<String, Object>();

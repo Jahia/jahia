@@ -140,8 +140,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                 if (userSearchField != null) {
                     String newSearch = userSearchField.getText().trim().replace("'","''");
 
-                    String path = "/users";
-                    String query = "select * from [jnt:user] as u where isdescendantnode(u,'"+path+"') ";
+                    String query = "select * from [jnt:user] as u where isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/"+JahiaGWTParameters.getSiteKey()+"/users/')";
                     if (newSearch.length() > 0) {
                         query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
                     }
@@ -152,7 +151,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
 
                     final JahiaContentManagementServiceAsync service = JahiaContentManagementService.App.getInstance();
                     
-                    service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_FIELDS, false, callback);
+                    service.searchSQL(query, ((PagingLoadConfig) pageLoaderConfig).getLimit(), offset, null, GWTJahiaNode.DEFAULT_USER_FIELDS, false, callback);
 
                     // remember last searched value
                     lastUserSearchValue = newSearch;
@@ -179,11 +178,11 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
         ListStore<GWTJahiaNode> store = new ListStore<GWTJahiaNode>(loader);
 
         List<ColumnConfig> columns = new ArrayList<ColumnConfig>();
-        columns.add(new ColumnConfig("display", Messages.get("label.username", "User name"), 150));
+        columns.add(new ColumnConfig("displayName", Messages.get("label.username", "User name"), 150));
         columns.add(new ColumnConfig("j:lastName", Messages.get("label.lastName", "Last name"), 130));
         columns.add(new ColumnConfig("j:firstName", Messages.get("label.firstName", "First name"), 130));
 //        columns.add(new ColumnConfig("siteName", "Site name", 80));
-        columns.add(new ColumnConfig("provider", Messages.get("column.provider.label", "Provider"), 75));
+        columns.add(new ColumnConfig("providerKey", Messages.get("column.provider.label", "Provider"), 75));
 //        columns.add(new ColumnConfig("email", "Email", 100));
 
         ColumnModel cm = new ColumnModel(columns);

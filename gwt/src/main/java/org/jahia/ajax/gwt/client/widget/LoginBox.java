@@ -115,7 +115,7 @@ public class LoginBox extends Window {
         final FormPanel form = new FormPanel();
         form.setHeaderVisible(false);
         form.setFrame(false);
-        form.setAction(JahiaGWTParameters.getContextPath() + "/cms/login?doLogin=true&restMode=true");
+        form.setAction(JahiaGWTParameters.getContextPath() + "/cms/login?doLogin=true&restMode=true&site="+JahiaGWTParameters.getSiteKey());
         form.setMethod(Method.POST);
         form.setLabelWidth(125);
 

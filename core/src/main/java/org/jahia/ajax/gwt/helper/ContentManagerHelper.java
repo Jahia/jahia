@@ -809,6 +809,9 @@ public class ContentManagerHelper {
                     }
                 } else {
                     JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                    if (u == null) {
+                        u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
+                    }
                     if (u != null) {
                         ace.setPrincipalKey(u.getPath());
                         String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);

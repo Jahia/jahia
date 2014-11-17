@@ -193,4 +193,21 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
     public String getRealm() {
         return realm;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        JahiaUserImpl jahiaUser = (JahiaUserImpl) o;
+
+        if (!path.equals(jahiaUser.path)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return path.hashCode();
+    }
 }

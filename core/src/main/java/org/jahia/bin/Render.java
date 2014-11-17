@@ -86,6 +86,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.pluto.JahiaPortalURLParserImpl;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -762,7 +763,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             req.getSession().setAttribute(Constants.SESSION_LOCALE, urlResolver.getLocale());
             jcrSessionFactory.setCurrentLocale(urlResolver.getLocale());
             if (renderContext.isPreviewMode() && req.getParameter(ALIAS_USER) != null && !JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
-                jcrSessionFactory.setCurrentAliasedUser(ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(req.getParameter(ALIAS_USER)).getJahiaUser());
+                JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
+                JCRUserNode userNode = userManagerService.lookupUser(req.getParameter(ALIAS_USER));
+                if (userNode == null) {
+                    userNode = userManagerService.lookupUser(req.getParameter(ALIAS_USER), urlResolver.getSiteKey());
+                }
+                if (userNode != null) {
+                    jcrSessionFactory.setCurrentAliasedUser(userNode.getJahiaUser());
+                }
             }
 
             // check permission

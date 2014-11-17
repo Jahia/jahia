@@ -100,11 +100,22 @@ public class AclListener extends DefaultEventListener {
 
     public static final List<String> PRIVILEGED_GROUPS = Arrays.asList("g:privileged", "g:site-privileged");
 
+    private JahiaUserManagerService userService;
+    private JahiaGroupManagerService groupService;
+
     public void setPublicationService(JCRPublicationService publicationService) {
         this.publicationService = publicationService;
     }
 
     private Map<String, String> foundRoles = new HashMap<String, String>();
+
+    public void setUserService(JahiaUserManagerService userService) {
+        this.userService = userService;
+    }
+
+    public void setGroupService(JahiaGroupManagerService groupService) {
+        this.groupService = groupService;
+    }
 
     @Override
     public int getEventTypes() {
@@ -303,15 +314,12 @@ public class AclListener extends DefaultEventListener {
                 }
             }
 
-            JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
-            JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-
             for (Map.Entry<String, Set<String>> entry : privilegedAdded.entrySet()) {
                 final String site = entry.getKey();
                 final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(site, principal);
 
                         if (p == null || priv.isMember(p)) {
                             continue;
@@ -327,7 +335,7 @@ public class AclListener extends DefaultEventListener {
                 final JCRGroupNode priv = groupService.lookupGroup(site, JahiaGroupManagerService.SITE_PRIVILEGED_GROUPNAME, systemSession);
                 if (priv != null) {
                     for (String principal : entry.getValue()) {
-                        JCRNodeWrapper p = getPrincipal(groupService, userService, site, principal);
+                        JCRNodeWrapper p = getPrincipal(site, principal);
 
                         if (p == null || !priv.isMember(p)) {
                             continue;
@@ -342,7 +350,7 @@ public class AclListener extends DefaultEventListener {
                                 + site
                                 + "']) or not isdescendantnode(ace, ['/sites']))"
                                 : "select ace.[j:roles] AS [rep:facet(facet.mincount=1)] from [jnt:ace] as ace where (not ([j:externalPermissionsName] is not null)) and ace.[j:aceType]='GRANT' and ace.[j:principal] = '"
-                                        + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
+                                + principal + "' and isdescendantnode(ace, ['/sites/" + site + "'])";
 
                         rolesName.addAll(getRolesName(systemSession, sql));
                         try {
@@ -430,7 +438,7 @@ public class AclListener extends DefaultEventListener {
         return null;
     }
 
-    private JCRNodeWrapper getPrincipal(JahiaGroupManagerService groupService, JahiaUserManagerService userService, String site, String principal) {
+    private JCRNodeWrapper getPrincipal(String site, String principal) {
         JCRNodeWrapper p = null;
         String principalName = principal.substring(2);
         if (principal.startsWith("u:")) {
@@ -543,6 +551,12 @@ public class AclListener extends DefaultEventListener {
             refNode.addMixin("jmix:accessControlled");
             refNode.addNode("j:acl", "jnt:acl");
         }
+
+        JCRNodeWrapper p = getPrincipal(ace.getResolveSite().getSiteKey(), principal);
+        if (!p.getResolveSite().getSiteKey().equals("systemsite") && !p.getResolveSite().getSiteKey().equals(refNode.getResolveSite().getSiteKey())) {
+            return;
+        }
+
         JCRNodeWrapper acl = refNode.getNode("j:acl");
         String n = "REF" + role + "_" + externalPermissions.getName() + "_" + JCRContentUtils.replaceColon(principal);
         if (!acl.hasNode(n)) {
@@ -552,8 +566,7 @@ public class AclListener extends DefaultEventListener {
             refAce.setProperty("j:roles", new String[]{role});
             refAce.setProperty("j:externalPermissionsName", externalPermissions.getName());
             refAce.setProperty("j:protected", true);
-            refAce.setProperty("j:sourceAce",
- new Value[]{session.getValueFactory().createValue(ace, true)});
+            refAce.setProperty("j:sourceAce", new Value[]{session.getValueFactory().createValue(ace, true)});
         } else {
             JCRNodeWrapper refAce = acl.getNode(n);
             if (refAce.hasProperty("j:sourceAce")) {

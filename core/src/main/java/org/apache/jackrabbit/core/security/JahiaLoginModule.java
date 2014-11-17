@@ -176,9 +176,22 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(impersonatorPass != null ? impersonatorPass : pass);
                     String lookupUser = impersonatorName != null ? impersonatorName : name;
                     Token token = removeToken(lookupUser, key);
+                    
+                    boolean ok = token != null
+                            || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key);
+                    if (ok && token == null && impersonatorName != null) {
+                        // ensure the user exists
+                        if (!JahiaUserManagerService.getInstance().userExists(name)) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("User {} is not known, the impersonator {} will be used instead", name,
+                                        impersonatorName);
+                            }
+                            name = impersonatorName;
+                        }
+                    }
 
-                    if ((token != null) || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key)) {
-                        principals.add(new JahiaPrincipal(name,realm, false,false));
+                    if (ok) {
+                        principals.add(new JahiaPrincipal(name, realm, false, false));
                         if (realm == null) {
                             if (JahiaGroupManagerService.getInstance().isAdminMember(name, null, null)) {
                                 principals.add(new AdminPrincipal(name));

@@ -78,6 +78,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.rules.AddedNodeFact;
 import org.jahia.services.sites.JahiaSite;
@@ -132,7 +133,25 @@ public class Tasks {
         taskService.createTask(task, user);
     }
 
+    public void createTask(AddedNodeFact user, String title, String description, String priority, Date dueDate, String state,
+                           KnowledgeHelper drools) throws RepositoryException {
+        Task task = new Task(title, description);
+        if (priority != null) {
+            task.setPriority(Task.Priority.valueOf(priority));
+        }
+        task.setDueDate(dueDate);
+        if (state != null) {
+            task.setState(Task.State.valueOf(state));
+        }
+        taskService.createTask(task, (JCRUserNode) user.getNode());
+    }
+
     public void createTask(String user, String title, String description, KnowledgeHelper drools)
+            throws RepositoryException {
+        createTask(user, title, description, null, null, null, drools);
+    }
+
+    public void createTask(AddedNodeFact user, String title, String description, KnowledgeHelper drools)
             throws RepositoryException {
         createTask(user, title, description, null, null, null, drools);
     }
@@ -147,6 +166,11 @@ public class Tasks {
             group = StringUtils.substringAfterLast(group, "/");
         }
         taskService.createTaskForGroup(new Task(title, description), group, siteKey);
+    }
+
+    public void createTaskForGroupMembers(AddedNodeFact group, String title, String description, KnowledgeHelper drools)
+            throws RepositoryException {
+        taskService.createTaskForGroup(new Task(title, description), (JCRGroupNode) group.getNode());
     }
 
     public void setTaskService(TaskService taskService) {

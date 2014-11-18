@@ -88,7 +88,7 @@ rule "User password is set"
         A property j:password has been set on a node
 			- the node has the type jnt:user
     then
-        Store password history for user node.getName()
+        Store password history for user node
 end
 
 rule "Create permission for template"

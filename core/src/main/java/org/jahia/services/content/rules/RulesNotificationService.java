@@ -215,10 +215,15 @@ public class RulesNotificationService {
 
     public void notifyUser(String user, final String template, final ChangedPropertyFact fromMail, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        notifyUser(user, null, template, fromMail, drools);
+    }
+
+    public void notifyUser(String user, String site, final String template, final ChangedPropertyFact fromMail, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
+        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user, site);
         if (userNode != null && userNode.hasProperty("j:email")) {
             String toMail = userNode.getProperty("j:email").getString();
             sendMail(template, userNode, toMail, fromMail.getStringValue(), null, null, getLocale(userNode), drools);
@@ -228,11 +233,17 @@ public class RulesNotificationService {
     public void notifyUser(String user, final String template, final String fromMail, final String ccList,
                            final String bccList, KnowledgeHelper drools)
             throws RepositoryException, ScriptException, IOException {
+        notifyUser(user, null, template, fromMail, ccList, bccList, drools);
+    }
+
+    public void notifyUser(String user, String site, final String template, final String fromMail, final String ccList,
+                           final String bccList, KnowledgeHelper drools)
+            throws RepositoryException, ScriptException, IOException {
         if (!notificationService.isEnabled()) {
             return;
         }
-        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user);
-        if (userNode.hasProperty("j:email")) {
+        JCRUserNode userNode = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user, site);
+        if (userNode != null && userNode.hasProperty("j:email")) {
             String toMail = userNode.getProperty("j:email").getString();
             sendMail(template, userNode, toMail, fromMail, ccList, bccList, getLocale(userNode), drools);
         }

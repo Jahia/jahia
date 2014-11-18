@@ -675,21 +675,8 @@ public class Service extends JahiaService {
         logger.info("All caches flushed.");
     }
 
-    public void storeUserPasswordHistory(final String username, KnowledgeHelper drools) throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            @Override
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRUserNode user = userManagerService.lookupUser(username, session);
-                if (user != null) {
-                    passwordPolicyService.storePasswordHistory(user);
-                } else {
-                    logger.warn("Unlable to lookup user for name: " + username
-                            + ". Skip updating user password history.");
-                }
-                session.save();
-                return null;
-            }
-        });
+    public void storeUserPasswordHistory(final AddedNodeFact user, KnowledgeHelper drools) throws RepositoryException {
+        passwordPolicyService.storePasswordHistory((JCRUserNode) user.getNode());
     }
 
     public void deployModule(String moduleId, AddedNodeFact site, KnowledgeHelper drools) {

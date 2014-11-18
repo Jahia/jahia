@@ -114,7 +114,11 @@ public class TaskService {
     public void createTask(final Task task, final String forUser) throws RepositoryException {
         JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                createTask(task, forUser, session);
+                JCRUserNode userNode = userManagerService.lookupUser(forUser, session);
+                if (userNode == null) {
+                    return false;
+                }
+                createTask(task, userNode, session);
 
                 session.save();
 
@@ -125,15 +129,34 @@ public class TaskService {
 
     /**
      * Creates a task for the specified user.
-     * 
+     *
      * @param task the task to be created
-     * @param forUser the user name, who gets this task
+     * @param userNode the user node, who gets this task
+     * @throws RepositoryException in case of an error
+     */
+    public void createTask(final Task task, final JCRUserNode userNode) throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSessionInSameWorkspaceAndLocale(new JCRCallback<Boolean>() {
+            public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                createTask(task, userNode, session);
+
+                session.save();
+
+                return true;
+            }
+        });
+    }
+
+    /**
+     * Creates a task for the specified user.
+     *
+     * @param task the task to be created
+     * @param userNode the user node, who gets this task
      * @param session the current session
      * @throws RepositoryException in case of an error
      */
-    private void createTask(final Task task, final String forUser, JCRSessionWrapper session)
+    private void createTask(final Task task, final JCRUserNode userNode, JCRSessionWrapper session)
             throws RepositoryException {
-        JCRNodeWrapper tasksNode = getUserTasksNode(forUser, session);
+        JCRNodeWrapper tasksNode = getUserTasksNode(userNode);
         session.checkout(tasksNode);
         JCRNodeWrapper taskNode = tasksNode.addNode(JCRContentUtils.findAvailableNodeName(tasksNode, "task"),
                 JAHIANT_TASK);
@@ -151,9 +174,9 @@ public class TaskService {
         }
         taskNode.setProperty("state", task.getState().toString().toLowerCase());
         try {
-            taskNode.setProperty("assignee", session.getNode(userManagerService.getUserSplittingRule().getPathForUsername(forUser)).getIdentifier());
+            taskNode.setProperty("assignee", userNode);
         } catch (Exception e) {
-            logger.warn("Unable to find user '" + forUser + "' to assign a task", e);
+            logger.warn("Unable to find user '" + userNode.getPath() + "' to assign a task", e);
         }
     }
 
@@ -164,7 +187,7 @@ public class TaskService {
      * 
      * @param task the task to be created
      * @param forGroup the group name, which members will get this task
-     * @param siteId the site ID of the group
+     * @param siteKey the site key of the group
      * @throws RepositoryException in case of an error
      */
     public void createTaskForGroup(final Task task, String forGroup, final String siteKey) throws RepositoryException {
@@ -187,8 +210,8 @@ public class TaskService {
         if (!members.isEmpty()) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (JCRNodeWrapper principal : members) {
-                        createTask(task, principal.getPath(), session);
+                    for (JCRUserNode principal : members) {
+                        createTask(task, principal, session);
                     }
 
                     session.save();
@@ -199,19 +222,39 @@ public class TaskService {
         }
     }
 
-    private JCRNodeWrapper getUserTasksNode(final String username, JCRSessionWrapper session)
+    public void createTaskForGroup(final Task task, JCRGroupNode group) throws RepositoryException {
+        if (group == null) {
+            return;
+        }
+        final Set<JCRUserNode> members = group.getRecursiveUserMembers();
+        if (logger.isDebugEnabled()) {
+            if (members.isEmpty()) {
+                logger.warn("Group '" + group.getPath() + "' has no members. Skipping creating tasks.");
+            } else {
+                logger.warn("Creating task for " + members.size() + " members of the group '" + group.getPath() + "'.");
+            }
+        }
+        if (!members.isEmpty()) {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    for (JCRUserNode principal : members) {
+                        createTask(task, principal, session);
+                    }
+
+                    session.save();
+
+                    return true;
+                }
+            });
+        }
+    }
+
+    private JCRNodeWrapper getUserTasksNode(final JCRUserNode userNode)
             throws RepositoryException {
         JCRNodeWrapper tasksNode = null;
-        String pathForUsername = userManagerService.getUserSplittingRule().getPathForUsername(username);
-        try {
-            tasksNode = session.getNode(getTasksPath(pathForUsername));
-        } catch (PathNotFoundException ex) {
-            // no tasks node found
-        }
-        if (tasksNode == null) {
-            // create it
-            JCRNodeWrapper userNode = session.getNode(pathForUsername);
-            session.checkout(userNode);
+        if (userNode.hasNode("tasks")) {
+            tasksNode = userNode.getNode("tasks");
+        } else {
             tasksNode = userNode.addNode("tasks", JAHIANT_TASKS);
         }
 

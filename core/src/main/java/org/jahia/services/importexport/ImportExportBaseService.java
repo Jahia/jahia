@@ -1345,51 +1345,54 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             StringTokenizer st = new StringTokenizer(property, ".");
             String firstKey = st.nextToken();
 
-            if (firstKey.equals("language")) {
-                String lang = st.nextToken();
+            try {
+                if (firstKey.equals("language")) {
+                    String lang = st.nextToken();
 
-                if (!languages.contains(lang)) {
-                    languages.add(lang);
-                    if (!Boolean.valueOf(p.getProperty("language." + lang + ".activated", "true"))) {
-                        inactiveLiveLanguages.add(lang);
+                    if (!languages.contains(lang)) {
+                        languages.add(lang);
+                        if (!Boolean.valueOf(p.getProperty("language." + lang + ".activated", "true"))) {
+                            inactiveLiveLanguages.add(lang);
+                        }
+                        if (Boolean.valueOf(p.getProperty("language." + lang + ".disabledCompletely", "false"))) {
+                            inactiveLanguages.add(lang);
+                            languages.remove(lang);
+                        }
+                        if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
+                            mandatoryLanguages.add(lang);
+                        }
+                        if (!inactiveLanguages.contains(lang) && (StringUtils.isEmpty(lowestRankLanguage)
+                                || p.containsKey("language." + lang + ".rank"))) {
+                            int langRank = NumberUtils.toInt(p
+                                    .getProperty("language." + lang + ".rank"));
+                            if (currentRank == 0 || langRank < currentRank) {
+                                currentRank = langRank;
+                                lowestRankLanguage = lang;
+                            }
+                        }
                     }
-                    if (Boolean.valueOf(p.getProperty("language." + lang + ".disabledCompletely", "false"))) {
-                        inactiveLanguages.add(lang);
-                        languages.remove(lang);
-                    }
-                    if (Boolean.valueOf(p.getProperty("language." + lang + ".mandatory", "false"))) {
-                        mandatoryLanguages.add(lang);
-                    }
-                    if (!inactiveLanguages.contains(lang) && (StringUtils.isEmpty(lowestRankLanguage)
-                            || p.containsKey("language." + lang + ".rank"))) {
-                        int langRank = NumberUtils.toInt(p
-                                .getProperty("language." + lang + ".rank"));
-                        if (currentRank == 0 || langRank < currentRank) {
-                            currentRank = langRank;
-                            lowestRankLanguage = lang;
+                } else if (firstKey.equals("defaultLanguage")) {
+                    defaultLanguage = value;
+                } else if (firstKey.equals("mixLanguage")) {
+                    site.setMixLanguagesActive(Boolean.parseBoolean(value));
+                } else if (firstKey.equals("allowsUnlistedLanguages")) {
+                    site.setAllowsUnlistedLanguages(Boolean.parseBoolean(value));
+                } else if (firstKey.equals("description")) {
+                    site.setDescription(value);
+                } else if (firstKey.startsWith("defaultSite") && "true".equals(value) && sitesService.getDefaultSite(session) == null) {
+                    sitesService.setDefaultSite(site, session);
+                } else if (firstKey.equals("installedModules")) {
+                    if (!installedModules.contains(value) && !templateSet.equals(value)) {
+                        JahiaTemplatesPackage pkg = templateManagerService.getAnyDeployedTemplatePackage(value);
+                        if (pkg != null) {
+                            modules.add(pkg);
+                        } else {
+                            logger.info("unable to find module {} in deployed modules", value);
                         }
                     }
                 }
-            } else if (firstKey.equals("defaultLanguage")) {
-                defaultLanguage = value;
-            } else if (firstKey.equals("mixLanguage")) {
-                site.setMixLanguagesActive(Boolean.parseBoolean(value));
-            } else if (firstKey.equals("allowsUnlistedLanguages")) {
-                site.setAllowsUnlistedLanguages(Boolean.parseBoolean(value));
-            } else if (firstKey.equals("description")) {
-                site.setDescription(value);
-            } else if (firstKey.startsWith("defaultSite") && "true".equals(
-                    value) && sitesService.getDefaultSite() == null) {
-                sitesService.setDefaultSite(site);
-            } else if (firstKey.equals("installedModules")) {
-                if (!installedModules.contains(value) && !templateSet.equals(value)) {
-                    JahiaTemplatesPackage pkg = templateManagerService.getAnyDeployedTemplatePackage(value);
-                    if (pkg != null) {
-                        modules.add(pkg);
-                    } else {
-                        logger.info("unable to find module {} in deployed modules", value);
-                    }
-                }
+            } catch (RepositoryException e) {
+                logger.error("Cannot set site property  " + firstKey, e);
             }
         }
 

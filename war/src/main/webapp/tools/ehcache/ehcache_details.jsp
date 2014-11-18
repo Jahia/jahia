@@ -109,8 +109,8 @@
 
             <tr class="gradeA">
                 <td>${key}</td>
-                <% String attribute = (String) pageContext.getAttribute("key");
-                    final Element element1 = cache.getQuiet(attribute);
+                <%
+                    final Element element1 = cache.getQuiet(pageContext.getAttribute("key"));
                 %>
 
                 <td><%=SimpleDateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(new Date(

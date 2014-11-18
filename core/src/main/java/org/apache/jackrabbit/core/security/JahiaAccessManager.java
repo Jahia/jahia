@@ -1125,6 +1125,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         public int hashCode() {
             return roleName != null ? roleName.hashCode() : 0;
         }
+
+        @Override
+        public String toString() {
+            return roleName;
+        }
     }
 
     private static class CacheEntryFactory implements net.sf.ehcache.constructs.blocking.CacheEntryFactory {

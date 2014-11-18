@@ -77,6 +77,7 @@ import org.jahia.bin.Login;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -88,6 +89,10 @@ import org.slf4j.Logger;
 import org.springframework.context.ApplicationEvent;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -222,17 +227,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             if ((useCookie != null) && ("on".equals(useCookie))) {
                 // the user has indicated he wants to use cookie authentication
                 // now let's create a random identifier to store in the cookie.
-                String cookieUserKey = null;
-                // now let's look for a free random cookie value key.
-                while (cookieUserKey == null) {
-                    cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
-                    Properties searchCriterias = new Properties();
-                    searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                    Set<JCRUserNode> foundUsers = userManagerService.searchUsers(searchCriterias);
-                    if (foundUsers.size() > 0) {
-                        cookieUserKey = null;
-                    }
-                }
+                String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(theUser, cookieAuthConfig.getUserPropertyName(), userManagerService, cookieAuthConfig);
                 // let's save the identifier for the user in the database
                 try {
                     theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);

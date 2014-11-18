@@ -97,6 +97,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,9 +215,22 @@ public class Export extends JahiaController implements ServletContextAware {
                     if (request.getParameter("live") == null || Boolean.valueOf(request.getParameter("live"))) {
                         params.put(ImportExportService.INCLUDE_LIVE_EXPORT, Boolean.TRUE);
                     }
-//                    if (request.getParameter("users") == null || Boolean.valueOf(request.getParameter("users"))) {
+                    if (request.getParameter("users") == null && SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue") != null) {
+                        Boolean siteExportUsersDefaultValue = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("siteExportUsersDefaultValue"));
+                        if (siteExportUsersDefaultValue.booleanValue()) {
+                            params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+                        } else {
+                            params.remove(ImportExportService.INCLUDE_USERS);
+                        }
+                    } else if (request.getParameter("users") != null) {
+                        if (Boolean.valueOf(request.getParameter("users"))) {
+                            params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
+                        } else {
+                            params.remove(ImportExportService.INCLUDE_USERS);
+                        }
+                    } else {
                         params.put(ImportExportService.INCLUDE_USERS, Boolean.TRUE);
-//                    }
+                    }
                     params.put(ImportExportService.INCLUDE_ROLES, Boolean.TRUE);
                     params.put(ImportExportService.INCLUDE_MOUNTS, Boolean.TRUE);
                     params.put(ImportExportService.VIEW_WORKFLOW, Boolean.TRUE);

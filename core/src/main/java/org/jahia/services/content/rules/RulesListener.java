@@ -454,10 +454,17 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                                                 list.add(new ChangedPropertyFact(rn, p));
                                             }
                                         } catch (PathNotFoundException pnfe) {
-                                            if (logger.isDebugEnabled()) {
-                                                logger.debug("Path " + path + " not found, might be normal if using VFS", pnfe);
+                                            Set<String> mountPoints = JCRSessionFactory.getInstance().getMountPoints().keySet();                                            
+                                            boolean isExternalRepository = false;
+                                            for (String mountPoint : mountPoints) {
+                                                if(!"/".equals(mountPoint) && path.startsWith(mountPoint)){
+                                                    isExternalRepository = true;
+                                                    break;
+                                                }
                                             }
-                                            logger.warn("Couldn't access path {}, ignoring it. If not an external repository need to be investigated.", path);
+                                            if(!isExternalRepository || logger.isDebugEnabled()) {
+                                                logger.error("Couldn't access path {}, ignoring it.", pnfe);
+                                            }
                                         }
                                     } else if (propertyName.equals("j:published")) {
                                         JCRNodeWrapper n = eventUuid != null ? s.getNodeByIdentifier(eventUuid) : s.getNode(path);

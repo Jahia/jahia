@@ -766,4 +766,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         return dslFiles.remove(resource);
     }
 
+    public Map<String, String> getModulePackageNameMap() {
+        return modulePackageNameMap;
+    }
 }

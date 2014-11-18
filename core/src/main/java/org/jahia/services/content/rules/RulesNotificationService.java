@@ -76,22 +76,26 @@ import org.apache.commons.lang.StringUtils;
 import org.drools.core.spi.KnowledgeHelper;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.mail.MailService;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
+import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.script.*;
 import java.io.*;
 import java.util.Locale;
+import java.util.Map;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
@@ -235,7 +239,7 @@ public class RulesNotificationService {
     }
 
     private void sendMail(String template, Object user, String toMail, String fromMail, String ccList, String bcclist,
-                          Locale locale, KnowledgeHelper drools) throws RepositoryException, ScriptException {
+                          Locale locale, KnowledgeHelper drools) throws RepositoryException, ScriptException, IOException {
         if (!notificationService.isEnabled()) {
             return;
         }
@@ -264,6 +268,21 @@ public class RulesNotificationService {
             );
         }
         InputStream scriptInputStream = JahiaContextLoaderListener.getServletContext().getResourceAsStream(template);
+        if (scriptInputStream == null && node != null) {
+            RulesListener rulesListener = RulesListener.getInstance(node.getSession().getWorkspace().getName());
+            String packageName = drools.getRule().getPackageName();
+            JahiaTemplateManagerService jahiaTemplateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+            for (Map.Entry<String, String> entry : rulesListener.getModulePackageNameMap().entrySet()) {
+                if (packageName.equals(entry.getValue())) {
+                    JahiaTemplatesPackage templatePackage = jahiaTemplateManagerService.getTemplatePackage(entry.getKey());
+                    Resource resource = templatePackage.getResource(template);
+                    if (resource != null) {
+                        scriptInputStream = resource.getInputStream();
+                        break;
+                    }
+                }
+            }
+        }
         if (scriptInputStream != null) {
             String resourceBundleName = StringUtils.substringBeforeLast(
                     Patterns.SLASH.matcher(

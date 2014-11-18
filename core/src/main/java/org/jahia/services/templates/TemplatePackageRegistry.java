@@ -1090,15 +1090,15 @@ public class TemplatePackageRegistry {
                             ObservationManager observationManager = workspace.getObservationManager();
                             //first remove existing listener of same type
                             final EventListenerIterator registeredEventListeners = observationManager.getRegisteredEventListeners();
-                            javax.jcr.observation.EventListener toBeRemoved = null;
                             while (registeredEventListeners.hasNext()) {
                                 javax.jcr.observation.EventListener next = registeredEventListeners.nextEventListener();
-                                if (next.getClass().equals(eventListener.getClass())) {
-                                    toBeRemoved = next;
+                                if (next.getClass().equals(eventListener.getClass())
+                                       && (!(next instanceof DefaultEventListener) || StringUtils.equals(
+                                                ((DefaultEventListener) next).getWorkspace(), eventListener.getWorkspace()))) {
+                                    observationManager.removeEventListener(next);
                                     break;
                                 }
                             }
-                            observationManager.removeEventListener(toBeRemoved);
                             if (register) {
                                 observationManager.addEventListener(eventListener, eventListener.getEventTypes(), eventListener.getPath(), eventListener.isDeep(), eventListener.getUuids(), eventListener.getNodeTypes(), false);
                             }

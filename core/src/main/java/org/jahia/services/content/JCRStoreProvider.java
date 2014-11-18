@@ -1067,6 +1067,18 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
+     * Checks if the specified node, backed by this provider, can be cached. This is useful e.g. in /files servlet which can cache the last
+     * modified data of the file to optimize the resource loading. A particular provider could override this method to return
+     * <code>true</code> for nodes, which are either read-only or can push observation events if their content is changed, to ensure cache
+     * consistency.
+     *
+     * @return <code>true</code> if the specified node can be cached; <code>false</code> otherwise
+     */
+    public boolean canCacheNode(Node node) {
+        return false;
+    }
+
+    /**
      * Indicates if the specified node, backed by this provider, is considered during export operation
      *
      * @return <code>true</code> if the specified node, backed by this provider, is included during the export operation

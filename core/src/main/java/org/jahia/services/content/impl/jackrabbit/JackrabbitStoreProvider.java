@@ -99,6 +99,7 @@ import javax.jcr.version.VersionManager;
 import javax.jcr.nodetype.NodeTypeIterator;
 import javax.jcr.nodetype.NodeTypeManager;
 import javax.jcr.nodetype.NodeTypeDefinition;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -217,7 +218,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             }
         }
         jntm.registerNodeTypes(nts.toArray(new NodeTypeDefinition[nts.size()]), true);
-        logger.info("Custom node types registered for " +systemId + " in " + (System.currentTimeMillis() - timer) + " ms");
+        logger.info("Custom node types registered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
     }
 
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
@@ -233,7 +234,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         }
 
         jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
-        logger.info("Custom node types registered for " +systemId + " in " + (System.currentTimeMillis() - timer) + " ms");
+        logger.info("Custom node types registered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
     }
 
     protected boolean canRegisterCustomNodeTypes() {
@@ -307,5 +308,10 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
                 return new PropertyIteratorAdapter(l);
             }
         }
+    }
+    
+    @Override
+    public boolean canCacheNode(Node node) {
+        return true;
     }
 }

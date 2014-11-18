@@ -133,6 +133,10 @@ public class FileServlet extends HttpServlet {
 
     private JCRSessionFactory sessionFactory;
 
+    private boolean canCache(JCRNodeWrapper n) {
+        return cacheFromExternalProviders || n.getProvider().canCacheNode(n);
+    }
+
     protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException,
             IOException {
         long timer = System.currentTimeMillis();
@@ -174,7 +178,7 @@ public class FileServlet extends HttpServlet {
                     String eTag = generateETag(n.getIdentifier(), lastModified);
                     if (lastModifiedEntry == null) {
                         lastModifiedEntry = new FileLastModifiedCacheEntry(eTag, lastModified);
-                        if (cacheFromExternalProviders || n.getProvider().isDefault()) {
+                        if (canCache(n)) {
                             lastModifiedCache.put(fileKey.getCacheKey(), lastModifiedEntry);
                         }
                     }
@@ -364,7 +368,7 @@ public class FileServlet extends HttpServlet {
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
                 lastModifiedEntry.getLastModified());
-        if (contentLength <= cacheThreshold && (cacheFromExternalProviders || node.getProvider().isDefault()) && isVisibleForGuest(node)) {
+        if (contentLength <= cacheThreshold && canCache(node) && isVisibleForGuest(node)) {
             InputStream is = null;
             try {
                 is = binary.getStream();

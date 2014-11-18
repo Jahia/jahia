@@ -81,6 +81,7 @@ import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -111,7 +112,7 @@ public class FileCacheListener extends DefaultEventListener {
         while (eventIterator.hasNext()) {
             Event event = eventIterator.nextEvent();
             try {
-                if (isExternal(event)) {
+                if (!shouldProcess(event)) {
                     continue;
                 }
 
@@ -142,6 +143,7 @@ public class FileCacheListener extends DefaultEventListener {
                     nodes.add(path);
                 }
                 if (event.getType() == Event.NODE_MOVED) {
+                    @SuppressWarnings("rawtypes")
                     Map eventInfo = event.getInfo();
                     if (eventInfo != null) {
                         Object absPath = eventInfo.get("srcAbsPath");
@@ -177,6 +179,10 @@ public class FileCacheListener extends DefaultEventListener {
                 logger.error("Error while accessing repository", e);
             }
         }
+    }
+
+    protected boolean shouldProcess(Event event) {
+        return !isExternal(event);
     }
 
     private void flushSubNodes(final String nodePath, final String srcAbsPath, final String destAbsPath) throws RepositoryException {

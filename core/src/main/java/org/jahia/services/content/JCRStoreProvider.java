@@ -848,11 +848,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
         Credentials credentials = originalCredentials;
         String username = ((SimpleCredentials) originalCredentials).getUserID();
+        String realm = (String) ((SimpleCredentials) originalCredentials).getAttribute(JahiaLoginModule.REALM_ATTRIBUTE);
 
         if ("shared".equals(authenticationType)) {
             credentials = username.startsWith(GUEST) ? getGuestCredentials() : getSystemCredentials();
         } else if ("storedPasswords".equals(authenticationType)) {
-            JCRUserNode user = userManagerService.lookupUser(username);
+            JCRUserNode user = userManagerService.lookupUser(username,realm,false);
             username = user.getPropertyAsString("storedUsername_" + getKey());
             JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
             if (passProp != null) {

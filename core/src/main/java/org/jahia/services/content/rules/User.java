@@ -161,7 +161,7 @@ public class User {
     public JCRUserNode getUserNode() {
         if (user == null && username != null) {
             if (!username.equals(JahiaLoginModule.SYSTEM) && !username.equals(JahiaLoginModule.GUEST)) {
-                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username, realm);
+                user = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(username, realm, false);
             }
         }
         return user;

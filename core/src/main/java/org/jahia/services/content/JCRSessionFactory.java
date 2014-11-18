@@ -308,7 +308,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                 if (jahiaPrincipal.isGuest()) {
                     userNode = userService.lookupUser(JahiaUserManagerService.GUEST_USERNAME);
                 } else {
-                    userNode = userService.lookupUser(jahiaPrincipal.getName(), jahiaPrincipal.getRealm());
+                    userNode = userService.lookupUser(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), false);
                 }
                 if (userNode != null) {
                     user = userNode.getJahiaUser();

@@ -114,21 +114,27 @@ public class AddPrincipalsInRolesAction extends Action {
             (parameters.get("roles") != null)) {
             List<String> principals = parameters.get("principals");
             List<String> roles = parameters.get("roles");
+
+            String siteKey = resource.getNode().getResolveSite().getSiteKey();
+
             for (String principalKey : principals) {
                 if (principalKey.startsWith("u:")) {
-                    String userKey = principalKey.substring("u:".length());
-                    JCRUserNode jahiaUser = jahiaUserManagerService.lookupUser(userKey);
+                    String user = principalKey.substring("u:".length());
+                    JCRUserNode jahiaUser = jahiaUserManagerService.lookupUser(user,siteKey);
                     if (jahiaUser == null) {
-                        logger.warn("User " + userKey + " could not be found, will not add to roles");
+                        logger.warn("User " + user + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;
                     }
                     resource.getNode().grantRoles(principalKey, new HashSet<String>(roles));
                     session.save();
                 } else if (principalKey.startsWith("g:")) {
-                    String groupKey = principalKey.substring("g:".length());
-                    JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroupByPath(groupKey);
+                    String group = principalKey.substring("g:".length());
+                    JCRGroupNode jahiaGroup = jahiaGroupManagerService.lookupGroup(siteKey, group);
                     if (jahiaGroup == null) {
-                        logger.warn("Group " + groupKey + " could not be found, will not add to roles");
+                        jahiaGroup = jahiaGroupManagerService.lookupGroup(null, group);
+                    }
+                    if (jahiaGroup == null) {
+                        logger.warn("Group " + group + " could not be found, will not add to roles");
                         return ActionResult.BAD_REQUEST;
                     }
                     resource.getNode().grantRoles(principalKey, new HashSet<String>(roles));

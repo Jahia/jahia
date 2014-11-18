@@ -808,10 +808,7 @@ public class ContentManagerHelper {
                         continue;
                     }
                 } else {
-                    JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
-                    if (u == null) {
-                        u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
-                    }
+                    JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
                     if (u != null) {
                         ace.setPrincipalKey(u.getPath());
                         String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
@@ -878,7 +875,7 @@ public class ContentManagerHelper {
                                 ace.setPrincipalDisplayName(groupName);
                             }
                         } else {
-                            JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal());
+                            JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
                             if (u != null) {
                                 ace.setPrincipalKey(u.getPath());
                                 String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);

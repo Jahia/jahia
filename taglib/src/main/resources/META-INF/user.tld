@@ -57,6 +57,17 @@
     </function>
     <function>
         <description>
+            Lookup the user by the username and site
+        </description>
+        <name>lookupUserByUsernameAndSite</name>
+        <function-class>org.jahia.taglibs.user.User</function-class>
+        <function-signature>org.jahia.services.content.decorator.JCRUserNode lookupUser(java.lang.String,java.lang.String)</function-signature>
+        <example>
+            ${user:lookupUser('sergiy','ACME')}
+        </example>
+    </function>
+    <function>
+        <description>
             Retrieve the displayable name for a principal object. For the moment this implementation only changes
             the guest user and guest group names to be localized using resource bundle entries (see jahia.properties
             for configuration of resource bundle name and key).

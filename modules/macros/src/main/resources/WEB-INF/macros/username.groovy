@@ -1,1 +1,1 @@
-print org.jahia.data.viewhelper.principal.PrincipalViewHelper.getFullName(org.jahia.services.usermanager.JahiaUserManagerService.instance.lookupUser(currentUser.name))
+print org.jahia.data.viewhelper.principal.PrincipalViewHelper.getFullName(currentUser)

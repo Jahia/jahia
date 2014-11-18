@@ -1566,9 +1566,17 @@ public final class JCRContentUtils implements ServletContextAware {
         for (Map.Entry<String, List<String[]>> entry : entries.entrySet()) {
             Map<String, Object> m = new HashMap<String, Object>();
             String entryKey = entry.getKey();
+            if (siteKey == null) {
+                try {
+                    JCRSiteNode resolveSite = node.getResolveSite();
+                    siteKey = resolveSite != null ? resolveSite.getSiteKey() : null;
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
+            }
             if (entryKey.startsWith("u:")) {
                 String name = StringUtils.substringAfter(entryKey, "u:");
-                JCRUserNode u = userService.lookupUser(name);
+                JCRUserNode u = userService.lookupUser(name, siteKey);
                 if (u == null) {
                     logger.warn("User {} cannot be found. Skipping.", name);
                     continue;
@@ -1576,14 +1584,6 @@ public final class JCRContentUtils implements ServletContextAware {
                 m.put("principalType", "user");
                 m.put("principal", u);
             } else if (entryKey.startsWith("g:")) {
-                if (siteKey == null) {
-                    try {
-                        JCRSiteNode resolveSite = node.getResolveSite();
-                        siteKey = resolveSite != null ? resolveSite.getSiteKey() : null;
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
                 String name = StringUtils.substringAfter(entryKey, "g:");
                 JCRGroupNode g = groupService.lookupGroup(siteKey, name);
                 if (g == null) {

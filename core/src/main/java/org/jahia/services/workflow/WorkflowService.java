@@ -459,10 +459,7 @@ public class WorkflowService implements BeanPostProcessor {
                             site = node.getResolveSite();
                         }
                         if (principal.charAt(0) == 'u') {
-                            JCRUserNode userNode = userService.lookupUser(principalName);
-                            if (userNode == null && strings[0].startsWith("/sites/")) {
-                                userNode = userService.lookupUser(principalName,site.getSiteKey());
-                            }
+                            JCRUserNode userNode = userService.lookupUser(principalName,strings[0].startsWith("/sites/") ? site.getSiteKey() : null);
                             if (userNode != null) {
                                 if (logger.isDebugEnabled()) {
                                     logger.debug("user " + userNode.getUserKey() + " is granted");

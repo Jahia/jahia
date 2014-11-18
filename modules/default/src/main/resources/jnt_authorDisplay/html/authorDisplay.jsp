@@ -31,7 +31,7 @@
         </div>
     </c:when>
     <c:otherwise>
-        <c:set var="user" value="${user:lookupUser(boundComponent.properties['jcr:createdBy'].string).path}"/>
+        <c:set var="user" value="${user:lookupUserByUsernameAndSite(boundComponent.properties['jcr:createdBy'].string, boundComponent.resolveSite.name).path}"/>
         <template:addCacheDependency path="${user}"/>
         <template:module path="${user}" view="${mainTemplate}">
             <template:param name="displayFirstName" value="${currentNode.properties['j:firstName'].string}"/>

@@ -228,16 +228,27 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUser(String name) {
-        return lookupUser(name, (String) null);
+        return lookupUser(name, null, false);
     }
 
     public JCRUserNode lookupUser(String name, String site) {
+        return lookupUser(name, site, true);
+    }
+
+    public JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers) {
+        JCRUserNode userNode = null;
         try {
-            return lookupUser(name, site, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            if (checkSiteAndGlobalUsers && site != null) {
+                userNode = lookupUser(name, null, s);
+            }
+            if (userNode == null) {
+                userNode = lookupUser(name, site, s);
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return null;
         }
+        return userNode;
     }
 
     /**

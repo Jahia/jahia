@@ -162,6 +162,13 @@ public class User {
                 .getJahiaUserManagerService().lookupUser(user);
     }
 
+    public static JCRUserNode lookupUser(String user, String site) throws IllegalArgumentException {
+        if (user == null) {
+            throw new IllegalArgumentException("Specified user key is null");
+        }
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(user, site);
+    }
+
     public static Map<String, JCRGroupNode> getUserMembership(String user) {
         return getUserMembership(lookupUser(user));
     }

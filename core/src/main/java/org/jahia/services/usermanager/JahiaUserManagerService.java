@@ -301,6 +301,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         return lookupUser(name) != null;
     }
 
+    public boolean userExists(String name, String siteKey) {
+        return lookupUser(name, siteKey) != null;
+    }
+
     /**
      * Returns the system root user name (cached)
      *

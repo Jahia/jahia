@@ -10,6 +10,9 @@
     <portlets jcr:primaryType="jnt:portletFolder"/>
 
     <groups jcr:primaryType="jnt:groupsFolder">
+        <site-users jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
+            <j:members jcr:primaryType="jnt:members"/>
+        </site-users>
         <site-administrators jcr:primaryType="jnt:group" jcr:mixinTypes="jmix:systemNode" j:hidden="false">
             <j:members jcr:primaryType="jnt:members"/>
         </site-administrators>

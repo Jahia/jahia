@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.*;
@@ -164,7 +165,11 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     public boolean isMember(String userPath) {
         if (JahiaGroupManagerService.GUEST_GROUPPATH.equals(getPath()) ||
-                !JahiaUserManagerService.GUEST_USERPATH.equals(userPath) && JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath())) {
+                (JahiaGroupManagerService.USERS_GROUPPATH.equals(getPath()) &&
+                        !JahiaUserManagerService.GUEST_USERPATH.equals(userPath)) ||
+                (JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(getName()) &&
+                        (!userPath.startsWith("/sites/") || userPath.startsWith("/sites/"+StringUtils.substringBetween(getPath(), "/sites/", "/"))))
+                ) {
             return true;
         }
         List<String> membershipByPath = JahiaGroupManagerService.getInstance().getMembershipByPath(userPath);

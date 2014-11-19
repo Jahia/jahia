@@ -985,6 +985,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean isUserMemberOf(String groupname, String site) {
         return  (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) ||
                 (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname)) ||
+                (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(groupname) && (jahiaPrincipal.getRealm() == null || jahiaPrincipal.getRealm().equals(site))) ||
                 (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, null)));
     }
 

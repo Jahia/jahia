@@ -235,10 +235,15 @@ public class GroupCacheHelper {
                 logger.warn("Error retrieving membership for user " + principalPath, e);
             }
             if (principalNode instanceof JCRUserNode) {
-                if (!JahiaUserManagerService.isGuest((JCRUserNode) principalNode)) {
-                    groups.add(JahiaGroupManagerService.USERS_GROUPPATH);
+                JCRUserNode userNode = (JCRUserNode) principalNode;
+                if (!JahiaUserManagerService.isGuest(userNode)) {
+                    recurseOnSpecialGroups(groups, JahiaGroupManagerService.USERS_GROUPPATH);
+                    if (userNode.getRealm() != null) {
+                        String siteUsers = "/sites/" + userNode.getRealm() + "/groups/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME;
+                        recurseOnSpecialGroups(groups, siteUsers);
+                    }
                 }
-                groups.add(JahiaGroupManagerService.GUEST_GROUPPATH);
+                recurseOnSpecialGroups(groups, JahiaGroupManagerService.GUEST_GROUPPATH);
             }
             return new LinkedList<String>(groups);
         } catch (PathNotFoundException e) {
@@ -247,6 +252,11 @@ public class GroupCacheHelper {
             logger.error("Error retrieving membership for user " + principalPath + ", will return empty list", e);
         }
         return null;
+    }
+
+    private void recurseOnSpecialGroups(Set<String> groups, String groupPath) {
+        groups.add(groupPath);
+        groups.addAll((List<String>) membershipCache.get(groupPath).getObjectValue());
     }
 
     private void recurseOnGroups(Set<String> groups, JCRNodeWrapper principal) throws RepositoryException, JahiaException {

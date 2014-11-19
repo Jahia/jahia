@@ -122,6 +122,7 @@ public class JahiaSitesService extends JahiaService {
     protected EhCacheProvider ehCacheProvider;
     private SelfPopulatingCache siteKeyByServerNameCache;
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
+    private SelfPopulatingCache sitesListCache;
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -152,6 +153,32 @@ public class JahiaSitesService extends JahiaService {
      */
     public static JahiaSitesService getInstance() {
         return Holder.INSTANCE;
+    }
+
+
+    /**
+     * return the list of all sites names
+     *
+     * @return List<String> List of site names
+     */
+    public List<String> getSitesNames() {
+        return (List<String>) getSitesListCache().get("/").getObjectValue();
+    }
+
+    private SelfPopulatingCache getSitesListCache() {
+        if (sitesListCache == null) {
+            sitesListCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.sitesService.sitesListCache", new CacheEntryFactory() {
+                @Override
+                public Object createEntry(Object o) throws Exception {
+                    List<String> sites = new ArrayList<String>();
+                    for (JCRSiteNode jcrSiteNode : getSitesNodeList(sessionFactory.getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null))) {
+                        sites.add(jcrSiteNode.getName());
+                    }
+                    return sites;
+                }
+            });
+        }
+        return sitesListCache;
     }
 
 
@@ -839,6 +866,9 @@ public class JahiaSitesService extends JahiaService {
         }
         if (siteDefaultLanguageBySiteKey != null) {
             siteDefaultLanguageBySiteKey.removeAll(false);
+        }
+        if (sitesListCache != null) {
+            sitesListCache.removeAll();
         }
     }
 

@@ -179,7 +179,8 @@ public class User {
         final List<String> userMembership = managerService.getMembershipByPath(user.getPath());
         for (String groupPath : userMembership) {
             if(!groupPath.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
-                    !groupPath.equals(JahiaGroupManagerService.USERS_GROUPNAME)) {
+                    !groupPath.equals(JahiaGroupManagerService.USERS_GROUPNAME) &&
+                    !groupPath.endsWith("/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME)) {
                 final JCRGroupNode group = managerService.lookupGroupByPath(groupPath);
                 map.put(groupPath,group);
             }

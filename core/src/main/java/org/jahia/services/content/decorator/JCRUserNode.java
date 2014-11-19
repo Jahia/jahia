@@ -210,6 +210,7 @@ public class JCRUserNode extends JCRNodeDecorator {
     public boolean isMemberOfGroup(String siteKey, String name) {
         return JahiaGroupManagerService.GUEST_GROUPNAME.equals(name) ||
                 JahiaGroupManagerService.USERS_GROUPNAME.equals(name) ||
+                (JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(name) && (getRealm() == null || getRealm().equals(siteKey))) ||
                 (isRoot() && JahiaGroupManagerService.POWERFUL_GROUPS.contains(name)) ||
                 JahiaGroupManagerService.getInstance().isMember(getName(), getRealm(), name, siteKey);
     }

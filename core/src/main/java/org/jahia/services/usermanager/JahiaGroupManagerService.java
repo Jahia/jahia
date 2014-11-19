@@ -80,6 +80,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,6 +98,7 @@ public class JahiaGroupManagerService extends JahiaService {
     private static Logger logger = LoggerFactory.getLogger(JahiaGroupManagerService.class);
 
     public static final String USERS_GROUPNAME = "users";
+    public static final String SITE_USERS_GROUPNAME = "site-users";
     public static final String ADMINISTRATORS_GROUPNAME = "administrators";
     public static final String PRIVILEGED_GROUPNAME = "privileged";
     public static final String SITE_PRIVILEGED_GROUPNAME = "site-privileged";
@@ -699,11 +701,17 @@ public class JahiaGroupManagerService extends JahiaService {
             for (JCRNodeWrapper member : groupNode.getMembers()) {
                 flushMembershipCache("/" + key + "/j:members" + member.getPath());
             }
+            if (groupNode.getPath().equals(JahiaGroupManagerService.GUEST_GROUPPATH) ||
+                    groupNode.getPath().equals(JahiaGroupManagerService.USERS_GROUPPATH) ||
+                    groupNode.getName().equals(JahiaGroupManagerService.SITE_USERS_GROUPNAME)) {
+                cacheHelper.getMembershipCache().removeAll();
+            }
         }
 
         if (key.contains("/")) {
-            cacheHelper.getMembershipCache().refresh("/" + key);
+            cacheHelper.getMembershipCache().remove("/" + key);
         } else {
+            // Legacy members
             cacheHelper.getMembershipCache().removeAll();
         }
     }
@@ -772,7 +780,19 @@ public class JahiaGroupManagerService extends JahiaService {
      */
     @SuppressWarnings("unchecked")
     public List<String> getMembershipByPath(String principalPath) {
-        return (List<String>) cacheHelper.getMembershipCache().get(principalPath).getObjectValue();
+        List<String> owners = (List<String>) cacheHelper.getMembershipCache().get(principalPath).getObjectValue();
+
+        if (principalPath.startsWith("/users/") && !principalPath.equals(JahiaUserManagerService.GUEST_USERPATH)) {
+            // Dynamically add all site-users groups for global users
+            owners = new ArrayList<String>(owners);
+            for (String s : JahiaSitesService.getInstance().getSitesNames()) {
+                String siteUsersGroup = "/sites/" + s + "/groups/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME;
+                owners.add(siteUsersGroup);
+                owners.addAll((List<String>) cacheHelper.getMembershipCache().get(siteUsersGroup).getObjectValue());
+            }
+        }
+
+        return owners;
     }
 
 }

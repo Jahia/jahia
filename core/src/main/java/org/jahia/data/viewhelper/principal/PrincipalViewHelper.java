@@ -564,6 +564,10 @@ public class PrincipalViewHelper implements Serializable {
         return getSearchResult(searchIn, null, searchString, searchInProps, storedOn, providers);
     }
 
+    public static Set<JCRUserNode> getSearchResult(String searchIn, String searchString, String[] searchInProps, String storedOn, String[] providers) {
+        return getSearchResult(searchIn, null, searchString, searchInProps, storedOn, providers);
+    }
+
     public static Set<JCRUserNode> getSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();

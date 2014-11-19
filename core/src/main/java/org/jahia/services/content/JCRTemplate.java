@@ -211,7 +211,7 @@ public class JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession with JahiaUser
+     * @deprecated Use doExecute with JahiaUser
      */
     @Deprecated
     public <X> X doExecuteWithUserSession(String username, String workspace, JCRCallback<X> callback) throws RepositoryException {
@@ -227,7 +227,7 @@ public class JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession with JahiaUser
+     * @deprecated Use doExecute with JahiaUser
      */
     @Deprecated
     public <X> X doExecuteWithUserSession(String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
@@ -259,7 +259,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithUserSession(String username, String realm, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
+    public <X> X doExecute(String username, String realm, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = sessionFactory.getUserSession(username, realm, workspace, locale);
@@ -288,7 +288,7 @@ public class JCRTemplate {
      * @return a result object returned by the action, or null
      * @throws RepositoryException in case of JCR errors
      */
-    public <X> X doExecuteWithUserSession(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
+    public <X> X doExecute(JahiaUser user, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
         JCRSessionWrapper session = null;
         try {
             session = sessionFactory.getUserSession(user != null ? user.getUsername() : null, user != null ? user.getRealm() : null, workspace, locale);
@@ -301,7 +301,7 @@ public class JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession or doExecuteWithUserSession with JahiaUser
+     * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
      */
     @Deprecated
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, Locale locale, JCRCallback<X> callback) throws RepositoryException {
@@ -313,7 +313,7 @@ public class JCRTemplate {
     }
 
     /**
-     * @deprecated Use doExecuteWithSystemSession or doExecuteWithUserSession with JahiaUser
+     * @deprecated Use doExecuteWithSystemSession or doExecute with JahiaUser
      */
     @Deprecated
     public <X> X doExecute(boolean useSystemSession, String username, String workspace, JCRCallback<X> callback) throws RepositoryException {

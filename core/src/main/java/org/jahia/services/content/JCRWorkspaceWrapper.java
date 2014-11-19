@@ -273,7 +273,7 @@ public class JCRWorkspaceWrapper implements Workspace {
                     if (session.isSystem()) {
                         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(session.getUser(), getName(), session.getLocale(), jcrCallback);
                     } else {
-                        JCRTemplate.getInstance().doExecuteWithUserSession(session.getUser(), getName(), session.getLocale(), jcrCallback);
+                        JCRTemplate.getInstance().doExecute(session.getUser(), getName(), session.getLocale(), jcrCallback);
                     }
                 }
             } else {

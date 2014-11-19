@@ -893,7 +893,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
         if (session.getUser() != null && sessionFactory.getCurrentAliasedUser() != null &&
                 !sessionFactory.getCurrentAliasedUser().equals(session.getUser())) {
-            JCRTemplate.getInstance().doExecuteWithUserSession(sessionFactory.getCurrentAliasedUser(),
+            JCRTemplate.getInstance().doExecute(sessionFactory.getCurrentAliasedUser(),
                     session.getWorkspace().getName(), session.getLocale(), new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                             try {

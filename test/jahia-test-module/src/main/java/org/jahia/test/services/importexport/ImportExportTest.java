@@ -285,7 +285,7 @@ public class ImportExportTest {
     public void testSimpleExportImport() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -301,7 +301,7 @@ public class ImportExportTest {
     public void testSimpleExportImportWithLive() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         final JCRPublicationService jcrService = ServicesRegistry.getInstance().getJCRPublicationService();
@@ -314,7 +314,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -330,7 +330,7 @@ public class ImportExportTest {
     public void testExportImportWithComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -343,14 +343,14 @@ public class ImportExportTest {
                         }
                         JCRNodeWrapper newPage = englishEditSiteHomeNode.addNode("added-child", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child");
-                        newPage.setProperty("j:templateName", "simple");                        
+                        newPage.setProperty("j:templateName", "simple");
 
                         newPage = englishEditSiteHomeNode.addNode("added-child-with-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child with subpage");
-                        newPage.setProperty("j:templateName", "simple");                        
+                        newPage.setProperty("j:templateName", "simple");
                         newPage = newPage.addNode("subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Subpage");
-                        newPage.setProperty("j:templateName", "simple");                        
+                        newPage.setProperty("j:templateName", "simple");
 
                         JCRNodeWrapper childPage = englishEditSiteHomeNode.getNode("child2");
                         if (!childPage.isCheckedOut()) {
@@ -358,7 +358,7 @@ public class ImportExportTest {
                         }
                         newPage = childPage.addNode("added-child-to-existing-subpage", "jnt:page");
                         newPage.setProperty("jcr:title", "Added child to existing subpage");
-                        newPage.setProperty("j:templateName", "simple");                        
+                        newPage.setProperty("j:templateName", "simple");
                         session.save();
 
                         // updates
@@ -409,7 +409,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -418,7 +418,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         // Now publish everything and check again
@@ -432,7 +432,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -448,7 +448,7 @@ public class ImportExportTest {
     public void testExportImportWithUGCComplexChanges() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.LIVE_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.LIVE_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
 
@@ -537,7 +537,7 @@ public class ImportExportTest {
                     }
                 });
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         exportImportAndCheck(session);
@@ -1062,7 +1062,7 @@ public class ImportExportTest {
     public void testImportValidation() throws Exception {
         JCRSessionFactory sf = JCRSessionFactory.getInstance();
         sf.closeAllSessions();
-        JCRTemplate.getInstance().doExecuteWithUserSession(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
+        JCRTemplate.getInstance().doExecute(sf.getCurrentUser(), Constants.EDIT_WORKSPACE,
                 LanguageCodeConverters.languageCodeToLocale(DEFAULT_LANGUAGE), new JCRCallback<Object>() {
                     public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         JCRNodeWrapper englishSiteRootNode = session.getNode("/" + SITECONTENT_ROOT_NODE);
@@ -1123,13 +1123,13 @@ public class ImportExportTest {
                                                 site.getInstalledModules());
                                         List<ValidationResult> valResults = results.getResults();
                                         assertTrue("No validation errors found although there should be some", valResults.size() > 0);
-                                        
+
                                         for (ValidationResult result : valResults) {
                                             if (!result.isSuccessful()) {
                                                 if (result instanceof MissingNodetypesValidationResult) {
-                                                    assertEquals("There should be 4 missing nodetypes", 4, ((MissingNodetypesValidationResult)result).getMissingNodetypes().size());
-                                                    assertEquals("There should be 1 missing mixin", 1, ((MissingNodetypesValidationResult)result).getMissingMixins().size());
-                                                } 
+                                                    assertEquals("There should be 4 missing nodetypes", 4, ((MissingNodetypesValidationResult) result).getMissingNodetypes().size());
+                                                    assertEquals("There should be 1 missing mixin", 1, ((MissingNodetypesValidationResult) result).getMissingMixins().size());
+                                                }
                                             }
                                         }
                                     }

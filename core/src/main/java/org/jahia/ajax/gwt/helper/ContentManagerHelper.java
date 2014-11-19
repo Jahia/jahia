@@ -455,7 +455,7 @@ public class ContentManagerHelper {
 
             List<String> uuids;
             if (allLanguages) {
-                uuids = JCRTemplate.getInstance().doExecuteWithUserSession(currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), null, callback);
+                uuids = JCRTemplate.getInstance().doExecute(currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), null, callback);
             } else {
                 uuids = callback.doInJCR(currentUserSession);
             }

@@ -211,7 +211,7 @@ public class TemplatePermissionCheckFilter extends AbstractFilter {
                 }
 
                 if (aliasedUser != null) {
-                    if (!JCRTemplate.getInstance().doExecuteWithUserSession(aliasedUser, node.getSession().getWorkspace().getName(), null,
+                    if (!JCRTemplate.getInstance().doExecute(aliasedUser, node.getSession().getWorkspace().getName(), null,
                             new JCRCallback<Boolean>() {
                                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     JCRNodeWrapper aliasedNode = session.getNode(resource.getNode().getPath());

@@ -1026,10 +1026,14 @@ public class LegacyImportHandler extends DefaultHandler {
                 }
                 references.get(reference).add(sub.getIdentifier() + "/" + Constants.NODE);
             } else if (isProperty && !node.hasProperty(propertyName)) {
+                Node target = node;
+                if (node.getApplicablePropertyDefinition(propertyName) != null && node.getApplicablePropertyDefinition(propertyName).isInternationalized()) {
+                    target = node.getOrCreateI18N(locale);
+                }
                 if (!references.containsKey(reference)) {
                     references.put(reference, new ArrayList<String>());
                 }
-                references.get(reference).add(node.getIdentifier() + "/" + propertyName);
+                references.get(reference).add(target.getIdentifier() + "/" + propertyName);
             }
             currentCtx.peek().pushSkip();
         } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {

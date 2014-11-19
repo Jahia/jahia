@@ -108,7 +108,7 @@ public class DefinitionsMapping {
     String EQ = WS + "=" + WS;
     String NODETYPE_MAPPING = NODETYPE + EQ + WORD;
     String NODE = WORD_WITH_DOTS_AND_SLASHES + WS + "(?:\\(" + WS + WORD + WS + "\\))?";
-    String NODE_MAPPING = WS + "\\+" + WS + WORD + EQ + NODE;
+    String NODE_MAPPING = WS + "\\+" + WS + WORD + EQ + "(" + WORD + "\\|" + ")?" + NODE;
     String PROPERTY_MAPPING = WS + "-" + WS + WORD + EQ + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES;
     String VALUE_MAPPING = WS + WORD_WITH_DOTS_SPACES_AND_BRACKETS + EQ + WORD_WITH_DOTS_SPACES_AND_BRACKETS;
     String PROPS = "(?:\\[((?:" + WS_OR_COMMA + "(" + WORD + "\\|" + ")?" + WORD_WITH_DOTS_AND_SLASHES + EQ + WORD_WITH_DOTS + WS + ")*)\\])";
@@ -144,8 +144,8 @@ public class DefinitionsMapping {
                     types.put(typeMapping.originalName, typeMapping);
                 } else if ((matcher = NODE_PATTERN.matcher(line)).matches()) {
                     String originalName = matcher.group(1);
-                    String nodeName = matcher.group(2);
-                    String nodeType = matcher.group(3);
+                    String nodeName = (matcher.group(2) != null ? matcher.group(2) : "") + matcher.group(4);
+                    String nodeType = matcher.group(5);
                     nodeMapping = new NodeMapping(originalName, nodeName, nodeType);
                     typeMapping.addNodeMapping(originalName, nodeMapping);
                     currentMapping = nodeMapping;

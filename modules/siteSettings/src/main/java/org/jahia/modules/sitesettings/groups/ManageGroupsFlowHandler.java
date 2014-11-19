@@ -477,14 +477,19 @@ public class ManageGroupsFlowHandler implements Serializable {
     public Set<JCRNodeWrapper> searchNewMembers(SearchCriteria searchCriteria) {
         long timer = System.currentTimeMillis();
 
-        Set<JCRNodeWrapper> searchResult;
+        Set<JCRNodeWrapper> searchResult = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>(){
+            @Override
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                return PrincipalViewHelper.getDisplayName(o1).compareToIgnoreCase(PrincipalViewHelper.getDisplayName(o2));
+            }
+        });
         boolean searchForUsers = searchType.equals("users");
         if (searchForUsers) {
-            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+            searchResult.addAll(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
                     searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
                     searchCriteria.getProviders()));
         } else {
-            searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
+            searchResult.addAll(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
                     searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
                     searchCriteria.getStoredOn(), searchCriteria.getProviders()));
         }

@@ -187,6 +187,7 @@
         <tr>
             <th width="2%"><input type="checkbox" name="selectedAllMembers" id="cbSelectedAllMembers"/></th>
             <th><fmt:message key="label.name"/></th>
+            <c:if test="${flowHandler.searchType eq 'users'}"><th width="43%" class="sortable"><fmt:message key="label.properties"/></th></c:if>
             <c:if test="${multipleProvidersAvailable}">
                 <th width="10%"><fmt:message key="column.provider.label"/></th>
             </c:if>
@@ -206,6 +207,8 @@
                         <td>
                             ${fn:escapeXml(user:displayName(principal))}
                         </td>
+                        <c:if test="${flowHandler.searchType eq 'users'}"> <td>${user:fullName(principal)}</td></c:if>
+
                         <c:if test="${multipleProvidersAvailable}">
                             <fmt:message var="i18nProviderLabel" key="providers.${principal.providerName}.label"/>
                             <td>${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? principal.providerName : i18nProviderLabel)}</td>

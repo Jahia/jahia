@@ -301,6 +301,16 @@ public class PrincipalViewHelper implements Serializable {
             String groupName = jahiaGroup.getName();
             groupName = getGroupDisplayName(groupName, locale);
             return groupName;
+        } else if (p instanceof JahiaUser) {
+            JahiaUser jahiaUser = (JahiaUser) p;
+            String userName = jahiaUser.getName();
+            userName = getUserDisplayName(userName, locale);
+            return userName;
+        } else if (p instanceof JahiaGroup) {
+            JahiaGroup jahiaGroup = (JahiaGroup) p;
+            String groupName = jahiaGroup.getName();
+            groupName = getGroupDisplayName(groupName, locale);
+            return groupName;
         } else if (p instanceof Principal) {
             return ((Principal) p).getName();
         } else {

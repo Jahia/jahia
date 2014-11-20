@@ -85,6 +85,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -224,7 +225,16 @@ public class QueryWrapper implements Query {
                     }
                     query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
                 } catch (ConstraintViolationException e) {
+                    if(logger.isDebugEnabled()){
+                        logger.debug(e.getMessage(),e);
+                    }
                     // Provider path incompatible with constraints, skip query
+                    return null;
+                } catch (NamespaceException e) {
+                    if(logger.isDebugEnabled()){
+                        logger.debug(e.getMessage(),e);
+                    }
+                    // Query nodetype / namespace does not exist on this provider, skip query
                     return null;
                 }
             }

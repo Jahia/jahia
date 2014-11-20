@@ -98,7 +98,7 @@ public class MountPointsManagementFlowHandler implements Serializable{
                         ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
 
                         // calcul the factory URL
-                        String queryString = "select * from [jmix:mountPointFactory] as factory where ['j:mountPointType'] = '" + type.getName() + "'";
+                        String queryString = "select * from [jmix:mountPointFactory] as factory where isdescendantnode(factory,'/modules/') and ['j:mountPointType'] = '" + type.getName() + "'";
                         Query query = session.getWorkspace().getQueryManager().createQuery(queryString, Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         String endOfURL = null;

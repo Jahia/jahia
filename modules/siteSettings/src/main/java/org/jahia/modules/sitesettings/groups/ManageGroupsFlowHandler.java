@@ -462,7 +462,7 @@ public class ManageGroupsFlowHandler implements Serializable {
         long timer = System.currentTimeMillis();
         Set<JCRNodeWrapper> searchResult = new HashSet<JCRNodeWrapper>(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
                 searchCriteria.getSiteKey(), searchTerm, searchCriteria.getProperties(),
-                searchCriteria.getStoredOn(), searchCriteria.getProviders()));
+                searchCriteria.getStoredOn(), searchCriteria.getProviders(), false));
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
         return searchResult;
     }

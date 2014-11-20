@@ -14,3 +14,4 @@
 
 [jnt:siteSettingsManageModules] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent
 
+[jnt:siteSettingsManageUsers] > jnt:content, mix:title, jmix:studioOnly, jmix:siteComponent

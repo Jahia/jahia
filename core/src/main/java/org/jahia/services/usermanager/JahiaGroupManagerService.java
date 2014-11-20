@@ -431,7 +431,7 @@ public class JahiaGroupManagerService extends JahiaService {
             Set<JCRGroupNode> users = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(
-                        "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE "
+                        "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE [j:hidden] = false AND "
                 );
                 List<JCRStoreProvider> searchOnProviders = getProviders(siteKey, providers, session);
                 if (!searchOnProviders.isEmpty()) {
@@ -455,7 +455,7 @@ public class JahiaGroupManagerService extends JahiaService {
                     if (siteKey == null) {
                         query.append("ISDESCENDANTNODE(g, '/groups')");
                     } else {
-                        query.append("(ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')").append(" OR ISDESCENDANTNODE(g, '/groups/providers'))");
+                        query.append("ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')");
                     }
                 }
                 if (searchCriterias != null && searchCriterias.size() > 0) {
@@ -527,7 +527,8 @@ public class JahiaGroupManagerService extends JahiaService {
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
         try {
             providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
-            JCRNodeWrapper providersNode = session.getNode("/groups/providers");
+            String providersParentPath = (siteKey == null ? "" : "/sites/" + siteKey) + "/groups/providers";
+            JCRNodeWrapper providersNode = session.getNode(providersParentPath);
             NodeIterator iterator = providersNode.getNodes();
             while (iterator.hasNext()){
                 JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();

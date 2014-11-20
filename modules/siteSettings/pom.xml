@@ -110,6 +110,7 @@
         <extensions>true</extensions>
         <configuration>
           <instructions>
+            <Export-Package>org.jahia.modules.sitesettings.users.management</Export-Package>
             <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
             <Jahia-Module-Type>system</Jahia-Module-Type>
           </instructions>

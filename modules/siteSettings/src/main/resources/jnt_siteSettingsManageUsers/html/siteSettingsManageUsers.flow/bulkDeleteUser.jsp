@@ -1,4 +1,4 @@
-<%--@elvariable id="searchCriteria" type="org.jahia.modules.serversettings.users.management.SearchCriteria"--%>
+<%--@elvariable id="searchCriteria" type="org.jahia.modules.sitesettings.users.management.SearchCriteria"--%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -43,7 +43,7 @@
                     <c:when test="${fn:length(usersToDelete) eq 0}">
                         <tr>
                             <td colspan="${multipleProvidersAvailable ? '4' : '3'}">
-                                <fmt:message key="serverSettings.user.search.no.result"/></td>
+                                <fmt:message key="siteSettings.user.search.no.result"/></td>
                         </tr>
                     </c:when>
                     <c:otherwise>

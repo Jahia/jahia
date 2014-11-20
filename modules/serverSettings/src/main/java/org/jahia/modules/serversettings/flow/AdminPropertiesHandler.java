@@ -101,9 +101,8 @@ public class AdminPropertiesHandler implements Serializable {
      * first method call in the flow. It instantiates and populates the AdminProperties bean
      */
     public void init() {
-        JCRUserNode rootNode = JahiaUserManagerService.getInstance().lookupRootUser();
         adminProperties = new AdminProperties();
-        UsersFlowHandler.populateUser(rootNode.getPath(), adminProperties);
+        adminProperties.populate(JahiaUserManagerService.getInstance().lookupRootUser());
     }
 
     /**

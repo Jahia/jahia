@@ -73,6 +73,7 @@
         <site-admin jcr:primaryType="jnt:permission" >
             <!-- site settings -->
             <siteAdministrationAccess jcr:primaryType="jnt:permission" />
+            <siteAdminUsers jcr:primaryType="jnt:permission" />
             <siteAdminGroups jcr:primaryType="jnt:permission" />
             <siteAdminLanguages jcr:primaryType="jnt:permission" />
             <siteAdminHtmlSettings jcr:primaryType="jnt:permission" />

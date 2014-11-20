@@ -81,7 +81,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.modules.serversettings.users.management.UserProperties;
+import org.jahia.modules.sitesettings.users.management.UserProperties;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.CacheHelper;

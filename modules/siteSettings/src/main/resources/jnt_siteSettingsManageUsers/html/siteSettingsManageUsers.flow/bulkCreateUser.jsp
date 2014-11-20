@@ -45,7 +45,7 @@
         </div>
     </c:if>
 </c:forEach>
-<h2><fmt:message key="serverSettings.users.bulk.create"/></h2>
+<h2><fmt:message key="siteSettings.users.bulk.create"/></h2>
 <div class="box-1">
     <form action="${flowExecutionUrl}" method="post" enctype="multipart/form-data" autocomplete="off">
 
@@ -70,6 +70,6 @@
         </fieldset>
     </form>
     <p>
-        <fmt:message key="serverSettings.users.batch.file.format"/>
+        <fmt:message key="siteSettings.users.batch.file.format"/>
     </p>
 </div>

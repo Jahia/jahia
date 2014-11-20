@@ -31,7 +31,7 @@ $(document).ready(function() {
     <h2><fmt:message key="${copyMode ? 'siteSettings.groups.copy' : 'siteSettings.groups.create'}"/></h2>
     <div class="box-1">
         <form action="${flowExecutionUrl}" method="post" autocomplete="off">
-            <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
+            <fieldset title="<fmt:message key="siteSettings.user.profile"/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
                         <p>

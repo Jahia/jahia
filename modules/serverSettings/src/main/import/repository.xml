@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <content xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
     <modules jcr:primaryType="jnt:modules">
-        <serverSettings j:dependencies="default tabularList"
+        <serverSettings j:dependencies="default siteSettings tabularList"
                       j:installedModules="serverSettings"
                       j:modulePriority="0"
                       j:moduleType="module"
@@ -359,11 +359,11 @@
                                j:hiddenTemplate="false"
                                j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_users/manage_users.png"
                                j:requiredPermissionNames="adminUsers"
-                               j:titleKey="serverSettings.manageUsers"
+                               j:titleKey="siteSettings.manageUsers"
                                jcr:mixinTypes="jmix:rbTitle"
                                jcr:primaryType="jnt:contentTemplate">
                                 <pagecontent jcr:primaryType="jnt:contentList">
-                                    <manage-users jcr:primaryType="jnt:serverSettingsManageUsers"/>
+                                    <manage-users jcr:primaryType="jnt:siteSettingsManageUsers"/>
                                 </pagecontent>
                             </manageUsers>
                             <adminProperties j:applyOn="jnt:globalSettings"

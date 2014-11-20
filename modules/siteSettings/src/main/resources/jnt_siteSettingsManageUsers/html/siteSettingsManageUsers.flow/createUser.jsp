@@ -1,4 +1,4 @@
-<%--@elvariable id="userProperties" type="org.jahia.modules.serversettings.users.management.UserProperties"--%>
+<%--@elvariable id="userProperties" type="org.jahia.modules.sitesettings.users.management.UserProperties"--%>
 <%@ page language="java" contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -31,13 +31,13 @@
             </c:if>
         </c:forEach>
     </p>
-    <h2><fmt:message key="serverSettings.user.create"/></h2>
+    <h2><fmt:message key="siteSettings.user.create"/></h2>
     <div class="box-1">
         <form action="${flowExecutionUrl}" method="post" autocomplete="off">
-            <fieldset title="<fmt:message key="serverSettings.user.profile"/>">
+            <fieldset title="<fmt:message key="siteSettings.user.profile"/>">
                 <div class="container-fluid">
                     <div class="row-fluid">
-                        <p><fmt:message key="label.noteThat"/>:&nbsp;<fmt:message key="serverSettings.user.errors.username.syntax"/></p>
+                        <p><fmt:message key="label.noteThat"/>:&nbsp;<fmt:message key="siteSettings.user.errors.username.syntax"/></p>
                     </div>
                     <div class="row-fluid">
                         <div class="span4">
@@ -87,7 +87,7 @@
                         <div class="span4">
                             <label for="emailNotificationsDisabled">
                                 <input type="checkbox" name="emailNotificationsDisabled" id="emailNotificationsDisabled" <c:if test="${userProperties.emailNotificationsDisabled}">checked="checked"</c:if>>
-                                <fmt:message key="serverSettings.user.emailNotifications"/>
+                                <fmt:message key="siteSettings.user.emailNotifications"/>
                             </label>
                             <label for="accountLocked">
                                 <input type="checkbox" name="accountLocked" id="accountLocked" <c:if test="${userProperties.accountLocked}">checked="checked"</c:if>>
@@ -95,7 +95,7 @@
                             </label>
                         </div>
                         <div class="span4">
-                            <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
+                            <label for="preferredLanguage"><fmt:message key="siteSettings.user.preferredLanguage"/></label>
                             <select class="span12" id="preferredLanguage" name="preferredLanguage">
                                 <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                                     <option value="${uiLanguage}" <c:if test="${uiLanguage eq userProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>

@@ -18,12 +18,12 @@
 <%--@elvariable id="mailSettings" type="org.jahia.services.mail.MailSettings"--%>
 <%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
-<%--@elvariable id="searchCriteria" type="org.jahia.modules.serversettings.users.management.SearchCriteria"--%>
+<%--@elvariable id="searchCriteria" type="org.jahia.modules.sitesettings.users.management.SearchCriteria"--%>
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
 
-<c:set var="userDisplayLimit" value="${serverSettingsProperties.userDisplayLimit}"/>
+<c:set var="userDisplayLimit" value="${siteSettingsProperties.userDisplayLimit}"/>
 <c:set var="jcrUserCountLimit" value="<%= SettingsBean.getInstance().getJahiaJCRUserCountLimit() %>"/>
 
 <template:addResources>
@@ -51,7 +51,7 @@
         if(val.length > 0){
             doUserAction(event, val.join(","));
         } else {
-            alert("<fmt:message key="serverSettings.user.select.one"/>")
+            alert("<fmt:message key="siteSettings.user.select.one"/>")
         }
     }
 </script>
@@ -82,7 +82,7 @@
             <input type="radio" name="searchIn" id="searchInProperties" value="properties"
                    <c:if test="${searchCriteria.searchIn eq 'properties'}">checked</c:if>
                    onclick="$('.propCheck').removeAttr('disabled');">&nbsp;<label for="searchInProperties"><fmt:message
-                key="serverSettings.user.properties.selected"/></label>:&nbsp;
+                key="siteSettings.user.properties.selected"/></label>:&nbsp;
 
 
             <input type="checkbox" class="propCheck" name="properties" value="name" id="propsUsersname"
@@ -150,15 +150,15 @@
     <div>
         <button class="btn" type="submit" onclick="doUserAction('addUser')">
             <i class="icon-plus"></i>
-            &nbsp;<fmt:message key='serverSettings.user.create'/>
+            &nbsp;<fmt:message key='siteSettings.user.create'/>
         </button>
         <button class="btn" type="submit" onclick="doUserAction('bulkAddUser')">
             <i class="icon-cog"></i>
-            &nbsp;<fmt:message key='serverSettings.users.bulk.create'/>
+            &nbsp;<fmt:message key='siteSettings.users.bulk.create'/>
         </button>
         <button class="btn" type="submit" onclick="doUsersAction('bulkDeleteUser')">
             <i class="icon-cog"></i>
-            &nbsp;<fmt:message key="serverSettings.user.remove"/>
+            &nbsp;<fmt:message key="siteSettings.user.remove"/>
         </button>
     </div>
     <p>
@@ -180,20 +180,20 @@
 
     <c:set var="userCount" value="${fn:length(users)}"/>
     <div>
-        <h2><fmt:message key="serverSettings.user.search.result"/></h2>
+        <h2><fmt:message key="siteSettings.user.search.result"/></h2>
         <div class="alert alert-info">
             <c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) lt userDisplayLimit || jcrUserCountLimit lt 0}">
-            <fmt:message key="serverSettings.user.search.found">
+            <fmt:message key="siteSettings.user.search.found">
                 <fmt:param value="${userCount}"/>
-            </fmt:message></c:if><c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) ge userDisplayLimit}">&nbsp;<fmt:message key="serverSettings.user.search.found.limit">
+            </fmt:message></c:if><c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) ge userDisplayLimit}">&nbsp;<fmt:message key="siteSettings.user.search.found.limit">
                     <fmt:param value="${(userDisplayLimit-searchCriteria.numberOfRemovedJahiaAdministrators)}"/>
                 </fmt:message>
             </c:if>
             <c:choose>
-                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators eq 1}"><br/><fmt:message key="serverSettings.user.search.renoved.administrator">
+                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators eq 1}"><br/><fmt:message key="siteSettings.user.search.renoved.administrator">
                     <fmt:param value="${searchCriteria.numberOfRemovedJahiaAdministrators}"/>
                 </fmt:message></c:when>
-                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators gt 1}"><br/><fmt:message key="serverSettings.user.search.renoved.administrators">
+                <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators gt 1}"><br/><fmt:message key="siteSettings.user.search.renoved.administrators">
                     <fmt:param value="${searchCriteria.numberOfRemovedJahiaAdministrators}"/>
                 </fmt:message></c:when>
             </c:choose>
@@ -220,7 +220,7 @@
                 <%--@elvariable id="users" type="java.util.List"--%>
                 <c:when test="${userCount eq 0}">
                     <tr>
-                        <td colspan="${multipleProvidersAvailable ? '5' : '4'}"><fmt:message key="serverSettings.user.search.no.result"/></td>
+                        <td colspan="${multipleProvidersAvailable ? '5' : '4'}"><fmt:message key="siteSettings.user.search.no.result"/></td>
                     </tr>
                 </c:when>
                 <c:otherwise>

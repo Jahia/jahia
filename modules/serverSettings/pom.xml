@@ -102,6 +102,14 @@
       <url>https://devtools.jahia.com/nexus/content/groups/public</url>
     </repository>
   </repositories>
+  <dependencies>
+    <dependency>
+      <groupId>org.jahia.modules</groupId>
+      <artifactId>siteSettings</artifactId>
+      <version>7.1.0.0-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
   <build>
     <plugins>
       <plugin>
@@ -113,7 +121,7 @@
             <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
             <Export-Package>org.jahia.modules.serversettings.forge</Export-Package>
             <Jahia-Deploy-On-Site>system</Jahia-Deploy-On-Site>
-            <Jahia-Depends>default,tabularList</Jahia-Depends>
+            <Jahia-Depends>default,siteSettings,tabularList</Jahia-Depends>
             <Jahia-Module-Type>system</Jahia-Module-Type>
           </instructions>
         </configuration>

@@ -44,11 +44,11 @@
 
             <div class="row-fluid">
                 <div class="span4">
-                    <label for="emailNotifications"><fmt:message key="serverSettings.user.emailNotifications"/></label>
+                    <label for="emailNotifications"><fmt:message key="siteSettings.user.emailNotifications"/></label>
                     <form:checkbox id="emailNotifications" path="emailNotificationsDisabled" />
                 </div>
                 <div class="span4">
-                    <label for="preferredLanguage"><fmt:message key="serverSettings.user.preferredLanguage"/></label>
+                    <label for="preferredLanguage"><fmt:message key="siteSettings.user.preferredLanguage"/></label>
                     <select class="span12" id="preferredLanguage" name="preferredLanguage" size="1">
                         <c:forEach items="${functions:availableAdminBundleLocale(renderContext.UILocale)}" var="uiLanguage">
                             <option value="${uiLanguage}" <c:if test="${uiLanguage eq adminProperties.preferredLanguage}">selected="selected" </c:if>>${functions:displayLocaleNameWith(uiLanguage, renderContext.UILocale)}</option>
@@ -61,12 +61,12 @@
                 <div class="span4">
                     <label for="password"><fmt:message key="label.password"/></label>
                     <form:input class="span12" type="password" id="password" path="password" autocomplete="off"/>
-                    <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
+                    <span class="text-info">(<fmt:message key="siteSettings.user.edit.password.no.change"/>)</span>
                 </div>
                 <div class="span4">
                     <label for="passwordConfirm"><fmt:message key="label.confirmPassword"/></label>
                     <form:input type="password" class="span12" id="passwordConfirm" path="passwordConfirm" autocomplete="off"/>
-                    <span class="text-info">(<fmt:message key="serverSettings.user.edit.password.no.change"/>)</span>
+                    <span class="text-info">(<fmt:message key="siteSettings.user.edit.password.no.change"/>)</span>
                 </div>
             </div>
             <div class="row-fluid">
@@ -79,11 +79,11 @@
     </form:form>
 </div>
     <hr/>
-<fieldset id="groupsFields" title="<fmt:message key="serverSettings.user.groups.list"/>">
+<fieldset id="groupsFields" title="<fmt:message key="siteSettings.user.groups.list"/>">
     <div class="container-fluid">
         <div class="row-fluid">
             <div class="span12">
-                <label for="groupsFields"><fmt:message key="serverSettings.user.groups.list"/></label>
+                <label for="groupsFields"><fmt:message key="siteSettings.user.groups.list"/></label>
                 <select class="span12 fontfix" name="selectMember" size="6" multiple>
                     <c:forEach items="${userGroups}" var="group">
                         <option value="${user:formatUserValueOption(group)}">${user:formatUserTextOption(group, 'Name, 20;SiteTitle, 15;Properties, 20')}</option>

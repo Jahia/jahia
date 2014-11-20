@@ -482,7 +482,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 StringBuilder query = new StringBuilder(128);
 
                 // Add provider to query
-                List<JCRStoreProvider> providers = getProviders(providerKeys, session);
+                List<JCRStoreProvider> providers = getProviders(siteKey, providerKeys, session);
                 if (!providers.isEmpty()) {
                     query.append("(");
                     for (JCRStoreProvider provider : providers) {
@@ -587,10 +587,15 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return list of JCRStoreProvider
      */
     public List<JCRStoreProvider> getProviderList(JCRSessionWrapper session) {
+        return getProviderList(null, session);
+    }
+
+    public List<JCRStoreProvider> getProviderList(String siteKey, JCRSessionWrapper session) {
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
         try {
             providers.add(JCRSessionFactory.getInstance().getDefaultProvider());
-            JCRNodeWrapper providersNode = session.getNode("/users/providers");
+            String providersParentPath = (siteKey == null ? "" : "/sites/" + siteKey) + "/users/providers";
+            JCRNodeWrapper providersNode = session.getNode(providersParentPath);
             NodeIterator iterator = providersNode.getNodes();
             while (iterator.hasNext()) {
                 JCRNodeWrapper providerNode = (JCRNodeWrapper) iterator.next();
@@ -612,12 +617,16 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return list of JCRStoreProvider
      */
     public List<JCRStoreProvider> getProviders(String[] providerKeys, JCRSessionWrapper session) {
+        return getProviders(null, providerKeys, session);
+    }
+
+    public List<JCRStoreProvider> getProviders(String siteKey, String[] providerKeys, JCRSessionWrapper session) {
         if (ArrayUtils.isEmpty(providerKeys)) {
             return Collections.emptyList();
         }
 
         List<JCRStoreProvider> providers = new LinkedList<JCRStoreProvider>();
-        for (JCRStoreProvider provider : getProviderList(session)) {
+        for (JCRStoreProvider provider : getProviderList(siteKey, session)) {
             if (ArrayUtils.contains(providerKeys, provider.getKey())) {
                 providers.add(provider);
             }
@@ -633,7 +642,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return JCRStoreProvider if it exist or null
      */
     public JCRStoreProvider getProvider(String providerKey, JCRSessionWrapper session) {
-        List<JCRStoreProvider> providers = getProviders(new String[]{providerKey}, session);
+        return getProvider(null, providerKey, session);
+    }
+
+    public JCRStoreProvider getProvider(String siteKey, String providerKey, JCRSessionWrapper session) {
+        List<JCRStoreProvider> providers = getProviders(siteKey, new String[]{providerKey}, session);
         return providers.size() == 1 ? providers.get(0) : null;
     }
 

@@ -21,8 +21,6 @@
 
 [jnt:serverSettingsManagePortlets] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
-[jnt:serverSettingsManageUsers] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
-
 [jnt:serverSettingsPasswordPolicy] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly
 
 [jnt:serverSettingsReportAnIssue] > jnt:content, jmix:siteComponent, mix:title, jmix:studioOnly

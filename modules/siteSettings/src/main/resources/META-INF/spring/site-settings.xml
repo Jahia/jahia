@@ -5,7 +5,10 @@
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
-    <util:map id="siteSettingsProperties">
+  <bean id="messageSource" class="org.jahia.utils.i18n.ModuleMessageSource"/>
+
+  <util:map id="siteSettingsProperties">
+        <entry key="userDisplayLimit" value="${jahia.settings.userDisplayLimit:100}"/>
         <entry key="groupDisplayLimit" value="${jahia.settings.groupDisplayLimit:100}"/>
         <entry key="memberDisplayLimit" value="${jahia.settings.memberDisplayLimit:100}"/>
     </util:map>

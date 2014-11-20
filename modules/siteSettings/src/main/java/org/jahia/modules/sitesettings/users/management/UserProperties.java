@@ -69,7 +69,7 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.modules.serversettings.users.management;
+package org.jahia.modules.sitesettings.users.management;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -80,44 +80,51 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PolicyEnforcementResult;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.binding.validation.ValidationContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import javax.jcr.RepositoryException;
+
 /**
  * @author rincevent
  */
 public class UserProperties implements Serializable {
+    private static Logger logger = LoggerFactory.getLogger(UserProperties.class);
     private static final Pattern EMAIL_PATTERN = Pattern
             .compile("^$|^[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*@([A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(\\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])$");
     private static final long serialVersionUID = -817961657416283232L;
+    private static final String[] BASIC_USER_PROPERTIES = new String[]{"j:firstName", "j:lastName", "j:email", "j:organization", "emailNotificationsDisabled", "j:accountLocked", "preferredLanguage"};
 
     public static void validateCreateUser(String username, String password, String passwordConfirm, String email,
-            MessageContext messages) {
+                                          MessageContext messages) {
         if (username == null || username.isEmpty()) {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .code("serverSettings.user.errors.username.mandatory").build());
+                    .code("siteSettings.user.errors.username.mandatory").build());
         } else if (!ServicesRegistry.getInstance().getJahiaUserManagerService().isUsernameSyntaxCorrect(username)) {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .code("serverSettings.user.errors.username.syntax").build());
+                    .code("siteSettings.user.errors.username.syntax").build());
         } else if (ServicesRegistry.getInstance().getJahiaUserManagerService().userExists(username)) {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("username")
-                    .defaultText(Messages.getInternal("label.username", LocaleContextHolder.getLocale()) + " '" + username + "' " + 
-                            Messages.get("resources.JahiaServerSettings", "serverSettings.user.errors.username.exist",
+                    .defaultText(Messages.getInternal("label.username", LocaleContextHolder.getLocale()) + " '" + username + "' " +
+                            Messages.get("resources.JahiaSiteSettings", "siteSettings.user.errors.username.exist",
                                     LocaleContextHolder.getLocale())).build());
         }
         validateEmail(email, messages);
@@ -130,24 +137,24 @@ public class UserProperties implements Serializable {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("email")
-                    .code("serverSettings.user.errors.email").build());
+                    .code("siteSettings.user.errors.email").build());
         }
     }
 
     public static void validatePassword(String username, String password, String passwordConfirm,
-            MessageContext messages) {
+                                        MessageContext messages) {
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         if (StringUtils.isEmpty(password) || StringUtils.isEmpty(passwordConfirm)) {
             messages.addMessage(new MessageBuilder()
                     .error()
                     .source("password")
-                    .code("serverSettings.user.errors.password.mandatory").build());
+                    .code("siteSettings.user.errors.password.mandatory").build());
         } else {
             if (!passwordConfirm.equals(password)) {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("passwordConfirm")
-                        .code("serverSettings.user.errors.password.not.matching")
+                        .code("siteSettings.user.errors.password.not.matching")
                         .build());
             } else {
                 PolicyEnforcementResult evalResult = pwdPolicyService.enforcePolicyOnUserCreate(username, password);
@@ -163,14 +170,14 @@ public class UserProperties implements Serializable {
     }
 
     public static void validatePasswordExistingUser(String userKey, String password, String passwordConfirm,
-            MessageContext messages) {
+                                                    MessageContext messages) {
         JahiaPasswordPolicyService pwdPolicyService = ServicesRegistry.getInstance().getJahiaPasswordPolicyService();
         if (!StringUtils.isEmpty(password)) {
             if (!password.equals(passwordConfirm)) {
                 messages.addMessage(new MessageBuilder()
                         .error()
                         .source("passwordConfirm")
-                        .code("serverSettings.user.errors.password.not.matching")
+                        .code("siteSettings.user.errors.password.not.matching")
                         .build());
             } else {
                 JCRUserNode jahiaUser = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
@@ -188,7 +195,7 @@ public class UserProperties implements Serializable {
     }
 
     public static void validateUpdateUser(String userKey, String password, String passwordConfirm, String email,
-            MessageContext messages) {
+                                          MessageContext messages) {
         validatePasswordExistingUser(userKey, password, passwordConfirm, messages);
         validateEmail(email, messages);
     }
@@ -212,7 +219,7 @@ public class UserProperties implements Serializable {
     private Set<String> readOnlyProperties = new HashSet<String>();
 
     private String userKey;
-    
+
     private String username;
 
     public UserProperties() {
@@ -368,4 +375,42 @@ public class UserProperties implements Serializable {
     public void validateEditUser(ValidationContext context) {
         validateUpdateUser(userKey, password, passwordConfirm, email, context.getMessageContext());
     }
+
+    public void populate(JCRUserNode jahiaUser) {
+        setFirstName(jahiaUser.getPropertyAsString("j:firstName"));
+        setLastName(jahiaUser.getPropertyAsString("j:lastName"));
+        setUsername(jahiaUser.getName());
+        setUserKey(jahiaUser.getPath());
+        setEmail(jahiaUser.getPropertyAsString("j:email"));
+        setOrganization(jahiaUser.getPropertyAsString("j:organization"));
+
+        try {
+            if (jahiaUser.hasProperty("emailNotificationsDisabled")) {
+                setEmailNotificationsDisabled(jahiaUser.getProperty("emailNotificationsDisabled").getBoolean());
+            }
+
+            if (jahiaUser.hasProperty("j:accountLocked")) {
+                setAccountLocked(jahiaUser.getProperty("j:accountLocked").getBoolean());
+            }
+
+            if (jahiaUser.hasProperty("j:external")) {
+                setExternal(jahiaUser.getProperty("j:external").getBoolean());
+            }
+        } catch (RepositoryException e) {
+            logger.debug(e.getMessage(), e);
+        }
+
+        setPreferredLanguage(UserPreferencesHelper.getPreferredLocale(jahiaUser));
+        setDisplayName(PrincipalViewHelper.getDisplayName(jahiaUser, LocaleContextHolder.getLocale()));
+        setLocalPath(jahiaUser.getPath());
+
+        Set<String> readOnlyProperties = new HashSet<String>();
+        for (String p : BASIC_USER_PROPERTIES) {
+            if (!jahiaUser.isPropertyEditable(p)) {
+                readOnlyProperties.add(p);
+            }
+        }
+        setReadOnlyProperties(readOnlyProperties);
+    }
+
 }

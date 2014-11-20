@@ -466,12 +466,12 @@
 
             $("#changePassword").submit(function() {
                 if ($("#password").val() == "") {
-                    alert("<fmt:message key='serverSettings.user.errors.password.mandatory'/>");
+                    alert("<fmt:message key='siteSettings.user.errors.password.mandatory'/>");
                     return false;
                 }
 
                 if ($("#password").val() != $("#passwordconfirm").val()) {
-                    alert("<fmt:message key='serverSettings.user.errors.password.not.matching'/>");
+                    alert("<fmt:message key='siteSettings.user.errors.password.not.matching'/>");
                     return false;
                 }
 

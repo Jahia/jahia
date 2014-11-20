@@ -71,7 +71,7 @@
  */
 package org.jahia.modules.serversettings.users.admin;
 
-import org.jahia.modules.serversettings.users.management.UserProperties;
+import org.jahia.modules.sitesettings.users.management.UserProperties;
 import org.springframework.binding.validation.ValidationContext;
 
 /**

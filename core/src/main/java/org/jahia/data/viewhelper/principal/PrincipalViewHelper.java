@@ -569,6 +569,10 @@ public class PrincipalViewHelper implements Serializable {
     }
 
     public static Set<JCRUserNode> getSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers) {
+        return getSearchResult(searchIn, siteKey, searchString, searchInProps, storedOn, providers, true);
+    }
+
+    public static Set<JCRUserNode> getSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps, String storedOn, String[] providers, boolean includeGlobalUsers) {
         JahiaUserManagerService jahiaUserManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         final Properties searchParameters = new Properties();
         long countLimit = SettingsBean.getInstance().getJahiaJCRUserCountLimit();
@@ -579,7 +583,7 @@ public class PrincipalViewHelper implements Serializable {
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
-            return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters);
+            return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters, includeGlobalUsers);
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -593,23 +597,23 @@ public class PrincipalViewHelper implements Serializable {
                 }
             }
             if ("everywhere".equals(storedOn) || providers == null) {
-                return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters);
+                return getSearchResult(siteKey, null, jahiaUserManagerService, searchParameters, includeGlobalUsers);
             } else if ("providers".equals(storedOn)){
-                return getSearchResult(siteKey, providers, jahiaUserManagerService, searchParameters);
+                return getSearchResult(siteKey, providers, jahiaUserManagerService, searchParameters, includeGlobalUsers);
             }
         }
         
-        return new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
+        return new TreeSet<>(PRINCIPAL_COMPARATOR);
     }
 
-    private static  Set<JCRUserNode> getSearchResult(String siteKey, String[] providers, JahiaUserManagerService jahiaUserManagerService, Properties searchParameters) {
+    private static  Set<JCRUserNode> getSearchResult(String siteKey, String[] providers, JahiaUserManagerService jahiaUserManagerService, Properties searchParameters, boolean includeGlobalUsers) {
         final Set<JCRUserNode> searchResults = new TreeSet<JCRUserNode>(PRINCIPAL_COMPARATOR);
         try {
             JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-            searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, null, providers, systemSession));
-            if (siteKey != null) {
-                searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, siteKey, providers, systemSession));
+            if (siteKey != null && includeGlobalUsers) {
+                searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, null, providers, systemSession));
             }
+            searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, siteKey, providers, systemSession));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
         }
@@ -644,15 +648,18 @@ public class PrincipalViewHelper implements Serializable {
 
     public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps,
                                            String storedOn, String[] providers) {
+        return getGroupSearchResult(searchIn, siteKey, searchString, searchInProps, storedOn, providers, true);
+    }
+
+    public static Set<JCRGroupNode> getGroupSearchResult(String searchIn, String siteKey, String searchString, String[] searchInProps,
+                                           String storedOn, String[] providers, boolean includeGlobalUsers) {
         JahiaGroupManagerService jahiaGroupManagerService =
                 ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final Properties searchParameters = new Properties();
-        final Set<JCRGroupNode> searchResults = new TreeSet<JCRGroupNode>(PRINCIPAL_COMPARATOR);
         if (searchIn == null) { // Necessary condition to say there is no formular.
             logger.debug("No formular transmited. Finding all Jahia DB users.");
             searchParameters.setProperty("*", "*");
-            searchResults.addAll(jahiaGroupManagerService.
-                    searchGroups(siteKey, searchParameters));
+            return getGroupSearchResult(siteKey, null, jahiaGroupManagerService, searchParameters, includeGlobalUsers);
         } else {
             //if (searchString == null || "".equals(searchString)) {
             if ("".equals(searchString)) {
@@ -666,11 +673,25 @@ public class PrincipalViewHelper implements Serializable {
                 }
             }
             if ("everywhere".equals(storedOn) || providers == null) {
-                searchResults.addAll(jahiaGroupManagerService.
-                        searchGroups(siteKey, searchParameters));
+                return getGroupSearchResult(siteKey, null, jahiaGroupManagerService, searchParameters, includeGlobalUsers);
             }else if ("providers".equals(storedOn)){
-                searchResults.addAll(jahiaGroupManagerService.searchGroups(siteKey, searchParameters, providers));
+                return getGroupSearchResult(siteKey, providers, jahiaGroupManagerService, searchParameters, includeGlobalUsers);
             }
+        }
+
+        return new TreeSet<>(PRINCIPAL_COMPARATOR);
+    }
+
+    private static  Set<JCRGroupNode> getGroupSearchResult(String siteKey, String[] providers, JahiaGroupManagerService jahiaGroupManagerService, Properties searchParameters, boolean includeGlobalUsers) {
+        final Set<JCRGroupNode> searchResults = new TreeSet<>(PRINCIPAL_COMPARATOR);
+        try {
+            JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            if (siteKey != null && includeGlobalUsers) {
+                searchResults.addAll(jahiaGroupManagerService.searchGroups(null, searchParameters, providers, systemSession));
+            }
+            searchResults.addAll(jahiaGroupManagerService.searchGroups(siteKey, searchParameters, providers, systemSession));
+        } catch (RepositoryException e) {
+            logger.error("Error while searching for users", e);
         }
         return searchResults;
     }

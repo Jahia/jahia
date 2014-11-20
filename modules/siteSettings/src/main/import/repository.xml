@@ -109,6 +109,14 @@
                             <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                             <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
               </urlmapping.png>
+              <manage_users.png j:height="16"
+                                j:width="16"
+                                jcr:mixinTypes="jmix:image"
+                                jcr:primaryType="jnt:file">
+                <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+              </manage_users.png>
           </files>
                     <contents jcr:primaryType="jnt:contentFolder"/>
                     <site-settings-base j:view="siteSettings"
@@ -182,6 +190,19 @@
                       <manage-modules jcr:primaryType="jnt:siteSettingsManageModules"/>
                   </pagecontent>
               </manageModules>
+                        <manageUsers j:applyOn="jnt:virtualsite"
+                             j:defaultTemplate="false"
+                             j:hiddenTemplate="true"
+                            j:icon="/modules/siteSettings/templates/files/manage_users.png"
+                             j:priority="100"
+                             j:requiredPermissionNames="siteAdminUsers"
+                             j:titleKey="siteSettings.manageUsers"
+                             jcr:mixinTypes="jmix:rbTitle"
+                             jcr:primaryType="jnt:contentTemplate">
+                  <pagecontent jcr:primaryType="jnt:contentList">
+                      <manage-users jcr:primaryType="jnt:siteSettingsManageUsers"/>
+                  </pagecontent>
+              </manageUsers>
                         <manageGroups j:applyOn="jnt:virtualsite"
                              j:defaultTemplate="false"
                              j:hiddenTemplate="true"

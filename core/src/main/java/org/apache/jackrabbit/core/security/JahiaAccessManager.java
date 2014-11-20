@@ -464,16 +464,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
-        String absPathStr = absPath.toString();
+        String jcrPath = pr.getJCRPath(absPath);
 
-        if (permissions.size() == 1 && absPathStr.equals("{}") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
+        if (permissions.size() == 1 && jcrPath.equals("/") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
         }
 
         boolean res = false;
 
-        String cacheKey = absPathStr + " : " + permissions;
-
+        String cacheKey = jcrPath + " : " + permissions;
 
         Boolean result = pathPermissionCache.get(cacheKey);
         if (result != null) {
@@ -481,8 +480,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         try {
-            String jcrPath = pr.getJCRPath(absPath);
-
             if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
                 pathPermissionCache.put(cacheKey, false);
                 return false;
@@ -614,7 +611,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        pathPermissionCache.put(absPathStr + " : " + permissions, res);
+        pathPermissionCache.put(cacheKey, res);
         return res;
     }
 

@@ -742,4 +742,8 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
            maxBytesLocalHeap="1M">
     </cache>
 
+    <cache name="org.jahia.security.privilegesInRolesCache"
+           eternal="true">
+    </cache>
+
 </ehcache>

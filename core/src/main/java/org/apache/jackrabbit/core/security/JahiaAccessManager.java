@@ -72,7 +72,6 @@
 package org.apache.jackrabbit.core.security;
 
 import net.sf.ehcache.Element;
-import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.security.authorization.PrivilegeManager;
@@ -98,7 +97,6 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
-import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -173,7 +171,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private RepositoryContext repositoryContext;
     private WorkspaceConfig workspaceConfig;
 
-    private static volatile SelfPopulatingCache privilegesInRole = null;
+    private static volatile Cache<String, Set<Privilege>> privilegesInRole = null;
     private static volatile Cache<String, Boolean> matchingPermissions = null;
     private Map<String, Boolean> pathPermissionCache = null;
     private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
@@ -220,8 +218,11 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
             if (cacheService != null) {
                 // Jahia is initialized
-                EhCacheProvider ehCacheProvider = (EhCacheProvider) cacheService.getCacheProviders().get("ehcache");
-                privilegesInRole = ehCacheProvider.registerSelfPopulatingCache("org.jahia.security.privilegesInRolesCache", new CacheEntryFactory());
+                try {
+                    privilegesInRole = cacheService.getCache("org.jahia.security.privilegesInRolesCache", true);
+                } catch (JahiaInitializationException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
         }
         if (matchingPermissions == null) {
@@ -733,7 +734,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     public Set<Privilege> getPermissionsInRole(String role) throws RepositoryException {
         if (privilegesInRole != null) {
-            return (Set<Privilege>) privilegesInRole.get(new CacheKey(this, role)).getObjectValue();
+            Set<Privilege> permsInRole = privilegesInRole.get(role);
+            if (permsInRole == null) {
+                permsInRole = internalGetPermissionsInRole(role);
+                privilegesInRole.put(role, permsInRole);
+            }
+            return permsInRole;
         } else {
             return internalGetPermissionsInRole(role);
         }
@@ -1059,7 +1065,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
      */
     public static void flushPrivilegesInRoles() {
         if (privilegesInRole != null) {
-            privilegesInRole.removeAll();
+            privilegesInRole.flush();
         }
         if (matchingPermissions != null) {
             matchingPermissions.flush();
@@ -1127,16 +1133,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         @Override
         public String toString() {
             return roleName;
-        }
-    }
-
-    private static class CacheEntryFactory implements net.sf.ehcache.constructs.blocking.CacheEntryFactory {
-        @Override
-        public Object createEntry(Object key) throws Exception {
-            CacheKey cacheKey = (CacheKey) key;
-            Set<Privilege> privileges = cacheKey.accessManager.internalGetPermissionsInRole(cacheKey.roleName);
-            cacheKey.accessManager = null;
-            return privileges;
         }
     }
 }

@@ -76,20 +76,13 @@ import org.jahia.api.Constants;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -150,21 +143,20 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             searchCriterias.setProperty(userPropertyName, value);
             Set<JCRUserNode> foundUsers = null;
             try {
-                String[] providerKeys = {"default"};
-                JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().
-                        getJahiaUserManagerService();
-                JCRSessionWrapper currentSystemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
-                foundUsers = userManagerService.searchUsers(searchCriterias, realm, providerKeys, currentSystemSession);
+                foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
                 if (foundUsers.size() == 1) {
-                    jahiaUser = checkUserIsValidAndRenewCookie(authContext, foundUsers.iterator().next(), authCookie, userPropertyName, realm, userManagerService);
-                } else if (userManagerService.getProviderList(currentSystemSession).size()>1) {
-                    Session providerSession = currentSystemSession.getProviderSession(JCRSessionFactory.getInstance().getDefaultProvider());
-                    Query query = providerSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:externalProviderExtension ] as u where isdescendantnode(u,'/users/') and u.[j:extendedType]='jnt:user' AND u.[cookieauth] = '" + value + "' ORDER BY u.[j:nodename]", Query.JCR_SQL2);
-                    QueryResult execute = query.execute();
-                    if(execute.getNodes().getSize()==1){
-                        Node nodeWrapper = execute.getNodes().nextNode();
-                        JCRUserNode jcrUserNode = userManagerService.lookupUser(nodeWrapper.getName(), realm, currentSystemSession);
-                        jahiaUser = checkUserIsValidAndRenewCookie(authContext, jcrUserNode, authCookie, userPropertyName, realm, userManagerService);
+                    jahiaUser = foundUsers.iterator().next();
+                    if (jahiaUser.isAccountLocked()) {
+                        jahiaUser = null;
+                    } else {
+                        HttpSession session = authContext.getRequest().getSession(false);
+                        if (session != null) {
+                            session.setAttribute(Constants.SESSION_USER, jahiaUser.getJahiaUser());
+                        }
+
+                        if (cookieAuthConfig.isRenewalActivated()) {
+                            createAndSendCookie(authContext, jahiaUser, cookieAuthConfig);
+                        }
                     }
                 }
             } catch (RepositoryException e) {
@@ -188,63 +180,37 @@ public class CookieAuthValveImpl extends BaseAuthValve {
         }
     }
 
-    private JCRUserNode checkUserIsValidAndRenewCookie(AuthValveContext authContext, JCRUserNode jahiaUser, Cookie authCookie, String userPropertyName, String realm, JahiaUserManagerService userManagerService) {
-        if (jahiaUser.isAccountLocked()) {
-            jahiaUser = null;
-        } else if (cookieAuthConfig.isRenewalActivated()) {
-            // we can now renew the cookie.
-            String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(jahiaUser, userPropertyName, userManagerService, cookieAuthConfig);
-            // let's save the identifier for the user in the database
-            try {
-                jahiaUser.setProperty(userPropertyName, cookieUserKey);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-            // now let's save the same identifier in the cookie.
-            authCookie.setValue(cookieUserKey + (realm != null ? (":" + realm) : ""));
-            authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
-                    authContext.getRequest().getContextPath() : "/");
-            authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-            authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-            authCookie.setSecure(cookieAuthConfig.isSecure());
-            HttpServletResponse realResponse = authContext.getResponse();
-            realResponse.addCookie(authCookie);
-        }
-        return jahiaUser;
-    }
-
-    public static String getAvailableCookieKey(JCRUserNode jahiaUser, String userPropertyName, JahiaUserManagerService userManagerService, CookieAuthConfig cookieAuthConfig) {
-        String cookieUserKey = null;
-        Properties searchCriterias;
-        String[] providerKeys = {"default"};
+    public static void createAndSendCookie(AuthValveContext authContext, JCRUserNode theUser, CookieAuthConfig cookieAuthConfig) {
+        // now let's look for a free random cookie value key.
+        String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(cookieAuthConfig);
+        // let's save the identifier for the user in the database
         try {
-            boolean hasExternalUserProvider = userManagerService.getProviderList(jahiaUser.getSession()).size() > 1;
-            Session providerSession = null;
-            Query query = null;
-            ValueFactory valueFactory = null;
-            if (hasExternalUserProvider) {
-                providerSession = jahiaUser.getSession().getProviderSession(JCRSessionFactory.getInstance().getDefaultProvider());
-                query = providerSession.getWorkspace().getQueryManager().createQuery("SELECT * FROM [jnt:externalProviderExtension ] as u where isdescendantnode(u,'/users/') and u.[j:extendedType]='jnt:user' AND u.[cookieauth] = $cookie ORDER BY u.[j:nodename]", Query.JCR_SQL2);
-                valueFactory = providerSession.getValueFactory();
-            }
-            while (cookieUserKey == null) {
-                cookieUserKey = CookieAuthValveImpl.generateRandomString(cookieAuthConfig.getIdLength());
-                searchCriterias = new Properties();
-                searchCriterias.setProperty(userPropertyName, cookieUserKey);
-                boolean cookieIsUsed = userManagerService.searchUsers(searchCriterias, providerKeys).size() > 0;
-                if (!cookieIsUsed && hasExternalUserProvider) {
-                    query.bindValue("cookie", valueFactory.createValue(cookieUserKey, PropertyType.STRING));
-                    QueryResult execute = query.execute();
-                    if (execute.getNodes().getSize() > 0) {
-                        cookieIsUsed = true;
-                    }
-                }
-                if (cookieIsUsed) {
-                    cookieUserKey = null;
-                }
-            }
+            theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+            theUser.getSession().save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+        // now let's save the same identifier in the cookie.
+        String realm = theUser.getRealm();
+        Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
+        authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
+                authContext.getRequest().getContextPath() : "/");
+        authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
+        authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+        authCookie.setSecure(cookieAuthConfig.isSecure());
+        authContext.getResponse().addCookie(authCookie);
+    }
+
+    public static String getAvailableCookieKey(CookieAuthConfig cookieAuthConfig) {
+        String cookieUserKey = null;
+        while (cookieUserKey == null) {
+            cookieUserKey = generateRandomString(cookieAuthConfig.getIdLength());
+            Properties searchCriterias = new Properties();
+            searchCriterias.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
+            Set<JCRUserNode> foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias);
+            if (foundUsers.size() > 0) {
+                cookieUserKey = null;
+            }
         }
         return cookieUserKey;
     }
@@ -255,7 +221,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
 
     public static String generateRandomString(int length) {
         SecureRandom randomGen = new SecureRandom();
-        StringBuilder result = new StringBuilder();
+        StringBuffer result = new StringBuffer();
         int count = 0;
         while (count < length) {
             int randomSel = randomGen.nextInt(3);

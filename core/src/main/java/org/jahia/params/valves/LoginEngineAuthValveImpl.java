@@ -71,13 +71,11 @@
  */
 package org.jahia.params.valves;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Login;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
@@ -88,12 +86,6 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationEvent;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
@@ -226,24 +218,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             String useCookie = httpServletRequest.getParameter(USE_COOKIE);
             if ((useCookie != null) && ("on".equals(useCookie))) {
                 // the user has indicated he wants to use cookie authentication
-                // now let's create a random identifier to store in the cookie.
-                String cookieUserKey = CookieAuthValveImpl.getAvailableCookieKey(theUser, cookieAuthConfig.getUserPropertyName(), userManagerService, cookieAuthConfig);
-                // let's save the identifier for the user in the database
-                try {
-                    theUser.setProperty(cookieAuthConfig.getUserPropertyName(), cookieUserKey);
-                    theUser.getSession().save();
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-                // now let's save the same identifier in the cookie.
-                String realm = theUser.getRealm();
-                Cookie authCookie = new Cookie(cookieAuthConfig.getCookieName(), cookieUserKey + (realm != null ? (":"+realm) : ""));
-                authCookie.setPath(StringUtils.isNotEmpty(httpServletRequest.getContextPath()) ?
-                        httpServletRequest.getContextPath() : "/");
-                authCookie.setMaxAge(cookieAuthConfig.getMaxAgeInSeconds());
-                authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
-                authCookie.setSecure(cookieAuthConfig.isSecure());
-                authContext.getResponse().addCookie(authCookie);
+                CookieAuthValveImpl.createAndSendCookie(authContext, theUser, cookieAuthConfig);
             }
 
             enforcePasswordPolicy(theUser);

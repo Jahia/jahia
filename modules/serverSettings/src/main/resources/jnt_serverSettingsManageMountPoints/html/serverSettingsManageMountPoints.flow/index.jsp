@@ -68,8 +68,8 @@
     <form style="margin: 0;">
         <select id="mountPointFactory">
             <c:forEach var="providerFactory" items="${mountPointManager.mountPointFactories}">
-                <c:if test="${not empty providerFactory.endOfURL}">
-                    <option value="<c:url value='${url.base}${providerFactory.endOfURL}'/>">${providerFactory.displayableName}</option>
+                <c:if test="${not empty providerFactory.value.endOfURL}">
+                    <option value="<c:url value='${url.base}${providerFactory.value.endOfURL}'/>">${providerFactory.value.displayableName}</option>
                 </c:if>
             </c:forEach>
         </select>
@@ -109,7 +109,7 @@
         <th width="100px">
             <fmt:message key="label.status"/>
         </th>
-        <th class="{sorter: false}">
+        <th class="{sorter: false}" width="250px">
             <fmt:message key="label.actions"/>
         </th>
     </tr>
@@ -132,20 +132,26 @@
             <td>
                 <c:if test="${mountPoint.showMountAction}">
                     <button class="btn btn-info" type="button" onclick="submitEvent('mount', '${mountPoint.name}')">
-                        <i class=" "></i>&nbsp;<fmt:message key="serverSettings.mountPointsManagement.action.mount"/>
+                        <i class="icon-download icon-white"></i>&nbsp;<fmt:message key="serverSettings.mountPointsManagement.action.mount"/>
                     </button>
                 </c:if>
                 <c:if test="${mountPoint.showUnmountAction}">
                     <button class="btn btn-info" type="button" onclick="submitEvent('unmount', '${mountPoint.name}')">
-                        <i class=" "></i>&nbsp;<fmt:message key="serverSettings.mountPointsManagement.action.unmount"/>
+                        <i class="icon-upload icon-white"></i>&nbsp;<fmt:message key="serverSettings.mountPointsManagement.action.unmount"/>
                     </button>
                 </c:if>
                 <fmt:message var="confirmDelete" key="serverSettings.mountPointsManagement.action.confirmDelete">
                     <fmt:param value="${mountPoint.name}"/>
                 </fmt:message>
+                <c:if test="${not empty mountPointManager.mountPointFactories[mountPoint.nodetype]}">
+                    <c:url var="editURL" value="${url.base}${mountPointManager.mountPointFactories[mountPoint.nodetype].endOfURL}"/>
+                    <a class="btn" href="#" onclick="window.parent.goToUrl('${editURL}?edit=${mountPoint.identifier}')">
+                        <i class="icon-edit"></i>&nbsp;<span><fmt:message key="label.edit"/></span>
+                    </a>
+                </c:if>
                 <button class="btn btn-danger" type="button"
                         onclick="submitEventWithConfirm('delete', '${mountPoint.name}', '${functions:escapeJavaScript(confirmDelete)}')">
-                    <i class=" "></i>&nbsp;<fmt:message key="label.delete"/>
+                    <i class="icon-remove icon-white"></i>&nbsp;<fmt:message key="label.delete"/>
                 </button>
             </td>
         </tr>

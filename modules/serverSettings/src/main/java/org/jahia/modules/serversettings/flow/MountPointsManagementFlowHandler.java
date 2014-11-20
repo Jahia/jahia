@@ -93,7 +93,7 @@ public class MountPointsManagementFlowHandler implements Serializable{
                     
                     // get provider factories
                     Map<String, ProviderFactory> providerFactories = jcrStoreService.getProviderFactories();
-                    List<MountPointFactory> mountPointFactories = new ArrayList<MountPointFactory>(providerFactories.size());
+                    Map<String, MountPointFactory> mountPointFactories = new HashMap<String, MountPointFactory>();
                     for (ProviderFactory factory : providerFactories.values()) {
                         ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
 
@@ -110,7 +110,7 @@ public class MountPointsManagementFlowHandler implements Serializable{
                             }
                         }
 
-                        mountPointFactories.add(new MountPointFactory(type.getName(), type.getLabel(LocaleContextHolder.getLocale()), endOfURL));
+                        mountPointFactories.put(type.getName(), new MountPointFactory(type.getName(), type.getLabel(LocaleContextHolder.getLocale()), endOfURL));
                     }
 
                     // return model

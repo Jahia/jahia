@@ -41,6 +41,7 @@ package org.jahia.modules.serversettings.mount;
 
 import org.jahia.services.content.decorator.JCRMountPointNode;
 
+import javax.jcr.RepositoryException;
 import java.io.Serializable;
 
 /**
@@ -53,13 +54,17 @@ public class MountPoint implements Serializable{
     String path;
     String displayStatusClass;
     JCRMountPointNode.MountStatus status;
+    String identifier;
+    String nodetype;
     boolean showMountAction = false;
     boolean showUnmountAction = false;
 
-    public MountPoint(JCRMountPointNode node) {
+    public MountPoint(JCRMountPointNode node) throws RepositoryException {
         this.name = node.getDisplayableName();
         this.path = node.getPath();
         this.status = node.getMountStatus();
+        this.identifier = node.getIdentifier();
+        this.nodetype = node.getPrimaryNodeType().getName();
 
         switch (node.getMountStatus()){
             case unmounted:
@@ -128,5 +133,21 @@ public class MountPoint implements Serializable{
 
     public void setShowUnmountAction(boolean showUnmountAction) {
         this.showUnmountAction = showUnmountAction;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getNodetype() {
+        return nodetype;
+    }
+
+    public void setNodetype(String nodetype) {
+        this.nodetype = nodetype;
     }
 }

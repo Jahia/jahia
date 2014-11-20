@@ -48,10 +48,10 @@ import java.util.*;
 public class MountPointManager implements Serializable{
     private static final long serialVersionUID = 7055743449410009286L;
 
-    List<MountPointFactory> mountPointFactories = Collections.emptyList();
+    Map<String, MountPointFactory> mountPointFactories = new HashMap<String, MountPointFactory>();
     List<MountPoint> mountPoints = Collections.emptyList();
 
-    public MountPointManager(List<MountPointFactory> mountPointFactories, List<MountPoint> mountPoints) {
+    public MountPointManager(Map<String, MountPointFactory> mountPointFactories, List<MountPoint> mountPoints) {
         this.mountPointFactories = mountPointFactories;
         this.mountPoints = mountPoints;
     }
@@ -59,11 +59,11 @@ public class MountPointManager implements Serializable{
     public MountPointManager() {
     }
 
-    public List<MountPointFactory> getMountPointFactories() {
+    public Map<String, MountPointFactory> getMountPointFactories() {
         return mountPointFactories;
     }
 
-    public void setMountPointFactories(List<MountPointFactory> mountPointFactories) {
+    public void setMountPointFactories(Map<String, MountPointFactory> mountPointFactories) {
         this.mountPointFactories = mountPointFactories;
     }
 

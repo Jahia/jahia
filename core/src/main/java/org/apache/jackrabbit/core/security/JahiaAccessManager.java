@@ -560,16 +560,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             // Translation permissions
             if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
-                String fullPath=pr.getJCRPath(absPath);
-                if (fullPath.contains("j:translation_")) {
-                    Matcher matcher = TRANSLATION_LANGUAGE_PATTERN.matcher(fullPath);
+                if (jcrPath.contains("j:translation_")) {
+                    Matcher matcher = TRANSLATION_LANGUAGE_PATTERN.matcher(jcrPath);
                     if(matcher.matches()) {
                         String language = matcher.group(2);
                         permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
                         permissions.add(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName) + "_" + language);
                     }
-                } else if (fullPath.contains("j:referenceInField_")) {
-                    Matcher matcher = REFERENCE_FIELD_LANGUAGE_PATTERN.matcher(fullPath);
+                } else if (jcrPath.contains("j:referenceInField_")) {
+                    Matcher matcher = REFERENCE_FIELD_LANGUAGE_PATTERN.matcher(jcrPath);
                     if(matcher.matches()) {
                         String language = matcher.group(2);
                         permissions.remove(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName));
@@ -583,7 +582,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String childNodeName = pr.getJCRName(absPath.getName());
                 if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
-                        hasPrivileges(pr.getJCRPath(absPath), new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
+                        hasPrivileges(jcrPath, new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
                     return true;
                 }
             }

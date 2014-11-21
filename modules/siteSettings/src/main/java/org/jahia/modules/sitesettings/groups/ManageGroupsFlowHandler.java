@@ -80,6 +80,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.i18n.Messages;
@@ -107,6 +108,16 @@ public class ManageGroupsFlowHandler implements Serializable {
     private transient JahiaUserManagerService userManagerService;
 
     private String searchType = "users";
+
+    private String siteKey;
+
+    public void initRealm(RenderContext renderContext) throws RepositoryException {
+        JCRNodeWrapper mainNode = renderContext.getMainResource().getNode();
+        if (mainNode != null && mainNode.isNodeType("jnt:virtualsite")) {
+            siteKey = ((JCRSiteNode) mainNode).getSiteKey();
+        }
+    }
+
 
     /**
      * Performs the creation of a new group for the site.
@@ -260,16 +271,12 @@ public class ManageGroupsFlowHandler implements Serializable {
             @Override
             public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 List<String> providerKeys = new ArrayList<String>();
-                for(JCRStoreProvider provider : groupManagerService.getProviderList(null, session)){
+                for (JCRStoreProvider provider : groupManagerService.getProviderList(siteKey, session)) {
                     providerKeys.add(provider.getKey());
                 }
                 return providerKeys;
             }
         });
-    }
-
-    private String getSiteKey(RequestContext ctx) {
-        return ((RenderContext) ctx.getExternalContext().getRequestMap().get("renderContext")).getSite().getSiteKey();
     }
 
     /**
@@ -299,7 +306,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return an empty (newly initialized) search criteria bean
      */
     public SearchCriteria initCriteria(RequestContext ctx) {
-        return new SearchCriteria(getSiteKey(ctx));
+        return new SearchCriteria(siteKey);
     }
 
     /**
@@ -308,7 +315,7 @@ public class ManageGroupsFlowHandler implements Serializable {
      * @return an empty (newly initialized) group bean
      */
     public GroupModel initGroup(RequestContext ctx) {
-        return new GroupModel(getSiteKey(ctx));
+        return new GroupModel(siteKey);
     }
 
     private boolean isReadOnly(JCRGroupNode grp) {

@@ -475,6 +475,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, JCRSessionWrapper session) {
+        return searchUsers(searchCriterias, siteKey, providerKeys, false, session);
+    }
+
+    public Set<JCRUserNode> searchUsers(final Properties searchCriterias, String siteKey, final String[] providerKeys, boolean excludeProtected, JCRSessionWrapper session) {
         try {
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
@@ -552,7 +556,10 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                     }
                 }
                 if (query.length() > 0) {
-                    query.insert(0, "and ");
+                    query.insert(0, " and ");
+                }
+                if (excludeProtected) {
+                    query.insert(0, " and [j:nodename] <> '" + GUEST_USERNAME + "'");
                 }
                 String s = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
                 query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_USER + "] as u where isdescendantnode(u,'" + s + "')");

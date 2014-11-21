@@ -613,7 +613,7 @@ public class PrincipalViewHelper implements Serializable {
             if (siteKey != null && includeGlobalUsers) {
                 searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, null, providers, systemSession));
             }
-            searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, siteKey, providers, systemSession));
+            searchResults.addAll(jahiaUserManagerService.searchUsers(searchParameters, siteKey, providers, !includeGlobalUsers, systemSession));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
         }
@@ -689,7 +689,7 @@ public class PrincipalViewHelper implements Serializable {
             if (siteKey != null && includeGlobalUsers) {
                 searchResults.addAll(jahiaGroupManagerService.searchGroups(null, searchParameters, providers, systemSession));
             }
-            searchResults.addAll(jahiaGroupManagerService.searchGroups(siteKey, searchParameters, providers, systemSession));
+            searchResults.addAll(jahiaGroupManagerService.searchGroups(siteKey, searchParameters, providers, !includeGlobalUsers, systemSession));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
         }

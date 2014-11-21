@@ -175,6 +175,16 @@
                                         <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
                                     </manage_users.png>
                                 </manage_x0020_users>
+                                <manage_x0020_groups jcr:primaryType="jnt:folder">
+                                    <users_into.png j:height="16"
+                                          j:width="16"
+                                          jcr:mixinTypes="jmix:image"
+                                          jcr:primaryType="jnt:file">
+                                        <jcr:content jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                        <thumbnail2 jcr:mimeType="image/png" jcr:primaryType="jnt:resource"/>
+                                    </users_into.png>
+                                </manage_x0020_groups>
                                 <password_x0020_policy jcr:primaryType="jnt:folder">
                                     <password_policy.png j:height="16"
                                              j:width="16"
@@ -390,6 +400,19 @@
                                     <password-policy jcr:primaryType="jnt:serverSettingsPasswordPolicy"/>
                                 </pagecontent>
                             </passwordPolicy>
+                            <manageGroups j:applyOn="jnt:globalSettings"
+                                j:defaultTemplate="false"
+                                j:hiddenTemplate="true"
+                                j:icon="/modules/serverSettings/templates/files/serveradmin/users_x0020_and_x0020_roles/manage_x0020_groups/users_into.png"
+                                j:priority="100"
+                                j:requiredPermissionNames="adminGroups"
+                                j:titleKey="siteSettings.label.manageGroups"
+                                jcr:mixinTypes="jmix:rbTitle"
+                                jcr:primaryType="jnt:contentTemplate">
+                                <pagecontent jcr:primaryType="jnt:contentList">
+                                    <manage-groups jcr:primaryType="jnt:siteSettingsManageGroups"/>
+                                </pagecontent>
+                            </manageGroups>
                         </users-and-roles>
                         <system-health j:hiddenTemplate="false"
                               j:icon="/modules/serverSettings/templates/files/serveradmin/system_x0020_health/system_health.png"

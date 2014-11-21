@@ -111,6 +111,10 @@ public class JahiaGroupManagerService extends JahiaService {
             ADMINISTRATORS_GROUPNAME, SITE_ADMINISTRATORS_GROUPNAME, PRIVILEGED_GROUPNAME,
             SITE_PRIVILEGED_GROUPNAME));
 
+    public static final Set<String> PROTECTED_GROUPS = new HashSet<String>(Arrays.asList(
+            USERS_GROUPNAME, SITE_USERS_GROUPNAME, PRIVILEGED_GROUPNAME,
+            SITE_PRIVILEGED_GROUPNAME, GUEST_GROUPNAME, ADMINISTRATORS_GROUPNAME));
+
     private static class PatternHolder {
         static final Pattern INSTANCE = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString("userManagementGroupNamePattern"));
     }
@@ -427,12 +431,21 @@ public class JahiaGroupManagerService extends JahiaService {
      * @return a Set of JCRGroupNode elements that correspond to those search criterias
      */
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers, JCRSessionWrapper session) {
+        return searchGroups(siteKey, searchCriterias, providers, false, session);
+    }
+
+    public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers, boolean excludeProtected, JCRSessionWrapper session) {
         try {
             Set<JCRGroupNode> users = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
                 StringBuilder query = new StringBuilder(
-                        "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE [j:hidden] = false AND "
+                        "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE "
                 );
+                if (excludeProtected) {
+                    for (String g : PROTECTED_GROUPS) {
+                        query.append("[j:nodename] <> '").append(g).append("' AND ");
+                    }
+                }
                 List<JCRStoreProvider> searchOnProviders = getProviders(siteKey, providers, session);
                 if (!searchOnProviders.isEmpty()) {
                     query.append("(");

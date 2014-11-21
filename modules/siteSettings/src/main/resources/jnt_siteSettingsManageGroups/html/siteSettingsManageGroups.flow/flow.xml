@@ -8,6 +8,7 @@
     <var name="flowHandler" class="org.jahia.modules.sitesettings.groups.ManageGroupsFlowHandler"/>
 
     <on-start>
+        <evaluate expression="flowHandler.initRealm(externalContext.requestMap.renderContext)"/>
         <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.searchCriteria"/>
         <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
     </on-start>

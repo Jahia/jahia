@@ -21,7 +21,6 @@
 	<fieldset>
 		<legend>${fn:escapeXml(jcr:label(currentNode.primaryNodeType,currentResource.locale))}</legend>
 </c:if>
-<%long startTime = System.currentTimeMillis(); %>
 <c:set var="hitsName" value="hits_${currentNode.identifier}"/>
 <c:set var="hitsCountName" value="hitsCount_${currentNode.identifier}"/>
 <c:choose>
@@ -121,8 +120,6 @@
 </div>
 </div>
 
-<% pageContext.setAttribute("searchTime", Long.valueOf(System.currentTimeMillis() - startTime)); %>
-<utility:logger level="info" value="Search render time: ${searchTime} ms"/>
 <c:if test="${renderContext.editMode}">
 	</fieldset>
 </c:if>

@@ -195,13 +195,14 @@ public class JahiaGroupManagerService extends JahiaService {
     public JCRGroupNode lookupGroupByPath(String groupPath, JCRSessionWrapper session) {
         try {
             return (JCRGroupNode) session.getNode(groupPath);
+        } catch (PathNotFoundException e) {
+            // Method return just null if a group is not found
         } catch (ClassCastException e) {
             // Not a group
-            return null;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return null;
         }
+        return null;
     }
 
     /**

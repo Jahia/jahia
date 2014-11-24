@@ -115,6 +115,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;
 
+import static org.apache.jackrabbit.core.query.lucene.FieldNames.UUID;
 import static org.apache.lucene.search.BooleanClause.Occur.MUST;
 
 /**
@@ -635,6 +636,12 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
             } else if (constraint instanceof ChildNode && !((ChildNode) constraint).getParentPath().equals("/")) {
                 query.subQuery.add(new TermQuery(new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(((ChildNode)constraint).getParentPath()).getParent().getIdentifier())),
                         BooleanClause.Occur.MUST_NOT);
+            } else if (constraint instanceof Or) {
+                final BooleanQuery context = new BooleanQuery();
+                if (mapOrConstraintWithDescendantNodesOnly(context, constraint)) {
+                    query.mainQuery = new DescendantSelfAxisQuery(context, query.subQuery, false);
+                    return Predicate.TRUE;
+                }
             }
         } catch (AccessDeniedException e) {
             // denied
@@ -647,6 +654,19 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         }
 
         return super.mapConstraintToQueryAndFilter(query,constraint, selectorMap, searcher, reader);
+    }
+
+    public boolean mapOrConstraintWithDescendantNodesOnly(BooleanQuery context, Constraint constraint) throws RepositoryException {
+        if (constraint instanceof Or) {
+            Or or = (Or) constraint;
+            return mapOrConstraintWithDescendantNodesOnly(context, or.getConstraint1()) &&
+                    mapOrConstraintWithDescendantNodesOnly(context, or.getConstraint2());
+        } else if (constraint instanceof DescendantNode) {
+            DescendantNode descendantNode = (DescendantNode) constraint;
+            context.add(getNodeIdQuery(UUID, descendantNode.getAncestorPath()), BooleanClause.Occur.SHOULD);
+            return true;
+        }
+        return false;
     }
 
     public Locale getLocale() {

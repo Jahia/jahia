@@ -77,7 +77,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
@@ -159,24 +158,8 @@ public class FileCacheListener extends DefaultEventListener {
             }
         }
         if (!nodes.isEmpty()) {
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        for (String s : nodes) {
-                            try {
-                                JCRNodeWrapper n = (JCRNodeWrapper) session.getItem(s);
-                                cacheManager.invalidate(workspace, n.getPath());
-                            } catch (Exception e) {
-                                cacheManager.invalidate(workspace, s);
-                            }
-                        }
-                        return null;
-                    }
-                });
-            } catch (PathNotFoundException e) {
-                logger.debug("Path not found", e);
-            } catch (RepositoryException e) {
-                logger.error("Error while accessing repository", e);
+            for (String s : nodes) {
+                cacheManager.invalidate(workspace, s);
             }
         }
     }

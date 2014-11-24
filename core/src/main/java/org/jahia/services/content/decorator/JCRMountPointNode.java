@@ -111,23 +111,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
         @Override
         public String getPath() {
-            String path;
-            try {
-                if (node.hasProperty(MOUNT_POINT_PROPERTY_NAME)) {
-                    path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + StringUtils.removeEnd(node.getName(), MOUNT_SUFFIX);
-                } else if (node.getPath().endsWith(MOUNT_SUFFIX)) {
-                    path = StringUtils.removeEnd(node.getPath(), MOUNT_SUFFIX);
-                } else {
-                    path = node.getPath() + MOUNT_POINT_SUFFIX;
-                }
-            } catch (RepositoryException e) {
-                if (!(e instanceof ItemNotFoundException)) {
-                    logger.error(e.getMessage(), e);
-                }
-                path = node.getPath() + MOUNT_POINT_SUFFIX;
-            }
-
-            return path;
+            return getTargetMountPointPath();
         }
     }
 
@@ -217,5 +201,25 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                 }
             }
         }
+    }
+
+    public String getTargetMountPointPath() {
+        String path;
+        try {
+            if (node.hasProperty(MOUNT_POINT_PROPERTY_NAME)) {
+                path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + StringUtils.removeEnd(node.getName(), MOUNT_SUFFIX);
+            } else if (node.getPath().endsWith(MOUNT_SUFFIX)) {
+                path = StringUtils.removeEnd(node.getPath(), MOUNT_SUFFIX);
+            } else {
+                path = node.getPath() + MOUNT_POINT_SUFFIX;
+            }
+        } catch (RepositoryException e) {
+            if (!(e instanceof ItemNotFoundException)) {
+                logger.error(e.getMessage(), e);
+            }
+            path = node.getPath() + MOUNT_POINT_SUFFIX;
+        }
+
+        return path;
     }
 }

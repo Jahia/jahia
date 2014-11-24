@@ -183,10 +183,11 @@ public class JahiaLoginModule implements LoginModule {
                         // ensure the user exists
                         if (!JahiaUserManagerService.getInstance().userExists(name)) {
                             if (logger.isDebugEnabled()) {
-                                logger.debug("User {} is not known, the impersonator {} will be used instead", name,
+                                logger.debug("User {} is not known, a the guest will be used instead", name,
                                         impersonatorName);
                             }
-                            name = impersonatorName;
+                            principals.add(new JahiaPrincipal(GUEST, null, false, true));
+                            ok = false;
                         }
                     }
 

@@ -746,6 +746,11 @@ public class WebprojectHandler implements Serializable {
                                     .getPathMapping();
                             pathMapping.put("/shared/files/", "/sites/" + system.getSiteKey() + "/files/");
                             pathMapping.put("/shared/mashups/", "/sites/" + system.getSiteKey() + "/portlets/");
+                            for (final ImportInfo infos2 : importsInfos.values()) {
+                                if (infos2.getOldSiteKey() != null && infos2.getSiteKey() != null && !infos2.getOldSiteKey().equals(infos2.getSiteKey())) {
+                                    pathMapping.put("/sites/" + infos2.getOldSiteKey(), "/sites/" + infos2.getSiteKey());
+                                }
+                            }
                             JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
                                 @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {

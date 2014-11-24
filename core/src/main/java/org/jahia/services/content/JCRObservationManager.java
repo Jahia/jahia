@@ -80,7 +80,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
-import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
@@ -282,11 +281,11 @@ public class JCRObservationManager implements ObservationManager {
             String ntName = null;
             Map<?, ?> info = event.getInfo();
             if (info != null && !info.isEmpty()) {
-                ntName = (String) info.get(Constants.JCR_PRIMARYTYPE);
+                ntName = (String) info.get("primaryType");
                 if (ntName != null) {
                     typeNames.add(JCRContentUtils.getJCRName(ntName, nsRegistry));
                 }
-                String mixins = (String) info.get(Constants.JCR_MIXINTYPES);
+                String mixins = (String) info.get("mixinTypes");
                 if (mixins != null && mixins.length() > 0) {
                     if (mixins.indexOf(' ') == -1) {
                         typeNames.add(JCRContentUtils.getJCRName(mixins, nsRegistry));

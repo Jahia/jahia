@@ -112,6 +112,11 @@ public class MountPointListener extends DefaultEventListener implements External
         return NODETYPES;
     }
 
+    @Override
+    public String getPath() {
+        return "/mounts";
+    }
+
     private void mount(final String uuid) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {

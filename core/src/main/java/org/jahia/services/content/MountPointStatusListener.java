@@ -103,6 +103,11 @@ public class MountPointStatusListener extends DefaultEventListener implements Ex
         return NODETYPES;
     }
 
+    @Override
+    public String getPath() {
+        return "/mounts";
+    }
+
     void mount(final String uuid, ProviderFactory providerFactory, JCRMountPointNode mountPoint)
             throws RepositoryException {
         JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);

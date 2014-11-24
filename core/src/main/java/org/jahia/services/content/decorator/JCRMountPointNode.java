@@ -114,7 +114,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
             String path;
             try {
                 if (node.hasProperty(MOUNT_POINT_PROPERTY_NAME)) {
-                    path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + node.getName();
+                    path = node.getProperty(MOUNT_POINT_PROPERTY_NAME).getNode().getPath() + "/" + StringUtils.removeEnd(node.getName(), MOUNT_SUFFIX);
                 } else if (node.getPath().endsWith(MOUNT_SUFFIX)) {
                     path = StringUtils.removeEnd(node.getPath(), MOUNT_SUFFIX);
                 } else {

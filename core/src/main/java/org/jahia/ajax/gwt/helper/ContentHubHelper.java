@@ -71,31 +71,15 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import javax.jcr.RepositoryException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.ProviderFactory;
-import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 
 /**
@@ -105,96 +89,12 @@ import org.slf4j.Logger;
  */
 public class ContentHubHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ContentHubHelper.class);
-
-    private static final Map<String, String> MOUNT_PARENTS;
-
-    static {
-        MOUNT_PARENTS = new HashMap<String, String>();
-        MOUNT_PARENTS.put("mounts", "jnt:systemFolder");
-    }
-
     private JCRSessionFactory sessionFactory;
-    private JCRStoreService jcrStoreService;
-    private ContentDefinitionHelper definitionHelper;
-    private ContentManagerHelper contentManager;
     private JahiaUserManagerService userManagerService;
 
     public void setSessionFactory(JCRSessionFactory sessionFactory) {
         this.sessionFactory = sessionFactory;
     }
-
-    public List<GWTJahiaNodeType> getProviderFactoriesType(Locale uiLocale) throws GWTJahiaServiceException {
-        try {
-            List<GWTJahiaNodeType> providerFactoriesType = new ArrayList<GWTJahiaNodeType>();
-            for (ProviderFactory factory : jcrStoreService.getProviderFactories().values()) {
-                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(factory.getNodeTypeName());
-                providerFactoriesType.add(definitionHelper.getGWTJahiaNodeType(type, uiLocale));
-            }
-            return providerFactoriesType;
-        } catch (NoSuchNodeTypeException e) {
-            throw new GWTJahiaServiceException(e);
-        }
-    }
-
-    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties,
-                      JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        mountAndReturnPath(mountName, providerType, properties, session, uiLocale);
-    }
-
-    public String mountAndReturnPath(String mountName, String providerType, List<GWTJahiaNodeProperty> properties,
-                                     JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        String mountPoint = getMountParentPath(properties);
-        try {
-            GWTJahiaNode mount = contentManager.createNode("/mounts", (mountPoint == null ? mountName + JCRMountPointNode.MOUNT_SUFFIX : mountName),
-                    providerType, null, properties, session, uiLocale, MOUNT_PARENTS, false);
-            session.save();
-            final String path = mount.getPath();
-
-            final JCRMountPointNode mountPointNode = (JCRMountPointNode) session.getNode(path);
-
-            // mount provider
-            final JCRStoreProvider provider = mountPointNode.getMountProvider();
-            provider.mount();
-
-            return path;
-        } catch (Exception e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.mount.label", uiLocale,
-                    mountName, e.getMessage()));
-        }
-    }
-
-    private String getMountParentPath(List<GWTJahiaNodeProperty> properties) {
-        String mountPoint = null;
-        if (properties != null) {
-            for (GWTJahiaNodeProperty p : properties) {
-                if (p.getName().equals(JCRMountPointNode.MOUNT_POINT_PROPERTY_NAME)) {
-                    List<GWTJahiaNodePropertyValue> values = p.getValues();
-                    if (values != null && values.size() > 0) {
-                        GWTJahiaNodePropertyValue v = values.get(0);
-                        if (v != null && v.getNode() != null) {
-                            mountPoint = v.getNode().getPath();
-                            logger.info("Using specified mount parent path {}", mountPoint);
-                        }
-                    }
-                    break;
-                }
-
-            }
-        }
-
-        return mountPoint;
-    }
-
-    public void unmount(String path, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        final JCRStoreProvider provider = sessionFactory.getProvider(path);
-        if (provider != null) {
-            if (!provider.unmount()) {
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("failure.unmount.label", uiLocale, provider.getMountPoint(),
-                        "Provider might not have been dynamically mounted"));
-            }
-        }
-    }
-
     public Map<String, String> getStoredPasswordsProviders(JahiaUser user) {
         Map<String, String> results = new HashMap<String, String>();
         results.put(null, user.getUsername());
@@ -224,18 +124,6 @@ public class ContentHubHelper {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
-    }
-
-    public void setJcrStoreService(JCRStoreService jcrStoreService) {
-        this.jcrStoreService = jcrStoreService;
-    }
-
-    public void setDefinitionHelper(ContentDefinitionHelper definitionHelper) {
-        this.definitionHelper = definitionHelper;
-    }
-
-    public void setContentManager(ContentManagerHelper contentManager) {
-        this.contentManager = contentManager;
     }
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {

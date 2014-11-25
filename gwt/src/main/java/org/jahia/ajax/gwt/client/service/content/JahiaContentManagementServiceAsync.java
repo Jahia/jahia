@@ -315,10 +315,6 @@ public interface JahiaContentManagementServiceAsync {
 
     void markForDeletion(List<String> paths, String comment, AsyncCallback async);
 
-    void mount(String mountName, String providerType,List<GWTJahiaNodeProperty> properties, AsyncCallback async);
-
-    void unmount(String path, AsyncCallback async);
-
     void move(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
 
     void moveAtEnd(List<String> sourcePaths, String targetPath, AsyncCallback asyncCallback);
@@ -434,8 +430,6 @@ public interface JahiaContentManagementServiceAsync {
     void translate(GWTJahiaNodeProperty property, GWTJahiaItemDefinition definition, String srcLanguage, String destLanguage, String siteUUID, AsyncCallback<GWTJahiaNodeProperty> async);
 
     void initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType, AsyncCallback<RpcMap> async);
-
-    void getProviderFactoriesType(AsyncCallback<List<GWTJahiaNodeType>> async);
 
     void getNamespaces(AsyncCallback<List<String>> async);
 

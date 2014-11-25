@@ -549,18 +549,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
     }
 
-    public void mount(String mountName, String providerType, List<GWTJahiaNodeProperty> properties) throws GWTJahiaServiceException {
-        contentHub.mount(mountName, providerType, properties, retrieveCurrentSession(), getUILocale());
-    }
-
-    public void unmount(String path) throws GWTJahiaServiceException {
-        contentHub.unmount(path, retrieveCurrentSession(), getUILocale());
-    }
-
-    public List<GWTJahiaNodeType> getProviderFactoriesType() throws GWTJahiaServiceException {
-        return contentHub.getProviderFactoriesType(getUILocale());
-    }
-
     public void storePasswordForProvider(String providerKey, String username, String password) throws GWTJahiaServiceException  {
         try {
             final JCRSessionWrapper session = retrieveCurrentSession();

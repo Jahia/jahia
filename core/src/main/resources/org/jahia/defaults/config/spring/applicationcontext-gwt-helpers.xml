@@ -15,9 +15,6 @@
 
     <bean name="ContentHubHelper" class="org.jahia.ajax.gwt.helper.ContentHubHelper">
         <property name="sessionFactory" ref="jcrSessionFactory"/>
-        <property name="jcrStoreService" ref="JCRStoreService"/>
-        <property name="definitionHelper" ref="ContentDefinitionHelper"/>
-        <property name="contentManager" ref="ContentManagerHelper"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 

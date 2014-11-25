@@ -1021,15 +1021,6 @@
         <property name="icon" value="import"/>
     </bean>
 
-    <bean id="Toolbar.Item.Mount" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.MountActionItem"/>
-        </property>
-        <property name="titleKey" value="label.mount"/>
-        <property name="icon" value="mount"/>
-        <property name="visibility" ref="RemoteMenuVisibility"/>
-    </bean>
-
     <bean id="Toolbar.Item.Paste" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PasteActionItem"/>
@@ -1145,15 +1136,6 @@
         </property>
         <property name="titleKey" value="label.rotate"/>
         <property name="icon" value="rotate"/>
-    </bean>
-
-    <bean id="Toolbar.Item.Unmount" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
-        <property name="actionItem">
-            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.UnmountActionItem"/>
-        </property>
-        <property name="titleKey" value="label.unmount"/>
-        <property name="icon" value="unmount"/>
-        <property name="visibility" ref="RemoteMenuVisibility"/>
     </bean>
 
     <bean id="Toolbar.Item.Upload" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
@@ -1441,8 +1423,6 @@
         <property name="titleKey" value="label.goToViewDefinition"/>
         <property name="icon" value="goto-view"/>
     </bean>
-
-    <bean id="RemoteMenuVisibility" class="org.jahia.services.uicomponents.bean.contentmanager.RemoteMenuVisibility"/>
 
     <bean id="Toolbar.Item.AddToSourceControl" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">
         <property name="actionItem">

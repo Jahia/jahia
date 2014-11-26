@@ -145,6 +145,9 @@ public class JahiaLoginModule implements LoginModule {
                 if (impersonatorCredentials != null) {
                     // there were impersonator credentials supplied -> will use them
                     impersonatorName = impersonatorCredentials.getUserID();
+                    if (!"root".equals(impersonatorName)) {
+                        throw new FailedLoginException("Only root user credentials can be used as an impersonator.");
+                    }
                     impersonatorPass = impersonatorCredentials.getPassword();
                 }
             } else {

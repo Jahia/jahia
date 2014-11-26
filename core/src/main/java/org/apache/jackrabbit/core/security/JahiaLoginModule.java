@@ -144,9 +144,6 @@ public class JahiaLoginModule implements LoginModule {
                 if (impersonatorCredentials != null) {
                     // there were impersonator credentials supplied -> will use them
                     impersonatorName = impersonatorCredentials.getUserID();
-                    if (!"root".equals(impersonatorName)) {
-                        throw new FailedLoginException("Only root user credentials can be used as an impersonator.");
-                    }
                     impersonatorPass = impersonatorCredentials.getPassword();
                 }
             } else {
@@ -178,10 +175,14 @@ public class JahiaLoginModule implements LoginModule {
                     String key = new String(impersonatorPass != null ? impersonatorPass : pass);
                     String lookupUser = impersonatorName != null ? impersonatorName : name;
                     Token token = removeToken(lookupUser, key);
-                    
+
                     boolean ok = token != null
                             || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key);
-                    if (ok && token == null && impersonatorName != null) {
+                    if (ok && impersonatorName != null) {
+                        // ensure the impersonator is root
+                        if (!JahiaUserManagerService.getInstance().lookupUser(lookupUser).isRoot()) {
+                            throw new FailedLoginException("Only root user credentials can be used as an impersonator.");
+                        }
                         // ensure the user exists
                         if (!JahiaUserManagerService.getInstance().userExists(name)) {
                             if (logger.isDebugEnabled()) {

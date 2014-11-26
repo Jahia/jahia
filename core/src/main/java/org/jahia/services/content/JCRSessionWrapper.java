@@ -562,7 +562,7 @@ public class JCRSessionWrapper implements Session {
                     Collection<ExtendedPropertyDefinition> propDefs = NodeTypeRegistry.getInstance().getNodeType(s).getPropertyDefinitionsAsMap().values();
                     for (ExtendedPropertyDefinition propertyDefinition : propDefs) {
                         String propertyName = propertyDefinition.getName();
-                        if (propertyDefinition.isMandatory() &&
+                        if (propertyDefinition.isMandatory() && propertyDefinition.getDefaultValuesAsUnexpandedValue().length == 0 &&
                                 propertyDefinition.getRequiredType() != PropertyType.WEAKREFERENCE &&
                                 propertyDefinition.getRequiredType() != PropertyType.REFERENCE &&
                                 !propertyDefinition.isProtected() &&

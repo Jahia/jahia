@@ -209,7 +209,7 @@ public class TextExtractionListener extends DefaultEventListener {
             logger.debug("Scheduling text extraction background job for file " + fileNode.getPath());
         }
 
-        schedulerService.scheduleJobNow(jobDetail);
+        schedulerService.scheduleJobAtEndOfRequest(jobDetail);
     }
 
     /**

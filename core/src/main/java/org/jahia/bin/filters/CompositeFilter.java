@@ -174,7 +174,8 @@ public class CompositeFilter implements Filter {
         if (filter.isMatchAllUrls())
             return (true);
 
-        String requestPath = request.getRequestURI().substring(request.getContextPath().length());
+        int length = request.getContextPath().length();
+        String requestPath = length > 0 ? request.getRequestURI().substring(length) : request.getRequestURI();
 
         // Match on context relative request path
         String[] testPaths = filter.getUrlPatterns();
@@ -189,7 +190,7 @@ public class CompositeFilter implements Filter {
         return (false);
     }
 
-    private static boolean matchFiltersURL(String testPath, String requestPath) {
+    public static boolean matchFiltersURL(String testPath, String requestPath) {
 
         if (testPath == null)
             return (false);

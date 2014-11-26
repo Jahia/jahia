@@ -518,6 +518,11 @@
 
     <bean id="JcrSessionFilter" class="org.jahia.bin.filters.jcr.JcrSessionFilter">
         <property name="authPipeline" ref="authPipeline"/>
+        <property name="bypassForPatterns">
+            <util:list value-type="java.lang.String">
+                <value>/server/*</value>
+            </util:list>
+        </property>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>

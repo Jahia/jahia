@@ -72,14 +72,13 @@
  package org.jahia.params.valves;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -114,25 +113,27 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
                 String cred = new String(decoder.decode(auth.getBytes("UTF-8")));
                 int colonInd = cred.indexOf(':');
                 String user = cred.substring(0,colonInd);
-                String pass = cred.substring(colonInd+1);
-
-                JCRUserNode jcrUserNode = userManagerService.lookupUser(user);
-                if (jcrUserNode != null) {
-                    if (jcrUserNode.verifyPassword(pass)) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("User " + user + " authenticated.");
-                        }
-                        if (jcrUserNode.isAccountLocked()) {
-                            logger.debug("Login failed. Account is locked for user " + user);
+                if (user != null && !user.contains(JahiaBasicCredentialsProvider.IMPERSONATOR)) {
+                    String pass = cred.substring(colonInd+1);
+    
+                    JCRUserNode jcrUserNode = userManagerService.lookupUser(user);
+                    if (jcrUserNode != null) {
+                        if (jcrUserNode.verifyPassword(pass)) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("User " + user + " authenticated.");
+                            }
+                            if (jcrUserNode.isAccountLocked()) {
+                                logger.debug("Login failed. Account is locked for user " + user);
+                                return;
+                            }
+                            authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
                             return;
+                        } else {
+                            logger.debug("User found but incorrect password : " + user);
                         }
-                        authContext.getSessionFactory().setCurrentUser(jcrUserNode.getJahiaUser());
-                        return;
                     } else {
-                        logger.debug("User found but incorrect password : " + user);
+                        logger.debug("User not found : "+user);                        
                     }
-                } else {
-                    logger.debug("User not found : "+user);                        
                 }
             } catch (Exception e) {
                 logger.debug("Exception thrown",e);

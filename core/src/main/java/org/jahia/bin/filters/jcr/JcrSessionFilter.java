@@ -71,7 +71,9 @@
  */
 package org.jahia.bin.filters.jcr;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.bin.filters.CompositeFilter;
 import org.jahia.params.valves.AuthValveContext;
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
@@ -87,7 +89,9 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Servlet filter that performs user authentication and the initialization of
@@ -99,6 +103,8 @@ public class JcrSessionFilter implements Filter {
     private static final Logger logger = LoggerFactory.getLogger(JcrSessionFilter.class);
     
     private Pipeline authPipeline;
+    
+    private List<String> bypassForPatterns;
 
     private JCRSessionFactory sessionFactory;
 
@@ -110,6 +116,10 @@ public class JcrSessionFilter implements Filter {
 
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
             throws IOException, ServletException {
+        if (bypass(servletRequest)) {
+            filterChain.doFilter(servletRequest, servletResponse);
+            return;
+        }
         boolean initialized = SpringContextSingleton.getInstance().isInitialized();
         try {
             AuthValveContext authValveContext = null;
@@ -156,6 +166,24 @@ public class JcrSessionFilter implements Filter {
         }
     }
 
+    private boolean bypass(ServletRequest servletRequest) {
+        if (bypassForPatterns == null || bypassForPatterns.isEmpty() || !(servletRequest instanceof HttpServletRequest)) {
+            return false;
+        }
+        HttpServletRequest req = (HttpServletRequest) servletRequest;
+        String path = req.getRequestURI();
+        if (req.getContextPath().length() > 0) {
+            path = StringUtils.substringAfter(path, req.getContextPath());
+        }
+        for (String pattern : bypassForPatterns) {
+            if (CompositeFilter.matchFiltersURL(pattern, path)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Performs finalization task for ending request processing: resetting thread locals and closing all active JCR sessions.
      */
@@ -182,6 +210,10 @@ public class JcrSessionFilter implements Filter {
 
 	public void setAuthPipeline(Pipeline authPipeline) {
     	this.authPipeline = authPipeline;
+    }
+
+    public void setBypassForPatterns(List<String> bypassForPatterns) {
+        this.bypassForPatterns = bypassForPatterns;
     }
 
 	public void setSessionFactory(JCRSessionFactory sessionFactory) {

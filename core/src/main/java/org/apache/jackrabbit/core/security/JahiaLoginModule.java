@@ -106,7 +106,6 @@ public class JahiaLoginModule implements LoginModule {
 
     public static final String SYSTEM = " system ";
     public static final String GUEST = " guest ";
-    public static final String IMPERSONATOR = " impersonator ";
     public static final String REALM_ATTRIBUTE = "org.jahia.realm";
 
     private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().sessionIdGenerator();

@@ -80,7 +80,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.SecurityConstants;
 import org.apache.jackrabbit.util.Base64;
 import org.apache.jackrabbit.webdav.DavConstants;
@@ -92,6 +91,8 @@ import org.apache.jackrabbit.webdav.DavConstants;
  * @author Sergiy Shyrkov
  */
 public class JahiaBasicCredentialsProvider extends BasicCredentialsProvider {
+
+    public static final String IMPERSONATOR = " impersonator ";
 
     public JahiaBasicCredentialsProvider(String defaultHeaderValue) {
         super(defaultHeaderValue);
@@ -132,12 +133,12 @@ public class JahiaBasicCredentialsProvider extends BasicCredentialsProvider {
      */
     protected Credentials createCredentials(String user, char[] password) {
         SimpleCredentials credentials = null;
-        if (user != null && user.contains(JahiaLoginModule.IMPERSONATOR)) {
-            credentials = new SimpleCredentials(StringUtils.substringBefore(user, JahiaLoginModule.IMPERSONATOR),
+        if (user != null && user.contains(IMPERSONATOR)) {
+            credentials = new SimpleCredentials(StringUtils.substringBefore(user, IMPERSONATOR),
                     ArrayUtils.EMPTY_CHAR_ARRAY);
 
             credentials.setAttribute(SecurityConstants.IMPERSONATOR_ATTRIBUTE,
-                    new SimpleCredentials(StringUtils.substringAfter(user, JahiaLoginModule.IMPERSONATOR), password));
+                    new SimpleCredentials(StringUtils.substringAfter(user, IMPERSONATOR), password));
         } else {
             credentials = new SimpleCredentials(user, password);
         }

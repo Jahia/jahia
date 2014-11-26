@@ -573,6 +573,60 @@
                 </plugins>
             </build>
         </profile>
+        <profile>
+            <id>checkstyle</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.13</version>
+                        <executions>
+                            <execution>
+                                <id>verify-style</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>check</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <logViolationsToConsole>true</logViolationsToConsole>
+                            <checkstyleRules>
+                                <module name="Checker">
+                                    <module name="TreeWalker">
+                                        <module name="JavadocType" />
+                                        <module name="JavadocMethod">
+                                            <property name="scope" value="public"/>
+                                            <property name="allowMissingPropertyJavadoc" value="true"/>
+                                        </module>
+                                        <module name="UnusedImports"/>
+                                        <module name="ConstantName">
+                                            <property name="applyToProtected" value="false"/>
+                                            <property name="applyToPackage" value="false"/>
+                                            <property name="applyToPrivate" value="false"/>
+                                        </module>
+                                        <module name="EmptyBlock" />
+                                        <module name="NeedBraces"/>
+                                        <module name="EqualsHashCode"/>
+                                        <module name="MagicNumber"/>
+                                        <module name="SimplifyBooleanReturn"/>
+                                        <module name="IllegalCatch">
+                                            <property name="illegalClassNames" value=" java.lang.Throwable"/>
+                                        </module>
+                                        <module name="MultipleVariableDeclarations"/>
+                                        <module name="OneStatementPerLine"/>
+                                        <module name="RedundantModifier"/>
+                                    </module>
+                                </module>
+                            </checkstyleRules>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <distributionManagement>

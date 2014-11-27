@@ -153,11 +153,9 @@ public class TagsSuggesterImpl implements TagsSuggester{
 
         QueryObjectModelFactory factory = queryManager.getQOMFactory();
         QOMBuilder qomBuilder = new QOMBuilder(factory, sessionWrapper.getValueFactory());
-
         qomBuilder.setSource(factory.selector("jmix:tagged", "tagged"));
         qomBuilder.andConstraint(factory.descendantNode("tagged", searchPath));
         qomBuilder.getColumns().add(factory.column("tagged", "j:tagList", facet.toString()));
-
         QueryObjectModel qom = qomBuilder.createQOM();
         QueryResultWrapper res = (QueryResultWrapper) qom.execute();
 

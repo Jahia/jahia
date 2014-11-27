@@ -313,9 +313,7 @@ public class FormFieldCreator {
                     break;
                 case GWTJahiaNodeSelectorType.TAG:
                     if((propDefinition.getRequiredType() == GWTJahiaNodePropertyType.STRING) && ((GWTJahiaPropertyDefinition) definition).isMultiple()){
-                        boolean autocompleteOnSiteTags = definition.getSelectorOptions().get("autocomplete") != null;
-                        String  separator = definition.getSelectorOptions().get("separator");
-                        field = new TagField(autocompleteOnSiteTags, separator);
+                        field = new TagField(definition.getSelectorOptions().get("separator"), definition.getSelectorOptions().get("autocomplete"));
                     }else {
                         return null;
                     }

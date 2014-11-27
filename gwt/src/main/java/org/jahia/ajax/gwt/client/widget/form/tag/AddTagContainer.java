@@ -4,9 +4,11 @@ import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
 import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
+import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -24,11 +26,13 @@ import java.util.List;
  * @author kevan
  */
 public class AddTagContainer extends HorizontalPanel {
+    private static final int DEFAULT_AUTOCOMPLETE_LIMIT = 10;
+
     protected TagComboBox tagComboBox;
     protected Button addTagButton;
     protected TagField tagField;
 
-    public AddTagContainer(TagField _tagField, boolean autoComplete, String separator) {
+    public AddTagContainer(TagField _tagField, String autoComplete) {
         super();
         tagField = _tagField;
         tagComboBox = new TagComboBox(autoComplete);
@@ -64,9 +68,10 @@ public class AddTagContainer extends HorizontalPanel {
      * @author kevan
      */
     public class TagComboBox extends ComboBox<GWTJahiaValueDisplayBean> {
-        public TagComboBox(boolean autoComplete) {
+        public TagComboBox(final String autoComplete) {
             setDisplayField("display");
-            if (autoComplete) {
+            if (autoComplete != null) {
+                final Long autocompleteLimit = new Integer(Util.parseInt(autoComplete, DEFAULT_AUTOCOMPLETE_LIMIT)).longValue();
                 final ListStore<GWTJahiaValueDisplayBean> store = new ListStore<GWTJahiaValueDisplayBean>(new BaseListLoader(
                         new RpcProxy<List<GWTJahiaValueDisplayBean>>() {
                             @Override
@@ -74,7 +79,9 @@ public class AddTagContainer extends HorizontalPanel {
                                 // TODO handle separator to provide better autocomplete
                                 GWTJahiaNode site = JahiaGWTParameters.getSiteNode();
                                 JahiaContentManagementService.App.getInstance().getTags(getRawValue(),
-                                        site != null ? site.getPath() : null, 1L, 10L, 0L, true, asyncCallback);
+                                        site != null ? site.getPath() : null, 1L,
+                                        autocompleteLimit,
+                                        0L, true, asyncCallback);
                             }
                         }));
                 setStore(store);
@@ -92,7 +99,7 @@ public class AddTagContainer extends HorizontalPanel {
             addKeyListener(new com.extjs.gxt.ui.client.event.KeyListener() {
                 @Override
                 public void componentKeyPress(ComponentEvent event) {
-                    if (event.getEvent().getKeyCode() == 13) {
+                    if (event.getEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
                         addTag();
                     }
                 }

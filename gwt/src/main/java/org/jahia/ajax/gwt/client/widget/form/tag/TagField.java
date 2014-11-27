@@ -25,13 +25,13 @@ public class TagField extends MultiField<List<String>> {
     protected AddTagContainer addTagContainer;
     private String separator;
 
-    public TagField(boolean autoComplete, String separator) {
+    public TagField(String separator, String autocomplete) {
         super();
         this.separator = separator;
         displayTagContainer = new LayoutContainer(new ColumnLayout());
         displayTagContainer.setScrollMode(Style.Scroll.AUTOY);
         displayTagContainer.setWidth("100%");
-        addTagContainer = new AddTagContainer(this, autoComplete, separator);
+        addTagContainer = new AddTagContainer(this, autocomplete);
         addTagContainer.setSpacing(5);
     }
 

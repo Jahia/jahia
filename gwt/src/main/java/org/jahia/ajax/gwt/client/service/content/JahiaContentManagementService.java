@@ -509,8 +509,26 @@ public interface JahiaContentManagementService extends RemoteService {
 
     RpcMap initializeCodeEditor(String path, boolean isNew, String nodeType, String fileType) throws GWTJahiaServiceException;
 
+    /**
+     * Retrieve tags regarding a given prefix and using the TagSuggester service
+     *
+     * @param prefix The text used to match the tags to retrieve
+     * @param startPath The path used to search the tags
+     * @param minCount Minimum usage count for a tag to be return
+     * @param limit Limit of tags return
+     * @param offset Offset used in the query
+     * @param sortByCount Sort tags by count
+     * @return the matching tags retrieved
+     */
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
 
+    /**
+     * Convert a given tag using the TagHandler service,
+     * used to made transformation on the tags before save or display them.
+     *
+     * @param tag The tag to convert
+     * @return the converted tag
+     */
     String convertTag(String tag);
 
     public static class App {

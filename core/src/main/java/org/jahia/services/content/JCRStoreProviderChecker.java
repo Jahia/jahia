@@ -111,4 +111,9 @@ public class JCRStoreProviderChecker {
     }
 
 
+    public void remove(String key) {
+        synchronized (lock) {
+            toPeriodicallyCheck.remove(key);
+        }
+    }
 }

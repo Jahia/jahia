@@ -608,10 +608,14 @@
                                             <property name="applyToPackage" value="false"/>
                                             <property name="applyToPrivate" value="false"/>
                                         </module>
-                                        <module name="EmptyBlock" />
+                                        <module name="EmptyBlock">
+                                            <property name="option" value="text"/>
+                                        </module>
                                         <module name="NeedBraces"/>
                                         <module name="EqualsHashCode"/>
-                                        <module name="MagicNumber"/>
+                                        <module name="MagicNumber">
+                                            <property name="ignoreNumbers" value=" 	-1, 0, 1, 2, 17, 31, 37"/>
+                                        </module>
                                         <module name="SimplifyBooleanReturn"/>
                                         <module name="IllegalCatch">
                                             <property name="illegalClassNames" value=" java.lang.Throwable"/>

@@ -58,6 +58,18 @@ class JCRStoreProviderChecker {
 
     private static final Object lock = new Object();
 
+    private static final ThreadLocal<Boolean> isFromChecker = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE;
+        }
+    };
+
+    public static boolean isFromChecker() {
+        return isFromChecker.get();
+    }
+
+
     public void run() {
         final Map<String, JCRStoreProvider> toCheck;
 
@@ -66,26 +78,30 @@ class JCRStoreProviderChecker {
         }
 
 
-        for (Map.Entry<String, JCRStoreProvider> entry : toCheck.entrySet()) {
-            final String key = entry.getKey();
+        try {
+            isFromChecker.set(true);
 
-            // if we managed to open the stream, this means the remote server is back up
-            // so attempt to mount the associated provider
-            final JCRStoreProvider provider = entry.getValue();
-            if (provider.isAvailable(true)) {
-                logger.info("Remote server at " + provider.getUrl() + " came back online. Attempting to re-mount provider.");
+            for (Map.Entry<String, JCRStoreProvider> entry : toCheck.entrySet()) {
+                final String key = entry.getKey();
 
-                provider.setMountStatus(JCRMountPointNode.MountStatus.mounted);
+                // if we managed to open the stream, this means the remote server is back up
+                // so attempt to mount the associated provider
+                final JCRStoreProvider provider = entry.getValue();
+                if (provider.isAvailable(true)) {
+                    logger.info("Remote server at " + provider.getUrl() + " came back online. Attempting to re-mount provider.");
 
-                synchronized (lock) {
-                    // remove the URL from the list of servers to check
-                    toPeriodicallyCheck.remove(key);
+                    provider.setMountStatus(JCRMountPointNode.MountStatus.mounted);
+
+                    synchronized (lock) {
+                        // remove the URL from the list of servers to check
+                        toPeriodicallyCheck.remove(key);
+                    }
+                    logger.info("Re-mount successful!");
                 }
-                logger.info("Re-mount successful!");
             }
+        } finally {
+            isFromChecker.set(false);
         }
-
-
     }
 
     public void checkPeriodically(JCRStoreProvider provider) {

@@ -42,8 +42,6 @@ package org.jahia.services.content;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +49,7 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Christophe Laprun
  */
-class JCRStoreProviderChecker {
+public class JCRStoreProviderChecker {
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private final Map<String, JCRStoreProvider> toPeriodicallyCheck = new HashMap<String, JCRStoreProvider>();

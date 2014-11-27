@@ -97,10 +97,25 @@ import java.util.Map;
 public class TagsSuggesterImpl implements TagsSuggester{
     private boolean faceted = false;
 
+    /**
+     * To switch between faceted suggester and default, you have to set this property to true
+     * tag.suggester.faceted in the jahia.properties
+     *
+     * @param prefix The text used to match the tags to retrieve
+     * @param startPath The path used to search the tags
+     * @param mincount Minimum usage count for a tag to be return (supported by faceted suggester only)
+     * @param limit Limit of tags return
+     * @param offset Offset used in the query (supported by faceted suggester only)
+     * @param sortByCount Sort tags by count (supported by faceted suggester only)
+     * @param sessionWrapper current session
+     * @return a Map<tag value, usage count> (usage count only supported by faceted suggester)
+     *
+     * @throws RepositoryException
+     */
     @Override
-    public Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
+    public Map<String, Long> suggest(String prefix, String startPath, Long mincount, Long limit, Long offset,
                                      boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException {
-        String converterdInput = TaggingService.getInstance().getTagHandler().execute(input);
+        String converterdInput = TaggingService.getInstance().getTagHandler().execute(prefix);
         if(faceted){
             return facetedSuggestion(converterdInput, startPath, mincount, limit, offset, sortByCount, sessionWrapper);
         } else {
@@ -158,23 +173,23 @@ public class TagsSuggesterImpl implements TagsSuggester{
     /**
      * Use a simple query to suggest tags
      *
-     * @param term the term used to search tags
+     * @param prefix the prefix to search on
      * @param startPath the path to start the search
      * @param limit the limit of tag returned
      * @param sessionWrapper the session used to do the query
      * @return Map of tags retrieving the tag name
      * @throws RepositoryException
      */
-    protected Map<String, Long> simpleSuggestion (final String term, String startPath, final Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
+    protected Map<String, Long> simpleSuggestion (final String prefix, String startPath, final Long limit, JCRSessionWrapper sessionWrapper) throws RepositoryException {
         // handle empty term
-        if(StringUtils.isEmpty(term.trim())){
+        if(StringUtils.isEmpty(prefix.trim())){
             return new HashMap<String, Long>();
         }
 
         QueryManager queryManager = sessionWrapper.getWorkspace().getQueryManager();
         String searchPath = StringUtils.isEmpty(startPath) ? "/sites" : startPath;
         Query query = queryManager.createQuery("select t.[j:tagList] from [jmix:tagged] as t where " +
-                "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '%" + JCRContentUtils.sqlEncode(term) + "%'", Query.JCR_SQL2);
+                "isdescendantnode(t, [" + searchPath + "]) and t.[j:tagList] like '" + JCRContentUtils.sqlEncode(prefix) + "%'", Query.JCR_SQL2);
 
         // use a scrollableQuery to iterate on contents, to avoid query returning too much nodes in one time
         // use a step of 100, and max iterations limit to 100
@@ -191,7 +206,7 @@ public class TagsSuggesterImpl implements TagsSuggester{
                     JCRValueWrapper[] tags = nodeWrapper.getProperty("j:tagList").getValues();
                     for (JCRValueWrapper tag : tags) {
                         String tagValue = tag.getString();
-                        if (tagValue.contains(term)) {
+                        if (tagValue.startsWith(prefix)) {
                             if (result.keySet().size() < limit) {
                                 result.put(tagValue, 0L);
                             }else {

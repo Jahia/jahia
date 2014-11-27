@@ -82,24 +82,6 @@ import java.util.Map;
  * @author kevan
  */
 public interface TagsSuggester {
-    /**
-     *
-     * To switch between faceted suggester and default, you have to set this property to true
-     * tag.suggester.faceted in the jahia.properties
-     *
-     * @param input The text used to match the tags to retrieve
-     *              faceted: tags like 'input%' are retrieved,
-     *              default: tags like '%input%' are retrieved
-     * @param startPath The path used to search the tags
-     * @param mincount Minimum usage count for a tag to be return (supported by faceted suggester only)
-     * @param limit Limit of tags return
-     * @param offset Offset used in the query (supported by faceted suggester only)
-     * @param sortByCount Sort tags by count (supported by faceted suggester only)
-     * @param sessionWrapper current session
-     * @return a Map<tag value, usage count> (usage count only supported by faceted suggester)
-     *
-     * @throws RepositoryException
-     */
     Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
                                      boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException;
 }

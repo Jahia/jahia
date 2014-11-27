@@ -159,9 +159,9 @@ public class MountPointListener extends DefaultEventListener implements External
                                             + " available until it is fixed. If you migrating from Jahia 6.6 this"
                                             + " might be normal until the migration scripts have been completed.",
                                     mountPointTarget.getPath());
-                            providerChecker.checkPeriodically(provider);
                             mountPoint.setMountStatus(JCRMountPointNode.MountStatus.waiting);
                             session.save();
+                            providerChecker.checkPeriodically(provider);
                         }
                     }
 

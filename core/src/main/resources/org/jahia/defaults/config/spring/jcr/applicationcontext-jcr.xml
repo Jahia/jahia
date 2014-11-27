@@ -346,6 +346,7 @@
                 </bean>
             </list>
         </property>
+        <property name="providerChecker" ref="JCRStoreProviderChecker"/>
     </bean>
     
     <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">

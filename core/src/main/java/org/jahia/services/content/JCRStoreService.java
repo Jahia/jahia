@@ -124,11 +124,15 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
     private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
     private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<String, Constructor<?>>();
-    private JCRStoreProviderChecker jcrStoreProviderChecker;
+    private JCRStoreProviderChecker providerChecker;
 
     private Map<String, List<DefaultEventListener>> listeners;
 
     private JCRSessionFactory sessionFactory;
+
+    public void setProviderChecker(JCRStoreProviderChecker providerChecker) {
+        this.providerChecker = providerChecker;
+    }
 
     private JCRStoreService() {
         super();
@@ -179,6 +183,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                                             + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
                                     jcrMountPointNode.setMountStatus(JCRMountPointNode.MountStatus.waiting);
                                     session.save();
+                                    providerChecker.checkPeriodically(provider);
                                 }
                             } else if (jcrMountPointNode.getMountStatus() == JCRMountPointNode.MountStatus.waiting) {
                                 jcrMountPointNode.setMountStatus(JCRMountPointNode.MountStatus.mounted);

@@ -364,7 +364,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         start(true);
     }
 
-    protected boolean start(boolean checkAvailability) throws JahiaInitializationException {
+    public boolean start(boolean checkAvailability) throws JahiaInitializationException {
         String tmpAuthenticationType = authenticationType;
         try {
             authenticationType = "shared";
@@ -386,14 +386,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 if (groovyPatcher != null && isProcessingServer) {
                     groovyPatcher.executeScripts("jcrStoreProviderStarted");
                 }
-
-                setMountStatus(JCRMountPointNode.MountStatus.mounted);
             }
 
             return available;
         } catch (Exception e) {
             logger.error("Couldn't mount provider " + getUrl(), e);
-            stop(JCRMountPointNode.MountStatus.error);
+            stop();
             throw new JahiaInitializationException("Couldn't mount provider " + getUrl(), e);
         } finally {
             authenticationType = tmpAuthenticationType;
@@ -437,70 +435,30 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
-     * Unmounts this provider if it's not dynamically mounted. Same as <code>unmount(JCRMountPointNode.MountStatus.unmounted)</code>.
-     *
-     * @return whether the unmount was successful
-     */
-    public boolean unmount() {
-        return unmount(JCRMountPointNode.MountStatus.unmounted);
-    }
-
-    /**
-     * Unmounts this provider if it's not dynamically mounted specifying which mount status the provider should have.
-     *
-     * @param status the MountStatus status the provider should have once it's unmounted
-     * @return whether the unmount was successful. If this provider was dynamically mounted, this method will do nothing and return <code>false</code>.
-     */
-    public boolean unmount(JCRMountPointNode.MountStatus status) {
-        if (isDynamicallyMounted()) {
-            stop(status);
-            return true;
-        }
-
-        logger.info("Provider of mount point {} was not dynamically mounted and was therefore not unmounted", getMountPoint());
-        return false;
-    }
-
-    /**
      * Sets the mount status of this provider to the specified one.
      *
      * @param status the new status of this provider
      */
-    protected void setMountStatus(JCRMountPointNode.MountStatus status) {
+    public void setMountStatus(final JCRMountPointNode.MountStatus status) {
         if (status != null && isDynamicallyMounted()) {
             try {
-                final JCRNodeWrapper node = getSystemSession().getNodeByIdentifier(getKey());
-                if (node instanceof JCRMountPointNode) {
-                    JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
-                    mountPointNode.setMountStatus(status);
-                }
+                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                    @Override
+                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                        JCRNodeWrapper node = session.getNodeByIdentifier(getKey());
+                        if (node instanceof JCRMountPointNode) {
+                            JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
+                            mountPointNode.setMountStatus(status);
+                            session.save();
+                        }
+                        return null;
+                    }
+                });
             } catch (RepositoryException e) {
                 logger.error("Couldn't retrieve session to update mount point status", e);
             }
         }
     }
-
-    /**
-     * Mounts this provider making it available to serve content.
-     */
-    public boolean mount() {
-        return mount(true);
-    }
-
-    /**
-     * Mounts this provider making it available to serve content, checking whether it's available or not.
-     * @param checkAvailability whether to check this provider's availability
-     * @return whether the mount was succesful or not
-     */
-    public boolean mount(boolean checkAvailability) {
-        try {
-            return start(checkAvailability);
-        } catch (JahiaInitializationException e) {
-            return false;
-        }
-    }
-    
-
 
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
@@ -619,14 +577,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public void stop() {
-        stop(null);
-    }
-
-    private void stop(JCRMountPointNode.MountStatus status) {
         logger.info("Unmounting provider of mount point {}", getMountPoint());
         unregisterObservers();
         getSessionFactory().removeProvider(key);
-        setMountStatus(status);
         rmiUnbind();
         initialized = false;
     }

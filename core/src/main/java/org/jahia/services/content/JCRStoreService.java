@@ -124,6 +124,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private Set<String> noLanguageValidityCheckTypes = new HashSet<String>();
     private Map<String, Class<? extends JCRNodeValidator>> validators = new ConcurrentHashMap<String, Class<? extends JCRNodeValidator>>();
     private Map<String, Constructor<?>> validatorCreators = new ConcurrentHashMap<String, Constructor<?>>();
+    private JCRStoreProviderChecker jcrStoreProviderChecker;
 
     private Map<String, List<DefaultEventListener>> listeners;
 
@@ -170,13 +171,18 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                         JCRNodeWrapper jcrNodeWrapper = session.getNodeByIdentifier(node.getIdentifier());
                         if (jcrNodeWrapper instanceof JCRMountPointNode && externalProviderFactory.getNodeTypeName().equals(jcrNodeWrapper.getPrimaryNodeTypeName())) {
                             final JCRMountPointNode jcrMountPointNode = (JCRMountPointNode) jcrNodeWrapper;
-                            if (jcrMountPointNode.shouldBeMounted()) {
+                            if (jcrMountPointNode.getMountStatus() == JCRMountPointNode.MountStatus.mounted) {
                                 JCRNodeWrapper mountPointNode = jcrMountPointNode.getVirtualMountPointNode();
                                 final JCRStoreProvider provider = externalProviderFactory.mountProvider(mountPointNode);
                                 if (!provider.isAvailable(true)) {
                                     logger.warn("Issue while trying to mount an external provider (" + mountPointNode.getPath()
                                             + ") upon startup, all references to file coming from this mount won't be available until it is fixed. If you migrating from Jahia 6.6 this might be normal until the migration scripts have been completed.");
+                                    jcrMountPointNode.setMountStatus(JCRMountPointNode.MountStatus.waiting);
+                                    session.save();
                                 }
+                            } else if (jcrMountPointNode.getMountStatus() == JCRMountPointNode.MountStatus.waiting) {
+                                jcrMountPointNode.setMountStatus(JCRMountPointNode.MountStatus.mounted);
+                                session.save();
                             }
                         }
                     }
@@ -205,7 +211,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                                     && jcrNodeWrapper.getPrimaryNodeTypeName().equals(externalProviderFactory.getNodeTypeName())) {
                                 JCRStoreProvider provider = ((JCRMountPointNode) jcrNodeWrapper).getMountProvider();
                                 if (provider != null) {
-                                    provider.unmount(null); // unmount but don't change the status since this is called when server is stopped
+                                    provider.stop();
                                 }
                             }
                         }

@@ -94,11 +94,23 @@ public class MountPointListener extends DefaultEventListener implements External
 
     private static final Logger logger = LoggerFactory.getLogger(MountPointListener.class);
 
-    private static final String[] NODETYPES = new String[] { Constants.JAHIANT_MOUNTPOINT };
+    private static final String[] NODETYPES = new String[]{Constants.JAHIANT_MOUNTPOINT};
+
+    private JCRStoreProviderChecker providerChecker;
+
+    public void setProviderChecker(JCRStoreProviderChecker providerChecker) {
+        this.providerChecker = providerChecker;
+    }
+
+    private static final ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>() {
+        @Override
+        protected Boolean initialValue() {
+            return Boolean.FALSE;
+        }
+    };
 
     public MountPointListener() {
         super();
-        propertiesToIgnore.add(JCRMountPointNode.MOUNT_STATUS_PROPERTY_NAME);
     }
 
     @Override
@@ -117,7 +129,7 @@ public class MountPointListener extends DefaultEventListener implements External
         return "/mounts";
     }
 
-    private void mount(final String uuid) {
+    private void mount(final String uuid, final JCRStoreProvider provider) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -135,17 +147,21 @@ public class MountPointListener extends DefaultEventListener implements External
                     }
 
                     JCRMountPointNode mountPoint = (JCRMountPointNode) node;
-
-                    if (mountPoint.shouldBeMounted()) {
+                    if (mountPoint.getMountStatus() == JCRMountPointNode.MountStatus.waiting && provider != null) {
+                        providerChecker.checkPeriodically(provider);
+                    } else if (mountPoint.getMountStatus() == JCRMountPointNode.MountStatus.mounted) {
                         JCRNodeWrapper mountPointTarget = mountPoint.getVirtualMountPointNode();
                         logger.info("Mounting the provider {} to {}", uuid, mountPointTarget.getPath());
                         final JCRStoreProvider provider = providerFactory.mountProvider(mountPointTarget);
                         if (!provider.isAvailable(true)) {
                             logger.warn("Issue while trying to mount an external provider ({}) upon startup,"
-                                    + " all references to file coming from this mount won't be"
-                                    + " available until it is fixed. If you migrating from Jahia 6.6 this"
-                                    + " might be normal until the migration scripts have been completed.",
+                                            + " all references to file coming from this mount won't be"
+                                            + " available until it is fixed. If you migrating from Jahia 6.6 this"
+                                            + " might be normal until the migration scripts have been completed.",
                                     mountPointTarget.getPath());
+                            providerChecker.checkPeriodically(provider);
+                            mountPoint.setMountStatus(JCRMountPointNode.MountStatus.waiting);
+                            session.save();
                         }
                     }
 
@@ -159,31 +175,40 @@ public class MountPointListener extends DefaultEventListener implements External
 
     @Override
     public void onEvent(EventIterator events) {
-        Map<String, Integer> changeLog = new LinkedHashMap<String, Integer>(1);
-        while (events.hasNext()) {
-            try {
-                final Event evt = events.nextEvent();
-                final int evtType = evt.getType();
-                if ((evtType & (Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED)) != 0) {
-                    // if property-level event -> check ignored properties
-                    String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
-                    if (propertiesToIgnore.contains(propertyName)) {
-                        continue;
-                    }
-                }
-                setStatus(changeLog, evt.getIdentifier(), evtType);
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
+        if (inListener.get()) {
+            return;
         }
-
-        for (Map.Entry<String, Integer> change : changeLog.entrySet()) {
-            String uuid = change.getKey();
-            Integer status = change.getValue();
-            unmount(uuid);
-            if (status != Event.NODE_REMOVED) {
-                mount(uuid);
+        try {
+            inListener.set(true);
+            Map<String, Integer> changeLog = new LinkedHashMap<String, Integer>(1);
+            while (events.hasNext()) {
+                try {
+                    final Event evt = events.nextEvent();
+                    final int evtType = evt.getType();
+                    if ((evtType & (Event.PROPERTY_CHANGED + Event.PROPERTY_ADDED + Event.PROPERTY_REMOVED)) != 0) {
+                        // if property-level event -> check ignored properties
+                        String propertyName = StringUtils.substringAfterLast(evt.getPath(), "/");
+                        if (propertiesToIgnore.contains(propertyName)) {
+                            continue;
+                        }
+                    }
+                    setStatus(changeLog, evt.getIdentifier(), evtType);
+                } catch (RepositoryException e) {
+                    logger.error(e.getMessage(), e);
+                }
             }
+
+            for (Map.Entry<String, Integer> change : changeLog.entrySet()) {
+                String uuid = change.getKey();
+                Integer status = change.getValue();
+                JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
+                unmount(p);
+                if (status != Event.NODE_REMOVED) {
+                    mount(uuid, p);
+                }
+            }
+        } finally {
+            inListener.set(false);
         }
     }
 
@@ -199,11 +224,10 @@ public class MountPointListener extends DefaultEventListener implements External
         }
     }
 
-    private void unmount(String uuid) {
-        JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
+    private void unmount(JCRStoreProvider p) {
         if (p != null) {
-            logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), uuid);
-            p.unmount(null);
+            logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), p.getKey());
+            p.stop();
         }
     }
 }

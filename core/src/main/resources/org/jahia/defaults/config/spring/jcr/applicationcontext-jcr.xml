@@ -210,8 +210,9 @@
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
-                        <bean class="org.jahia.services.content.MountPointListener"/>
-                        <bean class="org.jahia.services.content.MountPointStatusListener"/>
+                        <bean class="org.jahia.services.content.MountPointListener">
+                            <property name="providerChecker" ref="JCRStoreProviderChecker"/>
+                        </bean>
                     </list>
                 </entry>
                 <entry key="live">
@@ -617,5 +618,32 @@
                 </bean>
             </list>
         </property>
+    </bean>
+
+    <bean id="JCRStoreProviderChecker" class="org.jahia.services.content.JCRStoreProviderChecker" />
+
+    <bean parent="jobSchedulingBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
+                <property name="name" value="JCRStoreProviderCheckerJob" />
+                <property name="jobClass"
+                          value="org.jahia.services.content.JCRStoreProviderCheckerJob" />
+                <property name="group" value="Maintenance" />
+                <property name="description" value="Check providers" />
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="JCRStoreProviderChecker" value-ref="JCRStoreProviderChecker" />
+                    </map>
+                </property>
+            </bean>
+        </property>
+        <property name="trigger">
+            <bean class="org.quartz.CronTrigger">
+                <property name="name" value="RemoteCheckerJobTrigger" />
+                <!-- execute every 10 seconds -->
+                <property name="cronExpression" value="0/10 * * * * ?" />
+            </bean>
+        </property>
+        <property name="ramJob" value="true" />
     </bean>
 </beans>

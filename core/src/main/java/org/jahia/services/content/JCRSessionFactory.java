@@ -533,10 +533,6 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
         return null;
     }
 
-    public boolean unmount(JCRStoreProvider p) {
-        return p != null && p.unmount();
-    }
-
     public NamespaceRegistry getNamespaceRegistry() throws RepositoryException {
         return namespaceRegistry;
     }

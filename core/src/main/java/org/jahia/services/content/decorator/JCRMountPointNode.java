@@ -148,18 +148,9 @@ public class JCRMountPointNode extends JCRNodeDecorator {
         String path = mountPoint.getPath();
         JCRStoreProvider p = mountPoints != null ? mountPoints.get(path) : null;
         if (p != null) {
-            p.unmount(null);
+            p.stop();
         }
         super.remove();
-    }
-
-    public boolean shouldBeMounted() {
-        final MountStatus mountStatus = getMountStatus();
-        final boolean shouldBeMounted = !(MountStatus.unmounted.equals(mountStatus) || MountStatus.error.equals(mountStatus));
-        if (!shouldBeMounted) {
-            logger.info("Provider of mount point " + getVirtualMountPointNode().getPath() + " has status '" + mountStatus.name() + "' and will not be automatically mounted.");
-        }
-        return shouldBeMounted;
     }
 
     public MountStatus getMountStatus() {
@@ -186,7 +177,6 @@ public class JCRMountPointNode extends JCRNodeDecorator {
                     isValidationSkipped = session.isSkipValidation();
                     session.setSkipValidation(true);
                     setProperty(MOUNT_STATUS_PROPERTY_NAME, mountStatus.name());
-                    session.save();
                 }
             } catch (InvalidItemStateException ise) {
                 // ignore in cluster mode as servers could modify the mountStatus concurrently

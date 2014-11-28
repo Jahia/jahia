@@ -95,8 +95,10 @@ public class RemoveTag extends BaseTagAction {
         Map<String,String> res = new HashMap<String,String>();
 
         if(CollectionUtils.isNotEmpty(parameters.get("tag"))){
-            taggingService.untag(node, parameters.get("tag"));
-            jcrSessionWrapper.save();
+            List<String> removedTags = taggingService.untag(node, parameters.get("tag"));
+            if(!removedTags.isEmpty()) {
+                jcrSessionWrapper.save();
+            }
             res.put("size", node.hasProperty("j:tagList") ? String.valueOf(node.getProperty("j:tagList").getValues().length) : "0");
         }
 

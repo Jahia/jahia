@@ -1,4 +1,3 @@
-<%--@elvariable id="hit" type="org.jahia.services.search.AbstractHit"--%>
 <h4><a href="${hit.link}">${fn:escapeXml(functions:abbreviate(hit.title, 100,120,'...'))}</a></h4>
 
 <div class="resultslistDesc">${hit.excerpt}</div>

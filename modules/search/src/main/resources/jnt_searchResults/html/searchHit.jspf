@@ -1,16 +1,14 @@
+<%--@elvariable id="hit" type="org.jahia.services.search.AbstractHit"--%>
 <h4><a href="${hit.link}">${fn:escapeXml(functions:abbreviate(hit.title, 100,120,'...'))}</a></h4>
 
 <div class="resultslistDesc">${hit.excerpt}</div>
 <div class="resultsListFileType">${hit.contentType}</div>
 <div class="resultsListDate"><fmt:formatDate value="${hit.lastModified}" pattern="dd.MM.yyyy HH:mm"/></div>
 
-<c:catch var="exception"><c:set var="usages" value="${hit.usages}"/></c:catch>
-<c:if test="${empty exception}">
-    <div class="resultsListUsages">
-        <c:forEach items="${hit.usages}" var="usage" varStatus="loopStatus">
-            <c:if test="${loopStatus.first}"><fmt:message key="search.results.usages"/>:&nbsp;</c:if>
-            <c:if test="${not loopStatus.first}">,&nbsp;</c:if>
-            <a href="${usage.link}">${fn:escapeXml(usage.title)}</a>
-        </c:forEach>
-    </div>
-</c:if>
+<div class="resultsListUsages">
+    <c:forEach items="${hit.usages}" var="usage" varStatus="loopStatus">
+        <c:if test="${loopStatus.first}"><fmt:message key="search.results.usages"/>:&nbsp;</c:if>
+        <c:if test="${not loopStatus.first}">,&nbsp;</c:if>
+        <a href="${usage.link}">${fn:escapeXml(usage.title)}</a>
+    </c:forEach>
+</div>

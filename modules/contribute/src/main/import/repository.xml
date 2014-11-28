@@ -293,7 +293,7 @@
                                                           jcr:primaryType="jnt:translation"
                                                           jcr:title="##resourceBundle(system.facets)##"/>
                                         <facets j:type="jnt:file" jcr:primaryType="jnt:facets">
-                                            <fieldFacet facet="tagLib"
+                                            <fieldFacet facet="tagList"
                                                         field="jmix:tagged;j:tagList"
                                                         jcr:primaryType="jnt:fieldFacet"
                                                         limit="100"

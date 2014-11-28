@@ -237,4 +237,10 @@ public abstract class AbstractHit<T> implements Hit<T> {
     public List<Row> getRows() {
         return rows;
     }
+
+    /**
+     * Returns the list of hits that use the current hit
+     * @return list of AbstractHit objects
+     */
+    public abstract List<AbstractHit<?>> getUsages();
 }

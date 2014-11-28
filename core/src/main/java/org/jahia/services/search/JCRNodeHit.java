@@ -216,7 +216,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public List<AbstractHit<?>> getUsages() {
         if (usages == null) {
             usages = Collections.emptyList();
-            
+
             if (shouldRetrieveUsages(resource)) {
                 usages = new ArrayList<AbstractHit<?>>();
                 Set<String> addedLinks = new HashSet<String>();

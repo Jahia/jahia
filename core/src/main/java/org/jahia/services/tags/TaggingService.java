@@ -71,19 +71,27 @@
  */
 package org.jahia.services.tags;
 import javax.annotation.Nullable;
+import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.slf4j.Logger;
 
 import java.util.*;
+
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * JCR content tagging service.
@@ -92,6 +100,9 @@ import java.util.*;
  */
 public class TaggingService extends JahiaService{
 
+    private static final Logger logger = getLogger(TaggingService.class);
+
+    public static List<String> workspaces = Arrays.asList(Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
     private TagsSuggester tagsSuggester;
     private TagHandler tagHandler;
 
@@ -109,6 +120,77 @@ public class TaggingService extends JahiaService{
             }
         }
     };
+
+    /**
+     *
+     * @param sitePath
+     * @param selectedTag
+     * @param tagNewName
+     * @return
+     */
+    public Map<String, Set<String>> updateOrDeleteTagOnSite(String sitePath, String selectedTag, String tagNewName) {
+        Map<String, Set<String>> errors = new HashMap<String, Set<String>>();
+        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + sitePath + "') AND (result.[j:tagList] = '" + selectedTag + "')";
+        try {
+            for (String workspace : workspaces) {
+                JCRSessionWrapper session = getSystemSessionWorkspace(workspace);
+                QueryManager qm = session.getWorkspace().getQueryManager();
+                Query q = qm.createQuery(query, Query.JCR_SQL2);
+                NodeIterator ni = q.execute().getNodes();
+                while (ni.hasNext()) {
+                    JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
+                    try {
+                        updateOrDeleteTagOnNode(node, selectedTag, tagNewName);
+                    } catch (RepositoryException e) {
+                        String displayableName = JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName();
+                        if (!errors.containsKey(displayableName)) {
+                            errors.put(displayableName, new HashSet<String>());
+                        }
+                        errors.get(displayableName).add(node.getPath());
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return errors;
+    }
+
+    private JCRSessionWrapper getSystemSessionWorkspace(String selectedWorkspace) throws RepositoryException {
+        return JCRSessionFactory.getInstance().getCurrentSystemSession(selectedWorkspace, Locale.ENGLISH, null);
+    }
+
+    /**
+     *
+     * @param node
+     * @param selectedTag
+     * @param tagNewName
+     * @throws RepositoryException
+     */
+    public void updateOrDeleteTagOnNode(JCRNodeWrapper node, String selectedTag, String tagNewName) throws RepositoryException {
+        String path = node.getPath();
+        Set<String> newValues = new TreeSet<String>();
+        JCRValueWrapper[] tags = node.getProperty("j:tagList").getValues();
+        for (JCRValueWrapper tag : tags) {
+            String tagValue = tag.getString();
+            if (!tagValue.equals(selectedTag)) {
+                newValues.add(tagValue);
+            }
+        }
+        if (StringUtils.isNotEmpty(tagNewName) && !newValues.contains(tagNewName)) {
+            newValues.add(tagNewName);
+        }
+        node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
+        node.getSession().save();
+        ModuleCacheProvider moduleCacheProvider = ModuleCacheProvider.getInstance();
+        moduleCacheProvider.invalidate(path, true);
+        List<String> keys = moduleCacheProvider.getRegexpDependenciesCache().getKeys();
+        for (String key : keys) {
+            if (path.matches(key)) {
+                moduleCacheProvider.invalidateRegexp(key, true);
+            }
+        }
+    }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {

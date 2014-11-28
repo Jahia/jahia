@@ -1,12 +1,10 @@
 package org.jahia.modules.tags.webflow;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.query.ScrollableQuery;
 import org.jahia.services.query.ScrollableQueryCallback;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -38,9 +36,6 @@ public class TagsFlowHandler implements Serializable {
     @Autowired
     private transient JCRSessionFactory sessionFactory;
 
-    @Autowired
-    private transient ModuleCacheProvider moduleCacheProvider;
-
     public Map<String, Integer> getTagsList(RenderContext renderContext) {
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
@@ -51,6 +46,7 @@ public class TagsFlowHandler implements Serializable {
 
             return scrollableQuery.execute(new ScrollableQueryCallback<Map<String, Integer>>() {
                 Map<String, Integer> result = new HashMap<String, Integer>();
+
                 @Override
                 public boolean scroll() throws RepositoryException {
                     NodeIterator nodeIterator = stepResult.getNodes();
@@ -87,11 +83,7 @@ public class TagsFlowHandler implements Serializable {
             try {
                 // remove Capital and special character from tag
                 tagNewName = taggingService.getTagHandler().execute(tagNewName);
-
-                executeActionWithLiveSession(renderContext, messageContext, selectedTag, tagNewName);
-                executeActionWithDefaultSession(renderContext, messageContext, selectedTag, tagNewName);
-            } catch (RepositoryException e) {
-                logger.error("renameAllTags() cannot rename all tags '" + selectedTag + "' by '" + tagNewName + "'");
+                taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, tagNewName);
             } finally {
                 JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
@@ -103,10 +95,7 @@ public class TagsFlowHandler implements Serializable {
     public void deleteAllTags(RenderContext renderContext, MessageContext messageContext, String selectedTag) {
         JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
         try {
-            executeActionWithLiveSession(renderContext, messageContext, selectedTag, null);
-            executeActionWithDefaultSession(renderContext, messageContext, selectedTag, null);
-        } catch (RepositoryException e) {
-            logger.error("deleteAllTags() cannot delete all tags '" + selectedTag + "'");
+            taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, null);
         } finally {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
@@ -124,7 +113,7 @@ public class TagsFlowHandler implements Serializable {
             NodeIterator ni = q.execute().getNodes();
             List<String> nodeList = new ArrayList<String>();
             while (ni.hasNext()) {
-                JCRNodeWrapper node = (JCRNodeWrapper)ni.nextNode();
+                JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
                 nodeList.add(node.getIdentifier());
             }
 
@@ -139,13 +128,18 @@ public class TagsFlowHandler implements Serializable {
     public void renameTagOnNode(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName, String nodeID) {
         if (StringUtils.isNotEmpty(tagNewName)) {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
+            JCRNodeWrapper node = null;
             try {
                 // remove Capital and special character from tag
                 tagNewName = taggingService.getTagHandler().execute(tagNewName);
-                updateTagsList(renderContext, messageContext, getSystemSessionWorkspace(renderContext, Constants.EDIT_WORKSPACE).getNodeByIdentifier(nodeID), selectedTag, tagNewName);
-                updateTagsList(renderContext, messageContext, getSystemSessionWorkspace(renderContext, Constants.LIVE_WORKSPACE).getNodeByIdentifier(nodeID), selectedTag, tagNewName);
+                for (String workspace : TaggingService.workspaces) {
+                    node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
+                    taggingService.updateOrDeleteTagOnNode(node, selectedTag, tagNewName);
+                }
             } catch (RepositoryException e) {
-                logger.error("renameTagOnNode() cannot rename tag '" + selectedTag + "'");
+                if (node != null) {
+                    messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
+                }
             } finally {
                 JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
@@ -156,70 +150,21 @@ public class TagsFlowHandler implements Serializable {
 
     public void deleteTagOnNode(RenderContext renderContext, MessageContext messageContext, String selectedTag, String nodeID) {
         JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
+        JCRNodeWrapper node = null;
         try {
-            updateTagsList(renderContext, messageContext, getSystemSessionWorkspace(renderContext, Constants.EDIT_WORKSPACE).getNodeByIdentifier(nodeID), selectedTag, null);
-            updateTagsList(renderContext, messageContext, getSystemSessionWorkspace(renderContext, Constants.LIVE_WORKSPACE).getNodeByIdentifier(nodeID), selectedTag, null);
+            for (String workspace : TaggingService.workspaces) {
+                node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
+                taggingService.updateOrDeleteTagOnNode(node, selectedTag, null);
+            }
         } catch (RepositoryException e) {
-            logger.error("deleteTagOnNode() cannot delete tag '" + selectedTag + "'");
+            if (node != null) {
+                messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
+            }
         } finally {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
     }
-
-    private void executeAction(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName, JCRSessionWrapper session) throws RepositoryException {
-        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
-        QueryManager qm = session.getWorkspace().getQueryManager();
-        Query q = qm.createQuery(query, Query.JCR_SQL2);
-        NodeIterator ni = q.execute().getNodes();
-        while (ni.hasNext()) {
-            JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
-            updateTagsList(renderContext, messageContext, node, selectedTag, tagNewName);
-        }
-    }
-
-    private void executeActionWithDefaultSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
-        JCRSessionWrapper session = getSystemSessionWorkspace(renderContext, Constants.EDIT_WORKSPACE);
-        executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
-    }
-
-    private void executeActionWithLiveSession(RenderContext renderContext, MessageContext messageContext, String selectedTag, String tagNewName) throws RepositoryException {
-        JCRSessionWrapper session = getSystemSessionWorkspace(renderContext, Constants.LIVE_WORKSPACE);
-        executeAction(renderContext, messageContext, selectedTag, tagNewName, session);
-    }
-
     private JCRSessionWrapper getSystemSessionWorkspace(RenderContext renderContext, String selectedWorkspace) throws RepositoryException {
         return sessionFactory.getCurrentSystemSession(selectedWorkspace, renderContext.getMainResourceLocale(), renderContext.getFallbackLocale());
-    }
-
-    private void updateTagsList(RenderContext renderContext, MessageContext messageContext, JCRNodeWrapper node, String selectedTag, String tagNewName) {
-        String path = node.getPath();
-        try {
-            Set<String> newValues = new TreeSet<String>();
-            JCRValueWrapper[] tags = node.getProperty("j:tagList").getValues();
-            for (JCRValueWrapper tag : tags) {
-                String tagValue = tag.getString();
-                if (!tagValue.equals(selectedTag)) {
-                    newValues.add(tagValue);
-                }
-            }
-            if (StringUtils.isNotEmpty(tagNewName) && !newValues.contains(tagNewName)) {
-                newValues.add(tagNewName);
-            }
-            node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
-            node.getSession().save();
-            moduleCacheProvider.invalidate(path, true);
-            List<String> keys = moduleCacheProvider.getRegexpDependenciesCache().getKeys();
-            for (String key : keys) {
-                if (path.matches(key)) {
-                    moduleCacheProvider.invalidateRegexp(key, true);
-                }
-            }
-        } catch (RepositoryException e) {
-            if (StringUtils.isNotEmpty(tagNewName)) {
-                messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), path)).build());
-            } else {
-                messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), path)).build());
-            }
-        }
     }
 }

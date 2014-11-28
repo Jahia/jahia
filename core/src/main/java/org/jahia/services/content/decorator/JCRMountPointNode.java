@@ -101,7 +101,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
     public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
 
     public static enum MountStatus {
-        mounted, unmounted, waiting, error, unknown
+        mounted, unmounted, waiting, error
     }
 
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
@@ -155,7 +155,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
 
     public MountStatus getMountStatus() {
         final String status = getPropertyAsString(MOUNT_STATUS_PROPERTY_NAME);
-        return status == null ? MountStatus.unknown : MountStatus.valueOf(status);
+        return status == null ? MountStatus.mounted : MountStatus.valueOf(status);
     }
 
     public void setMountStatus(String status) {

@@ -118,6 +118,7 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.NavigationHelper;
 import org.jahia.ajax.gwt.helper.SearchHelper;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -585,6 +586,7 @@ public class ContentTest {
             String name = "testSearch" + System.currentTimeMillis() + ".txt";
             testFile = rootNode.uploadFile(name, is, mimeType);
             session.save();
+            ServicesRegistry.getInstance().getSchedulerService().triggerEndOfRequest();
             // nodes.add(testFile.getIdentifier());
 
             // now let's sleep a little to give time for Jackrabbit to index the file's content.

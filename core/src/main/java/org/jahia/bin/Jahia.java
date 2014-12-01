@@ -127,7 +127,7 @@ public final class Jahia {
     static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS =
         "supported_jdk_versions";
 
-    public static final String CODE_NAME = "Elektra";
+    public static final String CODE_NAME = "Firestar";
     
     static public final String COPYRIGHT =
             "&copy; Copyright 2002-2014  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";

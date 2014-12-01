@@ -19,7 +19,6 @@
       </groups>
       <contents j:originWS="default" j:published="true" jcr:primaryType="jnt:contentFolder" jcr:uuid="7747760b-78c6-4870-9773-fe3c28f44a97" j:publicationStatus="1">
       </contents>
-      <tags j:originWS="default" j:published="true" jcr:primaryType="jnt:tagList" jcr:uuid="1f451c42-0fc5-404e-83d1-21de3dd75265" />
       <categories j:originWS="default" j:published="true" jcr:primaryType="jnt:category" jcr:title="Categories" jcr:uuid="abd46620-d19a-4fd2-aa7a-d37d41b5952c" j:publicationStatus="1" />
       <home j:isHomePage="true" j:originWS="default" j:published="true" j:templateNode="_x0024_currentSite/templates/base/home" jcr:primaryType="jnt:page" jcr:uuid="28845de7-13a6-4a82-bf96-f0837cb279a2" j:publicationStatus="1">
         <j:translation_en j:published="true" jcr:language="en" jcr:mixinTypes="mix:title" jcr:primaryType="jnt:translation" jcr:title="##resourceBundle(home)##" jcr:uuid="c483a9ec-c2a2-4fe8-9467-60faff6e0bcb" />

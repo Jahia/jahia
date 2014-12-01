@@ -2,7 +2,6 @@
 <content xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:jnt="http://www.jahia.org/jahia/nt/1.0" xmlns:sv="http://www.jcp.org/jcr/sv/1.0" xmlns:commix="http://www.jahia.com/jahia/mix/1.0" xmlns:jmix="http://www.jahia.org/jahia/mix/1.0" xmlns:j="http://www.jahia.org/jahia/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:rep="internal">
   <sites jcr:primaryType="jnt:virtualsitesFolder">
     <systemsite j:inactiveLanguages="" j:inactiveLiveLanguages="" j:originWS="default" j:published="true" j:wcagCompliance="true" jcr:mixinTypes="jmix:accessControlled" jcr:primaryType="jnt:virtualsite" jcr:uuid="8668a186-f3ff-44d2-91a7-96c0407a86ec">
-      <tags j:originWS="default" j:published="true" jcr:primaryType="jnt:tagList" jcr:uuid="1f451c42-0fc5-404e-83d1-21de3dd75265" />
       <groups j:originWS="default" j:published="true" jcr:primaryType="jnt:groupsFolder" jcr:uuid="cb5fee94-5596-4b20-b7d4-99bff4a5e969">
         <site-administrators j:external="false" j:hidden="false" j:originWS="default" j:published="true" jcr:mixinTypes="jmix:systemNode" jcr:primaryType="jnt:group" jcr:uuid="11ecf8c4-205b-443d-9fa2-728de340fe2e">
           <j:members jcr:primaryType="jnt:members" jcr:uuid="0f923d11-8731-4f3b-aaac-635780664f79">

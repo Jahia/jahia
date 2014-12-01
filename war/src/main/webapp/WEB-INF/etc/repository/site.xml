@@ -23,6 +23,4 @@
 
     <contents jcr:primaryType="jnt:contentFolder"/>
 
-    <tags jcr:primaryType="jnt:tagList"/>
-
 </site>

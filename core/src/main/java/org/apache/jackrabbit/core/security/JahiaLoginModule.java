@@ -76,6 +76,7 @@ import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
 import org.apache.jackrabbit.core.security.principal.AdminPrincipal;
 import org.jahia.jaas.JahiaPrincipal;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
@@ -176,11 +177,18 @@ public class JahiaLoginModule implements LoginModule {
                     String lookupUser = impersonatorName != null ? impersonatorName : name;
                     Token token = removeToken(lookupUser, key);
 
-                    boolean ok = token != null
-                            || JahiaUserManagerService.getInstance().lookupUser(lookupUser).verifyPassword(key);
+                    boolean ok = token != null;
+                    JCRUserNode user = null;
+                    if (!ok) {
+                        user = JahiaUserManagerService.getInstance().lookupUser(lookupUser);
+                        ok = user != null && user.verifyPassword(key);
+                    }
                     if (ok && impersonatorName != null) {
                         // ensure the impersonator is root
-                        if (!JahiaUserManagerService.getInstance().lookupUser(lookupUser).isRoot()) {
+                        if (user == null) {
+                            user = JahiaUserManagerService.getInstance().lookupUser(lookupUser);
+                        }
+                        if (user == null || !user.isRoot()) {
                             throw new FailedLoginException("Only root user credentials can be used as an impersonator.");
                         }
                         // ensure the user exists

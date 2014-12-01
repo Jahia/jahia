@@ -13,6 +13,7 @@ import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -83,7 +84,12 @@ public class TagsFlowHandler implements Serializable {
             try {
                 // remove Capital and special character from tag
                 tagNewName = taggingService.getTagHandler().execute(tagNewName);
-                taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, tagNewName);
+                Map<String, Set<String>> errors = taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, tagNewName);
+                for (Map.Entry<String, Set<String>> entry : errors.entrySet()) {
+                    for (String path : entry.getValue()) {
+                        messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, entry.getKey(), path)).build());
+                    }
+                }
             } finally {
                 JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
@@ -95,7 +101,12 @@ public class TagsFlowHandler implements Serializable {
     public void deleteAllTags(RenderContext renderContext, MessageContext messageContext, String selectedTag) {
         JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
         try {
-            taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, null);
+            Map<String, Set<String>> errors = taggingService.updateOrDeleteTagOnSite(renderContext.getSite().getJCRLocalPath(), selectedTag, null);
+            for (Map.Entry<String, Set<String>> entry : errors.entrySet()) {
+                for (String path : entry.getValue()) {
+                    messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, entry.getKey(), path)).build());
+                }
+            }
         } finally {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
@@ -135,7 +146,10 @@ public class TagsFlowHandler implements Serializable {
                 for (String workspace : TaggingService.workspaces) {
                     node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
                     taggingService.updateOrDeleteTagOnNode(node, selectedTag, tagNewName);
+                    node.getSession().save();
                 }
+            } catch (PathNotFoundException e) {
+                logger.debug(e.getMessage(),e);
             } catch (RepositoryException e) {
                 if (node != null) {
                     messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
@@ -155,7 +169,10 @@ public class TagsFlowHandler implements Serializable {
             for (String workspace : TaggingService.workspaces) {
                 node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
                 taggingService.updateOrDeleteTagOnNode(node, selectedTag, null);
+                node.getSession().save();
             }
+        } catch (PathNotFoundException e) {
+            logger.debug(e.getMessage(),e);
         } catch (RepositoryException e) {
             if (node != null) {
                 messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());

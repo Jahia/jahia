@@ -137,10 +137,15 @@ public class TaggingService extends JahiaService{
                 QueryManager qm = session.getWorkspace().getQueryManager();
                 Query q = qm.createQuery(query, Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
+                int i=0;
                 while (ni.hasNext()) {
                     JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
                     try {
                         updateOrDeleteTagOnNode(node, selectedTag, tagNewName);
+                        if(i%100==0){
+                            session.save();
+                        }
+                        i++;
                     } catch (RepositoryException e) {
                         String displayableName = JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName();
                         if (!errors.containsKey(displayableName)) {
@@ -149,6 +154,7 @@ public class TaggingService extends JahiaService{
                         errors.get(displayableName).add(node.getPath());
                     }
                 }
+                session.save();
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -181,7 +187,6 @@ public class TaggingService extends JahiaService{
             newValues.add(tagNewName);
         }
         node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
-        node.getSession().save();
         ModuleCacheProvider moduleCacheProvider = ModuleCacheProvider.getInstance();
         moduleCacheProvider.invalidate(path, true);
         List<String> keys = moduleCacheProvider.getRegexpDependenciesCache().getKeys();

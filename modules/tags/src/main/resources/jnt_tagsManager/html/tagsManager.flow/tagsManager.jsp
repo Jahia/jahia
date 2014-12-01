@@ -145,7 +145,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                <c:set scope="page" var="totalTags" value="0"/>
                 <c:forEach items="${tagsList}" var="tag">
+                    <c:set var="totalTags" value="${totalTags+tag.value}"/>
                     <tr>
                         <td>
                             ${tag.key}
@@ -180,6 +182,9 @@
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="row-fluid">
+        <span>${totalTags}</span>
     </div>
 </div>
 <div class="row-fluid hide">

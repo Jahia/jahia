@@ -791,4 +791,61 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
         return typeNames.toArray(new String[typeNames.size()]);
     }
+
+    public Map<String, String> listBranchOrTags(String moduleVersion, String scmURI) throws IOException {
+        if (moduleVersion.endsWith("-SNAPSHOT")) {
+            return templateManagerService.listBranches(scmURI);
+        } else {
+            return templateManagerService.listTags(scmURI);
+        }
+    }
+
+    public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTag) {
+        String[] splitVersion = StringUtils.split(StringUtils.removeEnd(moduleVersion, "-SNAPSHOT"), ".");
+        if (moduleVersion.endsWith("-SNAPSHOT")) {
+            String branch;
+            if (splitVersion.length >= 3) {
+                branch = String.format("JAHIA-%s-%s-%s-X-BRANCH", splitVersion);
+                if (branchOrTag.containsKey(branch)) {
+                    return branch;
+                }
+            }
+            if (splitVersion.length >= 2) {
+                branch = String.format("JAHIA-%s-%s-X-X-BRANCH", splitVersion);
+                if (branchOrTag.containsKey(branch)) {
+                    return branch;
+                }
+            }
+            if (splitVersion.length >= 1) {
+                branch = splitVersion[0] + "_x";
+                if (branchOrTag.containsKey(branch)) {
+                    return branch;
+                }
+            }
+            String[] splitURI = StringUtils.split(scmURI, ":");
+            if (splitURI.length > 2) {
+                if ("svn".equals(splitURI[1])) {
+                    branch = "trunk";
+                    if (branchOrTag.containsKey(branch)) {
+                        return branch;
+                    }
+                } else if ("git".equals(splitURI[1])) {
+                    branch = "master";
+                    if (branchOrTag.containsKey(branch)) {
+                        return branch;
+                    }
+                }
+            }
+        } else {
+            String tag = StringUtils.join(splitVersion, '_');
+            if (branchOrTag.containsKey(tag)) {
+                return tag;
+            }
+            tag = "JAHIA_" + tag;
+            if (branchOrTag.containsKey(tag)) {
+                return tag;
+            }
+        }
+        return null;
+    }
 }

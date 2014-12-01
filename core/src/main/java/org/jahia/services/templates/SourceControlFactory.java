@@ -156,6 +156,30 @@ public class SourceControlFactory {
         return null;
     }
 
+
+    /**
+     * List all available branches on distant repository
+     * @param scmURI the remote SCM repository URI (of the trunk for SVN)
+     * @return a map tag/uri
+     * @throws IOException
+     */
+    public Map<String, String> listBranches(String scmURI) throws IOException {
+        if (scmURI.startsWith("scm:")) {
+            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
+            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
+            SourceControlManagement scm = null;
+            if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
+                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
+            } else if (scmProvider.equals("svn") && sourceControlExecutables.containsKey("svn")) {
+                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
+            } else {
+                throw new IOException("Unknown repository type");
+            }
+            return scm.getBranchInfos(scmUrl);
+        }
+        return null;
+    }
+
     /**
      * Returns a registry of executables (paths to the SCM executables) by SCM type.
      * 

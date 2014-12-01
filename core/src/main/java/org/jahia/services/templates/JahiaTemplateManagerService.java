@@ -321,6 +321,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return scmHelper.listTags(scmURI);
     }
 
+    public Map<String, String> listBranches(String scmURI) throws IOException {
+        return scmHelper.listBranches(scmURI);
+    }
+
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
         return scmHelper.checkValidSources(pack, sources);
     }

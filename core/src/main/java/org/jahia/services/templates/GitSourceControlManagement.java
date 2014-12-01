@@ -262,7 +262,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     protected void getFromSCM(File workingDirectory, String uri, String branchOrTag) throws IOException {
         this.rootFolder = workingDirectory.getParentFile();
-        ExecutionResult r = executeCommand(executable, new String[]{"-c", "core.askpass=true","clone",uri,workingDirectory.getName()});
+        ExecutionResult r = executeCommand(executable, new String[]{"-c", "core.askpass=true", "clone", uri, workingDirectory.getName()});
         if (r.exitValue > 0) {
             throw new IOException(r.err);
         }
@@ -277,12 +277,12 @@ public class GitSourceControlManagement extends SourceControlManagement {
         int  MERGE_COMMAND_INDEX = 5;
         List<String[]> commands = Arrays.asList(
                 new String[]{"init"},
-                new String[]{"add","."},
-                new String[]{"commit","-a","-m","First commit"},
-                new String[]{"remote","add","origin",url},
-                new String[]{"-c", "core.askpass=true","fetch"},
-                new String[]{"merge","origin/master"},
-                new String[]{"-c", "core.askpass=true","push","-u","origin","master"});
+                new String[]{"add", "."},
+                new String[]{"commit", "-a", "-m", "First commit"},
+                new String[]{"remote", "add", "origin", url},
+                new String[]{"-c", "core.askpass=true", "fetch"},
+                new String[]{"merge", "origin/master"},
+                new String[]{"-c", "core.askpass=true", "push", "-u", "origin", "master"});
 
         this.rootFolder = workingDirectory;
         for (String[] command : commands) {
@@ -429,16 +429,29 @@ public class GitSourceControlManagement extends SourceControlManagement {
 
     @Override
     public Map<String, String> getTagInfos(String uri) throws IOException {
-        Map<String, String> tagInfos = new LinkedHashMap<String, String>();
+        Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"ls-remote", "--tags", uri});
         List<String> lines = readLines(result.out);
         Collections.reverse(lines);
         for (String line : lines) {
             String tag = StringUtils.substringAfter(line, "refs/tags/");
             if (!tag.endsWith("^{}")) {
-                tagInfos.put(tag, "scm:git:" + uri);
+                infos.put(tag, "scm:git:" + uri);
             }
         }
-        return tagInfos;
+        return infos;
+    }
+
+    @Override
+    public Map<String, String> getBranchInfos(String uri) throws IOException {
+        Map<String, String> infos = new LinkedHashMap<>();
+        ExecutionResult result = executeCommand(executable, new String[]{"ls-remote", "--heads", uri});
+        List<String> lines = readLines(result.out);
+        Collections.reverse(lines);
+        for (String line : lines) {
+            String tag = StringUtils.substringAfter(line, "refs/heads/");
+            infos.put(tag, "scm:git:" + uri);
+        }
+        return infos;
     }
 }

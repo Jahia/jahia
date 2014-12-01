@@ -329,4 +329,12 @@ public abstract class SourceControlManagement {
      * @throws IOException
      */
     public abstract Map<String, String> getTagInfos(String uri) throws IOException;
+
+    /**
+     * List all available branches on distant repository
+     * @param uri the remote SCM repository URI (of the trunk for SVN)
+     * @return a map tag/uri
+     * @throws IOException
+     */
+    public abstract Map<String, String> getBranchInfos(String uri) throws IOException;
 }

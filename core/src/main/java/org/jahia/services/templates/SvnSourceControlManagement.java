@@ -300,13 +300,28 @@ public class SvnSourceControlManagement extends SourceControlManagement {
     public Map<String, String> getTagInfos(String uri) throws IOException {
         String base = StringUtils.substringBeforeLast(uri, "/trunk") + "/tags/";
         String path = StringUtils.substringAfterLast(uri, "/trunk/");
-        Map<String, String> tagInfos = new LinkedHashMap<String, String>();
+        Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);
         Collections.reverse(lines);
         for (String line : lines) {
-            tagInfos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
+            infos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
         }
-        return tagInfos;
+        return infos;
+    }
+
+    @Override
+    public Map<String, String> getBranchInfos(String uri) throws IOException {
+        String base = StringUtils.substringBeforeLast(uri, "/trunk") + "/branches/";
+        String path = StringUtils.substringAfterLast(uri, "/trunk/");
+        Map<String, String> infos = new LinkedHashMap<>();
+        ExecutionResult result = executeCommand(executable, new String[]{"list", base});
+        List<String> lines = readLines(result.out);
+        Collections.reverse(lines);
+        infos.put("trunk", uri);
+        for (String line : lines) {
+            infos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
+        }
+        return infos;
     }
 }

@@ -33,6 +33,7 @@
         </on-render>
 
         <transition on="downloadSources" to="downloadSources"/>
+        <transition on="viewDownloadForm" to="viewDownloadForm"/>
         <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
@@ -62,7 +63,15 @@
     </view-state>
 
     <view-state id="viewDownloadForm" model="flowScope">
+        <on-entry>
+            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
+            <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
+            <evaluate expression="flowScope.branchTagInfos ?: (flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
+            <evaluate expression="flowScope.branchOrTag ?: (flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos))" result="flowScope.branchOrTag"/>
+        </on-entry>
         <transition on="downloadSources" to="downloadSources"/>
+        <transition on="cancel" to="sourceDownloadEnd"/>
     </view-state>
 
     <view-state id="detailedView">
@@ -79,10 +88,12 @@
         <transition on="downloadSources" to="downloadSources">
             <set value="requestParameters.module" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
+            <set value="requestParameters.version" name="flowScope.version"/>
         </transition>
         <transition on="viewDownloadForm" to="viewDownloadForm">
             <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
             <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
+            <set value="requestParameters.version" name="flowScope.version"/>
         </transition>
         <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
         <transition on="viewDetails" to="detailedView"/>
@@ -95,20 +106,22 @@
 
     <action-state id="downloadSources">
         <on-entry>
-            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.newScmUri?:(requestParameters.scmUri?:flowScope.scmUri)" result="flowScope.scmUri"/>
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
+            <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
+            <evaluate expression="requestParameters.branchOrTag?:flowScope.branchOrTag" result="flowScope.branchOrTag"/>
         </on-entry>
-        <evaluate expression="JahiaTemplateManagerService.checkoutModule(null,flowScope.scmUri, null,flowScope.module,null,jcrSessionFactory.currentUserSession)"/>
+        <evaluate expression="JahiaTemplateManagerService.checkoutModule(null, flowScope.scmUri, flowScope.branchOrTag, flowScope.module, flowScope.version, jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">
             <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
-        <transition to="sourcesDownloaded">
+        <transition to="sourceDownloadEnd">
             <evaluate expression="flowHandler.storeTablesUUID(flowRequestContext)"/>
         </transition>
     </action-state>
 
-    <end-state id="sourcesDownloaded"/>
+    <end-state id="sourceDownloadEnd"/>
 
     <view-state id="duplicateModuleForm">
         <on-entry>

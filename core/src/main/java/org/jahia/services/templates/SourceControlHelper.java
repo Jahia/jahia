@@ -123,7 +123,7 @@ public class SourceControlHelper {
     public JCRNodeWrapper checkoutModule(final File moduleSources, final String scmURI, final String branchOrTag,
             final String moduleId, final String version, final JCRSessionWrapper session) throws IOException,
             RepositoryException, BundleException {
-        boolean newModule = moduleSources == null;
+            boolean newModule = moduleSources == null;
         File sources = ensureModuleSourceFolder(moduleSources);
 
         try {
@@ -135,6 +135,10 @@ public class SourceControlHelper {
             if (templatePackageRegistry.containsId(moduleInfo.id) && !moduleInfo.groupId.equals(templatePackageRegistry.lookupById(moduleInfo.id).getGroupId())) {
                 FileUtils.deleteDirectory(sources);
                 throw new RepositoryException("Cannot checkout module " + moduleInfo.id + " because another module with the same artifactId exists");
+            }
+            if (version != null && !version.equals(moduleInfo.version)) {
+                FileUtils.deleteDirectory(sources);
+                throw new RepositoryException("Sources don't match module version");
             }
 
             if (newModule) {
@@ -329,6 +333,10 @@ public class SourceControlHelper {
 
     public Map<String, String> listTags(String scmURI) throws IOException {
         return sourceControlFactory.listTags(scmURI);
+    }
+
+    public Map<String, String> listBranches(String scmURI) throws IOException {
+        return sourceControlFactory.listBranches(scmURI);
     }
 
     private void setSCMConfigInPom(File sources, String uri) {

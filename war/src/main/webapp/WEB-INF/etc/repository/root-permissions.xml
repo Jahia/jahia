@@ -121,7 +121,6 @@
                     <viewEditRolesTab jcr:primaryType="jnt:permission"/>
                 </viewRolesTab>
                 <viewSeoTab jcr:primaryType="jnt:permission"/>
-                <viewTagsTab jcr:primaryType="jnt:permission"/>
                 <viewUsagesTab jcr:primaryType="jnt:permission"/>
                 <viewWorkflowTab jcr:primaryType="jnt:permission"/>
                 <viewHistoryTab jcr:primaryType="jnt:permission"/>

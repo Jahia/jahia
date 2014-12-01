@@ -24,7 +24,7 @@
                      j:roleGroup="edit-role"
                      jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="contributeMode components editorialContentManager fileManager templates viewCategoriesTab viewContentTab viewMetadataTab viewTagsTab"
+                                j:permissionNames="contributeMode components editorialContentManager fileManager templates viewCategoriesTab viewContentTab viewMetadataTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Can edit content using contribute mode"
                               jcr:language="en"
@@ -37,7 +37,7 @@
                 j:roleGroup="edit-role"
                 jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="components editModeAccess editModeActions editSelector managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewTagsTab viewVisibilityTab"
+                                j:permissionNames="components editModeAccess editModeActions editSelector managers templates view-full-wysiwyg-editor viewCategoriesTab viewContentTab viewContributeModeTab viewLayoutTab viewMetadataTab viewOptionsTab viewSeoTab viewVisibilityTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <editor-in-chief j:hidden="false"
                              j:permissionNames="publish workflow-tasks"
@@ -74,7 +74,7 @@
                   j:roleGroup="edit-role"
                   jcr:primaryType="jnt:role">
             <currentSite-access j:path="currentSite"
-                                j:permissionNames="contributeMode editModeAccess sitemapSelector viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab viewTagsTab"
+                                j:permissionNames="contributeMode editModeAccess sitemapSelector viewCategoriesTab viewContentTab viewLayoutTab viewMetadataTab viewSeoTab"
                                 jcr:primaryType="jnt:externalPermissions"/>
             <j:translation_en jcr:description="Grant access to view the content and validate changes done by editors before publication"
                               jcr:language="en"

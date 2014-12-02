@@ -130,6 +130,11 @@ class JahiaBundleTemplatesPackageHandler {
             pkg.setScmURI(scmUri);
         }
 
+        if (pkg.getScmTag() == null) {
+            String scmTag = getHeader(bundle, "Jahia-Source-Control-Tag");
+            pkg.setScmTag(scmTag);
+        }
+
         //Check if sources are downloadable for this package
         Boolean isSourcesDownloadable = Boolean.TRUE;
         String downloadSourcesHeader = getHeader(bundle, "Jahia-Download-Sources-Available");

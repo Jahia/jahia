@@ -522,6 +522,7 @@
  - j:deployementDate (date)
  - j:sourcesFolder (string) nofulltext
  - j:scmURI (string) nofulltext
+ - j:scmTag (string) nofulltext
 
 //---------------------------------------------------------
 // Imports

@@ -294,6 +294,9 @@ public class TemplatePackageDeployer {
         if (pack.getScmURI() != null && !Constants.SCM_DUMMY_URI.equals(pack.getScmURI())) {
             try {
                 v.setProperty("j:scmURI",pack.getScmURI());
+                if (pack.getScmTag() != null) {
+                    v.setProperty("j:scmTag", pack.getScmTag());
+                }
             } catch (Exception e) {
                 logger.error("Cannot get SCM url");
             }

@@ -184,6 +184,8 @@ public class JahiaTemplatesPackage {
 
     private String scmURI;
 
+    private String scmTag;
+
     private File sourcesFolder;
 
     private SourceControlManagement sourceControl;
@@ -785,6 +787,21 @@ public class JahiaTemplatesPackage {
             }
         }
         this.scmURI = scmURI;
+    }
+
+    /**
+     * Returns the SCM tag of this module if it's released
+     * @return the SCM tag of this module if it's released
+     */
+    public String getScmTag() {
+        return scmTag;
+    }
+
+    /**
+     * Set the SCM tag of this module if it's released
+     */
+    public void setScmTag(String scmTag) {
+        this.scmTag = scmTag;
     }
 
     /**

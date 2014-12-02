@@ -335,6 +335,7 @@
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
                         <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}
                         </Jahia-Source-Control-DeveloperConnection>
+                        <Jahia-Source-Control-Tag>${project.scm.tag}</Jahia-Source-Control-Tag>
                         <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
                         <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>

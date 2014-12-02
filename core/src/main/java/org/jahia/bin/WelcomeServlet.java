@@ -192,7 +192,11 @@ public class WelcomeServlet extends HttpServlet {
         JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
         String redirect = null;
         String pathInfo = request.getPathInfo();
+<<<<<<< .working
         String language = resolveLanguage(request, site, userNode);
+=======
+        String language = resolveLanguage(request, site, user, false);
+>>>>>>> .merge-right.r51598
 
         String defaultLocation = null;
         String mapping = null;
@@ -209,7 +213,6 @@ public class WelcomeServlet extends HttpServlet {
         if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {
             userRedirect(request, response, context);
         } else {
-<<<<<<< .working
             if (defaultLocation != null) {
                 if (site != null && defaultLocation.contains("$defaultSiteHome")) {
                     JCRNodeWrapper home = site.getHome();
@@ -218,11 +221,6 @@ public class WelcomeServlet extends HttpServlet {
                     }
                     defaultLocation = defaultLocation.replace("$defaultSiteHome",home.getPath());
                 }
-=======
-            JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
-            String language = resolveLanguage(request, site, user, false);
-            String base = null;
->>>>>>> .merge-right.r51595
 
                 redirect = request.getContextPath() + mapping + "/" + language +defaultLocation;
             } else {
@@ -298,21 +296,13 @@ public class WelcomeServlet extends HttpServlet {
 >>>>>>> .merge-right.r51596
             throws JahiaException {
         List<Locale> siteLanguages = null;
-<<<<<<< .working
-        try {
-            siteLanguages = site.getActiveLiveLanguagesAsLocales();
-        } catch (Exception t) {
-            logger.debug("Exception while getting language settings as locales", t);
-            siteLanguages = Collections.emptyList();
-=======
-        if (!userRedirect && site != null && !JahiaSitesBaseService.SYSTEM_SITE_KEY.equals(site.getSiteKey())) {
+        if (!userRedirect && site != null && !JahiaSitesService.SYSTEM_SITE_KEY.equals(site.getSiteKey())) {
             try {
-                siteLanguages = site.getActiveLanguagesAsLocales();
+                siteLanguages = site.getActiveLiveLanguagesAsLocales();
             } catch (Exception t) {
                 logger.debug("Exception while getting language settings as locales", t);
                 siteLanguages = Collections.emptyList();
             }
->>>>>>> .merge-right.r51595
         }
 
         // first we will check the preferred user locale (if it is among the

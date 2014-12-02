@@ -72,12 +72,17 @@
 package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
+import org.apache.jackrabbit.core.journal.AbstractJournal;
+import org.apache.jackrabbit.core.journal.FileRevision;
+import org.apache.jackrabbit.core.journal.InstanceRevision;
+import org.apache.jackrabbit.core.journal.Journal;
 import org.apache.jackrabbit.core.journal.JournalException;
 import org.apache.jackrabbit.core.journal.RecordProducer;
 import org.apache.jackrabbit.core.state.ItemState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -152,6 +157,29 @@ public class JahiaClusterNode extends ClusterNode {
     public synchronized void stop() {
         status.set(STOPPED);
         super.stop();
+        Journal j = getJournal();
+        if (j != null && (j instanceof AbstractJournal)) {
+            String revisionFile = ((AbstractJournal) j).getRevision();
+            if (revisionFile != null) {
+                InstanceRevision currentFileRevision = null;
+                try {
+                    currentFileRevision = new FileRevision(new File(revisionFile));
+                    long rev = getRevision();
+                    currentFileRevision.set(rev);
+                    log.info("Written local revision {} into revision file", rev);
+                } catch (JournalException e) {
+                    if (log.isDebugEnabled()) {
+                        log.warn("Unable to write local revision into a file: " + e.getMessage(), e);
+                    } else {
+                        log.warn("Unable to write local revision into a file: {}", e.getMessage());
+                    }
+                } finally {
+                    if (currentFileRevision != null) {
+                        currentFileRevision.close();
+                    }
+                }
+            }
+        }
     }
 
     /**

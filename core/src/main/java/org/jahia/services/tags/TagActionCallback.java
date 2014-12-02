@@ -69,46 +69,39 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.modules.tags.actions;
+package org.jahia.services.tags;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.ActionResult;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.tags.BaseTagAction;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
+import javax.jcr.RepositoryException;
 
 /**
- * Transform tag(s) action
- *
+ * Callback used by tagging service when bench actions are made like for the renameTagUnderPath
+ * exemple: used for manually flush the cache for the node after renaming a tag on it for example using afterTagAction
+ * exemple: used for collect nodes in error using the onError and display custom error messages
+ * exemple: used for return collected information using the end()
  * @author kevan
  */
-public class TransformTag extends BaseTagAction {
+public interface TagActionCallback<T> {
+    /**
+     * will be execute after each tag action (after a tag rename on a node, after a tag delete on a node)
+     * @param node the node concern by the current tag action
+     * @throws RepositoryException
+     */
+    void afterTagAction(JCRNodeWrapper node) throws RepositoryException;
 
-    @Override
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> tags = parameters.get("tag");
-        JSONObject result = new JSONObject();
-        JSONArray jsonTags = new JSONArray();
-        if(!tags.isEmpty()){
-            for (String tag : tags){
-                String transformedTag = taggingService.getTagHandler().execute(tag);
-                if(StringUtils.isNotEmpty(transformedTag)){
-                    jsonTags.put(transformedTag);
-                }
-            }
-        }
+    /**
+     * will be call if a tag action throw a RepositoryException
+     * @param node the node in error
+     * @param e the exception
+     * @throws RepositoryException
+     */
+    void onError(JCRNodeWrapper node, RepositoryException e) throws RepositoryException;
 
-        result.put("tags", jsonTags);
-
-        return new ActionResult(HttpServletResponse.SC_OK, resource.getNode().getPath(), result);
-    }
+    /**
+     * will be call at the end of all the operations
+     * @return
+     * @throws RepositoryException
+     */
+    T end() throws RepositoryException;
 }

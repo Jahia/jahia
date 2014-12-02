@@ -71,6 +71,7 @@
  */
 package org.jahia.test.services.tags;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -271,8 +272,9 @@ public class TaggingTest {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 // assert the tag count
                 Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
+                Node facetedFolder = contentFolder.addNode("tags-content", "jnt:contentList");
                 for (int i = 1; i <= 10; i++) {
-                    contentFolder.addNode("content-45" + i, "jnt:text");
+                    facetedFolder.addNode("content-45" + i, "jnt:text");
                 }
                 session.save();
 

@@ -69,46 +69,66 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.modules.tags.actions;
+package org.jahia.modules.tags.webflow;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.ActionResult;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.tags.BaseTagAction;
-import org.json.JSONArray;
-import org.json.JSONObject;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
+import org.jahia.services.tags.TagActionCallback;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
+import javax.jcr.RepositoryException;
+import java.util.*;
 
 /**
- * Transform tag(s) action
- *
+ * Callback used on bench tag actions like rename all occurrences of a given tag under a site, or delete all occurrences of a tag under a site...
  * @author kevan
  */
-public class TransformTag extends BaseTagAction {
+public class TagManagerActionCallback implements TagActionCallback<Map<String, Set<String>>> {
+    private ModuleCacheProvider moduleCacheProvider;
+    private int counter;
+    private JCRSessionWrapper session;
+    Map<String, Set<String>> errors = new HashMap<>();
+
+    public TagManagerActionCallback(ModuleCacheProvider moduleCacheProvider, JCRSessionWrapper session) {
+        this.moduleCacheProvider = moduleCacheProvider;
+        this.session = session;
+        counter = 0;
+    }
 
     @Override
-    public ActionResult doExecute(HttpServletRequest req, RenderContext renderContext, Resource resource, JCRSessionWrapper session, Map<String, List<String>> parameters, URLResolver urlResolver) throws Exception {
-        List<String> tags = parameters.get("tag");
-        JSONObject result = new JSONObject();
-        JSONArray jsonTags = new JSONArray();
-        if(!tags.isEmpty()){
-            for (String tag : tags){
-                String transformedTag = taggingService.getTagHandler().execute(tag);
-                if(StringUtils.isNotEmpty(transformedTag)){
-                    jsonTags.put(transformedTag);
-                }
-            }
+    public void afterTagAction(JCRNodeWrapper node) throws RepositoryException {
+        //save each 100 nodes processed
+        counter ++;
+        if(counter % 100 == 0){
+            session.save();
         }
 
-        result.put("tags", jsonTags);
+        // flush cache for node
+        moduleCacheProvider.invalidate(node.getPath(), true);
+        List<String> keys = moduleCacheProvider.getRegexpDependenciesCache().getKeys();
+        for (String key : keys) {
+            if (node.getPath().matches(key)) {
+                moduleCacheProvider.invalidateRegexp(key, true);
+            }
+        }
+    }
 
-        return new ActionResult(HttpServletResponse.SC_OK, resource.getNode().getPath(), result);
+    @Override
+    public void onError(JCRNodeWrapper node, RepositoryException e) {
+        String displayableName = JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName();
+        if (!errors.containsKey(displayableName)) {
+            errors.put(displayableName, new HashSet<String>());
+        }
+        errors.get(displayableName).add(node.getPath());
+    }
+
+    @Override
+    public Map<String, Set<String>> end() throws RepositoryException{
+        //do a final save
+        session.save();
+
+        // return errors
+        return errors;
     }
 }

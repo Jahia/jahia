@@ -81,12 +81,10 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -99,10 +97,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Sergiy Shyrkov
  */
 public class TaggingService extends JahiaService{
-
     private static final Logger logger = getLogger(TaggingService.class);
 
-    public static List<String> workspaces = Arrays.asList(Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
     private TagsSuggester tagsSuggester;
     private TagHandler tagHandler;
 
@@ -120,82 +116,6 @@ public class TaggingService extends JahiaService{
             }
         }
     };
-
-    /**
-     *
-     * @param sitePath
-     * @param selectedTag
-     * @param tagNewName
-     * @return
-     */
-    public Map<String, Set<String>> updateOrDeleteTagOnSite(String sitePath, String selectedTag, String tagNewName) {
-        Map<String, Set<String>> errors = new HashMap<String, Set<String>>();
-        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + sitePath + "') AND (result.[j:tagList] = '" + selectedTag + "')";
-        try {
-            for (String workspace : workspaces) {
-                JCRSessionWrapper session = getSystemSessionWorkspace(workspace);
-                QueryManager qm = session.getWorkspace().getQueryManager();
-                Query q = qm.createQuery(query, Query.JCR_SQL2);
-                NodeIterator ni = q.execute().getNodes();
-                int i=0;
-                while (ni.hasNext()) {
-                    JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
-                    try {
-                        updateOrDeleteTagOnNode(node, selectedTag, tagNewName);
-                        if(i%100==0){
-                            session.save();
-                        }
-                        i++;
-                    } catch (RepositoryException e) {
-                        String displayableName = JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName();
-                        if (!errors.containsKey(displayableName)) {
-                            errors.put(displayableName, new HashSet<String>());
-                        }
-                        errors.get(displayableName).add(node.getPath());
-                    }
-                }
-                session.save();
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        return errors;
-    }
-
-    private JCRSessionWrapper getSystemSessionWorkspace(String selectedWorkspace) throws RepositoryException {
-        return JCRSessionFactory.getInstance().getCurrentSystemSession(selectedWorkspace, Locale.ENGLISH, null);
-    }
-
-    /**
-     *
-     * @param node
-     * @param selectedTag
-     * @param tagNewName
-     * @throws RepositoryException
-     */
-    public void updateOrDeleteTagOnNode(JCRNodeWrapper node, String selectedTag, String tagNewName) throws RepositoryException {
-        String path = node.getPath();
-        Set<String> newValues = new TreeSet<String>();
-        JCRValueWrapper[] tags = node.getProperty("j:tagList").getValues();
-        for (JCRValueWrapper tag : tags) {
-            String tagValue = tag.getString();
-            if (!tagValue.equals(selectedTag)) {
-                newValues.add(tagValue);
-            }
-        }
-        if (StringUtils.isNotEmpty(tagNewName) && !newValues.contains(tagNewName)) {
-            newValues.add(tagNewName);
-        }
-        node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
-        ModuleCacheProvider moduleCacheProvider = ModuleCacheProvider.getInstance();
-        moduleCacheProvider.invalidate(path, true);
-        List<String> keys = moduleCacheProvider.getRegexpDependenciesCache().getKeys();
-        for (String key : keys) {
-            if (path.matches(key)) {
-                moduleCacheProvider.invalidateRegexp(key, true);
-            }
-        }
-    }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -426,12 +346,12 @@ public class TaggingService extends JahiaService{
             return Collections.emptyList();
         }
 
-        List<String> currentTags = new ArrayList<String>();
         List<String> deletedTags = new ArrayList<String>();
         if(node.isNodeType(JMIX_TAGGED)){
             try{
-                JCRValueWrapper[] currentTagValues = node.getProperty(J_TAG_LIST).getValues();
-                currentTags = new ArrayList<String>(Collections2.transform(Arrays.asList(currentTagValues), JCR_VALUE_WRAPPER_STRING_FUNCTION));
+                JCRPropertyWrapper tagsProp = node.getProperty(J_TAG_LIST);
+                JCRValueWrapper[] currentTagValues = tagsProp.getValues();
+                List<String> currentTags = new ArrayList<String>(Collections2.transform(Arrays.asList(currentTagValues), JCR_VALUE_WRAPPER_STRING_FUNCTION));
                 for (String tag : tags){
                     int index = currentTags.indexOf(tag);
                     if(index != -1){
@@ -439,13 +359,18 @@ public class TaggingService extends JahiaService{
                         deletedTags.add(tag);
                     }
                 }
+
+                if(!deletedTags.isEmpty()){
+                    if(currentTags.isEmpty()){
+                        tagsProp.remove();
+                        node.removeMixin(JMIX_TAGGED);
+                    } else {
+                        node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
+                    }
+                }
             } catch (PathNotFoundException e){
                 // property not found
             }
-        }
-
-        if(!deletedTags.isEmpty()){
-            node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
         }
 
         return deletedTags;
@@ -490,6 +415,112 @@ public class TaggingService extends JahiaService{
      */
     public List<String> untag(final String nodePath, final String tag, JCRSessionWrapper session) throws RepositoryException {
         return untag(session.getNode(nodePath), Lists.newArrayList(tag));
+    }
+
+    /**
+     * Rename a specific tag on a node
+     * @param node target node
+     * @param selectedTag tag to rename
+     * @param tagNewName new tag name
+     * @throws RepositoryException
+     */
+    public void renameTag(final JCRNodeWrapper node, final String selectedTag, final String tagNewName) throws RepositoryException {
+        String cleanedTag = tagHandler.execute(tagNewName);
+        if(node.isNodeType(JMIX_TAGGED) && StringUtils.isNotEmpty(cleanedTag)){
+            Set<String> newValues = new TreeSet<String>();
+            JCRValueWrapper[] tags = node.getProperty(J_TAG_LIST).getValues();
+            boolean containNewTag = false;
+            for (JCRValueWrapper tag : tags) {
+                String tagValue = tag.getString();
+                if(!tagValue.equals(selectedTag)) {
+                    newValues.add(tagValue);
+                }
+                containNewTag = (containNewTag || tagValue.equals(cleanedTag));
+            }
+
+            if (!containNewTag) {
+                newValues.add(cleanedTag);
+            }
+
+            node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));
+        }
+    }
+
+    /**
+     * Rename a specific tag on a node
+     * @param nodePath target node path
+     * @param selectedTag tag to rename
+     * @param tagNewName new tag name
+     * @param session the session used to perform the operation
+     * @throws RepositoryException
+     */
+    public void renameTag(final String nodePath, final String selectedTag, final String tagNewName, JCRSessionWrapper session) throws RepositoryException {
+        renameTag(session.getNode(nodePath), selectedTag, tagNewName);
+    }
+
+    /**
+     * Rename all occurrence of a specific tag under a given path
+     * The session will be saved each 100 nodes processed
+     *
+     * @param startPath the start path for the renaming
+     * @param session the session used to perform the operation
+     * @param selectedTag tag to rename
+     * @param tagNewName new tag name
+     * @param callback an optional callback can be used to hook on the actions processed
+     * @throws RepositoryException
+     */
+    public <X> X renameTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, String tagNewName, TagActionCallback<X> callback) throws RepositoryException {
+        //Check here if tagNewName is not empty before bench operation
+        if(StringUtils.isNotEmpty(tagHandler.execute(tagNewName))){
+            return  updateOrDeleteTagUnderPath(startPath, session, selectedTag, tagNewName, callback);
+        }
+        return null;
+    }
+
+    /**
+     * Delete all occurrence of a specific tag under a given path
+     *
+     * @param startPath the start path for the deleting
+     * @param session the session used to perform the operation
+     * @param selectedTag tag to delete
+     * @param callback an optional callback can be used to hook on the actions processed
+     * @throws RepositoryException
+     */
+    public <X> X deleteTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, TagActionCallback<X> callback) throws RepositoryException {
+        return updateOrDeleteTagUnderPath(startPath, session, selectedTag, null, callback);
+    }
+
+    private <X> X updateOrDeleteTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, String tagNewName, TagActionCallback<X> callback) throws RepositoryException{
+        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + startPath + "') AND " +
+                "(result.[j:tagList] = '" + selectedTag + "')";
+        QueryManager qm = session.getWorkspace().getQueryManager();
+        Query q = qm.createQuery(query, Query.JCR_SQL2);
+        NodeIterator ni = q.execute().getNodes();
+
+        while (ni.hasNext()) {
+            JCRNodeWrapper node = (JCRNodeWrapper) ni.nextNode();
+            try {
+                if(StringUtils.isNotEmpty(tagNewName)) {
+                    renameTag(node, selectedTag, tagNewName);
+                } else {
+                    untag(node, selectedTag);
+                }
+                if(callback != null){
+                    callback.afterTagAction(node);
+                }
+            } catch (RepositoryException e){
+                if(callback != null){
+                    callback.onError(node, e);
+                } else {
+                    logger.error("Error trying to " + (StringUtils.isNotEmpty(tagNewName) ? "rename" : "delete") + " tag '" + selectedTag + "' on node " + node.getPath(), e);
+                }
+            }
+        }
+
+        if(callback != null) {
+            return callback.end();
+        }
+        return null;
     }
 
     public void setTagsSuggester(TagsSuggester tagsSuggester) {

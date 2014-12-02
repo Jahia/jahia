@@ -155,7 +155,11 @@ public class WelcomeServlet extends HttpServlet {
         if (!JahiaUserManagerService.isGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
+<<<<<<< .working
             String language = resolveLanguage(request, site, userNode);
+=======
+            String language = resolveLanguage(request, site, user, true);
+>>>>>>> .merge-right.r51596
             redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() +
                      DASHBOARD_HOME, response);
         } else {
@@ -205,6 +209,7 @@ public class WelcomeServlet extends HttpServlet {
         if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {
             userRedirect(request, response, context);
         } else {
+<<<<<<< .working
             if (defaultLocation != null) {
                 if (site != null && defaultLocation.contains("$defaultSiteHome")) {
                     JCRNodeWrapper home = site.getHome();
@@ -213,6 +218,11 @@ public class WelcomeServlet extends HttpServlet {
                     }
                     defaultLocation = defaultLocation.replace("$defaultSiteHome",home.getPath());
                 }
+=======
+            JahiaUser user = (JahiaUser) request.getSession().getAttribute(ProcessingContext.SESSION_USER);
+            String language = resolveLanguage(request, site, user, false);
+            String base = null;
+>>>>>>> .merge-right.r51595
 
                 redirect = request.getContextPath() + mapping + "/" + language +defaultLocation;
             } else {
@@ -281,25 +291,33 @@ public class WelcomeServlet extends HttpServlet {
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
     
+<<<<<<< .working
     protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user)
+=======
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JahiaUser user, boolean userRedirect)
+>>>>>>> .merge-right.r51596
             throws JahiaException {
-        if (site == null) {
-            // if we have no site, just use fallback
-            return StringUtils.defaultIfEmpty(SettingsBean.getInstance().getDefaultLanguageCode(), DEFAULT_LOCALE);
-        }
-
         List<Locale> siteLanguages = null;
+<<<<<<< .working
         try {
             siteLanguages = site.getActiveLiveLanguagesAsLocales();
         } catch (Exception t) {
             logger.debug("Exception while getting language settings as locales", t);
             siteLanguages = Collections.emptyList();
+=======
+        if (!userRedirect && site != null && !JahiaSitesBaseService.SYSTEM_SITE_KEY.equals(site.getSiteKey())) {
+            try {
+                siteLanguages = site.getActiveLanguagesAsLocales();
+            } catch (Exception t) {
+                logger.debug("Exception while getting language settings as locales", t);
+                siteLanguages = Collections.emptyList();
+            }
+>>>>>>> .merge-right.r51595
         }
 
         // first we will check the preferred user locale (if it is among the
         Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
-        if (preferredLocale != null && siteLanguages.contains(preferredLocale)
-                && ensureHomePageExists(site, preferredLocale)) {
+        if (preferredLocale != null && isLocaleSupported(site, siteLanguages, preferredLocale)) {
             return preferredLocale.toString();
         }
 
@@ -308,13 +326,13 @@ public class WelcomeServlet extends HttpServlet {
             final Locale curLocale = (Locale) requestLocales.nextElement();
             if (curLocale != null) { 
                 // check that the site contains the language and the home page exists in live for that language
-                if (siteLanguages.contains(curLocale) && ensureHomePageExists(site, curLocale)) {
+                if (isLocaleSupported(site, siteLanguages, curLocale)) {
                     return curLocale.toString();
                 }
                 if (!StringUtils.isEmpty(curLocale.getCountry())) {
                     // check the same but for language only
                     final Locale langOnlyLocale = LanguageCodeConverters.languageCodeToLocale(curLocale.getLanguage());
-                    if (siteLanguages.contains(langOnlyLocale) && ensureHomePageExists(site, langOnlyLocale)) {
+                    if (isLocaleSupported(site, siteLanguages, langOnlyLocale)) {
                         return langOnlyLocale.toString();
                     }
                 }
@@ -329,6 +347,10 @@ public class WelcomeServlet extends HttpServlet {
 
         // nothing matches -> fallback to default
         return StringUtils.defaultIfEmpty(SettingsBean.getInstance().getDefaultLanguageCode(), DEFAULT_LOCALE);
+    }
+
+    private boolean isLocaleSupported(JCRSiteNode site, List<Locale> siteLanguages, Locale locale) {
+        return siteLanguages == null || siteLanguages.contains(locale) && ensureHomePageExists(site, locale);
     }
 
     private boolean ensureHomePageExists(final JCRSiteNode site, final Locale curLocale) {

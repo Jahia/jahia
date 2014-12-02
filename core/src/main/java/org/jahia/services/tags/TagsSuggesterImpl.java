@@ -198,14 +198,14 @@ public class TagsSuggesterImpl implements TagsSuggester{
             @Override
             public boolean scroll() throws RepositoryException {
                 NodeIterator nodeIterator = stepResult.getNodes();
-                boolean limitReached = result.keySet().size() == limit;
+                boolean limitReached = limit != null && result.keySet().size() == limit;
                 while (!limitReached && nodeIterator.hasNext()) {
                     JCRNodeWrapper nodeWrapper = (JCRNodeWrapper) nodeIterator.next();
                     JCRValueWrapper[] tags = nodeWrapper.getProperty("j:tagList").getValues();
                     for (JCRValueWrapper tag : tags) {
                         String tagValue = tag.getString();
                         if (tagValue.startsWith(prefix)) {
-                            if (result.keySet().size() < limit) {
+                            if (limit == null || limit <= 0 || result.keySet().size() < limit) {
                                 result.put(tagValue, 0L);
                             }else {
                                 // limit reached

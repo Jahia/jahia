@@ -71,31 +71,18 @@
  */
 package org.jahia.test.services.tags;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
 
 import org.jahia.services.content.*;
-import org.jahia.services.tags.TagHandlerImpl;
-import org.jahia.services.tags.TagsSuggesterImpl;
+import org.jahia.services.tags.*;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.tags.TaggingService;
 import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for the Tagging feature: creating tags, assigning tags to nodes etc.
@@ -107,16 +94,7 @@ public class TaggingTest {
 
     private final static String TESTSITE_NAME = "taggingTest";
 
-    private static int counter = 0;
-
-    private TaggingService service = (TaggingService) SpringContextSingleton
-    .getBean("org.jahia.services.tags.TaggingService");
-
-    private static String tagPrefix = "test-" + System.currentTimeMillis() + "-";
-
-    private String generateTagName() {
-        return tagPrefix + counter++;
-    }
+    private TaggingService service = (TaggingService) SpringContextSingleton.getBean("org.jahia.services.tags.TaggingService");
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -168,186 +146,188 @@ public class TaggingTest {
         } catch (Exception e) {
             logger.error("Error tearing down TaggingTest environment", e);
         }
+    }
 
-        tagPrefix = null;
-        counter = 0;
+    private class ChesseTagDeleteCallback implements TagActionCallback<Void> {
+        TagsSuggester tagsSuggester;
+        JCRSessionWrapper session;
+
+        private ChesseTagDeleteCallback(TagsSuggester tagsSuggester, JCRSessionWrapper session) {
+            this.tagsSuggester = tagsSuggester;
+            this.session = session;
+        }
+
+        @Override
+        public void afterTagAction(JCRNodeWrapper node) throws RepositoryException {
+            session.save();
+            Assert.assertFalse(node.getPropertyAsString("j:tagList").contains("cheese"));
+        }
+
+        @Override
+        public void onError(JCRNodeWrapper node, RepositoryException e) throws RepositoryException {
+            fail("Fail on taging action on node: " + node.getPath());
+            throw e;
+        }
+
+        @Override
+        public Void end() throws RepositoryException {
+            Map<String, Long> suggested = tagsSuggester.suggest("cheese", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+            Assert.assertTrue(suggested.size() == 0);
+            return null;
+        }
+    }
+
+    private class BalckOliveTagRenamedCallback implements TagActionCallback<Void> {
+        TagsSuggester tagsSuggester;
+        JCRSessionWrapper session;
+
+        private BalckOliveTagRenamedCallback(TagsSuggester tagsSuggester, JCRSessionWrapper session) {
+            this.tagsSuggester = tagsSuggester;
+            this.session = session;
+        }
+
+        @Override
+        public void afterTagAction(JCRNodeWrapper node) throws RepositoryException {
+            session.save();
+            Assert.assertFalse(node.getPropertyAsString("j:tagList").contains("black olives"));
+            Assert.assertTrue(node.getPropertyAsString("j:tagList").contains("camembert"));
+        }
+
+        @Override
+        public void onError(JCRNodeWrapper node, RepositoryException e) throws RepositoryException {
+            fail("Fail on taging action on node: " + node.getPath());
+            throw e;
+        }
+
+        @Override
+        public Void end() throws RepositoryException {
+            Map<String, Long> suggested = tagsSuggester.suggest("black olives", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+            Assert.assertTrue(suggested.size() == 0);
+
+            suggested = tagsSuggester.suggest("camembert", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+            Assert.assertTrue(suggested.size() == 1);
+            Assert.assertTrue(suggested.containsKey("camembert"));
+            Assert.assertTrue(suggested.get("camembert") == 4);
+            return null;
+        }
     }
 
     @Test    
-    public void testTagContentObject() throws RepositoryException {
-        List<String> addedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                contentFolder.addNode("content-0", "jnt:text");
-
-                String tag = null;
-                List<String> tags = new LinkedList<String>();
-                for (int i = 0; i < 10; i++) {
-                    tag = generateTagName();
-                    tags.add(tag);
-                    service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-0", tag, session);
+    public void testTagTaggingService() throws RepositoryException {
+        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+            public Void doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                JCRNodeWrapper contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
+                for (int i = 0; i < 5; i++) {
+                    contentFolder.addNode("content-" + i, "jnt:text");
                 }
-                session.save();
-
-                return tags;
-            }
-        });
-
-
-        List<String> assignedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                new JCRCallback<List<String>>() {
-                    public List<String> doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        Node node = session.getNode("/sites/" + TESTSITE_NAME
-                                + "/tags-content/content-0");
-                        Value[] values = node.getProperty("j:tagList").getValues();
-                        List<String> tags = new LinkedList<String>();
-                        for (Value val : values) {
-                            tags.add(val.getString());
-                        }
-                        return tags;
-                    }
-                });
-        assertTrue("Tags were not correctly applied to the node",
-                addedTags.size() == assignedTags.size() && assignedTags.containsAll(addedTags) );
-    }
-
-    @Test
-    public void testUnTagContentObject() throws RepositoryException {
-        // add tags
-        final List<String> addedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                contentFolder.addNode("content-15", "jnt:text");
-
-                String tag = null;
-                List<String> tags = new LinkedList<String>();
-                for (int i = 0; i < 10; i++) {
-                    tag = generateTagName();
-                    tags.add(tag);
-                    service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-15", tag, session);
-                }
-                session.save();
-
-                return tags;
-            }
-        });
-
-        // untag some tags
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                JCRNodeWrapper contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content/content-15");
-                for (int i = 0; i < 10; i++) {
-                    if(i % 2 == 0){
-                        service.untag(contentFolder, addedTags.get(i));
-                    }
-                }
-                session.save();
-                return null;
-            }
-        });
-
-
-        List<String> assignedTags = JCRTemplate.getInstance().doExecuteWithSystemSession(
-                new JCRCallback<List<String>>() {
-                    public List<String> doInJCR(JCRSessionWrapper session)
-                            throws RepositoryException {
-                        Node node = session.getNode("/sites/" + TESTSITE_NAME
-                                + "/tags-content/content-15");
-                        Value[] values = node.getProperty("j:tagList").getValues();
-                        List<String> tags = new LinkedList<String>();
-                        for (Value val : values) {
-                            tags.add(val.getString());
-                        }
-                        return tags;
-                    }
-                });
-        assertTrue("Tags were not correctly applied to the node",
-                addedTags.size() / 2 == assignedTags.size());
-    }
-
-    @Test    
-    public void testFacetedSuggester() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                // assert the tag count
-                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                Node facetedFolder = contentFolder.addNode("tags-content", "jnt:contentList");
-                for (int i = 1; i <= 10; i++) {
-                    facetedFolder.addNode("content-45" + i, "jnt:text");
-                }
-                session.save();
-
-                // create 10 tags
-                List<String> tags = new LinkedList<String>();
-                for (int i = 0; i < 10; i++) {
-                    String tag = generateTagName();
-                    tags.add(tag);
-                }
-
-                // tag content using those tags
-                for (int i = 1; i <= 10; i++) {
-                    for (int j = i; j <= 10; j++) {
-                        service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-45" + i,
-                                tags.get(j - 1), session);
-                    }
-                }
-                session.save();
-
-                for (int i = 1; i <= 10; i++) {
-                    String tag = tags.get(i - 1);
-                    TagsSuggesterImpl tagsSuggester = new TagsSuggesterImpl();
-                    tagsSuggester.setFaceted(true);
-                    Map<String, Long> tagsMap =tagsSuggester.suggest(tag, "/sites/" + TESTSITE_NAME, 1l, -1l, 0l, false, session);
-                    assertEquals("Wrong count for the tag '" + tag + "'",
-                            tagsMap.get(tag).longValue(), new Integer(i).longValue());
-                }
-                return null;
-            }
-        });
-    }
-
-    @Test
-    public void testSimpleSuggester() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                // assert the tag count
-                Node contentFolder = session.getNode("/sites/" + TESTSITE_NAME + "/tags-content");
-                for (int i = 1; i <= 10; i++) {
-                    contentFolder.addNode("content-95" + i, "jnt:text");
-                }
-                session.save();
-
-                // create 10 tags
-                List<String> tags = new LinkedList<String>();
-                for (int i = 0; i < 10; i++) {
-                    String tag = "test-" + System.currentTimeMillis() + "-" + i;
-                    tags.add(tag);
-                }
-
-                // tag content using those tags
-                for (int i = 1; i <= 10; i++) {
-                    for (int j = i; j <= 10; j++) {
-                        service.tag("/sites/" + TESTSITE_NAME + "/tags-content/content-95" + i,
-                                tags.get(j - 1), session);
-                    }
-                }
+                service.tag(contentFolder.getNode("content-0"), Arrays.asList(new String[]{"cheese", "Chipmunk", "pepperoni", "black Olives", "aircheck"}));
+                service.tag(contentFolder.getNode("content-1"), Arrays.asList(new String[]{"cheese", "chiPmunk", "black Olives", "aircheck"}));
+                service.tag(contentFolder.getNode("content-2"), Arrays.asList(new String[]{"cheese"}));
+                service.tag(contentFolder.getNode("content-3"), Arrays.asList(new String[]{"cheese", "black Olives"}));
+                service.tag(contentFolder.getNode("content-4"), Arrays.asList(new String[]{"pepperoni", "black Olives"}));
                 session.save();
 
                 TagsSuggesterImpl tagsSuggester = new TagsSuggesterImpl();
+                tagsSuggester.setFaceted(true);
+                // faceted: sugest on "ch"
+                Map<String, Long> suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 2);
+                Assert.assertTrue(suggested.get("cheese") != null);
+                Assert.assertTrue(suggested.get("cheese") == 4);
+                Assert.assertTrue(suggested.get("chipmunk") != null);
+                Assert.assertTrue(suggested.get("chipmunk") == 2);
+
+                // faceted: order by count
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, true, session);
+                Assert.assertTrue(suggested.size() == 2);
+                Assert.assertTrue(suggested.get("cheese") != null);
+                Assert.assertTrue(suggested.get("cheese") == 4);
+                Assert.assertTrue(suggested.get("chipmunk") != null);
+                Assert.assertTrue(suggested.get("chipmunk") == 2);
+                Assert.assertTrue(new TreeMap<>(suggested).firstKey().equals("cheese"));
+
+                // faceted: test minimum count
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 3l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("cheese") != null);
+                Assert.assertTrue(suggested.get("cheese") == 4);
+
+                // faceted: test offset and limit
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, 1l, 1l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+
+                // faceted: test limit
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, 1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+
+                // faceted: sugest on "chip"
+                suggested = tagsSuggester.suggest("chip", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("chipmunk") != null);
+                Assert.assertTrue(suggested.get("chipmunk") == 2);
+
                 tagsSuggester.setFaceted(false);
-                Map<String, Long> tagsMap = tagsSuggester.suggest("test-", "/sites/" + TESTSITE_NAME, 1l, 40l, 0l, false, session);
-                assertEquals("Wrong number of tags suggested",
-                        tagsMap.size(), 10);
+                // simple: suggest on "ch"
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 2);
+                Assert.assertTrue(suggested.containsKey("cheese"));
+                Assert.assertTrue(suggested.containsKey("chipmunk"));
+
+                // simple: suggest on "chip"
+                suggested = tagsSuggester.suggest("chip", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.containsKey("chipmunk"));
+
+                // simple: test offset and limit
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, 1l, 1l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+
+                // simple: test limit
+                suggested = tagsSuggester.suggest("ch", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, 1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+
+                //untag
+                service.untag(contentFolder.getNode("content-2"), Arrays.asList(new String[]{"cheese"}));
+                session.save();
+
+                // test property and mixin
+                Assert.assertFalse(contentFolder.getNode("content-2").isNodeType("jmix:tagged"));
+                Assert.assertFalse(contentFolder.getNode("content-2").hasProperty("j:tagList"));
+
+                // test faceted result:
+                tagsSuggester.setFaceted(true);
+                suggested = tagsSuggester.suggest("cheese", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("cheese") != null);
+                Assert.assertTrue(suggested.get("cheese") == 3);
+
+                // test simple result:
+                suggested = tagsSuggester.suggest("cheese", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("cheese") != null);
+                Assert.assertTrue(suggested.get("cheese") == 3);
+
+                // rename
+                service.renameTag(contentFolder.getNode("content-4"), "pepperoni", "babybel");
+                session.save();
+
+                // test with faceted
+                suggested = tagsSuggester.suggest("babybel", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("babybel") != null);
+                Assert.assertTrue(suggested.get("babybel") == 1);
+                suggested = tagsSuggester.suggest("pepperoni", "/sites/" + TESTSITE_NAME + "/tags-content", 1l, -1l, 0l, false, session);
+                Assert.assertTrue(suggested.size() == 1);
+                Assert.assertTrue(suggested.get("pepperoni") != null);
+                Assert.assertTrue(suggested.get("pepperoni") == 1);
+
+                // bench delete tag
+                service.deleteTagUnderPath("/sites/" + TESTSITE_NAME + "/tags-content", session, "cheese", new ChesseTagDeleteCallback(tagsSuggester, session));
+
+                // bench rename
+                service.renameTagUnderPath("/sites/" + TESTSITE_NAME + "/tags-content", session, "black olives", "camembert", new BalckOliveTagRenamedCallback(tagsSuggester, session));
                 return null;
             }
         });
-    }
-
-    @Test
-    public void testTagHandler() throws RepositoryException {
-        TagHandlerImpl tagHandler = new TagHandlerImpl();
-        assertEquals("Tag handler should lower case and trim the tag",
-                tagHandler.execute(" TEST "), "test");
     }
 }

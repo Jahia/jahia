@@ -155,11 +155,7 @@ public class WelcomeServlet extends HttpServlet {
         if (!JahiaUserManagerService.isGuest(user) && userNode.isMemberOfGroup(null, JahiaGroupManagerService.PRIVILEGED_GROUPNAME)) {
             JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE,
                     JCRContentUtils.getSystemSitePath());
-<<<<<<< .working
-            String language = resolveLanguage(request, site, userNode);
-=======
-            String language = resolveLanguage(request, site, user, true);
->>>>>>> .merge-right.r51596
+            String language = resolveLanguage(request, site, userNode, true);
             redirect(request.getContextPath() + "/cms/dashboard/default/"+ language + user.getLocalPath() +
                      DASHBOARD_HOME, response);
         } else {
@@ -192,11 +188,7 @@ public class WelcomeServlet extends HttpServlet {
         JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
         String redirect = null;
         String pathInfo = request.getPathInfo();
-<<<<<<< .working
-        String language = resolveLanguage(request, site, userNode);
-=======
-        String language = resolveLanguage(request, site, user, false);
->>>>>>> .merge-right.r51598
+        String language = resolveLanguage(request, site, userNode, false);
 
         String defaultLocation = null;
         String mapping = null;
@@ -289,11 +281,7 @@ public class WelcomeServlet extends HttpServlet {
                 .getCurrentUserSession(workspace).getNode(sitePath) : null;
     }
     
-<<<<<<< .working
-    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user)
-=======
-    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JahiaUser user, boolean userRedirect)
->>>>>>> .merge-right.r51596
+    protected String resolveLanguage(HttpServletRequest request, final JCRSiteNode site, JCRUserNode user, boolean userRedirect)
             throws JahiaException {
         List<Locale> siteLanguages = null;
         if (!userRedirect && site != null && !JahiaSitesService.SYSTEM_SITE_KEY.equals(site.getSiteKey())) {

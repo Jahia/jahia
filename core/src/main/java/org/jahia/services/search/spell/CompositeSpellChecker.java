@@ -73,9 +73,7 @@ package org.jahia.services.search.spell;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.QueryHandler;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.*;
 import org.apache.lucene.analysis.Analyzer;
@@ -339,7 +337,9 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             } catch (Exception e) {
                 logger.error(e.getMessage(),e);
             }
-            refreshSpellChecker();
+            if (!(handler instanceof JahiaSecondaryIndex)) {
+                refreshSpellChecker();
+            }
         }
 
         /**

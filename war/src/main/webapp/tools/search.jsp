@@ -6,6 +6,9 @@
 <%@page import="org.apache.commons.io.filefilter.DirectoryFileFilter"%>
 <%@page import="org.jahia.settings.SettingsBean"%>
 <%@page import="org.jahia.services.search.spell.CompositeSpellChecker"%>
+<%@ page import="org.jahia.services.content.JCRSessionFactory" %>
+<%@ page import="org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository" %>
+<%@ page import="org.apache.jackrabbit.core.JahiaRepositoryImpl" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -37,6 +40,10 @@
         <c:when test="${param.action == 'reindex'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "reindex")); %>
             <p style="color: blue">Re-indexing of the repository content will be done on next Jahia startup</p>
+        </c:when>
+        <c:when test="${param.action == 'reindex-now'}">
+            <% ((JahiaRepositoryImpl)((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).scheduleReindexing(request.getParameter("ws")); %>
+            <p style="color: blue">Re-indexing of the repository content will be done now</p>
         </c:when>
         <c:when test="${param.action == 'index-fix'}">
             <% FileUtils.touch(new File(SettingsBean.getInstance().getRepositoryHome(), "index-fix")); %>
@@ -77,8 +84,11 @@
 <legend>Immediate</legend>
 <ul>
     <li><a href="?action=index-check-physical">Repository index physical check</a> - Do immediate repository search indexes physical consistency check and print out the results (Lucene CheckIndex tool)</li>
-    <li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker
-    dictionary index used by the "Did you mean" search feature</li>
+    <li><a href="?action=updateSpellCheckerIndex">Spell checker index update</a> - triggers an immediate update (no restart needed) of the spell checker dictionary index used by the "Did you mean" search feature</li>
+    <li><a href="?action=reindex-now&ws=live">Live repository re-indexing</a> - Do repository re-indexing now</li>
+    <li><a href="?action=reindex-now&ws=default">Default repository re-indexing</a> - Do repository re-indexing now</li>
+    <li><a href="?action=reindex-now">System repository re-indexing system</a> - Do repository re-indexing now</li>
+
 </ul>
 </fieldset>
 <%@ include file="gotoIndex.jspf" %>

@@ -72,6 +72,8 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -91,18 +93,23 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.TermQuery;
-import org.apache.shiro.util.StringUtils;
+import org.apache.lucene.store.AlreadyClosedException;
 import org.apache.tika.parser.Parser;
 import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.settings.SettingsBean;
+import org.quartz.*;
 import org.slf4j.Logger;
 
+import javax.jcr.NamespaceException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -114,16 +121,25 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
+    private Boolean versionIndex;
 
     private int maxClauseCount = 1024;
-
-    private Boolean versionIndex;
 
     private int batchSize = 100;
 
     private boolean addAclUuidInIndex = true;
 
     private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
+
+    private Set<String> ignoredTypes;
+
+    private boolean skipVersionIndex = true;
+
+    private volatile boolean switching = false;
+
+    private int defaultWaitTime = 500;
+
+    private volatile JahiaSecondaryIndex newIndex;
 
     public int getMaxClauseCount() {
         return maxClauseCount;
@@ -132,6 +148,102 @@ public class JahiaSearchIndex extends SearchIndex {
     public void setMaxClauseCount(int maxClauseCount) {
         this.maxClauseCount = maxClauseCount;
         BooleanQuery.setMaxClauseCount(maxClauseCount);
+    }
+
+    public int getBatchSize() {
+        return batchSize;
+    }
+
+    /**
+     * Set the maximum number of documents that will be sent in one batch to the index for certain
+     * mass indexing requests, like after ACL change
+     *
+     * @param batchSize
+     */
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
+
+    /**
+     * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     * This can have a negative effect on performance, when setting rights on a node,
+     * which has a large subtree using the same rights, as all these nodes will need
+     * to be reindexed. On the other side the advantage is that the queries are faster,
+     * as the user rights are resolved faster.
+     *
+     * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
+     */
+    public boolean isAddAclUuidInIndex() {
+        return addAclUuidInIndex;
+    }
+
+    public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
+        this.addAclUuidInIndex = addAclUuidInIndex;
+    }
+
+    /**
+     * Return the list of types which can benefit of the optimized ACE indexation.
+     *
+     * @return
+     */
+    public Set<String> getTypesUsingOptimizedACEIndexation() {
+        return typesUsingOptimizedACEIndexation;
+    }
+
+    public void setTypesUsingOptimizedACEIndexation(String typesUsingOptimizedACEIndexation) {
+        this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
+    }
+
+    public Set<String> getIgnoredTypes() {
+        return ignoredTypes;
+    }
+
+    public void setIgnoredTypes(String ignoredTypes) {
+        this.ignoredTypes = Sets.newHashSet(StringUtils.split(ignoredTypes));
+    }
+
+    public boolean isSkipVersionIndex() {
+        return skipVersionIndex;
+    }
+
+    public void setSkipVersionIndex(boolean skipVersionIndex) {
+        this.skipVersionIndex = skipVersionIndex;
+    }
+
+    public int getDefaultWaitTime() {
+        return defaultWaitTime;
+    }
+
+    public void setDefaultWaitTime(int defaultWaitTime) {
+        this.defaultWaitTime = defaultWaitTime;
+    }
+
+    @Override
+    protected void doInit() throws IOException {
+        Set<String> ignoredTypes = new HashSet<>();
+        if (skipVersionIndex && isVersionIndex()) {
+            ignoredTypes.add("{" + Name.NS_REP_URI + "}versionStorage");
+            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionHistory");
+            ignoredTypes.add("{" + Name.NS_NT_URI + "}version");
+            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionLabels");
+            ignoredTypes.add("{" + Name.NS_NT_URI + "}frozenNode");
+            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionedChild");
+        }
+        if (this.ignoredTypes != null) {
+            for (String s : this.ignoredTypes) {
+                if (!s.startsWith("{")) {
+                    try {
+                        s = "{" + getContext().getNamespaceRegistry().getURI(StringUtils.substringBefore(s,":")) + "}" + StringUtils.substringAfter(s,":");
+                    } catch (NamespaceException e) {
+                        log.error("Cannot parse namespace for "+s);
+                    }
+                }
+                ignoredTypes.add(s);
+            }
+        }
+        this.ignoredTypes = ignoredTypes;
+        super.doInit();
     }
 
     @Override
@@ -182,14 +294,20 @@ public class JahiaSearchIndex extends SearchIndex {
         return configuration;
     }
 
-    /**
-     * Set the maximum number of documents that will be sent in one batch to the index for certain
-     * mass indexing requests, like after ACL change
-     *
-     * @param batchSize
-     */
-    public void setBatchSize(int batchSize) {
-        this.batchSize = batchSize;
+    private void waitForIndexSwitch() {
+        while (switching) {
+            try {
+                Thread.sleep(defaultWaitTime);
+            } catch (InterruptedException e) {
+                log.error("Interrupted",e);
+            }
+        }
+    }
+
+    @Override
+    protected IndexReader getIndexReader(boolean includeSystemIndex) throws IOException {
+        waitForIndexSwitch();
+        return super.getIndexReader(includeSystemIndex);
     }
 
     /**
@@ -208,6 +326,30 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
             throws RepositoryException, IOException {
+        updateNodes(remove, add, false);
+    }
+
+    public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add, boolean noWait)
+            throws RepositoryException, IOException {
+
+        if (!noWait) {
+            waitForIndexSwitch();
+
+            if (newIndex != null) {
+                newIndex.addDelayedUpdated(remove, add);
+            }
+        }
+
+        if (ignoredTypes != null && !ignoredTypes.isEmpty()) {
+            List<NodeState> l = new LinkedList<NodeState>();
+            while (add.hasNext()) {
+                NodeState state = add.next();
+                if (!ignoredTypes.contains(state.getNodeTypeName().toString())) {
+                    l.add(state);
+                }
+            }
+            add = l.iterator();
+        }
 
         if (isVersionIndex()) {
             super.updateNodes(remove, add);
@@ -269,7 +411,14 @@ public class JahiaSearchIndex extends SearchIndex {
 
         long timer = System.currentTimeMillis();
 
-        super.updateNodes(removeList.iterator(), addList.iterator());
+        try {
+            super.updateNodes(removeList.iterator(), addList.iterator());
+        } catch (AlreadyClosedException e) {
+            if (!switching) {
+                throw e;
+            }
+            // If switching index, updates will be handled in delayed updates
+        }
 
         if (log.isDebugEnabled()) {
             log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[]{
@@ -294,7 +443,14 @@ public class JahiaSearchIndex extends SearchIndex {
                     }
                 }
 
-                super.updateNodes(aclRemoveList.iterator(), aclAddList.iterator());
+                try {
+                    super.updateNodes(aclRemoveList.iterator(), aclAddList.iterator());
+                } catch (AlreadyClosedException e) {
+                    if (!switching) {
+                        throw e;
+                    }
+                    // If switching index, updates will be handled in delayed updates
+                }
 
                 aclSubListStart += batchSize;
                 aclSubListEnd = Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
@@ -523,39 +679,80 @@ public class JahiaSearchIndex extends SearchIndex {
         return versionIndex;
     }
 
-    /**
-     * Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
-     * This can have a negative effect on performance, when setting rights on a node,
-     * which has a large subtree using the same rights, as all these nodes will need
-     * to be reindexed. On the other side the advantage is that the queries are faster,
-     * as the user rights are resolved faster.
-     *
-     * @return Returns <code>true</code> if ACL-UUID should be resolved and stored in index.
-     */
-    public boolean isAddAclUuidInIndex() {
-        return addAclUuidInIndex;
-    }
-
-    public void setAddAclUuidInIndex(boolean addAclUuidInIndex) {
-        this.addAclUuidInIndex = addAclUuidInIndex;
-    }
-
-    /**
-     * Return the list of types which can benefit of the optimized ACE indexation.
-     *
-     * @return
-     */
-    public Set<String> getTypesUsingOptimizedACEIndexation() {
-        return typesUsingOptimizedACEIndexation;
-    }
-
-    public void setTypesUsingOptimizedACEIndexation(String typesUsingOptimizedACEIndexation) {
-        this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
-    }
-
     @Override
     protected Parser createParser() {
         // we disable binary indexing by Jackrabbit (is done by Jahia), so we do not need the parser
         return null;
     }
+
+
+    public void scheduleReindexing() {
+        if (newIndex != null || switching) {
+            return;
+        }
+
+        newIndex = new JahiaSecondaryIndex(this);
+        JobDetail jobDetail = BackgroundJob.createJahiaJob("ReindexJob", ReindexJob.class);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.put("index", this);
+        try {
+            ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail, true);
+        } catch (SchedulerException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void reindexAndSwitch() throws RepositoryException, IOException {
+        File dest = new File(getPath() + ".old." + System.currentTimeMillis());
+        FileUtils.deleteQuietly(new File(newIndex.getPath()));
+        newIndex.newIndexInit();
+        newIndex.replayDelayedUpdates(newIndex);
+        log.info("Reindexation over, switching to new index");
+
+        try {
+            switching = true;
+
+            quietClose(newIndex);
+            quietClose(this);
+
+            new File(getPath()).renameTo(dest);
+            new File(newIndex.getPath()).renameTo(new File(getPath()));
+            log.info("New index deployed, reloading " + getPath() );
+            init(fs, getContext());
+            List<JahiaSecondaryIndex.DelayedIndexUpdate> delayedUpdates = newIndex.getDelayedUpdates();
+
+            newIndex.replayDelayedUpdates(this);
+            log.info("New index ready");
+        } finally {
+            newIndex = null;
+            switching = false;
+        }
+        FileUtils.deleteQuietly(dest);
+    }
+
+    private void quietClose(JahiaSearchIndex index) {
+        try {
+            if (index.getSpellChecker() != null) {
+                index.getSpellChecker().close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            index.index.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static class ReindexJob extends BackgroundJob implements StatefulJob {
+        @Override
+        public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
+            JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
+            JahiaSearchIndex index = (JahiaSearchIndex) map.get("index");
+            index.reindexAndSwitch();
+        }
+    }
+
+
 }

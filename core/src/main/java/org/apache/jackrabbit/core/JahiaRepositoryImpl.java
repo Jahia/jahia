@@ -75,9 +75,11 @@ import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
+import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
 
@@ -128,7 +130,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
         }
    
     }
-    
+
     public JahiaRepositoryImpl(RepositoryConfig repConfig) throws RepositoryException {
         super(repConfig);
     }
@@ -169,7 +171,15 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
             throw new RepositoryException(e);
         }
     }
-    
+
+    public void scheduleReindexing(String workspaceName) throws RepositoryException {
+        JahiaSearchIndex index = (JahiaSearchIndex) (workspaceName == null ?
+                getSystemSearchManager("default") :
+                getWorkspaceInfo(workspaceName).getSearchManager()).getQueryHandler();
+
+        index.scheduleReindexing();
+    }
+
     /**
      * Creates a new {@link RepositoryImpl.WorkspaceInfo} instance for
      * <code>wspConfig</code>.

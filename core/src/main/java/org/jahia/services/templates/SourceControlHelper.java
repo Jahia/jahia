@@ -196,10 +196,14 @@ public class SourceControlHelper {
         return null;
     }
 
-    public File checkoutTmpModule(String moduleId, String version, String scmURI, String branchOrTag) throws IOException, XmlPullParserException, DocumentException {
+    public File checkoutTmpModule(String moduleId, String version, String scmURI, String branchOrTag) throws IOException, XmlPullParserException, DocumentException, RepositoryException {
         File sources = ensureModuleSourceFolder(null);
         sourceControlFactory.checkoutRepository(sources, scmURI, branchOrTag, false);
         ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
+        if (version != null && !version.equals(moduleInfo.version)) {
+            FileUtils.deleteDirectory(sources);
+            throw new RepositoryException("Sources don't match module version");
+        }
         return moduleInfo.path;
     }
 

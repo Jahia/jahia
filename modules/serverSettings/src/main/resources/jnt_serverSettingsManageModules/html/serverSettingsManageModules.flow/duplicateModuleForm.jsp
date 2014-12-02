@@ -10,7 +10,7 @@
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
 <template:addResources type="javascript" resources="jquery.min.js,jquery.blockUI.js,workInProgress.js"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
-<c:if test="${not empty tagInfos}">
+<c:if test="${not empty branchTagInfos}">
     <fmt:message key="serverSettings.manageModules.duplicateModule.scm.master" var="scmMaster"/>
     <template:addResources type="inlinejavascript">
         <script type="text/javascript">
@@ -20,7 +20,7 @@
                     if (selectedTag == "${scmMaster}") {
                         selectedTag = "";
                     }
-                    $('#scmTag').val(selectedTag);
+                    $('#branchOrTag').val(selectedTag);
                 });
             });
         </script>
@@ -35,13 +35,12 @@
 
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <fieldset>
-        <c:if test="${not empty tagInfos}">
-            <label for="newScmUri"><fmt:message key="serverSettings.manageModules.duplicateModule.scm.tag" /></label>
-            <input type="hidden" id="scmTag" name="scmTag" value="${not empty scmTag ? scmTag : ''}"/>
+        <c:if test="${not empty branchTagInfos}">
+            <label for="newScmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
+            <input type="hidden" id="branchOrTag" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
             <select name="newScmUri" id="newScmUri">
-                <option value="${scmUri}" ${(empty newScmUri or scmUri eq newScmUri) and empty scmTag ? 'selected' : ''}>${scmMaster}</option>
-                <c:forEach var="tagInfo" items="${tagInfos}">
-                    <option value="${tagInfo.value}" ${tagInfo.value eq newScmUri and tagInfo.key eq scmTag ? 'selected' : ''}>${tagInfo.key}</option>
+                <c:forEach var="branchTagInfo" items="${branchTagInfos}">
+                    <option value="${branchTagInfo.value}" ${branchTagInfo.key eq branchOrTag ? 'selected' : ''}>${branchTagInfo.key}</option>
                 </c:forEach>
             </select>
         </c:if>

@@ -579,7 +579,7 @@ public class ModuleBuildHelper implements InitializingBean {
         boolean deleteSrcFolder = false;
         if (srcPath == null) {
             try {
-                srcFolder = scmHelper.checkoutTmpModule(srcModuleId, null, scmURI, branchOrTag);
+                srcFolder = scmHelper.checkoutTmpModule(srcModuleId, srcModuleVersion, scmURI, branchOrTag);
             } catch (XmlPullParserException e) {
                 throw new IOException(e);
             } catch (DocumentException e) {

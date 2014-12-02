@@ -35,6 +35,7 @@
     <c:choose>
         <c:when test="${not empty branchTagInfos}">
             <fieldset>
+                <label for="newScmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
                 <input type="hidden" id="branchOrTag" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
                 <select name="newScmUri" id="newScmUri">
                     <c:forEach var="branchTagInfo" items="${branchTagInfos}">

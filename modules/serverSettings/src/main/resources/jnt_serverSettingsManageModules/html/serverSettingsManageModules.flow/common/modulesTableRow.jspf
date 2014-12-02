@@ -99,7 +99,9 @@
                                 <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                                 <input type="hidden" name="version" value="${currentModule.version}"/>
                                 <c:choose>
-                                    <c:when test="${not currentModule.version.snapshot and not empty currentModule.scmTag}">
+                                    <c:when test="${(fn:startsWith(currentModule.scmURI, 'scm:git') and not empty currentModule.scmTag)
+                                                    or (fn:startsWith(currentModule.scmURI, 'scm:svn')
+                                                        and (fn:containsIgnoreCase(currentModule.scmURI, '/tags/') or fn:containsIgnoreCase(currentModule.scmURI, '/branches/')))}">
                                         <input type="hidden" name="branchOrTag" value="${currentModule.scmTag}"/>
                                         <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
                                             <i class="icon-download"></i>
@@ -123,7 +125,9 @@
                                 <input type="hidden" name="scmUri" value="${defaultVersion.scmURI}"/>
                                 <input type="hidden" name="version" value="${defaultVersion.version}"/>
                                 <c:choose>
-                                    <c:when test="${not defaultVersion.version.snapshot and not empty defaultVersion.scmTag}">
+                                    <c:when test="${(fn:startsWith(defaultVersion.scmURI, 'scm:git') and not empty defaultVersion.scmTag)
+                                                    or (fn:startsWith(defaultVersion.scmURI, 'scm:svn')
+                                                        and (fn:containsIgnoreCase(defaultVersion.scmURI, '/tags/') or fn:containsIgnoreCase(defaultVersion.scmURI, '/branches/')))}">
                                         <input type="hidden" name="branchOrTag" value="${defaultVersion.scmTag}"/>
                                         <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
                                             <i class="icon-download"></i>

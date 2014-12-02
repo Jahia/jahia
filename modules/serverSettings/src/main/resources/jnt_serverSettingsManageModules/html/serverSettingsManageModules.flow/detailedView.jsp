@@ -169,7 +169,9 @@
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <input type="hidden" name="version" value="${activeVersion.version}"/>
                                     <c:choose>
-                                        <c:when test="${not activeVersion.version.snapshot and not empty activeVersion.scmTag}">
+                                        <c:when test="${(fn:startsWith(activeVersion.scmURI, 'scm:git') and not empty activeVersion.scmTag)
+                                                    or (fn:startsWith(activeVersion.scmURI, 'scm:svn')
+                                                        and (fn:containsIgnoreCase(activeVersion.scmURI, '/tags/') or fn:containsIgnoreCase(activeVersion.scmURI, '/branches/')))}">
                                             <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
                                             <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
                                                 <i class="icon-download"></i>

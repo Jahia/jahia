@@ -68,7 +68,7 @@
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="flowScope.branchTagInfos ?: (flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.branchOrTag ?: (flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos))" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
         </on-entry>
         <transition on="downloadSources" to="downloadSources"/>
         <transition on="cancel" to="sourceDownloadEnd"/>

@@ -110,6 +110,7 @@
                 <value>trident/7</value>
             </set>
         </property>
+        <property name="addLastModifiedDate" value="${addLastModifiedDateInAssets:false}"/>
     </bean>
     <util:list id="excludesFromAggregateAndCompress">
     </util:list>

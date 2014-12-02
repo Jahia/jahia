@@ -150,7 +150,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
     private String jahiaContext = null;
-    
+
+    private boolean addLastModifiedDate = false;
+
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", Integer.valueOf(0));
@@ -198,7 +200,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private String ajaxTemplate;
     private String ajaxTemplateExtension;
-    
+
     private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
 
     private String resolvedTemplate;
@@ -213,7 +215,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private Set<String> ieHeaderRecognitions = new HashSet<String>();
     private String ieCompatibilityContent = "IE=8";
-    
+
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -274,7 +276,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
             assets.put(type, stringMap);
         }
-        
+
         renderContext.getRequest().setAttribute("staticAssets", assets);
 
         OutputDocument outputDocument = new OutputDocument(source);
@@ -352,7 +354,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
-                    
+
                     bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
 
                     if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
@@ -362,6 +364,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         assets.put("javascript", newScripts);
                         scripts.keySet().removeAll(newScripts.keySet());
                         assets.put("aggregatedjavascript", scripts);
+                    } else if (addLastModifiedDate) {
+                        addLastModified(assets);
                     }
 
 //                    if (renderContext.getRequest().getParameter("channel") != null) {
@@ -424,6 +428,22 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+    private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {
+        for (Map.Entry<String, Map<String, Map<String, String>>> assetsEntry : assets.entrySet()) {
+            Map<String,Map<String,String>> newMap = new HashMap<String, Map<String, String>>();
+            for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
+                org.springframework.core.io.Resource r = getResource(getKey(entry.getKey()));
+                if (r != null) {
+                    newMap.put(entry.getKey() + "?lastModified=" + r.lastModified(), entry.getValue());
+                } else {
+                    newMap.put(entry.getKey(), entry.getValue());
+                }
+            }
+            assetsEntry.getValue().clear();
+            assetsEntry.getValue().putAll(newMap);
+        }
+    }
+
     private Object getContextJsParameters(Map<String, Map<String, Map<String, String>>> assets, RenderContext ctx) {
         StringBuilder params = new StringBuilder(128);
         params.append("{contextPath:\"").append(ctx.getRequest().getContextPath()).append("\",lang:\"")
@@ -458,12 +478,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         header = header.toLowerCase();
         for (String ieHeaderRecognition : getIeHeaderRecognitions()) {
             if (header.contains(ieHeaderRecognition)) {
-                return true;   
+                return true;
             }
         }
         return false;
-    }    
-    
+    }
+
     public static String removeTempTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
             return CLEANUP_REGEXP.matcher(content).replaceAll("");
@@ -484,22 +504,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
-                String key = entry.getKey();
-                if(Jahia.getContextPath().length() > 0 && key.startsWith(jahiaContext)) {
-                	key = key.substring(Jahia.getContextPath().length());
-                }
-
-                org.springframework.core.io.Resource r = null;
-
-                String filePath = StringUtils.substringAfter(key.substring(1),"/");
-                String moduleId = StringUtils.substringBefore(filePath, "/");
-                filePath = StringUtils.substringAfter(filePath, "/");
-
-                if (key.startsWith("/modules/")) {
-                    r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
-                } else if (key.startsWith("/files/")) {
-                    r = getResourceFromFile(r, moduleId, "/" + filePath);
-                }
+                String key = getKey(entry.getKey());
+                org.springframework.core.io.Resource r = getResource(key);
                 if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null && r.exists()) {
                     pathsToAggregate.put(key, r);
                     long lastModified = r.lastModified();
@@ -516,6 +522,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                 String minifiedAggregatedPath = "/generated-resources/" + aggregatedKey + ".min." + type;
                 String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedPath);
+
+                if (addLastModifiedDate) {
+                    minifiedAggregatedPath += "?lastModified=" + filesDates;
+                }
+
                 File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
                 if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
@@ -632,11 +643,38 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 newCss.put(ctx.length() > 0 ?  (ctx + minifiedAggregatedPath) : minifiedAggregatedPath, new HashMap<String, String>());
             }
             if (i < entries.size()) {
-                newCss.put(entries.get(i).getKey(), entries.get(i).getValue());
+                org.springframework.core.io.Resource r;
+                if (addLastModifiedDate && ((r = getResource(getKey(entries.get(i).getKey()))) != null)) {
+                    newCss.put(entries.get(i).getKey() + "?lastModified=" + r.lastModified(), entries.get(i).getValue());
+                } else {
+                    newCss.put(entries.get(i).getKey(), entries.get(i).getValue());
+                }
                 i++;
             }
         }
         return newCss;
+    }
+
+    private String getKey(String key) {
+        if(Jahia.getContextPath().length() > 0 && key.startsWith(jahiaContext)) {
+            key = key.substring(Jahia.getContextPath().length());
+        }
+        return key;
+    }
+
+    private org.springframework.core.io.Resource getResource(String key) {
+        org.springframework.core.io.Resource r = null;
+
+        String filePath = StringUtils.substringAfter(key.substring(1), "/");
+        String moduleId = StringUtils.substringBefore(filePath, "/");
+        filePath = StringUtils.substringAfter(filePath, "/");
+
+        if (key.startsWith("/modules/")) {
+            r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
+        } else if (key.startsWith("/files/")) {
+            r = getResourceFromFile(r, moduleId, "/" + filePath);
+        }
+        return r;
     }
 
     private String getFileSystemPath(String minifiedAggregatedPath) {
@@ -781,7 +819,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         ajaxResolvedTemplate = null;
         resolvedTemplate = null;
     }
-    
+
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
     }
@@ -804,6 +842,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void setCkeditorJavaScript(String ckeditorJavaScript) {
         this.ckeditorJavaScript = ckeditorJavaScript;
-    }    
+    }
 
+    public void setAddLastModifiedDate(boolean addLastModifiedDate) {
+        this.addLastModifiedDate = addLastModifiedDate;
+    }
 }

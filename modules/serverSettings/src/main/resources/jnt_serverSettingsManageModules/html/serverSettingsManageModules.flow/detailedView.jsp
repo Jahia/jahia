@@ -148,12 +148,13 @@
             <c:if test="${developmentMode}">
                 <c:set value="${functions:contains(systemSiteRequiredModules, activeVersion.id)}" var="isMandatoryDependency"/>
                 <c:set value="${activeVersion.sourcesDownloadable and not isMandatoryDependency}" var="sourcesDownloadable"/>
+                <fmt:message var="i18nDownloadSources" key='serverSettings.manageModules.downloadSources'/>
                 <td>
                     <c:if test="${not isStudio and moduleStates[activeVersion.id][activeVersion.version].installed}">
                     <c:choose>
                         <c:when test="${not empty activeVersion.sourcesFolder}">
                             <c:url var="urlToStudio" value="/cms/studio/${currentResource.locale}/modules/${activeVersion.id}.html"/>
-                            <button class="btn" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
+                            <button class="btn btn-block" type="button" onclick='window.parent.location.assign("${urlToStudio}")'>
                                 <i class="icon-circle-arrow-right"></i>
                                 &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                             </button>
@@ -166,11 +167,22 @@
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="module" value="${activeVersion.id}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
-                                    <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                    <button class="btn button-download" type="submit" name="_eventId_downloadSources" onclick="">
-                                        <i class="icon-download"></i>
-                                        &nbsp;${label}
-                                    </button>
+                                    <input type="hidden" name="version" value="${activeVersion.version}"/>
+                                    <c:choose>
+                                        <c:when test="${not activeVersion.version.snapshot and not empty activeVersion.scmTag}">
+                                            <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
+                                            <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                                <i class="icon-download"></i>
+                                                &nbsp;${i18nDownloadSources}
+                                            </button>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <button class="btn btn-block button-download" type="submit" name="_eventId_viewDownloadForm" onclick="">
+                                                <i class="icon-download"></i>
+                                                &nbsp;${i18nDownloadSources}
+                                            </button>
+                                        </c:otherwise>
+                                    </c:choose>
                                 </form>
                             </c:if>
                         </c:when>
@@ -179,10 +191,9 @@
                             <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                 <input type="hidden" name="module" value="${activeVersion.id}"/>
                                 <input type="hidden" name="scmUri" value="scm:git:"/>
-                                <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
-                                <button class="btn" type="submit" name="_eventId_viewDownloadForm" onclick="">
+                                <button class="btn btn-block" type="submit" name="_eventId_viewDownloadForm" onclick="">
                                     <i class="icon-download"></i>
-                                    &nbsp;${label}
+                                    &nbsp;${i18nDownloadSources}
                                 </button>
                             </form>
                         </c:otherwise>
@@ -217,7 +228,7 @@
                                     <input type="hidden" name="groupId" value="${activeVersion.groupId}"/>
                                     <input type="hidden" name="version" value="${activeVersion.version}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
-                                    <button class="btn button-download" type="submit" name="_eventId_duplicateModuleForm">
+                                    <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                         <i class="icon-share"></i>
                                         &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>
                                     </button>

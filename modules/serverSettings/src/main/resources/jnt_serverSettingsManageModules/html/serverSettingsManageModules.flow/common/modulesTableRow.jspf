@@ -145,7 +145,6 @@
                         <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                             <input type="hidden" name="module" value="${entry.key}"/>
                             <input type="hidden" name="scmUri" value="scm:git:"/>
-                            <fmt:message var="label" key='serverSettings.manageModules.downloadSources'/>
                             <button class="btn btn-block" type="submit" name="_eventId_viewDownloadForm" onclick="">
                                 <i class="icon-download"></i>
                                 &nbsp;${i18nDownloadSources}

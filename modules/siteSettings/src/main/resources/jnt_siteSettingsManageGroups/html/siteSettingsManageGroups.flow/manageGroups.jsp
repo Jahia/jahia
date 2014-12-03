@@ -19,11 +19,11 @@
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="searchCriteria" type="org.jahia.services.usermanager.SearchCriteria"--%>
 
-<c:set var="groupDisplayLimit" value="${siteSettingsProperties.groupDisplayLimit}"/>
-
 <template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
 <template:addResources type="css" resources="admin-bootstrap.css"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
+<template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
+<template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
 <template:addResources>
@@ -34,6 +34,26 @@ function submitGroupForm(act, group) {
 	$('#groupForm').submit();
 }
 </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var oldStart = 0;
+            $('#manageGroups').dataTable({
+                "sDom": "<'row-fluid'<'span6'l><'span6'<'refresh_modules'>f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                "iDisplayLength": 25,
+                "sPaginationType": "bootstrap",
+                "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
+                "bStateSave": true,
+                "fnDrawCallback": function (o) {
+                    // auto scroll to top on paginate
+                    if ( o._iDisplayStart != oldStart ) {
+                        var targetOffset = $('#manageGroups').offset().top;
+                        $('html,body').animate({scrollTop: targetOffset}, 350);
+                        oldStart = o._iDisplayStart;
+                    }
+                }
+            });
+        });
+    </script>
 </template:addResources>
 
 <c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
@@ -117,10 +137,7 @@ function submitGroupForm(act, group) {
         <div class="alert alert-info">
             <fmt:message key="siteSettings.groups.found">
                 <fmt:param value="${groupCount}"/>
-            </fmt:message><c:if test="${groupCount > groupDisplayLimit}">&nbsp;<fmt:message key="siteSettings.groups.found.limit">
-                    <fmt:param value="${groupDisplayLimit}"/>
-                </fmt:message>
-            </c:if>
+            </fmt:message>
         </div>
         
         <c:if test="${groupsFound}">
@@ -129,7 +146,7 @@ function submitGroupForm(act, group) {
                 <input type="hidden" id="groupFormAction" name="_eventId" value="" />
             </form>
         </c:if>
-        <table class="table table-bordered table-striped table-hover">
+        <table class="table table-bordered table-striped table-hover" id="manageGroups">
             <thead>
             <tr>
                 <th width="4%">#</th>
@@ -155,7 +172,7 @@ function submitGroupForm(act, group) {
                     <fmt:message var="i18nRemoveNote" key="siteSettings.groups.remove.confirm"/>
                     <fmt:message var="i18nContinue" key="label.confirmContinue"/>
                     <c:set var="i18nRemoveConfirm" value="${functions:escapeJavaScript(i18nRemoveNote)} ${functions:escapeJavaScript(i18nContinue)}"/>
-                    <c:forEach items="${groups}" var="grp" end="${groupDisplayLimit - 1}" varStatus="loopStatus">
+                    <c:forEach items="${groups}" var="grp" varStatus="loopStatus">
                         <tr>
                             <td>${loopStatus.count}</td>
                             <td>

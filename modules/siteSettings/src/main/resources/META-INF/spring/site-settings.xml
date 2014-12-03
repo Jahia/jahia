@@ -9,7 +9,6 @@
 
   <util:map id="siteSettingsProperties">
         <entry key="userDisplayLimit" value="${jahia.settings.userDisplayLimit:100}"/>
-        <entry key="groupDisplayLimit" value="${jahia.settings.groupDisplayLimit:100}"/>
         <entry key="memberDisplayLimit" value="${jahia.settings.memberDisplayLimit:100}"/>
     </util:map>
 </beans>

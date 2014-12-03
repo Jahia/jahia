@@ -430,7 +430,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {
         for (Map.Entry<String, Map<String, Map<String, String>>> assetsEntry : assets.entrySet()) {
-            if (!assetsEntry.getKey().equals("inline")) {
+            if (assetsEntry.getKey().equals("css") || assetsEntry.getKey().equals("javascript")) {
                 Map<String, Map<String, String>> newMap = new LinkedHashMap<String, Map<String, String>>();
                 for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
                     org.springframework.core.io.Resource r = getResource(getKey(entry.getKey()));

@@ -95,6 +95,14 @@ public class BundleResource extends UrlResource {
 
     @Override
     public long lastModified() throws IOException {
+        String lastModifed = bundle.getHeaders().get("Bnd-LastModified");
+        if (lastModifed != null) {
+            try {
+                return Long.parseLong(lastModifed);
+            } catch (NumberFormatException e) {
+                // Ignore header
+            }
+        }
         return bundle.getLastModified();
     }
 }

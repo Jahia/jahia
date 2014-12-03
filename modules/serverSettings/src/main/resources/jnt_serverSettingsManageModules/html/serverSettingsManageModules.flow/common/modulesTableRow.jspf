@@ -198,6 +198,12 @@
                                 <input type="hidden" name="groupId" value="${currentModule.groupId}"/>
                                 <input type="hidden" name="version" value="${currentModule.version}"/>
                                 <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
+                                <c:if test="${(fn:startsWith(currentModule.scmURI, 'scm:git') and not empty currentModule.scmTag)
+                                                or (fn:startsWith(currentModule.scmURI, 'scm:svn')
+                                                    and (fn:containsIgnoreCase(currentModule.scmURI, '/tags/') or fn:containsIgnoreCase(currentModule.scmURI, '/branches/')))}">
+                                    <input type="hidden" name="newScmUri" value="${currentModule.scmURI}"/>
+                                    <input type="hidden" name="branchOrTag" value="${currentModule.scmTag}"/>
+                                </c:if>
                                 <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                     <i class="icon-share"></i>
                                     &nbsp;${i18nDuplicateModule}
@@ -213,6 +219,12 @@
                                 <input type="hidden" name="groupId" value="${defaultVersion.groupId}"/>
                                 <input type="hidden" name="version" value="${defaultVersion.version}"/>
                                 <input type="hidden" name="scmUri" value="${defaultVersion.scmURI}"/>
+                                <c:if test="${(fn:startsWith(defaultVersion.scmURI, 'scm:git') and not empty defaultVersion.scmTag)
+                                                or (fn:startsWith(defaultVersion.scmURI, 'scm:svn')
+                                                    and (fn:containsIgnoreCase(defaultVersion.scmURI, '/tags/') or fn:containsIgnoreCase(defaultVersion.scmURI, '/branches/')))}">
+                                    <input type="hidden" name="newScmUri" value="${defaultVersion.scmURI}"/>
+                                    <input type="hidden" name="branchOrTag" value="${defaultVersion.scmTag}"/>
+                                </c:if>
                                 <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                     <i class="icon-share"></i>
                                     &nbsp;${i18nDuplicateModule}

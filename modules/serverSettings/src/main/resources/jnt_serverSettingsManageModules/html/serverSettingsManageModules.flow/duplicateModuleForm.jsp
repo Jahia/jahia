@@ -35,7 +35,8 @@
 
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <fieldset>
-        <c:if test="${not empty branchTagInfos}">
+        <c:choose>
+        <c:when test="${not empty branchTagInfos}">
             <label for="newScmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
             <input type="hidden" id="branchOrTag" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
             <select name="newScmUri" id="newScmUri">
@@ -43,7 +44,18 @@
                     <option value="${branchTagInfo.value}" ${branchTagInfo.key eq branchOrTag ? 'selected' : ''}>${branchTagInfo.key}</option>
                 </c:forEach>
             </select>
-        </c:if>
+        </c:when>
+        <c:when test="${not empty error}">
+            <label for="newScmUriText"><fmt:message key="serverSettings.manageModules.downloadSources.scmUri" /></label>
+            <input type="text" id="newScmUriText" name="newScmUri" value="${not empty newScmUri ? newScmUri : scmUri}"/>
+            <label for="branchOrTagText"><fmt:message key="serverSettings.manageModules.downloadSources.branchOrTag" /></label>
+            <input type="text" id="branchOrTagText" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
+        </c:when>
+        <c:when test="${not empty newScmUri}">
+            <input type="hidden" name="newScmUri" value="${newScmUri}"/>
+            <input type="hidden" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
+        </c:when>
+        </c:choose>
 
         <fmt:message key='label.moduleName.copy' var="moduleNameCopy">
             <fmt:param value="${moduleName}"/>

@@ -130,11 +130,13 @@
             <evaluate expression="requestParameters.groupId?:flowScope.groupId" result="flowScope.groupId"/>
             <evaluate expression="requestParameters.srcPath?:flowScope.srcPath" result="flowScope.srcPath"/>
             <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.newScmUri?:flowScope.newScmUri" result="flowScope.newScmUri"/>
+            <evaluate expression="requestParameters.branchOrTag?:flowScope.branchOrTag" result="flowScope.branchOrTag"/>
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
             <evaluate expression="flowHandler.getModuleNodetypes(flowScope.moduleId)" result="flowScope.moduleNodetypes"/>
-            <evaluate expression="flowScope.branchTagInfos ?: (flowScope.srcPath != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.branchOrTag ?: (flowScope.srcPath != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos))" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.branchTagInfos ?: (flowScope.srcPath != null || flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
+            <evaluate expression="flowScope.branchOrTag ?: (flowScope.srcPath != null || flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos))" result="flowScope.branchOrTag"/>
         </on-entry>
         <transition on="duplicateModule" to="duplicateModule"/>
         <transition on="cancelDuplicate" to="duplicateCanceled"/>

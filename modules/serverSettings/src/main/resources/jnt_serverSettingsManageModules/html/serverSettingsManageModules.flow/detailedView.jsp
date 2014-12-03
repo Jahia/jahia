@@ -229,7 +229,17 @@
                                     <input type="hidden" name="moduleId" value="${activeVersion.id}"/>
                                     <input type="hidden" name="groupId" value="${activeVersion.groupId}"/>
                                     <input type="hidden" name="version" value="${activeVersion.version}"/>
-                                    <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
+                                    <c:choose>
+                                        <c:when test="${(fn:startsWith(activeVersion.scmURI, 'scm:git') and not empty activeVersion.scmTag)
+                                                    or (fn:startsWith(activeVersion.scmURI, 'scm:svn')
+                                                        and (fn:containsIgnoreCase(activeVersion.scmURI, '/tags/') or fn:containsIgnoreCase(activeVersion.scmURI, '/branches/')))}">
+                                            <input type="hidden" name="newScmUri" value="${activeVersion.scmURI}"/>
+                                            <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
+                                        </c:otherwise>
+                                    </c:choose>
                                     <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
                                         <i class="icon-share"></i>
                                         &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>

@@ -125,6 +125,10 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
@@ -169,6 +173,41 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
 
         return errorDir;
+    }
+
+    private static String detectIpAddress() {
+        InetAddress address = null;
+
+        try {
+            Enumeration<NetworkInterface> intfs = NetworkInterface.getNetworkInterfaces();
+            while (intfs.hasMoreElements() && address == null) {
+                NetworkInterface intf = intfs.nextElement();
+                try {
+                    if (!intf.isUp()) {
+                        continue;
+                    }
+                    InetAddress addr = null;
+                    Enumeration<InetAddress> inetAddresses = intf.getInetAddresses();
+                    while (inetAddresses.hasMoreElements()) {
+                        addr = inetAddresses.nextElement();
+                        if ((addr instanceof Inet4Address) && !addr.isLoopbackAddress()) {
+                            address = addr;
+                            break;
+                        }
+                    }
+                } catch (SocketException e) {
+                    // ignore
+                }
+            }
+        } catch (SocketException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Unable to detect the network non-loobback address.", e);
+            } else {
+                logger.warn("Unable to detect the network non-loobback address. Cause: " + e.getMessage());
+            }
+        }
+
+        return address != null ? address.getHostAddress() : null;
     }
 
     /**
@@ -492,11 +531,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 setSystemProperty("cluster.node.serverId", getString("cluster.node.serverId", "jahiaServer1"));
             }
             if(clusterActivated) {
-                // First expose tcp ip binding address: use also cluster.tcp.start.ip_address for backward compatibility with Jahia 6.6
-                String bindAddress = getString("cluster.tcp.bindAddress", getString("cluster.tcp.start.ip_address", null));
-                if (StringUtils.isNotEmpty(bindAddress)) {
-                    setSystemProperty("cluster.tcp.bindAddress", bindAddress);
-                }
+                initBindAddress();
                 // Expose binding port: use also cluster.tcp.ehcache.jahia.port for backward compatibility with Jahia 6.6
                 String bindPort = getString("cluster.tcp.bindPort", getString("cluster.tcp.ehcache.jahia.port", null));
                 if (StringUtils.isNotEmpty(bindPort)) {
@@ -524,6 +559,24 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             logger.error("Properties file is not valid...!", nfe);
         }
     } // end load
+
+    private void initBindAddress() {
+        // First expose tcp ip binding address: use also cluster.tcp.start.ip_address for backward compatibility with Jahia 6.6
+        String bindAddress = getString("cluster.tcp.bindAddress", getString("cluster.tcp.start.ip_address", null));
+        if (StringUtils.isEmpty(bindAddress)) {
+            bindAddress = System.getProperty("jgroups.bind_addr");
+            if (bindAddress != null) {
+                logger.info("Using value, supplied via jgroups.bind_addr system property, for the bind address: {}",
+                        bindAddress);
+            } else {
+                bindAddress = detectIpAddress();
+                logger.info("Detected non-loopback network bind address: {}", bindAddress);
+            }
+        }
+        logger.info("Setting JGroups bind address to: {}", bindAddress);
+        setSystemProperty("cluster.tcp.bindAddress", bindAddress);
+        setSystemProperty("jgroups.bind_addr", bindAddress);
+    }
 
     private void initJcrSystemProperties() {
         setSystemProperty("jahia.jackrabbit.consistencyCheck", String.valueOf(getBoolean("jahia.jackrabbit.consistencyCheck", false)));

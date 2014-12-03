@@ -697,13 +697,15 @@ public class ConflictResolver {
         }
 
         public boolean apply() throws RepositoryException {
-            JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
-            String propertyName = getTargetName(propertyPath);
+            try {
+                JCRNodeWrapper targetNode = getParentTarget(ConflictResolver.this.targetNode, propertyPath);
+                String propertyName = getTargetName(propertyPath);
 
-            if (!targetNode.isCheckedOut()) {
-                targetNode.checkout();
-            }
+                if (!targetNode.isCheckedOut()) {
+                    targetNode.checkout();
+                }
 
+<<<<<<< .working
             if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                 targetNode.removeMixin(oldValue.getString());
             } else {
@@ -712,13 +714,26 @@ public class ConflictResolver {
                 for (Value value : oldValues) {
                     if (!equalsValue(value, oldValue)) {
                         newValues.add(value);
+=======
+                if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
+                    targetNode.removeMixin(oldValue.getString());
+                } else {
+                    List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
+                    List<Value> newValues = new ArrayList<Value>();
+                    for (Value value : oldValues) {
+                        if (!equalsValue(value, oldValue)) {
+                            newValues.add(value);
+                        }
+>>>>>>> .merge-right.r51605
+                    }
+                    if (newValues.isEmpty()) {
+                        targetNode.getProperty(propertyName).remove();
+                    } else {
+                        targetNode.setProperty(propertyName, newValues.toArray(new Value[newValues.size()]));
                     }
                 }
-                if (newValues.isEmpty()) {
-                    targetNode.getProperty(propertyName).remove();
-                } else {
-                    targetNode.setProperty(propertyName, newValues.toArray(new Value[newValues.size()]));
-                }
+            } catch (PathNotFoundException e) {
+                logger.debug("Property has already been removed", e);
             }
             return true;
         }

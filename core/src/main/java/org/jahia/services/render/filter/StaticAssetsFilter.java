@@ -430,17 +430,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {
         for (Map.Entry<String, Map<String, Map<String, String>>> assetsEntry : assets.entrySet()) {
-            Map<String,Map<String,String>> newMap = new HashMap<String, Map<String, String>>();
-            for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
-                org.springframework.core.io.Resource r = getResource(getKey(entry.getKey()));
-                if (r != null) {
-                    newMap.put(entry.getKey() + "?lastModified=" + r.lastModified(), entry.getValue());
-                } else {
-                    newMap.put(entry.getKey(), entry.getValue());
+            if (!assetsEntry.getKey().equals("inline")) {
+                Map<String, Map<String, String>> newMap = new LinkedHashMap<String, Map<String, String>>();
+                for (Map.Entry<String, Map<String, String>> entry : assetsEntry.getValue().entrySet()) {
+                    org.springframework.core.io.Resource r = getResource(getKey(entry.getKey()));
+                    if (r != null) {
+                        newMap.put(entry.getKey() + "?" + r.lastModified(), entry.getValue());
+                    } else {
+                        newMap.put(entry.getKey(), entry.getValue());
+                    }
                 }
+                assetsEntry.getValue().clear();
+                assetsEntry.getValue().putAll(newMap);
             }
-            assetsEntry.getValue().clear();
-            assetsEntry.getValue().putAll(newMap);
         }
     }
 
@@ -524,7 +526,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedPath);
 
                 if (addLastModifiedDate) {
-                    minifiedAggregatedPath += "?lastModified=" + filesDates;
+                    minifiedAggregatedPath += "?" + filesDates;
                 }
 
                 File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);

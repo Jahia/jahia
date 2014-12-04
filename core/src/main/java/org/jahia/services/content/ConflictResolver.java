@@ -705,26 +705,15 @@ public class ConflictResolver {
                     targetNode.checkout();
                 }
 
-<<<<<<< .working
-            if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
-                targetNode.removeMixin(oldValue.getString());
-            } else {
-                List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
-                List<Value> newValues = new ArrayList<Value>();
-                for (Value value : oldValues) {
-                    if (!equalsValue(value, oldValue)) {
-                        newValues.add(value);
-=======
                 if (propertyName.equals(Constants.JCR_MIXINTYPES)) {
                     targetNode.removeMixin(oldValue.getString());
                 } else {
-                    List<Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
+                    List<? extends Value> oldValues = Arrays.asList(targetNode.getProperty(propertyName).getRealValues());
                     List<Value> newValues = new ArrayList<Value>();
                     for (Value value : oldValues) {
                         if (!equalsValue(value, oldValue)) {
                             newValues.add(value);
                         }
->>>>>>> .merge-right.r51605
                     }
                     if (newValues.isEmpty()) {
                         targetNode.getProperty(propertyName).remove();

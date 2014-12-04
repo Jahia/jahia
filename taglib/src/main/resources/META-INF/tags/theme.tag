@@ -4,13 +4,15 @@
 
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <c:set var="sortAssetsByNodeName" value="${not empty sortAssetsByNodeName ? sortAssetsByNodeName : false}"/>
-
-<jcr:nodeProperty var="theme" node="${renderContext.mainResource.node}" name="j:theme" inherited="true"/>
+<%--@elvariable id="renderContext" type="org.jahia.services.render.RenderContext"--%>
+<jcr:nodeProperty var="theme" node="${renderContext.mainResource.node}" name="j:themeName" inherited="true"/>
 <c:if test="${!empty theme}">
-    <c:if test="${!empty theme}">
-        <c:set var="themeFiles" value="${jcr:getChildrenOfType(theme.node,'jnt:file')}"/>
+    <jcr:node var="themeFolder" path="${renderContext.site.templatePackage.rootFolderPath}/${renderContext.site.templatePackage.version}/templates/files/themes/${theme.string}"/>
+    <c:if test="${!empty themeFolder}">
+        <c:set var="themeFiles" value="${jcr:getChildrenOfType(themeFolder,'jnt:file')}"/>
         <c:if test="${sortAssetsByNodeName}">
             <jcr:sort list="${themeFiles}" properties="false,j:nodename,asc" var="themeFiles" />
         </c:if>

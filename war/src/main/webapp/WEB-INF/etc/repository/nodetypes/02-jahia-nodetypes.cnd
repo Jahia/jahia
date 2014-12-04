@@ -476,7 +476,9 @@
 
 [jmix:theme] mixin
  extends = jnt:page, jnt:template
- - j:theme (weakreference,choicelist[nodes='$currentSiteTemplatesSet/templates/files/themes;jnt:folder'])
+ //deprecated
+ - j:theme (weakreference,choicelist[nodes='$currentSiteTemplatesSet/templates/files/themes;jnt:folder']) nofulltext hidden
+ - j:themeName (string,choicelist[nodes='$currentSiteTemplatesSet/templates/files/themes;jnt:folder;name']) nofulltext
 
 // @since Jahia 7.0
 [jmix:useUILocale] mixin

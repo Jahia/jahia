@@ -183,11 +183,14 @@
         <h2><fmt:message key="siteSettings.user.search.result"/></h2>
         <div class="alert alert-info">
             <c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) lt userDisplayLimit || jcrUserCountLimit lt 0}">
-            <fmt:message key="siteSettings.user.search.found">
-                <fmt:param value="${userCount}"/>
-            </fmt:message></c:if><c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) ge userDisplayLimit}">&nbsp;<fmt:message key="siteSettings.user.search.found.limit">
-                    <fmt:param value="${(userDisplayLimit-searchCriteria.numberOfRemovedJahiaAdministrators)}"/>
+                <fmt:message key="siteSettings.user.search.found">
+                    <fmt:param value="${userCount}"/>
                 </fmt:message>
+            </c:if>
+            <c:if test="${(userCount + searchCriteria.numberOfRemovedJahiaAdministrators) ge userDisplayLimit}">&nbsp;<fmt:message
+                    key="siteSettings.user.search.found.limit">
+                <fmt:param value="${(userDisplayLimit-searchCriteria.numberOfRemovedJahiaAdministrators)}"/>
+            </fmt:message>
             </c:if>
             <c:choose>
                 <c:when test="${searchCriteria.numberOfRemovedJahiaAdministrators eq 1}"><br/><fmt:message key="siteSettings.user.search.renoved.administrator">

@@ -107,8 +107,6 @@ public class ManageGroupsFlowHandler implements Serializable {
 
     private transient JahiaUserManagerService userManagerService;
 
-    private String searchType = "users";
-
     private String siteKey;
 
     public void initRealm(RenderContext renderContext) throws RepositoryException {
@@ -117,7 +115,6 @@ public class ManageGroupsFlowHandler implements Serializable {
             siteKey = ((JCRSiteNode) mainNode).getSiteKey();
         }
     }
-
 
     /**
      * Performs the creation of a new group for the site.
@@ -266,14 +263,31 @@ public class ManageGroupsFlowHandler implements Serializable {
      * 
      * @return a map of all group providers currently registered
      */
-    public List<String> getProviders() throws RepositoryException {
-        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String>>() {
+    public Set<String> getProviders(final boolean isUsers, final boolean includeGlobals) throws RepositoryException {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Set<String>>() {
             @Override
-            public List<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                List<String> providerKeys = new ArrayList<String>();
-                for (JCRStoreProvider provider : groupManagerService.getProviderList(siteKey, session)) {
-                    providerKeys.add(provider.getKey());
+            public Set<String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                Set<String> providerKeys = new HashSet<String>();
+                if(isUsers){
+                    if(includeGlobals) {
+                        for (JCRStoreProvider provider : userManagerService.getProviderList(session)) {
+                            providerKeys.add(provider.getKey());
+                        }
+                    }
+                    for (JCRStoreProvider provider : userManagerService.getProviderList(siteKey, session)) {
+                        providerKeys.add(provider.getKey());
+                    }    
+                } else {
+                    if(includeGlobals) {
+                        for (JCRStoreProvider provider : groupManagerService.getProviderList(null, session)) {
+                            providerKeys.add(provider.getKey());
+                        }
+                    }
+                    for (JCRStoreProvider provider : groupManagerService.getProviderList(siteKey, session)) {
+                        providerKeys.add(provider.getKey());
+                    }
                 }
+
                 return providerKeys;
             }
         });
@@ -455,66 +469,51 @@ public class ManageGroupsFlowHandler implements Serializable {
     }
 
     /**
-     * Performs the group search with the specified search criteria and returns the list of matching groups.
-     * 
-     * @param searchCriteria
-     *            current search criteria
+     * Performs the group search.
+     *
      * @return the list of groups, matching the specified search criteria
      */
-    public Set<JCRGroupNode> search(SearchCriteria searchCriteria) {
-        String searchTerm = searchCriteria.getSearchString();
-        if (StringUtils.isNotEmpty(searchTerm) && searchTerm.indexOf('*') == -1) {
-            searchTerm += '*';
-        }
+    public Set<JCRGroupNode> search() {
         long timer = System.currentTimeMillis();
-        Set<JCRGroupNode> searchResult = PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
-                searchCriteria.getSiteKey(), searchTerm, searchCriteria.getProperties(),
-                searchCriteria.getStoredOn(), searchCriteria.getProviders(), false);
-
+        Set<JCRGroupNode> searchResult = PrincipalViewHelper.getGroupSearchResult(null, siteKey, null, null, null, null, false);
         logger.info("Found {} groups in {} ms", searchResult.size(), System.currentTimeMillis() - timer);
         return searchResult;
     }
 
     /**
      * Performs the group search with the specified search criteria and returns the list of matching groups.
-     *
-     * @param searchCriteria
-     *            current search criteria
      * @return the list of groups, matching the specified search criteria
      */
-    public Set<JCRNodeWrapper> searchNewMembers(SearchCriteria searchCriteria) {
+    public Set<JCRNodeWrapper> searchNewGroupMembers() {
         long timer = System.currentTimeMillis();
 
-        Set<JCRNodeWrapper> searchResult = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>(){
+        Set<JCRNodeWrapper> searchResult = new TreeSet<>(new Comparator<JCRNodeWrapper>(){
             @Override
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return PrincipalViewHelper.getDisplayName(o1).compareToIgnoreCase(PrincipalViewHelper.getDisplayName(o2));
             }
         });
-        boolean searchForUsers = searchType.equals("users");
-        if (searchForUsers) {
-            searchResult.addAll(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
-                    searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
-                    searchCriteria.getProviders()));
-        } else {
-            searchResult.addAll(PrincipalViewHelper.getGroupSearchResult(searchCriteria.getSearchIn(),
-                    searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(),
-                    searchCriteria.getStoredOn(), searchCriteria.getProviders()));
-        }
+        searchResult.addAll(PrincipalViewHelper.getGroupSearchResult(null, siteKey, null, null, null, null));
 
-        logger.info("Found {} {} in {} ms", new Object[] { searchResult.size(), searchForUsers ? "users" : "groups",
-                System.currentTimeMillis() - timer });
+        logger.info("Found {} groups in {} ms", new Object[] { searchResult.size(), System.currentTimeMillis() - timer });
         return searchResult;
     }
 
+    public Set<JCRNodeWrapper> searchNewUserMembers(SearchCriteria searchCriteria) {
+        long timer = System.currentTimeMillis();
 
+        Set<JCRNodeWrapper> searchResult = new TreeSet<>(new Comparator<JCRNodeWrapper>(){
+            @Override
+            public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
+                return PrincipalViewHelper.getDisplayName(o1).compareToIgnoreCase(PrincipalViewHelper.getDisplayName(o2));
+            }
+        });
+        searchResult.addAll(PrincipalViewHelper.getSearchResult(searchCriteria.getSearchIn(),
+                searchCriteria.getSiteKey(), searchCriteria.getSearchString(), searchCriteria.getProperties(), searchCriteria.getStoredOn(),
+                searchCriteria.getProviders()));
 
-    public void setSearchType(String searchType) {
-        this.searchType = searchType;
-    }
-
-    public String getSearchType() {
-        return searchType;
+        logger.info("Found {} users in {} ms", new Object[] { searchResult.size(), System.currentTimeMillis() - timer });
+        return searchResult;
     }
 
     @Autowired

@@ -13,13 +13,12 @@
         <set name="flowScope.siteSettingsProperties" value="siteSettingsProperties" type="java.util.Map" />
     </on-start>
 
-    <view-state id="manageGroups" model="searchCriteria">
+    <view-state id="manageGroups">
         <on-render>
-            <evaluate expression="flowHandler.search(searchCriteria)" result="requestScope.groups"/>
-            <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.search()" result="requestScope.groups"/>
+            <evaluate expression="flowHandler.getProviders(false, false)" result="requestScope.providers"/>
             <evaluate expression="flowHandler.getSystemGroups(requestScope.groups)" result="requestScope.systemGroups"/>
         </on-render>
-        <transition on="search" to="manageGroups"/>
         <transition on="createGroup" to="createGroup" bind="false" validate="false">
             <evaluate expression="flowHandler.initGroup(flowRequestContext)" result="flowScope.group"/>
         </transition>
@@ -52,15 +51,10 @@
     <view-state id="editGroup">
         <on-render>
             <evaluate expression="flowHandler.initCriteria(flowRequestContext)" result="flowScope.memberSearchCriteria"/>
-            <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.getProviders(false, false)" result="requestScope.providers"/>
             <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
         </on-render>
-        <transition on="editGroupMembers" to="editGroupMembers" validate="false">
-
-        </transition>
-        <transition on="addMembers" to="editGroup" validate="false">
-            <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.newMembers, messageContext)"/>
-        </transition>
+        <transition on="editGroupMembers" to="editUsersMembers" validate="false"/>
         <transition on="removeMembers" to="editGroup" validate="false">
             <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.selectedMembers, messageContext)"/>
         </transition>
@@ -68,25 +62,37 @@
         <transition on="cancel" to="manageGroups" bind="false" validate="false"/>
     </view-state>
 
-    <view-state id="editGroupMembers" model="memberSearchCriteria">
+    <view-state id="editUsersMembers" model="memberSearchCriteria">
         <on-render>
-            <evaluate expression="flowHandler.searchNewMembers(memberSearchCriteria)" result="requestScope.principals"/>
-            <evaluate expression="flowHandler.providers" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.searchNewUserMembers(memberSearchCriteria)" result="requestScope.principals"/>
+            <evaluate expression="flowHandler.getProviders(true, true)" result="requestScope.providers"/>
             <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
         </on-render>
 
         <transition on="editGroup" to="editGroup"/>
-        <transition on="search" to="editGroupMembers"/>
-        <transition on="users" to="editGroupMembers" validate="false">
-            <evaluate expression="'users'" result="flowHandler.searchType"/>
-        </transition>
-        <transition on="groups" to="editGroupMembers" validate="false">
-            <evaluate expression="'groups'" result="flowHandler.searchType"/>
-        </transition>
+        <transition on="search" to="editUsersMembers"/>
+        <transition on="editUsers" to="editUsersMembers" validate="false"/>
+        <transition on="editGroups" to="editGroupsMembers" validate="false"/>
         <transition on="save" to="editGroup" validate="false">
             <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.addedMembers, messageContext)"/>
             <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.removedMembers, messageContext)"/>
         </transition>
+    </view-state>
 
+    <view-state id="editGroupsMembers">
+        <on-render>
+            <evaluate expression="flowHandler.searchNewGroupMembers()" result="requestScope.principals"/>
+            <evaluate expression="flowHandler.getProviders(false, true)" result="requestScope.providers"/>
+            <evaluate expression="flowHandler.lookupGroup(flowScope.groupKey)" result="requestScope.group"/>
+        </on-render>
+
+        <transition on="editGroup" to="editGroup"/>
+        <transition on="search" to="editUsersMembers"/>
+        <transition on="editUsers" to="editUsersMembers" validate="false"/>
+        <transition on="editGroups" to="editGroupsMembers" validate="false"/>
+        <transition on="save" to="editGroup" validate="false">
+            <evaluate expression="flowHandler.addMembers(flowScope.groupKey, requestParameters.addedMembers, messageContext)"/>
+            <evaluate expression="flowHandler.removeMembers(flowScope.groupKey, requestParameters.removedMembers, messageContext)"/>
+        </transition>
     </view-state>
 </flow>

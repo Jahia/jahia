@@ -33,22 +33,6 @@
 <c:if test="${isGroupEditable}">
 <template:addResources>
 <script type="text/javascript">
-var newMembersArray = new Array();
-function addOptions(text, value) {
-	$('#newMembers').show();
-	if ($.inArray(value, newMembersArray) == -1) {
-		newMembersArray.push(value);
-		var tokens=text.split('|');
-		var principal=$.trim(tokens[0]);
-		var provider=$.trim(tokens[1]);
-		var name=$.trim(tokens[2]);
-		var displayName=$.trim(tokens[3]);
-		var key = value.substring(0, 1) + ':' + value.substring(1, value.length);
-		$('#newMembersTableBody').append($('<tr><td><input type="hidden" name="newMembers" value="' 
-				+ key + '"/>' + name + '</td><td>'
-				+ displayName + '</td></tr>'));
-		}
-}
 function removeGroupMember(confirmMsg, member) {
 	if (confirm(confirmMsg)) {
 		$.each($(':checkbox[name=selectedMembers]'), function() {
@@ -148,29 +132,6 @@ $(document).ready(function() {
     </c:if>
 
     <div>
-    <c:if test="${isGroupEditable}">
-        <div id="newMembers" style="display:none">
-            <h2><fmt:message key="siteSettings.groups.newMembers"/></h2>
-            <table id="newMembersTable" class="table table-bordered table-striped table-hover" style="width: 50%">
-                <thead>
-                    <tr>
-                        <th><fmt:message key="label.name"/></th>
-                        <th><fmt:message key="label.properties"/></th>
-                    </tr>
-                </thead>
-                <tbody id="newMembersTableBody">
-                </tbody>
-            </table>
-            <button class="btn btn-primary" type="submit" name="_eventId_addMembers" onclick="workInProgress('${i18nWaiting}'); return true;">
-               <i class="icon-ok"></i>
-               &nbsp;<fmt:message key="label.saveChanges"/>
-            </button>
-            <button class="btn" type="submit" name="reset" id="btnNewMembersReset">
-                <i class="icon-ban-circle"></i>
-                &nbsp;<fmt:message key="label.reset"/>
-            </button>
-        </div>
-    </c:if>
         <h2><fmt:message key="members.label"/> (${memberCount})</h2>
         <c:if test="${memberCount > memberDisplayLimit}">
             <div class="alert alert-info">

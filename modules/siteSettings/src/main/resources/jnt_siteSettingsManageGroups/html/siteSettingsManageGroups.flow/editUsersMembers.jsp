@@ -19,101 +19,10 @@
 <%--@elvariable id="flowExecutionUrl" type="java.lang.String"--%>
 <%--@elvariable id="memberSearchCriteria" type="org.jahia.services.usermanager.SearchCriteria"--%>
 
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,jquery.blockUI.js,workInProgress.js,admin-bootstrap.js"/>
-<template:addResources type="css"
-                       resources="admin-bootstrap.css,jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css"/>
-<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
-
-<c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
-<c:set var="members" value="${group.members}"/>
-<c:set var="memberCount" value="${fn:length(members)}"/>
-<c:set var="membersFound" value="${memberCount > 0}"/>
-
-<fmt:message var="i18nRemoveMultipleConfirm" key="siteSettings.groups.removeMembers.confirm"/>
-<fmt:message var="i18nContinue" key="label.confirmContinue"/>
-
-<c:set var="memberDisplayLimit" value="${siteSettingsProperties.memberDisplayLimit}"/>
-
-<c:set var="isGroupEditable" value="${!group.properties['j:external'].boolean}"/>
-
-<c:if test="${flowHandler.searchType eq 'users'}">
-    <c:set var="prefix" value="u:"/>
-    <c:set var="displayUsers" value="selected"/>
-</c:if>
-<c:if test="${flowHandler.searchType eq 'groups'}">
-    <c:set var="prefix" value="g:"/>
-    <c:set var="displayGroups" value="selected"/>
-</c:if>
-
-<script type="text/javascript">
-    var addedMembers = []
-    var removedMembers = []
-    $(document).ready(function() {
-        $(".selectedMember").change(function(event) {
-            v = $(this).val();
-
-            name = '${prefix}' + $(this).attr('value');
-            if ($(this).is(':checked')) {
-                if (removedMembers.indexOf(name) > -1) {
-                    removedMembers.splice(removedMembers.indexOf(name),1)
-                } else {
-                    addedMembers[addedMembers.length] = name
-                }
-            } else {
-                if (addedMembers.indexOf(name) > -1) {
-                    addedMembers.splice(addedMembers.indexOf(name),1)
-                } else {
-                    removedMembers[removedMembers.length] = name
-                }
-            }
-
-            if (addedMembers.length == 0 && removedMembers.length == 0) {
-                $('#saveButton').attr('disabled', 'disabled')
-            } else {
-                $('#saveButton').removeAttr("disabled")
-            }
-//            if ($(this).is(':checked') && $('#removedMembers'))})
-        })
-
-        $('#cbSelectedAllMembers').click(function() {
-            var state=this.checked;
-            $.each($(':checkbox[name="selectedMembers"]'), function() {
-                if (this.checked != state) {
-                    this.checked = state;
-                    $(this).change()
-                }
-            });
-        });
-
-        $("#saveForm").submit(function() {
-            workInProgress('${i18nWaiting}');
-            $("#addedMembers").val(addedMembers)
-            $("#removedMembers").val(removedMembers)
-        })
-    })
-
-</script>
-
-<div>
-    <form action="${flowExecutionUrl}" method="post" style="display: inline;">
-        <div>
-            <button class="btn" type="submit" name="_eventId_editGroup">
-                <i class="icon-arrow-left"></i>
-                &nbsp;<fmt:message key="siteSettings.label.backToGroup"/>
-            </button>
-            <button class="btn ${displayUsers}" type="submit" name="_eventId_users">
-                <img src="<c:url value='/modules/assets/css/img/icon-user-small.png'/>" alt=""/>
-                &nbsp;<fmt:message key="label.users"/>
-            </button>
-
-            <button class="btn ${displayGroups}" type="submit" name="_eventId_groups">
-                <img src="<c:url value='/modules/assets/css/img/icon-group-small.png'/>" alt=""/>
-                &nbsp;<fmt:message key="label.groups"/>
-            </button>
-
-        </div>
-    </form>
-</div>
+<c:set var="prefix" value="u:"/>
+<c:set var="displayUsers" value="selected"/>
+<c:set var="userDisplayLimit" value="${siteSettingsProperties.userDisplayLimit}"/>
+<%@include file="common/editMembersHead.jsp" %>
 
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">
@@ -133,8 +42,7 @@
             </div>
             <c:if test="${multipleProvidersAvailable}">
                 <br/>
-                <label for="storedOn"><span class="badge badge-info"><fmt:message
-                        key="label.on"/></span></label>
+                <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
                 <input type="radio" name="storedOn" value="everywhere"
                     ${empty memberSearchCriteria.storedOn || memberSearchCriteria.storedOn == 'everywhere' ? ' checked="checked" ' : ''}
                        onclick="$('.provCheck').attr('disabled',true);">&nbsp;<fmt:message
@@ -147,8 +55,8 @@
 
                 <c:forEach items="${providers}" var="curProvider">
                     <input type="checkbox" class="provCheck" name="providers" value="${curProvider}"
-                        ${searchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
-                        ${empty searchCriteria.providers || functions:contains(searchCriteria.providers, curProvider) ? 'checked="checked"' : ''}/>
+                        ${memberSearchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
+                        ${empty memberSearchCriteria.providers || functions:contains(memberSearchCriteria.providers, curProvider) ? 'checked="checked"' : ''}/>
                     <fmt:message var="i18nProviderLabel" key="providers.${curProvider}.label"/>
                     ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider : i18nProviderLabel)}
                 </c:forEach>
@@ -166,18 +74,17 @@
         <i class="icon-ok icon-white"></i>
         &nbsp;<fmt:message key="label.save"/>
     </button>
-
 </form>
 
 <div>
     <c:set var="principalsCount" value="${fn:length(principals)}"/>
     <c:set var="principalsFound" value="${principalsCount > 0}"/>
 
-    <c:if test="${principalsCount > memberDisplayLimit}">
+    <c:if test="${principalsCount > userDisplayLimit}">
         <div class="alert alert-info">
-            <fmt:message key="siteSettings.${flowHandler.searchType}.found">
+            <fmt:message key="siteSettings.users.found">
                 <fmt:param value="${principalsCount}"/>
-                <fmt:param value="${memberDisplayLimit}"/>
+                <fmt:param value="${userDisplayLimit}"/>
             </fmt:message>
         </div>
     </c:if>
@@ -187,7 +94,7 @@
         <tr>
             <th width="2%"><input type="checkbox" name="selectedAllMembers" id="cbSelectedAllMembers"/></th>
             <th><fmt:message key="label.name"/></th>
-            <c:if test="${flowHandler.searchType eq 'users'}"><th width="43%" class="sortable"><fmt:message key="label.properties"/></th></c:if>
+            <th width="43%" class="sortable"><fmt:message key="label.properties"/></th>
             <c:if test="${multipleProvidersAvailable}">
                 <th width="10%"><fmt:message key="column.provider.label"/></th>
             </c:if>
@@ -201,13 +108,13 @@
                 </tr>
             </c:when>
             <c:otherwise>
-                <c:forEach items="${principals}" var="principal" end="${memberDisplayLimit - 1}" varStatus="loopStatus">
+                <c:forEach items="${principals}" var="principal" end="${userDisplayLimit - 1}" varStatus="loopStatus">
                     <tr>
-                        <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${flowHandler.searchType eq 'users' ? principal.userKey : principal.groupKey}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
+                        <td><input class="selectedMember" type="checkbox" name="selectedMembers" value="${principal.userKey}" ${functions:contains(members, principal) ? 'checked="checked"' : ''}/> </td>
                         <td>
                             ${fn:escapeXml(user:displayName(principal))}
                         </td>
-                        <c:if test="${flowHandler.searchType eq 'users'}"> <td>${user:fullName(principal)}</td></c:if>
+                        <td>${user:fullName(principal)}</td>
 
                         <c:if test="${multipleProvidersAvailable}">
                             <fmt:message var="i18nProviderLabel" key="providers.${principal.providerName}.label"/>
@@ -219,7 +126,6 @@
         </c:choose>
         </tbody>
     </table>
-
 </div>
 
 

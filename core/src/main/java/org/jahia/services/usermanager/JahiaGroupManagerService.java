@@ -124,8 +124,6 @@ public class JahiaGroupManagerService extends JahiaService {
     }
 
     private JahiaUserManagerService userManagerService;
-    
-    private List<String> jahiaJcrEnforcedGroups;
 
     private Map<String, JahiaGroupManagerProvider> legacyGroupProviders = new HashMap<String, JahiaGroupManagerProvider>();
     
@@ -143,10 +141,6 @@ public class JahiaGroupManagerService extends JahiaService {
 
     public void setUserManagerService(JahiaUserManagerService userManagerService) {
         this.userManagerService = userManagerService;
-    }
-
-    public void setJahiaJcrEnforcedGroups(List<String> jahiaJcrEnforcedGroups) {
-        this.jahiaJcrEnforcedGroups = jahiaJcrEnforcedGroups;
     }
 
     @Override
@@ -437,41 +431,29 @@ public class JahiaGroupManagerService extends JahiaService {
 
     public Set<JCRGroupNode> searchGroups(String siteKey, Properties searchCriterias, String[] providers, boolean excludeProtected, JCRSessionWrapper session) {
         try {
-            Set<JCRGroupNode> users = new HashSet<JCRGroupNode>();
+            Set<JCRGroupNode> groups = new HashSet<JCRGroupNode>();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuilder query = new StringBuilder(
-                        "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g WHERE "
-                );
-                if (excludeProtected) {
-                    for (String g : PROTECTED_GROUPS) {
-                        query.append("[j:nodename] <> '").append(g).append("' AND ");
-                    }
-                }
-                List<JCRStoreProvider> searchOnProviders = getProviders(siteKey, providers, session);
-                if (!searchOnProviders.isEmpty()) {
-                    query.append("(");
-                    int initialLength = query.length();
-                    for (JCRStoreProvider provider : searchOnProviders) {
-                        query.append(query.length() > initialLength ? " OR " : "");
-                        if (provider.isDefault()) {
-                            query.append("(g.[j:external] = false AND ");
-                            if(siteKey == null){
-                                query.append("ISDESCENDANTNODE(g, '/groups'))");
+                StringBuilder query = new StringBuilder(128);
+
+                // Add provider to query
+                if(providers != null) {
+                    List<JCRStoreProvider> onProviders = getProviders(siteKey, providers, session);
+                    if (!onProviders.isEmpty()) {
+                        query.append("(");
+                        for (JCRStoreProvider provider : onProviders) {
+                            query.append(query.length() > 1 ? " OR " : "");
+                            if (provider.isDefault()) {
+                                query.append("g.[j:external] = false");
                             } else {
-                                query.append("ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups'))");
+                                query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
                             }
-                        } else {
-                            query.append("ISDESCENDANTNODE(g, '").append(provider.getMountPoint()).append("')");
                         }
-                    }
-                    query.append(")");
-                } else {
-                    if (siteKey == null) {
-                        query.append("ISDESCENDANTNODE(g, '/groups')");
+                        query.append(")");
                     } else {
-                        query.append("ISDESCENDANTNODE(g, '/sites/").append(siteKey).append("/groups')");
+                        return groups;
                     }
                 }
+
                 if (searchCriterias != null && searchCriterias.size() > 0) {
                     // Avoid wildcard attribute
                     if (!(searchCriterias.containsKey("*") && searchCriterias.size() == 1 &&
@@ -479,7 +461,7 @@ public class JahiaGroupManagerService extends JahiaService {
                         Iterator<Map.Entry<Object, Object>> objectIterator =
                                 searchCriterias.entrySet().iterator();
                         if (objectIterator.hasNext()) {
-                            query.append(" AND (");
+                            query.append(query.length() > 0 ? " AND " : "").append(" (");
                             while (objectIterator.hasNext()) {
                                 Map.Entry<Object, Object> entry = objectIterator.next();
                                 String propertyKey = (String) entry.getKey();
@@ -511,22 +493,33 @@ public class JahiaGroupManagerService extends JahiaService {
                         }
                     }
                 }
+
+                if (query.length() > 0) {
+                    query.insert(0, " and ");
+                }
+                if (excludeProtected) {
+                    for (String g : PROTECTED_GROUPS) {
+                        query.insert(0, " and [j:nodename] <> '" + g + "'");
+                    }
+                }
+                String s = (siteKey == null) ? "/groups/" : "/sites/" + siteKey + "/groups/";
+                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g where isdescendantnode(g,'" + s + "')");
                 query.append(" ORDER BY g.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
                 }
-                Query q = session.getWorkspace().getQueryManager()
-                        .createQuery(query.toString(), Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery(query.toString(),
+                        Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
-                    Node usersFolderNode = ni.nextNode();
-                    users.add((JCRGroupNode) usersFolderNode);
+                    groups.add((JCRGroupNode) ni.nextNode());
                 }
             }
-            return users;
+
+            return groups;
         } catch (RepositoryException e) {
-            logger.error("Error while searching groups", e);
+            logger.error("Error while searching for groups", e);
             return new HashSet<JCRGroupNode>();
         }
     }

@@ -486,18 +486,22 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 StringBuilder query = new StringBuilder(128);
 
                 // Add provider to query
-                List<JCRStoreProvider> providers = getProviders(siteKey, providerKeys, session);
-                if (!providers.isEmpty()) {
-                    query.append("(");
-                    for (JCRStoreProvider provider : providers) {
-                        query.append(query.length() > 1 ? " OR " : "");
-                        if (provider.isDefault()) {
-                            query.append("u.[j:external] = false");
-                        } else {
-                            query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
+                if(providerKeys != null) {
+                    List<JCRStoreProvider> providers = getProviders(siteKey, providerKeys, session);
+                    if (!providers.isEmpty()) {
+                        query.append("(");
+                        for (JCRStoreProvider provider : providers) {
+                            query.append(query.length() > 1 ? " OR " : "");
+                            if (provider.isDefault()) {
+                                query.append("u.[j:external] = false");
+                            } else {
+                                query.append("ISDESCENDANTNODE('").append(provider.getMountPoint()).append("')");
+                            }
                         }
+                        query.append(")");
+                    } else {
+                        return users;
                     }
-                    query.append(")");
                 }
 
                 // Add criteria

@@ -42,7 +42,6 @@ function submitGroupForm(act, group) {
                 "iDisplayLength": 25,
                 "sPaginationType": "bootstrap",
                 "aaSorting": [], //this option disable sort by default, the user steal can use column names to sort the table
-                "bStateSave": true,
                 "fnDrawCallback": function (o) {
                     // auto scroll to top on paginate
                     if ( o._iDisplayStart != oldStart ) {
@@ -61,47 +60,6 @@ function submitGroupForm(act, group) {
 <h2><fmt:message key="siteSettings.label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
-
-<div class="box-1">
-    <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">
-        <input type="hidden" id="searchIn" name="searchIn" value="allProps"/>
-        <fieldset>
-            <h2><fmt:message key="label.search"/></h2>
-            <div class="input-append">
-                <label style="display: none;"  for="searchString"><fmt:message key="label.search"/></label>
-                <input class="span6" type="text" id="searchString" name="searchString"
-                       value='${searchCriteria.searchString}'
-                       onkeydown="if (event.keyCode == 13) submitForm('search');"/>
-                <button class="btn btn-primary" type="submit" name="_eventId_search">
-                    <i class="icon-search icon-white"></i>
-                    &nbsp;<fmt:message key='label.search'/>
-                </button>
-            </div>
-            <c:if test="${multipleProvidersAvailable}">
-                <br/>
-                <label for="storedOn"><span class="badge badge-info"><fmt:message key="label.on"/></span></label>
-                <input type="radio" name="storedOn" value="everywhere" 
-                    ${empty searchCriteria.storedOn || searchCriteria.storedOn == 'everywhere' ? ' checked="checked" ' : ''}   
-                    onclick="$('.provCheck').attr('disabled',true);">&nbsp;<fmt:message
-                    key="label.everyWhere"/>
-
-                <input type="radio" name="storedOn" value="providers"
-                       ${searchCriteria.storedOn == 'providers' ? 'checked="checked"' : ''}
-                       onclick="$('.provCheck').removeAttr('disabled');"/>&nbsp;<fmt:message
-                    key="label.providers"/>
-                    
-                <c:forEach items="${providers}" var="curProvider">
-                    <input type="checkbox" class="provCheck" name="providers" value="${curProvider}"
-                           ${searchCriteria.storedOn != 'providers' ? 'disabled="disabled"' : ''}
-                           ${empty searchCriteria.providers || functions:contains(searchCriteria.providers, curProvider) ? 'checked="checked"' : ''}/>
-                    <fmt:message var="i18nProviderLabel" key="providers.${curProvider}.label"/>
-                    ${fn:escapeXml(fn:contains(i18nProviderLabel, '???') ? curProvider : i18nProviderLabel)}
-                </c:forEach>
-            </c:if>
-        </fieldset>
-    </form>
-</div>
-
 
 <div>
     <div>
@@ -163,6 +121,8 @@ function submitGroupForm(act, group) {
                 <c:when test="${!groupsFound}">
                     <tr>
                         <td colspan="${multipleProvidersAvailable ? '4' : '3'}"><fmt:message key="label.noItemFound"/></td>
+                        <td style="display: none"></td>
+                        <td style="display: none"></td>
                     </tr>
                 </c:when>
                 <c:otherwise>
@@ -186,9 +146,11 @@ function submitGroupForm(act, group) {
                                 <a style="margin-bottom:0;" class="btn btn-small" title="${i18nEdit}" href="#edit" onclick="submitGroupForm('editGroup', '${grp.groupKey}'); return false;">
                                     <i class="icon-edit"></i>
                                 </a>
-                                <a style="margin-bottom:0;" class="btn btn-small" title="${i18nCopy}" href="#copy" onclick="submitGroupForm('copyGroup', '${grp.groupKey}'); return false;">
-                                    <i class="icon-share"></i>
-                                </a>
+                                <c:if test="${!grp.properties['j:external'].boolean}">
+                                    <a style="margin-bottom:0;" class="btn btn-small" title="${i18nCopy}" href="#copy" onclick="submitGroupForm('copyGroup', '${grp.groupKey}'); return false;">
+                                        <i class="icon-share"></i>
+                                    </a>
+                                </c:if>
                                 <c:if test="${!grp.properties['j:external'].boolean && !functions:contains(systemGroups, grp.groupKey)}">
                                     <a style="margin-bottom:0;" class="btn btn-danger btn-small" title="${i18nRemove}" href="#delete" onclick="if (confirm('${i18nRemoveConfirm}')) { workInProgress('${i18nWaiting}'); submitGroupForm('removeGroup', '${grp.groupKey}');} return false;">
                                         <i class="icon-remove icon-white"></i>

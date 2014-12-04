@@ -6,16 +6,6 @@
 
     <bean id="JahiaGroupManagerService" class="org.jahia.services.usermanager.JahiaGroupManagerService" parent="jahiaServiceTemplate" factory-method="getInstance">
         <property name="userManagerService" ref="JahiaUserManagerService"/>
-        <property name="jahiaJcrEnforcedGroups">
-            <list value-type="java.lang.String">
-                <value>guest</value>
-                <value>users</value>
-                <value>administrators</value>
-                <value>privileged</value>
-                <value>site-administrators</value>
-                <value>site-privileged</value>
-            </list>
-        </property>
         <property name="cacheHelper">
             <bean class="org.jahia.services.usermanager.GroupCacheHelper">
                 <property name="ehCacheProvider" ref="ehCacheProvider"/>

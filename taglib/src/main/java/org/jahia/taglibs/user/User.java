@@ -232,6 +232,8 @@ public class User {
                         }
                     }
                 }
+            } else {
+                return true;
             }
         }
         return false;

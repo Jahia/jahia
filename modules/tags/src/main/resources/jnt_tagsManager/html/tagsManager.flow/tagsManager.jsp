@@ -26,6 +26,7 @@
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.min.js,datatables/dataTables.bootstrap-ext.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
+<template:addResources type="javascript" resources="underscore.min.js"/>
 <template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagsManager.js"/>
 
@@ -146,7 +147,7 @@
                 </thead>
                 <tbody>
                 <c:set scope="page" var="totalTags" value="0"/>
-                <c:forEach items="${tagsList}" var="tag">
+                <c:forEach items="${tagsList}" var="tag" varStatus="tagsListIndex">
                     <c:set var="totalTags" value="${totalTags+tag.value}"/>
                     <tr>
                         <td>
@@ -157,7 +158,7 @@
                         </td>
                         <td>
                             <div class="btn-group pull-right">
-                                <button type="button" class="btn btn-primary" onclick="viewUsages('${functions:escapeJavaScript(tag.key)}')">
+                                <button type="button" class="btn btn-primary" onclick="viewUsages('${fn:escapeXml(functions:escapeJavaScript(tag.key))}')">
                                     <i class="fa fa-search"></i>&nbsp;<fmt:message key="jnt_tagsManager.label.viewUsages"/>
                                 </button>
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
@@ -165,12 +166,12 @@
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="#" onclick="bbRenameTag('${functions:escapeJavaScript(tag.key)}')">
+                                        <a href="#" onclick="bbRenameTag('${fn:escapeXml(functions:escapeJavaScript(tag.key))}')">
                                             <i class="fa fa-pencil"></i>&nbsp;<fmt:message key="label.rename"/>
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="#" class="text-danger" onclick="bbDeleteTag('${functions:escapeJavaScript(tag.key)}')">
+                                        <a href="#" class="text-danger" onclick="bbDeleteTag('${fn:escapeXml(functions:escapeJavaScript(tag.key))}')">
                                             <i class="fa fa-trash"></i>&nbsp;<fmt:message key="label.delete"/>
                                         </a>
                                     </li>
@@ -183,9 +184,6 @@
             </table>
         </div>
     </div>
-    <div class="row-fluid">
-        <span>${totalTags}</span>
-    </div>
 </div>
 <div class="row-fluid hide">
     <form:form id="formTagsManagement" action="${flowExecutionUrl}" method="post">
@@ -194,3 +192,4 @@
         <input type="hidden" id="tagNewName" name="tagNewName">
     </form:form>
 </div>
+

@@ -26,6 +26,7 @@
 <template:addResources type="javascript" resources="jquery-ui.min.js,jquery.blockUI.js,workInProgress.js"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.min.js,datatables/dataTables.bootstrap-ext.js,i18n/jquery.dataTables-${currentResource.locale}.js"/>
 <template:addResources type="javascript" resources="bootbox.min.js"/>
+<template:addResources type="javascript" resources="underscore.min.js"/>
 <template:addResources type="javascript" resources="typeahead.min.js"/>
 <template:addResources type="javascript" resources="tagUsages.js"/>
 
@@ -190,7 +191,7 @@
 <div class="row-fluid hide">
     <form:form id="formTagManagement" action="${flowExecutionUrl}" method="post">
         <input type="hidden" id="eventInput" name="_eventId_">
-        <input id="selectedTag" type="hidden" name="selectedTag" value="${currentTagName}">
+        <input id="selectedTag" type="hidden" name="selectedTag" value="${fn:escapeXml(currentTagName)}">
         <input type="hidden" id="nodeToUpdateId" name="nodeToUpdateId"/>
         <input type="hidden" id="tagNewName" name="tagNewName">
     </form:form>

@@ -72,6 +72,7 @@
 package org.jahia.modules.tags.webflow;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.query.ScrollableQuery;
@@ -173,7 +174,7 @@ public class TagsFlowHandler implements Serializable {
                     }
                 }
             } catch (RepositoryException e){
-                // TODO display error, something goes wrong with global operations, the unit operations on node are fail safe and are handle by the TagManagerActionCallback
+                messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.renameAll.serverIssue", renderContext.getUILocale(), selectedTag, e.getMessage())).build());
             } finally {
                 JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
@@ -197,7 +198,7 @@ public class TagsFlowHandler implements Serializable {
                 }
             }
         } catch (RepositoryException e){
-            // TODO display error, something goes wrong with global operations, the unit operations on node are fail safe and are handle by the TagManagerActionCallback
+            messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.deleteAll.serverIssue", renderContext.getUILocale(), selectedTag, e.getMessage())).build());
         } finally {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
         }
@@ -208,7 +209,7 @@ public class TagsFlowHandler implements Serializable {
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
 
-            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + selectedTag + "')";
+            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] = '" + Text.escapeIllegalXpathSearchChars(selectedTag).replaceAll("'", "''") + "')";
             QueryManager qm = session.getWorkspace().getQueryManager();
             Query q = qm.createQuery(query, Query.JCR_SQL2);
 
@@ -231,20 +232,21 @@ public class TagsFlowHandler implements Serializable {
         if (StringUtils.isNotEmpty(tagNewName)) {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             JCRNodeWrapper node = null;
-            try {
-                // remove Capital and special character from tag
-                tagNewName = taggingService.getTagHandler().execute(tagNewName);
-                for (String workspace : workspaces) {
-                    node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
-                    taggingService.renameTag(node, selectedTag, tagNewName);
-                    node.getSession().save();
+            // remove Capital and special character from tag
+            tagNewName = taggingService.getTagHandler().execute(tagNewName);
+
+            for (String workspace : workspaces) {
+                try {
+                        node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
+                        taggingService.renameTag(node, selectedTag, tagNewName);
+                        node.getSession().save();
+                } catch (RepositoryException e) {
+                    if (node != null) {
+                        messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
+                    }
+                } finally {
+                    JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
                 }
-            } catch (RepositoryException e) {
-                if (node != null) {
-                    messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
-                }
-            } finally {
-                JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
         } else {
             messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaTags", "jnt_tagsManager.error.newNameEmpty", renderContext.getUILocale())).build());

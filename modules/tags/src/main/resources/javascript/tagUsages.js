@@ -24,7 +24,7 @@ function bbRenameTag(nodeID) {
     bootbox.dialog({
         title: "<h3>" + jsVarMap.labelRename + " : " + $('#selectedTag').val() + "<h3>",
         message: "<p>" + jsVarMap.labelTagNewName +
-            "</p><input id='renameTag' class='typeahead' type='text' value='" + $('#selectedTag').val() + "'>" +
+            "</p><input id='renameTag' class='typeahead' type='text' value='" + _.escape($('#selectedTag').val()) + "'>" +
             "<script>" +
                 "$('.modal-body').css('overflow', 'visible');" +
                 "$('#renameTag').keyup(function() {" +

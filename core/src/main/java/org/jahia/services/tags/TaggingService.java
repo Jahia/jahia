@@ -81,6 +81,7 @@ import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
@@ -492,7 +493,7 @@ public class TaggingService extends JahiaService{
 
     private <X> X updateOrDeleteTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, String tagNewName, TagActionCallback<X> callback) throws RepositoryException{
         String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + startPath + "') AND " +
-                "(result.[j:tagList] = '" + selectedTag + "')";
+                "(result.[j:tagList] = '" + Text.escapeIllegalXpathSearchChars(selectedTag).replaceAll("'", "''") + "')";
         QueryManager qm = session.getWorkspace().getQueryManager();
         Query q = qm.createQuery(query, Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();

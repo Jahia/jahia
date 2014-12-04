@@ -18,7 +18,7 @@ function bbRenameTag(oldName) {
     bootbox.dialog({
         title: "<h3>" + jsVarMap.labelRename + " : " + oldName + "<h3>",
         message: "<p>" + jsVarMap.labelTagNewName +
-                 "</p><input id='renameTag' class='typeahead' type='text' value='" + oldName + "'>" +
+                 "</p><input id='renameTag' class='typeahead' type='text' value='" + _.escape(oldName) + "'>" +
                  "<script>" +
                      "$('.modal-body').css('overflow', 'visible');" +
                      "$('#renameTag').keyup(function() {" +

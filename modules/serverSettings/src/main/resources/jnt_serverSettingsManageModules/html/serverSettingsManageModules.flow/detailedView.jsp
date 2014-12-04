@@ -168,23 +168,11 @@
                                     <input type="hidden" name="module" value="${activeVersion.id}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <input type="hidden" name="version" value="${activeVersion.version}"/>
-                                    <c:choose>
-                                        <c:when test="${(fn:startsWith(activeVersion.scmURI, 'scm:git') and not empty activeVersion.scmTag)
-                                                    or (fn:startsWith(activeVersion.scmURI, 'scm:svn')
-                                                        and (fn:containsIgnoreCase(activeVersion.scmURI, '/tags/') or fn:containsIgnoreCase(activeVersion.scmURI, '/branches/')))}">
-                                            <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
-                                            <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
-                                                <i class="icon-download"></i>
-                                                &nbsp;${i18nDownloadSources}
-                                            </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button class="btn btn-block button-download" type="submit" name="_eventId_viewDownloadForm" onclick="">
-                                                <i class="icon-download"></i>
-                                                &nbsp;${i18nDownloadSources}
-                                            </button>
-                                        </c:otherwise>
-                                    </c:choose>
+                                    <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
+                                    <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                        <i class="icon-download"></i>
+                                        &nbsp;${i18nDownloadSources}
+                                    </button>
                                 </form>
                             </c:if>
                         </c:when>
@@ -231,7 +219,7 @@
                                     <input type="hidden" name="version" value="${activeVersion.version}"/>
                                     <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
                                     <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
-                                    <button class="btn btn-block button-download" type="submit" name="_eventId_duplicateModuleForm">
+                                    <button class="btn btn-block button-download" type="submit" name="_eventId_downloadTempSources">
                                         <i class="icon-share"></i>
                                         &nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>
                                     </button>

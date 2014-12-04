@@ -37,6 +37,7 @@
         </transition>
         <transition on="viewDownloadForm" to="viewDownloadForm"/>
         <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
+        <transition on="downloadTempSources" to="downloadTempSources"/>
         <transition on="startModule" to="startModule"/>
         <transition on="stopModule" to="stopModule"/>
         <transition on="undeployModule" to="undeployModule"/>
@@ -90,12 +91,9 @@
         <transition on="downloadSources" to="downloadSources">
             <evaluate expression="flowHandler.validateScmInfo(requestParameters.scmUri, requestParameters.branchOrTag, requestParameters.version, flowScope)"/>
         </transition>
-        <transition on="viewDownloadForm" to="viewDownloadForm">
-            <set value="requestParameters.currentModule" name="flowScope.currentModule"/>
-            <set value="requestParameters.scmUri" name="flowScope.scmUri"/>
-            <set value="requestParameters.version" name="flowScope.version"/>
-        </transition>
+        <transition on="viewDownloadForm" to="viewDownloadForm"/>
         <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
+        <transition on="downloadTempSources" to="downloadTempSources"/>
         <transition on="viewDetails" to="detailedView"/>
         <transition on="enable" to="enableOnSite"/>
         <transition on="disable" to="disableFromSite"/>
@@ -121,6 +119,22 @@
         </transition>
     </action-state>
 
+    <action-state id="downloadTempSources">
+        <on-entry>
+            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
+            <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
+            <evaluate expression="requestParameters.branchOrTag?:flowScope.branchOrTag" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowHandler.validateScmInfo(flowScope.scmUri, flowScope.branchOrTag, flowScope.version, flowScope)"/>
+        </on-entry>
+        <evaluate expression="JahiaTemplateManagerService.checkoutTempModule(flowScope.scmUri, flowScope.branchOrTag, flowScope.module, flowScope.version)" result="flowScope.tempSources"/>
+        <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
+            <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
+            <evaluate expression="flowHandler.logError(rootCauseException)"/>
+        </transition>
+        <transition to="duplicateModuleForm"/>
+    </action-state>
+
     <end-state id="sourceDownloadEnd"/>
 
     <view-state id="duplicateModuleForm">
@@ -129,6 +143,7 @@
             <evaluate expression="requestParameters.moduleId?:flowScope.moduleId" result="flowScope.moduleId"/>
             <evaluate expression="requestParameters.groupId?:flowScope.groupId" result="flowScope.groupId"/>
             <evaluate expression="requestParameters.srcPath?:flowScope.srcPath" result="flowScope.srcPath"/>
+            <evaluate expression="flowScope.tempSources == null ? null : flowScope.tempSources.path" result="flowScope.srcPath"/>
             <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
             <evaluate expression="requestParameters.newScmUri?:flowScope.newScmUri" result="flowScope.newScmUri"/>
             <evaluate expression="requestParameters.branchOrTag?:flowScope.branchOrTag" result="flowScope.branchOrTag"/>
@@ -136,7 +151,7 @@
             <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
             <evaluate expression="flowHandler.getModuleNodetypes(flowScope.moduleId)" result="flowScope.moduleNodetypes"/>
             <evaluate expression="flowScope.branchTagInfos ?: (flowScope.srcPath != null || flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.branchOrTag ?: (flowScope.srcPath != null || flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos))" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
         </on-entry>
         <transition on="duplicateModule" to="duplicateModule"/>
         <transition on="cancelDuplicate" to="duplicateCanceled"/>
@@ -151,7 +166,7 @@
             <evaluate expression="flowScope.srcPath != null ? flowScope.scmUri : requestParameters.newScmUri" result="flowScope.newScmUri"/>
             <evaluate expression="requestParameters.branchOrTag" result="flowScope.branchOrTag"/>
         </on-entry>
-        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.newScmUri, flowScope.branchOrTag, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
+        <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.newScmUri, flowScope.branchOrTag, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, flowScope.tempSources != null, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
         <transition on-exception="org.osgi.framework.BundleException" to="view">
             <set name="flashScope.error" value="rootCauseException"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>

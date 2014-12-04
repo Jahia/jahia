@@ -546,7 +546,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public JahiaTemplatesPackage duplicateModule(String dstModuleName, String dstModuleId, String dstGroupId, String srcPath, String scmURI, String branchOrTag,
-                                                 String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session)
+                                                 String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder , JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(dstModuleName)) {
             throw new RepositoryException("Cannot create module because no module name has been specified");
@@ -576,7 +576,6 @@ public class ModuleBuildHelper implements InitializingBean {
         }
 
         File srcFolder;
-        boolean deleteSrcFolder = false;
         if (srcPath == null) {
             try {
                 srcFolder = scmHelper.checkoutTmpModule(srcModuleId, srcModuleVersion, scmURI, branchOrTag);

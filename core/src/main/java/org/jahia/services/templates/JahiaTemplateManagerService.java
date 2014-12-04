@@ -79,6 +79,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.Model;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dom4j.DocumentException;
 import org.dom4j.io.OutputFormat;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
@@ -254,8 +255,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return scmHelper.checkoutModule(moduleSources, scmURI, branchOrTag, moduleId, version, session);
     }
 
-    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String branchOrTag, String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
-        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, branchOrTag, srcModuleId, srcModuleVersion, uninstallSrcModule, dstPath, session);
+    public File checkoutTempModule(String scmURI, String branchOrTag, String moduleId,
+                                   String version) throws RepositoryException, XmlPullParserException, DocumentException, IOException {
+        return scmHelper.checkoutTmpModule(moduleId, version, scmURI, branchOrTag);
+    }
+
+    public JahiaTemplatesPackage duplicateModule(String moduleName, String moduleId, String groupId, String srcPath, String scmURI, String branchOrTag, String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {
+        return moduleBuildHelper.duplicateModule(moduleName, moduleId, groupId, srcPath, scmURI, branchOrTag, srcModuleId, srcModuleVersion, uninstallSrcModule, dstPath, deleteSrcFolder, session);
     }
 
     public JCRNodeWrapper createModule(String moduleName, String artifactId, String groupId, String moduleType, File sources, JCRSessionWrapper session) throws IOException, RepositoryException, BundleException {

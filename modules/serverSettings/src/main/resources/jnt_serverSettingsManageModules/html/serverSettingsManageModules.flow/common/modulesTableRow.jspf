@@ -98,23 +98,11 @@
                                 <input type="hidden" name="module" value="${entry.key}"/>
                                 <input type="hidden" name="scmUri" value="${currentModule.scmURI}"/>
                                 <input type="hidden" name="version" value="${currentModule.version}"/>
-                                <c:choose>
-                                    <c:when test="${(fn:startsWith(currentModule.scmURI, 'scm:git') and not empty currentModule.scmTag)
-                                                    or (fn:startsWith(currentModule.scmURI, 'scm:svn')
-                                                        and (fn:containsIgnoreCase(currentModule.scmURI, '/tags/') or fn:containsIgnoreCase(currentModule.scmURI, '/branches/')))}">
-                                        <input type="hidden" name="branchOrTag" value="${currentModule.scmTag}"/>
-                                        <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
-                                            <i class="icon-download"></i>
-                                            &nbsp;${i18nDownloadSources}
-                                        </button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button class="btn btn-block button-download" type="submit" name="_eventId_viewDownloadForm" onclick="">
-                                            <i class="icon-download"></i>
-                                            &nbsp;${i18nDownloadSources}
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
+                                <input type="hidden" name="branchOrTag" value="${currentModule.scmTag}"/>
+                                <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                    <i class="icon-download"></i>
+                                    &nbsp;${i18nDownloadSources}
+                                </button>
                             </form>
                         </c:if>
                     </c:when>
@@ -124,23 +112,11 @@
                                 <input type="hidden" name="module" value="${entry.key}"/>
                                 <input type="hidden" name="scmUri" value="${defaultVersion.scmURI}"/>
                                 <input type="hidden" name="version" value="${defaultVersion.version}"/>
-                                <c:choose>
-                                    <c:when test="${(fn:startsWith(defaultVersion.scmURI, 'scm:git') and not empty defaultVersion.scmTag)
-                                                    or (fn:startsWith(defaultVersion.scmURI, 'scm:svn')
-                                                        and (fn:containsIgnoreCase(defaultVersion.scmURI, '/tags/') or fn:containsIgnoreCase(defaultVersion.scmURI, '/branches/')))}">
-                                        <input type="hidden" name="branchOrTag" value="${defaultVersion.scmTag}"/>
-                                        <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
-                                            <i class="icon-download"></i>
-                                            &nbsp;${i18nDownloadSources}
-                                        </button>
-                                    </c:when>
-                                    <c:otherwise>
-                                        <button class="btn btn-block button-download" type="submit" name="_eventId_viewDownloadForm" onclick="">
-                                            <i class="icon-download"></i>
-                                            &nbsp;${i18nDownloadSources}
-                                        </button>
-                                    </c:otherwise>
-                                </c:choose>
+                                <input type="hidden" name="branchOrTag" value="${defaultVersion.scmTag}"/>
+                                <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                    <i class="icon-download"></i>
+                                    &nbsp;${i18nDownloadSources}
+                                </button>
                             </form>
                         </c:if>
                     </c:when>

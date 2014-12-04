@@ -32,7 +32,9 @@
             <evaluate expression="flowHandler.getLastModulesUpdateTime()" result="requestScope.lastModulesUpdate"/>
         </on-render>
 
-        <transition on="downloadSources" to="downloadSources"/>
+        <transition on="downloadSources" to="downloadSources">
+            <evaluate expression="flowHandler.validateScmInfo(requestParameters.scmUri, requestParameters.branchOrTag, requestParameters.version, flowScope)"/>
+        </transition>
         <transition on="viewDownloadForm" to="viewDownloadForm"/>
         <transition on="duplicateModuleForm" to="duplicateModuleForm"/>
         <transition on="startModule" to="startModule"/>
@@ -67,8 +69,8 @@
             <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
-            <evaluate expression="flowScope.branchTagInfos ?: (flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.newScmUri != null ? null : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.branchTagInfos ?: flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri)" result="flowScope.branchTagInfos"/>
+            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
         </on-entry>
         <transition on="downloadSources" to="downloadSources"/>
         <transition on="cancel" to="sourceDownloadEnd"/>
@@ -106,7 +108,7 @@
 
     <action-state id="downloadSources">
         <on-entry>
-            <evaluate expression="requestParameters.newScmUri?:(requestParameters.scmUri?:flowScope.scmUri)" result="flowScope.scmUri"/>
+            <evaluate expression="requestParameters.scmUri?:flowScope.scmUri" result="flowScope.scmUri"/>
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="requestParameters.branchOrTag?:flowScope.branchOrTag" result="flowScope.branchOrTag"/>

@@ -14,7 +14,7 @@
     <template:addResources type="inlinejavascript">
         <script type="text/javascript">
             $(document).ready(function() {
-                $("#newScmUri").change(function() {
+                $("#scmUri").change(function() {
                     var selectedBranchTag = $(this).find('option:selected').text();
                     if (selectedBranchTag == "${scmMaster}") {
                         selectedBranchTag = "";
@@ -35,9 +35,9 @@
     <c:choose>
         <c:when test="${not empty branchTagInfos}">
             <fieldset>
-                <label for="newScmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
+                <label for="scmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
                 <input type="hidden" id="branchOrTag" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
-                <select name="newScmUri" id="newScmUri">
+                <select name="scmUri" id="scmUri">
                     <c:forEach var="branchTagInfo" items="${branchTagInfos}">
                         <option value="${branchTagInfo.value}" ${branchTagInfo.key eq branchOrTag ? 'selected' : ''}>${branchTagInfo.key}</option>
                     </c:forEach>
@@ -48,10 +48,10 @@
             <fieldset>
                 <div class="row-fluid">
                     <div class="span2">
-                        <label for="newScmUriText"><fmt:message key="serverSettings.manageModules.downloadSources.scmUri" /></label>
+                        <label for="scmUriText"><fmt:message key="serverSettings.manageModules.downloadSources.scmUri" /></label>
                     </div>
                     <div class="span10">
-                        <input class="span12" type="text" id="newScmUriText" name="newScmUri" value="${not empty newScmUri ? newScmUri : scmUri}"/>
+                        <input class="span12" type="text" id="scmUriText" name="scmUri" value="${not empty scmUri ? scmUri : scmUri}"/>
                     </div>
                 </div>
                 <div class="row-fluid">

@@ -298,8 +298,13 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public Map<String, String> getTagInfos(String uri) throws IOException {
-        String base = StringUtils.substringBeforeLast(uri, "/trunk") + "/tags/";
-        String path = StringUtils.substringAfterLast(uri, "/trunk/");
+        String separator = "/trunk";
+        Iterator<String> it = Arrays.asList("/branches", "/tags").iterator();
+        while (!StringUtils.contains(uri, separator) && it.hasNext()) {
+            separator = it.next();
+        }
+        String base = StringUtils.substringBeforeLast(uri, separator) + "/tags/";
+        String path = StringUtils.substringAfterLast(uri, separator + "/");
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);
@@ -312,8 +317,13 @@ public class SvnSourceControlManagement extends SourceControlManagement {
 
     @Override
     public Map<String, String> getBranchInfos(String uri) throws IOException {
-        String base = StringUtils.substringBeforeLast(uri, "/trunk") + "/branches/";
-        String path = StringUtils.substringAfterLast(uri, "/trunk/");
+        String separator = "/trunk";
+        Iterator<String> it = Arrays.asList("/branches", "/tags").iterator();
+        while (!StringUtils.contains(uri, separator) && it.hasNext()) {
+            separator = it.next();
+        }
+        String base = StringUtils.substringBeforeLast(uri, separator) + "/branches/";
+        String path = StringUtils.substringAfterLast(uri, separator + "/");
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);

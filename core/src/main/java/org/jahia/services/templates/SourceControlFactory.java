@@ -111,19 +111,9 @@ public class SourceControlFactory {
      */
     public SourceControlManagement checkoutRepository(File workingDir, String scmURI, String branchOrTag, boolean initRepository)
             throws IOException {
-        SourceControlManagement scm = null;
-
-        if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-
-            if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
-                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
-            } else if (scmProvider.equals("svn") && sourceControlExecutables.containsKey("svn")) {
-                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
-            } else {
-                throw new IOException("Unknown repository type");
-            }
+        SourceControlManagement scm = getSCM(scmURI);
+        if (scm != null) {
+            String scmUrl = getScmURL(scmURI);
             if (initRepository) {
                 scm.sendToSCM(workingDir, scmUrl);
             } else  {
@@ -140,17 +130,9 @@ public class SourceControlFactory {
      * @throws IOException
      */
     public Map<String, String> listTags(String scmURI) throws IOException {
-        if (scmURI.startsWith("scm:")) {
-            String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-            SourceControlManagement scm = null;
-            if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
-                scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
-            } else if (scmProvider.equals("svn") && sourceControlExecutables.containsKey("svn")) {
-                scm = new SvnSourceControlManagement(sourceControlExecutables.get("svn"));
-            } else {
-                throw new IOException("Unknown repository type");
-            }
+        SourceControlManagement scm = getSCM(scmURI);
+        if (scm != null) {
+            String scmUrl = getScmURL(scmURI);
             return scm.getTagInfos(scmUrl);
         }
         return null;
@@ -164,10 +146,18 @@ public class SourceControlFactory {
      * @throws IOException
      */
     public Map<String, String> listBranches(String scmURI) throws IOException {
+        SourceControlManagement scm = getSCM(scmURI);
+        if (scm != null) {
+            String scmUrl = getScmURL(scmURI);
+            return scm.getBranchInfos(scmUrl);
+        }
+        return null;
+    }
+
+    private SourceControlManagement getSCM(String scmURI) throws IOException {
+        SourceControlManagement scm = null;
         if (scmURI.startsWith("scm:")) {
             String scmProvider = scmURI.substring(4, scmURI.indexOf(":", 4));
-            String scmUrl = scmURI.substring(scmURI.indexOf(":", 4) + 1);
-            SourceControlManagement scm = null;
             if (scmProvider.equals("git") && sourceControlExecutables.containsKey("git")) {
                 scm = new GitSourceControlManagement(sourceControlExecutables.get("git"));
             } else if (scmProvider.equals("svn") && sourceControlExecutables.containsKey("svn")) {
@@ -175,9 +165,12 @@ public class SourceControlFactory {
             } else {
                 throw new IOException("Unknown repository type");
             }
-            return scm.getBranchInfos(scmUrl);
         }
-        return null;
+        return scm;
+    }
+
+    private String getScmURL(String scmURI) {
+        return scmURI.substring(scmURI.indexOf(":", 4) + 1);
     }
 
     /**

@@ -106,6 +106,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.webflow.core.collection.MutableAttributeMap;
 import org.springframework.webflow.execution.RequestContext;
 
 import javax.jcr.RepositoryException;
@@ -800,25 +801,25 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
-    public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTag) {
+    public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTags) {
         String[] splitVersion = StringUtils.split(StringUtils.removeEnd(moduleVersion, "-SNAPSHOT"), ".");
         if (moduleVersion.endsWith("-SNAPSHOT")) {
             String branch;
             if (splitVersion.length >= 3) {
                 branch = String.format("JAHIA-%s-%s-%s-X-BRANCH", splitVersion);
-                if (branchOrTag.containsKey(branch)) {
+                if (branchOrTags.containsKey(branch)) {
                     return branch;
                 }
             }
             if (splitVersion.length >= 2) {
                 branch = String.format("JAHIA-%s-%s-X-X-BRANCH", splitVersion);
-                if (branchOrTag.containsKey(branch)) {
+                if (branchOrTags.containsKey(branch)) {
                     return branch;
                 }
             }
             if (splitVersion.length >= 1) {
                 branch = splitVersion[0] + "_x";
-                if (branchOrTag.containsKey(branch)) {
+                if (branchOrTags.containsKey(branch)) {
                     return branch;
                 }
             }
@@ -826,26 +827,36 @@ public class ModuleManagementFlowHandler implements Serializable {
             if (splitURI.length > 2) {
                 if ("svn".equals(splitURI[1])) {
                     branch = "trunk";
-                    if (branchOrTag.containsKey(branch)) {
+                    if (branchOrTags.containsKey(branch)) {
                         return branch;
                     }
                 } else if ("git".equals(splitURI[1])) {
                     branch = "master";
-                    if (branchOrTag.containsKey(branch)) {
+                    if (branchOrTags.containsKey(branch)) {
                         return branch;
                     }
                 }
             }
         } else {
             String tag = StringUtils.join(splitVersion, '_');
-            if (branchOrTag.containsKey(tag)) {
+            if (branchOrTags.containsKey(tag)) {
                 return tag;
             }
             tag = "JAHIA_" + tag;
-            if (branchOrTag.containsKey(tag)) {
+            if (branchOrTags.containsKey(tag)) {
                 return tag;
             }
         }
         return null;
+    }
+
+    public void validateScmInfo(String scmUri, String branchOrTag, String moduleVersion, MutableAttributeMap flashScope) throws IOException {
+        if ((StringUtils.startsWith(scmUri, "scm:git:") && StringUtils.isBlank(branchOrTag))
+                || (StringUtils.startsWith(scmUri, "scm:svn:") && StringUtils.contains(scmUri, "/trunk/"))) {
+            Map<String, String> branchTagInfos = listBranchOrTags(moduleVersion, scmUri);
+            flashScope.put("branchTagInfos", branchTagInfos);
+            branchOrTag = guessBranchOrTag(moduleVersion, scmUri, branchTagInfos);
+            flashScope.put("branchOrTag", branchOrTag);
+        }
     }
 }

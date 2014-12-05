@@ -518,16 +518,24 @@ public class JahiaSitesService extends JahiaService {
         modulesToUninstall.remove("default");
         modulesToUninstall.remove(((JCRSiteNode) site).getTemplatePackage().getId());
 
+        String siteKey = site.getSiteKey();
+        for (JahiaTemplatesPackage availableTemplatePackage : templateService.getAvailableTemplatePackages()) {
+            String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
+            if (autoDeployOnSite != null
+                && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
+                modulesToUninstall.remove(availableTemplatePackage.getId());
+            }
+        }
         // un-install modules if there are any
         if (!modulesToUninstall.isEmpty()) {
             List<JahiaTemplatesPackage> uninstalledModules = moduleIdsToTemplatesPackage(modulesToUninstall, templateService);
             // uninstall modules that are not needed anymore
             try {
-                logger.info("Uninstalling modules " + uninstalledModules + " from " + site.getSiteKey());
+                logger.info("Uninstalling modules " + uninstalledModules + " from " + siteKey);
                 templateService.uninstallModules(uninstalledModules, site.getJCRLocalPath(), session);
             } catch (RepositoryException re) {
                 logger.error("Unable to uninstall modules " + uninstalledModules + " from "
-                        + site.getSiteKey() + ". Cause: " + re.getMessage(), re);
+                        + siteKey + ". Cause: " + re.getMessage(), re);
             }
         }
 
@@ -541,11 +549,11 @@ public class JahiaSitesService extends JahiaService {
             List<JahiaTemplatesPackage> toInstallModules = moduleIdsToTemplatesPackage(modulesToInstall, templateService);
             // install new modules
             try {
-                logger.info("Installing modules " + toInstallModules + " to " + site.getSiteKey());
+                logger.info("Installing modules " + toInstallModules + " to " + siteKey);
                 templateService.installModules(toInstallModules, site.getJCRLocalPath(), session);
             } catch (RepositoryException re) {
                 logger.error("Unable to install modules " + toInstallModules + " to "
-                        + site.getSiteKey() + ". Cause: " + re.getMessage(), re);
+                        + siteKey + ". Cause: " + re.getMessage(), re);
             }
         }
     }

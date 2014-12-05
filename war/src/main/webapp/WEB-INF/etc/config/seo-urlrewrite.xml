@@ -32,7 +32,7 @@
         <note>Add language to URL if not present</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
+        <condition type="path-info" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <from>^/cms/(.*)$</from>
         <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
@@ -43,8 +43,8 @@
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
+        <condition type="path-info" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
+        <condition type="path-info" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
         <to>/cms/$1sites/%{attribute:jahiaSiteKeyForCurrentServerName}/$3</to>
     </rule>

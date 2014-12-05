@@ -440,23 +440,39 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @param status the new status of this provider
      */
     public void setMountStatus(final JCRMountPointNode.MountStatus status) {
-        if (status != null && isDynamicallyMounted()) {
-            try {
-                JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
-                    @Override
-                    public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        JCRNodeWrapper node = session.getNodeByIdentifier(getKey());
-                        if (node instanceof JCRMountPointNode) {
-                            JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
-                            mountPointNode.setMountStatus(status);
-                            session.save();
+        if (status != null) {
+            if (isDynamicallyMounted()) {
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        @Override
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            JCRNodeWrapper node = session.getNodeByIdentifier(getKey());
+                            if (node instanceof JCRMountPointNode) {
+                                JCRMountPointNode mountPointNode = (JCRMountPointNode) node;
+                                mountPointNode.setMountStatus(status);
+                                session.save();
+                            }
+                            return null;
                         }
-                        return null;
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Couldn't retrieve session to update mount point status", e);
+                }
+            } else {
+                stop();
+                if (status == JCRMountPointNode.MountStatus.waiting) {
+                    getService().getProviderChecker().checkPeriodically(this);
+                } else if (status == JCRMountPointNode.MountStatus.mounted) {
+                    try {
+                        start();
+                        isAvailable();
+                    } catch (JahiaInitializationException e) {
+                        logger.warn("Issue while trying to start an external provider ({}) upon startup" +getMountPoint());
+                        getService().getProviderChecker().checkPeriodically(this);
                     }
-                });
-            } catch (RepositoryException e) {
-                logger.error("Couldn't retrieve session to update mount point status", e);
+                }
             }
+
         }
     }
 

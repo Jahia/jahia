@@ -134,6 +134,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         this.providerChecker = providerChecker;
     }
 
+    public JCRStoreProviderChecker getProviderChecker() {
+        return providerChecker;
+    }
+
     private JCRStoreService() {
         super();
     }

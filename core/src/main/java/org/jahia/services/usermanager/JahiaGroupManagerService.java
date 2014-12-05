@@ -700,14 +700,14 @@ public class JahiaGroupManagerService extends JahiaService {
         return usernameCorrect;
     }
 
-    public void flushMembershipCache(String memberPath) {
+    public void flushMembershipCache(String memberPath, JCRSessionWrapper session) {
         final String key = StringUtils.substringAfter(memberPath, "/j:members/");
 
         // If member is a group, recurse on all members
-        JCRGroupNode groupNode = lookupGroupByPath("/" + key);
+        JCRGroupNode groupNode = lookupGroupByPath("/" + key, session);
         if (groupNode != null) {
             for (JCRNodeWrapper member : groupNode.getMembers()) {
-                flushMembershipCache("/" + key + "/j:members" + member.getPath());
+                flushMembershipCache("/" + key + "/j:members" + member.getPath(), session);
             }
             if (groupNode.getPath().equals(JahiaGroupManagerService.GUEST_GROUPPATH) ||
                     groupNode.getPath().equals(JahiaGroupManagerService.USERS_GROUPPATH) ||

@@ -75,11 +75,11 @@ import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
+import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 
 import javax.jcr.AccessDeniedException;
-import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
 
@@ -189,5 +189,10 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
      */
     protected WorkspaceInfo createWorkspaceInfo(WorkspaceConfig wspConfig) {
         return new JahiaWorkspaceInfo(wspConfig);
+    }
+
+    @Override
+    protected NodeId getSystemExcludedNodeId() {
+        return JahiaSearchIndex.SKIP_VERSION_INDEX ? RepositoryImpl.VERSION_STORAGE_NODE_ID : null;
     }
 }

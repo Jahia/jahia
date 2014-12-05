@@ -95,6 +95,7 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.core.stats.StatManager;
 import org.slf4j.Logger;
@@ -586,6 +587,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
         setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
         setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
+        setSystemProperty(JahiaSearchIndex.SKIP_VERSION_INDEX_SYSTEM_PROPERTY, getString(JahiaSearchIndex.SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
         
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
         

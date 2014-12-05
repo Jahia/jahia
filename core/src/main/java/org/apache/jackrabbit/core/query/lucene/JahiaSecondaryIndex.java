@@ -1,5 +1,6 @@
 package org.apache.jackrabbit.core.query.lucene;
 
+import org.apache.jackrabbit.core.RepositoryImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.OnWorkspaceInconsistency;
 import org.apache.jackrabbit.core.query.QueryHandlerContext;
@@ -14,6 +15,7 @@ import org.apache.tika.parser.Parser;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -51,8 +53,8 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
             excludedIDs.add(context.getExcludedNodeId());
         } else {
             // Avoid parsing of version storage
-            if (mainIndex.isSkipVersionIndex()) {
-                excludedIDs.add(new NodeId("deadbeef-face-babe-cafe-babecafebabe"));
+            if (JahiaSearchIndex.SKIP_VERSION_INDEX) {
+                excludedIDs.add(RepositoryImpl.VERSION_STORAGE_NODE_ID);
             }
         }
 

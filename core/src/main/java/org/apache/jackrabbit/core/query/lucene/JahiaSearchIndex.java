@@ -72,6 +72,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.id.NodeId;
@@ -109,6 +110,7 @@ import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -121,6 +123,12 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
+
+    public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
+
+    public static final boolean SKIP_VERSION_INDEX = Boolean.valueOf(System.getProperty(
+            SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
+
     private Boolean versionIndex;
 
     private int maxClauseCount = 1024;
@@ -132,8 +140,6 @@ public class JahiaSearchIndex extends SearchIndex {
     private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
 
     private Set<String> ignoredTypes;
-
-    private boolean skipVersionIndex = true;
 
     private volatile boolean switching = false;
 
@@ -203,14 +209,6 @@ public class JahiaSearchIndex extends SearchIndex {
         this.ignoredTypes = Sets.newHashSet(StringUtils.split(ignoredTypes));
     }
 
-    public boolean isSkipVersionIndex() {
-        return skipVersionIndex;
-    }
-
-    public void setSkipVersionIndex(boolean skipVersionIndex) {
-        this.skipVersionIndex = skipVersionIndex;
-    }
-
     public int getDefaultWaitTime() {
         return defaultWaitTime;
     }
@@ -222,7 +220,7 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     protected void doInit() throws IOException {
         Set<String> ignoredTypes = new HashSet<>();
-        if (skipVersionIndex && isVersionIndex()) {
+        if (SKIP_VERSION_INDEX && isVersionIndex()) {
             ignoredTypes.add("{" + Name.NS_REP_URI + "}versionStorage");
             ignoredTypes.add("{" + Name.NS_NT_URI + "}versionHistory");
             ignoredTypes.add("{" + Name.NS_NT_URI + "}version");

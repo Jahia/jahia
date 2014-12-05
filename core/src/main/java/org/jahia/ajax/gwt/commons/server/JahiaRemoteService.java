@@ -154,18 +154,18 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected Locale getLocale() {
-        Locale locale = LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang"));
-        return locale;
+        return LanguageCodeConverters.languageCodeToLocale(request.getParameter("lang"));
     }
 
     private Locale getFallbackLocale() throws GWTJahiaServiceException {
         Locale fallback = null;
 
         try {
-            if (request.getParameter("site") == null) {
+            final String siteParam = request.getParameter("site");
+            if (siteParam == null) {
                 return null;
             }
-            JCRSiteNode site = (JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace()).getNodeByUUID(request.getParameter("site"));
+            JCRSiteNode site = (JCRSiteNode) JCRSessionFactory.getInstance().getCurrentUserSession(getWorkspace()).getNodeByUUID(siteParam);
 
             if (site.isMixLanguagesActive()) {
                 fallback = LanguageCodeConverters.getLocaleFromCode(site.getDefaultLanguage());
@@ -186,8 +186,9 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected JCRSiteNode getSite() {
         try {
-            if (!StringUtils.isEmpty(request.getParameter("site"))) {
-                return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(request.getParameter("site"));
+            final String site = request.getParameter("site");
+            if (!StringUtils.isEmpty(site)) {
+                return (JCRSiteNode) retrieveCurrentSession().getNodeByUUID(site);
             } else {
                 return (JCRSiteNode) retrieveCurrentSession().getNode(JCRContentUtils.getSystemSitePath());
             }
@@ -203,8 +204,9 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      * @return
      */
     protected String getWorkspace() {
-        if (!StringUtils.isEmpty(request.getParameter("workspace"))) {
-            return request.getParameter("workspace");
+        final String workspace = request.getParameter("workspace");
+        if (!StringUtils.isEmpty(workspace)) {
+            return workspace;
         }
         return "default";
     }
@@ -216,10 +218,11 @@ public abstract class JahiaRemoteService implements RemoteService, ServletContex
      */
     protected Locale getUILocale() throws GWTJahiaServiceException {
         Locale sessionLocale = (Locale) getSession().getAttribute(Constants.SESSION_UI_LOCALE);
-        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), sessionLocale) : UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode(), LanguageCodeConverters.resolveLocaleForGuest(request));
+        final JCRUserNode remoteJahiaUserNode = getRemoteJahiaUserNode();
+        Locale locale = sessionLocale != null ? UserPreferencesHelper.getPreferredLocale(remoteJahiaUserNode, sessionLocale) : UserPreferencesHelper.getPreferredLocale(remoteJahiaUserNode, LanguageCodeConverters.resolveLocaleForGuest(request));
         if (locale == null) {
             if(!JahiaUserManagerService.isGuest(getRemoteJahiaUser())) {
-                locale = UserPreferencesHelper.getPreferredLocale(getRemoteJahiaUserNode());
+                locale = UserPreferencesHelper.getPreferredLocale(remoteJahiaUserNode);
             }
             if (locale == null) {
                 locale = getLocale();

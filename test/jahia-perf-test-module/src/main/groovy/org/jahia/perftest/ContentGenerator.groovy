@@ -55,7 +55,7 @@ class ContentGenerator {
      * */
     def randomTextGeneratorLanguage = ['en', 'cn', 'nl', 'fin', 'fr', 'de', 'el', 'il', 'it', 'jp', 'ltn', 'pl', 'pt', 'ru', 'sr', 'es']
 
-    def randomTextGenerator = { language = 'en' ->
+    def randomTextGenerator(language = 'en') {
         when:
         final URLConnection connection = new URL('http://randomtextgenerator.com/').openConnection()
         connection.setDoOutput(true)
@@ -68,7 +68,7 @@ class ContentGenerator {
 
     def rand = new Random();
 
-    def addExpiration = { JCRNodeWrapper node ->
+    def addExpiration(JCRNodeWrapper node) {
         if (withExpiration) {
             if (nbContents % percentageExpiration == 0) {
                 node.addMixin("jmix:cache")
@@ -85,7 +85,7 @@ class ContentGenerator {
     def rolesDefinition = [new HashSet<String>(["editor-in-chief"]), new HashSet<String>(["editor"]), new HashSet<String>(["owner"]), new HashSet<String>(["reviewer"]), new HashSet<String>(["contributor"])]
     def addAcl = { JCRNodeWrapper node, groupName -> node.grantRoles(groupName, rolesDefinition[rand.nextInt(rolesDefinition.size())]) }
 
-    def createContent = { JCRNodeWrapper page, int nbRow, int nbText ->
+    def createContent(page, nbRow, nbText) {
         println "Create content for " + page.getPath()
         def random = new Random();
         JCRNodeWrapper area = page.getNode("pagecontent")
@@ -121,7 +121,7 @@ class ContentGenerator {
 
     }
 
-    def updateContent = { JCRNodeWrapper page, int nbRow, int nbText, locale ->
+    def updateContent(page, nbRow, nbText, locale) {
         def random = new Random();
         JCRNodeWrapper area = page.getNode("pagecontent")
         (1..nbRow).each {
@@ -151,8 +151,7 @@ class ContentGenerator {
 
     def VanityUrlManager vanityUrlManager = (VanityUrlManager) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlManager")
 
-    def generateContent = {
-        siteName, nbPagesFirstLevel, nbPagesSecondLevel, nbPagesThirdLevel, nbRowPerPage, nbTextPerPage, randomElements = false, publishFirstLevelOnEachIteration = false, createVanity = true ->
+    def generateContent(siteName, nbPagesFirstLevel, nbPagesSecondLevel, nbPagesThirdLevel, nbRowPerPage, nbTextPerPage, randomElements = false, publishFirstLevelOnEachIteration = false, createVanity = true) {
             JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, Locale.ENGLISH,
                     new JCRCallback<Object>() {
                         public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
@@ -221,8 +220,7 @@ class ContentGenerator {
     }
 
 
-    def updateContentForLanguages = {
-        siteName, nbPagesFirstLevel, nbPagesSecondLevel, nbPagesThirdLevel, nbRowPerPage, nbTextPerPage, languages = languagesList, publishFirstLevelOnEachIteration = false ->
+    def updateContentForLanguages(siteName, nbPagesFirstLevel, nbPagesSecondLevel, nbPagesThirdLevel, nbRowPerPage, nbTextPerPage, languages = languagesList, publishFirstLevelOnEachIteration = false) {
             languages.each { language ->
                 locale = new java.util.Locale(language);
                 JCRTemplate.getInstance().doExecuteWithSystemSession(null, Constants.EDIT_WORKSPACE, locale,
@@ -270,7 +268,7 @@ class ContentGenerator {
             }
     }
 
-    def createGroups = { String site = null ->
+    def createGroups(String site = null) {
         def randUsers = new Random()
         def service = ServicesRegistry.instance.jahiaGroupManagerService
         def userService = ServicesRegistry.instance.jahiaUserManagerService
@@ -319,7 +317,7 @@ class ContentGenerator {
         }
     }
 
-    def createUsers = { String site = null ->
+    def createUsers(String site = null) {
         def userService = ServicesRegistry.instance.jahiaUserManagerService
         if (userService.lookupUser("userGroovy_" + (site != null ? site + "_0" : "0")) == null) {
             def session = JCRSessionFactory.instance.getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH)
@@ -338,7 +336,7 @@ class ContentGenerator {
 
     def modules = ["tags"]
 
-    def createSite = { siteKey ->
+    def createSite(siteKey) {
         def sitesService = ServicesRegistry.instance.jahiaSitesService
         if (sitesService.getSiteByKey(siteKey) == null) {
             def session = JCRSessionFactory.instance.getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH)

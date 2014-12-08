@@ -85,7 +85,17 @@ $(document).ready(function() {
 
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 <c:set var="members" value="${group.members}"/>
-<c:set var="memberCount" value="${fn:length(members)}"/>
+
+<c:if test="${not isGroupEditable}">
+    <c:forEach items="${members}" var="member" begin="${memberDisplayLimit}" end="${memberDisplayLimit}" varStatus="loopStatus">
+        <c:set var="memberCount" value="${memberDisplayLimit + 1}"/>
+    </c:forEach>
+</c:if>
+
+<c:if test="${empty memberCount}">
+    <c:set var="memberCount" value="${fn:length(members)}"/>
+</c:if>
+
 <c:set var="membersFound" value="${memberCount > 0}"/>
 
 <form action="${flowExecutionUrl}" method="post" style="display: inline;">
@@ -132,11 +142,15 @@ $(document).ready(function() {
     </c:if>
 
     <div>
-        <h2><fmt:message key="members.label"/> (${memberCount})</h2>
+        <h2><fmt:message key="members.label"/> <c:if test="${isGroupEditable}">(${memberCount})</c:if></h2>
         <c:if test="${memberCount > memberDisplayLimit}">
             <div class="alert alert-info">
+                <c:if test="${isGroupEditable}">
                 <fmt:message key="siteSettings.groups.members.found">
                     <fmt:param value="${memberCount}"/>
+                </fmt:message>
+                </c:if>
+                <fmt:message key="siteSettings.groups.first.shown">
                     <fmt:param value="${memberDisplayLimit}"/>
                 </fmt:message>
                 <input type="hidden" id="memberFormDisplayLimit" name="displayLimit" value="<%= Integer.MAX_VALUE %>" />

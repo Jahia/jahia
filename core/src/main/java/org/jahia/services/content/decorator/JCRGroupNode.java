@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content.decorator;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -127,25 +128,12 @@ public class JCRGroupNode extends JCRNodeDecorator {
     }
 
     public List<JCRNodeWrapper> getMembers() {
-        List<JCRNodeWrapper> result = null;
         try {
-            result = new ArrayList<JCRNodeWrapper>();
-            getMembers(getNode("j:members"), result);
+            return new GroupNodeMembers(this);
         } catch (RepositoryException e) {
-            logger.error("Cannot read group members",e);
+            logger.error("Cannot get member nodes");
         }
-        return result;
-    }
-
-    private void getMembers(JCRNodeWrapper members, List<JCRNodeWrapper> result) throws RepositoryException {
-        JCRNodeIteratorWrapper ni = members.getNodes();
-        for (JCRNodeWrapper wrapper : ni) {
-            if (wrapper.isNodeType("jnt:members")) {
-                getMembers(wrapper, result);
-            } else if (wrapper.isNodeType("jnt:member")) {
-                result.add(wrapper.getProperty("j:member").getValue().getNode());
-            }
-        }
+        return Collections.emptyList();
     }
 
     public Set<JCRUserNode> getRecursiveUserMembers() {

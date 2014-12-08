@@ -84,6 +84,7 @@ import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.core.session.SessionContext;
 import org.apache.jackrabbit.core.state.*;
 import org.apache.jackrabbit.spi.Name;
+import org.apache.jackrabbit.spi.NameFactory;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.apache.jackrabbit.spi.commons.query.qom.QueryObjectModelTree;
 import org.apache.lucene.analysis.Analyzer;
@@ -139,8 +140,10 @@ public class JahiaSearchIndex extends SearchIndex {
 
     private Set<String> typesUsingOptimizedACEIndexation = new HashSet<String>();
 
-    private Set<String> ignoredTypes;
+    private Set<Name> ignoredTypes;
 
+    private String ignoredTypesString;
+    
     private volatile boolean switching = false;
 
     private int defaultWaitTime = 500;
@@ -201,12 +204,12 @@ public class JahiaSearchIndex extends SearchIndex {
         this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
     }
 
-    public Set<String> getIgnoredTypes() {
+    public Set<Name> getIgnoredTypes() {
         return ignoredTypes;
     }
 
     public void setIgnoredTypes(String ignoredTypes) {
-        this.ignoredTypes = Sets.newHashSet(StringUtils.split(ignoredTypes));
+        this.ignoredTypesString = ignoredTypes;
     }
 
     public int getDefaultWaitTime() {
@@ -219,25 +222,33 @@ public class JahiaSearchIndex extends SearchIndex {
 
     @Override
     protected void doInit() throws IOException {
-        Set<String> ignoredTypes = new HashSet<>();
+        Set<Name> ignoredTypes = new HashSet<>();
+        NameFactory nf = NameFactoryImpl.getInstance();
         if (SKIP_VERSION_INDEX && isVersionIndex()) {
-            ignoredTypes.add("{" + Name.NS_REP_URI + "}versionStorage");
-            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionHistory");
-            ignoredTypes.add("{" + Name.NS_NT_URI + "}version");
-            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionLabels");
-            ignoredTypes.add("{" + Name.NS_NT_URI + "}frozenNode");
-            ignoredTypes.add("{" + Name.NS_NT_URI + "}versionedChild");
+            ignoredTypes.add(nf.create(Name.NS_REP_URI, "versionStorage"));
+            ignoredTypes.add(nf.create(Name.NS_NT_URI, "versionHistory"));
+            ignoredTypes.add(nf.create(Name.NS_NT_URI, "version"));
+            ignoredTypes.add(nf.create(Name.NS_NT_URI, "versionLabels"));
+            ignoredTypes.add(nf.create(Name.NS_NT_URI, "frozenNode"));
+            ignoredTypes.add(nf.create(Name.NS_NT_URI, "versionedChild"));
         }
-        if (this.ignoredTypes != null) {
-            for (String s : this.ignoredTypes) {
-                if (!s.startsWith("{")) {
-                    try {
-                        s = "{" + getContext().getNamespaceRegistry().getURI(StringUtils.substringBefore(s,":")) + "}" + StringUtils.substringAfter(s,":");
-                    } catch (NamespaceException e) {
-                        log.error("Cannot parse namespace for "+s);
+        if (ignoredTypesString != null) {
+            for (String s : StringUtils.split(ignoredTypesString, ", ")) {
+                try {
+                    if (!s.startsWith("{")) {
+                        try {
+                            ignoredTypes.add(nf.create(
+                                    getContext().getNamespaceRegistry().getURI(StringUtils.substringBefore(s, ":")),
+                                    StringUtils.substringAfter(s, ":")));
+                        } catch (NamespaceException e) {
+                            log.error("Cannot parse namespace for " + s, e);
+                        }
+                    } else {
+                        ignoredTypes.add(nf.create(s));
                     }
+                } catch (IllegalArgumentException iae) {
+                    log.error("Illegal node type name: " + s, iae);
                 }
-                ignoredTypes.add(s);
             }
         }
         this.ignoredTypes = ignoredTypes;
@@ -339,14 +350,17 @@ public class JahiaSearchIndex extends SearchIndex {
         }
 
         if (ignoredTypes != null && !ignoredTypes.isEmpty()) {
-            List<NodeState> l = new LinkedList<NodeState>();
+            List<NodeState> l = null;
             while (add.hasNext()) {
                 NodeState state = add.next();
-                if (!ignoredTypes.contains(state.getNodeTypeName().toString())) {
+                if (!ignoredTypes.contains(state.getNodeTypeName())) {
+                    if (l == null) {
+                        l = new LinkedList<NodeState>();
+                    }
                     l.add(state);
                 }
             }
-            add = l.iterator();
+            add = l != null ? l.iterator() : Collections.<NodeState>emptyIterator();
         }
 
         if (isVersionIndex()) {
@@ -696,17 +710,24 @@ public class JahiaSearchIndex extends SearchIndex {
         try {
             ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail, true);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            log.error("Unable to schedule background job for re-indexing", e);
         }
     }
 
     public void reindexAndSwitch() throws RepositoryException, IOException {
+        long startTime = System.currentTimeMillis();
+
         File dest = new File(getPath() + ".old." + System.currentTimeMillis());
         FileUtils.deleteQuietly(new File(newIndex.getPath()));
+        log.info("Start initializing new index");
         newIndex.newIndexInit();
+        log.info("New index initialized in {} ms", System.currentTimeMillis() - startTime);
+        long startTimeIntern = System.currentTimeMillis();
         newIndex.replayDelayedUpdates(newIndex);
-        log.info("Reindexation over, switching to new index");
+        log.info("Delayed updates replayed in {} ms", System.currentTimeMillis() - startTimeIntern);
 
+        log.info("Reindexing has finished, switching to new index...");
+        startTimeIntern = System.currentTimeMillis();
         try {
             switching = true;
 
@@ -715,9 +736,8 @@ public class JahiaSearchIndex extends SearchIndex {
 
             new File(getPath()).renameTo(dest);
             new File(newIndex.getPath()).renameTo(new File(getPath()));
-            log.info("New index deployed, reloading " + getPath() );
+            log.info("New index deployed, reloading {}", getPath());
             init(fs, getContext());
-            List<JahiaSecondaryIndex.DelayedIndexUpdate> delayedUpdates = newIndex.getDelayedUpdates();
 
             newIndex.replayDelayedUpdates(this);
             log.info("New index ready");
@@ -725,7 +745,10 @@ public class JahiaSearchIndex extends SearchIndex {
             newIndex = null;
             switching = false;
         }
+        log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
         FileUtils.deleteQuietly(dest);
+
+        log.info("Re-indexing operation is completed in {} ms", System.currentTimeMillis() - startTime);
     }
 
     private void quietClose(JahiaSearchIndex index) {
@@ -734,12 +757,12 @@ public class JahiaSearchIndex extends SearchIndex {
                 index.getSpellChecker().close();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("Unable to close spell checker", e);
         }
         try {
             index.index.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.warn("Unable to close index", e);
         }
     }
 

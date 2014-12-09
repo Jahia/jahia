@@ -82,7 +82,7 @@ import java.util.List;
 
 /**
  * Represents a deleted node fact.
- * 
+ *
  * @author toto
  */
 public class DeletedNodeFact implements NodeFact {
@@ -138,7 +138,7 @@ public class DeletedNodeFact implements NodeFact {
         this.identifier = identifier;
     }
 
-    public JCRSessionWrapper getSession() {
+    public JCRSessionWrapper getSession() throws RepositoryException {
         return session;
     }
 

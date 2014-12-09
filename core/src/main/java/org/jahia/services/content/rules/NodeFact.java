@@ -71,18 +71,20 @@
  */
 package org.jahia.services.content.rules;
 
+import org.jahia.services.content.JCRSessionWrapper;
+
 import javax.jcr.RepositoryException;
 
 /**
  * Common interface for node facts in rules engine.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface NodeFact {
 
     /**
      * Returns the UUID of the corresponding node.
-     * 
+     *
      * @return the UUID of the corresponding nodeo
      * @throws RepositoryException
      *             in case of a repository access error
@@ -91,7 +93,7 @@ public interface NodeFact {
 
     /**
      * Returns the parent node fact.
-     * 
+     *
      * @return the parent node fact
      * @throws RepositoryException
      *             in case of a repository access error
@@ -100,7 +102,7 @@ public interface NodeFact {
 
     /**
      * Returns the corresponding path of the node.
-     * 
+     *
      * @return the corresponding path of the node
      * @throws RepositoryException
      *             in case of a repository access error
@@ -109,7 +111,7 @@ public interface NodeFact {
 
     /**
      * Returns the current JCR workspace name.
-     * 
+     *
      * @return the current JCR workspace name
      * @throws RepositoryException
      *             in case of a repository access error
@@ -138,4 +140,11 @@ public interface NodeFact {
     String getOperationType();
 
     void setOperationType(String operationType);
+
+    /**
+     * Returns the session that execute the rule
+     *
+     * @return the session that execute the rule
+     */
+    JCRSessionWrapper getSession() throws RepositoryException;
 }

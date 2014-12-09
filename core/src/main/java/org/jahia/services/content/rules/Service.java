@@ -779,7 +779,7 @@ public class Service extends JahiaService {
 
     public void flushGroupMembershipCache(NodeFact node) {
         try {
-            groupManagerService.flushMembershipCache(node.getPath(), ((AbstractNodeFact) node).getNode().getSession());
+            groupManagerService.flushMembershipCache(node.getPath(), node.getSession());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

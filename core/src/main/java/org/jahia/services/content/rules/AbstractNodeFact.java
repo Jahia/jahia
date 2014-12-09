@@ -74,6 +74,7 @@ package org.jahia.services.content.rules;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 
 import javax.jcr.ItemNotFoundException;
@@ -162,6 +163,11 @@ public abstract class AbstractNodeFact implements NodeFact {
 
     public String getLanguage() throws RepositoryException {
         return node.getLanguage();
+    }
+
+    @Override
+    public JCRSessionWrapper getSession() throws RepositoryException {
+        return node.getSession();
     }
 
     /**

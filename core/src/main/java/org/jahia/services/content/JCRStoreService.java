@@ -72,7 +72,6 @@
 package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
-
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -92,7 +91,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
-
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -279,6 +277,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 provider.deployDefinitions(systemId);
             }
         }
+        registerNamespaces();
     }
 
     public void undeployDefinitions(String systemId) {
@@ -437,6 +436,16 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
 
     public void start() throws JahiaInitializationException {
         try {
+            registerNamespaces();
+
+            initObservers(listeners);
+        } catch (Exception e) {
+            logger.error("Repository init error", e);
+        }
+    }
+
+    private void registerNamespaces() {
+        try {
             NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
             Set<String> prefixes = ImmutableSet.copyOf(nsRegistry.getPrefixes());
@@ -446,10 +455,8 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                             .registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
                 }
             }
-
-            initObservers(listeners);
-        } catch (Exception e) {
-            logger.error("Repository init error", e);
+        } catch (RepositoryException e) {
+            logger.error("Unable to register namespaces", e);
         }
     }
 

@@ -105,6 +105,7 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.settings.SettingsBean;
 import org.quartz.*;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.NamespaceException;
 import javax.jcr.Node;
@@ -120,9 +121,36 @@ import java.util.*;
  * Implements a {@link org.apache.jackrabbit.core.query.QueryHandler} using Lucene and handling Jahia specific definitions.
  */
 public class JahiaSearchIndex extends SearchIndex {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSearchIndex.class);
+    
+    /**
+     * Background job that performs re-indexing of the repository content for the specified workspaces.
+     */
+    public static class ReindexJob extends BackgroundJob implements StatefulJob {
+        @Override
+        public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
+            JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
+            JahiaSearchIndex index = (JahiaSearchIndex) map.get("index");
+            if (index != null) {
+                index.reindexAndSwitch();
+            } else {
+                @SuppressWarnings("unchecked")
+                List<JahiaSearchIndex> indexes = (List<JahiaSearchIndex>) map.get("indexes");
+                if (indexes != null) {
+                    long start = System.currentTimeMillis();
+                    for (JahiaSearchIndex searchIndex : indexes) {
+                        searchIndex.reindexAndSwitch();
+                    }
+                    log.info("Re-indexing of the whole repository content took {} ms", System.currentTimeMillis()
+                            - start);
+                }
+            }
+        }
+    }
+
+    private static final Logger log = LoggerFactory.getLogger(JahiaSearchIndex.class);
 
     private static final Name JNT_ACL = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "acl");
+    
     private static final Name JNT_ACE = NameFactoryImpl.getInstance().create(Constants.JAHIANT_NS, "ace");
 
     public static final String SKIP_VERSION_INDEX_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.skipVersionIndex";
@@ -308,7 +336,7 @@ public class JahiaSearchIndex extends SearchIndex {
             try {
                 Thread.sleep(defaultWaitTime);
             } catch (InterruptedException e) {
-                log.error("Interrupted",e);
+                log.error("Interrupted", e);
             }
         }
     }
@@ -335,13 +363,13 @@ public class JahiaSearchIndex extends SearchIndex {
     @Override
     public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add)
             throws RepositoryException, IOException {
-        updateNodes(remove, add, false);
+        updateNodes(remove, add, true);
     }
 
-    public void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add, boolean noWait)
+    void updateNodes(Iterator<NodeId> remove, Iterator<NodeState> add, boolean waitForIndexSwitch)
             throws RepositoryException, IOException {
 
-        if (!noWait) {
+        if (waitForIndexSwitch) {
             waitForIndexSwitch();
 
             if (newIndex != null) {
@@ -698,13 +726,30 @@ public class JahiaSearchIndex extends SearchIndex {
     }
 
 
-    public void scheduleReindexing() {
+    /**
+     * Prepares for a re-indexing of the repository content, creating a secondary index instance.
+     */
+    public boolean prepareReindexing() {
         if (newIndex != null || switching) {
-            return;
+            return false;
         }
 
         newIndex = new JahiaSecondaryIndex(this);
-        JobDetail jobDetail = BackgroundJob.createJahiaJob("ReindexJob", ReindexJob.class);
+        
+        return true;
+    }
+
+    /**
+     * Schedules the re-indexing of the repository content in a background job.
+     */
+    public void scheduleReindexing() {
+        if (!prepareReindexing()) {
+            return;
+        }
+
+        JobDetail jobDetail = BackgroundJob.createJahiaJob(
+                "Re-indexing of the " + StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system")
+                        + " workspace content", ReindexJob.class);
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put("index", this);
         try {
@@ -714,20 +759,22 @@ public class JahiaSearchIndex extends SearchIndex {
         }
     }
 
-    public void reindexAndSwitch() throws RepositoryException, IOException {
+    void reindexAndSwitch() throws RepositoryException, IOException {
         long startTime = System.currentTimeMillis();
 
         File dest = new File(getPath() + ".old." + System.currentTimeMillis());
         FileUtils.deleteQuietly(new File(newIndex.getPath()));
-        log.info("Start initializing new index");
-        newIndex.newIndexInit();
-        log.info("New index initialized in {} ms", System.currentTimeMillis() - startTime);
-        long startTimeIntern = System.currentTimeMillis();
-        newIndex.replayDelayedUpdates(newIndex);
-        log.info("Delayed updates replayed in {} ms", System.currentTimeMillis() - startTimeIntern);
+        String workspace = StringUtils.defaultIfEmpty(getContext().getWorkspace(), "system");
+        log.info("Start initializing new index for {} workspace", workspace);
 
-        log.info("Reindexing has finished, switching to new index...");
-        startTimeIntern = System.currentTimeMillis();
+        newIndex.newIndexInit();
+
+        log.info("New index for workspace {} initialized in {} ms", workspace, System.currentTimeMillis() - startTime);
+
+        newIndex.replayDelayedUpdates(newIndex);
+
+        log.info("Reindexing has finished for {} workspace, switching to new index...", workspace);
+        long startTimeIntern = System.currentTimeMillis();
         try {
             switching = true;
 
@@ -736,10 +783,13 @@ public class JahiaSearchIndex extends SearchIndex {
 
             new File(getPath()).renameTo(dest);
             new File(newIndex.getPath()).renameTo(new File(getPath()));
+
             log.info("New index deployed, reloading {}", getPath());
+
             init(fs, getContext());
 
             newIndex.replayDelayedUpdates(this);
+
             log.info("New index ready");
         } finally {
             newIndex = null;
@@ -748,7 +798,8 @@ public class JahiaSearchIndex extends SearchIndex {
         log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
         FileUtils.deleteQuietly(dest);
 
-        log.info("Re-indexing operation is completed in {} ms", System.currentTimeMillis() - startTime);
+        log.info("Re-indexing operation is completed for {} workspace in {} ms", workspace, System.currentTimeMillis()
+                - startTime);
     }
 
     private void quietClose(JahiaSearchIndex index) {
@@ -765,15 +816,4 @@ public class JahiaSearchIndex extends SearchIndex {
             log.warn("Unable to close index", e);
         }
     }
-
-    public static class ReindexJob extends BackgroundJob implements StatefulJob {
-        @Override
-        public void executeJahiaJob(JobExecutionContext jobExecutionContext) throws Exception {
-            JobDataMap map = jobExecutionContext.getJobDetail().getJobDataMap();
-            JahiaSearchIndex index = (JahiaSearchIndex) map.get("index");
-            index.reindexAndSwitch();
-        }
-    }
-
-
 }

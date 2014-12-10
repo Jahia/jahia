@@ -71,13 +71,24 @@
  */
 package org.apache.jackrabbit.core;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
+import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex.ReindexJob;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
@@ -131,6 +142,8 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
    
     }
 
+    private static final Logger log = LoggerFactory.getLogger(JahiaRepositoryImpl.class);
+    
     public JahiaRepositoryImpl(RepositoryConfig repConfig) throws RepositoryException {
         super(repConfig);
     }
@@ -172,6 +185,49 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
         }
     }
 
+    /**
+     * Schedules the re-indexing of the whole repository content.
+     * 
+     * @throws RepositoryException
+     *             in case of a JCR-related error
+     */
+    public void scheduleReindexing() throws RepositoryException {
+        List<JahiaSearchIndex> indexes = new LinkedList<>();
+        JahiaSearchIndex index = (JahiaSearchIndex) getSystemSearchManager("default").getQueryHandler();
+        if (index.prepareReindexing()) {
+            indexes.add(index);
+        }
+        index = (JahiaSearchIndex) getWorkspaceInfo("default").getSearchManager().getQueryHandler();
+        if (index.prepareReindexing()) {
+            indexes.add(index);
+        }
+        index = (JahiaSearchIndex) getWorkspaceInfo("live").getSearchManager().getQueryHandler();
+        if (index.prepareReindexing()) {
+            indexes.add(index);
+        }
+
+        if (!indexes.isEmpty()) {
+
+            JobDetail jobDetail = BackgroundJob.createJahiaJob("Re-indexing of the repository content",
+                    ReindexJob.class);
+            JobDataMap jobDataMap = jobDetail.getJobDataMap();
+            jobDataMap.put("indexes", indexes);
+            try {
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail, true);
+            } catch (SchedulerException e) {
+                log.error("Unable to schedule background job for re-indexing", e);
+            }
+        }
+    }
+
+    /**
+     * Schedules the re-indexing of the repository content for the specified workspace.
+     * 
+     * @param workspaceName
+     *            the name of the workspace to be re-indexed
+     * @throws RepositoryException
+     *             in case of a JCR-related error
+     */
     public void scheduleReindexing(String workspaceName) throws RepositoryException {
         JahiaSearchIndex index = (JahiaSearchIndex) (workspaceName == null ?
                 getSystemSearchManager("default") :

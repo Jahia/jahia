@@ -96,18 +96,35 @@ import java.util.*;
 public class JahiaSecondaryIndex extends JahiaSearchIndex {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(JahiaSecondaryIndex.class);
 
+    class DelayedIndexUpdate {
+        Iterator<NodeId> remove;
+        Iterator<NodeState> add;
+
+        DelayedIndexUpdate(Iterator<NodeId> remove, Iterator<NodeState> add) {
+            super();
+            this.remove = remove;
+            this.add = add;
+        }
+    }
+    
+    private List<DelayedIndexUpdate> delayedUpdates = Collections.synchronizedList(new LinkedList<DelayedIndexUpdate>());
+    
     private JahiaSearchIndex mainIndex;
 
     private SpellChecker spellChecker;
 
-    private List<DelayedIndexUpdate> delayedUpdates = Collections.synchronizedList(new ArrayList<DelayedIndexUpdate>());
     private String path;
 
+    /**
+     * Initializes an instance of this class.
+     * 
+     * @param mainIndex
+     *            the main search index instance
+     */
     public JahiaSecondaryIndex(JahiaSearchIndex mainIndex) {
+        super();
         this.mainIndex = mainIndex;
     }
-
-
 
     /**
      * Initializes this <code>QueryHandler</code>. This implementation requires
@@ -183,19 +200,22 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
         spellChecker = spCheck;
     }
 
-    public void replayDelayedUpdates(JahiaSearchIndex targetIndex) throws RepositoryException, IOException {
+    void replayDelayedUpdates(JahiaSearchIndex targetIndex) throws RepositoryException, IOException {
+        long start = System.currentTimeMillis();
+        int count = 0;
         while (!delayedUpdates.isEmpty()) {
             DelayedIndexUpdate n = delayedUpdates.remove(0);
-            targetIndex.updateNodes(n.remove, n.add, true);
+            count++;
+            targetIndex.updateNodes(n.remove, n.add, false);
+        }
+        if (count > 0) {
+            log.info("Replayed {} delayed updates on index {} in {} ms",
+                    new Object[] { count, getPath(), System.currentTimeMillis() - start });
         }
     }
 
-    public void addDelayedUpdated(Iterator<NodeId> remove, Iterator<NodeState> add) {
-        delayedUpdates.add(new DelayedIndexUpdate(remove,add));
-    }
-
-    public List<DelayedIndexUpdate> getDelayedUpdates() {
-        return delayedUpdates;
+    void addDelayedUpdated(Iterator<NodeId> remove, Iterator<NodeState> add) {
+        delayedUpdates.add(new DelayedIndexUpdate(remove, add));
     }
 
     @Override
@@ -347,16 +367,4 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
     public OnWorkspaceInconsistency getOnWorkspaceInconsistencyHandler() {
         return OnWorkspaceInconsistency.LOG;
     }
-
-    public static class DelayedIndexUpdate {
-        Iterator<NodeId> remove;
-        Iterator<NodeState> add;
-
-        public DelayedIndexUpdate(Iterator<NodeId> remove, Iterator<NodeState> add) {
-            this.remove = remove;
-            this.add = add;
-        }
-    }
-
-
 }

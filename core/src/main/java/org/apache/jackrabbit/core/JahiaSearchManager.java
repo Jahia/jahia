@@ -197,8 +197,9 @@ public class JahiaSearchManager extends SearchManager {
         try {
             addJahiaDependencies(removedNodes, addedNodes, propEvents, nodeEventRemovedNodes);
         
-            if (removedNodes.size() > 0 || addedNodes.size() > 0) {
-                Iterator<NodeState> addedStates = new Iterator<NodeState>() {
+            boolean addedNodesPresent = addedNodes.size() > 0;
+            if (addedNodesPresent || removedNodes.size() > 0) {
+                Iterator<NodeState> addedStates = addedNodesPresent ? new Iterator<NodeState>() {
                     private final Iterator<NodeId> iter = addedNodes.keySet().iterator();
 
                     public void remove() {
@@ -221,12 +222,12 @@ public class JahiaSearchManager extends SearchManager {
                             if (e == null || !e.isExternal()) {
                                 log.error("Unable to index node " + id + ": does not exist");
                             } else {
-                                log.info("Node no longer available " + id + ", skipped.");
+                                log.info("Node no longer available {}, skipped.", id);
                             }
                         }
                         return item;
                     }
-                };
+                } : Collections.<NodeState>emptyIterator();
                 Iterator<NodeId> removedIds = removedNodes.iterator();            
             
                 getQueryHandler().updateNodes(removedIds, addedStates);
@@ -238,9 +239,7 @@ public class JahiaSearchManager extends SearchManager {
         }
 
         if (log.isDebugEnabled()) {
-            log.debug("onEvent: indexing finished in "
-                    + String.valueOf(System.currentTimeMillis() - time)
-                    + " ms.");
+            log.debug("onEvent: indexing finished in {} ms.", System.currentTimeMillis() - time);
         }
     }
     

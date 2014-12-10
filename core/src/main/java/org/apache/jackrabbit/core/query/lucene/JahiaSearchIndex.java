@@ -103,6 +103,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.DateUtils;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -140,8 +141,8 @@ public class JahiaSearchIndex extends SearchIndex {
                     for (JahiaSearchIndex searchIndex : indexes) {
                         searchIndex.reindexAndSwitch();
                     }
-                    log.info("Re-indexing of the whole repository content took {} ms", System.currentTimeMillis()
-                            - start);
+                    log.info("Re-indexing of the whole repository content took {}",
+                            DateUtils.formatDurationWords(System.currentTimeMillis() - start));
                 }
             }
         }
@@ -232,10 +233,6 @@ public class JahiaSearchIndex extends SearchIndex {
         this.typesUsingOptimizedACEIndexation = Sets.newHashSet(StringUtils.split(typesUsingOptimizedACEIndexation));
     }
 
-    public Set<Name> getIgnoredTypes() {
-        return ignoredTypes;
-    }
-
     public void setIgnoredTypes(String ignoredTypes) {
         this.ignoredTypesString = ignoredTypes;
     }
@@ -279,7 +276,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 }
             }
         }
-        this.ignoredTypes = ignoredTypes;
+        this.ignoredTypes = ignoredTypes.isEmpty() ? null : ignoredTypes;
         super.doInit();
     }
 
@@ -372,25 +369,24 @@ public class JahiaSearchIndex extends SearchIndex {
         if (waitForIndexSwitch) {
             waitForIndexSwitch();
 
+            if (ignoredTypes != null && add.hasNext()) {
+                List<NodeState> l = null;
+                while (add.hasNext()) {
+                    NodeState state = add.next();
+                    if (!ignoredTypes.contains(state.getNodeTypeName())) {
+                        if (l == null) {
+                            l = new LinkedList<NodeState>();
+                        }
+                        l.add(state);
+                    }
+                }
+                add = l != null ? l.iterator() : Collections.<NodeState> emptyIterator();
+            }
             if (newIndex != null) {
                 newIndex.addDelayedUpdated(remove, add);
             }
         }
-
-        if (ignoredTypes != null && !ignoredTypes.isEmpty()) {
-            List<NodeState> l = null;
-            while (add.hasNext()) {
-                NodeState state = add.next();
-                if (!ignoredTypes.contains(state.getNodeTypeName())) {
-                    if (l == null) {
-                        l = new LinkedList<NodeState>();
-                    }
-                    l.add(state);
-                }
-            }
-            add = l != null ? l.iterator() : Collections.<NodeState>emptyIterator();
-        }
-
+        
         if (isVersionIndex()) {
             super.updateNodes(remove, add);
             return;
@@ -798,8 +794,8 @@ public class JahiaSearchIndex extends SearchIndex {
         log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
         FileUtils.deleteQuietly(dest);
 
-        log.info("Re-indexing operation is completed for {} workspace in {} ms", workspace, System.currentTimeMillis()
-                - startTime);
+        log.info("Re-indexing operation is completed for {} workspace in {}", workspace,
+                DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));
     }
 
     private void quietClose(JahiaSearchIndex index) {

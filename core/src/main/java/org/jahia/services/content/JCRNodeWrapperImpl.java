@@ -733,7 +733,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return provider.getNodeWrapper(n, buildSubnodePath(name), this, session);
     }
 
-    private String buildSubnodePath(String name) {
+    protected String buildSubnodePath(String name) {
         if (localPath.equals("/")) {
             return localPath + name;
         } else {
@@ -988,7 +988,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                     list.add(storeProvider.getNodeWrapper(node, "/", this, session));
                                     mounts.add(name);
                                 } catch (PathNotFoundException e) {
-                                    // current session does'nt have the right to read the mounted node
+                                    // current session doesn't have the right to read the mounted node
                                 }
                             }
                         }
@@ -999,26 +999,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         NodeIterator ni = namePattern != null ? objectNode.getNodes(namePattern) : (nameGlobs != null ? objectNode
                 .getNodes(nameGlobs) : objectNode.getNodes());
 
-        while (ni.hasNext()) {
-            Node node = ni.nextNode();
-            if ((session.getLocale() == null || !node.getName().startsWith("j:translation_")) && (mounts == null || !mounts.contains(node.getName()))) {
-                try {
-                    JCRNodeWrapper child = provider.getNodeWrapper(node, buildSubnodePath(node.getName()), this, session);
-                    if (list == null) {
-                        list = new LinkedList<JCRNodeWrapper>();
-                    }
-                    list.add(child);
-                } catch (ItemNotFoundException e) {
-                    if (logger.isDebugEnabled())
-                        logger.debug(e.getMessage(), e);
-                } catch (PathNotFoundException e) {
-                    if (logger.isDebugEnabled())
-                        logger.debug(e.getMessage(), e);
-                }
-            }
-        }
-
-        return list != null && list.size() > 0 ? new NodeIteratorImpl(list.iterator(), list.size()) : NodeIteratorImpl.EMPTY;
+        return new ChildNodesIterator(ni, mounts, list, this, session, provider);
     }
 
     public Map<String, String> getPropertiesAsString() throws RepositoryException {

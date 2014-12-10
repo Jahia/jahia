@@ -287,9 +287,15 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
             spellCheckers.remove(spellChecker.handler.getPath());
         }
     }
+    
+    /**
+     * Triggers update of the spell checker dictionary index.
+     */
+    public void updateIndex() {
+        spellChecker.lastRefresh = 0;
+        spellChecker.refreshSpellChecker();
+    }
 
-    // ------------------------------< internal
-    // >--------------------------------
 
     private final class InternalSpellChecker {
 

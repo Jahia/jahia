@@ -102,6 +102,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.quartz.*;
@@ -801,6 +802,12 @@ public class JahiaSearchIndex extends SearchIndex {
         }
         log.info("Switched to newly created index in {} ms", System.currentTimeMillis() - startTimeIntern);
         FileUtils.deleteQuietly(dest);
+
+        SpellChecker spellChecker = getSpellChecker();
+        if (spellChecker instanceof CompositeSpellChecker) {
+            ((CompositeSpellChecker) spellChecker).updateIndex();
+            log.info("Triggered update of the spellchecker index");
+        }
 
         log.info("Re-indexing operation is completed for {} workspace in {}", workspace,
                 DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));

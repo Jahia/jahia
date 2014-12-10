@@ -777,8 +777,16 @@ public class JahiaSearchIndex extends SearchIndex {
             quietClose(newIndex);
             quietClose(this);
 
-            new File(getPath()).renameTo(dest);
-            new File(newIndex.getPath()).renameTo(new File(getPath()));
+            if (!new File(getPath()).renameTo(dest)) {
+                throw new IOException("Unable to rename the existing index folder " + getPath());
+            }
+            if (!new File(newIndex.getPath()).renameTo(new File(getPath()))) {
+                // rename the index back
+                log.info("Restored original index");
+                dest.renameTo(new File(getPath()));
+                
+                throw new IOException("Unable to rename the newly created index folder " + newIndex.getPath());
+            }
 
             log.info("New index deployed, reloading {}", getPath());
 

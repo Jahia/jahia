@@ -89,6 +89,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -119,12 +120,12 @@ public class EditContentEngine extends AbstractContentEngine {
 
     /**
      * Initializes an instance of this class.
-     *
+     *  @param configuration
      * @param node   the content object to be edited
      * @param linker the edit linker for refresh purpose
      */
-    public EditContentEngine(GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
-        super(linker.getConfig().getEngineConfiguration(node), linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')));
+    public EditContentEngine(GWTEngineConfiguration configuration, GWTJahiaNode node, Linker linker, EngineContainer engineContainer) {
+        super(configuration, linker, node.getPath().substring(0, node.getPath().lastIndexOf('/')));
         contentPath = node.getPath();
         nodeName = node.getName();
         this.node = node;

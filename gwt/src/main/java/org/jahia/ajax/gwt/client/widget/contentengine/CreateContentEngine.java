@@ -84,6 +84,7 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -115,7 +116,7 @@ public class CreateContentEngine extends AbstractContentEngine {
 
     /**
      * Open Edit content engine for a new node creation
-     *
+     *  @param configuration
      * @param linker                      The linker
      * @param parent                      The parent node where to create the new node - if createInParentAndMoveBefore, the node is sibling
      * @param type                        The selected node type of the new node
@@ -123,8 +124,8 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param targetName                  The name of the new node, or null if automatically defined
      * @param createInParentAndMoveBefore
      */
-    public CreateContentEngine(Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
-        super(linker.getConfig().getEngineConfiguration(type), linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
+    public CreateContentEngine(GWTEngineConfiguration configuration, Linker linker, GWTJahiaNode parent, GWTJahiaNodeType type, Map<String, GWTJahiaNodeProperty> props, String targetName, boolean createInParentAndMoveBefore, EngineContainer engineContainer) {
+        super(configuration, linker, createInParentAndMoveBefore ? parent.getPath().substring(0, parent.getPath().lastIndexOf('/')) : parent.getPath());
         this.existingNode = false;
         this.targetNode = parent;
         this.type = type;

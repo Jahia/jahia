@@ -86,7 +86,6 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.compare.CompareEngine;
 import org.jahia.ajax.gwt.client.widget.contentengine.EngineContainer;
@@ -173,7 +172,7 @@ public class PublicationStatusGrid extends Grid<GWTJahiaPublicationInfo> {
                         JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(model.getPath()), null,
                                 new BaseAsyncCallback<List<GWTJahiaNode>>() {
                                     public void onSuccess(List<GWTJahiaNode> result) {
-                                        EngineLoader.showEditEngine(linker, result.get(0), true);
+                                        EngineLoader.showEditEngine(linker, result.get(0), true, null);
                                     }
                                 });
                     }

@@ -77,6 +77,7 @@ import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
 import org.jahia.services.uicomponents.bean.toolbar.Toolbar;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
@@ -90,7 +91,7 @@ import java.util.Map;
  * Date: Apr 14, 2010
  * Time: 12:30:01 PM
  */
-public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean {
+public class SidePanelTab implements Serializable, BeanNameAware, InitializingBean, DisposableBean {
     
     private static final long serialVersionUID = -4170052202882342097L;
     
@@ -251,40 +252,55 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
 
     public void afterPropertiesSet() throws Exception {
         if (parent != null) {
-            if (parent instanceof String) {
-                parent = SpringContextSingleton.getBean((String) parent);
-            }
-            if (parent instanceof EditConfiguration) {
-                EditConfiguration cfg = (EditConfiguration) parent;
-                cfg.removeTab(getKey());
-                int index = -1;
-                if (position >= 0) {
-                    index = position;
-                } else if (positionBefore != null) {
-                    index = cfg.getTabs().indexOf(new SidePanelTab(positionBefore));
-                } else if (positionAfter != null) {
-                    index = cfg.getTabs().indexOf(new SidePanelTab(positionAfter));
-                    if (index != -1) {
-                        index++;
-                    }
-                    if (index >= cfg.getTabs().size()) {
-                        index = -1;
-                    }
-                }
-                if (index != -1) {
-                    cfg.addTab(index, this);
-                } else {
-                    cfg.addTab(this);
+            if (parent instanceof List) {
+                for (Object o : (List) parent) {
+                    addToParent(o);
                 }
             } else {
-                throw new IllegalArgumentException("Unknown parent type '"
-                        + parent.getClass().getName() + "'. Can accept EditConfiguration or"
-                        + " a String value with a beanId of the EditConfiguration bean");
+                addToParent(parent);
             }
 
             // clean the reference
             parent = null;
         }
+    }
+
+    private void addToParent(Object o) {
+        if (o instanceof String) {
+            o = SpringContextSingleton.getBean((String) o);
+        }
+        if (o instanceof EditConfiguration) {
+            EditConfiguration cfg = (EditConfiguration) o;
+            cfg.removeTab(getKey());
+            int index = -1;
+            if (position >= 0) {
+                index = position;
+            } else if (positionBefore != null) {
+                index = cfg.getTabs().indexOf(new SidePanelTab(positionBefore));
+            } else if (positionAfter != null) {
+                index = cfg.getTabs().indexOf(new SidePanelTab(positionAfter));
+                if (index != -1) {
+                    index++;
+                }
+                if (index >= cfg.getTabs().size()) {
+                    index = -1;
+                }
+            }
+            if (index != -1) {
+                cfg.addTab(index, this);
+            } else {
+                cfg.addTab(this);
+            }
+        } else {
+            throw new IllegalArgumentException("Unknown parent type '"
+                    + o.getClass().getName() + "'. Can accept EditConfiguration or"
+                    + " a String value with a beanId of the EditConfiguration bean");
+        }
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        // todo remove tab
     }
 }
 

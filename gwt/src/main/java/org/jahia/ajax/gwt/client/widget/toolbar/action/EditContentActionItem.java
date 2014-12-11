@@ -74,8 +74,8 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTEngineConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
@@ -98,6 +98,7 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
     private boolean allowRootNodeEditing;
     private boolean useMainNode = false;
     private String path = null;
+    private String configurationName;
 
     public void onComponentSelection() {
         GWTJahiaNode singleSelection;
@@ -105,7 +106,7 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
             String replacedPath = URL.replacePlaceholders(path, linker.getSelectionContext().getSingleSelection());
             JahiaContentManagementService.App.getInstance().getNodes(Arrays.asList(replacedPath), null, new BaseAsyncCallback<List<GWTJahiaNode>>() {
                 public void onSuccess(List<GWTJahiaNode> result) {
-                    EngineLoader.showEditEngine(linker, result.get(0));
+                    EngineLoader.showEditEngine(linker, result.get(0), linker.getConfig().getEngineConfiguration(configurationName));
                 }
             });
             return;
@@ -114,7 +115,7 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
         }   else {
             singleSelection = linker.getSelectionContext().getSingleSelection();
         }
-        EngineLoader.showEditEngine(linker, singleSelection);
+        EngineLoader.showEditEngine(linker, singleSelection, linker.getConfig().getEngineConfiguration(configurationName));
     }
 
     public void handleNewLinkerSelection() {
@@ -137,6 +138,10 @@ public class EditContentActionItem extends NodeTypeAwareBaseActionItem {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public void setConfigurationName(String configurationName) {
+        this.configurationName = configurationName;
     }
 
     @Override

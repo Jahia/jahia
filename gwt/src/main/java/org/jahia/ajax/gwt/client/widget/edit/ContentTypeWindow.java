@@ -127,7 +127,7 @@ public class ContentTypeWindow extends Window {
             public void handleEvent(TreeGridEvent<GWTJahiaNodeType> baseEvent) {
                 GWTJahiaNodeType gwtJahiaNodeType = baseEvent.getModel();
                 if (gwtJahiaNodeType != null && linker != null && !gwtJahiaNodeType.isMixin()) {
-                    EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore);
+                    EngineLoader.showCreateEngine(linker, parentNode, gwtJahiaNodeType, props, nodeName, createInParentAndMoveBefore, null);
                     hide();
                 }
             }
@@ -153,7 +153,7 @@ public class ContentTypeWindow extends Window {
             public void componentSelected(ButtonEvent buttonEvent) {
                 GWTJahiaNodeType selectedItem = contentTypeTree.getTreeGrid().getSelectionModel().getSelectedItem();
                 if (selectedItem != null && !selectedItem.isMixin()) {
-                    EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, selectedItem, props, nodeName, createInParentAndMoveBefore);
+                    EngineLoader.showCreateEngine(ContentTypeWindow.this.linker, parentNode, selectedItem, props, nodeName, createInParentAndMoveBefore, null);
                     window.hide();
                 }
             }
@@ -203,13 +203,13 @@ public class ContentTypeWindow extends Window {
                 linker.loaded();
                 if (result.size() == 1 && result.get(0).getChildren().isEmpty()) {
                     EngineLoader.showCreateEngine(linker, targetNode,  result.get(0), props,
-                            name, createInParentAndMoveBefore);
+                            name, createInParentAndMoveBefore, null);
 
                 } else {
                     if (nodeTypes != null && nodeTypes.size() == 1 && displayedNodeTypes != null) {
                         GWTJahiaNodeType targetNodeType = getTargetNodeType(nodeTypes.get(0), result, displayedNodeTypes);
                         if (targetNodeType != null) {
-                            EngineLoader.showCreateEngine(linker, targetNode, targetNodeType, props, name, createInParentAndMoveBefore);
+                            EngineLoader.showCreateEngine(linker, targetNode, targetNodeType, props, name, createInParentAndMoveBefore, null);
                             return;
                         }
                     }

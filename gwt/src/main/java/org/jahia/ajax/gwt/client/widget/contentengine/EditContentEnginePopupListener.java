@@ -92,7 +92,7 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
             return;
         }
         if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(module.getNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-            EngineLoader.showEditEngine(editLinker, module.getNode());
+            EngineLoader.showEditEngine(editLinker, module.getNode(), null);
         }
     }
 }

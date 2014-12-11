@@ -87,7 +87,7 @@ public class EditSourceContentActionItem extends BaseActionItem {
 	private static final long serialVersionUID = -2912157212228173779L;
 
 	public void onComponentSelection() {
-        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection().getReferencedNode());
+        EngineLoader.showEditEngine(linker, linker.getSelectionContext().getSingleSelection().getReferencedNode(), null);
     }
 
 	public void handleNewLinkerSelection() {

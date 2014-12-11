@@ -242,7 +242,7 @@ public class EditModeDNDListener extends DNDListener {
                 } else {
                     EngineLoader.showCreateEngine(editLinker, targetNode, sourceNodeType,
                             new HashMap<String, GWTJahiaNodeProperty>(),
-                            targetPath.substring(targetPath.lastIndexOf("/") + 1), false);
+                            targetPath.substring(targetPath.lastIndexOf("/") + 1), false, null);
                 }
             } else if (QUERY_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation
@@ -300,7 +300,7 @@ public class EditModeDNDListener extends DNDListener {
                             });
                 } else {
                     EngineLoader.showCreateEngine(editLinker, targetNode, sourceNodeType,
-                            new HashMap<String, GWTJahiaNodeProperty>(), "*", true);
+                            new HashMap<String, GWTJahiaNodeProperty>(), "*", true, null);
                 }
             } else if (QUERY_SOURCE_TYPE.equals(sourceType)) {
                 // Item creation

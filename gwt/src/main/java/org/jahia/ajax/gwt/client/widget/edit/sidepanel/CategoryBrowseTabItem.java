@@ -179,13 +179,13 @@ public class CategoryBrowseTabItem extends BrowseTabItem {
                             }
                             public void onSuccess(GWTJahiaNodeType result) {
                                 if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
-                                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                                    EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                                 }
                             }
                         });
                     } else {
                         if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(gwtJahiaNode.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-                            EngineLoader.showEditEngine(editLinker, gwtJahiaNode);
+                            EngineLoader.showEditEngine(editLinker, gwtJahiaNode, null);
                         }
                     }
                 }

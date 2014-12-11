@@ -80,7 +80,6 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.ScrollContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
@@ -89,7 +88,6 @@ import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -307,13 +305,13 @@ class SearchTabItem extends SidePanelTabItem {
                         }
                         public void onSuccess(GWTJahiaNodeType result) {
                             if (!Boolean.FALSE.equals(result.get("canUseComponentForEdit"))) {
-                                EngineLoader.showEditEngine(editLinker, node);
+                                EngineLoader.showEditEngine(editLinker, node, null);
                             }
                         }
                     });
                 } else {
                     if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(node.getNodeTypes().get(0)).get("canUseComponentForEdit"))) {
-                        EngineLoader.showEditEngine(editLinker, node);
+                        EngineLoader.showEditEngine(editLinker, node, null);
                     }
                 }
             }

@@ -155,6 +155,13 @@ public class GWTConfiguration implements IsSerializable, Serializable {
         return getDefaultEngineConfiguration();
     }
 
+    public GWTEngineConfiguration getEngineConfiguration(String key) {
+        if (engineConfigurations.containsKey(key)) {
+            return engineConfigurations.get(key);
+        }
+        return null;
+    }
+
     public Map<String, GWTEngineConfiguration> getEngineConfigurations() {
         return engineConfigurations;
     }

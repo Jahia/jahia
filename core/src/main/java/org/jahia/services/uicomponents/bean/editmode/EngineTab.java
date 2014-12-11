@@ -185,12 +185,25 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void afterPropertiesSet() throws Exception {
-        addTab(parent);
+        if (parent instanceof List) {
+            for (Object o : (List) parent) {
+                addTab(o);
+            }
+        } else {
+            addTab(parent);
+        }
         addTab(parentManagerConfiguration);
         addTab(parentEditConfiguration);
     }
 
     public void destroy() throws Exception {
+        if (parent instanceof List) {
+            for (Object o : (List) parent) {
+                removeTab(getEngineTabs(o), getId());
+            }
+        } else {
+            removeTab(getEngineTabs(parent), getId());
+        }
         removeTab(getEngineTabs(parent), getId());
         removeTab(getEngineTabs(parentEditConfiguration), getId());
         removeTab(getEngineTabs(parentManagerConfiguration), getId());
@@ -259,6 +272,12 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
             if (tabs == null) {
                 tabs = new LinkedList<EngineTab>();
                 ((ManagerConfiguration) parent).setEngineTabs(tabs);
+            }
+        } else if (parent instanceof EngineConfiguration) {
+            tabs = ((EngineConfiguration) parent).getEngineTabs();
+            if (tabs == null) {
+                tabs = new LinkedList<EngineTab>();
+                ((EngineConfiguration) parent).setEngineTabs(tabs);
             }
         } else if (parent instanceof Engine) {
             tabs = ((Engine) parent).getTabs();

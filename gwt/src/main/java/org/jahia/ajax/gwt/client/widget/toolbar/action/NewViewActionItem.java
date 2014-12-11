@@ -71,7 +71,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.TreeGridEvent;
@@ -194,7 +193,7 @@ public class NewViewActionItem extends BaseActionItem  {
     private void createEngine(GWTJahiaNodeType nodeType, GWTJahiaNode selectedNode, String targetName) {
         HashMap<String, GWTJahiaNodeProperty> props = new HashMap<String, GWTJahiaNodeProperty>();
         props.put("nodeTypeName", new GWTJahiaNodeProperty("nodeTypeName",targetName));
-        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName.replaceAll(":", "_"), false);
+        EngineLoader.showCreateEngine(linker, selectedNode, nodeType, props, targetName.replaceAll(":", "_"), false, null);
     }
 
     public void handleNewLinkerSelection() {

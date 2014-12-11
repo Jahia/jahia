@@ -72,10 +72,14 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
+import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Core part of engine configuration
@@ -83,15 +87,27 @@ import java.util.List;
  * see {@link org.jahia.ajax.gwt.helper.UIConfigHelper} for link
  */
 
-public class EngineConfiguration implements Serializable {
+public class EngineConfiguration implements Serializable , InitializingBean, DisposableBean {
 
     private static final long serialVersionUID = -5991528610464460659L;
+
+    private String key;
 
     private List<EngineTab> engineTabs;
 
     private List<ButtonItem> creationButtons = new ArrayList<ButtonItem>();
     private List<ButtonItem> editionButtons = new ArrayList<ButtonItem>();
     private List<ButtonItem> commonButtons = new ArrayList<ButtonItem>();
+
+    private Object parent;
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 
     /***
      * @return list of engine tabs
@@ -137,4 +153,61 @@ public class EngineConfiguration implements Serializable {
         this.commonButtons = commonButtons;
     }
 
+    public Object getParent() {
+        return parent;
+    }
+
+    public void setParent(Object parent) {
+        this.parent = parent;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        if (parent instanceof List) {
+            for (Object o : (List) parent) {
+                addToParent(o);
+            }
+        } else {
+            addToParent(parent);
+        }
+    }
+
+    public void destroy() throws Exception {
+        if (parent instanceof List) {
+            for (Object o : (List) parent) {
+                removeFromParent(o);
+            }
+        } else {
+            removeFromParent(parent);
+        }
+    }
+
+    private void removeFromParent(Object o) {
+        Map<String, EngineConfiguration> configs = getParentConfigurationMap(o);
+
+        if (configs != null) {
+            configs.remove(getKey());
+        }
+    }
+
+    private void addToParent(Object o) {
+        Map<String, EngineConfiguration> configs = getParentConfigurationMap(o);
+
+        if (configs != null) {
+            configs.put(getKey(), this);
+        } else if (o != null) {
+            throw new IllegalArgumentException("Unknown parent type '"
+                    + o.getClass().getName()
+                    + "'. Can accept EditConfiguration, ManagerConfiguration, Engine or"
+                    + " a String value with a beanId of the those beans");
+        }
+    }
+
+    private Map<String, EngineConfiguration> getParentConfigurationMap(Object parent) {
+        if (parent instanceof EditConfiguration) {
+            return ((EditConfiguration)parent).getEngineConfigurations();
+        } else if (parent instanceof ManagerConfiguration) {
+            return ((ManagerConfiguration)parent).getEngineConfigurations();
+        }
+        return null;
+    }
 }

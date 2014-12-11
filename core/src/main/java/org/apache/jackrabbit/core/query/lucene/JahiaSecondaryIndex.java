@@ -312,7 +312,7 @@ public class JahiaSecondaryIndex extends JahiaSearchIndex {
     @Override
     public String getPath() {
         if (path == null) {
-            path = mainIndex.getPath() + ".newIndex." + System.currentTimeMillis();
+            path = mainIndex.getPath() + ".new." + System.currentTimeMillis();
         }
 
         return path;

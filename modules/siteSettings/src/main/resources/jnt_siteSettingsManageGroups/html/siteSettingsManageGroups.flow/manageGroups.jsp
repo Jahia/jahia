@@ -55,10 +55,15 @@ function submitGroupForm(act, group) {
     </script>
 </template:addResources>
 
-<c:set var="site" value="${renderContext.mainResource.node.resolveSite}"/>
-
-<h2><fmt:message key="siteSettings.label.manageGroups"/> - ${fn:escapeXml(site.displayableName)}</h2>
-
+<c:set var="mainNode" value="${renderContext.mainResource.node}"/>
+<c:choose>
+<c:when test="${fn:startsWith(mainNode.path, '/sites/')}">
+<h2><fmt:message key="siteSettings.label.manageGroups"/> - ${fn:escapeXml(mainNode.displayableName)}</h2>
+</c:when>
+<c:otherwise>
+<h2><fmt:message key="siteSettings.label.manageGroups.global"/></h2>
+</c:otherwise>
+</c:choose>
 <c:set var="multipleProvidersAvailable" value="${fn:length(providers) > 1}"/>
 
 <div>

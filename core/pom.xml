@@ -1535,7 +1535,7 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${surefire.plugin.version}</version>
                         <configuration>
-                            <argLine>-Xmx1536m -XX:MaxPermSize=256m</argLine>
+                            <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>
                             <skipTests>false</skipTests>
                             <systemProperties>
                               <property>

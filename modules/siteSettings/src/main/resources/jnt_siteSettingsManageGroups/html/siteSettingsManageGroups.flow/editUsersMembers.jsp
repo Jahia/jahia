@@ -22,7 +22,7 @@
 <c:set var="prefix" value="u:"/>
 <c:set var="displayUsers" value="selected"/>
 <c:set var="userDisplayLimit" value="${siteSettingsProperties.userDisplayLimit}"/>
-<%@include file="common/editMembersHead.jsp" %>
+<%@include file="common/editMembersHead.jspf" %>
 
 <div class="box-1">
     <form class="form-inline " action="${flowExecutionUrl}" id="searchForm" method="post">

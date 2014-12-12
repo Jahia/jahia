@@ -21,7 +21,7 @@
 
 <c:set var="prefix" value="g:"/>
 <c:set var="displayGroups" value="selected"/>
-<%@include file="common/editMembersHead.jsp" %>
+<%@include file="common/editMembersHead.jspf" %>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <template:addResources>

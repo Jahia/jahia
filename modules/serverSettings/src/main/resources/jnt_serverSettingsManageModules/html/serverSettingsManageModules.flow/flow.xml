@@ -71,7 +71,7 @@
             <evaluate expression="requestParameters.module?:flowScope.module" result="flowScope.module"/>
             <evaluate expression="requestParameters.version?:flowScope.version" result="flowScope.version"/>
             <evaluate expression="flowScope.branchTagInfos ?: flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri)" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos, flowScope.branchOrTag)" result="flowScope.branchOrTag"/>
         </on-entry>
         <transition on="downloadSources" to="downloadSources"/>
         <transition on="cancel" to="sourceDownloadEnd"/>
@@ -111,7 +111,7 @@
         </on-entry>
         <evaluate expression="JahiaTemplateManagerService.checkoutModule(null, flowScope.scmUri, flowScope.branchOrTag, flowScope.module, flowScope.version, jcrSessionFactory.currentUserSession)"/>
         <transition on-exception="java.lang.Exception" to="viewDownloadForm">
-            <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
+            <evaluate expression="flowHandler.handleError(rootCauseException, flowScope, messageContext)"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="sourceDownloadEnd">
@@ -129,7 +129,7 @@
         </on-entry>
         <evaluate expression="JahiaTemplateManagerService.checkoutTempModule(flowScope.scmUri, flowScope.branchOrTag, flowScope.module, flowScope.version)" result="flowScope.tempSources"/>
         <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
-            <set name="flashScope.error" value="'serverSettings.manageModules.downloadSourcesError'"/>
+            <evaluate expression="flowHandler.handleError(rootCauseException, flowScope, messageContext)"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="duplicateModuleForm"/>
@@ -151,7 +151,8 @@
             <evaluate expression="settingsBean.getModulesSourcesDiskPath()" result="flowScope.dstPath"/>
             <evaluate expression="flowHandler.getModuleNodetypes(flowScope.moduleId)" result="flowScope.moduleNodetypes"/>
             <evaluate expression="flowScope.branchTagInfos ?: (flowScope.srcPath != null || flowScope.newScmUri != null ? null : flowHandler.listBranchOrTags(flowScope.version, flowScope.scmUri))" result="flowScope.branchTagInfos"/>
-            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos)" result="flowScope.branchOrTag"/>
+            <evaluate expression="flowScope.branchTagInfos == null ? flowScope.branchOrTag : flowHandler.guessBranchOrTag(flowScope.version, flowScope.scmUri, flowScope.branchTagInfos, flowScope.branchOrTag)" result="flowScope.branchOrTag"/>
+            <evaluate expression="messageContext.hasErrorMessages()" result="flowScope.hasError"/>
         </on-entry>
         <transition on="duplicateModule" to="duplicateModule"/>
         <transition on="cancelDuplicate" to="duplicateCanceled"/>
@@ -168,11 +169,11 @@
         </on-entry>
         <evaluate expression="JahiaTemplateManagerService.duplicateModule(flowScope.newModuleName, flowScope.newModuleId, flowScope.newGroupId, flowScope.srcPath, flowScope.newScmUri, flowScope.branchOrTag, flowScope.moduleId, flowScope.version, flowScope.moduleNodetypes.length != 0, flowScope.newDstPath, flowScope.tempSources != null, jcrSessionFactory.currentUserSession).getId()" result="flowScope.newModuleId"/>
         <transition on-exception="org.osgi.framework.BundleException" to="view">
-            <set name="flashScope.error" value="rootCauseException"/>
+            <evaluate expression="flowHandler.handleError(rootCauseException, flowScope, messageContext)"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition on-exception="java.lang.Exception" to="duplicateModuleForm">
-            <set name="flashScope.error" value="rootCauseException"/>
+            <evaluate expression="flowHandler.handleError(rootCauseException, flowScope, messageContext)"/>
             <evaluate expression="flowHandler.logError(rootCauseException)"/>
         </transition>
         <transition to="moduleDuplicated"/>

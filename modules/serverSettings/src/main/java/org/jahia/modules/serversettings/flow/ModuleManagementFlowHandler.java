@@ -92,9 +92,7 @@ import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.sites.JahiaSitesService;
-import org.jahia.services.templates.JahiaTemplateManagerService;
-import org.jahia.services.templates.ModuleVersion;
-import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.templates.*;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 import org.osgi.framework.Bundle;
@@ -745,6 +743,21 @@ public class ModuleManagementFlowHandler implements Serializable {
         logger.error(e.getMessage(), e);
     }
 
+    public void handleError(Exception exception, MutableAttributeMap flashScope, MessageContext messageContext) {
+        if (exception instanceof ScmUnavailableModuleIdException) {
+            messageContext.addMessage(new MessageBuilder().error().code(
+                    "serverSettings.manageModules.duplicateModuleError.moduleExists").arg(flashScope.get("newModuleName")).build());
+        } else if (exception instanceof ScmWrongVersionException) {
+            messageContext.addMessage(new MessageBuilder().error().code(
+                    "serverSettings.manageModules.downloadSourcesError.wrongVersion").build());
+        } else if (exception instanceof SourceControlException) {
+            messageContext.addMessage(new MessageBuilder().error().code(
+                    "serverSettings.manageModules.downloadSourcesError").build());
+        } else {
+            messageContext.addMessage(new MessageBuilder().error().defaultText(exception.getLocalizedMessage()).build());
+        }
+    }
+
     public void startModule(String moduleId, String version, RequestContext requestContext) throws RepositoryException, BundleException {
         List<String> missingDependencies = new ArrayList<String>();
         JahiaTemplatesPackage module = templateManagerService.getTemplatePackageRegistry().lookupByIdAndVersion(moduleId,
@@ -801,7 +814,7 @@ public class ModuleManagementFlowHandler implements Serializable {
         }
     }
 
-    public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTags) {
+    public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTags, String defaultBranchOrTag) {
         String[] splitVersion = StringUtils.split(StringUtils.removeEnd(moduleVersion, "-SNAPSHOT"), ".");
         if (moduleVersion.endsWith("-SNAPSHOT")) {
             String branch;
@@ -847,7 +860,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                 return tag;
             }
         }
-        return null;
+        return defaultBranchOrTag;
     }
 
     public void validateScmInfo(String scmUri, String branchOrTag, String moduleVersion, MutableAttributeMap flashScope) throws IOException {
@@ -855,7 +868,7 @@ public class ModuleManagementFlowHandler implements Serializable {
                 || (StringUtils.startsWith(scmUri, "scm:svn:") && StringUtils.contains(scmUri, "/trunk/"))) {
             Map<String, String> branchTagInfos = listBranchOrTags(moduleVersion, scmUri);
             flashScope.put("branchTagInfos", branchTagInfos);
-            branchOrTag = guessBranchOrTag(moduleVersion, scmUri, branchTagInfos);
+            branchOrTag = guessBranchOrTag(moduleVersion, scmUri, branchTagInfos, null);
             flashScope.put("branchOrTag", branchOrTag);
         }
     }

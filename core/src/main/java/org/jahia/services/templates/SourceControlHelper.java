@@ -72,7 +72,6 @@
 package org.jahia.services.templates;
 
 import java.io.File;
-import java.io.FileFilter;
 import java.io.IOException;
 import java.util.*;
 
@@ -134,11 +133,11 @@ public class SourceControlHelper {
             ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
             if (templatePackageRegistry.containsId(moduleInfo.id) && !moduleInfo.groupId.equals(templatePackageRegistry.lookupById(moduleInfo.id).getGroupId())) {
                 FileUtils.deleteDirectory(sources);
-                throw new RepositoryException("Cannot checkout module " + moduleInfo.id + " because another module with the same artifactId exists");
+                throw new ScmUnavailableModuleIdException("Cannot checkout module " + moduleInfo.id + " because another module with the same artifactId exists", moduleInfo.id);
             }
             if (version != null && !version.equals(moduleInfo.version)) {
                 FileUtils.deleteDirectory(sources);
-                throw new RepositoryException("Sources don't match module version");
+                throw new ScmWrongVersionException("Sources don't match module version");
             }
 
             if (newModule) {
@@ -202,7 +201,7 @@ public class SourceControlHelper {
         ModuleInfo moduleInfo = getModuleInfo(sources, scmURI, moduleId, version, branchOrTag);
         if (version != null && !version.equals(moduleInfo.version)) {
             FileUtils.deleteDirectory(sources);
-            throw new RepositoryException("Sources don't match module version");
+            throw new ScmWrongVersionException("Sources don't match module version");
         }
         return moduleInfo.path;
     }

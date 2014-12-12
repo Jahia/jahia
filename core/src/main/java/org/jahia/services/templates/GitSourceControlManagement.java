@@ -264,7 +264,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory.getParentFile();
         ExecutionResult r = executeCommand(executable, new String[]{"-c", "core.askpass=true", "clone", uri, workingDirectory.getName()});
         if (r.exitValue > 0) {
-            throw new IOException(r.err);
+            throw new SourceControlException(r.err);
         }
         this.rootFolder = workingDirectory;
         if (!StringUtils.isEmpty(branchOrTag)) {
@@ -317,7 +317,7 @@ public class GitSourceControlManagement extends SourceControlManagement {
                 } else {
                     message.append("Repository not accessible, see the log for more information");
                 }
-                throw new IOException("Unable to init git repository. " + message.toString());
+                throw new SourceControlException("Unable to init git repository. " + message.toString());
             }
         }
 

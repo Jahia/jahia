@@ -549,7 +549,7 @@ public class ModuleBuildHelper implements InitializingBean {
                                                  String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder , JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(dstModuleName)) {
-            throw new RepositoryException("Cannot create module because no module name has been specified");
+            throw new SourceControlException("Cannot create module because no module name has been specified");
         }
         if (StringUtils.isBlank(dstModuleId)) {
             dstModuleId = JCRContentUtils.generateNodeName(dstModuleName);
@@ -558,7 +558,7 @@ public class ModuleBuildHelper implements InitializingBean {
             dstGroupId = "org.jahia.modules";
         }
         if (templatePackageRegistry.containsId(dstModuleId)) {
-            throw new RepositoryException("Cannot create module " + dstModuleId + " because another module with the same artifactId exists");
+            throw new ScmUnavailableModuleIdException("Cannot create module " + dstModuleId + " because another module with the same artifactId exists");
         }
 
         if (StringUtils.isBlank(dstPath)) {
@@ -566,7 +566,7 @@ public class ModuleBuildHelper implements InitializingBean {
         }
         File parentDir = new File(dstPath);
         if (!parentDir.exists() && !parentDir.mkdirs()) {
-            throw new IOException("Unable to create path for: " + parentDir);
+            throw new SourceControlException("Unable to create path for: " + parentDir);
         }
 
         File dstFolder = new File(parentDir, dstModuleId);

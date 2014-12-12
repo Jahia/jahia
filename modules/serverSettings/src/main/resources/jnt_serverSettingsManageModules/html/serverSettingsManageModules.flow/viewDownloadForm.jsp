@@ -28,9 +28,14 @@
 <h2>
     <fmt:message key='serverSettings.manageModules.downloadSources' />
 </h2>
-<c:if test="${not empty error}">
-    <div class="alert alert-error"><fmt:message key='${error}'/></div>
-</c:if>
+<c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+    <c:if test="${message.severity eq 'ERROR'}">
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                ${message.text}
+        </div>
+    </c:if>
+</c:forEach>
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <c:choose>
         <c:when test="${not empty branchTagInfos}">

@@ -185,7 +185,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
         this.rootFolder = workingDirectory.getParentFile();
         ExecutionResult r = executeCommand(executable, new String[]{"checkout ", uri, workingDirectory.getName()});
         if (r.exitValue > 0) {
-            throw new IOException(r.err);
+            throw new SourceControlException(r.err);
         }
         this.rootFolder = workingDirectory;
     }

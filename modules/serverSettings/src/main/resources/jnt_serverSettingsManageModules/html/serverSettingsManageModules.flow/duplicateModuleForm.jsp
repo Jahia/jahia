@@ -29,9 +29,14 @@
 <h2>
     <fmt:message key='serverSettings.manageModules.duplicateModule' />
 </h2>
-<c:if test="${not empty error}">
-    <div class="alert alert-error">${error}</div>
-</c:if>
+<c:forEach items="${flowRequestContext.messageContext.allMessages}" var="message">
+    <c:if test="${message.severity eq 'ERROR'}">
+        <div class="alert alert-error">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                ${message.text}
+        </div>
+    </c:if>
+</c:forEach>
 
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <fieldset>
@@ -45,7 +50,7 @@
                 </c:forEach>
             </select>
         </c:when>
-        <c:when test="${not empty error}">
+        <c:when test="${hasError}">
             <label for="newScmUriText"><fmt:message key="serverSettings.manageModules.downloadSources.scmUri" /></label>
             <input type="text" id="newScmUriText" name="newScmUri" value="${not empty newScmUri ? newScmUri : scmUri}"/>
             <label for="branchOrTagText"><fmt:message key="serverSettings.manageModules.downloadSources.branchOrTag" /></label>

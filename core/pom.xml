@@ -1546,6 +1546,10 @@
                                 <name>jahia.config</name>
                                 <value>jahiaunittest.properties</value>
                               </property>
+                              <property>
+                                <name>jahiaWebAppRoot</name>
+                                <value>./target/test-repo</value>
+                              </property>                              
                             </systemProperties>
                         </configuration>
                         <executions>

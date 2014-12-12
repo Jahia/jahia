@@ -75,6 +75,7 @@ import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.RequestLoadAverage;
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -84,6 +85,7 @@ import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -115,6 +117,11 @@ public class ErrorFileDumperTest {
     public static void oneTimeTearDown() throws Exception {
         FileUtils.deleteDirectory(todaysDirectory);
         RequestLoadAverage.getInstance().stop();
+    }
+    
+    @After
+    public void tearDown() throws Exception {
+        FileUtils.deleteDirectory(todaysDirectory);
     }
 
     @Test
@@ -207,6 +214,8 @@ public class ErrorFileDumperTest {
         }
 
         Assert.assertEquals("File count should stay the same because high load deactivates file dumping !", fileCountBeforeTest, fileCountAfterTest);
+        
+        requestLoadAverage = new RequestLoadAverage("requestLoadAverage");        
     }
 
     @Test
@@ -285,15 +294,17 @@ public class ErrorFileDumperTest {
         ErrorFileDumper.start();
 
         threadSet.clear();
+        final int[] dumpLengths = new int[(int)THREAD_COUNT];
 
         for (int i=0; i < THREAD_COUNT; i++) {
+            final int threadCounter = i;
             Thread newThread = new Thread(new Runnable() {
 
                 public void run() {
                     // this is the call made in errors.jsp file.
                     StringWriter stringWriter = new StringWriter();
                     ErrorFileDumper.outputSystemInfo(new PrintWriter(stringWriter));
-                    stringWriter.toString();
+                    dumpLengths[threadCounter] = stringWriter.toString().length();
                     stringWriter = null;
                 }
             }, "ErrorFileDumperTestThread" + i);
@@ -314,10 +325,9 @@ public class ErrorFileDumperTest {
         double averageTime = ((double) totalTime) / ((double) LOOP_COUNT);
         logger.info("Milliseconds per exception = " + averageTime);
         logger.info(stopWatch.prettyPrint());
-
-        Assert.assertTrue("Error dump directory does not exist !", todaysDirectory.exists());
-        Assert.assertTrue("Error dump directory should have error files in it !", todaysDirectory.listFiles().length > 0);
-
+        for (int dumpLength : dumpLengths) {
+            Assert.assertTrue("System info dump is empty", dumpLength > 0);
+        }
     }
 
     private void generateExceptions() {

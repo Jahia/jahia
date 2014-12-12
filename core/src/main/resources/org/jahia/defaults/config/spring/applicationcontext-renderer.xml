@@ -64,6 +64,7 @@
         <property name="applyOnConfigurations" value="page"/>
     </bean>
     <bean class="org.jahia.services.render.filter.TemplateModuleInterceptorFilter">
+        <property name="applyOnConfigurations" value="page"/>
         <property name="description" value="Inject renderContext in TemplateModuleInterceptor."/>
         <property name="priority" value="-2"/>
     </bean>

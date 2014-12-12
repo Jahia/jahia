@@ -71,8 +71,6 @@
  */
 package org.jahia.services.render.filter;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Render;
 import org.jahia.services.content.interceptor.TemplateModuleInterceptor;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;

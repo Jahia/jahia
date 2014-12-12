@@ -15,4 +15,7 @@
         <property name="performMigrationToDataStoreIfNeeded" value="false"/>
     </bean>
 
+    <bean name="nodeTypesDBService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl" />
+    </bean>
 </beans>

@@ -81,7 +81,7 @@
     </parent>
 
     <artifactId>org.jahia.bundles.webconsole.config</artifactId>
-    <name>Jahia Felix Web Console Configuration</name>
+    <name>Jahia OSGi Web Console Configuration</name>
     <packaging>bundle</packaging>
 
     <dependencies>

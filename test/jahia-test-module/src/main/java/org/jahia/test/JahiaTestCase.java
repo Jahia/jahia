@@ -85,7 +85,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPublicationService;

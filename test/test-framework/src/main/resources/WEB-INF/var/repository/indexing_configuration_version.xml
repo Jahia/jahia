@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<!DOCTYPE configuration SYSTEM "http://jackrabbit.apache.org/dtd/indexing-configuration-1.2.dtd">
+<configuration xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+
+    <!-- see http://wiki.apache.org/jackrabbit/IndexingConfiguration for details -->
+
+    <index-rule nodeType="nt:base"/>
+            
+</configuration>

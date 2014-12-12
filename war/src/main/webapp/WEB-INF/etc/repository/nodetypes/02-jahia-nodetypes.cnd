@@ -586,6 +586,8 @@
 
 [jmix:userProfileComponents] > jmix:droppableContent, jmix:accessControllableContent mixin
 
+[jmix:skipConstraintCheck] mixin
+
 // To exclude a node type from the components tree and create engine
 
 [jmix:hiddenType] mixin

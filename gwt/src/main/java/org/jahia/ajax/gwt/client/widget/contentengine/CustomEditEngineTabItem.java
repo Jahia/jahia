@@ -13,10 +13,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class CustomEditEngineTabItem extends EditEngineTabItem {
 
@@ -88,9 +85,20 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
     }
 
     @Override
-    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> chidren, GWTJahiaNodeACL acl) {
+    public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> children, GWTJahiaNodeACL acl) {
         if (doSaveMethodName != null) {
-            doCall(doSaveMethodName, getWriteOperations(changedProperties, changedI18NProperties, addedTypes, removedTypes));
+            Map<String,GWTJahiaNode> childrenMap = new HashMap<String, GWTJahiaNode>();
+            doCall(doSaveMethodName, getWriteOperations(node, changedProperties, changedI18NProperties, addedTypes, removedTypes, childrenMap));
+            if (!childrenMap.isEmpty()) {
+                if (node != null) {
+                    for (GWTJahiaNode child : childrenMap.values()) {
+                        node.add(child);
+                    }
+                    node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
+                } else {
+                    children.addAll(childrenMap.values());
+                }
+            }
         }
     }
 
@@ -150,6 +158,25 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         changedI18NProperties.get(lang).add(new GWTJahiaNodeProperty(name, value, type));
     }
 
+    private static void setChild(String uuid, String name, Map<String,GWTJahiaNode> children) {
+        GWTJahiaNode node = new GWTJahiaNode();
+        node.setUUID(uuid);
+        node.setName(name);
+        node.setNodeTypes(new ArrayList<String>());
+        node.set("nodeLangCodeProperties", new HashMap<String, List<GWTJahiaNodeProperty>>());
+        node.set("nodeProperties", new ArrayList<GWTJahiaNodeProperty>());
+        children.put(uuid, node);
+    }
+
+    public static void addChildMixin(String uuid, String mixin, Map<String,GWTJahiaNode> children) {
+        children.get(uuid).getNodeTypes().add(mixin);
+    }
+
+    public static void setChildProperty(String uuid, String name, String value, int type, Map<String,GWTJahiaNode> children) {
+        ((List<GWTJahiaNodeProperty>)children.get(uuid).get("nodeProperties")).add(new GWTJahiaNodeProperty(name, value, type));
+    }
+
+
     public static native JavaScriptObject convertExistingNode(GWTJahiaNode node, Map<String,GWTJahiaNodeProperty> properties, JsArrayString types, String language) /*-{
         var jsnode = {
             'isNewNode':false,
@@ -202,7 +229,7 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         return jsnode;
     }-*/;
 
-    public static native JavaScriptObject getWriteOperations(List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes) /*-{
+    public static native JavaScriptObject getWriteOperations(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, Map<String,GWTJahiaNode> children) /*-{
         var jsnode = {
             'addMixin': function (mixin) {
                 addedTypes.@java.util.Set::add(Ljava/lang/Object;)(mixin);
@@ -217,6 +244,18 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
             },
             'setI18NProperty': function (lang, property, value, type) {
                 @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::setI18NProperty(Ljava/util/Map;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)(changedI18NProperties, lang, property, value, type)
+            },
+            'child': function(uuid,name) {
+                @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::setChild(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)(uuid, name, children);
+                var subnode = {
+                    'addMixin': function(mixin) {
+                        @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::addChildMixin(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)(uuid, mixin, children);
+                    },
+                    'setProperty': function (property, value, type) {
+                        @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::setChildProperty(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/Map;)(uuid, property, value, type, children);
+                    }
+                }
+                return subnode;
             }
         }
         return jsnode;

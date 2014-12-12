@@ -809,17 +809,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                     newNames.add(subNode.getName());
                 }
-                List<String> oldNames = new ArrayList<String>();
-                NodeIterator oldChildrenNodes = nodeWrapper.getNodes();
-                while (oldChildrenNodes.hasNext()) {
-                    JCRNodeWrapper next = (JCRNodeWrapper) oldChildrenNodes.next();
-                    if (newNames.contains(next.getName())) {
-                        oldNames.add(next.getName());
+                if (nodeWrapper.getPrimaryNodeType().hasOrderableChildNodes()) {
+                    List<String> oldNames = new ArrayList<String>();
+                    NodeIterator oldChildrenNodes = nodeWrapper.getNodes();
+                    while (oldChildrenNodes.hasNext()) {
+                        JCRNodeWrapper next = (JCRNodeWrapper) oldChildrenNodes.next();
+                        if (newNames.contains(next.getName())) {
+                            oldNames.add(next.getName());
+                        }
                     }
-                }
-                if (!oldNames.equals(newNames)) {
-                    for (String newName : newNames) {
-                        nodeWrapper.orderBefore(newName, null);
+                    if (!oldNames.equals(newNames)) {
+                        for (String newName : newNames) {
+                            nodeWrapper.orderBefore(newName, null);
+                        }
                     }
                 }
             }

@@ -252,7 +252,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                 "areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                     }
                     try {
-                        if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim())) {
+                        if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim()) && !node.isNodeType("jmix:skipConstraintCheck")) {
                             StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
                             boolean found = false;
                             Node displayedNode = node;

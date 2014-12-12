@@ -76,12 +76,16 @@ import com.extjs.gxt.ui.client.event.MessageBoxEvent;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.google.gwt.http.client.*;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONParser;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -90,7 +94,7 @@ import java.util.Set;
  * Time: 2:26:32 PM
  * 
  */
-public class ExecuteActionItem extends BaseActionItem {
+public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
     private static final long serialVersionUID = -1317342305404063292L;
     public static final int STATUS_CODE_OK = 200;
     protected String action;
@@ -127,6 +131,7 @@ public class ExecuteActionItem extends BaseActionItem {
                 if (requestData != null) {
                     builder.setHeader("Content-type", "application/x-www-form-urlencoded");
                 }
+                builder.setHeader("accept", "application/json");
                 builder.sendRequest(requestData, new RequestCallback() {
                     public void onError(Request request, Throwable exception) {
                         com.google.gwt.user.client.Window.alert("Cannot create connection");
@@ -137,6 +142,16 @@ public class ExecuteActionItem extends BaseActionItem {
                     public void onResponseReceived(Request request, Response response) {
                         if (response.getStatusCode() != 200) {
                             com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
+                        }
+                        try {
+                            JSONObject refreshData = JSONParser.parseStrict(response.getText()).isObject().get("refreshData").isObject();
+                            Map data = new HashMap();
+                            for (String s : refreshData.keySet()) {
+                                data.put(s, refreshData.get(s));
+                            }
+                            linker.refresh(data);
+                        } catch (Exception e) {
+                            // Ignore
                         }
                         linker.loaded();
                         actionExecuted(response.getStatusCode());

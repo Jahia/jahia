@@ -1,81 +1,12 @@
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header { margin-bottom: 8px; }
+.ui-timepicker-div dl { text-align: left; }
+.ui-timepicker-div dl dt { float: left; clear:left; padding: 0 0 0 5px; }
+.ui-timepicker-div dl dd { margin: 0 10px 10px 45%; }
+.ui-timepicker-div td { font-size: 90%; }
+.ui-tpicker-grid-label { background: none; border: none; margin: 0; padding: 0; }
 
-.selHrs, .selMins {
-    width: 2.5em;
-}
-
-.selHrs {
-    margin-left: 5px;
-}
-
-.dayPeriod {
-    display: inline-block;
-    width: 20px;
-}
-
-.slider {
-    height: 120px;
-    float: left;
-    margin: 10px
-}
-
-#tpSelectedTime {
-    margin-bottom: 0;
-    border-bottom: 1px solid #aaa;
-    padding: 5px;
-    color: #000;
-    background: #fff;
-    text-transform: none;
-
-}
-
-#tpSelectedTime span {
-    font-weight: bold;
-}
-
-#datepicker {
-
-}
-
-#pickerplug {
-    overflow: hidden;
-    display: none;
-    position: absolute;
-    top: 200px;
-    left: 300px;
-    z-index: 500;
-}
-
-#pickerplug li {
-    display: block;
-    float: left;
-}
-
-#timepicker {
-    border: 1px solid #aaa;
-    background: #fff;
-}
-
-#timepicker ul {
-    overflow: hidden;
-    padding: 5px;
-}
-
-#timepicker ul li {
-    position: relative;
-    display: block;
-    float: left;
-    width: 50px;
-
-}
-
-#timepicker ul li h4 {
-    width: 100%;
-    background: transparent;
-    color: #000;
-    text-align: center;
-}
-
-#timepicker ul li .slider {
-    position: relative;
-    left: 10px;
-}
+.ui-timepicker-rtl{ direction: rtl; }
+.ui-timepicker-rtl dl { text-align: right; padding: 0 5px 0 0; }
+.ui-timepicker-rtl dl dt{ float: right; clear: right; }
+.ui-timepicker-rtl dl dd { margin: 0 45% 10px 10px; }

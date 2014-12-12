@@ -105,18 +105,11 @@
             <artifactId>jahia-commons</artifactId>
             <version>${jahia.commons.version}</version>
         </dependency>
-
+        
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>${junit.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-            <version>${spring.version}</version>
+            <groupId>org.jahia.modules</groupId>
+            <artifactId>test-framework</artifactId>
+            <version>7.1.0.0-SNAPSHOT</version>
             <scope>test</scope>
         </dependency>
 
@@ -1542,9 +1535,40 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>${surefire.plugin.version}</version>
                         <configuration>
-                            <argLine>-Xmx1024m</argLine>
+                            <argLine>-Xmx1536m -XX:MaxPermSize=256m</argLine>
                             <skipTests>false</skipTests>
+                            <systemProperties>
+                              <property>
+                                <name>jahia.license</name>
+                                <value>jahia.license</value>
+                              </property>
+                              <property>
+                                <name>jahia.config</name>
+                                <value>jahiaunittest.properties</value>
+                              </property>
+                            </systemProperties>
                         </configuration>
+                        <executions>
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <testNGArtifactName>none:none</testNGArtifactName>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>test-testng</id>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>test</goal>
+                                </goals>
+                                <configuration>
+                                    <junitArtifactName>none:none</junitArtifactName>
+                                </configuration>
+                            </execution>
+                        </executions>                        
                     </plugin>
                 </plugins>
             </build>

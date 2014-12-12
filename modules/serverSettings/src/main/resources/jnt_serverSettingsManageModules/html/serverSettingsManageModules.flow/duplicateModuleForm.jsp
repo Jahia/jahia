@@ -40,6 +40,7 @@
 
 <form action="${flowExecutionUrl}" method="POST" onsubmit="workInProgress('${i18nWaiting}');">
     <fieldset>
+        <c:if test="${empty srcPath}">
         <c:choose>
         <c:when test="${not empty branchTagInfos}">
             <label for="newScmUri"><fmt:message key="serverSettings.manageModules.downloadSources.scm.${fn:endsWith(version,'-SNAPSHOT') ? 'branch' : 'tag'}" /></label>
@@ -61,6 +62,7 @@
             <input type="hidden" name="branchOrTag" value="${not empty branchOrTag ? branchOrTag : ''}"/>
         </c:when>
         </c:choose>
+        </c:if>
 
         <fmt:message key='label.moduleName.copy' var="moduleNameCopy">
             <fmt:param value="${moduleName}"/>

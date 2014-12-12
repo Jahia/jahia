@@ -71,9 +71,13 @@
  */
 package org.jahia.modules.serversettings.flow;
 
+import org.apache.camel.util.FileUtil;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.dom4j.DocumentException;
 import org.jahia.bin.Jahia;
 import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -87,6 +91,9 @@ import org.jahia.modules.serversettings.moduleManagement.ModuleVersionState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.security.license.LicenseCheckerService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -743,10 +750,10 @@ public class ModuleManagementFlowHandler implements Serializable {
         logger.error(e.getMessage(), e);
     }
 
-    public void handleError(Exception exception, MutableAttributeMap flashScope, MessageContext messageContext) {
+    public void handleError(Exception exception, MutableAttributeMap flowScope, MessageContext messageContext) {
         if (exception instanceof ScmUnavailableModuleIdException) {
             messageContext.addMessage(new MessageBuilder().error().code(
-                    "serverSettings.manageModules.duplicateModuleError.moduleExists").arg(flashScope.get("newModuleName")).build());
+                    "serverSettings.manageModules.duplicateModuleError.moduleExists").arg(flowScope.get("newModuleName")).build());
         } else if (exception instanceof ScmWrongVersionException) {
             messageContext.addMessage(new MessageBuilder().error().code(
                     "serverSettings.manageModules.downloadSourcesError.wrongVersion").build());
@@ -754,7 +761,11 @@ public class ModuleManagementFlowHandler implements Serializable {
             messageContext.addMessage(new MessageBuilder().error().code(
                     "serverSettings.manageModules.downloadSourcesError").build());
         } else {
-            messageContext.addMessage(new MessageBuilder().error().defaultText(exception.getLocalizedMessage()).build());
+            String message = exception.getLocalizedMessage();
+            if (StringUtils.isBlank(message)) {
+                message = exception.toString();
+            }
+            messageContext.addMessage(new MessageBuilder().error().defaultText(message).build());
         }
     }
 
@@ -870,6 +881,54 @@ public class ModuleManagementFlowHandler implements Serializable {
             flashScope.put("branchTagInfos", branchTagInfos);
             branchOrTag = guessBranchOrTag(moduleVersion, scmUri, branchTagInfos, null);
             flashScope.put("branchOrTag", branchOrTag);
+        }
+    }
+
+    public JCRNodeWrapper checkoutModule(MutableAttributeMap flowScope, JCRSessionWrapper session) throws RepositoryException, XmlPullParserException, DocumentException, IOException, BundleException {
+        String scmUri = (String) flowScope.get("scmUri");
+        String branchOrTag = (String) flowScope.get("branchOrTag");
+        String module = (String) flowScope.get("module");
+        String version = (String) flowScope.get("version");
+        try {
+            return templateManagerService.checkoutModule(null, scmUri, branchOrTag, module, version, session);
+        } catch (SourceControlException e) {
+            Map<String, String> branchTagInfos = listBranchOrTags(version, scmUri);
+            String newBranchOrTag = guessBranchOrTag(version, scmUri, branchTagInfos, branchOrTag);
+            String newScmUri = branchTagInfos.get(newBranchOrTag);
+            if (newScmUri != null && newBranchOrTag != null && (!newBranchOrTag.equals(branchOrTag) || newScmUri.equals(scmUri))) {
+                flowScope.put("scmUri", newScmUri);
+                flowScope.put("branchTagInfos", branchTagInfos);
+                flowScope.put("branchOrTag", newBranchOrTag);
+                return templateManagerService.checkoutModule(null, newScmUri, newBranchOrTag, module, version, session);
+            }
+            throw e;
+        }
+    }
+
+    public File checkoutTempModule(MutableAttributeMap flowScope) throws RepositoryException, XmlPullParserException, DocumentException, IOException {
+        String scmUri = (String) flowScope.get("scmUri");
+        String branchOrTag = (String) flowScope.get("branchOrTag");
+        String module = (String) flowScope.get("module");
+        String version = (String) flowScope.get("version");
+        try {
+            return templateManagerService.checkoutTempModule(scmUri, branchOrTag, module, version);
+        } catch (SourceControlException e) {
+            Map<String, String> branchTagInfos = listBranchOrTags(version, scmUri);
+            String newBranchOrTag = guessBranchOrTag(version, scmUri, branchTagInfos, branchOrTag);
+            String newScmUri = branchTagInfos.get(newBranchOrTag);
+            if (newScmUri != null && newBranchOrTag != null && (!newBranchOrTag.equals(branchOrTag) || newScmUri.equals(scmUri))) {
+                flowScope.put("newScmUri", newScmUri);
+                flowScope.put("branchTagInfos", branchTagInfos);
+                flowScope.put("branchOrTag", newBranchOrTag);
+                return templateManagerService.checkoutTempModule(newScmUri, newBranchOrTag, module, version);
+            }
+            throw e;
+        }
+    }
+
+    public void deleteTempSources(File tempSources) {
+        if (tempSources != null && tempSources.exists()) {
+            FileUtils.deleteQuietly(tempSources);
         }
     }
 }

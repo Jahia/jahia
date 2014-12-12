@@ -670,7 +670,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         serverVersion = getString("serverVersion", null);
         serverHome = getString("serverHome", "");
 
-        if (server.length() == 0) {
+        if (server.length() == 0 && servletContext != null) {
             logger.info("Auto-detecting server type...");
             String info = StringUtils.defaultString(
                     servletContext.getServerInfo(), "tomcat").toLowerCase();
@@ -748,10 +748,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             logger.info("...detected server home is '{}'", serverHome);
         }
-
-        serverDeployer = ServerDeploymentFactory.getImplementation(server,
-                serverVersion, new File(serverHome).getAbsoluteFile(), null,
-                null);
+        if (!StringUtils.isEmpty(server) && !StringUtils.isEmpty(serverHome)) {
+            serverDeployer = ServerDeploymentFactory.getImplementation(server,
+                    serverVersion, new File(serverHome).getAbsoluteFile(),
+                    null, null);
+        }
     }
 
     /**

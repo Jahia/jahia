@@ -194,7 +194,7 @@ public final class Jahia {
                 logger.error(ioe.getMessage(), ioe);
                 BUILD_NUMBER = 0;
             } catch (NumberFormatException nfe) {
-                logger.error(nfe.getMessage(), nfe);
+                logger.warn(nfe.getMessage());
                 BUILD_NUMBER = 0;
             }
         }

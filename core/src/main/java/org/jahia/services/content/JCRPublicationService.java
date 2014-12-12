@@ -90,7 +90,6 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
-
 import java.util.*;
 
 import static org.jahia.api.Constants.*;
@@ -1314,11 +1313,15 @@ public class JCRPublicationService extends JahiaService {
     }
 
     public static boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node) throws RepositoryException {
-        Value descriptorValue = sourceSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-        if (descriptorValue == null) {
+        Value workspaceManagement = sourceSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+        if (workspaceManagement == null) {
             return false;
         }
-        return descriptorValue.getBoolean();
+        Value writeSupported = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.WRITE_SUPPORTED);
+        if (writeSupported == null) {
+            return false;
+        }
+        return workspaceManagement.getBoolean() && writeSupported.getBoolean();
     }
 
     private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {

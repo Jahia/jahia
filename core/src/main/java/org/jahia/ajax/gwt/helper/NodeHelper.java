@@ -73,7 +73,6 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -109,7 +108,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
-
 import java.io.File;
 import java.util.*;
 
@@ -304,6 +302,7 @@ class NodeHelper {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
                 populatePublicationInfos(n, node);
             }
+            checkWriteAccessForPublication(node, n);
         }
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)
@@ -451,6 +450,19 @@ class NodeHelper {
         populateInvalidLanguages(n, node);
 
         return n;
+    }
+
+    private void checkWriteAccessForPublication(JCRNodeWrapper node, GWTJahiaNode n) {
+        try {
+            Value descriptorValue = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.WRITE_SUPPORTED);
+            if (descriptorValue != null) {
+                n.set("supportsPublication", descriptorValue.getBoolean());
+            } else {
+                n.set("supportsPublication", false);
+            }
+        } catch (RepositoryException e) {
+            e.printStackTrace();
+        }
     }
 
     private List<GWTJahiaNodeVersion> getVersions(final JCRNodeWrapper node)

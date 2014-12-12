@@ -71,15 +71,10 @@
  */
 package org.springframework.webflow.conversation.impl;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.webflow.conversation.Conversation;
 import org.springframework.webflow.conversation.ConversationId;
-import org.springframework.webflow.conversation.ConversationParameters;
 import org.springframework.webflow.conversation.NoSuchConversationException;
 
 /**
@@ -88,28 +83,6 @@ import org.springframework.webflow.conversation.NoSuchConversationException;
 class JahiaConversationContainer extends ConversationContainer {
     private static final long serialVersionUID = 6043504320583152706L;
 
-    private transient Logger logger;
-
-    /**
-     * Maximum number of conversations in this container. -1 for unlimited.
-     */
-    private int maxConversations;
-
-    /**
-     * The key of this conversation container in the session.
-     */
-    private String sessionKey;
-
-    /**
-     * The contained conversations. A list of {@link ContainedConversation} objects.
-     */
-    private List<ContainedConversation> conversations;
-
-    /**
-     * The sequence for unique conversation identifiers within this container.
-     */
-    private int conversationIdSequence;
-
     /**
      * Create a new conversation container.
      * @param maxConversations the maximum number of allowed concurrent conversations, -1 for unlimited
@@ -117,52 +90,6 @@ class JahiaConversationContainer extends ConversationContainer {
      */
     public JahiaConversationContainer(int maxConversations, String sessionKey) {
         super(maxConversations, sessionKey);
-        this.maxConversations = maxConversations;
-        this.sessionKey = sessionKey;
-        this.conversations = new ArrayList<ContainedConversation>();
-    }
-
-    /**
-     * Returns the key of this conversation container in the session. For package level use only.
-     */
-    String getSessionKey() {
-        return sessionKey;
-    }
-
-    /**
-     * Returns the current size of the conversation container: the number of conversations contained within it.
-     */
-    public int size() {
-        return conversations.size();
-    }
-
-    /**
-     * Create a new conversation based on given parameters and add it to the container.
-     * @param parameters descriptive conversation parameters
-     * @param lockFactory the lock factory to use to create the conversation lock
-     * @return the created conversation
-     */
-    public synchronized Conversation createConversation(ConversationParameters parameters,
-                                                        ConversationLockFactory lockFactory) {
-        ContainedConversation conversation = new ContainedConversation(this, nextId(), lockFactory.createLock());
-        conversation.putAttribute("name", parameters.getName());
-        conversation.putAttribute("caption", parameters.getCaption());
-        conversation.putAttribute("description", parameters.getDescription());
-        conversations.add(conversation);
-        if (maxExceeded()) {
-            if (getLogger().isDebugEnabled()) {
-                getLogger()
-                        .debug("The maximum number of flow executions has been exceeded for the current user. Removing the oldest conversation with id: "
-                                + ((Conversation) conversations.get(0)).getId());
-            }
-            // end oldest conversation
-            ((Conversation) conversations.get(0)).end();
-        }
-        return conversation;
-    }
-
-    private ConversationId nextId() {
-        return new SimpleConversationId(Integer.valueOf(++conversationIdSequence));
     }
 
     /**
@@ -171,43 +98,16 @@ class JahiaConversationContainer extends ConversationContainer {
      * @return the conversation
      * @throws NoSuchConversationException if the conversation cannot be found
      */
+    @Override
     public synchronized Conversation getConversation(ConversationId id) throws NoSuchConversationException {
-        for (Iterator<ContainedConversation> it = conversations.iterator(); it.hasNext();) {
+        for (Iterator<ContainedConversation> it = getConversations().iterator(); it.hasNext();) {
             ContainedConversation conversation = (ContainedConversation) it.next();
             if (conversation.getId().equals(id)) {
-                conversations.remove(conversation);
-                conversations.add(conversation);
+                getConversations().remove(conversation);
+                getConversations().add(conversation);
                 return conversation;
             }
         }
         throw new NoSuchConversationException(id);
-    }
-
-    /**
-     * Remove identified conversation from this container.
-     */
-    public synchronized void removeConversation(ConversationId id) {
-        for (Iterator<ContainedConversation> it = conversations.iterator(); it.hasNext();) {
-            ContainedConversation conversation = (ContainedConversation) it.next();
-            if (conversation.getId().equals(id)) {
-                it.remove();
-                break;
-            }
-        }
-    }
-
-    /**
-     * Has the maximum number of allowed concurrent conversations in the session been exceeded?
-     */
-    private boolean maxExceeded() {
-        return maxConversations > 0 && conversations.size() > maxConversations;
-    }
-    
-    private Logger getLogger() {
-        if (logger == null) {
-            logger = LoggerFactory.getLogger(JahiaConversationContainer.class);
-        }
-        
-        return logger;
     }
 }

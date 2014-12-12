@@ -118,7 +118,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         WebflowDispatcherScript script = (WebflowDispatcherScript) request.getAttribute("script");
         JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
         if (script != null && n != null) {
-            StringBuffer path = new StringBuffer(request.getRequestURI());
+            StringBuilder path = new StringBuilder(request.getRequestURI());
             path.append('?');
             Map<String,String> params = new HashMap<String, String>();
             try {

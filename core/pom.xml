@@ -587,11 +587,6 @@
             <artifactId>spring-webflow</artifactId>
             <version>${springwebflow-version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.webflow</groupId>
-            <artifactId>spring-js</artifactId>
-            <version>${springwebflow-version}</version>
-        </dependency>
 
         <!-- Spring framework optional dependencies-->
 

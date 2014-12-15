@@ -1312,16 +1312,16 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    public static boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node) throws RepositoryException {
-        Value workspaceManagement = sourceSession.getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-        if (workspaceManagement == null) {
-            return false;
+    public static boolean supportsPublication(JCRSessionWrapper sourceSession, JCRNodeWrapper node)
+            throws RepositoryException {
+        JCRStoreProvider provider = node.getProvider();
+        if (provider.isDefault()) {
+            return true;
         }
-        Value writeSupported = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.WRITE_SUPPORTED);
-        if (writeSupported == null) {
-            return false;
-        }
-        return workspaceManagement.getBoolean() && writeSupported.getBoolean();
+        Value workspaceManagement = sourceSession.getProviderSession(provider).getRepository()
+                .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+
+        return workspaceManagement != null && workspaceManagement.getBoolean();
     }
 
     private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {

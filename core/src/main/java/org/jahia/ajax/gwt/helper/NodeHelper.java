@@ -73,6 +73,7 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -108,6 +109,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
+
 import java.io.File;
 import java.util.*;
 
@@ -453,15 +455,18 @@ class NodeHelper {
     }
 
     private void checkWriteAccessForPublication(JCRNodeWrapper node, GWTJahiaNode n) {
+        // if write operations are not supported on the target repository, disable the publication actions
+        JCRStoreProvider provider = node.getProvider();
+        if (provider.isDefault()) {
+            return;
+        }
         try {
-            Value descriptorValue = node.getSession().getProviderSession(node.getProvider()).getRepository().getDescriptorValue(Repository.WRITE_SUPPORTED);
-            if (descriptorValue != null) {
-                n.set("supportsPublication", descriptorValue.getBoolean());
-            } else {
-                n.set("supportsPublication", false);
-            }
+            Value descriptorValue = node.getSession().getProviderSession(provider).getRepository()
+                    .getDescriptorValue(Repository.WRITE_SUPPORTED);
+            n.set("supportsPublication", descriptorValue != null && descriptorValue.getBoolean());
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            logger.warn("Unable to get the repository descriptor for node {}. Cause: {}", n.getPath(),
+                    e.getLocalizedMessage());
         }
     }
 
@@ -873,12 +878,7 @@ class NodeHelper {
 
         boolean supportsPublication = false;
         try {
-            Value descriptorValue = node.getSession().getProviderSession(node.getProvider())
-                    .getRepository()
-                    .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-            if (descriptorValue != null) {
-                supportsPublication = descriptorValue.getBoolean();
-            }
+            supportsPublication = JCRPublicationService.supportsPublication(node.getSession(), node);
         } catch (Exception e) {
             logger.error("Cannot get repository infos", e);
         }

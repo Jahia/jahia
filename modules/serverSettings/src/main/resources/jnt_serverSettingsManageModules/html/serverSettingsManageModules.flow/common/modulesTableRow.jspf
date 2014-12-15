@@ -30,7 +30,7 @@
             </c:if>
         </td>
         <td>
-            <c:set var="sourcesFound" value="false"/>
+            <c:remove var="sourcesFound" />
             <c:forEach items="${entry.value}" var="version">
                 <c:set var="isActiveVersion" value="${version.key == currentModule.version}"/>
                 <c:set var="displayVersionAndState" value="true"/>
@@ -43,7 +43,7 @@
                     </div>
                 </c:if>
                 <c:if test="${not empty version.value.sourcesFolder}">
-                    <c:set var="sourcesFound" value="true"/>
+                    <c:set var="sourcesFound" value="${version.key}"/>
                 </c:if>
             </c:forEach>
             <c:if test="${not empty availableUpdates[entry.key] and not functions:contains(systemSiteRequiredModules,entry.key)}">
@@ -83,11 +83,10 @@
                             &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                         </button>
                     </c:when>
-                    <c:when test="${sourcesFound}">
-                        <button class="btn btn-block" disabled="disabled" type="button" >
-                            <i class="icon-circle-arrow-right"></i>
-                            &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
-                        </button>
+                    <c:when test="${not empty sourcesFound}">
+                        <fmt:message key='serverSettings.manageModules.module.source.notAvailable' >
+                            <fmt:param value="${sourcesFound}" />
+                        </fmt:message>
                     </c:when>
                     <c:when test="${not sourcesDownloadable}">
                         <fmt:message key="serverSettings.manageModules.notDownloadable"/>

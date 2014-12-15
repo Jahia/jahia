@@ -79,6 +79,7 @@ import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
+import org.apache.jackrabbit.core.state.StaleItemStateException;
 import org.apache.jackrabbit.rmi.server.ServerAdapterFactory;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -456,7 +457,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                         }
                     });
                 } catch (RepositoryException e) {
-                    logger.error("Couldn't retrieve session to update mount point status", e);
+                    if (!(e.getCause() instanceof StaleItemStateException)) {
+                        logger.error("Error updating mount point status", e);
+                    }
                 }
             } else {
                 stop();

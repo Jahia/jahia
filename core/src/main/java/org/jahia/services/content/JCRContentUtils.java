@@ -727,7 +727,7 @@ public final class JCRContentUtils implements ServletContextAware {
                 }
             }
             return (useContext?prefix:"") + getIcon(nt, getSubType(nt, f));
-        } else if (f.isNodeType("jnt:folder") && !StringUtils.equals(f.getProvider().getKey(), JCRSessionFactory.DEFAULT_PROVIDER_KEY)) {
+        } else if (!f.getProvider().isDefault() && f.isNodeType("jnt:folder")) {
             return (useContext?prefix:"") + folder + "remoteFolder.png";
         } else {
             return (useContext?prefix:"") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));

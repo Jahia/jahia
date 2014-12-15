@@ -143,14 +143,14 @@ public class WebprojectHandler implements Serializable {
     private static final Pattern LANGUAGE_RANK_PATTERN = Pattern.compile("(?:language.)(\\w+)(?:.rank)");
 
     static Logger logger = LoggerFactory.getLogger(WebprojectHandler.class);
-    private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<String>(Arrays.asList("serverPermissions.xml",
+    private static final HashSet<String> NON_SITE_IMPORTS = new HashSet<>(Arrays.asList("serverPermissions.xml",
             "users.xml", "users.zip", JahiaSitesService.SYSTEM_SITE_KEY + ".zip", "references.zip", "roles.zip", "mounts.zip"));
     private static final Map<String, Integer> RANK;
 
     private static final long serialVersionUID = -6643519526225787438L;
 
     static {
-        RANK = new HashMap<String, Integer>(8);
+        RANK = new HashMap<>(8);
         RANK.put("mounts.zip", 4);
         RANK.put("roles.xml", 5);
         RANK.put("roles.zip", 5);
@@ -253,9 +253,7 @@ public class WebprojectHandler implements Serializable {
                             groupManagerService.getAdministratorGroup(site.getSiteKey(), session).addMember(adminSiteUser);
                             session.save();
                         }
-                    } catch (JahiaException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (IOException e) {
+                    } catch (JahiaException | IOException e) {
                         logger.error(e.getMessage(), e);
                     }
                     return null;  //To change body of implemented methods use File | Settings | File Templates.
@@ -289,9 +287,7 @@ public class WebprojectHandler implements Serializable {
                             break;
                         }
                     }
-                } catch (JahiaException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (RepositoryException e) {
+                } catch (JahiaException | RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
@@ -300,7 +296,7 @@ public class WebprojectHandler implements Serializable {
     }
 
     private Locale determineDefaultLocale(Locale defaultLocale, ImportInfo infos) {
-        SortedMap<Integer, String> activeLanguageCodesByRank = new TreeMap<Integer, String>();
+        SortedMap<Integer, String> activeLanguageCodesByRank = new TreeMap<>();
         Map<Object, Object> map = infos.asMap();
         for (Map.Entry<Object, Object> info : map.entrySet()) {
             if (info.getKey() instanceof String) {
@@ -418,7 +414,7 @@ public class WebprojectHandler implements Serializable {
         siteBean.setTemplatePackageName(site.getTemplatePackageName());
         siteBean.setTemplateFolder(site.getTemplateFolder());
         List<String> installedModules = site.getInstalledModules();
-        siteBean.setModules(installedModules.size() > 1 ? new LinkedList<String>(installedModules.subList(1,
+        siteBean.setModules(installedModules.size() > 1 ? new LinkedList<>(installedModules.subList(1,
                 installedModules.size())) : new LinkedList<String>());
 
         return siteBean;
@@ -434,13 +430,13 @@ public class WebprojectHandler implements Serializable {
     private void prepareFileImports(File f, String name, MessageContext messageContext) {
         if (f != null && f.exists()) {
             ZipInputStream zis = null;
+            ZipEntry z = null;
             try {
                 importProperties = new Properties();
                 zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(f)));
-                ZipEntry z;
-                Map<File, String> imports = new HashMap<File, String>();
-                List<File> importList = new ArrayList<File>();
-                List<String> emptyFiles = new ArrayList<String>();
+                Map<File, String> imports = new HashMap<>();
+                List<File> importList = new ArrayList<>();
+                List<String> emptyFiles = new ArrayList<>();
                 while ((z = zis.getNextEntry()) != null) {
                     if (z.isDirectory()) {
                         continue;
@@ -496,8 +492,8 @@ public class WebprojectHandler implements Serializable {
                     }
                 }
 
-                this.importsInfos = new LinkedHashMap<String, ImportInfo>();
-                List<ImportInfo> importsInfosList = new ArrayList<ImportInfo>();
+                this.importsInfos = new LinkedHashMap<>();
+                List<ImportInfo> importsInfosList = new ArrayList<>();
                 for (File i : importList) {
                     ImportInfo value = prepareSiteImport(i, imports.get(i), messageContext);
                     if (value != null) {
@@ -506,10 +502,10 @@ public class WebprojectHandler implements Serializable {
                             Map<String,Resource> legacyDefinitions = getLegacyMappingsInModules("cnd");
 
                             if (!legacyMappings.isEmpty()) {
-                                value.setLegacyMappings(new HashSet<String>(legacyMappings.keySet()));
+                                value.setLegacyMappings(new HashSet<>(legacyMappings.keySet()));
                             }
                             if (!legacyDefinitions.isEmpty()) {
-                                value.setLegacyDefinitions(new HashSet<String>(legacyDefinitions.keySet()));
+                                value.setLegacyDefinitions(new HashSet<>(legacyDefinitions.keySet()));
                             }
                         }
                         importsInfosList.add(value);
@@ -534,7 +530,7 @@ public class WebprojectHandler implements Serializable {
         File fld = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "legacyMappings");
         final File defaultMappingsFolder = fld.isDirectory() ? fld : null;
 
-        final Map<String,Resource> resources = new HashMap<String,Resource>();
+        final Map<String,Resource> resources = new HashMap<>();
 
         if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {
             try {
@@ -600,9 +596,12 @@ public class WebprojectHandler implements Serializable {
         importInfos.setImportFile(i);
         importInfos.setImportFileName(filename);
         importInfos.setSelected(Boolean.TRUE);
-        if (importProperties != null) {
+        if (importProperties != null && !importProperties.isEmpty()) {
             importInfos.setOriginatingJahiaRelease(importProperties.getProperty("JahiaRelease"));
-            importInfos.setOriginatingBuildNumber(Integer.parseInt(importProperties.getProperty("BuildNumber")));
+            final String buildNumber = importProperties.getProperty("BuildNumber");
+            if (buildNumber != null) {
+                importInfos.setOriginatingBuildNumber(Integer.parseInt(buildNumber));
+            }
         }
         if (filename.endsWith(".xml")) {
             importInfos.setType("xml");
@@ -713,9 +712,7 @@ public class WebprojectHandler implements Serializable {
             if (infos.isSelected() && infos.getImportFileName().equals("users.xml")) {
                 try {
                     importExportBaseService.importUsers(file);
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                } catch (IOException e) {
+                } catch (RepositoryException | IOException e) {
                     logger.error(e.getMessage(), e);
                 } finally {
                     FileUtils.deleteQuietly(file);
@@ -724,7 +721,7 @@ public class WebprojectHandler implements Serializable {
             }
         }
 
-        Set<File> files = new HashSet<File>();
+        Set<File> files = new HashSet<>();
         for (ImportInfo infos : importsInfos.values()) {
             files.add(infos.getImportFile());
         }
@@ -770,6 +767,7 @@ public class WebprojectHandler implements Serializable {
                     } else if (type.equals("xml")
                             && (infos.getImportFileName().equals("serverPermissions.xml") || infos.getImportFileName()
                             .equals("users.xml"))) {
+                        // todo: shouldn't something been done here?
 
                     } else if (type.equals("site")) {
                         // site import
@@ -816,9 +814,7 @@ public class WebprojectHandler implements Serializable {
                                                             finalDoImportServerPermissions, infos
                                                             .getOriginatingJahiaRelease(),
                                                             finalLegacyMappingFilePath, finalLegacyDefinitionsFilePath);
-                                                } catch (JahiaException e) {
-                                                    throw new RepositoryException(e);
-                                                } catch (IOException e) {
+                                                } catch (JahiaException | IOException e) {
                                                     throw new RepositoryException(e);
                                                 }
                                                 return null;
@@ -854,7 +850,7 @@ public class WebprojectHandler implements Serializable {
     }
 
     private List<String> readInstalledModules(File i) throws IOException {
-        List<String> modules = new LinkedList<String>();
+        List<String> modules = new LinkedList<>();
         org.jahia.utils.zip.ZipEntry z;
         NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(i)));
 
@@ -864,7 +860,7 @@ public class WebprojectHandler implements Serializable {
                     if ("site.properties".equals(z.getName())) {
                         Properties p = new Properties();
                         p.load(zis2);
-                        Map<Integer, String> im = new TreeMap<Integer, String>();
+                        Map<Integer, String> im = new TreeMap<>();
                         for (Object k : p.keySet()) {
                             String key = String.valueOf(k);
                             if (key.startsWith("installedModules.")) {
@@ -908,7 +904,7 @@ public class WebprojectHandler implements Serializable {
     }
 
     public void setSitesKey(List<String> sites) {
-        this.sites = new ArrayList<JahiaSite>();
+        this.sites = new ArrayList<>();
         this.sitesKey = sites;
         if (sites != null) {
             for (String site : sites) {

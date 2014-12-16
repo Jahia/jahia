@@ -585,7 +585,8 @@ public class JCRPublicationService extends JahiaService {
                 );
             }
 
-            if (!node.getPath().equals(destinationPath)) {
+            String expectedDestinationPath = node.getParent().getCorrespondingNodePath(destinationSession.getWorkspace().getName()) + "/" + node.getName();
+            if (!expectedDestinationPath.equals(destinationPath)) {
                 try {
                     destinationSession.checkout(destinationNode.getParent()); // previous parent
                     JCRNodeWrapper nodeParent = node.getParent();

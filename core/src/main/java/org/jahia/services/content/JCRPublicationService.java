@@ -1318,10 +1318,17 @@ public class JCRPublicationService extends JahiaService {
         if (provider.isDefault()) {
             return true;
         }
-        Value workspaceManagement = sourceSession.getProviderSession(provider).getRepository()
+        Value workspaceManagement = sourceSession.getProviderSession(node.getProvider()).getRepository()
                 .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
-
-        return workspaceManagement != null && workspaceManagement.getBoolean();
+        if (workspaceManagement == null) {
+            return false;
+        }
+        Value writeSupported = node.getSession().getProviderSession(node.getProvider()).getRepository()
+                .getDescriptorValue(Repository.WRITE_SUPPORTED);
+        if (writeSupported == null) {
+            return false;
+        }
+        return workspaceManagement.getBoolean() && writeSupported.getBoolean();
     }
 
     private boolean skipReferencedNodeType(JCRNodeWrapper ref) throws RepositoryException {

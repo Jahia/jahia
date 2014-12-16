@@ -292,7 +292,7 @@ class NodeHelper {
         }
 
         populateStatusInfo(n, node);
-        if ((Boolean) n.get("supportsPublication")) {
+        if (supportsWorkspaceManagement(node)) {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFO)) {
                 populatePublicationInfo(n, node);
             }
@@ -304,7 +304,7 @@ class NodeHelper {
             if (fields.contains(GWTJahiaNode.PUBLICATION_INFOS)) {
                 populatePublicationInfos(n, node);
             }
-            checkWriteAccessForPublication(node, n);
+            n.set("supportsPublication", supportsPublication(node));
         }
 
         if (fields.contains(GWTJahiaNode.WORKFLOW_INFO)
@@ -454,20 +454,32 @@ class NodeHelper {
         return n;
     }
 
-    private void checkWriteAccessForPublication(JCRNodeWrapper node, GWTJahiaNode n) {
-        // if write operations are not supported on the target repository, disable the publication actions
+    private Boolean supportsPublication(JCRNodeWrapper node) {
+        try {
+            return JCRPublicationService.supportsPublication(node.getSession(), node);
+        } catch (RepositoryException e) {
+            logger.warn("Unable to get the repository descriptor for node {}. Cause: {}", node.getPath(),
+                    e.getLocalizedMessage());
+        }
+
+        return Boolean.FALSE;
+    }
+
+    private Boolean supportsWorkspaceManagement(JCRNodeWrapper node) {
         JCRStoreProvider provider = node.getProvider();
         if (provider.isDefault()) {
-            return;
+            return Boolean.TRUE;
         }
         try {
             Value descriptorValue = node.getSession().getProviderSession(provider).getRepository()
-                    .getDescriptorValue(Repository.WRITE_SUPPORTED);
-            n.set("supportsPublication", descriptorValue != null && descriptorValue.getBoolean());
+                    .getDescriptorValue(Repository.OPTION_WORKSPACE_MANAGEMENT_SUPPORTED);
+            return descriptorValue != null && descriptorValue.getBoolean();
         } catch (RepositoryException e) {
-            logger.warn("Unable to get the repository descriptor for node {}. Cause: {}", n.getPath(),
+            logger.warn("Unable to get the repository descriptor for node {}. Cause: {}", node.getPath(),
                     e.getLocalizedMessage());
         }
+
+        return Boolean.FALSE;
     }
 
     private List<GWTJahiaNodeVersion> getVersions(final JCRNodeWrapper node)
@@ -876,13 +888,6 @@ class NodeHelper {
                             + node.getPath() + ". Cause: " + e.getMessage(), e);
         }
 
-        boolean supportsPublication = false;
-        try {
-            supportsPublication = JCRPublicationService.supportsPublication(node.getSession(), node);
-        } catch (Exception e) {
-            logger.error("Cannot get repository infos", e);
-        }
-        n.set("supportsPublication", Boolean.valueOf(supportsPublication));
         // Add 'work in progress' info
         try {
             if (node.hasProperty("j:workInProgress")) {

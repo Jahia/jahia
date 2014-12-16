@@ -127,13 +127,11 @@ public class WorkInProgressPreviewFilter extends AbstractFilter {
             request.removeAttribute(attrName);
             renderContext.setWorkspace("default");
             List<String> wipNodes = (List<String>) request.getAttribute("WIP_nodes");
-            if (wipNodes != null) {
-                if (wipNodes.remove(resource.getNode().getPath())) {
-                    if (wipNodes.isEmpty()) {
-                        request.removeAttribute("WIP_nodes");
-                    } else {
-                        chain.pushAttribute(request, "WIP_nodes", wipNodes);
-                    }
+            if (wipNodes != null && wipNodes.remove(resource.getNode().getPath())) {
+                if (wipNodes.isEmpty()) {
+                    request.removeAttribute("WIP_nodes");
+                } else {
+                    chain.pushAttribute(request, "WIP_nodes", wipNodes);
                 }
             }
             JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentUserSession("default", resource.getNode().getSession().getLocale(), resource.getNode().getSession().getFallbackLocale());

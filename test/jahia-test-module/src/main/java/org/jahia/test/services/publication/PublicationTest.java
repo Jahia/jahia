@@ -584,7 +584,7 @@ public class PublicationTest {
         getCleanSession();
         infos = jcrService.getPublicationInfo(testHomeEdit.getIdentifier(), null, false, true, false, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);
 
-        assertEquals("Invalid status forQA-5120 :  page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
+        assertEquals("Invalid status for page", PublicationInfo.PUBLISHED,getStatusFor(infos, testHomeEdit.getIdentifier()));
         assertEquals("Invalid status for list", PublicationInfo.PUBLISHED,getStatusFor(infos, list.getIdentifier()));
         assertEquals("Invalid status for content", PublicationInfo.PUBLISHED,getStatusFor(infos, editTextNode1.getIdentifier()));
 

@@ -259,13 +259,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
 
 
     public static Image renderPublicationStatusImage(GWTJahiaPublicationInfo info) {
-        String label;
-        if (info.isWorkInProgress()) {
-            label = "workinprogress";
-        } else {
-            label = statusToLabel.get(info.getStatus());
-        }
-        return statusLabelToImage(label);
+        return statusLabelToImage(info.isWorkInProgress() ? "workinprogress" : statusToLabel.get(info.getStatus()));
     }
 
     public static Image renderPublicationStatusImage(Integer status) {

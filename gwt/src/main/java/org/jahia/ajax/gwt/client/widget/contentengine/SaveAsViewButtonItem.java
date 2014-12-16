@@ -75,6 +75,7 @@ import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -108,7 +109,7 @@ public class SaveAsViewButtonItem extends SaveButtonItem {
     public static final int INDEX_OF_TEMPLATE_TYPE = 9;
     public static final String VIEWS_SOURCE_PATH = "/sources/src/main/resources";
 
-    public com.extjs.gxt.ui.client.widget.BoxComponent create(final AbstractContentEngine engine) {
+    public BoxComponent create(final AbstractContentEngine engine) {
         Button button = new Button(Messages.get("label.saveAs", "Save as ..."));
         button.setHeight(BUTTON_HEIGHT);
         button.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());

@@ -138,7 +138,7 @@
                 </c:choose>
 
                 <c:choose>
-                    <c:when test="${not isMandatoryDependency and (not empty moduleState.unresolvedDependencies or not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key])}">
+                    <c:when test="${not isMandatoryDependency and (not empty moduleState.unresolvedDependencies or not empty sitesTemplates[entry.key] or not empty sitesDirect[entry.key] or not empty sitesTransitive[entry.key]) or (empty currentModule.sourcesFolder and not empty sourcesFound)}">
                         <%--<button class="btn btn-block button-download" disabled>--%>
                             <%--<i class="icon-share"></i>--%>
                             <%--&nbsp;${i18nDuplicateModule}--%>

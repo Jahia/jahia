@@ -81,6 +81,9 @@
         <c:if test="${version.value.state.state eq 'STARTED'}">
             <c:set var="hasStartedVersion" value="true"/>
         </c:if>
+        <c:if test="${not empty version.value.sourcesFolder}">
+            <c:set var="sourcesFound" value="${version.key}"/>
+        </c:if>
     </c:forEach>
 </c:if>
 <div id="detailActiveVersion">
@@ -166,6 +169,11 @@
                                 &nbsp;<fmt:message key='serverSettings.manageModules.goToStudio' />
                             </button>
                         </c:when>
+                        <c:when test="${not empty sourcesFound}">
+                            <fmt:message key='serverSettings.manageModules.module.source.notAvailable' >
+                                <fmt:param value="${sourcesFound}" />
+                            </fmt:message>
+                        </c:when>
                         <c:when test="${not sourcesDownloadable}">
                             <fmt:message key="serverSettings.manageModules.notDownloadable"/>
                         </c:when>
@@ -205,7 +213,7 @@
                     </c:if>
 
                     <c:choose>
-                        <c:when test="${not isMandatoryDependency and (not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies or  not empty sitesTemplates[activeVersion.id] or not empty sitesDirect[activeVersion.id] or not empty sitesTransitive[activeVersion.id])}">
+                        <c:when test="${not isMandatoryDependency and (not empty moduleStates[activeVersion.id][activeVersion.version].unresolvedDependencies or  not empty sitesTemplates[activeVersion.id] or not empty sitesDirect[activeVersion.id] or not empty sitesTransitive[activeVersion.id] or (empty activeVersion.sourcesFolder and not empty sourcesFound))}">
                             <%--<button class="btn btn-block button-download" disabled>--%>
                                 <%--<i class="icon-share"></i>--%>
                                 <%--&nbsp;<fmt:message key='serverSettings.manageModules.duplicateModule'/>--%>

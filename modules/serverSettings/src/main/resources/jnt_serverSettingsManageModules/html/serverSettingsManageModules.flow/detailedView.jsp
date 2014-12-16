@@ -76,6 +76,13 @@
     <button class="btn" name="_eventId_viewInstalledModules"><i class=" icon-chevron-left"></i>&nbsp;<fmt:message key="backToPreviousPage"/></button>
 </form>
 
+<c:if test="${not empty otherVersions}">
+    <c:forEach items="${otherVersions}" var="version">
+        <c:if test="${version.value.state.state eq 'STARTED'}">
+            <c:set var="hasStartedVersion" value="true"/>
+        </c:if>
+    </c:forEach>
+</c:if>
 <div id="detailActiveVersion">
     <h2><fmt:message key="serverSettings.manageModules"/> - ${activeVersion.name}&nbsp;${activeVersion.version}</h2>
     <p>
@@ -164,16 +171,23 @@
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI}">
                             <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
-                                <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
-                                    <input type="hidden" name="module" value="${activeVersion.id}"/>
-                                    <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
-                                    <input type="hidden" name="version" value="${activeVersion.version}"/>
-                                    <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
-                                    <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
-                                        <i class="icon-download"></i>
-                                        &nbsp;${i18nDownloadSources}
-                                    </button>
-                                </form>
+                                <c:choose>
+                                    <c:when test="${hasStartedVersion}">
+                                        <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
+                                            <input type="hidden" name="module" value="${activeVersion.id}"/>
+                                            <input type="hidden" name="scmUri" value="${activeVersion.scmURI}"/>
+                                            <input type="hidden" name="version" value="${activeVersion.version}"/>
+                                            <input type="hidden" name="branchOrTag" value="${activeVersion.scmTag}"/>
+                                            <button class="btn btn-block button-download" type="submit" name="_eventId_downloadSources" onclick="">
+                                                <i class="icon-download"></i>
+                                                &nbsp;${i18nDownloadSources}
+                                            </button>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:message key="serverSettings.manageModules.noStartedVersion"/>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:if>
                         </c:when>
 
@@ -211,7 +225,7 @@
                             </form>
                         </c:when>
                         <c:when test="${not empty activeVersion.scmURI and sourcesDownloadable}">
-                            <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':'))}">
+                            <c:if test="${functions:contains(sourceControls, fn:substringBefore(fn:substringAfter(activeVersion.scmURI, ':'),':')) and hasStartedVersion}">
                                 <form style="margin: 0;" action="${flowExecutionUrl}" method="POST">
                                     <input type="hidden" name="moduleName" value="${activeVersion.name}"/>
                                     <input type="hidden" name="moduleId" value="${activeVersion.id}"/>

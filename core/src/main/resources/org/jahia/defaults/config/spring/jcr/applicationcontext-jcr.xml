@@ -74,6 +74,7 @@
                 <entry key="option.query.sql.supported" value="true"/>
                 <entry key="query.xpath.pos.index" value="true"/>
                 <entry key="query.xpath.doc.order" value="false"/>
+                <entry key="org.apache.jackrabbit.spi.commons.AdditionalEventInfo" value="true"/>
             </map>
         </property>
         <property name="servletContextAttributeName" value="uch"/>

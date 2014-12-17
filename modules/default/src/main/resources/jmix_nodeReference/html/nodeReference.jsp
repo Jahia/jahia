@@ -2,6 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="template" uri="http://www.jahia.org/tags/templateLib" %>
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
+<%@ taglib prefix="jahia" uri="http://www.jahia.org/tags/templateLib" %>
 <%--@elvariable id="currentNode" type="org.jahia.services.content.JCRNodeWrapper"--%>
 <jcr:nodeProperty node="${currentNode}" name="j:node" var="reference"/>
 <c:set var="node" value="${reference.node}"/>
@@ -13,6 +14,9 @@
         </template:module>
     </c:when>
     <c:otherwise>
+		<c:if test="${not empty reference}">
+			<jahia:addCacheDependency path="${reference.string}" />
+		</c:if>
         <fmt:message key="label.missingReference"/>
     </c:otherwise>
-</c:choose>        
+</c:choose>

@@ -84,7 +84,6 @@ import com.extjs.gxt.ui.client.widget.form.ComboBox.TriggerAction;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Element;
 import com.google.gwt.user.client.Timer;
-
 import com.google.gwt.user.client.ui.Accessibility;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -105,11 +104,7 @@ import org.jahia.ajax.gwt.client.widget.form.*;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * This class creates fields for a GXT form panel based on available jcr types and a specific mapping.
@@ -356,6 +351,7 @@ public class FormFieldCreator {
             fillValue(field, definition, property, initializer, defaultValues);
         }
         //field.setId("JahiaGxtField"+ "_" + field.getName().replace(":","_")+"_"+locale);
+        field.getElement().setAttribute("dir","auto");
         return field;
     }
 

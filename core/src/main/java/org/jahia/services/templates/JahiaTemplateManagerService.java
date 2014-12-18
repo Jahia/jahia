@@ -331,6 +331,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return scmHelper.listBranches(scmURI);
     }
 
+    public String guessBranchOrTag(String moduleVersion, String scm, Set<String> branchOrTags) {
+        return scmHelper.guessBranchOrTag(moduleVersion, scm, branchOrTags);
+    }
+
     public boolean checkValidSources(JahiaTemplatesPackage pack, File sources) {
         return scmHelper.checkValidSources(pack, sources);
     }

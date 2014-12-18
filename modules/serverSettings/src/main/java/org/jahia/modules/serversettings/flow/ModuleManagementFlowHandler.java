@@ -826,52 +826,8 @@ public class ModuleManagementFlowHandler implements Serializable {
     }
 
     public String guessBranchOrTag(String moduleVersion, String scmURI, Map<String, String> branchOrTags, String defaultBranchOrTag) {
-        String[] splitVersion = StringUtils.split(StringUtils.removeEnd(moduleVersion, "-SNAPSHOT"), ".");
-        if (moduleVersion.endsWith("-SNAPSHOT")) {
-            String branch;
-            if (splitVersion.length >= 3) {
-                branch = String.format("JAHIA-%s-%s-%s-X-BRANCH", splitVersion);
-                if (branchOrTags.containsKey(branch)) {
-                    return branch;
-                }
-            }
-            if (splitVersion.length >= 2) {
-                branch = String.format("JAHIA-%s-%s-X-X-BRANCH", splitVersion);
-                if (branchOrTags.containsKey(branch)) {
-                    return branch;
-                }
-            }
-            if (splitVersion.length >= 1) {
-                branch = splitVersion[0] + "_x";
-                if (branchOrTags.containsKey(branch)) {
-                    return branch;
-                }
-            }
-            String[] splitURI = StringUtils.split(scmURI, ":");
-            if (splitURI.length > 2) {
-                if ("svn".equals(splitURI[1])) {
-                    branch = "trunk";
-                    if (branchOrTags.containsKey(branch)) {
-                        return branch;
-                    }
-                } else if ("git".equals(splitURI[1])) {
-                    branch = "master";
-                    if (branchOrTags.containsKey(branch)) {
-                        return branch;
-                    }
-                }
-            }
-        } else {
-            String tag = StringUtils.join(splitVersion, '_');
-            if (branchOrTags.containsKey(tag)) {
-                return tag;
-            }
-            tag = "JAHIA_" + tag;
-            if (branchOrTags.containsKey(tag)) {
-                return tag;
-            }
-        }
-        return defaultBranchOrTag;
+        String branchOrTag = templateManagerService.guessBranchOrTag(moduleVersion, StringUtils.substringBefore(StringUtils.removeStart(scmURI, "scm:"), ":"), branchOrTags.keySet());
+        return branchOrTag != null ? branchOrTag : defaultBranchOrTag;
     }
 
     public void validateScmInfo(String scmUri, String branchOrTag, String moduleVersion, MutableAttributeMap flashScope) throws IOException {

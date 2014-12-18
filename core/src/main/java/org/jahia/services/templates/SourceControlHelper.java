@@ -342,6 +342,52 @@ public class SourceControlHelper {
         return sourceControlFactory.listBranches(scmURI);
     }
 
+    public String guessBranchOrTag(String moduleVersion, String scm, Set<String> branchOrTags) {
+        String[] splitVersion = StringUtils.split(StringUtils.removeEnd(moduleVersion, "-SNAPSHOT"), ".");
+        if (moduleVersion.endsWith("-SNAPSHOT")) {
+            String branch;
+            if (splitVersion.length >= 3) {
+                branch = String.format("JAHIA-%s-%s-%s-X-BRANCH", splitVersion);
+                if (branchOrTags.contains(branch)) {
+                    return branch;
+                }
+            }
+            if (splitVersion.length >= 2) {
+                branch = String.format("JAHIA-%s-%s-X-X-BRANCH", splitVersion);
+                if (branchOrTags.contains(branch)) {
+                    return branch;
+                }
+            }
+            if (splitVersion.length >= 1) {
+                branch = splitVersion[0] + "_x";
+                if (branchOrTags.contains(branch)) {
+                    return branch;
+                }
+            }
+            if ("svn".equals(scm)) {
+                branch = "trunk";
+                if (branchOrTags.contains(branch)) {
+                    return branch;
+                }
+            } else if ("git".equals(scm)) {
+                branch = "master";
+                if (branchOrTags.contains(branch)) {
+                    return branch;
+                }
+            }
+        } else {
+            String tag = StringUtils.join(splitVersion, '_');
+            if (branchOrTags.contains(tag)) {
+                return tag;
+            }
+            tag = "JAHIA_" + tag;
+            if (branchOrTags.contains(tag)) {
+                return tag;
+            }
+        }
+        return null;
+    }
+
     private void setSCMConfigInPom(File sources, String uri) {
         try {
             PomUtils.updateScm(new File(sources, "pom.xml"), uri);

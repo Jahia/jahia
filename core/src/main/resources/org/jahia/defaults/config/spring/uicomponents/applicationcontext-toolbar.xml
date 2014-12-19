@@ -682,7 +682,7 @@
                 <property name="allSubTree" value="true"/>
             </bean>
         </property>
-        <property name="titleKey" value="label.publishall"/>
+        <property name="titleKey" value="label.publishall.all.languages"/>
         <property name="icon" value="publishAll"/>
     </bean>
 
@@ -692,7 +692,7 @@
                 <property name="allLanguages" value="true"/>
             </bean>
         </property>
-        <property name="titleKey" value="label.publish"/>
+        <property name="titleKey" value="label.publish.languages"/>
         <property name="icon" value="publish"/>
     </bean>
 

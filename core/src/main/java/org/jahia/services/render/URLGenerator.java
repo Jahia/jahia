@@ -79,6 +79,7 @@ import org.jahia.bin.*;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -89,6 +90,7 @@ import org.jahia.utils.Url;
 
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
@@ -147,28 +149,30 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        base = getBase(resource.getLocale().toString());
+        final String languageCode = resource.getLocale().toString();
+        base = getBase(languageCode);
 
         final String resourcePath = getResourcePath();
 
-        baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        final String renderServletPath = Render.getRenderServletPath();
+        baseLive = renderServletPath + "/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
         live = baseLive + resourcePath;
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            baseEdit = "/cms/edit/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            baseEdit = "/cms/edit/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
             edit = baseEdit + resourcePath;
-            baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+            baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
             contribute = baseContribute + resourcePath;
         }
-        basePreview = Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
+        basePreview = renderServletPath + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
         preview = basePreview + resourcePath;
-        find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
-        initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + resource.getLocale();
+        find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
+        initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
-        baseUserBoardEdit = "/cms/dashboard/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-        baseUserBoardLive = "/cms/dashboard/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
-        baseUserBoardFrameEdit = "/cms/dashboardframe/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale();
-        baseUserBoardFrameLive = "/cms/dashboardframe/" + Constants.LIVE_WORKSPACE + "/" + resource.getLocale();
+        baseUserBoardEdit = "/cms/dashboard/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
+        baseUserBoardLive = "/cms/dashboard/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
+        baseUserBoardFrameEdit = "/cms/dashboardframe/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
+        baseUserBoardFrameLive = "/cms/dashboardframe/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
     }
 
     public String getResourcePath() {
@@ -236,14 +240,15 @@ public class URLGenerator {
         if (cfg.isDistantPublicationServerMode() || cfg.isProductionMode()) {
             return null;
         }
-        String url;
-        if (context.getSite() != null && context.getSite().getPath().startsWith("/modules/")) {
-            url = "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale()
-                    + context.getSite().getPath() + ".html";
-        } else {
-            url = isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";
+
+        final JCRSiteNode site = context.getSite();
+        if (site != null) {
+            final String path = site.getPath();
+            if (path.startsWith("/modules/")) {
+                return "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + path + ".html";
+            }
         }
-        return url;
+        return isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";
     }
 
     /**
@@ -277,8 +282,7 @@ public class URLGenerator {
     }
 
     public String getCurrentModule() {
-        View view = ((Script) context.getRequest().getAttribute(
-                "script")).getView();
+        View view = ((Script) context.getRequest().getAttribute("script")).getView();
         return view.getModule().getRootFolderPath();
 //                + (view.getModuleVersion() != null ? "/"
 //                + view.getModuleVersion() : StringUtils.EMPTY);
@@ -302,9 +306,13 @@ public class URLGenerator {
     }
 
     public String getLanguage(String languageCode) {
-        return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + context.getMainResource().getNode().getPath() +
-                ("default".equals(resource.getTemplate()) ? "" : "." + resource.getTemplate())
-                + ".html";
+        final String template = resource.getTemplate();
+        return getContext() + context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode + context.getMainResource().getNode().getPath()
+                + getTemplateExtensionFrom(template) + ".html";
+    }
+
+    private String getTemplateExtensionFrom(String template) {
+        return (template != null && !"default".equals(template) ? "." + template : "");
     }
 
     @SuppressWarnings("unchecked")
@@ -386,7 +394,7 @@ public class URLGenerator {
         if (!StringUtils.isEmpty(languageCode)) {
             baseURL = context.getServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
         }
-        return baseURL + nodePath + (template != null && !"default".equals(template) ? "." + template : "") + "." + templateType;
+        return baseURL + nodePath + getTemplateExtensionFrom(template) + "." + templateType;
     }
 
     public String getInitializers() {
@@ -434,14 +442,15 @@ public class URLGenerator {
     }
 
     public String getRealResource() {
-        if (context.isAjaxRequest() && context.getAjaxResource() != null) {
+        final Resource ajaxResource = context.getAjaxResource();
+        if (context.isAjaxRequest() && ajaxResource != null) {
+            final String path = ajaxResource.getNode().getPath();
             if (context.isEditMode()) {
-                return baseEdit + context.getAjaxResource().getNode().getPath() + ".html";
+                return baseEdit + path + ".html";
             } else if (context.isContributionMode()) {
-                return baseContribute + context.getAjaxResource().getNode().getPath() + ".html";
+                return baseContribute + path + ".html";
             } else {
-                return (Constants.LIVE_WORKSPACE.equals(
-                        context.getAjaxResource().getWorkspace()) ? baseLive : basePreview) + context.getAjaxResource().getNode().getPath() + ".html";
+                return (Constants.LIVE_WORKSPACE.equals(ajaxResource.getWorkspace()) ? baseLive : basePreview) + path + ".html";
             }
         } else {
             if (context.isEditMode()) {
@@ -465,17 +474,18 @@ public class URLGenerator {
      */
     public String getServer() {
         if (server == null) {
-            StringBuilder url = new StringBuilder();
-            String scheme = context.getRequest().getScheme();
+            StringBuilder url = new StringBuilder(255); // use a greater than default (16) allocated StringBuilder to avoid having to resize it
+            final HttpServletRequest request = context.getRequest();
+            String scheme = request.getScheme();
             String host = context.getSite().getServerName();
             if (Url.isLocalhost(host)) {
-                host = context.getRequest().getServerName();
+                host = request.getServerName();
             }
 
             int port = SettingsBean.getInstance().getSiteURLPortOverride();
 
             if (port == 0) {
-                port = context.getRequest().getServerPort();
+                port = request.getServerPort();
             }
 
             url.append(scheme).append("://").append(host);
@@ -523,7 +533,7 @@ public class URLGenerator {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder(1024);
         sb.append("URLGenerator");
         sb.append("{base='").append(base).append('\'');
         sb.append(", live='").append(live).append('\'');

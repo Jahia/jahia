@@ -115,6 +115,13 @@ public class ModuleVersion implements Comparable<ModuleVersion> {
         if (c != 0) {
             return c;
         }
+
+        // Snapshot is older than released version
+        c = Boolean.compare(o.isSnapshot, isSnapshot);
+        if (c != 0) {
+            return c;
+        }
+
         return versionString.compareTo(o.versionString);
     }
 

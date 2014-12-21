@@ -71,6 +71,7 @@
  */
 package org.jahia.services.render.filter;
 
+import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -90,7 +91,7 @@ public class AreaResourceFilter extends AbstractFilter {
         final HttpServletRequest request = renderContext.getRequest();
         if (node.isNodeType("jnt:area") || node.isNodeType("jnt:mainResourceDisplay")) {
             chain.pushAttribute(request, "areaListResource", resource.getNode());
-        } else if (node.isNodeType("jmix:list")) {
+        } else if (node.isNodeType(Constants.JAHIAMIX_LIST)) {
             if (request.getAttribute("areaListResource") == null) {
                 chain.pushAttribute(request, "areaResource", resource.getNode());
             } else {

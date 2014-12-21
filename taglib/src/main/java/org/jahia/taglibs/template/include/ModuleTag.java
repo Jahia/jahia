@@ -324,7 +324,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             nodeTypes = StringUtils.join(contributeTypes, " ");
                             add = "editable=\"false\"";
                         }
-                        if (node.isNodeType("jmix:bindedComponent")) {
+                        if (node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT)) {
                             add += " bindable=\"true\"";
                         }
 

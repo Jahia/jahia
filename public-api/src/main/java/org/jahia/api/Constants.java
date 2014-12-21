@@ -182,6 +182,9 @@ public class Constants {
     public static final String JAHIAMIX_SHAREABLE = "jmix:shareable";
     public static final String JAHIAMIX_PUBLICATION = "jmix:publication";
 
+    public static final String JAHIAMIX_BOUND_COMPONENT = "jmix:bindedComponent";
+    public static final String JAHIAMIX_LIST = "jmix:list";
+
     public final static String JAHIAMIX_IMAGE = "jmix:image";
 
     public static final String JAHIAMIX_REFERENCES_IN_FIELD = "jmix:referencesInField";

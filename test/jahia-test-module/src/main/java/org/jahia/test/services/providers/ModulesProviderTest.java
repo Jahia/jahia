@@ -73,6 +73,7 @@ package org.jahia.test.services.providers;
 
 import com.google.common.collect.Sets;
 import org.apache.log4j.Logger;
+import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -279,7 +280,7 @@ public class ModulesProviderTest {
         for (Value value : nodeType.getProperty("j:mixinExtends").getValues()) {
             testValues.add(value.getString());
         }
-        assertTrue(Sets.newHashSet("jmix:list", "jnt:area").equals(testValues));
+        assertTrue(Sets.newHashSet(Constants.JAHIAMIX_LIST, "jnt:area").equals(testValues));
         assertEquals("layout", nodeType.getProperty("j:itemsType").getString());
     }
 

@@ -109,7 +109,7 @@ public class TemplateScriptFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
         Script script = (Script) request.getAttribute("script");
         renderContext.getResourcesStack().push(resource);
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
         Stack<StopWatch> stopWatchStack = null;
         try {
             if (logger.isDebugEnabled()) {

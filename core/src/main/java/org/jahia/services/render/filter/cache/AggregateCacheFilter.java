@@ -995,8 +995,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public static String removeCacheTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
-            String s = CLEANUP_REGEXP.matcher(content).replaceAll("");
-            return s;
+            return CLEANUP_REGEXP.matcher(content).replaceAll("");
         } else {
             return content;
         }

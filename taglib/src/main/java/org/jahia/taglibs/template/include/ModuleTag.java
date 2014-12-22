@@ -136,7 +136,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected String var = null;
 
-    protected StringBuffer buffer = new StringBuffer();
+    protected StringBuilder builder = new StringBuilder();
 
     protected Map<String, String> parameters = new HashMap<String, String>();
 
@@ -222,7 +222,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         try {
             RenderContext renderContext =
                     (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            buffer = new StringBuffer();
+            builder = new StringBuilder();
 
             Resource currentResource =
                     (Resource) pageContext.getAttribute("currentResource", PageContext.REQUEST_SCOPE);
@@ -371,7 +371,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             throw new JspException(ex);
         } finally {
             if (var != null) {
-                pageContext.setAttribute(var, buffer.toString());
+                pageContext.setAttribute(var, builder.toString());
             }
             path = null;
             node = null;
@@ -382,7 +382,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             listLimit = -1;
             constraints = null;
             var = null;
-            buffer = null;
+            builder = null;
             contextSite = null;
 
             if (!(this instanceof IncludeTag)) {
@@ -582,53 +582,53 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                     String additionalParameters)
             throws RepositoryException, IOException {
 
-        buffer.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
+        builder.append("<div class=\"jahia-template-gxt\" jahiatype=\"module\" ").append("id=\"module")
                 .append(UUID.randomUUID().toString()).append("\" type=\"").append(type).append("\"");
 
-        buffer.append((script != null && script.getView().getInfo() != null) ? " scriptInfo=\"" + script.getView().getInfo() + "\"" : "");
+        builder.append((script != null && script.getView().getInfo() != null) ? " scriptInfo=\"" + script.getView().getInfo() + "\"" : "");
 
         if (script != null && script.getView().getModule().getSourcesFolder() != null) {
             String version = script.getView().getModule().getIdWithVersion();
-            buffer.append(" sourceInfo=\"/modules/" + version + "/sources/src/main/resources" + StringUtils.substringAfter(script.getView().getPath(), "/modules/" + script.getView().getModule().getId()) + "\"");
+            builder.append(" sourceInfo=\"/modules/" + version + "/sources/src/main/resources" + StringUtils.substringAfter(script.getView().getPath(), "/modules/" + script.getView().getModule().getId()) + "\"");
         }
 
-        buffer.append(" path=\"").append(path).append("\"");
+        builder.append(" path=\"").append(path).append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
             nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');
-            buffer.append(" nodetypes=\"" + nodeTypes + "\"");
+            builder.append(" nodetypes=\"" + nodeTypes + "\"");
         } else if (!StringUtils.isEmpty(constraints)) {
             constraints = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(constraints))),' ');
-            buffer.append(" nodetypes=\"" + constraints + "\"");
+            builder.append(" nodetypes=\"" + constraints + "\"");
         }
 
         if (listLimit > -1) {
-            buffer.append(" listlimit=\"" + listLimit + "\"");
+            builder.append(" listlimit=\"" + listLimit + "\"");
         }
 
         if (!StringUtils.isEmpty(constraints)) {
             String referenceTypes = ConstraintsHelper.getReferenceTypes(constraints, nodeTypes);
-            buffer.append((!StringUtils.isEmpty(referenceTypes)) ? " referenceTypes=\"" + referenceTypes + "\"" : " referenceTypes=\"none\"");
+            builder.append((!StringUtils.isEmpty(referenceTypes)) ? " referenceTypes=\"" + referenceTypes + "\"" : " referenceTypes=\"none\"");
         }
 
         if (additionalParameters != null) {
-            buffer.append(" ").append(additionalParameters);
+            builder.append(" ").append(additionalParameters);
         }
 
-        buffer.append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "").append(">");
+        builder.append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "").append(">");
 
-        if (var == null) {
-            pageContext.getOut().print(buffer);
-            buffer.delete(0, buffer.length());
-        }
-
+        printAndClean();
     }
 
     protected void printModuleEnd() throws IOException {
-        buffer.append("</div>");
+        builder.append("</div>");
+        printAndClean();
+    }
+
+    private void printAndClean() throws IOException {
         if (var == null) {
-            pageContext.getOut().print(buffer);
-            buffer.delete(0, buffer.length());
+            pageContext.getOut().print(builder);
+            builder.delete(0, builder.length());
         }
     }
 
@@ -656,33 +656,24 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                 renderContext.setSite(contextSite);
             }
 
-            buffer.append(RenderService.getInstance().render(resource, renderContext));
+            builder.append(RenderService.getInstance().render(resource, renderContext));
 
             renderContext.setSite(previousSite);
 
-            if (var == null) {
-                pageContext.getOut().print(buffer);
-                buffer.delete(0, buffer.length());
-            }
+            printAndClean();
             if (setRestrictions) {
                 pageContext.removeAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE);
             }
         } catch (TemplateNotFoundException io) {
-            buffer.append(io);
-            if (var == null) {
-                pageContext.getOut().print(buffer);
-                buffer.delete(0, buffer.length());
-            }
+            builder.append(io);
+            printAndClean();
         } catch (RenderException e) {
             if (renderContext.isEditMode() && ((e.getCause() instanceof TemplateNotFoundException) || (e.getCause() instanceof AccessDeniedException))) {
                 if (!(e.getCause() instanceof AccessDeniedException)) {
                     logger.error(e.getMessage(), e);
                 }
-                buffer.append(e.getCause().getMessage());
-                if (var == null) {
-                    pageContext.getOut().print(buffer);
-                    buffer.delete(0, buffer.length());
-                }
+                builder.append(e.getCause().getMessage());
+                printAndClean();
             } else {
                 throw e;
             }

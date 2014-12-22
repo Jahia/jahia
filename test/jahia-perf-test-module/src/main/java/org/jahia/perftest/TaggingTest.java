@@ -1,12 +1,15 @@
 package org.jahia.perftest;
 
 import com.carrotsearch.junitbenchmarks.AbstractBenchmark;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.sites.JahiaSitesService;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.slf4j.Logger;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,7 +20,8 @@ import java.util.Collection;
 @RunWith(Parameterized.class)
 public class TaggingTest extends AbstractBenchmark {
 
-    private static String siteKey = "test";
+    private static String siteKey = "taggingTest";
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingTest.class);
 
     private TaggingUtils taggingUtils = new TaggingUtils();
 
@@ -50,20 +54,15 @@ public class TaggingTest extends AbstractBenchmark {
 
     @AfterClass
     public static void tearDownClass() {
+        try {
+            JahiaSitesService.getInstance().removeSite(JahiaSitesService.getInstance().getSiteByKey(siteKey));
+        } catch (JahiaException e) {
+            logger.error(e.getMessage(), e);
+        }
     }
 
     @Test
     public void testTagContent() {
         taggingUtils.tagContent(siteKey, taggingUtils.tagSubset(0,nbOfTags), nbContentToTag, tagsPerContent);
-    }
-
-    @Test
-    public void testTagRenaming() {
-        taggingUtils.tagRenaming(siteKey, taggingUtils.tagSubset(0,nbOfTags), 1000);
-    }
-
-    @Test
-    public void testTagDeletion() {
-        taggingUtils.tagRenaming(siteKey, taggingUtils.tagSubset(0,nbOfTags), 1000);
     }
 }

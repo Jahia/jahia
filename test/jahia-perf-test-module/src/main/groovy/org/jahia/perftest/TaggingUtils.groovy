@@ -78,9 +78,9 @@ class TaggingUtils {
             def suggest = suggester.suggest(substring, '/sites/' + siteKey, 1, 10, 0, true, session)
             if (!suggest.isEmpty()) {
                 def toBerenamed = suggest.keySet().getAt(0)
-                tagService.updateOrDeleteTagOnSite("/sites/" + siteKey, toBerenamed, toBerenamed + "_renamed")
+                tagService.renameTagUnderPath("/sites/" + siteKey, session, toBerenamed, toBerenamed + "_renamed", null)
                 //rollback changes so that tag is still matching tagset
-                tagService.updateOrDeleteTagOnSite("/sites/" + siteKey, toBerenamed + "_renamed", toBerenamed)
+                tagService.renameTagUnderPath("/sites/" + siteKey, session, toBerenamed + "_renamed", toBerenamed, null)
             }
         }
     }
@@ -95,7 +95,7 @@ class TaggingUtils {
             def suggest = suggester.suggest(substring, '/sites/' + siteKey, 1, 10, 0, true, session)
             if (!suggest.isEmpty()) {
                 def toBeDeleted = suggest.keySet().getAt(0)
-                tagService.updateOrDeleteTagOnSite("/sites/" + siteKey, toBeDeleted, null)
+                tagService.deleteTagUnderPath("/sites/" + siteKey, session, toBeDeleted, null)
             }
         }
     }

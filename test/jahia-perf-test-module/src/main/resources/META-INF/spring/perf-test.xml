@@ -9,6 +9,7 @@
         <property name="testCases">
             <list>
                 <value>org.jahia.perftest.TaggingTest</value>
+                <value>org.jahia.perftest.UserTest</value>
             </list>
         </property>
     </bean>

@@ -15,6 +15,7 @@ import org.jahia.services.seo.jcr.VanityUrlManager
 import javax.jcr.RepositoryException
 
 class ContentGenerator {
+    public static final String USER_GROOVY_ = "userGroovy_"
     def languagesList = ["sq", "ar", "be", "bg", "ca", "zh", "hr", "cs", "da", "nl", "et", "fi", "fr", "de", "el", "iw", "hu", "is", "in", "it", "ja"];
 
     def nbContents = 0
@@ -27,11 +28,7 @@ class ContentGenerator {
     def aclsOn3rdpage = false;
     def withExpiration = false;
 
-    def nbOfGroupsPerLevel = 1
     def randomgroupName = new Random()
-    def nbUsersPerGroup = 10
-
-    def nbUsersToCreate = 10
 
     /**
      * Use the lipsum generator to generate Lorem Ipsum dummy paragraphs / words / bytes.
@@ -159,7 +156,7 @@ class ContentGenerator {
                             JCRNodeWrapper home = session.getNode("/sites/" + siteName + "/home");
                             JCRNodeWrapper page1 = home.getNode("page");
                             def int nbPage = 0;
-
+                            def int nbOfGroupsPerLevel = 1;
                             (1..nbPagesFirstLevel).each { it1 ->
                                 if (page1.copy(home, "page" + (++nbPage), false)) {
                                     nbContents++;
@@ -268,7 +265,7 @@ class ContentGenerator {
             }
     }
 
-    def createGroups(String site = null) {
+    def createGroups(String site = null, nbOfGroupsPerLevel = 1, nbUsersPerGroup=10) {
         def randUsers = new Random()
         def service = ServicesRegistry.instance.jahiaGroupManagerService
         def userService = ServicesRegistry.instance.jahiaUserManagerService
@@ -282,7 +279,7 @@ class ContentGenerator {
                                 false, session)
                         if (group != null) {
                             (0..nbUsersPerGroup).each {
-                                def user = userService.lookupUser("userGroovy_" + (site != null ? site + "_" : "") + randUsers.nextInt(nbUsersToCreate), site, session)
+                                def user = userService.lookupUser(USER_GROOVY_ + (site != null ? site + "_" : "") + randUsers.nextInt(nbUsersToCreate), site, session)
                                 if (user != null) {
                                     group.addMember(user)
                                 }
@@ -317,21 +314,20 @@ class ContentGenerator {
         }
     }
 
-    def createUsers(String site = null) {
+    def createUsers(String site = null, nbUsersToCreate = 10) {
         def userService = ServicesRegistry.instance.jahiaUserManagerService
-        if (userService.lookupUser("userGroovy_" + (site != null ? site + "_0" : "0")) == null) {
-            def session = JCRSessionFactory.instance.getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH)
-            def properties = new java.util.Properties();
-            (0..nbUsersToCreate).each { first ->
-                if (site == null)
-                    userService.createUser("userGroovy_" + first, "password", properties, session);
-                else
-                    userService.createUser("userGroovy_" + site + "_" + first, site, "password", properties, session);
-                if (first % 100 == 0)
-                    session.save()
-            }
-            session.save()
+        def session = JCRSessionFactory.instance.getCurrentSystemSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH, Locale.ENGLISH)
+        session.refresh(false)
+        def properties = new Properties();
+        (0..nbUsersToCreate).each { first ->
+            if (site == null)
+                userService.createUser(USER_GROOVY_ + first, null, "password", properties, session);
+            else
+                userService.createUser(USER_GROOVY_ + site + "_" + first, site, "password", properties, session);
+            if (first % 100 == 0)
+                session.save()
         }
+        session.save()
     }
 
     def modules = ["tags"]

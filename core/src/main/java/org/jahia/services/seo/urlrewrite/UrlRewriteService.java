@@ -222,9 +222,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
                     urlRewriteEngine.destroy();
                 }
                 urlRewriteEngine = new UrlRewriteEngine(servletContext, merged.toArray(new Resource[merged.size()]));
-                urlRewriteEngine.setUrlResolverFactory(urlResolverFactory);
-                urlRewriteEngine.setVanityUrlService(vanityUrlService);
-                urlRewriteEngine.setUrlRewriteSeoRulesEnabled(isSeoRulesEnabled());
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
@@ -452,9 +449,6 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public void setSeoRulesEnabled(boolean seoRulesEnabled) {
         this.seoRulesEnabled = seoRulesEnabled;
-        if (urlRewriteEngine != null) {
-            urlRewriteEngine.setUrlRewriteSeoRulesEnabled(seoRulesEnabled);
-        }
     }
 
     public void setServletContext(ServletContext servletContext) {

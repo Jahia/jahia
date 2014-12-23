@@ -73,6 +73,14 @@
         <from>^([^?]*)\{mode\}(.*)$</from>
         <to>$1%{attribute:currentMode}$2</to>
     </outbound-rule>
+
+    <outbound-rule>
+        <name>Vanity url</name>
+        <note>Check for vanity urls</note>
+        <from>^(.*)$</from>
+        <run class="org.jahia.services.seo.jcr.VanityUrlMapper" method="checkVanityUrl(HttpServletRequest, String)"/>
+        <to>%{attribute:vanityUrl}</to>
+    </outbound-rule>
     <!-- Jahia Administration -->
     <rule enabled="true">
         <name>Jahia Administration</name>

@@ -71,56 +71,27 @@
  */
 package org.jahia.services.seo.urlrewrite;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.net.URLDecoder;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Render;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.URLResolver;
-import org.jahia.services.render.URLResolverFactory;
-import org.jahia.services.seo.VanityUrl;
-import org.jahia.services.seo.jcr.VanityUrlService;
-import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.tuckey.web.filters.urlrewrite.RewrittenOutboundUrl;
-import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
 import org.tuckey.web.filters.urlrewrite.UrlRewriter;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 
 /**
  * URL rewriter engine.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class UrlRewriteEngine extends UrlRewriter {
 
     private static final Logger logger = LoggerFactory.getLogger(UrlRewriteEngine.class);
-
-    private URLResolverFactory urlResolverFactory;
-
-    private VanityUrlService vanityUrlService;
-    
-    private boolean urlRewriteSeoRulesEnabled;
-
-    public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
-        this.urlResolverFactory = urlResolverFactory;
-    }
-
-    public void setVanityUrlService(VanityUrlService vanityUrlService) {
-        this.vanityUrlService = vanityUrlService;
-    }
 
     private static Configuration getConfiguration(ServletContext context, Resource[] confLocations) {
         Configuration cfg = null;
@@ -140,38 +111,21 @@ class UrlRewriteEngine extends UrlRewriter {
 
     /**
      * Initializes an instance of this class.
-     * 
-     * @param conf
-     *            the URL rewriter configuration
-     */
-    UrlRewriteEngine(InputStream is, String fileName) {
-        super(new Configuration(is, fileName));
-        logger.info("Loaded URL rewrite rules from {}", fileName);
-    }
-
-    /**
-     * Initializes an instance of this class.
-     * 
+     *
      * @param context
      *            current servlet context
-     * @param confLocation
+     * @param confLocations
      *            the URL rewriter configuration resource location
      */
     public UrlRewriteEngine(ServletContext context, Resource[] confLocations) {
         super(getConfiguration(context, confLocations));
         if (confLocations != null) {
-            logger.info("Loaded URL rewrite rules from {}",
-                    confLocations != null ? java.util.Arrays.asList(confLocations) : null);
+            logger.info("Loaded URL rewrite rules from {}",java.util.Arrays.asList(confLocations));
         }
     }
 
-    public RewrittenUrl rewriteInbound(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException, InvocationTargetException {
-        return processRequest(request, response);
-    }
-
     public String rewriteOutbound(String url, HttpServletRequest request,
-            HttpServletResponse response) throws IOException, ServletException,
+                                  HttpServletResponse response) throws IOException, ServletException,
             InvocationTargetException {
 
         RewrittenOutboundUrl rou = processEncodeURL(response, request, false, url);
@@ -183,60 +137,5 @@ class UrlRewriteEngine extends UrlRewriter {
         }
         return processEncodeURL(response, request, true, rou.getTarget()).getTarget();
 
-    }
-
-    @Override
-    protected RewrittenOutboundUrl processEncodeURL(HttpServletResponse hsResponse, HttpServletRequest hsRequest, boolean encodeUrlHasBeenRun, String outboundUrl) {
-        try {
-            String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), null);
-            if (outboundUrl.startsWith(ctx != null ? (ctx + Render.getRenderServletPath()) : Render.getRenderServletPath())) {
-                if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
-                    String url = StringUtils.substringAfter(outboundUrl, ctx != null ? (ctx + "/cms") : "/cms");
-                    url = StringUtils.substringBefore(url,"?");
-                    url = StringUtils.substringBefore(url,"#");
-                    url = StringUtils.substringBefore(url,";");
-                    url = URLDecoder.decode(url,"UTF-8");
-                    URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName() ,hsRequest);
-                    JCRNodeWrapper node = urlResolver.getNode();
-                    if (urlResolver.isMapped()) {
-                        try {
-                            RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
-                            VanityUrl vanityUrl = vanityUrlService
-                                    .getVanityUrlForWorkspaceAndLocale(
-                                            node,
-                                            urlResolver.getWorkspace(),
-                                            urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : null);
-                            if (vanityUrl != null && vanityUrl.isActive()) {
-                                outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
-                                        + urlResolver.getPath(), vanityUrl.getUrl());
-                            }
-                        } catch (RepositoryException e) {
-                            logger.debug("Error when trying to obtain vanity url", e);
-                        }
-                    }
-                    if (!isUrlRewriteSeoRulesEnabled()) {
-                        // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
-                        try {
-                            // Switch to correct site for links
-                            outboundUrl = Url.appendServerNameIfNeeded(node, outboundUrl, hsRequest);
-                        } catch (PathNotFoundException e) {
-                            // Cannot find node
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            logger.debug("Cannot parse url for rewriting : "+outboundUrl , e);
-        }
-
-        return super.processEncodeURL(hsResponse, hsRequest, encodeUrlHasBeenRun, outboundUrl);
-    }
-
-    public boolean isUrlRewriteSeoRulesEnabled() {
-        return urlRewriteSeoRulesEnabled;
-    }
-
-    public void setUrlRewriteSeoRulesEnabled(boolean urlRewriteSeoRulesEnabled) {
-        this.urlRewriteSeoRulesEnabled = urlRewriteSeoRulesEnabled;
     }
 }

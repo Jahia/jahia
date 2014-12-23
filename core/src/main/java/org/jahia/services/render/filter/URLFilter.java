@@ -84,6 +84,11 @@ import java.util.Map;
  * Executes the list of configured visitors to modify the URL value.
  */
 public class URLFilter extends AbstractFilter {
+    private final static String TEMP_START_TAG = "<!-- jahia:temp value=\"URLParserStart";
+    private final static String TEMP_FULL_START_TAG = TEMP_START_TAG + "XXXXXXXX\" -->";
+    private final static String TEMP_END_TAG = "<!-- jahia:temp value=\"URLParserEnd";
+    private final static String TEMP_CLOSING = "\" -->";
+    private final static String REPLACED_START_TAG = "<jahia:URLParserParsedReplaced id=\"";
 
     /**
      * Initializes an instance of this class.
@@ -102,30 +107,31 @@ public class URLFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         if (handlers != null && handlers.length > 0) {
-
             final String thisuuid = StringUtils.leftPad(Integer.toHexString(resource.hashCode()),8,"0");
-
-            Map<String, String> m = new HashMap<String, String>();
-
+            Map<String, String> alreadyParsedFragmentsMap = new HashMap<>();
             StringBuilder sb = new StringBuilder(previousOut);
+
+            // store all the already processed url traverse
             int i;
-            final String startTag = "<!-- jahia:temp value=\"URLParserStart";
-            while ((i = sb.indexOf(startTag)) > -1) {
-                String uuid = sb.substring(i+ startTag.length(), i+ startTag.length() +8);
-                final String endTag = "<!-- jahia:temp value=\"URLParserEnd" + uuid + "\" -->";
+            while ((i = sb.indexOf(TEMP_START_TAG)) > -1) {
+                String uuid = sb.substring(i+ TEMP_START_TAG.length(), i+ TEMP_START_TAG.length() +8);
+                final String endTag = TEMP_END_TAG + uuid + TEMP_CLOSING;
                 int j = sb.indexOf(endTag);
-                m.put(uuid, sb.substring(i, j + endTag.length()));
-                sb.replace(i, j + endTag.length(), "<jahia:URLParserParsedReplaced id=\"" + uuid + "\"/>");
+                alreadyParsedFragmentsMap.put(uuid, sb.substring(i + TEMP_FULL_START_TAG.length(), j));
+                sb.replace(i, j + endTag.length(), REPLACED_START_TAG + uuid + "\"/>");
             }
 
-            StringBuilder replaced = new StringBuilder("<!-- jahia:temp value=\"URLParserStart" + thisuuid + "\" -->" + urlTraverser.traverse(sb.toString(), renderContext, resource, handlers) + "<!-- jahia:temp value=\"URLParserEnd" + thisuuid + "\" -->");
+            // traverse the fragment and wrap it with a temp tag
+            sb = new StringBuilder(urlTraverser.traverse(sb.toString(), renderContext, resource, handlers));
+            sb.insert(0, TEMP_START_TAG + thisuuid + TEMP_CLOSING);
+            sb.append(TEMP_END_TAG + thisuuid + TEMP_CLOSING);
 
-            final String str2 = "<jahia:URLParserParsedReplaced id=\"";
-            while ((i = replaced.indexOf(str2)) > -1) {
-                String uuid = replaced.substring(i+str2.length(), i+str2.length() + 8);
-                replaced.replace(i, i+str2.length()+ 8 + 3, m.get(uuid));
+            // replace all the previous stored fragments
+            while ((i = sb.indexOf(REPLACED_START_TAG)) > -1) {
+                String uuid = sb.substring(i+REPLACED_START_TAG.length(), i+REPLACED_START_TAG.length() + 8);
+                sb.replace(i, i+REPLACED_START_TAG.length()+ 8 + 3, alreadyParsedFragmentsMap.get(uuid));
             }
-            return replaced.toString();
+            return sb.toString();
         }
 
         return previousOut;

@@ -1,6 +1,8 @@
 package org.jahia.services.seo.jcr;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -114,7 +116,7 @@ public class VanityUrlMapper {
 
         hsRequest.setAttribute("vanityUrl",outboundUrl);
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), null);
-        if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
+        if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName()) && !StringUtils.endsWith(outboundUrl,".flow")) {
             String url = StringUtils.substringAfter(outboundUrl, ctx != null ? (ctx + "/cms") : "/cms");
             url = StringUtils.substringBefore(url, "?");
             url = StringUtils.substringBefore(url, "#");

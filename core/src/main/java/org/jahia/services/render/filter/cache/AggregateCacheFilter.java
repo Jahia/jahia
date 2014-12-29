@@ -457,17 +457,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
 
             // Append debug information
-            String renderContent = null;
             if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-                renderContent = surroundWithCacheTag(key, previousOut);
-                return appendDebugInformation(renderContext, key, renderContent, null);
+                return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
             }
-
 
             if (renderContext.getMainResource() == resource) {
                 return removeCacheTags(previousOut);
             } else {
-                return renderContent != null ? renderContent : surroundWithCacheTag(key, previousOut);
+                return surroundWithCacheTag(key, previousOut);
             }
         } catch (Exception e) {
             throw e;

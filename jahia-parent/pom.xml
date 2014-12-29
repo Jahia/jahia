@@ -155,14 +155,14 @@
         <jahia.sign.keystore>${user.home}/.codesign/jahia-code-signing-certificate.p12</jahia.sign.keystore>
 
         <!-- plugin versions -->
-        <javadoc.plugin.version>2.9.1</javadoc.plugin.version>
-        <assembly.plugin.version>2.4</assembly.plugin.version>
-        <site.plugin.version>3.3</site.plugin.version>
-        <war.plugin.version>2.4</war.plugin.version>
+        <javadoc.plugin.version>2.10.1</javadoc.plugin.version>
+        <assembly.plugin.version>2.5.2</assembly.plugin.version>
+        <site.plugin.version>3.4</site.plugin.version>
+        <war.plugin.version>2.5</war.plugin.version>
         <enforcer.plugin.version>1.1.1</enforcer.plugin.version>
-        <compiler.plugin.version>3.1</compiler.plugin.version>
+        <compiler.plugin.version>3.2</compiler.plugin.version>
         <buildnumber.plugin.version>1.0</buildnumber.plugin.version>
-        <source.plugin.version>2.2.1</source.plugin.version>
+        <source.plugin.version>2.4</source.plugin.version>
         <release.plugin.version>2.2.1.jahia1</release.plugin.version>
         <project.info.reports.plugin.version>2.7</project.info.reports.plugin.version>
         <jxr.plugin.version>2.3</jxr.plugin.version>

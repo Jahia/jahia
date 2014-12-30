@@ -156,7 +156,6 @@
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 
-<<<<<<< .working
     <bean class="org.jahia.services.render.filter.WorkInProgressPreviewFilter">
         <property name="priority" value="14" />
         <property name="description" value="Displays live version of 'work in progress' content in preview"/>
@@ -165,10 +164,7 @@
         <property name="applyOnConfigurations" value="page,wrappedcontent,module" />
     </bean>
 
-    <bean class="org.jahia.services.render.filter.MarkedForDeletionFilter">
-=======
-    <bean id="markedForDeletionFilter" class="org.jahia.services.render.filter.MarkedForDeletionFilter">
->>>>>>> .merge-right.r51768
+   <bean id="markedForDeletionFilter" class="org.jahia.services.render.filter.MarkedForDeletionFilter">
         <property name="priority" value="10"/>
         <property name="description" value="Filters out content in preview mode that is marked for deletion"/>
         <property name="applyOnModes" value="preview"/>
@@ -247,9 +243,6 @@
         <property name="priority" value="28"/>
         <property name="description" value="Handles permissions set on the template"/>
         <property name="userManagerService" ref="JahiaUserManagerService"/>
-=======
-<<<<<<< .working
->>>>>>> .merge-right.r51768
     </bean>
 
     <bean id="forceUILocaleFilter" class="org.jahia.services.render.filter.ForceUILocaleFilter">

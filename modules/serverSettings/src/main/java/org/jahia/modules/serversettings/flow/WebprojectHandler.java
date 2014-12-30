@@ -519,6 +519,7 @@ public class WebprojectHandler implements Serializable {
                     imports.clear();
                     importList.clear();
                     File tempFile = File.createTempFile("import", ".zip");
+                    FileUtils.copyInputStreamToFile(inputStream, tempFile);
                     imports.put(tempFile, name);
                     importList.add(tempFile);
                     break;

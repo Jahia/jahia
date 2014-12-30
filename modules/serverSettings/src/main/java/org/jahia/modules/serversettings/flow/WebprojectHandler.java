@@ -103,6 +103,8 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.zip.ZipEntry;
+import org.jahia.utils.zip.ZipInputStream;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -456,16 +458,6 @@ public class WebprojectHandler implements Serializable {
         if (f != null && f.exists()) {
             ZipEntry z = null;
             try {
-<<<<<<< .working
-                importProperties = new Properties();
-                zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(f)));
-                Map<File, String> imports = new HashMap<>();
-                List<File> importList = new ArrayList<>();
-                List<String> emptyFiles = new ArrayList<>();
-                while ((z = zis.getNextEntry()) != null) {
-                    if (z.isDirectory()) {
-                        continue;
-=======
                 prepareFileImports(new FileInputStream(f), name, messageContext);
             } catch (FileNotFoundException e) {
                 logger.error("Cannot read import file :" + e.getMessage());
@@ -474,14 +466,14 @@ public class WebprojectHandler implements Serializable {
     }
 
     private void prepareFileImports(InputStream inputStream,String name, MessageContext messageContext) {
-        org.jahia.utils.zip.ZipInputStream zis = null;
+        ZipInputStream zis = null;
         try {
+            zis = new ZipInputStream(new BufferedInputStream(inputStream));
+            ZipEntry z;
             importProperties = new Properties();
-            zis = new org.jahia.utils.zip.ZipInputStream(new BufferedInputStream(inputStream));
-            org.jahia.utils.zip.ZipEntry z;
-            Map<File, String> imports = new HashMap<File, String>();
-            List<File> importList = new ArrayList<File>();
-            List<String> emptyFiles = new ArrayList<String>();
+            Map<File, String> imports = new HashMap<>();
+            List<File> importList = new ArrayList<>();
+            List<String> emptyFiles = new ArrayList<>();
             while ((z = zis.getNextEntry()) != null) {
                 if (z.isDirectory()) {
                     continue;
@@ -492,7 +484,6 @@ public class WebprojectHandler implements Serializable {
                     final int numberOfBytesCopied = IOUtils.copy(zis, os);
                     if(numberOfBytesCopied == 0) {
                         emptyFiles.add(z.getName());
->>>>>>> .merge-right.r51770
                     }
                 } finally {
                     IOUtils.closeQuietly(os);
@@ -537,40 +528,20 @@ public class WebprojectHandler implements Serializable {
                 }
             }
 
-<<<<<<< .working
-                this.importsInfos = new LinkedHashMap<>();
-                List<ImportInfo> importsInfosList = new ArrayList<>();
-                for (File i : importList) {
-                    ImportInfo value = prepareSiteImport(i, imports.get(i), messageContext);
-                    if (value != null) {
-                        if (value.isLegacyImport()) {
-                            Map<String,Resource> legacyMappings = getLegacyMappingsInModules("map");
-                            Map<String,Resource> legacyDefinitions = getLegacyMappingsInModules("cnd");
-=======
-            this.importsInfos = new LinkedHashMap<String, ImportInfo>();
-            List<ImportInfo> importsInfosList = new ArrayList<ImportInfo>();
+            this.importsInfos = new LinkedHashMap<>();
+            List<ImportInfo> importsInfosList = new ArrayList<>();
             for (File i : importList) {
                 ImportInfo value = prepareSiteImport(i, imports.get(i), messageContext);
                 if (value != null) {
                     if (value.isLegacyImport()) {
                         Map<String,Resource> legacyMappings = getLegacyMappingsInModules("map");
                         Map<String,Resource> legacyDefinitions = getLegacyMappingsInModules("cnd");
->>>>>>> .merge-right.r51770
 
-<<<<<<< .working
-                            if (!legacyMappings.isEmpty()) {
-                                value.setLegacyMappings(new HashSet<>(legacyMappings.keySet()));
-                            }
-                            if (!legacyDefinitions.isEmpty()) {
-                                value.setLegacyDefinitions(new HashSet<>(legacyDefinitions.keySet()));
-                            }
-=======
                         if (!legacyMappings.isEmpty()) {
-                            value.setLegacyMappings(new HashSet<String>(legacyMappings.keySet()));
->>>>>>> .merge-right.r51770
+                            value.setLegacyMappings(new HashSet<>(legacyMappings.keySet()));
                         }
                         if (!legacyDefinitions.isEmpty()) {
-                            value.setLegacyDefinitions(new HashSet<String>(legacyDefinitions.keySet()));
+                            value.setLegacyDefinitions(new HashSet<>(legacyDefinitions.keySet()));
                         }
                     }
                     importsInfosList.add(value);

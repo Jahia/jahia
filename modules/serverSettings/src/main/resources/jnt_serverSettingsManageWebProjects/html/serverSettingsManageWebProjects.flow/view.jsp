@@ -231,9 +231,7 @@
         <h2><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></h2>
         <select class="span5" name="selectedPrepackagedSite">
             <c:forEach items="${webprojectHandler.prepackagedSites}" var="file">
-                <fmt:message key="serverSettings.manageWebProjects.importprepackaged.${file.name}" var="label"/>
-                <c:set var="label" value="${fn:contains(label, '???') ? file.name : label}"/>
-                <option value="${file.absolutePath}"${file.name == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(label)}</option>
+                <option value="${file.key}"${file.value == defaultPrepackagedSite ? ' selected="selected"':''}>${fn:escapeXml(file.value)}</option>
             </c:forEach>
         </select>
         <button class="btn btn-primary" type="submit" name="importPrepackaged" onclick="submitSiteForm('importPrepackaged'); return false;">

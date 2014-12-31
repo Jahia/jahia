@@ -1,8 +1,7 @@
 package org.jahia.services.seo.jcr;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.bin.Render;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -101,6 +100,8 @@ public class VanityUrlMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(VanityUrlMapper.class);
 
+    public static final String vanityKey = "org.jahia.services.seo.jcr.VanityUrl";
+
     /**
      * checks if a vanity exists and put the result as an attribute of the request
      * this is used in urlRewriting rules
@@ -109,52 +110,51 @@ public class VanityUrlMapper {
      * @param outboundUrl
      *              the url received to be checked
      */
-    public void checkVanityUrl(HttpServletRequest hsRequest, String outboundUrl) {
+    public void checkVanityUrl(HttpServletRequest hsRequest,String outboundContext, String outboundUrl) {
+
         URLResolverFactory urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
         UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
 
-        hsRequest.setAttribute("vanityUrl",outboundUrl);
-        String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), null);
-        if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName()) && !StringUtils.endsWith(outboundUrl,".flow")) {
-            String url = StringUtils.substringAfter(outboundUrl, ctx != null ? (ctx + "/cms") : "/cms");
-            url = StringUtils.substringBefore(url, "?");
-            url = StringUtils.substringBefore(url, "#");
-            url = StringUtils.substringBefore(url, ";");
-            try {
-                url = URLDecoder.decode(url, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-            URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
-            try {
-                JCRNodeWrapper node = urlResolver.getNode();
-                if (urlResolver.isMapped()) {
-                    RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
-                    VanityUrl vanityUrl = vanityUrlService
-                            .getVanityUrlForWorkspaceAndLocale(
-                                    node,
-                                    urlResolver.getWorkspace(),
-                                    urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey());
-                    if (vanityUrl != null && vanityUrl.isActive()) {
-                        outboundUrl = outboundUrl.replace("/" + urlResolver.getLocale()
-                                + urlResolver.getPath(), vanityUrl.getUrl());
-                    }
+        String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
+        String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
+        hsRequest.setAttribute(vanityKey, fullUrl);
+        if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
+            if (StringUtils.equals(ctx,outboundContext)) {
+                String url = "/render" + outboundUrl;
+                try {
+                    url = URLDecoder.decode(url, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
-                if (!urlRewriteService.isSeoRulesEnabled()) {
-                    // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
-                    try {
-                        // Switch to correct site for links
-                        outboundUrl = Url.appendServerNameIfNeeded(node, outboundUrl, hsRequest);
-                    } catch (PathNotFoundException e) {
-                        // Cannot find node
-                    } catch (MalformedURLException e) {
-                        // Cannot find node
+                URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
+                try {
+                    JCRNodeWrapper node = urlResolver.getNode();
+                    if (urlResolver.isMapped()) {
+                        RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
+                        VanityUrl vanityUrl = vanityUrlService
+                                .getVanityUrlForWorkspaceAndLocale(
+                                        node,
+                                        urlResolver.getWorkspace(),
+                                        urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey());
+                        if (vanityUrl != null && vanityUrl.isActive()) {
+                            hsRequest.setAttribute(vanityKey, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl());
+                        }
                     }
+                    if (!urlRewriteService.isSeoRulesEnabled()) {
+                        // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
+                        try {
+                            // Switch to correct site for links
+                            hsRequest.setAttribute(vanityKey, Url.appendServerNameIfNeeded(node, fullUrl, hsRequest));
+                        } catch (PathNotFoundException e) {
+                            // Cannot find node
+                        } catch (MalformedURLException e) {
+                            // Cannot find node
+                        }
+                    }
+                } catch (RepositoryException e) {
+                    logger.debug("Error when trying to obtain vanity url", e);
                 }
-                hsRequest.setAttribute("vanityUrl",outboundUrl);
-            } catch (RepositoryException e) {
-                logger.debug("Error when trying to obtain vanity url", e);
             }
         }
     }

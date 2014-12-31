@@ -215,18 +215,12 @@
         <property name="applyOnTemplateTypes" value="html,html-.+"/>
         <property name="handlers">
             <list>
-                <bean class="org.jahia.services.seo.filter.VanityUrlSetter">
-                    <property name="vanityUrlService"
-                              ref="org.jahia.services.seo.jcr.VanityUrlService"/>
-                    <property name="urlResolverFactory" ref="urlResolverFactory"/>
-                </bean>
                 <bean class="org.jahia.services.render.filter.SiteParameterAdder">
                     <property name="vanityUrlService" ref="org.jahia.services.seo.jcr.VanityUrlService"/>
                 </bean>
                 <bean class="org.jahia.services.seo.urlrewrite.UrlRewriteVisitor">
                     <property name="urlRewriteService" ref="UrlRewriteService"/>
                 </bean>
-
             </list>
         </property>
     </bean>

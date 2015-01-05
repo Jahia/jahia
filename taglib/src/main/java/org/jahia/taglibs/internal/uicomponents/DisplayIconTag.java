@@ -270,7 +270,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
         // Produce the HTML code
         try {
             JspWriter out = pageContext.getOut();
-            StringBuffer str = new StringBuffer("");
+            StringBuilder str = new StringBuilder();
             
             // Resolve file name
             final String imagePath;
@@ -288,7 +288,7 @@ public class DisplayIconTag extends AbstractJahiaTag {
 
             /*
             if (wfState) {
-    			imagePath = new StringBuffer(64).append(contextPath).append(
+    			imagePath = new StringBuilder(64).append(contextPath).append(
     					"/ajaxaction/GetWorkflowState?params=/op/edit/pid/").append(
     					jParams.getPageID()).append("&key=").append(
     					jParams.getContentPage().getObjectKey()).append(

@@ -496,7 +496,7 @@ public class SessionViewerTag extends AbstractJahiaTag {
     }
 
     private String getPadding (int indent) {
-        StringBuffer paddingBuf = new StringBuffer(indent);
+        StringBuilder paddingBuf = new StringBuilder(indent);
         for (int i = 0; i < indent; i++) {
             paddingBuf.append(' ');
         }

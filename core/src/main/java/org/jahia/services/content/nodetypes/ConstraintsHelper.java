@@ -163,7 +163,7 @@ public class ConstraintsHelper {
      * @throws NoSuchNodeTypeException
      */
     public static String getReferenceTypes(String constraints, String nodeTypes) throws NoSuchNodeTypeException {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         List<ExtendedNodeType> refs =
                 NodeTypeRegistry.getInstance().getNodeType("jmix:nodeReference").getSubtypesAsList();
 

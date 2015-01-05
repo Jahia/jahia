@@ -221,7 +221,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
 
     public static String generateRandomString(int length) {
         SecureRandom randomGen = new SecureRandom();
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         int count = 0;
         while (count < length) {
             int randomSel = randomGen.nextInt(3);

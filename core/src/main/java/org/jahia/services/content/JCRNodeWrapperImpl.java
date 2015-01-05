@@ -1015,7 +1015,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     res.put(p.getName(), p.getString());
                 } else {
                     Value[] vs = p.getValues();
-                    StringBuffer b = new StringBuffer();
+                    StringBuilder b = new StringBuilder();
                     for (int i = 0; i < vs.length; i++) {
                         Value v = vs[i];
                         b.append(v.getString());
@@ -1576,7 +1576,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 return property.getString();
             } else {
                 Value[] vs = property.getValues();
-                StringBuffer b = new StringBuffer();
+                StringBuilder b = new StringBuilder();
                 for (int i = 0; i < vs.length; i++) {
                     Value v = vs[i];
                     b.append(v.getString());

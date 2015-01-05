@@ -894,7 +894,7 @@ public final class JCRContentUtils implements ServletContextAware {
      */
     public static String getParentJCRPath(String path) {
         String[] pathNames = splitJCRPath(path);
-        StringBuffer parentPath = new StringBuffer();
+        StringBuilder parentPath = new StringBuilder();
         // if we are dealing with an absolute path, we add the initial separator
         if (path.startsWith("/")) {
             parentPath.append("/");
@@ -1394,7 +1394,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
         int nextSlashPos = -1;
         do {
-            StringBuffer currentName = new StringBuffer();
+            StringBuilder currentName = new StringBuilder();
             if (path.indexOf('{', pathPos) == pathPos) {
                 int endingBracketPos = path.indexOf('}', pathPos + 1);
                 currentName.append(path.substring(pathPos, endingBracketPos + 1));

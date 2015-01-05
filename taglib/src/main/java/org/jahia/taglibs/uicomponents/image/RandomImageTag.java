@@ -140,7 +140,7 @@ public class RandomImageTag extends AbstractJCRTag {
                 pageContext.getOut().println("<img id=\"img" + this.hashCode() + "\" src=\"" + pathes.get(0) + "\" />");
                 pageContext.getOut().println("<script language=\"JavaScript\"><!--\n");
                 createJSRandomMethod(pageContext.getOut());
-                StringBuffer js = new StringBuffer();
+                StringBuilder js = new StringBuilder();
                 js.append("\nimgarray").append(this.hashCode()).append(" = new Array(");
                 for (int i = 0; i < pathes.size(); i++) {
                     if (i > 0)
@@ -227,7 +227,7 @@ public class RandomImageTag extends AbstractJCRTag {
     }
 
     private void createJSRandomMethod(JspWriter out) throws IOException {
-        StringBuffer output = new StringBuffer();
+        StringBuilder output = new StringBuilder();
 
         output.append("function getRandom").append(this.hashCode()).append("(imgarray) { ");
         output.append("var randomNum = Math.floor((imgarray.length)*(Math.random())); ");

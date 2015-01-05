@@ -306,7 +306,7 @@ public class DocumentViewExporter {
                                 values.add(JCRMultipleValueUtils.encode(getValue(v)));
                             }
                             Collections.sort(values);
-                            StringBuffer b = new StringBuffer();
+                            StringBuilder b = new StringBuilder();
                             for (int i = 0; i < values.size(); i++) {
                                 String v = values.get(i);
                                 b.append(v);

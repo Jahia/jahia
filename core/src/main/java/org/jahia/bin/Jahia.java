@@ -292,7 +292,7 @@ public final class Jahia {
                 try {
                     currentJDKVersion = new Version(System.getProperty("java.version"));
                     if (!isSupportedJDKVersion(currentJDKVersion, supportedJDKVersions)) {
-                        StringBuffer jemsg = new StringBuffer();
+                        StringBuilder jemsg = new StringBuilder(256);
                         jemsg.append("WARNING\n\n");
                         jemsg.append(
                             "You are using an unsupported JDK version\n");

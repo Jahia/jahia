@@ -492,7 +492,7 @@ public class ImageInfo {
                         {
                               int extensionType = read();
                               if (collectComments && extensionType == 0xfe) {
-                                    StringBuffer sb = new StringBuffer();
+                                    StringBuilder sb = new StringBuilder();
                                     int n;
                                     do
                                     {

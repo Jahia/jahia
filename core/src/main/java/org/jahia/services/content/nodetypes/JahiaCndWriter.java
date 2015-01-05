@@ -486,7 +486,7 @@ public class JahiaCndWriter {
         if (s.indexOf('\\') == -1 && s.indexOf('\'') == -1) {
             return s;
         }
-        StringBuffer sb = new StringBuffer(s);
+        StringBuilder sb = new StringBuilder(s);
         for (int i = 0; i < sb.length(); i++) {
             if (sb.charAt(i) == '\\' || sb.charAt(i) == '\'') {
                 sb.insert(i, '\\');

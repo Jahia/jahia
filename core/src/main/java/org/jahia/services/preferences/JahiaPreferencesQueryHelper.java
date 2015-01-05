@@ -111,7 +111,7 @@ public class JahiaPreferencesQueryHelper {
      * @return a string containing sql constraint to be used with JahiaPreferencesProvider
      */
     public static String convertToSQL(Map<String, Object> propertiesMap) {
-        StringBuffer prefPath = new StringBuffer();
+        StringBuilder prefPath = new StringBuilder();
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();
             boolean isFirstProperty = true;
@@ -139,7 +139,7 @@ public class JahiaPreferencesQueryHelper {
      * @return a string containing sql constraint to be used with JahiaPreferencesProvider
      */
     public static String convertToSQLPureStringProperties(Map<String, String> propertiesMap) {
-        StringBuffer prefPath = new StringBuffer();
+        StringBuilder prefPath = new StringBuilder();
         if (propertiesMap != null && !propertiesMap.isEmpty()) {
             Iterator<?> propertiesIterator = propertiesMap.keySet().iterator();
             boolean isFirstProperty = true;

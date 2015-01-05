@@ -157,7 +157,7 @@ public class Cache<K, V> implements CacheStatistics {
         if (entry == null) {
             if (logger.isDebugEnabled()) {
                 // log the result
-                StringBuffer buffer = new StringBuffer("Entry [");
+                StringBuilder buffer = new StringBuilder("Entry [");
                 buffer.append(entryKey.toString());
                 buffer.append("] could not be found in cache [");
                 buffer.append(name);

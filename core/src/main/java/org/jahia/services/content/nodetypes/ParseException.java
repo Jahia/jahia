@@ -150,7 +150,7 @@ public class ParseException extends Exception {
      * {@inheritDoc}
      */
     public String getMessage() {
-        StringBuffer b = new StringBuffer(super.getMessage());
+        StringBuilder b = new StringBuilder(super.getMessage());
         String delim = " (";
         if (filename != null && !filename.equals("")) {
             b.append(delim);

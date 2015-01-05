@@ -152,7 +152,7 @@ public class GroupCacheKey implements Serializable, Comparable<GroupCacheKey> {
     }
 
     public String toString() {
-        StringBuffer result = new StringBuffer(groups.size()*5);
+        StringBuilder result = new StringBuilder(groups.size()*5);
         result.append(key);
         result.append(keyGroupSeparator);
         result.append(groupSeparator);

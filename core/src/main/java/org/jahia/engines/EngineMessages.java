@@ -184,7 +184,7 @@ public class EngineMessages {
     }
 
     public String toString() {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         buff.append("org.jahia.engines.EngineMessages : ");
         buff.append(messages);
         return buff.toString();

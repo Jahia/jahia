@@ -423,7 +423,7 @@ public class Connection extends URLConnection {
 
         Properties bndProperties = new Properties();
         if (classPathEntries.size() > 0) {
-            StringBuffer bundleClassPath = new StringBuffer(".");
+            StringBuilder bundleClassPath = new StringBuilder(".");
             for (String classPathEntry : classPathEntries) {
                 bundleClassPath.append(",");
                 bundleClassPath.append(classPathEntry);

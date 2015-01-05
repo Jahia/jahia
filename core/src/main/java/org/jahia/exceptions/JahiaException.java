@@ -275,7 +275,7 @@ public class JahiaException extends Exception
 
     public String toString() {
         logger.debug("called.");
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         result.append(super.toString());
         if (getRootCause() != null) {
             result.append(" root cause=");

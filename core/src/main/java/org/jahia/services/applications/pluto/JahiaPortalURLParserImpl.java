@@ -202,7 +202,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
             LOG.debug("Parsing request pathInfo: " + portletInfo);
         }
 
-        StringBuffer renderPath = new StringBuffer();
+        StringBuilder renderPath = new StringBuilder();
         StringTokenizer st = new StringTokenizer(portletInfo, "/", false);
         while (st.hasMoreTokens()) {
 
@@ -289,7 +289,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
      * @return a URL string representing the portal URL.
      */
     public String toString(PortalURL portalURL) {
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
 
         // Append the server URI and the servlet path.
         //buffer.append(portalURL.getServletPath().startsWith("/") ? "" : "/").append(portalURL.getServletPath());
@@ -353,7 +353,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
         }
 
         // Append action and render parameters.
-        StringBuffer query = new StringBuffer("?");
+        StringBuilder query = new StringBuilder("?");
         boolean firstParam = true;
         for (Iterator it = portalURL.getParameters().iterator();
              it.hasNext();) {
@@ -468,7 +468,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
     private String encodeControlParameter(String type,
                                           String windowId,
                                           String name) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(PREFIX).append(type)
                 .append(encodeCharacters(windowId))
                 .append(DELIM).append(name);
@@ -476,7 +476,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
     }
 
     private String encodePublicParamname(String type, String name) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         buffer.append(PREFIX).append(type)
                 .append(DELIM).append(name);
         return buffer.toString();
@@ -490,7 +490,7 @@ public class JahiaPortalURLParserImpl implements PortalURLParser {
      * @return a single string containing all the values.
      */
     private String encodeMultiValues(String[] values) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         for (int i = 0; i < values.length; i++) {
             // Do not operate on the array reference
             String currentValue = values[i];

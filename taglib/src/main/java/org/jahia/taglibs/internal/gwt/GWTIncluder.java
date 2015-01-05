@@ -118,7 +118,7 @@ public class GWTIncluder {
      */
     public static String generateJahiaModulePlaceHolder(boolean templateUsage, String cssClassName, String jahiaType, String id, Map<String, Object> extraParams) {
         // css depending on type of module
-        StringBuffer css = new StringBuffer();
+        StringBuilder css = new StringBuilder();
         if (templateUsage) {
             css.append("jahia-template-gxt");
         } else {
@@ -131,7 +131,7 @@ public class GWTIncluder {
             css.append(" ").append(cssClassName);
         }
 
-        final StringBuffer outBuf = new StringBuffer("<div class=\"" + css + "\" id=\"").append(id).append("\" ");
+        final StringBuilder outBuf = new StringBuilder("<div class=\"").append(css).append("\" id=\"").append(id).append("\" ");
         if (jahiaType != null) {
             outBuf.append("jahiatype=\"");
             outBuf.append(jahiaType);
@@ -147,7 +147,7 @@ public class GWTIncluder {
     }
 
     protected static String getParam(Map<String, Object> extraParams) {
-        final StringBuffer outBuf = new StringBuffer();
+        final StringBuilder outBuf = new StringBuilder();
         for (String name : extraParams.keySet()) {
             Object value = extraParams.get(name);
             if (value == null) {

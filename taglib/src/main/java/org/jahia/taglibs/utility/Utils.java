@@ -109,7 +109,7 @@ public class Utils {
      */
     public static String buildUniqueName(final String parentName, final String tagName) {
 
-        final StringBuffer buffer = new StringBuffer();
+        final StringBuilder buffer = new StringBuilder();
         buffer.append(parentName);
         buffer.append(SEPARATOR);
         buffer.append(tagName);
@@ -196,7 +196,7 @@ public class Utils {
 
         final int pos = link.indexOf("src=");
         if (pos != -1) {
-            final StringBuffer tmp = new StringBuffer();
+            final StringBuilder tmp = new StringBuilder();
             tmp.append(link);
             // insert after "src='"
             tmp.insert(pos + 5, contextPath + "/");

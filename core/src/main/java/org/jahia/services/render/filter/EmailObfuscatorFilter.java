@@ -118,7 +118,7 @@ public class EmailObfuscatorFilter extends AbstractFilter {
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        StringBuffer wholeHtml = new StringBuffer(previousOut);
+        StringBuilder wholeHtml = new StringBuilder(previousOut);
 
         StringTokenizer st = new StringTokenizer(previousOut);
 

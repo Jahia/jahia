@@ -132,7 +132,7 @@ public abstract class ObjectKey implements
                      String IDInType) {
         this.type = type;
         this.IDInType = IDInType;
-        StringBuffer buf = new StringBuffer(50);
+        StringBuilder buf = new StringBuilder(50);
         buf.append(type);
         buf.append(KEY_SEPARATOR);
         buf.append(IDInType);

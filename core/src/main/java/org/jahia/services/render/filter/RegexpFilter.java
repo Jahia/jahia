@@ -129,7 +129,7 @@ public class RegexpFilter extends AbstractFilter {
             }
             return previousOut;
         } else {
-            StringBuffer buffer = new StringBuffer(previousOut);
+            StringBuilder buffer = new StringBuilder(previousOut);
             Source source = new Source(previousOut);
             List<Tag> tags = source.getAllTags();
             int offset = 0;

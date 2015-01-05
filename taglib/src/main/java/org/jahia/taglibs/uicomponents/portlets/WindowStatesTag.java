@@ -292,7 +292,7 @@ public class WindowStatesTag extends TagSupport {
 			} else {
 				out.print("<li>");
 			}
-			final StringBuffer buff = new StringBuffer();
+			final StringBuilder buff = new StringBuilder();
 			buff.append("<a class=\"")
 			        .append(curWindowStateBean.getName())
 			        .append("\" title=\"")

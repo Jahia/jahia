@@ -398,7 +398,7 @@ public class JahiaArchiveFileHandler {
             ZipEntry entry = m_JarFile.getEntry(entryName);
 
             if (entry == null) {
-                StringBuffer strBuf = new StringBuffer(1024);
+                StringBuilder strBuf = new StringBuilder(1024);
                 strBuf.append(" extractEntry(), cannot find entry ");
                 strBuf.append(entryName);
                 strBuf.append(" in the jar file ");
@@ -538,12 +538,12 @@ public class JahiaArchiveFileHandler {
     }
 
     /**
-     * Generates a file path for a gived entry name
+     * Generates a file path for a given entry name
      * Parses "/" char and replaces them with File.separator char
      */
     protected String genPathFile(String entryName) {
 
-        StringBuffer sb = new StringBuffer(entryName.length());
+        StringBuilder sb = new StringBuilder(entryName.length());
         for (int i = 0; i < entryName.length(); i++) {
             if (entryName.charAt(i) == '/') {
                 sb.append(File.separator);

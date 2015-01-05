@@ -229,13 +229,13 @@ public class JCRVersionService extends JahiaService {
             // the first is the root version, which has no properties, so we will ignore it.
         }
         String nodeTitle = null;
-        StringBuffer propertyString = null;
+        StringBuilder propertyString = null;
         while (vi.hasNext()) {
             Version v = vi.nextVersion();
             if (logger.isDebugEnabled()) {
                 try {
                     Node frozenNode = v.getFrozenNode();
-                    propertyString = new StringBuffer();
+                    propertyString = new StringBuilder();
                     PropertyIterator propertyIterator = frozenNode.getProperties();
                     while (propertyIterator.hasNext()) {
                         Property property = propertyIterator.nextProperty();

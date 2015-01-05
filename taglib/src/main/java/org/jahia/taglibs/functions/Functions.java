@@ -371,7 +371,7 @@ public class Functions {
     }
 
     public static String stringConcatenation(String value, String appendix1, String appendix2) {
-        final StringBuffer buff = new StringBuffer();
+        final StringBuilder buff = new StringBuilder();
         if (value != null) {
             buff.append(value);
         }

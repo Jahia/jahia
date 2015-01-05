@@ -284,7 +284,7 @@ public class LanguageCodeConverters {
      * NULL string is returned instead !
      */
     public static String localeToLanguageTag(Locale locale) {
-        StringBuffer result = new StringBuffer();
+        StringBuilder result = new StringBuilder();
         if (!("".equals(locale.getLanguage()))) {
             result.append(locale.getLanguage());
         } else {

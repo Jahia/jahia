@@ -307,7 +307,7 @@ public class PropertiesManager
                                     {
                                         propertyFound  = true;
 
-                                        StringBuffer thisLineBuffer =  new StringBuffer();
+                                        StringBuilder thisLineBuffer =  new StringBuilder();
                                         thisLineBuffer.append( lineReaded.substring(0,position+1) );
                                         thisLineBuffer.append( "   " );
                                         thisLineBuffer.append( string2Property( propvalue ) );
@@ -337,7 +337,7 @@ public class PropertiesManager
                 while(restantPropertyNames.hasNext())
                 {
                     String restantPropertyName = (String) restantPropertyNames.next();
-                    StringBuffer specialLineBuffer =  new StringBuffer();
+                    StringBuilder specialLineBuffer =  new StringBuilder();
                     specialLineBuffer.append( restantPropertyName );
                     for(int i=0; i<55-restantPropertyName.length(); i++) {
                         specialLineBuffer.append( " " );
@@ -381,13 +381,13 @@ public class PropertiesManager
 
         File         thisFile     =  null;
         FileWriter   fileWriter   =  null;
-        StringBuffer outputBuffer =  null;
+        StringBuilder outputBuffer =  null;
 
         try
         {
             thisFile     =  new File( propertiesFilePath );
             fileWriter   =  new FileWriter( thisFile );
-            outputBuffer =  new StringBuffer();
+            outputBuffer =  new StringBuilder();
 
             for(int i=0; i < bufferList.size(); i++) {
                 outputBuffer.append((String) bufferList.get(i));
@@ -424,7 +424,7 @@ public class PropertiesManager
      * @author Alexandre Kraft
      */
     public static String string2Property(String originalValue) {
-        StringBuffer convertedValue = new StringBuffer();
+        StringBuilder convertedValue = new StringBuilder();
         for (int i = 0; i < originalValue.length(); i++) {
             if (originalValue.substring(i, i + 1).equals(":")) {
                 convertedValue.append("\\:");

@@ -98,7 +98,7 @@ public class UserPropertyTag extends AbstractJCRTag {
     public int doStartTag() throws JspException {
         try {
             RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
-            final StringBuffer buff = new StringBuffer();
+            final StringBuilder buff = new StringBuilder();
 
             if (cssClassName != null && cssClassName.length() > 0) {
                 buff.append("<div class=\"");

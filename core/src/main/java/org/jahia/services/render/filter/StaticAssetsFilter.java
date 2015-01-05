@@ -545,6 +545,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                             Writer writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                             boolean compress = true;
                             if (compress && type.equals("css")) {
+                                String s = IOUtils.toString(reader);
+                                IOUtils.closeQuietly(reader);
+
+                                if (s.indexOf("url(") != -1) {
+                                    String url = StringUtils.substringBeforeLast(path, "/") + "/";
+                                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
+                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
+                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
+                                }
+                                
+                                reader = new StringReader(s);
+
                                 CssCompressor compressor = new CssCompressor(reader);
                                 compressor.compress(writer, -1);
                             } else if (compress && type.equals("js")) {
@@ -614,19 +627,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     outMerged.write("\n".getBytes());
                                 }
                                 InputStream is = new FileInputStream(getFileSystemPath(entry.getValue()));
-                                if (type.equals("css")) {
-                                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                                    IOUtils.copy(is, stream);
-                                    IOUtils.closeQuietly(is);
-                                    String s = stream.toString("UTF-8");
-
-                                    String url = StringUtils.substringBeforeLast(entry.getKey(), "/") + "/";
-                                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
-                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
-                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
-                                    is = new ByteArrayInputStream(s.getBytes("UTF-8"));
-                                }
                                 IOUtils.copy(is, outMerged);
                                 if (type.equals("js")) {
                                     outMerged.write(";\n".getBytes());

@@ -109,7 +109,8 @@ public class TemplateScriptFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
         Script script = (Script) request.getAttribute("script");
         renderContext.getResourcesStack().push(resource);
-        StringBuilder output = new StringBuilder();
+        StringBuilder output = null;
+        String outputString = null;
         Stack<StopWatch> stopWatchStack = null;
         try {
             if (logger.isDebugEnabled()) {
@@ -131,6 +132,7 @@ public class TemplateScriptFilter extends AbstractFilter {
             boolean moduleInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("moduleinfo")) && !resource.getNode().isNodeType("jnt:template");
 
             if (moduleInfo) {
+                output = new StringBuilder();
                 output.append("\n<fieldset class=\"moduleinfo\"> ");
                 start = System.currentTimeMillis();
 
@@ -146,8 +148,9 @@ public class TemplateScriptFilter extends AbstractFilter {
                 stopWatch = new StopWatch();
                 stopWatchStack.push(stopWatch);
                 stopWatch.start();
-            }
-            output.append(script.execute(resource, renderContext));
+
+            } 
+            outputString = script.execute(resource, renderContext);
 
             if (logger.isDebugEnabled()) {
                 if(renderContext.getRequest().getAttribute("previousTemplate")!=null) {
@@ -163,6 +166,7 @@ public class TemplateScriptFilter extends AbstractFilter {
             }
 
             if (moduleInfo) {
+                output.append(outputString);                
                 stopWatch.stop();
                 View view = script.getView();
                 output.append("<legend>").append("<img src=\"").append(renderContext.getURLGenerator().getContext())
@@ -172,7 +176,9 @@ public class TemplateScriptFilter extends AbstractFilter {
                         .append(" in total: ").append(System.currentTimeMillis() - start).append("ms")
                         .append(" , own time: ").append(stopWatch.getTotalTimeMillis()).append("ms")
                         .append("\"/></legend>");
-                output.append("</fieldset> ");
+                output.append("</fieldset>");
+                
+                outputString = output.toString();
             }
         } finally {
             renderContext.getResourcesStack().pop();
@@ -185,7 +191,7 @@ public class TemplateScriptFilter extends AbstractFilter {
                 }
             }
         }
-        return output.toString().trim();
+        return outputString.trim();
     }
 
     @Override

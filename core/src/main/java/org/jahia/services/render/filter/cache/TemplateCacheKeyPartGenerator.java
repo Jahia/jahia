@@ -71,7 +71,6 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 

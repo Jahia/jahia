@@ -74,8 +74,6 @@ package org.jahia.services.render.filter.cache;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -86,7 +84,6 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
-    private static Logger logger = LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
     private List<CacheKeyPartGenerator> partGenerators;
     private List<String> fields;
 

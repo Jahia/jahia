@@ -158,8 +158,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
-                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() + " - " +
-                            Messages.get("label.publish.all.languages", "all languages");
+                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName();
                     updateItem(ctx, gwtJahiaNode, title);
                 }
             }

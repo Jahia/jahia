@@ -79,6 +79,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.migration.Migrators;
+import org.jahia.utils.osgi.parsers.PackageInfo;
 import org.jahia.utils.osgi.parsers.Parsers;
 import org.jahia.utils.osgi.parsers.ParsingContext;
 import org.jahia.utils.osgi.parsers.TldXmlFileParser;
@@ -201,8 +202,8 @@ public class Connection extends URLConnection {
                         if (!directoryName.startsWith("META-INF") &&
                             !directoryName.startsWith("OSGI-INF") &&
                             !directoryName.startsWith("WEB-INF") &&
-                            !parsingContext.getProjectPackages().contains(packageName)) {
-                            parsingContext.getProjectPackages().add(packageName);
+                            !parsingContext.getLocalPackages().contains(new PackageInfo(packageName, parser.getWrappedJarURL().toString(), parsingContext))) {
+                            parsingContext.getLocalPackages().add(new PackageInfo(packageName, parser.getWrappedJarURL().toString(), parsingContext));
                         }
                     }
                 } else if (newName.startsWith("WEB-INF/lib/")) {
@@ -249,12 +250,12 @@ public class Connection extends URLConnection {
                             if (!directoryName.startsWith("META-INF") &&
                                 !directoryName.startsWith("OSGI-INF") &&
                                 !directoryName.startsWith("WEB-INF") &&
-                                !parsingContext.getProjectPackages().contains(packageName)) {
-                                parsingContext.getProjectPackages().add(packageName);
+                                !parsingContext.getLocalPackages().contains(new PackageInfo(packageName, parser.getWrappedJarURL() + "/" + newName, parsingContext))) {
+                                parsingContext.getLocalPackages().add(new PackageInfo(packageName, parser.getWrappedJarURL() + "/" + newName, parsingContext));
                             }
                         }
 
-                        InputStream embeddedInputStream = parseFile(embeddedJarInputStream, embeddedJarNewName, parsingContext);
+                        InputStream embeddedInputStream = parseFile(embeddedJarInputStream, embeddedJarNewName, parser.getWrappedJarURL() + "/" + newName, false, parsingContext);
                         if (!embeddedJarEntry.isDirectory() && embeddedJarNewName.endsWith(".xml") &&
                                 (embeddedJarNewName.startsWith("org/jahia/config/") ||
                                         embeddedJarNewName.startsWith("org/jahia/defaults/config/"))) {
@@ -337,7 +338,7 @@ public class Connection extends URLConnection {
                     entryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
                 }
 
-                entryInputStream = parseFile(entryInputStream, newName, parsingContext);
+                entryInputStream = parseFile(entryInputStream, newName, parser.getWrappedJarURL().toExternalForm(), false, parsingContext);
 
                 ByteArrayOutputStream tempByteArrayOutputStream = new ByteArrayOutputStream();
                 IOUtils.copyLarge(entryInputStream, tempByteArrayOutputStream);
@@ -474,13 +475,13 @@ public class Connection extends URLConnection {
                     alreadyImportedPackages.add(curImportPackage);
                 }
             }
-            for (String importPackageFromParsing : parsingContext.getPackageImports()) {
-                if (!alreadyImportedPackages.contains(importPackageFromParsing) &&
-                    !getBundlePackages(rootFolder, excludedImportPackages).contains(importPackageFromParsing)) {
+            for (PackageInfo importPackageFromParsing : parsingContext.getPackageImports()) {
+                if (!alreadyImportedPackages.contains(importPackageFromParsing.getName()) &&
+                    !getBundlePackages(rootFolder, excludedImportPackages).contains(importPackageFromParsing.getName())) {
                     importPackage.append(",");
-                    importPackage.append(importPackageFromParsing);
+                    importPackage.append(importPackageFromParsing.getName());
                     importPackage.append(";resolution:=optional");
-                    alreadyImportedPackages.add(importPackageFromParsing);
+                    alreadyImportedPackages.add(importPackageFromParsing.getName());
                 }
             }
 
@@ -581,7 +582,7 @@ public class Connection extends URLConnection {
                 logger.info("Analysing taglib {} from URI {}", taglibUri, tld);
                 TldXmlFileParser parser = new TldXmlFileParser();
                 parser.setLogger(logger);
-                parser.parse(tld.getFilename(), doc.getRootElement(), parsingContext, true);
+                parser.parse(tld.getFilename(), doc.getRootElement(), tld.getURL().toExternalForm(), true, false, null, parsingContext);
                 if (parsingContext.getUnresolvedTaglibUris().size() == 0) {
                     // we have resolved everything -> stop
                     break;
@@ -606,14 +607,14 @@ public class Connection extends URLConnection {
         }
     }
     
-    private InputStream parseFile(InputStream fileInputStream, String fileName, ParsingContext parsingContext) throws IOException {
+    private InputStream parseFile(InputStream fileInputStream, String fileName, String fileParent, boolean optional, ParsingContext parsingContext) throws IOException {
         // let's run all the parsers now.
         ByteArrayOutputStream entryOutputStream = new ByteArrayOutputStream();
         StreamUtils.copyStream(fileInputStream, entryOutputStream, false);
         ByteArrayInputStream tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
-        Parsers.getInstance().parse(0, fileName, tempEntryInputStream, parsingContext, false, logger);
+        Parsers.getInstance().parse(0, fileName, tempEntryInputStream, fileParent, false, optional, null, logger, parsingContext);
         tempEntryInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());
-        Parsers.getInstance().parse(1, fileName, tempEntryInputStream, parsingContext, false, logger);
+        Parsers.getInstance().parse(1, fileName, tempEntryInputStream, fileParent, false, optional, null, logger, parsingContext);
         tempEntryInputStream.close();
         tempEntryInputStream = null;
         fileInputStream = new ByteArrayInputStream(entryOutputStream.toByteArray());

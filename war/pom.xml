@@ -706,6 +706,7 @@
                             <goal>build-framework-package-list</goal>
                         </goals>
                         <configuration>
+                            <failBuildOnSplitPackages>false</failBuildOnSplitPackages>
                             <propertiesInputFile>
                                 ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
                             </propertiesInputFile>
@@ -745,6 +746,7 @@
                             <goal>dependencies</goal>
                         </goals>
                         <configuration>
+                            <failBuildOnSplitPackages>false</failBuildOnSplitPackages>
                             <propertiesInputFile>
                                 ${project.build.directory}/generated-resources/felix-framework.properties
                             </propertiesInputFile>

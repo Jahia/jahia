@@ -509,9 +509,17 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     private String getNodeType(SearchCriteria params) {
-        return StringUtils.isEmpty(params.getNodeType()) ? (isFileSearch(params) && !isSiteSearch(params) ? Constants.NT_HIERARCHYNODE
-                : Constants.NT_BASE)
-                : params.getNodeType();
+        if(StringUtils.isNotEmpty(params.getNodeType())) {
+            return params.getNodeType();
+        }
+
+        if(isFileSearch(params) && !isSiteSearch(params)) {
+            return Constants.NT_HIERARCHYNODE;
+        } else if (!isFileSearch(params) && isSiteSearch(params)) {
+            return Constants.JAHIANT_CONTENT;
+        }
+
+        return Constants.NT_BASE;
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,

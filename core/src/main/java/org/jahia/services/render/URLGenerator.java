@@ -156,12 +156,8 @@ public class URLGenerator {
 
         final String resourcePath = getResourcePath();
 
-<<<<<<< .working
         final String renderServletPath = Render.getRenderServletPath();
         baseLive = renderServletPath + "/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
-=======
-        baseLive = Render.getRenderServletPath() + "/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
->>>>>>> .merge-right.r51795
         live = baseLive + resourcePath;
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
             baseEdit = "/cms/edit/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
@@ -169,11 +165,7 @@ public class URLGenerator {
             baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
             contribute = baseContribute + resourcePath;
         }
-<<<<<<< .working
         basePreview = renderServletPath + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
-=======
-        basePreview = Render.getRenderServletPath() + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
->>>>>>> .merge-right.r51795
         preview = basePreview + resourcePath;
         find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
         initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
@@ -250,7 +242,6 @@ public class URLGenerator {
         if (cfg.isDistantPublicationServerMode() || cfg.isProductionMode()) {
             return null;
         }
-<<<<<<< .working
 
         final JCRSiteNode site = context.getSite();
         if (site != null) {
@@ -258,14 +249,6 @@ public class URLGenerator {
             if (path.startsWith("/modules/")) {
                 return "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode + path + ".html";
             }
-=======
-        String url;
-        if (context.getSite() != null && context.getSite().getPath().startsWith("/modules/")) {
-            url = "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode
-                    + context.getSite().getPath() + ".html";
-        } else {
-            url = isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";
->>>>>>> .merge-right.r51795
         }
         return isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";
     }

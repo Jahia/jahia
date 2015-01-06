@@ -80,6 +80,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
+
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -87,6 +88,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
@@ -123,6 +125,11 @@ import org.springframework.context.ApplicationListener;
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
     public static final String CACHE_PER_USER = "cache.perUser";
+    private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
+    private static final String CACHE_TAG_START_1 = "<!-- cache:include src=\"";
+    private static final String CACHE_TAG_START_2 = "\" -->\n";
+    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length()
+            + CACHE_TAG_END.length();
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
     static final String V = "v";
@@ -664,7 +671,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      */
     protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
-        StringBuilder sb = new StringBuilder(TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR));
+        String out = TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR);
+        StringBuilder sb = new StringBuilder(out.length() + key.length() + CACHE_TAG_LENGTH);
+        sb.append(out);
         // Finally, add the  <!-- cache:include --> around the content and create cache entry.
         surroundWithCacheTag(key, sb);
         return new CacheEntry<>(sb.toString());
@@ -924,14 +933,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return The content surrounded by the tag
      */
     protected String surroundWithCacheTag(String key, String output) {
-        StringBuilder builder = new StringBuilder(output);
+        StringBuilder builder = new StringBuilder(output.length() + key.length() + CACHE_TAG_LENGTH);
+        builder.append(output);
         surroundWithCacheTag(key, builder);
         return builder.toString();
     }
 
     protected void surroundWithCacheTag(String key, StringBuilder output) {
-        output.insert(0, "<!-- cache:include src=\"" + key + "\" -->\n");
-        output.append("\n<!-- /cache:include -->");
+        output.insert(0, CACHE_TAG_START_2).insert(0, key).insert(0, CACHE_TAG_START_1).append(CACHE_TAG_END);
     }
 
     protected String appendDebugInformation(RenderContext renderContext, String key, String renderContent,

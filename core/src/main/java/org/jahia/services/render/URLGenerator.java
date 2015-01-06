@@ -136,6 +136,8 @@ public class URLGenerator {
 
     private String logout;
 
+    private String languageCode;
+
     public URLGenerator(RenderContext context, Resource resource) {
         this.context = context;
         this.resource = resource;
@@ -149,7 +151,7 @@ public class URLGenerator {
      * Set workspace url as attribute of the current request
      */
     protected void initURL() {
-        final String languageCode = resource.getLocale().toString();
+        languageCode = resource.getLocale().toString();
         base = getBase(languageCode);
 
         final String resourcePath = getResourcePath();
@@ -245,7 +247,7 @@ public class URLGenerator {
         if (site != null) {
             final String path = site.getPath();
             if (path.startsWith("/modules/")) {
-                return "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + resource.getLocale() + path + ".html";
+                return "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode + path + ".html";
             }
         }
         return isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";

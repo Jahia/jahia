@@ -81,6 +81,7 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -264,53 +265,62 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return keyPart;
     }
 
-    private void populatesRolesForKey(Map<String, Set<String>> rolesForKey, Map<String, Set<String>> principalAcl,
-                                      Set<String> aclPathChecked, String nodePath, Pattern regexp){
-        for (Map.Entry<String, Set<String>> entry : principalAcl.entrySet()) {
-            boolean match;
-            if(regexp != null) {
-                match = regexp.matcher(entry.getKey()).matches();
-            }else {
-                String grantPath = nodePath + "/";
-                match = (nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath)) && !aclPathChecked.contains(entry.getKey());
-            }
+    public String getAclKeyPartForNode(RenderContext renderContext, String nodePath,
+                                       JahiaUser principal, Set<String> aclPathChecked, boolean regexp)
+            throws RepositoryException {
+        List<Map<String, Set<String>>> l = new ArrayList<Map<String, Set<String>>>();
 
-            if (match) {
-                Set<String> roles = entry.getValue();
-                if (!rolesForKey.containsKey(entry.getKey())) {
-                    rolesForKey.put(entry.getKey(), new TreeSet<>(roles));
-                } else {
-                    rolesForKey.get(entry.getKey()).addAll(roles);
+        l.add(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
+
+        List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
+
+        for (String group : groups) {
+            String groupName = StringUtils.substringAfterLast(group, "/");
+            String siteName = group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null;
+            l.add(getPrincipalAcl("g:" + groupName, siteName));
+        }
+
+        Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
+
+        if (!regexp) {
+            nodePath += "/";
+
+            for (Map<String, Set<String>> map : l) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                    String grantPath = entry.getKey() + "/";
+                    if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath)) && !aclPathChecked.contains(entry.getKey())) {
+                        Set<String> roles = entry.getValue();
+                        if (!rolesForKey.containsKey(entry.getKey())) {
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                        } else {
+                            rolesForKey.get(entry.getKey()).addAll(roles);
+                        }
+                    }
                 }
             }
-        }
-    }
+        } else {
+            Pattern p = Pattern.compile(nodePath);
+            for (Map<String, Set<String>> map : l) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                    String grantPath = entry.getKey();
+                    if (p.matcher(grantPath).matches()) {
+                        Set<String> roles = entry.getValue();
+                        if (!rolesForKey.containsKey(entry.getKey())) {
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                        } else {
+                            rolesForKey.get(entry.getKey()).addAll(roles);
+                        }
+                    }
+                }
+            }
 
-    public String getAclKeyPartForNode(RenderContext renderContext, String nodePath,
-                                       JahiaUser principal, Set<String> aclPathChecked, boolean isRegexp)
-            throws RepositoryException {
-
-        // create regexp pattern if needed first
-        Pattern p = null;
-        if (isRegexp){
-            p = Pattern.compile(nodePath);
-        }
-
-        // get roles for key
-        Map<String, Set<String>> rolesForKey = new TreeMap<>();
-        populatesRolesForKey(rolesForKey, getPrincipalAcl("u:" + principal.getName(), principal.getRealm()), aclPathChecked, nodePath, p);
-        for (String group : groupManagerService.getMembershipByPath(principal.getLocalPath())) {
-            populatesRolesForKey(rolesForKey, getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"),
-                    group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null),
-                    aclPathChecked, nodePath, p);
         }
 
         aclPathChecked.addAll(rolesForKey.keySet());
         StringBuilder r = new StringBuilder();
         for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
             try {
-                r.append(URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8"))
-                        .append(":").append(URLEncoder.encode(entry.getKey(), "UTF-8")).append("|");
+                r.append(URLEncoder.encode(StringUtils.join(entry.getValue(), ","), "UTF-8") + ":" + URLEncoder.encode(entry.getKey(), "UTF-8") + "|");
             } catch (UnsupportedEncodingException e) {
                 // UTF-8 encoding should be supported
                 throw new RuntimeException(e);

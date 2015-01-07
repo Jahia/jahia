@@ -124,16 +124,20 @@ import org.springframework.context.ApplicationListener;
  */
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
+
     public static final String CACHE_PER_USER = "cache.perUser";
-    private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
-    private static final String CACHE_TAG_START_1 = "<!-- cache:include src=\"";
-    private static final String CACHE_TAG_START_2 = "\" -->\n";
-    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length()
-            + CACHE_TAG_END.length();
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
-    static final String V = "v";
-    static final String EC = "ec";
+
+    private static final String CACHE_TAG_START_1_NOSRC = "<!-- cache:include";
+    private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
+    private static final String CACHE_TAG_START_2 = "\" -->\n";
+    private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
+    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length() + CACHE_TAG_END.length();
+
+    private static final String V = "v";
+    private static final String EC = "ec";
+
     private static final TextUtils.StringReplacementGenerator GENERATOR = new TextUtils.StringReplacementGenerator() {
         @Override
         public String getReplacementFor(String match, String prefix, String suffix) {
@@ -144,7 +148,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
 
-    protected static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- cache:include src=\"(.*)\" -->\n|\n<!-- /cache:include -->");
+    protected static final Pattern CLEANUP_REGEXP = Pattern.compile(CACHE_TAG_START_1 + "(.*)" + CACHE_TAG_START_2 + "|" + CACHE_TAG_END);
 
     // We use ConcurrentHashMap instead of Set since we absolutely need the thread safety of this implementation but we don't want reads to lock.
     // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.
@@ -773,15 +777,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getObjectValue();
                         String content = cacheEntry.getObject();
 
-                        if (!cachedContent.equals(content)) {
-                            try {
-                                return aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
-                            } catch (RenderException e) {
-                                throw new RuntimeException(e.getMessage(), e);
+                        // Avoid loops
+                        if (cacheKeyStack.contains(match)) {
+                            return StringUtils.EMPTY;
+                        }
+                        cacheKeyStack.push(match);
+
+                        try {
+                            if (!cachedContent.equals(content)) {
+                                try {
+                                    return aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
+                                } catch (RenderException e) {
+                                    throw new RuntimeException(e.getMessage(), e);
+                                }
+                            } else {
+                                // TODO: need to investigate here, seem's that the if condition is always true.
+                                return content;
                             }
-                        } else {
-                            // TODO: need to investigate here, seem's that the if condition is always true.
-                            return content;
+                        } finally {
+                            cacheKeyStack.pop();
                         }
                     } else {
                         cache.put(new Element(replacedCacheKey, null));
@@ -830,7 +844,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             JCRNodeWrapper node = null;
             try {
                 // Get the node associated to the fragment to generate
-                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, ""));
+                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY));
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Node {} is no longer available." + " Replacing output with empty content.",
@@ -872,7 +886,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
             Object oldInArea = (Object) renderContext.getRequest().getAttribute("inArea");
             String inArea = keyAttrbs.get("inArea");
-            if (inArea == null || "".equals(inArea)) {
+            if (StringUtils.isEmpty(inArea)) {
                 renderContext.getRequest().removeAttribute("inArea");
             } else {
                 renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
@@ -899,7 +913,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
-            if (content == null || "".equals(content.trim())) {
+            if (StringUtils.isBlank(content)) {
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                         " areaIdentifier " + areaIdentifier);
             }
@@ -921,7 +935,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return content;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
-            return "";
+            return StringUtils.EMPTY;
         }
     }
 
@@ -977,7 +991,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public static String removeCacheTags(String content) {
         if (StringUtils.isNotEmpty(content)) {
-            return CLEANUP_REGEXP.matcher(content).replaceAll("");
+            return CLEANUP_REGEXP.matcher(content).replaceAll(StringUtils.EMPTY);
         } else {
             return content;
         }
@@ -990,7 +1004,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             return null;
         }
         try {
-            renderContext.getRequest().setAttribute("expiration", "" + errorCacheExpiration);
+            renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
             // Returns a fragment with an error comment
             return execute("<!-- Module error : " + e.getMessage() + "-->", renderContext, resource, chain);

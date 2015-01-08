@@ -553,7 +553,7 @@
                                 <artifactItem>
                                     <groupId>org.jahia.configuration</groupId>
                                     <artifactId>osgi-tools</artifactId>
-                                    <version>${jahia.plugin.version}</version>
+                                    <version>4.3-20141216.135126-7</version>
                                 </artifactItem>
 
                                 <artifactItem>

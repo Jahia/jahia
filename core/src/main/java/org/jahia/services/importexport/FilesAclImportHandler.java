@@ -86,7 +86,6 @@ import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.jahia.utils.zip.ZipEntry;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
@@ -102,6 +101,7 @@ import java.text.DateFormat;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
 
 public class FilesAclImportHandler extends DefaultHandler {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(FilesAclImportHandler.class);

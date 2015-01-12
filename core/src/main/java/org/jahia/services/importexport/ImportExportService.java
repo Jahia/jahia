@@ -125,6 +125,8 @@ public interface ImportExportService {
 
     String SYSTEM_VIEW = "systemView";
 
+    String SERVER_DIRECTORY = "serverDirectory";
+
     /**
      * Performs the full repository export into the provided output stream using the specified parameters.
      * 

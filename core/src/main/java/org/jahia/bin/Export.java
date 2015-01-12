@@ -155,6 +155,7 @@ public class Export extends JahiaController implements ServletContextAware {
             String workspace = m.group(1);
             String nodePath = "/" + m.group(2);
             String exportFormat = m.group(3);
+            String serverDirectory = null;
             if (StringUtils.isNotEmpty(request.getParameter("exportformat"))) {
                 exportFormat = request.getParameter("exportformat");
             }
@@ -166,6 +167,11 @@ public class Export extends JahiaController implements ServletContextAware {
 
             if (request.getParameter("root") != null) {
                 exportRoot = session.getNode(request.getParameter("root"));
+            }
+
+            if (StringUtils.isNotBlank(request.getParameter("exportPath"))) {
+                serverDirectory = request.getParameter("exportPath");
+                params.put(ImportExportService.SERVER_DIRECTORY, serverDirectory);
             }
 
             if ("all".equals(exportFormat)) {

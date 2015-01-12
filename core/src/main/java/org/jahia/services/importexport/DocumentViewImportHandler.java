@@ -91,9 +91,9 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.zip.ZipEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.Attributes;
 import org.xml.sax.Locator;
@@ -109,6 +109,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
 
 /**
  * SAX handler that performs import of the JCR content, provided in a document format.
@@ -201,6 +202,12 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
         nodes.add(node);
 
         this.archive = archive;
+
+        if (archive != null && !archive.isReadable() && archive instanceof FileSystemResource) {
+            expandImportedFilesOnDiskPath = archive.getFile().getPath();
+            expandImportedFilesOnDisk = true;
+        }
+
         this.fileList = fileList;
         setPropertiesToSkip((Set<String>) SpringContextSingleton.getBean("DocumentViewImportHandler.propertiesToSkip"));
     }
@@ -218,6 +225,9 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 ReferencesHelper.resolveCrossReferences(session, references, false);
                 session.save(JCRObservationManager.IMPORT);
                 batchCount = 0;
+            } catch (CompositeConstraintViolationException e) {
+                logger.error("Constraint violation exception", e);
+                throw new SAXException("Cannot save batch", e);
             } catch (ConstraintViolationException e) {
                 // save on the next node when next node is needed (like content node for files)
                 batchCount = maxBatch -1;
@@ -457,7 +467,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                             }
                         }
                         if (!isValid) {
-                            session.checkout(nodes.peek());
+                            try {
+                                session.checkout(nodes.peek());
+                            } catch (PathNotFoundException e) {
+                                logger.error("Couldn't find parent node " + nodes.peek(), e);
+                            }
                             try {
                                 checkDependencies(path, pt, atts);
                                 child = nodes.peek().addNode(decodedQName, pt, uuid, created, createdBy, lastModified, lastModifiedBy);

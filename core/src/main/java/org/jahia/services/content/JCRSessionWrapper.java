@@ -548,7 +548,7 @@ public class JCRSessionWrapper implements Session {
             CompositeConstraintViolationException exception = validateNodes(newNodes.values(), null, operationType);
             exception = validateNodes(changedNodes.values(), exception, operationType);
             if (exception != null) {
-                refresh(false);
+                refresh(true);
                 throw exception;
             }
         }
@@ -1347,7 +1347,12 @@ public class JCRSessionWrapper implements Session {
         return new MultiplePropertyIterator(propertyIterators, -1);
     }
 
-
+    @Override
+    public String toString() {
+        return "JCRSessionWrapper{" +
+                "sessions=" + sessions +
+                '}';
+    }
     public JCRUserNode getUserNode() throws RepositoryException {
         return (JCRUserNode) getNode(user.getLocalPath());
     }

@@ -71,10 +71,9 @@
  */
 package org.jahia.services.importexport;
 
-import org.jahia.utils.zip.ZipInputStream;
-
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.zip.ZipInputStream;
 
 /**
  * 

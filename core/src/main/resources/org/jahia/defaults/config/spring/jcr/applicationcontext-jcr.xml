@@ -615,9 +615,13 @@
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.MissingNodetypesValidator"/>
                 <bean class="org.jahia.services.importexport.validation.MissingPortletsValidator"/>
+<<<<<<< .working
                 <bean class="org.jahia.services.importexport.validation.ProviderAvailabilityValidator">
                     <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
                 </bean>
+=======
+                <bean class="org.jahia.services.importexport.validation.ConstraintsValidator" />
+>>>>>>> .merge-right.r51807
             </list>
         </property>
     </bean>

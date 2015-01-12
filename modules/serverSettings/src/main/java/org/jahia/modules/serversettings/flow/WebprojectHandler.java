@@ -84,12 +84,17 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.modules.sitesettings.users.management.UserProperties;
 import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.ImportExportBaseService;
+<<<<<<< .working
 import org.jahia.services.importexport.ImportUpdateService;
+=======
+import org.jahia.services.importexport.ImportExportService;
+>>>>>>> .merge-right.r51807
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.search.spell.CompositeSpellChecker;
@@ -102,6 +107,7 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
+import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.zip.ZipEntry;
 import org.jahia.utils.zip.ZipInputStream;
@@ -117,15 +123,20 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.webflow.execution.RequestContext;
+import org.xml.sax.SAXException;
 
 import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.xml.transform.TransformerException;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 /**
  * Handle creation of Web projects in webflow.
@@ -174,8 +185,9 @@ public class WebprojectHandler implements Serializable {
     private Properties importProperties;
 
     private Map<String, ImportInfo> importsInfos = Collections.emptyMap();
+    private boolean deleteFilesAtEnd = true;
 
-    private Map<String,String> prepackagedSites = new HashMap<String, String>();
+    private Map<String, String> prepackagedSites = new HashMap<String, String>();
 
     private String selectedPrepackagedSite;
 
@@ -204,7 +216,7 @@ public class WebprojectHandler implements Serializable {
         File[] files = new File(SettingsBean.getInstance().getJahiaVarDiskPath() + "/prepackagedSites").listFiles();
         if (files != null) {
             for (File file : files) {
-                prepackagedSites.put(file.getAbsolutePath(), Messages.get("resources.JahiaServerSettings", "serverSettings.manageWebProjects.importprepackaged." + file.getName(), LocaleContextHolder.getLocale(),file.getName()));
+                prepackagedSites.put(file.getAbsolutePath(), Messages.get("resources.JahiaServerSettings", "serverSettings.manageWebProjects.importprepackaged." + file.getName(), LocaleContextHolder.getLocale(), file.getName()));
             }
         }
         for (final JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAvailableTemplatePackages()) {
@@ -218,7 +230,7 @@ public class WebprojectHandler implements Serializable {
                         String title = bundleResource.getFilename();
                         try {
                             String titleKey = "serverSettings.manageWebProjects.importprepackaged." + bundleResource.getFilename();
-                            title = Messages.get(aPackage, titleKey, LocaleContextHolder.getLocale(),bundleResource.getFilename());
+                            title = Messages.get(aPackage, titleKey, LocaleContextHolder.getLocale(), bundleResource.getFilename());
                         } catch (MissingResourceException e) {
                             logger.warn("unable to get resource key " + "serverSettings.manageWebProjects.importprepackaged." + bundleResource.getFilename() + " in package" + bundle.getSymbolicName());
                         }
@@ -264,12 +276,12 @@ public class WebprojectHandler implements Serializable {
                                         bean.getServerName(), bean.getSiteKey(), bean.getDescription(),
                                         LanguageCodeConverters.getLocaleFromCode(bean.getLanguage()),
                                         bean.getTemplateSet(), bean.getModules().toArray(
-                                        new String[bean.getModules().size()]), null, null, null, null, null, null, null,
+                                                new String[bean.getModules().size()]), null, null, null, null, null, null, null,
                                         null, session);
 
                         // set as default site
                         if (bean.isDefaultSite()) {
-                            sitesService.setDefaultSite(site,session);
+                            sitesService.setDefaultSite(site, session);
                             session.save();
                         }
 
@@ -350,6 +362,42 @@ public class WebprojectHandler implements Serializable {
         return defaultLocale;
     }
 
+    public void exportToFile(RequestContext requestContext, boolean staging) throws Exception {
+        String exportPath = requestContext.getRequestParameters().get("exportPath");
+        if (StringUtils.isEmpty(exportPath)) {
+            return;
+        }
+        Map<String, Object> params = new HashMap<String, Object>(6);
+
+        params.put(ImportExportService.VIEW_CONTENT, true);
+        params.put(ImportExportService.VIEW_VERSION, false);
+        params.put(ImportExportService.VIEW_ACL, true);
+        params.put(ImportExportService.VIEW_METADATA, true);
+        params.put(ImportExportService.VIEW_JAHIALINKS, true);
+        params.put(ImportExportService.VIEW_WORKFLOW, true);
+        params.put(ImportExportService.SERVER_DIRECTORY, exportPath);
+        params.put(ImportExportService.INCLUDE_ALL_FILES, true);
+        params.put(ImportExportService.INCLUDE_TEMPLATES, true);
+        params.put(ImportExportService.INCLUDE_SITE_INFOS, true);
+        params.put(ImportExportService.INCLUDE_DEFINITIONS, true);
+        params.put(ImportExportService.INCLUDE_LIVE_EXPORT, !staging);
+        params.put(ImportExportService.INCLUDE_USERS, true);
+        params.put(ImportExportService.INCLUDE_ROLES, true);
+        String cleanupXsl = ((ServletContext) requestContext.getExternalContext().getNativeContext()).getRealPath("/WEB-INF/etc/repository/export/cleanup.xsl");
+        params.put(ImportExportService.XSL_PATH, cleanupXsl);
+
+        List<JCRSiteNode> sites = new ArrayList<JCRSiteNode>();
+        String[] sitekeys = requestContext.getRequestParameters().getArray("sitesKey");
+        if (sitekeys != null) {
+            for (String sitekey : sitekeys) {
+                JahiaSite site = ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(sitekey);
+                sites.add((JCRSiteNode) site);
+            }
+        }
+
+        importExportBaseService.exportSites(new ByteArrayOutputStream(), params, sites);
+    }
+
     public void exportSites(RequestContext requestContext) {
         // HttpServletResponse response = (HttpServletResponse) requestContext.getExternalContext().getNativeResponse();
         // HttpServletRequest request = (HttpServletRequest) requestContext.getExternalContext().getNativeRequest();
@@ -417,7 +465,7 @@ public class WebprojectHandler implements Serializable {
         return new SiteBean();
     }
 
-    public Map<String,String> getPrepackagedSites() {
+    public Map<String, String> getPrepackagedSites() {
         return prepackagedSites;
     }
 
@@ -448,48 +496,80 @@ public class WebprojectHandler implements Serializable {
     }
 
     public List<JahiaSite> getSites() {
-        if(sites==null && sitesKey !=null) {
+        if (sites == null && sitesKey != null) {
             setSitesKey(sitesKey);
         }
         return sites;
     }
 
     private void prepareFileImports(File f, String name, MessageContext messageContext) {
+        ZipInputStream zis = null;
         if (f != null && f.exists()) {
             ZipEntry z = null;
             try {
-                prepareFileImports(new FileInputStream(f), name, messageContext);
+                if (f != null && f.isDirectory()) {
+                    zis = new DirectoryZipInputStream(f);
+                } else {
+                    zis = new ZipInputStream(new BufferedInputStream(new FileInputStream(f)));
+                }
+                prepareFileImports(zis, name, messageContext);
             } catch (FileNotFoundException e) {
                 logger.error("Cannot read import file :" + e.getMessage());
+            } finally {
+                IOUtils.closeQuietly(zis);
             }
         }
     }
 
+<<<<<<< .working
     private void prepareFileImports(InputStream inputStream,String name, MessageContext messageContext) {
         ZipInputStream zis = null;
+=======
+    private void prepareFileImports(ZipInputStream zis, String name, MessageContext messageContext) {
+>>>>>>> .merge-right.r51807
         try {
             zis = new ZipInputStream(new BufferedInputStream(inputStream));
             ZipEntry z;
             importProperties = new Properties();
+<<<<<<< .working
             Map<File, String> imports = new HashMap<>();
             List<File> importList = new ArrayList<>();
             List<String> emptyFiles = new ArrayList<>();
+=======
+            deleteFilesAtEnd = !(zis instanceof DirectoryZipInputStream);
+
+            ZipEntry z;
+            Map<File, String> imports = new HashMap<File, String>();
+            List<File> importList = new ArrayList<File>();
+            List<String> emptyFiles = new ArrayList<String>();
+>>>>>>> .merge-right.r51807
             while ((z = zis.getNextEntry()) != null) {
-                if (z.isDirectory()) {
-                    continue;
-                }
-                File i = File.createTempFile("import", ".zip");
-                OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
-                try {
-                    final int numberOfBytesCopied = IOUtils.copy(zis, os);
-                    if(numberOfBytesCopied == 0) {
-                        emptyFiles.add(z.getName());
+                String n = z.getName();
+
+                File i;
+                if (!(zis instanceof DirectoryZipInputStream)) {
+                    i = File.createTempFile("import", ".zip");
+                    OutputStream os = new BufferedOutputStream(new FileOutputStream(i));
+                    try {
+                        final int numberOfBytesCopied = IOUtils.copy(zis, os);
+                        if (numberOfBytesCopied == 0) {
+                            emptyFiles.add(n);
+                        }
+                    } finally {
+                        IOUtils.closeQuietly(os);
                     }
-                } finally {
-                    IOUtils.closeQuietly(os);
+                } else {
+                    DirectoryZipInputStream directoryZipInputStream = (DirectoryZipInputStream) zis;
+                    if (n.indexOf('/') > -1 && n.indexOf('/') != n.length() - 1) {
+                        continue;
+                    }
+                    i = new File(directoryZipInputStream.getSourceDirectory(), n);
+                    if (z.isDirectory()) {
+                        n = n.replace("/", ".zip");
+                    }
                 }
 
-                if(!emptyFiles.isEmpty()) {
+                if (!emptyFiles.isEmpty()) {
                     // we've detected empty files, issue an error message and exit
                     messageContext.addMessage(new MessageBuilder()
                             .error()
@@ -499,27 +579,32 @@ public class WebprojectHandler implements Serializable {
                     return;
                 }
 
-                String n = z.getName();
                 if (n.equals("export.properties")) {
                     InputStream is = new BufferedInputStream(new FileInputStream(i));
                     try {
                         importProperties.load(is);
                     } finally {
                         IOUtils.closeQuietly(is);
-                        FileUtils.deleteQuietly(i);
+                        if (deleteFilesAtEnd) {
+                            FileUtils.deleteQuietly(i);
+                        }
                     }
                 } else if (n.equals("classes.jar")) {
-                    FileUtils.deleteQuietly(i);
+                    if (deleteFilesAtEnd) {
+                        FileUtils.deleteQuietly(i);
+                    }
                 } else if (n.equals("site.properties") || ((n.startsWith("export_") && n.endsWith(".xml")))) {
                     // this is a single site import, stop everything and import
-                    FileUtils.deleteQuietly(i);
-                    for (File file : imports.keySet()) {
-                        FileUtils.deleteQuietly(file);
+                    if (deleteFilesAtEnd) {
+                        FileUtils.deleteQuietly(i);
+                        for (File file : imports.keySet()) {
+                            FileUtils.deleteQuietly(file);
+                        }
                     }
                     imports.clear();
                     importList.clear();
                     File tempFile = File.createTempFile("import", ".zip");
-                    FileUtils.copyInputStreamToFile(inputStream, tempFile);
+                    FileUtils.copyInputStreamToFile(zis, tempFile);
                     imports.put(tempFile, name);
                     importList.add(tempFile);
                     break;
@@ -535,8 +620,8 @@ public class WebprojectHandler implements Serializable {
                 ImportInfo value = prepareSiteImport(i, imports.get(i), messageContext);
                 if (value != null) {
                     if (value.isLegacyImport()) {
-                        Map<String,Resource> legacyMappings = getLegacyMappingsInModules("map");
-                        Map<String,Resource> legacyDefinitions = getLegacyMappingsInModules("cnd");
+                        Map<String, Resource> legacyMappings = getLegacyMappingsInModules("map");
+                        Map<String, Resource> legacyDefinitions = getLegacyMappingsInModules("cnd");
 
                         if (!legacyMappings.isEmpty()) {
                             value.setLegacyMappings(new HashSet<>(legacyMappings.keySet()));
@@ -557,20 +642,22 @@ public class WebprojectHandler implements Serializable {
 
         } catch (IOException e) {
             logger.error("Cannot read import file :" + e.getMessage());
-        } finally {
-            IOUtils.closeQuietly(zis);
         }
     }
 
-    public static Map<String,Resource> getLegacyMappingsInModules(final String pattern) {
+    public static Map<String, Resource> getLegacyMappingsInModules(final String pattern) {
         File fld = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "legacyMappings");
         final File defaultMappingsFolder = fld.isDirectory() ? fld : null;
 
+<<<<<<< .working
         final Map<String,Resource> resources = new HashMap<>();
+=======
+        final Map<String, Resource> resources = new HashMap<String, Resource>();
+>>>>>>> .merge-right.r51807
 
         if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {
             try {
-                Collection<File> filesList = FileUtils.listFiles(defaultMappingsFolder, new String[] { pattern },false);
+                Collection<File> filesList = FileUtils.listFiles(defaultMappingsFolder, new String[]{pattern}, false);
                 if (filesList != null) {
                     for (File file : filesList) {
                         resources.put(file.getName(), new FileSystemResource(file));
@@ -621,13 +708,17 @@ public class WebprojectHandler implements Serializable {
         if (!StringUtils.isEmpty(selectedPrepackagedSite)) {
             if (StringUtils.startsWith(selectedPrepackagedSite, "bundle")) {
                 String[] bundleInfos = StringUtils.split(selectedPrepackagedSite, "#");
+                ZipInputStream zis = null;
                 try {
-                    BundleResource resource = new BundleResource(new URL(bundleInfos[0]),ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(bundleInfos[1]).getBundle());
-                    prepareFileImports(resource.getInputStream(),resource.getFilename(),messageContext);
+                    BundleResource resource = new BundleResource(new URL(bundleInfos[0]), ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(bundleInfos[1]).getBundle());
+                    zis = new ZipInputStream(new BufferedInputStream(resource.getInputStream()));
+                    prepareFileImports(zis, resource.getFilename(), messageContext);
                 } catch (MalformedURLException e) {
                     logger.error("Unable to parse url from " + selectedPrepackagedSite);
                 } catch (IOException e) {
                     logger.error("Unable to read file from " + selectedPrepackagedSite);
+                } finally {
+                    IOUtils.closeQuietly(zis);
                 }
 
             } else {
@@ -658,8 +749,8 @@ public class WebprojectHandler implements Serializable {
             importInfos.setType("files");
         } else {
             List<String> installedModules = readInstalledModules(i);
-            org.jahia.utils.zip.ZipEntry z;
-            NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(i)));
+            ZipEntry z;
+            ZipInputStream zis2 = i.isDirectory() ? new DirectoryZipInputStream(i) : new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(i)));
 
             boolean isSite = false;
             boolean isLegacySite = false;
@@ -720,7 +811,9 @@ public class WebprojectHandler implements Serializable {
                     zis2.closeEntry();
                 }
             } finally {
-                zis2.reallyClose();
+                if (zis2 instanceof NoCloseZipInputStream) {
+                    ((NoCloseZipInputStream) zis2).reallyClose();
+                }
             }
             importInfos.setSite(isSite);
             // todo import ga parameters
@@ -856,12 +949,12 @@ public class WebprojectHandler implements Serializable {
                                                     throws RepositoryException {
                                                 try {
                                                     sitesService.addSite(user, infos.getSiteTitle(), infos
-                                                            .getSiteServername(), infos.getSiteKey(), "",
+                                                                    .getSiteServername(), infos.getSiteKey(), "",
                                                             defaultLocale, finalTpl, null, "fileImport",
                                                             file == null ? null : new FileSystemResource(file), infos
-                                                            .getImportFileName(), false,
+                                                                    .getImportFileName(), false,
                                                             finalDoImportServerPermissions, infos
-                                                            .getOriginatingJahiaRelease(),
+                                                                    .getOriginatingJahiaRelease(),
                                                             finalLegacyMappingFilePath, finalLegacyDefinitionsFilePath);
                                                 } catch (JahiaException | IOException e) {
                                                     throw new RepositoryException(e);
@@ -888,8 +981,15 @@ public class WebprojectHandler implements Serializable {
                 }
             }
         } finally {
+<<<<<<< .working
             for (File file : files) {
                 FileUtils.deleteQuietly(file);
+=======
+            for (ImportInfo infos : importsInfos.values()) {
+                if (deleteFilesAtEnd) {
+                    FileUtils.deleteQuietly(infos.getImportFile());
+                }
+>>>>>>> .merge-right.r51807
             }
         }
 
@@ -900,8 +1000,9 @@ public class WebprojectHandler implements Serializable {
 
     private List<String> readInstalledModules(File i) throws IOException {
         List<String> modules = new LinkedList<>();
-        org.jahia.utils.zip.ZipEntry z;
-        NoCloseZipInputStream zis2 = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(i)));
+        ZipEntry z;
+
+        ZipInputStream zis2 = i.isDirectory() ? new DirectoryZipInputStream(i) : new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(i)));
 
         try {
             while ((z = zis2.getNextEntry()) != null) {
@@ -927,7 +1028,9 @@ public class WebprojectHandler implements Serializable {
                 }
             }
         } finally {
-            zis2.reallyClose();
+            if (zis2 instanceof NoCloseZipInputStream) {
+                ((NoCloseZipInputStream) zis2).reallyClose();
+            }
         }
         return modules;
     }
@@ -1028,9 +1131,9 @@ public class WebprojectHandler implements Serializable {
     }
 
     public void validateView(ValidationContext context) {
-        if(context.getUserEvent().equals("import")) {
+        if (context.getUserEvent().equals("import")) {
             MessageContext messages = context.getMessageContext();
-            if(StringUtils.isEmpty(getImportPath()) && getImportFile().isEmpty()) {
+            if (StringUtils.isEmpty(getImportPath()) && getImportFile().isEmpty()) {
                 messages.addMessage(new MessageBuilder().error().source("importPath").
                         code("serverSettings.manageWebProjects.fileImport.error").build());
             }
@@ -1110,8 +1213,7 @@ public class WebprojectHandler implements Serializable {
      * Returns the total number of sites in Jahia.
      *
      * @return the total number of sites in Jahia
-     * @throws JahiaException
-     *             in case of an error
+     * @throws JahiaException in case of an error
      */
     public int getNumberOfSites() throws JahiaException {
         return sitesService.getNbSites() - 1;

@@ -81,8 +81,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.importexport.NoCloseZipInputStream;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipOutputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.NodeIterator;
@@ -92,6 +90,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Helper class for ZIP file manipulations.
@@ -169,7 +169,7 @@ public class ZipHelper {
         ZipEntry anEntry;
         String relativePath = file.getPath().replace(rootDir, "");
         if (!file.isFile()) {
-            anEntry = new org.jahia.utils.zip.ZipEntry(relativePath + "/");
+            anEntry = new ZipEntry(relativePath + "/");
             zout.putNextEntry(anEntry);
             try {
                 for (final NodeIterator iterator = file.getNodes(); iterator.hasNext();) {
@@ -183,7 +183,7 @@ public class ZipHelper {
             final InputStream is = file.getFileContent().downloadFile();
             if (is != null) {
                 try {
-                    anEntry = new org.jahia.utils.zip.ZipEntry(relativePath);
+                    anEntry = new ZipEntry(relativePath);
                     zout.putNextEntry(anEntry);
                     int bytesIn;
                     while ((bytesIn = is.read(buffer)) != -1) {

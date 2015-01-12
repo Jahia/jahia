@@ -16,11 +16,13 @@
 <jcr:node var="sites" path="/sites"/>
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespaceelektra.zip"/>
-<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js"/>
+<template:addResources type="javascript" resources="jquery.min.js,jquery-ui.min.js,admin-bootstrap.js,bootstrap-filestyle.min.js,jquery.metadata.js,jquery.tablesorter.js,jquery.tablecloth.js,workInProgress.js"/>
 <template:addResources type="css" resources="jquery-ui.smoothness.css,jquery-ui.smoothness-jahia.css,tablecloth.css"/>
 <template:addResources type="javascript" resources="datatables/jquery.dataTables.js,i18n/jquery.dataTables-${currentResource.locale}.js,datatables/dataTables.bootstrap-ext.js"/>
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
+<fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
+
 <script type="text/javascript">
     function submitSiteForm(act, site) {
     	if (typeof site != 'undefined') {
@@ -30,7 +32,10 @@
     			$("<input type='hidden' name='sitesKey' />").attr("value", $(this).val()).appendTo('#sitesForm');
     		});
     	}
-    	$('#sitesFormAction').val(act);
+        if (act == 'exportToFile' || act == 'exportToFileStaging') {
+            workInProgress('${i18nWaiting}');
+        }
+        $('#sitesFormAction').val(act);
     	$('#sitesForm').submit();
     }
 
@@ -211,6 +216,21 @@
                 </c:forEach>
             </tbody>
         </table>
+
+        <div class="box-1">
+            <p><fmt:message key="serverSettings.manageWebProjects.exportServerDirectory"/></p>
+            <input class="span5" type="text"  name="exportPath"/>
+
+            <a  class="btn btn-primary sitesAction" id="exportToFile" href="#exportToFile" title="<fmt:message key='label.export'/>">
+                <i class="icon-download icon-white"></i>
+                &nbsp;<fmt:message key='label.export'/>
+            </a>
+            <a  class="btn btn-primary sitesAction" id="exportToFileStaging" href="#exportToFileStaging" title="<fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)">
+                <i class="icon-download icon-white"></i>
+                &nbsp; <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
+            </a>
+        </div>
+
     </fieldset>
 
     <fieldset>

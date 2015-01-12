@@ -1114,7 +1114,7 @@ public class ImportExportTest {
                                     siteZIPFile)));
                             try {
                                 while (true) {
-                                    org.jahia.utils.zip.ZipEntry zipentry = noCloseZis.getNextEntry();
+                                    ZipEntry zipentry = noCloseZis.getNextEntry();
                                     if (zipentry == null)
                                         break;
                                     String name = zipentry.getName();

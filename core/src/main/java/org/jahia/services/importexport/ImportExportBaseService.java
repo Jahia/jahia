@@ -118,11 +118,11 @@ import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipInputStream;
-import org.jahia.utils.zip.ZipOutputStream;
+import org.jahia.utils.zip.DirectoryZipInputStream;
+import org.jahia.utils.zip.DirectoryZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -144,6 +144,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 /**
  * Service used to perform all import/export operations for content and documents.
@@ -346,7 +349,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     @Override
     public void exportSites(OutputStream outputStream, Map<String, Object> params, List<JCRSiteNode> sites)
             throws RepositoryException, IOException, SAXException, TransformerException {
-        ZipOutputStream zout = new ZipOutputStream(outputStream);
+        String serverDirectory = (String) params.get(SERVER_DIRECTORY);
+        ZipOutputStream zout = getZipOutputStream(outputStream, serverDirectory);
 
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
         zout.putNextEntry(anEntry);
@@ -360,9 +364,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Set<String> externalReferences = new HashSet<String>();
 
         for (JCRSiteNode jahiaSite : sites) {
-            anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
-            zout.putNextEntry(anEntry);
-            exportSite(jahiaSite, zout, externalReferences, params);
+            if (serverDirectory == null) {
+                anEntry = new ZipEntry(jahiaSite.getSiteKey() + ".zip");
+                zout.putNextEntry(anEntry);
+                exportSite(jahiaSite, zout, externalReferences, params, null);
+            } else {
+                exportSite(jahiaSite, zout, externalReferences, params, serverDirectory + "/" + jahiaSite.getSiteKey());
+            }
         }
 
         JCRSessionWrapper session = jcrStoreService.getSessionFactory().getCurrentUserSession();
@@ -372,8 +380,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         if (params.containsKey(INCLUDE_USERS)) {
             // export users
-            zout.putNextEntry(new ZipEntry("users.zip"));
-            ZipOutputStream zzout = new ZipOutputStream(zout);
+            ZipOutputStream zzout;
+            if (serverDirectory == null) {
+                zout.putNextEntry(new ZipEntry("users.zip"));
+                zzout = getZipOutputStream(zout, null);
+            } else {
+                zzout = getZipOutputStream(zout, serverDirectory + "/users");
+            }
 
             try {
                 exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/users")), zzout, tti, externalReferences, params);
@@ -386,8 +399,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         if (params.containsKey(INCLUDE_ROLES)) {
             // export roles
-            zout.putNextEntry(new ZipEntry("roles.zip"));
-            ZipOutputStream zzout = new ZipOutputStream(zout);
+            ZipOutputStream zzout;
+            if (serverDirectory == null) {
+                zout.putNextEntry(new ZipEntry("roles.zip"));
+                zzout = getZipOutputStream(zout, null);
+            } else {
+                zzout = getZipOutputStream(zout, serverDirectory + "/roles");
+            }
+
 
             try {
                 exportNodesWithBinaries(session.getRootNode(), Collections.singleton(session.getNode("/roles")), zzout, tti, externalReferences, params);
@@ -422,7 +441,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
         if (!refs.isEmpty()) {
             zout.putNextEntry(new ZipEntry("references.zip"));
-            ZipOutputStream zzout = new ZipOutputStream(zout);
+            ZipOutputStream zzout = getZipOutputStream(zout, serverDirectory + "/references.zip");
             try {
                 exportNodesWithBinaries(session.getRootNode(), refs, zzout, tti, externalReferences, params);
             } catch (Exception e) {
@@ -435,9 +454,38 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         zout.finish();
     }
 
-    private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params)
+    private ZipOutputStream getZipOutputStream(OutputStream outputStream, String serverDirectory) {
+        ZipOutputStream zout = null;
+        if (serverDirectory != null) {
+            File serverDirectoryFile = new File(serverDirectory);
+            if (serverDirectoryFile.getParentFile().exists()) {
+                if (!serverDirectoryFile.exists()) {
+                    if (!serverDirectoryFile.mkdir()) {
+                        serverDirectoryFile = null;
+                    }
+                } else {
+                    if (!serverDirectoryFile.isDirectory()) {
+                        serverDirectoryFile = null;
+                    }
+                }
+            } else {
+                // parent directory doesn't exist, we fail the export to avoid potential security issues using the
+                // export functionality to write on the server file system.
+                serverDirectoryFile = null;
+            }
+            if (serverDirectoryFile != null) {
+                zout = new DirectoryZipOutputStream(serverDirectoryFile, outputStream);
+            }
+        }
+        if (zout == null) {
+            zout = new ZipOutputStream(outputStream);
+        }
+        return zout;
+    }
+
+    private void exportSite(final JCRSiteNode site, OutputStream out, Set<String> externalReferences, Map<String, Object> params, String serverDirectory)
             throws RepositoryException, SAXException, IOException, TransformerException {
-        ZipOutputStream zout = new ZipOutputStream(out);
+        ZipOutputStream zout = getZipOutputStream(out, serverDirectory);
 
         zout.putNextEntry(new ZipEntry(SITE_PROPERTIES));
         exportSiteInfos(zout, site);
@@ -456,7 +504,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     @Override
     public void exportZip(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
-        ZipOutputStream zout = new ZipOutputStream(out);
+        ZipOutputStream zout = getZipOutputStream(out, (String) params.get(SERVER_DIRECTORY));
         Set<JCRNodeWrapper> nodes = new HashSet<JCRNodeWrapper>();
         nodes.add(node);
         exportNodesWithBinaries(exportRoot == null ? node : exportRoot, nodes, zout, new HashSet<String>(), null, params);
@@ -824,10 +872,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
-        NoCloseZipInputStream zis;
+        ZipInputStream zis;
         if (sizes.containsKey(USERS_XML)) {
             // Import users first
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -841,7 +889,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
                 }
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
         }
 
@@ -854,7 +902,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
 
         if (sizes.containsKey(SITE_PROPERTIES)) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -868,13 +916,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
                 }
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
         }
 
         if (sizes.containsKey(REPOSITORY_XML)) {
             // Parse import file to detect sites
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -913,7 +961,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
                 }
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
 
             importZip(null, file, DocumentViewImportHandler.ROOT_BEHAVIOUR_IGNORE, session, Sets.newHashSet(USERS_XML, CATEGORIES_XML), true);
@@ -929,7 +977,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         // and eventual plain file from 5.x imports
         if (!sizes.containsKey(REPOSITORY_XML) || sizes.containsKey(SITE_PROPERTIES) || sizes.containsKey(CATEGORIES_XML)
                 || sizes.containsKey(SITE_PERMISSIONS_XML) || sizes.containsKey(DEFINITIONS_CND) || sizes.containsKey(DEFINITIONS_MAP)) {
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -1001,7 +1049,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
                 }
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
         }
 
@@ -1125,7 +1173,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 ReferencesHelper.resolveReferencesKeeper(session);
                 siteFolder.getSession().save(JCRObservationManager.IMPORT);
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
             logger.info("Done legacy import in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerLegacy));
         }
@@ -1281,7 +1329,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             temp = File.createTempFile("migration", "");
             temp.delete();
             temp.mkdir();
-            NoCloseZipInputStream zis = new NoCloseZipInputStream(new FileInputStream(file.getFile()));
+            ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;
                 while ((zipentry = zis.getNextEntry()) != null) {
@@ -1296,7 +1344,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     zis.closeEntry();
                 }
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
 
             handleImport(is, new FilesAclImportHandler(site, mapping, file, fileList, filePath), file.getFilename());
@@ -1723,7 +1771,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, List<String>> references = new HashMap<String, List<String>>();
 
         getFileList(file, sizes, fileList);
-        NoCloseZipInputStream zis;
+        ZipInputStream zis;
 
         Map<String, String> pathMapping = session.getPathMapping();
         for (JahiaTemplatesPackage pkg : templatePackageRegistry.getRegisteredModules().values()) {
@@ -1738,7 +1786,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         List<String> liveUuids = null;
         if (importLive) {
             // Import live content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -1810,12 +1858,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } catch (Exception e) {
                 logger.error("Cannot import", e);
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
         }
 
         // Import repository content
-        zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+        zis = getZipInputStream(file);
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
@@ -1877,12 +1925,12 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         } catch (Exception e) {
             logger.error("Cannot import", e);
         } finally {
-            zis.reallyClose();
+            closeInputStream(zis);
         }
 
         if (importLive) {
             // Import user generated content
-            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+            zis = getZipInputStream(file);
             try {
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
@@ -1920,7 +1968,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             } catch (Exception e) {
                 logger.error("Cannot import", e);
             } finally {
-                zis.reallyClose();
+                closeInputStream(zis);
             }
         }
         cleanFilesList(fileList);
@@ -1929,7 +1977,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     public void getFileList(Resource file, Map<String, Long> sizes, List<String> fileList) throws IOException {
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+        ZipInputStream zis = getZipInputStream(file);
         try {
             while (true) {
                 ZipEntry zipentry = zis.getNextEntry();
@@ -1977,9 +2025,28 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 zis.closeEntry();
             }
         } finally {
-            zis.reallyClose();
+            closeInputStream(zis);
         }
     }
+
+    private void closeInputStream(ZipInputStream zis) throws IOException {
+        if (zis instanceof NoCloseZipInputStream) {
+            ((NoCloseZipInputStream)zis).reallyClose();
+        } else {
+            zis.close();
+        }
+    }
+
+    private ZipInputStream getZipInputStream(Resource file) throws IOException {
+        ZipInputStream zis;
+        if (!file.isReadable() && file instanceof FileSystemResource) {
+            zis = new DirectoryZipInputStream(file.getFile());
+        } else {
+            zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
+        }
+        return zis;
+    }
+
 
     /**
      * Injects an instance of the category service

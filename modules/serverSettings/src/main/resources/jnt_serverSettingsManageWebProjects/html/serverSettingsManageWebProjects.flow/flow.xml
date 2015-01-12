@@ -36,6 +36,14 @@
 
         <transition on="import" to="import" />
 
+        <transition on="exportToFile">
+            <evaluate expression="webprojectHandler.exportToFile(flowRequestContext, false)"/>
+        </transition>
+
+        <transition on="exportToFileStaging">
+            <evaluate expression="webprojectHandler.exportToFile(flowRequestContext, true)"/>
+        </transition>
+
     </view-state>
 
     <!-- Site creation -->

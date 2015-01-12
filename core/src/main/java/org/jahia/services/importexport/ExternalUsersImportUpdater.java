@@ -76,8 +76,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -103,6 +101,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class ExternalUsersImportUpdater extends ImportFileUpdater {
 

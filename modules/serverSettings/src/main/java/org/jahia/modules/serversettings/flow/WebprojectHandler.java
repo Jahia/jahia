@@ -90,11 +90,8 @@ import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.ImportExportBaseService;
-<<<<<<< .working
 import org.jahia.services.importexport.ImportUpdateService;
-=======
 import org.jahia.services.importexport.ImportExportService;
->>>>>>> .merge-right.r51807
 import org.jahia.services.importexport.NoCloseZipInputStream;
 import org.jahia.services.importexport.validation.ValidationResults;
 import org.jahia.services.search.spell.CompositeSpellChecker;
@@ -109,8 +106,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.jahia.utils.i18n.Messages;
-import org.jahia.utils.zip.ZipEntry;
-import org.jahia.utils.zip.ZipInputStream;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -521,28 +516,15 @@ public class WebprojectHandler implements Serializable {
         }
     }
 
-<<<<<<< .working
-    private void prepareFileImports(InputStream inputStream,String name, MessageContext messageContext) {
-        ZipInputStream zis = null;
-=======
     private void prepareFileImports(ZipInputStream zis, String name, MessageContext messageContext) {
->>>>>>> .merge-right.r51807
         try {
-            zis = new ZipInputStream(new BufferedInputStream(inputStream));
             ZipEntry z;
             importProperties = new Properties();
-<<<<<<< .working
             Map<File, String> imports = new HashMap<>();
             List<File> importList = new ArrayList<>();
             List<String> emptyFiles = new ArrayList<>();
-=======
             deleteFilesAtEnd = !(zis instanceof DirectoryZipInputStream);
 
-            ZipEntry z;
-            Map<File, String> imports = new HashMap<File, String>();
-            List<File> importList = new ArrayList<File>();
-            List<String> emptyFiles = new ArrayList<String>();
->>>>>>> .merge-right.r51807
             while ((z = zis.getNextEntry()) != null) {
                 String n = z.getName();
 
@@ -649,11 +631,7 @@ public class WebprojectHandler implements Serializable {
         File fld = new File(SettingsBean.getInstance().getJahiaVarDiskPath(), "legacyMappings");
         final File defaultMappingsFolder = fld.isDirectory() ? fld : null;
 
-<<<<<<< .working
         final Map<String,Resource> resources = new HashMap<>();
-=======
-        final Map<String, Resource> resources = new HashMap<String, Resource>();
->>>>>>> .merge-right.r51807
 
         if (defaultMappingsFolder != null && defaultMappingsFolder.exists()) {
             try {
@@ -981,15 +959,10 @@ public class WebprojectHandler implements Serializable {
                 }
             }
         } finally {
-<<<<<<< .working
-            for (File file : files) {
-                FileUtils.deleteQuietly(file);
-=======
             for (ImportInfo infos : importsInfos.values()) {
                 if (deleteFilesAtEnd) {
                     FileUtils.deleteQuietly(infos.getImportFile());
                 }
->>>>>>> .merge-right.r51807
             }
         }
 

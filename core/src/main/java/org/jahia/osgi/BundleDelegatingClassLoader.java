@@ -84,6 +84,7 @@ import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Enumeration;
+import java.util.NoSuchElementException;
 
 /**
  * ClassLoader backed by an OSGi bundle. Provides the ability to use a separate
@@ -178,13 +179,13 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
         return url;
     }
 
-    protected Enumeration findResources(String name) throws IOException {
+    protected Enumeration<URL> findResources(String name) throws IOException {
         boolean trace = log.isTraceEnabled();
 
         if (trace)
             log.trace("Looking for resources " + name);
 
-        Enumeration enm = this.backingBundle.getResources(name);
+        Enumeration<URL> enm = this.backingBundle.getResources(name);
 
         if (trace && enm != null && enm.hasMoreElements())
             log.trace("Found resource " + name + " at " + this.backingBundle.getLocation());
@@ -202,11 +203,28 @@ public class BundleDelegatingClassLoader extends ClassLoader implements BundleRe
 
     @Override
     public Enumeration<URL> getResources(String name) throws IOException {
-        Enumeration enm = findResources(name);
-        if (bridge != null && enm == null) {
-            enm = bridge.getResources(name);
+        final Enumeration<URL> enm = findResources(name);
+        final Enumeration<URL> bridgeEnm = bridge != null ? bridge.getResources(name) : null;
+        if (enm == null && bridgeEnm == null) {
+            return null;
         }
-        return enm;
+        return new Enumeration<URL>() {
+            @Override
+            public boolean hasMoreElements() {
+                return (enm != null && enm.hasMoreElements()) || (bridgeEnm != null && bridgeEnm.hasMoreElements());
+            }
+
+            @Override
+            public URL nextElement() {
+                if (enm != null && enm.hasMoreElements()) {
+                    return enm.nextElement();
+                }
+                if (bridgeEnm != null && bridgeEnm.hasMoreElements()) {
+                    return bridgeEnm.nextElement();
+                }
+                throw new NoSuchElementException();
+            }
+        };
     }
 
     protected Class loadClass(String name, boolean resolve) throws ClassNotFoundException {

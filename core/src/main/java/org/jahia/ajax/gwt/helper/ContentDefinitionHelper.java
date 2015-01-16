@@ -962,13 +962,13 @@ public class ContentDefinitionHelper {
         }
 
         if (includeSubTypes) {
-            if (isNodeType(nodeTypes, ent.getName()) && checkPermissionForType(ent.getName(), node)) {
-                return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
+            if (isNodeType(nodeTypes, ent) && checkPermissionForType(ent, node)) {
+                return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent);
             }
         } else {
             for (String nodeType : nodeTypes) {
-                if (ent.getName().equals(nodeType) && checkPermissionForType(ent.getName(), node)) {
-                    return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent.getName());
+                if (ent.getName().equals(nodeType) && checkPermissionForType(ent, node)) {
+                    return excludedNodeTypes == null || !isNodeType(excludedNodeTypes, ent);
                 }
             }
         }
@@ -977,6 +977,10 @@ public class ContentDefinitionHelper {
 
     public boolean checkPermissionForType(String typename, JCRNodeWrapper node) throws RepositoryException {
         ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(typename);
+        return checkPermissionForType(type, node);
+    }
+
+    private boolean checkPermissionForType(ExtendedNodeType type, JCRNodeWrapper node) throws NoSuchNodeTypeException {
         NodeTypeRegistry.getInstance().getNodeType("jmix:accessControllableContent").getDeclaredSubtypes();
 
         List<ExtendedNodeType> superTypes = Arrays.asList(type.getSupertypes());
@@ -993,20 +997,16 @@ public class ContentDefinitionHelper {
         return allowed;
     }
 
-    private boolean isNodeType(List<String> nodeTypes, String name) {
+    private boolean isNodeType(List<String> nodeTypes, ExtendedNodeType type) {
         if (nodeTypes != null) {
-            try {
-                ExtendedNodeType type = NodeTypeRegistry.getInstance().getNodeType(name);
-                for (String nodeType : nodeTypes) {
-                    if (type.isNodeType(nodeType)) {
-                        return true;
-                    }
+            for (String nodeType : nodeTypes) {
+                if (type.isNodeType(nodeType)) {
+                    return true;
                 }
-                return false;
-            } catch (NoSuchNodeTypeException e) {
-                return false;
             }
+            return false;
         }
+
         return true;
     }
 

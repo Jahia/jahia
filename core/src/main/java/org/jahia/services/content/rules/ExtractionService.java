@@ -238,13 +238,31 @@ public class ExtractionService {
      * @throws IOException
      */
     public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath) throws IOException {
-
+        extractText(provider, sourcePath, extractionNodePath, Constants.EDIT_WORKSPACE);
+    }
+    
+    /**
+     * Synchronously extract text from document and store it as a property of either the file
+     * node itself or the node referred to by the extractionNodePath parameter.
+     * The node must have the following properties, which will be set:
+     * j:extractedText, j:lastExtractionDate and for the case of extractionNodePath being passed
+     * also j:originalUuid is required.
+     *
+     * @param provider           the JCR store provider
+     * @param sourcePath         the path to the file node
+     * @param extractionNodePath the optional path to the node receiving the extracted text
+     * @param workspace          the workspace, where document was saved (default or live) 
+     * @throws IOException
+     */
+    public boolean extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath, final String workspace) throws IOException {
+        boolean textExtracted = false;
         if (!textExtractionService.isEnabled()) {
-            return;
+            return textExtracted;
         }
         try {
-            jcrTemplate.doExecuteWithSystemSession(new JCRCallback<Object>() {
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+            textExtracted = jcrTemplate.doExecuteWithSystemSession(null, workspace, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    boolean success = false;
                     JCRNodeWrapper file = session.getNode(sourcePath);
                     JCRFileContent fileContent = file.getFileContent();
                     Node n = file.getRealNode().getNode(Constants.JCR_CONTENT);
@@ -278,6 +296,7 @@ public class ExtractionService {
                             n.setProperty(Constants.EXTRACTED_TEXT, contentValue);
                             n.setProperty(Constants.EXTRACTION_DATE, new GregorianCalendar());
                             session.save();
+                            success = true;
                         } catch (ConstraintViolationException cve) {
                             logger.error("Extracted text property is not of the right type for node " + sourcePath + " please run patch associated for this conversion.", cve);
                         } finally {
@@ -294,7 +313,7 @@ public class ExtractionService {
                     } finally {
                         IOUtils.closeQuietly(stream);
                     }
-                    return null;
+                    return success;
                 }
             });
         } catch (RepositoryException e) {
@@ -304,6 +323,7 @@ public class ExtractionService {
                 logger.warn("Cannot extract content: " + e.getMessage());
             }
         }
+        return textExtracted;
     }
 
     /**

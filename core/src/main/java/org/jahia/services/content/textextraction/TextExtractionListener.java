@@ -103,8 +103,8 @@ public class TextExtractionListener extends DefaultEventListener {
 
     private SchedulerService schedulerService;
 
-    protected void doHandle(Node node, Event event, JCRSessionWrapper s) throws AccessDeniedException,
-            ItemNotFoundException, RepositoryException, SchedulerException {
+    protected void doHandle(Node node, Event event, JCRSessionWrapper s, boolean immediateExtraction) throws AccessDeniedException,
+            ItemNotFoundException, IOException, RepositoryException, SchedulerException {
         String mimeType = null;
         try {
             mimeType = node.getProperty(Constants.JCR_MIMETYPE).getString();
@@ -117,7 +117,7 @@ public class TextExtractionListener extends DefaultEventListener {
         }
 
         Calendar extractionDate = null;
-        if (node.hasProperty(Constants.EXTRACTION_DATE)) {
+        if (node.hasProperty(Constants.EXTRACTION_DATE) && node.hasProperty(Constants.EXTRACTED_TEXT)) {
             try {
                 extractionDate = node.getProperty(Constants.EXTRACTION_DATE).getDate();
             } catch (PathNotFoundException e) {
@@ -127,23 +127,27 @@ public class TextExtractionListener extends DefaultEventListener {
 
         // extraction date property found?
         if (extractionDate != null) {
-            // check if it is greater than last modified date
+            // check if last modified date is at least more than 1 second after extraction date
             Calendar lastModified = node.getProperty(Constants.JCR_LASTMODIFIED).getDate();
-            if (!extractionDate.before(lastModified)) {
+            if (!extractionDate.before(lastModified) || lastModified.getTimeInMillis() - extractionDate.getTimeInMillis() < 1000L) {
                 // no updates were done -> do not need to extract content
                 return;
             }
         }
 
-        boolean canHanlde = false;
+        boolean canHandle = false;
         try {
-            canHanlde = extractionService.canHandle((JCRNodeWrapper) node);
+            canHandle = extractionService.canHandle((JCRNodeWrapper) node);
         } catch (IOException e) {
             logger.warn(e.getMessage(), e);
         }
-        if (canHanlde) {
-            // we got so far to the background task
-            scheduleBackgroundExtraction((JCRNodeWrapper) node.getParent(), event.getUserID());
+        if (canHandle) {
+            JCRNodeWrapper fileNode = (JCRNodeWrapper)node.getParent();
+            if (immediateExtraction) {
+                ExtractionService.getInstance().extractText(fileNode.getProvider(), fileNode.getPath(), null, getWorkspace());
+            } else {
+                scheduleBackgroundExtraction(fileNode, event.getUserID());
+            }
         }
     }
 
@@ -158,8 +162,11 @@ public class TextExtractionListener extends DefaultEventListener {
     }
 
     public void onEvent(final EventIterator eventIterator) {
+        final boolean isImport = eventIterator instanceof JCREventIterator
+                && ((JCREventIterator) eventIterator).getOperationType() == JCRObservationManager.IMPORT;
+
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(null, getWorkspace(), new JCRCallback<Object>() {
                 public Object doInJCR(JCRSessionWrapper s) throws RepositoryException {
                     try {
                         while (eventIterator.hasNext()) {
@@ -181,7 +188,7 @@ public class TextExtractionListener extends DefaultEventListener {
                                 continue;
                             }
 
-                            doHandle(p.getParent(), event, s);
+                            doHandle(p.getParent(), event, s, isImport);
                         }
                     } catch (ConstraintViolationException e) {
                         logger.debug(e.getMessage(), e);
@@ -204,6 +211,7 @@ public class TextExtractionListener extends DefaultEventListener {
         JobDataMap jobDataMap = jobDetail.getJobDataMap();
         jobDataMap.put(TextExtractorJob.JOB_PROVIDER, fileNode.getProvider().getMountPoint());
         jobDataMap.put(TextExtractorJob.JOB_PATH, fileNode.getPath());
+        jobDataMap.put(TextExtractorJob.JOB_WORKSPACE, getWorkspace());        
 
         if (logger.isDebugEnabled()) {
             logger.debug("Scheduling text extraction background job for file " + fileNode.getPath());

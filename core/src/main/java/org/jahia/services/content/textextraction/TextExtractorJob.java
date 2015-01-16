@@ -88,6 +88,7 @@ import org.quartz.JobExecutionContext;
 public class TextExtractorJob extends BackgroundJob {
     public static final String JOB_PATH = "path";
     public static final String JOB_PROVIDER = "provider";
+    public static final String JOB_WORKSPACE = "workspace";
     public static final String JOB_EXTRACTNODE_PATH = "extractnode-path";
 
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TextExtractorJob.class);
@@ -97,6 +98,7 @@ public class TextExtractorJob extends BackgroundJob {
         String path = (String) data.get(JOB_PATH);
         String providerPath = (String) data.get(JOB_PROVIDER);
         String extractNodePath = (String) data.get(JOB_EXTRACTNODE_PATH);
+        String workspace = (String) data.get(JOB_WORKSPACE);
         JCRStoreProvider provider = JCRSessionFactory.getInstance().getProvider(providerPath);
 
         if (logger.isDebugEnabled()) {
@@ -106,7 +108,7 @@ public class TextExtractorJob extends BackgroundJob {
             logger.info("Start text extraction job for node " + path);
         }
 
-        ExtractionService.getInstance().extractText(provider, path, extractNodePath);
+        ExtractionService.getInstance().extractText(provider, path, extractNodePath, workspace);
 
         logger.info("... finished text extraction job for node " + path);
     }

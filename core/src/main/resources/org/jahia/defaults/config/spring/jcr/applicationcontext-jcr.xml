@@ -284,6 +284,11 @@
                                 </set>
                             </property>
                         </bean>
+                        <bean class="org.jahia.services.content.textextraction.TextExtractionListener">
+                            <property name="extractionService"
+                                      ref="org.jahia.services.content.rules.ExtractionService"/>
+                            <property name="schedulerService" ref="SchedulerService"/>
+                        </bean>                        
                         <bean class="org.jahia.services.content.files.FileCacheListener">
                             <property name="availableDuringPublish" value="true"/>
                         </bean>

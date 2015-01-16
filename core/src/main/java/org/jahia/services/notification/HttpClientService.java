@@ -83,6 +83,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.HostConfiguration;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpState;
@@ -109,6 +110,8 @@ import org.springframework.web.context.ServletContextAware;
 public class HttpClientService implements ServletContextAware {
 
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(HttpClientService.class);
+    private static final String HTTP_PROXY_HOST = "http.proxyHost";
+    private static final String HTTP_PROXY_PORT = "http.proxyPort";
 
     /**
      * Returns <tt>true</tt> if our current URL is absolute, <tt>false</tt>
@@ -404,6 +407,15 @@ public class HttpClientService implements ServletContextAware {
      */
     public void setHttpClient(HttpClient httpClient) {
         this.httpClient = httpClient;
+
+        // proxy configuration if any
+        final String proxyHost = System.getProperty(HTTP_PROXY_HOST);
+        if(!StringUtils.isEmpty(proxyHost)) {
+            final String proxyPort = System.getProperty(HTTP_PROXY_PORT);
+            final int port = StringUtils.isEmpty(proxyPort) ? 80 : Integer.parseInt(proxyPort);
+            final HostConfiguration currentConfiguration = httpClient.getHostConfiguration();
+            currentConfiguration.setProxy(proxyHost, port);
+        }
     }
 
     public void setServletContext(ServletContext servletContext) {

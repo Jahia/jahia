@@ -69,7 +69,7 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.services.history;
+package org.jahia.tools;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -82,34 +82,34 @@ import org.slf4j.helpers.MessageFormatter;
  * 
  * @author Sergiy Shyrkov
  */
-class OutWrapper {
+public class OutWrapper {
     private Logger log;
     private Writer out;
 
-    OutWrapper(Logger logger, Writer out) {
+    public OutWrapper(Logger logger, Writer out) {
         this.log = logger;
         this.out = out;
     }
 
-    OutWrapper echo(String message) {
+    public OutWrapper echo(String message) {
         log.info(message);
         out(message);
         return this;
     }
 
-    OutWrapper echo(String format, Object arg1) {
+    public OutWrapper echo(String format, Object arg1) {
         return echo(MessageFormatter.format(format, arg1).getMessage());
     }
 
-    OutWrapper echo(String format, Object arg1, Object arg2) {
+    public OutWrapper echo(String format, Object arg1, Object arg2) {
         return echo(MessageFormatter.format(format, arg1, arg2).getMessage());
     }
 
-    OutWrapper echo(String format, Object arg1, Object arg2, Object arg3) {
+    public OutWrapper echo(String format, Object arg1, Object arg2, Object arg3) {
         return echo(MessageFormatter.arrayFormat(format, new Object[] { arg1, arg2, arg3 }).getMessage());
     }
 
-    OutWrapper echo(String format, Object[] args) {
+    public OutWrapper echo(String format, Object[] args) {
         return echo(MessageFormatter.format(format, args).getMessage());
     }
 
@@ -118,7 +118,7 @@ class OutWrapper {
             try {
                 out.append(message).append("\n").flush();
             } catch (IOException e) {
-                NodeVersionHistoryHelper.logger.error(e.getMessage(), e);
+                log.error(e.getMessage(), e);
             }
         }
     }

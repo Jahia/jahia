@@ -93,6 +93,7 @@ import org.apache.jackrabbit.core.version.InternalXAVersionManager;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.tools.OutWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

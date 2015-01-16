@@ -352,6 +352,7 @@
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
+                        <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,

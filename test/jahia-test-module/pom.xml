@@ -518,6 +518,12 @@
                         </configuration>
                         <phase>prepare-package</phase>
                     </execution>
+                    <execution>
+                        <id>verify-package-dependencies</id>
+                        <goals>
+                            <goal>check-dependencies</goal>
+                        </goals>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>

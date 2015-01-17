@@ -565,7 +565,7 @@
                         </Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*;scope=compile;type=!pom;inline=false;artifactId=!spring-core</Embed-Dependency>
+                        <Embed-Dependency>*;scope=compile;type=!pom;inline=true;artifactId=!spring-core</Embed-Dependency>
                         <Export-Package>!org.jahia.services.*,org.jahia.test.*,bsh.*,junit.*,org.hamcrest.*,org.junit.*,org.testng.*,com.beust.*,org.yaml.snakeyaml.*</Export-Package>
                         <Embed-Transitive>true</Embed-Transitive>
                         <_removeheaders>

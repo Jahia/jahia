@@ -153,6 +153,14 @@ public class FrameworkService {
             map.put("gosh.args", "--nointeractive");
         }
 
+        StringBuilder extra = new StringBuilder((String) map.get("org.osgi.framework.system.packages.extra"));
+        for (Map.Entry<String, Object> entry : map.entrySet()) {
+            if (entry.getKey().startsWith("org.osgi.framework.system.packages.extra.")) {
+                extra.append(',').append(entry.getValue());
+            }
+        }
+        map.put("org.osgi.framework.system.packages.extra",extra.toString());
+
         map.put("org.jahia.servlet.context", context);
 
         provisionActivator = new ProvisionActivator(this.context);

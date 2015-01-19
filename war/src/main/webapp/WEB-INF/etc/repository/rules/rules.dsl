@@ -45,6 +45,7 @@
 [condition][]- in operation {operation}=operationType == "{operation}"
 [condition][]- installed modules contains {module}=installedModules contains "{module}"
 [condition][]A search result hit is present=searchHit : JCRNodeHit ( )
+[condition][]- the node wrapped by the hit is of type {type}=searchHit instanceof JCRNodeHit && searchHit.type == "{type}"
 [condition][]- the node is of type {type}=type == "{type}"
 [condition][]The {node} has not been added=not AddedNodeFact ( path == ({node}.getPath()) )
 [condition][]The {node} has not been moved=not MovedNodeFact ( path == ({node}.getPath()) )
@@ -53,6 +54,7 @@
 [condition][]Not in operation {operation}=not OperationTypeFact( operationType == "{operation}")
 [condition][]In operation {operation}=OperationTypeFact( operationType == "{operation}")
 [consequence][]Append URL query-parameter "{parameterName}" with {parameterValue}=urlService.addURLQueryParameter(searchHit, "{parameterName}", {parameterValue});
+[consequence][]Change the hit link template type to "{templateType}"=urlService.updateHitLinkTemplateType(searchHit, "{templateType}");
 [consequence][]Add the type {type}=node.addType ( "{type}", drools );
 [consequence][]Remove the type {type}=node.removeType ( "{type}", drools );
 [consequence][]Break all ACL inheritance on the {node}=service.setAclInheritanceBreak({node},true);

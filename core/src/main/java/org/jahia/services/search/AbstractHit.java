@@ -100,6 +100,7 @@ public abstract class AbstractHit<T> implements Hit<T> {
     private float score;
     protected RenderContext context;
     private String queryParameter = "";
+    private String linkTemplateType = "html";
     private List<Row> rows = null;
 
     /**
@@ -220,18 +221,26 @@ public abstract class AbstractHit<T> implements Hit<T> {
         this.queryParameter = queryParameter;
     }
 
+    public String getLinkTemplateType() {
+        return linkTemplateType;
+    }
+
+    public void setLinkTemplateType(String linkTemplateType) {
+        this.linkTemplateType = linkTemplateType;
+    }
+
     public void addRow(Row row) {
         if (this.rows == null) {
             this.rows = new ArrayList<Row>();
         }
         rows.add(row);
     }
-    
+
     /**
      * Returns the row objects from the query/search linked to this hit. Multiple query results (row) can be linked to a
-     * hit, because some nodes cannot be displayed on its own as they have no template, so the hit's link URL points to a 
-     * parent node having a template, which can aggregate several sub-nodes. 
-     * 
+     * hit, because some nodes cannot be displayed on its own as they have no template, so the hit's link URL points to a
+     * parent node having a template, which can aggregate several sub-nodes.
+     *
      * @return list of Row objects
      */
     public List<Row> getRows() {

@@ -93,8 +93,12 @@ public class SearchURLService {
 
     public void addURLQueryParameter(AbstractHit<?> searchHit, String parameterName,
             String parameterValue) {
-        searchHit.setQueryParameter(appendParams(searchHit.getQueryParameter(), parameterName + "=" + encode(parameterValue)));        
+        searchHit.setQueryParameter(appendParams(searchHit.getQueryParameter(), parameterName + "=" + encode(parameterValue)));
         return;
+    }
+
+    public void updateHitLinkTemplateType (AbstractHit<?> searchHit, String templateType) {
+        searchHit.setLinkTemplateType(templateType);
     }
 
     private String encode(String parameterValue) {

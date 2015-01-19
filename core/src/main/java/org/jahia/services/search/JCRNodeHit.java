@@ -97,28 +97,28 @@ import org.jahia.services.render.RenderContext;
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
  * templates.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     private static final Pattern SITES_CONTENTS_FILES = Pattern.compile("/sites/([^/]+)/(contents|files)/.*");
-    
+
     private static Logger logger = LoggerFactory.getLogger(JCRNodeHit.class);
-    
+
     private String link  = null;
 
     private Map<String, JCRPropertyWrapper> propertiesFacade;
 
     private List<AbstractHit<?>> usages;
-    
+
     private JCRNodeWrapper displayableNode = null;
-    
+
     private Set<String> usageFilterSites;
-    
+
     /**
      * Initializes an instance of this class.
-     * 
+     *
      * @param node search result item to be wrapped
      * @param context
      */
@@ -148,7 +148,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public String getLink() {
         if (link == null) {
-            link = context.getURLGenerator().getContext() + resolveURL() + getQueryParameter();
+            link = context.getURLGenerator().getContext() + resolveURL(getLinkTemplateType()) + getQueryParameter();
         }
         return link;
     }
@@ -188,10 +188,10 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public String getTitle() {
         return getDisplayableNode().getDisplayableName();
     }
-    
+
     /**
      * Returns the name of this file or folder.
-     * 
+     *
      * @return the name of this file or folder
      */
     public String getName() {
@@ -212,7 +212,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     public String getIconType() {
         return "";
     }
-    
+
     public List<AbstractHit<?>> getUsages() {
         if (usages == null) {
             usages = Collections.emptyList();
@@ -244,7 +244,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         }
         return usages;
     }
-       
+
     private boolean shouldRetrieveUsages(JCRNodeWrapper node) {
         boolean shouldRetrieveUsages = false;
         if (SITES_CONTENTS_FILES.matcher(node.getPath()).matches()) {
@@ -252,7 +252,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         }
         return shouldRetrieveUsages;
     }
-    
+
     public JCRNodeWrapper getDisplayableNode() {
         if (displayableNode == null) {
             displayableNode = JCRContentUtils.findDisplayableNode(resource, context);
@@ -262,9 +262,9 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         }
         return displayableNode;
     }
-    
-    private String resolveURL() {
-        return context.getURLGenerator().buildURL(getDisplayableNode(), getDisplayableNode().getLanguage(), null, "html");
+
+    private String resolveURL(String templateType) {
+        return context.getURLGenerator().buildURL(getDisplayableNode(), getDisplayableNode().getLanguage(), null, templateType);
     }
 
     public void setUsageFilterSites(Set<String> usageFilterSites) {

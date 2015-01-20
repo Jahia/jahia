@@ -350,7 +350,7 @@
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*; scope=compile; type=!pom; inline=false</Embed-Dependency>
+                        <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
                         <_removeheaders>

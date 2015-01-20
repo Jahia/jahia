@@ -146,14 +146,6 @@
                 <configuration>
                     <instructions>
                         <Jahia-Depends>default,jahia-test-module</Jahia-Depends>
-                        <Import-Package>
-                            com.mysql.jdbc.jdbc2.optional;resolution:=optional,
-                            com.vividsolutions.jts.geom;resolution:=optional,
-                            com.vividsolutions.jts.io;resolution:=optional,
-                            org.osgi.service.jdbc;resolution:=optional,
-                            ${jahia.plugin.projectPackageImport},
-                            *
-                        </Import-Package>
                     </instructions>
                 </configuration>
             </plugin>

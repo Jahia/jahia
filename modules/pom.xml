@@ -91,6 +91,9 @@
             Embed-Dependency,
             Embed-Transitive
         </jahia.modules.bundle.removeheaders>
+        <jahia-depends>default</jahia-depends>
+        <jahia-module-type>module</jahia-module-type>
+        <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
     </properties>
 
     <repositories>
@@ -334,16 +337,15 @@
                         <Specification-Vendor>${project.organization.name}</Specification-Vendor>
 
                         <!-- Jahia manifest attributes -->
-                        <Jahia-Depends>default</Jahia-Depends>
-                        <Jahia-Module-Type>module</Jahia-Module-Type>
+                        <Jahia-Depends>${jahia-depends}</Jahia-Depends>
+                        <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
                         <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
                         <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
-                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}
-                        </Jahia-Source-Control-DeveloperConnection>
+                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
                         <Jahia-Source-Control-Tag>${project.scm.tag}</Jahia-Source-Control-Tag>
                         <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
-                        <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
+                        <Jahia-Static-Resources>${jahia-static-resources}</Jahia-Static-Resources>
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
 
                         <Export-Package />
@@ -353,12 +355,7 @@
                         <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
                         <Embed-Transitive>false</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
-                        <_removeheaders>
-                            Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive
-                        </_removeheaders>
+                        <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>
                     </instructions>
                 </configuration>
             </plugin>

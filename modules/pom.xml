@@ -347,8 +347,9 @@
                         <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
                         <Jahia-Static-Resources>${jahia-static-resources}</Jahia-Static-Resources>
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
-
-                        <Export-Package />
+                        <Jahia-Deploy-On-Site>${jahia-deploy-on-site}</Jahia-Deploy-On-Site>
+                        <Jahia-Block-Edit-Mode>${jahia-block-edit-mode}</Jahia-Block-Edit-Mode>
+                        <Export-Package>${jahia.modules.exportPackage}</Export-Package>
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>

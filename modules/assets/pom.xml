@@ -72,54 +72,48 @@
         For more information, please visit http://www.jahia.com
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jahia.modules</groupId>
-    <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>assets</artifactId>
-  <packaging>bundle</packaging>
-  <name>Jahia Static Assets</name>
-  <description>Jahia template module that includes common CSS and JavaScript resources and also supports Content Delivery Network.</description>
-  <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/assets</url>
-  </scm>
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>jahia-public</id>
-      <name>Jahia Public Repository</name>
-      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-    </repository>
-  </repositories>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Jahia-Depends>jquery,ckeditor</Jahia-Depends>
-            <Jahia-Module-Type>system</Jahia-Module-Type>
-            <Jahia-Static-Resources>/css,/icons,/javascript,/swf</Jahia-Static-Resources>
-            <_removeheaders>Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.modules</groupId>
+        <artifactId>jahia-modules</artifactId>
+        <version>7.1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>assets</artifactId>
+    <packaging>bundle</packaging>
+    <name>Jahia Static Assets</name>
+
+    <description>Jahia template module that includes common CSS and JavaScript resources and also supports Content
+        Delivery Network.
+    </description>
+
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/assets</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/assets</url>
+    </scm>
+
+
+    <properties>
+        <jahia-depends>jquery,ckeditor</jahia-depends>
+        <jahia-module-type>system</jahia-module-type>
+        <jahia-static-resources>/css,/icons,/javascript,/swf</jahia-static-resources>
+    </properties>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
+
 </project>

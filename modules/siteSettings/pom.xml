@@ -72,50 +72,43 @@
         For more information, please visit http://www.jahia.com
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jahia.modules</groupId>
-    <artifactId>jahia-modules</artifactId>
-    <version>7.1.0.0-SNAPSHOT</version>
-  </parent>
-  <artifactId>siteSettings</artifactId>
-  <packaging>bundle</packaging>
-  <name>Jahia Site Settings</name>
-  <description>Settings (groups,tools, etc) for site.</description>
-  <scm>
-    <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</connection>
-    <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</developerConnection>
-    <url>https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</url>
-  </scm>
-  <repositories>
-    <repository>
-      <releases>
-        <enabled>true</enabled>
-        <updatePolicy>never</updatePolicy>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-      <id>jahia-public</id>
-      <name>Jahia Public Repository</name>
-      <url>https://devtools.jahia.com/nexus/content/groups/public</url>
-    </repository>
-  </repositories>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Export-Package>org.jahia.modules.sitesettings.users.management</Export-Package>
-            <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
-            <Jahia-Module-Type>system</Jahia-Module-Type>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jahia.modules</groupId>
+        <artifactId>jahia-modules</artifactId>
+        <version>7.1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>siteSettings</artifactId>
+    <packaging>bundle</packaging>
+    <name>Jahia Site Settings</name>
+    <description>Settings (groups,tools, etc) for site.</description>
+    <scm>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings
+        </developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/trunk/modules/siteSettings</url>
+    </scm>
+
+    <properties>
+        <jahia.modules.exportPackage>org.jahia.modules.sitesettings.users.management</jahia.modules.exportPackage>
+        <jahia-module-type>system</jahia-module-type>
+        <jahia-deploy-on-site>all</jahia-deploy-on-site>
+    </properties>
+
+    <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>jahia-public</id>
+            <name>Jahia Public Repository</name>
+            <url>https://devtools.jahia.com/nexus/content/groups/public</url>
+        </repository>
+    </repositories>
 </project>

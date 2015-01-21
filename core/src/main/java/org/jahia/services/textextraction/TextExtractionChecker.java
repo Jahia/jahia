@@ -151,7 +151,7 @@ class TextExtractionChecker {
             } else {
                 xpathBuilder.append("*//");
             }
-            xpathBuilder.append("element(*,nt:hierarchyNode)[not(jcr:like(jcr:content/@jcr:mimeType, 'image%')) and not(jcr:like(jcr:content/@jcr:mimeType, '%css')) and not(jcr:like(fn:name(), 'thumbnail%'))");
+            xpathBuilder.append("element(*,nt:file)[not(jcr:like(jcr:content/@jcr:mimeType, 'image%')) and not(jcr:like(jcr:content/@jcr:mimeType, '%css')) and not(jcr:like(fn:name(), 'thumbnail%'))");
             if (!filter.getMimeTypes().isEmpty()) {
                 xpathBuilder.append(" and (");
                 String connector = "";
@@ -177,35 +177,41 @@ class TextExtractionChecker {
         }
         QueryResult qr = q.createQuery(xpath, Query.XPATH).execute();
         NodeIterator ni = qr.getNodes();
+        JCRNodeWrapper fileNode = null;
         while (ni.hasNext()) {
             try {
-                JCRNodeWrapper fileNode = ((JCRNodeWrapper) ni.next());
-                JCRNodeWrapper resource = fileNode.getNode(Constants.JCR_CONTENT);
-                String savedMimeType = "";
-                try {
-                    savedMimeType = resource
-                            .getProperty(Constants.JCR_MIMETYPE).getString();
-                } catch (PathNotFoundException e) {
-                    // ignore
+                fileNode = ((JCRNodeWrapper) ni.next());
+                if (!fileNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                    JCRNodeWrapper resource = fileNode
+                            .getNode(Constants.JCR_CONTENT);
+                    String savedMimeType = "";
+                    try {
+                        savedMimeType = resource.getProperty(
+                                Constants.JCR_MIMETYPE).getString();
+                    } catch (PathNotFoundException e) {
+                        // ignore
+                    }
+                    String mimeType = JCRContentUtils.getMimeType(fileNode
+                            .getName());
+                    if (mimeType != null && !savedMimeType.equals(mimeType)) {
+                        logger.warn(
+                                "Saved mimetype for {} is '{}', but the suggested one is '{}'",
+                                new Object[] { fileNode.getPath(),
+                                        savedMimeType, mimeType });
+                    }
+                    if (ExtractionService.getInstance().canHandle(resource)) {
+                        out.echo("{} with mimetype '{}'", fileNode.getPath(),
+                                savedMimeType);
+                        status.extractable++;
+                        nodesToExtract.add(fileNode.getIdentifier());
+                    }
+                    status.checked++;
                 }
-                String mimeType = JCRContentUtils.getMimeType(fileNode
-                        .getName());
-                if (mimeType != null && !savedMimeType.equals(mimeType)) {
-                    logger.warn("Saved mimetype for {} is '{}', but the suggested one is '{}'",
-                            new Object[]{fileNode.getPath(), savedMimeType, mimeType});
-                }
-                if (ExtractionService.getInstance().canHandle(resource)) {
-                    out.echo("{} with mimetype '{}'",
-                            fileNode.getPath(), savedMimeType);
-                    status.extractable++;
-                    nodesToExtract.add(fileNode.getIdentifier());
-                }
-                status.checked++;
                 if (forceStop) {
                     return;
                 }
             } catch (Exception e) {
-                logger.warn(e.getMessage(), e);
+                logger.warn("Error when trying to extract: " + fileNode != null ? fileNode.getPath() : "", e);
             }
         }
     }

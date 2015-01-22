@@ -638,7 +638,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publish"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publish"/>
         <property name="items">
             <list>
@@ -662,7 +661,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publish"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publish"/>
         <!--<property name="workflowAction" value="publish"/>-->
     </bean>
@@ -674,7 +672,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publishall"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publishAll"/>
     </bean>
 
@@ -686,7 +683,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publishall.all.languages"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publishAll"/>
     </bean>
 
@@ -697,7 +693,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publish.languages"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publish"/>
     </bean>
 
@@ -706,7 +701,6 @@
             <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.PublishSiteActionItem"/>
         </property>
         <property name="titleKey" value="label.publishSite"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publishSite"/>
     </bean>
 
@@ -716,9 +710,8 @@
                 <property name="allLanguages" value="true"/>
             </bean>
         </property>
-        <property name="titleKey" value="label.reversepublish"/>
-        <property name="requiredPermission" value="startWorkflow"/>
-        <property name="icon" value="reversePublish"/>
+        <property name="titleKey" value="label.publishSite"/>
+        <property name="icon" value="publishSite"/>
     </bean>
 
     <!-- new edit mode buttons: unpublish -->
@@ -733,7 +726,6 @@
             </bean>
         </property>
         <property name="titleKey" value="label.unpublish"/>
-        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="unpublish"/>
         <!--<property name="workflowAction" value="unpublish"/>-->
     </bean>

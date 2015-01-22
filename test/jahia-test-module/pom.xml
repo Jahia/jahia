@@ -75,10 +75,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>jahia-test-parent</artifactId>
-        <groupId>org.jahia.test</groupId>
+        <artifactId>jahia-modules</artifactId>
+        <groupId>org.jahia.modules</groupId>
         <version>7.1.0.0-SNAPSHOT</version>
+        <relativePath>../../modules</relativePath>
     </parent>
+    <groupId>org.jahia.test</groupId>
     <artifactId>jahia-test-module</artifactId>
     <name>Jahia Test Module</name>
     <packaging>bundle</packaging>
@@ -105,80 +107,11 @@
     </repositories>
 
     <properties>
-        <jahia.modules.test.importPackage>
-            ${jahia.modules.importPackage},
-            org.testng.*,
-            org.jbpm.api;resolution:=optional,
-			com.google.inject;resolution:=optional,
-			com.google.inject.internal;resolution:=optional,
-			org.apache.bsf.util;resolution:=optional,
-            com.google.protobuf;resolution:=optional,
-            com.jayway.jsonpath;resolution:=optional,
-            com.sun.tools.apt;resolution:=optional,
-            com.sun.tools.javac;resolution:=optional,
-            com.sun.tools.javah;resolution:=optional,
-            com.sun.tools.javah.oldjavah;resolution:=optional,
-            gnu.gcj;resolution:=optional,
-            javax.jms;resolution:=optional,
-            javax.resource;resolution:=optional,
-            javax.resource.cci;resolution:=optional,
-            javax.resource.spi;resolution:=optional,
-            joptsimple;resolution:=optional,
-            kaffe.util;resolution:=optional,
-            net.sf.cglib.proxy;resolution:=optional,
-            net.sf.cglib.reflect;resolution:=optional,
-            org.apache.bsf;resolution:=optional,
-            org.apache.cactus;resolution:=optional,
-            org.apache.cactus.server;resolution:=optional,
-            org.apache.commons.cli;resolution:=optional,
-            org.apache.commons.cli2;resolution:=optional,
-            org.apache.commons.cli2.builder;resolution:=optional,
-            org.apache.commons.cli2.commandline;resolution:=optional,
-            org.apache.commons.cli2.option;resolution:=optional,
-            org.apache.commons.net.ftp;resolution:=optional,
-            org.apache.env;resolution:=optional,
-            org.apache.hadoop.mapreduce;resolution:=optional,
-            org.apache.hadoop.mapreduce.lib.input;resolution:=optional,
-            org.apache.hadoop.mapreduce.lib.output;resolution:=optional,
-            org.apache.harmony.luni.util;resolution:=optional,
-            org.apache.jasper.el;resolution:=optional,
-            org.apache.struts.action;resolution:=optional,
-            org.apache.struts.config;resolution:=optional,
-            org.apache.struts.config.impl;resolution:=optional,
-            org.apache.struts.util;resolution:=optional,
-            org.apache.struts.validator;resolution:=optional,
-            org.aspectj.bridge;resolution:=optional,
-            org.aspectj.weaver;resolution:=optional,
-            org.aspectj.weaver.bcel;resolution:=optional,
-            org.aspectj.weaver.loadtime;resolution:=optional,
-            org.aspectj.weaver.patterns;resolution:=optional,
-            org.easymock;resolution:=optional,
-            org.glassfish.grizzly.asyncqueue;resolution:=optional,
-            org.glassfish.grizzly.attributes;resolution:=optional,
-            org.glassfish.grizzly.impl;resolution:=optional,
-            org.glassfish.grizzly.memory;resolution:=optional,
-            org.glassfish.grizzly.nio.transport;resolution:=optional,
-            org.glassfish.grizzly.ssl;resolution:=optional,
-            org.glassfish.grizzly.strategies;resolution:=optional,
-            org.glassfish.grizzly.websockets.draft06;resolution:=optional,
-            org.jets3t.service;resolution:=optional,
-            org.jets3t.service.impl.rest.httpclient;resolution:=optional,
-            org.jets3t.service.model;resolution:=optional,
-            org.jets3t.service.security;resolution:=optional,
-            org.jmock.core;resolution:=optional,
-            org.kosmix.kosmosfs.access;resolution:=optional,
-            org.mortbay.http;resolution:=optional,
-            org.springframework.asm.tree;resolution:=optional,
-            org.springframework.web.portlet.multipart;resolution:=optional,
-            org.znerd.xmlenc;resolution:=optional,
-            sun.misc;resolution:=optional,
-            sun.rmi.rmic;resolution:=optional,
-            sun.tools.javac;resolution:=optional,
-            sun.tools.native2ascii;resolution:=optional,
-            weblogic;resolution:=optional,
-            net.sf.jasperreports.engine;resolution:=optional,
-            net.sf.jasperreports.engine.query;resolution:=optional
-        </jahia.modules.test.importPackage>
+        <embed-dependency>*;scope=compile;type=!pom;inline=false;artifactId=!spring-core</embed-dependency>
+        <export-package>!org.jahia.services.*,org.jahia.test.*,bsh.*,junit.*,org.hamcrest.*,org.junit.*,org.testng.*,com.beust.*,org.yaml.snakeyaml.*</export-package>
+        <jahia-depends>default</jahia-depends>
+        <jahia-deploy-on-site>all</jahia-deploy-on-site>
+        <jahia-module-type>system</jahia-module-type>
     </properties>
 
     <profiles>
@@ -489,28 +422,11 @@
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>native2ascii</id>
-                        <goals>
-                            <goal>native2ascii</goal>
-                        </goals>
-                        <configuration>
-                            <includes>resources/*.properties</includes>
-                            <defaultPropertiesFileLocale>en</defaultPropertiesFileLocale>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>package-imports</id>
-                        <goals>
-                            <goal>package-imports</goal>
-                        </goals>
-                    </execution>
-                    <execution>
                         <id>prepare-package-dependencies</id>
                         <goals>
                             <goal>dependencies</goal>
                         </goals>
                         <configuration>
-                            <existingImports>${jahia.modules.test.importPackage}</existingImports>
                             <excludeFromDirectoryScan>
                                 <exclude>imports/import.xml</exclude>
                                 <exclude>imports/importIndexOptionNodes.xml</exclude>
@@ -518,64 +434,7 @@
                         </configuration>
                         <phase>prepare-package</phase>
                     </execution>
-                    <execution>
-                        <id>verify-package-dependencies</id>
-                        <goals>
-                            <goal>check-dependencies</goal>
-                        </goals>
-                    </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${project.name}</Bundle-Name>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Category>jahia-module</Bundle-Category>
-
-                        <Implementation-Title>${project.name}</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                        <Implementation-URL>${project.organization.url}</Implementation-URL>
-                        <Specification-Title>${project.name}</Specification-Title>
-                        <Specification-Version>${project.version}</Specification-Version>
-                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-
-                        <!-- Jahia manifest attributes -->
-                        <Jahia-Depends>default</Jahia-Depends>
-                        <Jahia-Deploy-On-Site>all</Jahia-Deploy-On-Site>
-                        <Jahia-Module-Type>system</Jahia-Module-Type>
-                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
-                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
-                        <Jahia-Static-Resources>/css,/icons,/images,/img,/javascript</Jahia-Static-Resources>
-
-                        <Import-Package>
-                            com.sun.org.apache.xerces.internal.xni;resolution:=optional,
-                            org.apache.html.dom,
-                            org.apache.tika.config,
-                            org.apache.tika.metadata,
-                            org.apache.tika.parser,
-                            org.apache.xerces.xni,
-                            org.apache.xerces.xni.parser,
-                            ${jahia.plugin.projectPackageImport},
-                            *
-                        </Import-Package>
-                        <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
-                        <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*;scope=compile;type=!pom;inline=true;artifactId=!spring-core</Embed-Dependency>
-                        <Export-Package>!org.jahia.services.*,org.jahia.test.*,bsh.*,junit.*,org.hamcrest.*,org.junit.*,org.testng.*,com.beust.*,org.yaml.snakeyaml.*</Export-Package>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <_removeheaders>
-                            Include-Resource,
-                            Private-Package,
-                            Embed-Dependency,
-                            Embed-Transitive
-                        </_removeheaders>
-                    </instructions>
-                </configuration>
             </plugin>
         </plugins>
     </build>

@@ -75,7 +75,9 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitialized
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -85,7 +87,7 @@ import java.util.Map;
  *
  * @author Sergiy Shyrkov
  */
-public class LoginConfig implements ApplicationListener<RootContextInitializedEvent> {
+public class LoginConfig implements ApplicationListener<ApplicationEvent> {
 
     private static final Logger logger = LoggerFactory.getLogger(LoginConfig.class);
 
@@ -113,11 +115,20 @@ public class LoginConfig implements ApplicationListener<RootContextInitializedEv
         return loginUrlProvider != null ? loginUrlProvider.getLoginUrl(request) : null;
     }
 
-    public void onApplicationEvent(RootContextInitializedEvent event) {
-        Map<String, LoginUrlProvider> beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
-                event.getContext(),
-                LoginUrlProvider.class);
-        if (!beansOfType.isEmpty()) {
+    public void onApplicationEvent(ApplicationEvent event) {
+        Map<String, LoginUrlProvider> beansOfType = null;
+        if (event instanceof RootContextInitializedEvent) {
+            RootContextInitializedEvent rootContextInitializedEvent = (RootContextInitializedEvent) event;
+            beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                    rootContextInitializedEvent.getContext(),
+                    LoginUrlProvider.class);
+        } else if (event instanceof ContextRefreshedEvent) {
+            ContextRefreshedEvent contextRefreshedEvent = (ContextRefreshedEvent) event;
+            beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                    contextRefreshedEvent.getApplicationContext(),
+                    LoginUrlProvider.class);
+        }
+        if (beansOfType != null && !beansOfType.isEmpty()) {
             for (LoginUrlProvider provider : beansOfType.values()) {
                 if (provider.hasCustomLoginUrl()) {
                     logger.info("Using login URL provider {}", provider);
@@ -127,4 +138,5 @@ public class LoginConfig implements ApplicationListener<RootContextInitializedEv
             }
         }
     }
+
 }

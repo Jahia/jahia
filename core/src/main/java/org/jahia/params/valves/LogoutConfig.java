@@ -75,7 +75,9 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitialized
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -85,7 +87,7 @@ import java.util.Map;
  *
  * @author Sergiy Shyrkov
  */
-public class LogoutConfig implements ApplicationListener<RootContextInitializedEvent> {
+public class LogoutConfig implements ApplicationListener<ApplicationEvent> {
     private static final Logger logger = LoggerFactory.getLogger(LogoutConfig.class);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -112,12 +114,20 @@ public class LogoutConfig implements ApplicationListener<RootContextInitializedE
         return logoutUrlProvider != null ? logoutUrlProvider.getLogoutUrl(request) : null;
     }
 
-    public void onApplicationEvent(RootContextInitializedEvent event) {
-        Map<String, LogoutUrlProvider> beansOfType = BeanFactoryUtils
-                .beansOfTypeIncludingAncestors(
-                        event.getContext(),
-                        LogoutUrlProvider.class);
-        if (!beansOfType.isEmpty()) {
+    public void onApplicationEvent(ApplicationEvent event) {
+        Map<String, LogoutUrlProvider> beansOfType = null;
+        if (event instanceof RootContextInitializedEvent) {
+            RootContextInitializedEvent rootContextInitializedEvent = (RootContextInitializedEvent) event;
+            beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                    rootContextInitializedEvent.getContext(),
+                    LogoutUrlProvider.class);
+        } else if (event instanceof ContextRefreshedEvent) {
+            ContextRefreshedEvent contextRefreshedEvent = (ContextRefreshedEvent) event;
+            beansOfType = BeanFactoryUtils.beansOfTypeIncludingAncestors(
+                    contextRefreshedEvent.getApplicationContext(),
+                    LogoutUrlProvider.class);
+        }
+        if (beansOfType != null && !beansOfType.isEmpty()) {
             for (LogoutUrlProvider provider : beansOfType.values()) {
                 if (provider.hasCustomLogoutUrl()) {
                     logger.info("Using logout URL provider {}", provider);

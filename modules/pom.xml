@@ -94,6 +94,7 @@
         <jahia-depends>default</jahia-depends>
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
+        <embed-dependency>*; scope=compile|runtime; type=!pom; inline=false</embed-dependency>
     </properties>
 
     <repositories>
@@ -349,11 +350,11 @@
                         <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
                         <Jahia-Deploy-On-Site>${jahia-deploy-on-site}</Jahia-Deploy-On-Site>
                         <Jahia-Block-Edit-Mode>${jahia-block-edit-mode}</Jahia-Block-Edit-Mode>
-                        <Export-Package>${jahia.modules.exportPackage}</Export-Package>
+                        <Export-Package>${export-package}</Export-Package>
                         <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
                         <Provide-Capability>${jahia.plugin.providedNodeTypes}</Provide-Capability>
                         <Require-Capability>${jahia.plugin.requiredNodeTypes}</Require-Capability>
-                        <Embed-Dependency>*; scope=compile|runtime; type=!pom; inline=false</Embed-Dependency>
+                        <Embed-Dependency>${embed-dependency}</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
                         <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>

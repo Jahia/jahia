@@ -92,7 +92,7 @@
     </scm>
 
     <properties>
-        <jahia.modules.exportPackage>org.jahia.modules.sitesettings.users.management</jahia.modules.exportPackage>
+        <export-package>org.jahia.modules.sitesettings.users.management</export-package>
         <jahia-module-type>system</jahia-module-type>
         <jahia-deploy-on-site>all</jahia-deploy-on-site>
     </properties>

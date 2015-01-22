@@ -93,7 +93,7 @@
 
     <properties>
         <jahia-depends>default,siteSettings,tabularList</jahia-depends>
-        <jahia.modules.exportPackage>org.jahia.modules.serversettings.forge</jahia.modules.exportPackage>
+        <export-package>org.jahia.modules.serversettings.forge</export-package>
         <jahia-module-type>system</jahia-module-type>
         <jahia-deploy-on-site>system</jahia-deploy-on-site>
     </properties>

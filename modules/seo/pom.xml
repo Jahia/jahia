@@ -92,7 +92,7 @@
 
     <properties>
         <jahia-module-type>system</jahia-module-type>
-        <jahia.modules.exportPackage>org.jahia.modules.seo.rules</jahia.modules.exportPackage>
+        <export-package>org.jahia.modules.seo.rules</export-package>
     </properties>
 
     <repositories>

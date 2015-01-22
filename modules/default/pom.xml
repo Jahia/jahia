@@ -93,7 +93,7 @@
 
     <properties>
         <jahia-depends>assets</jahia-depends>
-        <jahia.modules.exportPackage>org.jahia.modules.osgi</jahia.modules.exportPackage>
+        <export-package>org.jahia.modules.osgi</export-package>
         <jahia-module-type>system</jahia-module-type>
     </properties>
 

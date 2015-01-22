@@ -92,7 +92,7 @@
 
     <properties>
         <jahia-depends>default,userDashboard</jahia-depends>
-        <jahia.modules.exportPackage>org.jahia.modules.tasks.rules</jahia.modules.exportPackage>
+        <export-package>org.jahia.modules.tasks.rules</export-package>
         <jahia-module-type>system</jahia-module-type>
         <jahia-deploy-on-site>system</jahia-deploy-on-site>
     </properties>

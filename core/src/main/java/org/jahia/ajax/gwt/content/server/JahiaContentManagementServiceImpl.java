@@ -104,11 +104,8 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
-<<<<<<< .working
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
-=======
 import org.jahia.bin.Login;
->>>>>>> .merge-right.r51871
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;

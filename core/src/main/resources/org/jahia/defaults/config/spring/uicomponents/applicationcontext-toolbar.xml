@@ -662,6 +662,7 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publish"/>
+        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publish"/>
         <!--<property name="workflowAction" value="publish"/>-->
     </bean>
@@ -685,6 +686,7 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publishall.all.languages"/>
+        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publishAll"/>
     </bean>
 
@@ -695,6 +697,7 @@
             </bean>
         </property>
         <property name="titleKey" value="label.publish.languages"/>
+        <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="publish"/>
     </bean>
 
@@ -713,14 +716,9 @@
                 <property name="allLanguages" value="true"/>
             </bean>
         </property>
-<<<<<<< .working
-        <property name="titleKey" value="label.publishSite"/>
-        <property name="icon" value="publishSite"/>
-=======
         <property name="titleKey" value="label.reversepublish"/>
         <property name="requiredPermission" value="startWorkflow"/>
         <property name="icon" value="reversePublish"/>
->>>>>>> .merge-right.r51858
     </bean>
 
     <!-- new edit mode buttons: unpublish -->

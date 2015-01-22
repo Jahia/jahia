@@ -91,6 +91,10 @@
         <developerConnection>scm:dummy:uri</developerConnection>
     </scm>
 
+    <properties>
+        <jahia-depends>default,jahia-test-module</jahia-depends>
+    </properties>
+
     <repositories>
         <repository>
             <id>jahia-public</id>
@@ -139,17 +143,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Jahia-Depends>default,jahia-test-module</Jahia-Depends>
-                    </instructions>
-                </configuration>
-            </plugin>
-
             <plugin>
                 <groupId>org.codehaus.gmaven</groupId>
                 <artifactId>gmaven-plugin</artifactId>

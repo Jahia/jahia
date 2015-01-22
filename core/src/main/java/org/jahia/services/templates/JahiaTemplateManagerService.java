@@ -84,6 +84,7 @@ import org.dom4j.io.OutputFormat;
 import org.jahia.api.Constants;
 import org.jahia.bin.Action;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
@@ -476,10 +477,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return modifiedFiles;
     }
 
-    private void setDependenciesInPom(File sources, List<String> dependencies) {
+    private void setDependenciesInPom(File sources, List<String> dependencies, boolean useProperties) {
         File pom = new File(sources, "pom.xml");
         try {
-            PomUtils.updateJahiaDepends(pom, StringUtils.join(dependencies, ","));
+            PomUtils.updateJahiaDepends(pom, StringUtils.join(dependencies, ","), useProperties);
         } catch (Exception e) {
             logger.error("Unable to updated dependencies in pom file: " + pom, e);
         }
@@ -491,10 +492,21 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         templatePackageRegistry.computeDependencies(pack);
 
         if (pack.getSourcesFolder() != null) {
-            setDependenciesInPom(pack.getSourcesFolder(), depends);
+            setDependenciesInPom(pack.getSourcesFolder(), depends, shouldUsePropertiesInPom(pack));
         }
 
         applicationEventPublisher.publishEvent(new ModuleDependenciesEvent(pack.getId(), this));
+    }
+
+    private boolean shouldUsePropertiesInPom(JahiaTemplatesPackage pack) {
+        boolean useProperties = false;
+        String jahiaRequiredVersion = pack.getBundle().getHeaders().get("Jahia-Required-Version");
+        if (StringUtils.isNotEmpty(jahiaRequiredVersion)) {
+            if (new Version(jahiaRequiredVersion).compareTo(new Version("7.1.0.0")) >= 0) {
+                useProperties = true;
+            }
+        }
+        return useProperties;
     }
 
     /**

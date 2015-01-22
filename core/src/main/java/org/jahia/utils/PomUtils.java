@@ -71,7 +71,6 @@
  */
 package org.jahia.utils;
 
-import org.apache.commons.io.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.maven.model.*;
@@ -80,9 +79,7 @@ import org.apache.maven.model.io.xpp3.MavenXpp3Writer;
 import org.apache.tika.io.IOUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
-import org.codehaus.plexus.util.xml.pull.MXSerializer;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.codehaus.plexus.util.xml.pull.XmlSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -90,11 +87,8 @@ import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.*;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Map;
 import java.util.jar.JarEntry;
@@ -229,17 +223,21 @@ public final class PomUtils {
      *            the Maven project descriptor file to update
      * @param depends
      *            comma-separated list of dependencies
+     * @param useProperties
      * @throws IOException
      *             in case of a reading problem
      * @throws XmlPullParserException
      *             in case of a parsing error
      */
-    public static void updateJahiaDepends(File pomXmlFile, String depends) throws IOException, XmlPullParserException {
+    public static void updateJahiaDepends(File pomXmlFile, String depends, boolean useProperties) throws IOException, XmlPullParserException {
         Model model = read(pomXmlFile);
         Build build = model.getBuild();
         if (build == null) {
             build = new Build();
             model.setBuild(build);
+        }
+        if (useProperties) {
+            model.getProperties().put("jahia-depends", depends);
         }
         Map<String, Plugin> pluginsAsMap = build.getPluginsAsMap();
         Plugin plugin = pluginsAsMap.get("org.apache.felix:maven-bundle-plugin");
@@ -252,22 +250,24 @@ public final class PomUtils {
         }
 
         Xpp3Dom cfg = (Xpp3Dom) plugin.getConfiguration();
-        if (cfg == null) {
+        if (cfg == null && !useProperties) {
             plugin.setConfiguration(Xpp3DomBuilder.build(new StringReader(
                     "<configuration><instructions><Jahia-Depends>" + depends
                             + "</Jahia-Depends></instructions></configuration>")));
-        } else {
+        } else if (cfg != null) {
             Xpp3Dom instructions = cfg.getChild("instructions");
-            if (instructions == null) {
+            if (instructions == null && !useProperties) {
                 cfg.addChild(Xpp3DomBuilder.build(new StringReader("<instructions><Jahia-Depends>" + depends
                         + "</Jahia-Depends></instructions>")));
-            } else {
+            } else if (instructions != null) {
                 Xpp3Dom jahiaDepends = instructions.getChild("Jahia-Depends");
-                if (jahiaDepends == null) {
+                if (jahiaDepends == null && !useProperties) {
                     instructions.addChild(Xpp3DomBuilder.build(new StringReader("<Jahia-Depends>" + depends
                             + "</Jahia-Depends>")));
-                } else {
+                } else if (jahiaDepends != null && !useProperties) {
                     jahiaDepends.setValue(depends);
+                } else if (jahiaDepends != null) {
+                    instructions.removeChild(Arrays.asList(instructions.getChildren()).indexOf(jahiaDepends));
                 }
             }
         }

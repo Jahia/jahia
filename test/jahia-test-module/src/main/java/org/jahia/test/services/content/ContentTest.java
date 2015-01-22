@@ -164,6 +164,7 @@ public class ContentTest {
                 continue;
             }
             Object[] parameter = new Object[1];
+            logger.info("Added " + providerRoot + " to parameterized ContentTest");
             parameter[0] = providerRoot;
             data.add(parameter);
         }

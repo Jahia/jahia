@@ -592,7 +592,7 @@ public class UIConfigHelper {
         for (Property currentProperty : item.getProperties()) {
             GWTJahiaProperty gwtProperty = new GWTJahiaProperty();
             gwtProperty.setName(currentProperty.getName());
-            gwtProperty.setValue(currentProperty.getRealValue(site, jahiaUser, locale));
+            gwtProperty.setValue(currentProperty.getRealValue(site, jahiaUser, locale, request));
             pMap.put(gwtProperty.getName(), gwtProperty);
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));

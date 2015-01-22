@@ -72,7 +72,13 @@
 package org.jahia.ajax.gwt.client.widget;
 
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.FormEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.Listener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.widget.Label;
 import com.extjs.gxt.ui.client.widget.VerticalPanel;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -81,16 +87,15 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.Method;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormData;
 import org.jahia.ajax.gwt.client.core.CommonEntryPoint;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
-* Displays the login form.
-*
-* @author Sergiy Shyrkov
-*/
+ * Displays the login form.
+ *
+ * @author Sergiy Shyrkov
+ */
 public class LoginBox extends Window {
 
     private static LoginBox instance;
@@ -102,11 +107,8 @@ public class LoginBox extends Window {
         return instance;
     }
 
-    private FormData formData;
-
     public LoginBox() {
         this.setSize(400, 200);
-        //this.setPlain(true);
         this.setModal(true);
         this.setBlinkModal(true);
         this.setHeadingHtml(Messages.get("label.login", "Login"));
@@ -146,7 +148,7 @@ public class LoginBox extends Window {
                 }
             }
         });
-        form.add(username, formData);
+        form.add(username);
 
         TextField<String> password = new TextField<String>();
         password.setPassword(true);
@@ -161,7 +163,7 @@ public class LoginBox extends Window {
                 }
             }
         });
-        form.add(password, formData);
+        form.add(password);
 
 
         Button btnSubmit = new Button(Messages.get("label.login", "Login"), new SelectionListener<ButtonEvent>() {
@@ -177,10 +179,10 @@ public class LoginBox extends Window {
             public void componentSelected(ButtonEvent event) {
                 hide();
                 final String portOrigin = com.google.gwt.user.client.Window.Location.getPort();
-                String port = (portOrigin == null || portOrigin.equals("80") || portOrigin.equals(""))? "":(":"+ portOrigin);
+                String port = (portOrigin == null || portOrigin.equals("80") || portOrigin.equals("")) ? "" : (":" + portOrigin);
                 com.google.gwt.user.client.Window.Location.assign(
                         com.google.gwt.user.client.Window.Location.getProtocol() + "//" +
-                        com.google.gwt.user.client.Window.Location.getHostName() + port + JahiaGWTParameters.getContextPath());
+                                com.google.gwt.user.client.Window.Location.getHostName() + port + JahiaGWTParameters.getContextPath());
             }
         });
         form.addButton(btnCancel);
@@ -200,9 +202,6 @@ public class LoginBox extends Window {
             }
         });
 
-//        FormButtonBinding binding = new FormButtonBinding(form);
-//        binding.addButton(b);
-
         this.add(form);
-     }
+    }
 }

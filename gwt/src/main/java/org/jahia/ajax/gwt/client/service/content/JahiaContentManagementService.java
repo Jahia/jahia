@@ -96,6 +96,7 @@ import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
+import org.jahia.ajax.gwt.client.util.SessionValidationResult;
 import org.jahia.ajax.gwt.client.util.URL;
 import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
@@ -370,7 +371,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     GWTJahiaEditEngineInitBean initializeEditEngine(List<String> paths, boolean tryToLockNode) throws GWTJahiaServiceException;
 
-    Integer isValidSession() throws GWTJahiaServiceException;
+    SessionValidationResult isValidSession() throws GWTJahiaServiceException;
 
     PagingLoadResult<GWTJahiaNode> lsLoad(String parentPath, List<String> nodeTypes, List<String> mimeTypes, List<String> filters, List<String> fields, boolean checkSubChild, int limit, int offset, boolean displayHiddenTypes, List<String> hiddenTypes, String hiddenRegex, boolean showOnlyNodesWithTemplates, boolean useUILocale) throws GWTJahiaServiceException;
 

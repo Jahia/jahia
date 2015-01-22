@@ -98,13 +98,19 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryIt
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.SessionValidationResult;
 import org.jahia.ajax.gwt.commons.server.JahiaRemoteService;
 import org.jahia.ajax.gwt.helper.*;
 import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
+<<<<<<< .working
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
+=======
+import org.jahia.bin.Login;
+>>>>>>> .merge-right.r51871
 import org.jahia.exceptions.JahiaException;
+import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
@@ -134,6 +140,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.security.Privilege;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.ConstraintViolationException;
 import java.net.MalformedURLException;
@@ -1696,11 +1703,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         return workflow.getWorkflowHistoryTasks(provider, processId, getUILocale());
     }
 
-    public Integer isValidSession() throws GWTJahiaServiceException {
+    public SessionValidationResult isValidSession() throws GWTJahiaServiceException {
         // >0 : shedule poll repeating for this value
         // 0 : session expire
         // <0 : polling desactivated
-        final HttpSession session = getRequest().getSession(false);
+        final HttpServletRequest request = getRequest();
+        final String customLoginUrl = LoginConfig.getInstance().getCustomLoginUrl(request);
+        final String loginUrl = customLoginUrl != null ? customLoginUrl : Login.getServletPath();
+        final HttpSession session = request.getSession(false);
         if (session != null) {
             Long date = (Long) session.getAttribute("lastPoll");
             long lastAccessed = session.getLastAccessedTime();
@@ -1725,9 +1735,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (!invalidated) {
                 session.setAttribute("lastPoll", now);
             }
-            return sessionPollingFrequency;
+            return new SessionValidationResult(loginUrl, sessionPollingFrequency);
         } else {
-            return 0;
+            return new SessionValidationResult(loginUrl, 0);
         }
     }
 

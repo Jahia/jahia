@@ -76,6 +76,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.Messages;
 
 import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: jahia
@@ -96,7 +97,7 @@ public class ResourceBundleProperty extends Property {
         this.key = key;
     }
 
-    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
+    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale, HttpServletRequest request) {
         return Messages.getInternal(key, locale);
     }
 }

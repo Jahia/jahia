@@ -74,6 +74,8 @@ package org.jahia.ajax.gwt.client.core;
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.RunAsyncCallback;
+import com.google.gwt.http.client.URL;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.rpc.StatusCodeException;
 import org.jahia.ajax.gwt.client.widget.LoginBox;
@@ -87,7 +89,7 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
 
     public void onFailure(Throwable caught) {
         if (caught instanceof SessionExpirationException ||
-                (caught instanceof StatusCodeException && ((StatusCodeException)caught).getStatusCode() == 403)) {
+                (caught instanceof StatusCodeException && ((StatusCodeException) caught).getStatusCode() == 403)) {
             showLogin();
             onSessionExpired();
         } else {
@@ -108,11 +110,17 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
             }
 
             public void onSuccess() {
-                if (!LoginBox.getInstance().isVisible()) {
-                    LoginBox.getInstance().show();
+                final String loginUrl = CommonEntryPoint.getLoginUrl();
+                if (loginUrl != null && !loginUrl.isEmpty()) {
+                    Window.Location.assign(loginUrl + (loginUrl.contains("?") ? "&" : "?") + "redirectTo=" + URL.encodeQueryString(Window.Location.getHref()));
+                } else {
+                    if (!LoginBox.getInstance().isVisible()) {
+                        LoginBox.getInstance().show();
+
+                    }
                 }
             }
-        });        
+        });
     }
 
 }

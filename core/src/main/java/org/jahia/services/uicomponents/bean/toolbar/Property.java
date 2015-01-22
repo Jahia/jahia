@@ -71,12 +71,12 @@
  */
 package org.jahia.services.uicomponents.bean.toolbar;
 
-import org.slf4j.Logger;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.usermanager.JahiaUser;
-
 import java.io.Serializable;
 import java.util.Locale;
+import javax.servlet.http.HttpServletRequest;
+
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * User: jahia
@@ -84,11 +84,9 @@ import java.util.Locale;
  * Time: 09:30:53
  */
 public class Property implements Serializable {
-    
+
     private static final long serialVersionUID = 2368961966271023030L;
 
-    private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(Property.class);
-    
     private String name;
     private String value;
 
@@ -108,8 +106,8 @@ public class Property implements Serializable {
         this.value = value;
     }
 
-    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale) {
-        return value;
+    public String getRealValue(JCRSiteNode site, JahiaUser user, Locale locale, HttpServletRequest request) {
+        return getValue();
     }
 
 }

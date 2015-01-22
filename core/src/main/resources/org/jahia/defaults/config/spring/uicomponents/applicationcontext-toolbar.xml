@@ -569,9 +569,10 @@
         </property>
         <property name="properties">
             <list>
-                <bean class="org.jahia.services.uicomponents.bean.toolbar.Property">
+                <bean class="org.jahia.services.uicomponents.bean.toolbar.LogoutProperty">
                     <property name="name" value="url"/>
                     <property name="value" value="$context/cms/logout?redirect=$location-path$location-hash"/>
+                    <property name="config" ref="jahiaLogoutConfig"/>
                 </bean>
             </list>
         </property>

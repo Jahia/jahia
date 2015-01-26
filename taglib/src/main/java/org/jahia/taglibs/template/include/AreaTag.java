@@ -335,7 +335,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                             } else {
                                 // now let's check if the content node matches the areaType. If not it means we have a
                                 // conflict with another content created outside of the content of the area (DEVMINEFI-223)
-                                if (!this.node.isNodeType(areaType)) {
+                                if (!this.node.isNodeType(areaType) && !this.node.isNodeType("jmix:skipConstraintCheck")) {
 //                                    conflictsWith = this.node.getPath();
                                     found = false;
                                     this.node = null;

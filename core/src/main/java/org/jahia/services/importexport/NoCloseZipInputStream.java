@@ -73,6 +73,7 @@ package org.jahia.services.importexport;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 
 /**
@@ -87,6 +88,9 @@ public class NoCloseZipInputStream extends ZipInputStream {
         super(in);
     }
 
+    public NoCloseZipInputStream(InputStream in, Charset charset) {
+        super(in, charset);
+    }
     public void close() throws IOException {
     }
 

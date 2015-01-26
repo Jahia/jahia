@@ -111,6 +111,7 @@ import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.configuration.deployers.ServerDeploymentFactory;
 import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
+import org.jahia.utils.zip.ZipEntryCharsetDetector;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -446,6 +447,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             jahiaFileUploadMaxSize = getLong("jahiaFileUploadMaxSize", 104857600);
 
             characterEncoding = getString("characterEncoding", "UTF-8");
+            
+            if (System.getProperty(ZipEntryCharsetDetector.ZIP_ENTRY_ALTERNATIVE_ENCODING) == null) {
+                String zipEntryCharsets = getString(ZipEntryCharsetDetector.ZIP_ENTRY_ALTERNATIVE_ENCODING, null);
+                if (StringUtils.isNotEmpty(zipEntryCharsets)) {
+                    System.setProperty(ZipEntryCharsetDetector.ZIP_ENTRY_ALTERNATIVE_ENCODING, zipEntryCharsets);
+                }
+            }
 
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);

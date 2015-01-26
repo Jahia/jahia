@@ -75,18 +75,22 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.jackrabbit.spi.commons.conversion.MalformedPathException;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.zip.ZipEntryCharsetDetector;
 import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRFileContent;
 import org.jahia.services.importexport.NoCloseZipInputStream;
 
 import javax.jcr.ItemExistsException;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.io.*;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -196,22 +200,36 @@ public class ZipHelper {
         }
     }
 
-    public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        InputStream is = null;
+    public boolean unzipFile(final JCRNodeWrapper zipfile, final JCRNodeWrapper destination,
+            JCRSessionWrapper currentUserSession) throws RepositoryException {
+        NoCloseZipInputStream zis = null;
         try {
-            is = zipfile.getFileContent().downloadFile();
-            return doUnzipContent(is, destination.getPath(), currentUserSession);
+            JCRFileContent fileContent = zipfile.getFileContent();
+            Charset charset = ZipEntryCharsetDetector.detect(fileContent);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Unzipping content of the node {} using charset {}", zipfile.getPath(), charset);
+            }
+            zis = new NoCloseZipInputStream(fileContent.downloadFile(), charset);
+            return doUnzipContent(zis, destination.getPath(), currentUserSession);
         } finally {
-            IOUtils.closeQuietly(is);
+            if (zis != null) {
+                try {
+                    zis.reallyClose();
+                } catch (IOException e) {
+                    if (logger.isDebugEnabled()) {
+                        logger.warn("Unable to close the ZIP file for node " + zipfile.getPath(), e);
+                    } else {
+                        logger.warn("Unable to close the ZIP file for node {}", zipfile.getPath());
+                    }
+                }
+            }
         }
     }
 
-    private boolean doUnzipContent(final InputStream in, final String dest, JCRSessionWrapper currentUserSession) throws RepositoryException {
+    private boolean doUnzipContent(final NoCloseZipInputStream zis, final String dest, JCRSessionWrapper currentUserSession) throws RepositoryException {
         List<String> errorFiles = new ArrayList<String>();
         boolean result = false;
-        NoCloseZipInputStream zis = null;
         try {
-            zis = new NoCloseZipInputStream(in);
             ZipEntry zipentry;
 
             while ((zipentry = zis.getNextEntry()) != null) {
@@ -263,15 +281,8 @@ public class ZipHelper {
         } catch (InternalError err) {
             logger.error("Error when unzipping file, " + err.getMessage(), err);
             result = false;
-        } finally {
-            if (zis != null) {
-                try {
-                    zis.reallyClose();
-                } catch (Exception e) {
-                    logger.error("Error when closing zip stream", e);
-                }
-            }
         }
+        
         return result;
     }
 

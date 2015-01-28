@@ -265,8 +265,9 @@ public class MainModule extends Module {
 
         String location = newLocation;
         newLocation = null;
-        if (location == null && !Window.Location.getHash().equals("")) {
-            location = Window.Location.getHash().substring(Window.Location.getHash().indexOf('|') + 1);
+        String hash = Window.Location.getHash();
+        if (location == null && !hash.equals("") && hash.contains("|")) {
+            location = hash.substring(hash.indexOf('|') + 1);
         }
         if (location == null) {
             location = Window.Location.getPath();

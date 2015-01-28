@@ -102,7 +102,7 @@ public class EditEntryPoint extends CommonEntryPoint {
             final String path = DOM.getElementAttribute(element, "path");
             String config = DOM.getElementAttribute(element, "config");
             String hash = Window.Location.getHash();
-            if (!hash.equals("")) {
+            if (!hash.equals("") && hash.contains("|")) {
                 config = hash.substring(1, hash.indexOf('|'));
             }
             JahiaContentManagementService.App.getInstance().getEditConfiguration(path, config,"default", new BaseAsyncCallback<GWTEditConfiguration>() {

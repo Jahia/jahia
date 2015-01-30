@@ -92,8 +92,9 @@ public class FileEvents {
     public static final String FILE_PATH = "path";
     public static final String FILE_WORKSPACE = "workspace";
     public static final String FILE_NODE_TYPES = "nodeTypes";
+    public static final String FILE_NODE_IDENTIFIER = "identifier";
 
-    protected static void sendEvent(String eventKey, String filePath, String workspace, List<String> nodeTypes){
+    protected static void sendEvent(String eventKey, String filePath, String identifier, String workspace, List<String> nodeTypes){
         BundleContext context = FrameworkService.getBundleContext();
         ServiceReference ref = context.getServiceReference(EventAdmin.class.getName());
         if (ref != null)
@@ -102,6 +103,7 @@ public class FileEvents {
 
             Dictionary properties = new Hashtable();
             properties.put(FILE_PATH, filePath);
+            properties.put(FILE_NODE_IDENTIFIER, identifier);
             properties.put(FILE_WORKSPACE, workspace);
             properties.put(FILE_NODE_TYPES, nodeTypes);
 

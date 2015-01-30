@@ -100,6 +100,8 @@ public class FileCacheEntry implements Serializable {
 
     private List<String> nodeTypes = Collections.emptyList();
 
+    private String identifier;
+
     /**
      * Initializes an instance of this class.
      * 
@@ -124,8 +126,9 @@ public class FileCacheEntry implements Serializable {
      * @param lastModified
      * @param nodeTypes
      */
-    public FileCacheEntry(String eTag, String mimeType, long contentLength, long lastModified, List<String> nodeTypes) {
+    public FileCacheEntry(String eTag, String mimeType, long contentLength, long lastModified, String identifier, List<String> nodeTypes) {
         this(eTag, mimeType, contentLength, lastModified);
+        this.identifier = identifier;
         this.nodeTypes = nodeTypes;
     }
 
@@ -167,5 +170,9 @@ public class FileCacheEntry implements Serializable {
 
     public void setNodeTypes(List<String> nodeTypes) {
         this.nodeTypes = nodeTypes;
+    }
+
+    public String getIdentifier() {
+        return identifier;
     }
 }

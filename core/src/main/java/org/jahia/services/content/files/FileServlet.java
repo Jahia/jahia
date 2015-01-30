@@ -290,7 +290,7 @@ public class FileServlet extends HttpServlet {
                         fileEntry.getBinary().dispose();
                         fileEntry.setBinary(null);
                     }
-                    FileEvents.sendEvent(FileEvents.FILE_DOWNLOADED_EVENT_KEY, fileKey.getPath(), fileKey.getWorkspace(), fileEntry.getNodeTypes());
+                    FileEvents.sendEvent(FileEvents.FILE_DOWNLOADED_EVENT_KEY, fileKey.getPath(), fileKey.getWorkspace(), fileEntry.getIdentifier(), fileEntry.getNodeTypes());
                 } else {
                     code = HttpServletResponse.SC_NOT_FOUND;
                     res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -367,7 +367,7 @@ public class FileServlet extends HttpServlet {
 
         fileEntry = new FileCacheEntry(lastModifiedEntry.getETag(), content.getProperty(
                 Constants.JCR_MIMETYPE).getString(), contentLength,
-                lastModifiedEntry.getLastModified(), node.getNodeTypes());
+                lastModifiedEntry.getLastModified(), node.getIdentifier(), node.getNodeTypes());
         if (contentLength <= cacheThreshold && canCache(node) && isVisibleForGuest(node)) {
             InputStream is = null;
             try {

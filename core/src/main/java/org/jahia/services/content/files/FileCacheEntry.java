@@ -72,6 +72,8 @@
 package org.jahia.services.content.files;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 import javax.jcr.Binary;
 
@@ -96,6 +98,8 @@ public class FileCacheEntry implements Serializable {
 
     private String mimeType;
 
+    private List<String> nodeTypes = Collections.emptyList();
+
     /**
      * Initializes an instance of this class.
      * 
@@ -110,6 +114,19 @@ public class FileCacheEntry implements Serializable {
         this.mimeType = mimeType;
         this.contentLength = contentLength;
         this.lastModified = lastModified;
+    }
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param eTag
+     * @param mimeType
+     * @param contentLength
+     * @param lastModified
+     * @param nodeTypes
+     */
+    public FileCacheEntry(String eTag, String mimeType, long contentLength, long lastModified, List<String> nodeTypes) {
+        this(eTag, mimeType, contentLength, lastModified);
+        this.nodeTypes = nodeTypes;
     }
 
     public Binary getBinary() {
@@ -144,4 +161,11 @@ public class FileCacheEntry implements Serializable {
         this.data = data;
     }
 
+    public List<String> getNodeTypes() {
+        return nodeTypes;
+    }
+
+    public void setNodeTypes(List<String> nodeTypes) {
+        this.nodeTypes = nodeTypes;
+    }
 }

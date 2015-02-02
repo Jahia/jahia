@@ -2,6 +2,7 @@ package org.jahia.services.seo.jcr;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
+import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -9,6 +10,8 @@ import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +19,11 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
 /**
@@ -100,7 +106,8 @@ public class VanityUrlMapper {
 
     private static final Logger logger = LoggerFactory.getLogger(VanityUrlMapper.class);
 
-    public static final String vanityKey = "org.jahia.services.seo.jcr.VanityUrl";
+    public static final String VANITY_KEY = "org.jahia.services.seo.jcr.VanityUrl";
+    public static final String VANITY_SERVER_KEY = "org.jahia.services.seo.jcr.VanityUrl.server";
 
     /**
      * checks if a vanity exists and put the result as an attribute of the request
@@ -111,16 +118,41 @@ public class VanityUrlMapper {
      *              the url received to be checked
      */
     public void checkVanityUrl(HttpServletRequest hsRequest,String outboundContext, String outboundUrl) {
-
+        hsRequest.removeAttribute(VANITY_KEY);
+        hsRequest.removeAttribute(VANITY_SERVER_KEY);
+        
         URLResolverFactory urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
         UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
 
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
         String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
-        hsRequest.setAttribute(vanityKey, fullUrl);
+        hsRequest.setAttribute(VANITY_KEY, fullUrl);
+        
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
-            if (StringUtils.equals(ctx,outboundContext)) {
+            String serverName = null;
+            String siteKey = null;
+            String contextToCheck = outboundContext;            
+            int schemaDelimiterIndex = outboundContext.indexOf("://");
+            if (schemaDelimiterIndex != -1) {
+                try {
+                    URI uri = new URI(outboundContext);
+                    siteKey = lookupSiteKeyByServerName(uri.getHost());
+                    if (siteKey != null) {
+                        contextToCheck = uri.getPath();
+                        StringBuffer sb = new StringBuffer()
+                                .append(uri.getScheme()).append("://")
+                                .append(uri.getHost());
+                        if (uri.getPort() != -1) {
+                            sb.append(':').append(uri.getPort());
+                        }
+                        serverName = sb.toString();
+                    }
+                } catch (URISyntaxException e) {
+                    // simply continue as siteKey will be determined later
+                }
+            }
+            if (StringUtils.equals(ctx, contextToCheck)) {
                 String url = "/render" + outboundUrl;
                 try {
                     url = URLDecoder.decode(url, "UTF-8");
@@ -130,22 +162,30 @@ public class VanityUrlMapper {
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
                 try {
                     JCRNodeWrapper node = urlResolver.getNode();
+                    boolean vanityUrlFound = false;
                     if (urlResolver.isMapped()) {
                         RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
+                        if (siteKey == null) {
+                            siteKey = context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey();
+                        }                        
                         VanityUrl vanityUrl = vanityUrlService
                                 .getVanityUrlForWorkspaceAndLocale(
                                         node,
                                         urlResolver.getWorkspace(),
-                                        urlResolver.getLocale(), context != null ? context.getSite().getSiteKey() : node.getResolveSite().getSiteKey());
+                                        urlResolver.getLocale(), siteKey);
                         if (vanityUrl != null && vanityUrl.isActive()) {
-                            hsRequest.setAttribute(vanityKey, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl());
+                            vanityUrlFound = true;
+                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl());
+                            if (serverName != null) {
+                                hsRequest.setAttribute(VANITY_SERVER_KEY, serverName);                        
+                            }                            
                         }
                     }
-                    if (!urlRewriteService.isSeoRulesEnabled()) {
+                    if (!urlRewriteService.isSeoRulesEnabled() && !vanityUrlFound) {
                         // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
                         try {
                             // Switch to correct site for links
-                            hsRequest.setAttribute(vanityKey, Url.appendServerNameIfNeeded(node, fullUrl, hsRequest));
+                            hsRequest.setAttribute(VANITY_KEY, Url.appendServerNameIfNeeded(node, fullUrl, hsRequest));
                         } catch (PathNotFoundException e) {
                             // Cannot find node
                         } catch (MalformedURLException e) {
@@ -154,10 +194,26 @@ public class VanityUrlMapper {
                     }
                 } catch (RepositoryException e) {
                     logger.debug("Error when trying to obtain vanity url", e);
+                    if (serverName != null) {
+                        hsRequest.setAttribute(VANITY_SERVER_KEY, serverName);                        
+                    }
                 }
             }
         }
     }
+    
+    private static String lookupSiteKeyByServerName(String host) {
+        JahiaSite site = null;
+        if (SpringContextSingleton.getInstance().isInitialized()) {
+            try {
+                site = JahiaSitesService.getInstance().getSiteByServerName(host);
+            } catch (JahiaException e) {
+                logger.error("Error resolving site by server name '" + host + "'", e);
+            }
+        }
+        return site != null ? site.getSiteKey() : "";
+    }
+    
 }
 
 

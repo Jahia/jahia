@@ -33,5 +33,22 @@
         <set type="request" name="jahiaCacheControlSet">done</set>   
     </rule>
     <!-- end of client-side caching -->
+    <outbound-rule>
+        <name>Vanity url (servername)</name>
+        <note>Check if we need to add server name for vanity urls</note>
+        <condition type="attribute" name="org.jahia.services.seo.jcr.VanityUrl" operator="notequal">^$</condition>
+        <condition type="attribute" name="org.jahia.services.seo.jcr.VanityUrl.server" operator="notequal">^$</condition>
+        <from>^(.*)$</from>
+        <to>%{attribute:org.jahia.services.seo.jcr.VanityUrl.server}$1</to>
+    </outbound-rule>
+    <outbound-rule>
+        <name>Clear vanity attributes</name>
+        <note>Clear vanity URL attributes</note>
+        <condition type="attribute" name="org.jahia.services.seo.jcr.VanityUrl" operator="notequal">^$</condition>
+        <condition type="attribute" name="org.jahia.services.seo.jcr.VanityUrl.server" operator="notequal">^$</condition>
+        <from>^(.*)$</from>
+        <set type="request" name="org.jahia.services.seo.jcr.VanityUrl"> </set>
+        <set type="request" name="org.jahia.services.seo.jcr.VanityUrl.server"> </set>        
+    </outbound-rule>    
     
 </urlrewrite>

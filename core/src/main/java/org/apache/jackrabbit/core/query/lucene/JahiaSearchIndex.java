@@ -756,7 +756,7 @@ public class JahiaSearchIndex extends SearchIndex {
         }
     }
 
-    void reindexAndSwitch() throws RepositoryException, IOException {
+    synchronized void reindexAndSwitch() throws RepositoryException, IOException {
         long startTime = System.currentTimeMillis();
 
         File dest = new File(getPath() + ".old." + System.currentTimeMillis());

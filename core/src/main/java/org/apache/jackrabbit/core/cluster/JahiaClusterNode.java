@@ -379,7 +379,7 @@ public class JahiaClusterNode extends ClusterNode {
                             NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                         }
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        log.error("Cannot read file",e);
                     } catch (ParseException e) {
                         remfiles.add(file);
                     }

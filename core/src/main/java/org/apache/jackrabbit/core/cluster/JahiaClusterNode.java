@@ -79,11 +79,18 @@ import org.apache.jackrabbit.core.journal.Journal;
 import org.apache.jackrabbit.core.journal.JournalException;
 import org.apache.jackrabbit.core.journal.RecordProducer;
 import org.apache.jackrabbit.core.state.ItemState;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -345,6 +352,42 @@ public class JahiaClusterNode extends ClusterNode {
                 }
             }
             log.debug("Getting change  " + record.getRevision() + " : " + nodeIdList);
+        }
+        super.process(record);
+    }
+
+    @Override
+    public void process(NamespaceRecord record) {
+        NodeTypeRegistry.getProviderNodeTypeRegistry().getNamespaces().put( record.getNewPrefix() , record.getUri());
+        super.process(record);
+    }
+
+    @Override
+    public void process(NodeTypeRecord record) {
+        try {
+            // In case of any change in the registered nodetypes, reread the provider nodetype registry
+            List<String> files = new ArrayList<String>();
+            NodeTypeRegistry instance = NodeTypeRegistry.getInstance();
+            List<String> remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
+            while (!remfiles.isEmpty() && !remfiles.equals(files)) {
+                files = new ArrayList<String>(remfiles);
+                remfiles.clear();
+                for (String file : files) {
+                    try {
+                        if (file.endsWith(".cnd")) {
+                            final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
+                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        remfiles.add(file);
+                    }
+                }
+            }
+        } catch (RepositoryException e) {
+            String msg = "Unable to register nodetypes : " + e.getMessage();
+            log.error(msg);
         }
         super.process(record);
     }

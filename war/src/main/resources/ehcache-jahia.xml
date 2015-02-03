@@ -689,15 +689,18 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     </cache>
 
     <cache name="HTMLCache"
-            eternal="false"
-            timeToIdleSeconds="3600"
-            timeToLiveSeconds="14400">
+           eternal="false"
+           timeToIdleSeconds="3600">
     </cache>
+
     <cache name="HTMLDependenciesCache"
-            eternal="true">
+           eternal="true">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.DependenciesCacheEventListenerFactory" listenFor="local"/>
     </cache>
+
     <cache name="HTMLREGEXPDependenciesCache"
-            eternal="true">
+           eternal="true">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.DependenciesCacheEventListenerFactory" listenFor="local"/>
     </cache>
 
     <cache name="org.jahia.selfPopulatingReplicatedCache"

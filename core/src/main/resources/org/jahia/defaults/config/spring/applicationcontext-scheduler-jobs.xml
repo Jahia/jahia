@@ -71,11 +71,36 @@
                 <property name="name" value="DataStoreGarbageCollectorJob" />
                 <property name="jobClass" value="org.jahia.services.scheduler.DataStoreGarbageCollectorJob" />
                 <property name="group" value="Maintenance" />
-                <property name="description" value="Runs JCR DataStore Garbag Collector that deletes no longer used entries" />
+                <property name="description" value="Runs JCR DataStore Garbage Collector that deletes no longer used entries" />
             </bean>
         </property>
     </bean>
-    
+
+    <bean parent="jobSchedulingBean">
+        <property name="jobDetail">
+            <bean class="org.springframework.scheduling.quartz.JobDetailBean" depends-on="settingsBean">
+                <property name="name" value="EvictExpiredHTMLCacheKeyJob" />
+                <property name="jobClass" value="org.jahia.services.scheduler.JSR223ScriptJob" />
+                <property name="group" value="Maintenance" />
+                <property name="description" value="Evict form the HTML cache the expired fragment" />
+                <property name="jobDataAsMap">
+                    <map>
+                        <entry key="userkey" value=" system " />
+                        <entry key="jobScriptAbsolutePath" value="#{settingsBean.jahiaVarDiskPath}/scripts/groovy/evictExpiredCacheKey.groovy" />
+                    </map>
+                </property>
+            </bean>
+        </property>
+
+        <property name="trigger">
+            <bean class="org.quartz.CronTrigger">
+                <property name="name" value="EvictExpiredHTMLCacheKeyTrigger"/>
+                <!-- run every 15mn -->
+                <property name="cronExpression" value="0 0/15 * * * ?"/>
+            </bean>
+        </property>
+    </bean>
+
     <!-- 
     <bean parent="jobSchedulingBean">
         <property name="jobDetail">

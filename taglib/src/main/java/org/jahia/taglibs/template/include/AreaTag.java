@@ -120,6 +120,8 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     private boolean areaAsSubNode;
 
+    private boolean limitedAbsoluteAreaEdit = true;
+
     private String conflictsWith = null;
     
     public void setAreaType(String areaType) {
@@ -140,6 +142,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     public void setAreaAsSubNode(boolean areaAsSubNode) {
         this.areaAsSubNode = areaAsSubNode;
+    }
+
+    public void setLimitedAbsoluteAreaEdit(boolean limitedAbsoluteAreaEdit) {
+        this.limitedAbsoluteAreaEdit = limitedAbsoluteAreaEdit;
     }
 
     @Override
@@ -271,7 +277,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (node == null) {
                         return;
                     }
-                    if (!renderContext.getMainResource().getNode().getPath().equals(node.getPath())) {
+                    if ((limitedAbsoluteAreaEdit && !renderContext.getMainResource().getNode().getPath().equals(node.getPath())) || renderContext.getMainResource().getNode().getPath().startsWith("/modules")) {
                         parameters.put("readOnly", "true");
                         editable = false;
                     }

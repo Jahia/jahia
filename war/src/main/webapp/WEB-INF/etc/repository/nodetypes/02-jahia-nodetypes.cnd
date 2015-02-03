@@ -439,6 +439,7 @@
 
 [jnt:absoluteArea] > jnt:area, jmix:layoutComponentContent, jmix:studioOnly
  - j:level (long)
+ - j:limitedAbsoluteAreaEdit (boolean)
 
 [jnt:levelAbsoluteArea] > jnt:absoluteArea, jmix:hiddenType
 

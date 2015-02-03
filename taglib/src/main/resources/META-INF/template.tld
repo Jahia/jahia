@@ -461,6 +461,12 @@
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>
+        <attribute>
+            <description>Is the absolute area editable everywhere or only on the page containing its node.</description>
+            <name>limitedAbsoluteAreaEdit</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
     </tag>
 
     <tag>

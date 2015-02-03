@@ -501,6 +501,7 @@
  + * (jnt:virtualsite)
 
 [jnt:virtualsite] > nt:base, jmix:nodenameInfo, jmix:publication, jmix:autoPublish, jmix:observable, jmix:htmlSettings, mix:referenceable, mix:created, jmix:lockable, mix:lastModified, jmix:lastPublished, jmix:i18n, jmix:originWS, jmix:workflow
+ orderable
  - j:defaultTemplate (weakreference,choicelist[templatesNode=pageTemplate]) nofulltext hidden
  - j:defaultTemplateName (string, choicelist[templatesNode=pageTemplate]) nofulltext
  - j:title (string) protected nofulltext primary

@@ -14,9 +14,15 @@
         </template:module>
     </c:when>
     <c:otherwise>
+<<<<<<< .working
 		<c:if test="${not empty reference}">
 			<jahia:addCacheDependency path="${reference.string}" />
 		</c:if>
         <fmt:message key="label.missingReference"/>
+=======
+        <c:if test="${renderContext.editMode}"> 
+        	<fmt:message key="label.missingReference"/>
+        </c:if>
+>>>>>>> .merge-right.r51912
     </c:otherwise>
 </c:choose>

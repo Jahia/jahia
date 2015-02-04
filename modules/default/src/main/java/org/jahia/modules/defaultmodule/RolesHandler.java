@@ -179,25 +179,16 @@ public class RolesHandler implements Serializable {
         String siteKey = nodePath.startsWith("/sites/") ? StringUtils.substringBefore(StringUtils.substringAfter(nodePath,"/sites/"),"/") : null;
 
         for (Map.Entry<String, List<String[]>> entry : acl.entrySet()) {
-<<<<<<< .working
             JCRNodeWrapper p = null;
-=======
-            Principal p = null;
->>>>>>> .merge-right.r51900
             if (entry.getKey().startsWith("u:")) {
                 p = userManagerService.lookupUser(entry.getKey().substring(2),siteKey);
             } else if (entry.getKey().startsWith("g:")) {
                 if (siteKey != null) {
                     p = groupManagerService.lookupGroup(siteKey, entry.getKey().substring(2));
                 }
-<<<<<<< .working
                 if (p == null) {
                     p = groupManagerService.lookupGroup(null, entry.getKey().substring(2));
                 }
-            } else {
-                continue;
-=======
->>>>>>> .merge-right.r51900
             }
             if (p != null) {
                 final List<String[]> value = entry.getValue();

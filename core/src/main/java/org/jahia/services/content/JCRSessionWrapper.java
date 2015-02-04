@@ -284,11 +284,13 @@ public class JCRSessionWrapper implements Session {
             }
 
             try {
+                boolean isAliased = false;
                 Session session = getProviderSession(provider);
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
                         sessionFactory.getCurrentAliasedUser() != null &&
-                        sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                     ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
+                    isAliased = true;
                 }
                 Node n = session.getNodeByIdentifier(uuid);
                 JCRNodeWrapper wrapper = null;
@@ -301,8 +303,10 @@ public class JCRSessionWrapper implements Session {
                 if (wrapper == null) {
                     wrapper = provider.getNodeWrapper(n, this);
                 }
-                sessionCacheByIdentifier.put(uuid, wrapper);
-                sessionCacheByPath.put(wrapper.getPath(), wrapper);
+                if (!isAliased) {
+                    sessionCacheByIdentifier.put(uuid, wrapper);
+                    sessionCacheByPath.put(wrapper.getPath(), wrapper);
+                }
 
                 return wrapper;
             } catch (ItemNotFoundException ee) {
@@ -373,10 +377,12 @@ public class JCRSessionWrapper implements Session {
                 }
 //                Item item = getProviderSession(provider).getItem(localPath);
                 Session session = getProviderSession(provider);
+                boolean isAliased = false;
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
                         sessionFactory.getCurrentAliasedUser() != null &&
-                        sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                     ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
+                    isAliased = true;
                 }
                 Item item = session.getItem(provider.getRelativeRoot() + localPath);
                 if (item.isNode()) {
@@ -391,8 +397,11 @@ public class JCRSessionWrapper implements Session {
                     if (wrapper == null) {
                         wrapper = provider.getNodeWrapper(node, localPath, null, this);
                     }
-                    sessionCacheByPath.put(path, wrapper);
-                    sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
+                    
+                    if (!isAliased) {
+                        sessionCacheByPath.put(path, wrapper);
+                        sessionCacheByIdentifier.put(wrapper.getIdentifier(), wrapper);
+                    }
 
                     return wrapper;
                 } else {

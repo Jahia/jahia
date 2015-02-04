@@ -475,19 +475,19 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         String cacheKey = jcrPath + " : " + permissions;
 
-        Boolean result = pathPermissionCache.get(cacheKey);
+        Boolean result = pathPermissionCacheGet(cacheKey);
         if (result != null) {
             return result;
         }
 
         try {
             if (deniedPathes.get() != null && deniedPathes.get().contains(jcrPath)) {
-                pathPermissionCache.put(cacheKey, false);
+                pathPermissionCachePut(cacheKey, false);
                 return false;
             }
 
             if (isSystemPrincipal()) {
-                pathPermissionCache.put(cacheKey, true);
+                pathPermissionCachePut(cacheKey, true);
                 return true;
             }
 
@@ -503,7 +503,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                     i = getSecuritySession().getItem(jcrPath);
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
-                            pathPermissionCache.put(cacheKey, false);
+                            pathPermissionCachePut(cacheKey, false);
                             return false;
                         }
                     }
@@ -513,7 +513,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Administrators are always granted
             if (jahiaPrincipal != null) {
                 if (isAdmin(null)) {
-                    pathPermissionCache.put(cacheKey, true);
+                    pathPermissionCachePut(cacheKey, true);
                     return true;
                 }
             }
@@ -524,7 +524,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
 
             if (!itemExists) {
-                pathPermissionCache.put(cacheKey, true);
+                pathPermissionCachePut(cacheKey, true);
                 return true;
             }
 
@@ -611,7 +611,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-        pathPermissionCache.put(cacheKey, res);
+        pathPermissionCachePut(cacheKey, res);
         return res;
     }
 
@@ -840,7 +840,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             stringBuilder.append(permission);
         }
         String entryKey = stringBuilder.toString();
-        Boolean cachedValue = isAliased ? null : matchingPermissions.get(entryKey);
+        Boolean cachedValue = matchingPermissionsGet(entryKey);
         if (cachedValue == null) {
             Set<Privilege> permsInRole = getPermissionsInRole(role);
             if (logger.isDebugEnabled()) {
@@ -861,7 +861,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             }
             if (permissionsSize == permissions.size()) {
                 // Do not cache if permissions set is modified
-                matchingPermissions.put(entryKey, Boolean.FALSE);
+                matchingPermissionsPut(entryKey, Boolean.FALSE);
             }
             return false;
         } else {
@@ -877,9 +877,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean checkPrivilege(Set<String> permissions, String name, String cacheEntryKey) {
         if (!isAliased || !name.contains("_" + Constants.EDIT_WORKSPACE)) {
             if (checkPrivilege(permissions, name)) {
-                if (!isAliased) {
-                    matchingPermissions.put(cacheEntryKey, Boolean.TRUE);
-                }
+                matchingPermissionsPut(cacheEntryKey, Boolean.TRUE);
                 return true;
             }
         }
@@ -1046,7 +1044,27 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
         return grantedRoles;
     }
+    
 
+    private Boolean matchingPermissionsGet(String key) {
+        return isAliased ? null : matchingPermissions.get(key);
+    }
+
+    private void matchingPermissionsPut(String key, Boolean value) {
+        if (!isAliased) {
+            matchingPermissions.put(key, value);
+        }
+    }
+    
+    private Boolean pathPermissionCacheGet(String key) {
+        return isAliased ? null : pathPermissionCache.get(key);
+    }
+
+    private void pathPermissionCachePut(String key, Boolean value) {
+        if (!isAliased) {
+            pathPermissionCache.put(key, value);
+        }
+    }
 
     class CompiledAcl {
         boolean broken = false;

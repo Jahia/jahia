@@ -77,6 +77,7 @@
     </bean>
 
     <bean parent="jobSchedulingBean">
+        <property name="ramJob" value="true"/>
         <property name="jobDetail">
             <bean class="org.springframework.scheduling.quartz.JobDetailBean" depends-on="settingsBean">
                 <property name="name" value="EvictExpiredHTMLCacheKeyJob" />

@@ -141,7 +141,7 @@ public class TrashboardEngine extends LayoutContainer {
         RpcProxy<PagingLoadResult<GWTJahiaNode>> proxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {
             @Override
             protected void load(Object loadConfig, AsyncCallback<PagingLoadResult<GWTJahiaNode>> callback) {
-                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot] where isdescendantnode(['"+ JahiaGWTParameters.getSiteNode().getPath()+"'])",-1, 0, null,
+                JahiaContentManagementService.App.getInstance().searchSQL("select * from [jmix:markedForDeletionRoot] where isdescendantnode(['"+ JahiaGWTParameters.getSiteNode().getPath().replace("'","''")+"'])",-1, 0, null,
                         FIELDS, true, callback);
             }
         };

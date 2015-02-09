@@ -104,15 +104,12 @@ import org.jahia.ajax.gwt.helper.*;
 import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.bin.Login;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.htmlvalidator.Result;
@@ -120,7 +117,6 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.tags.TaggingService;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -673,37 +669,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-     * Save properties by langCode
-     *  @param nodes
-     * @param newProps
-     * @param removedTypes
-     * @param locale       @throws GWTJahiaServiceException
-     * @param b
-     */
-    private void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, String locale, boolean validate)
-            throws GWTJahiaServiceException {
-        JCRSessionWrapper session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale));
-        try {
-            properties.saveProperties(nodes, newProps, removedTypes, session, getUILocale());
-            if(validate)
-            session.validate();
-        } catch (javax.jcr.nodetype.ConstraintViolationException e) {
-            if (e instanceof CompositeConstraintViolationException) {
-                properties.convertException((CompositeConstraintViolationException) e);
-            }
-            if (e instanceof NodeConstraintViolationException) {
-                properties.convertException((NodeConstraintViolationException) e);
-            }
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
-        } catch (LockException e) {
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
-        }
-    }
-
-    /**
      * Save properties and acl for the given nodes
      *
      * @param nodes
@@ -714,25 +679,42 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public void savePropertiesAndACL(List<GWTJahiaNode> nodes, GWTJahiaNodeACL acl,
                                      Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                                      List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
-        // save shared properties
-        saveProperties(nodes, sharedProperties, removedTypes, getLocale().toString(), false);
         Iterator<String> langCode = langCodeProperties.keySet().iterator();
-        // save properties per lang
-        while (langCode.hasNext()) {
-            String currentLangCode = langCode.next();
-            List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
-            saveProperties(nodes, props, removedTypes, currentLangCode, true);
-        }
 
-        // save acl
-        if (acl != null) {
-            for (GWTJahiaNode node : nodes) {
-                contentManager.setACL(node.getUUID(), acl, retrieveCurrentSession());
-            }
-        }
         try {
+            List<JCRSessionWrapper> sessions = new ArrayList<>();
+            JCRSessionWrapper session = retrieveCurrentSession(null);
+            sessions.add(session);
+
+            // save shared properties
+            properties.saveProperties(nodes, sharedProperties, removedTypes, session, getUILocale());
+
+            // save properties per lang
+            while (langCode.hasNext()) {
+                String currentLangCode = langCode.next();
+                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+                session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
+                sessions.add(session);
+                properties.saveProperties(nodes, props, removedTypes, session, getUILocale());
+            }
+            for (JCRSessionWrapper sessionWrapper : sessions) {
+                sessionWrapper.validate();
+            }
+            if (acl != null) {
+                for (GWTJahiaNode node : nodes) {
+                    contentManager.setACL(node.getUUID(), acl, retrieveCurrentSession());
+                }
+            }
             retrieveCurrentSession().save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
+            if (e instanceof CompositeConstraintViolationException) {
+                properties.convertException((CompositeConstraintViolationException) e);
+            }
+            if (e instanceof NodeConstraintViolationException) {
+                properties.convertException((NodeConstraintViolationException) e);
+            }
+            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
+        } catch (LockException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -773,18 +755,42 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 //        setLock(Arrays.asList(node.getPath()), false);
             Iterator<String> langCode = langCodeProperties.keySet().iterator();
 
-            // save shared properties
-            saveProperties(Arrays.asList(node), sharedProperties, removedTypes, null, false);
-            if (!removedTypes.isEmpty()) {
-                for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
-                    removedTypes.remove(mixin.getName());
+            try {
+                List<JCRSessionWrapper> sessions = new ArrayList<>();
+                JCRSessionWrapper session = retrieveCurrentSession(null);
+                sessions.add(session);
+
+                // save shared properties
+                properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale());
+                if (!removedTypes.isEmpty()) {
+                    for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
+                        removedTypes.remove(mixin.getName());
+                    }
                 }
-            }
-            // save properties per lang
-            while (langCode.hasNext()) {
-                String currentLangCode = langCode.next();
-                List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
-                saveProperties(Arrays.asList(node), props, removedTypes, currentLangCode, true);
+                // save properties per lang
+                while (langCode.hasNext()) {
+                    String currentLangCode = langCode.next();
+                    List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
+                    session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
+                    sessions.add(session);
+                    properties.saveProperties(Arrays.asList(node), props, removedTypes, session, getUILocale());
+                }
+                for (JCRSessionWrapper sessionWrapper : sessions) {
+                    sessionWrapper.validate();
+                }
+            } catch (javax.jcr.nodetype.ConstraintViolationException e) {
+                if (e instanceof CompositeConstraintViolationException) {
+                    properties.convertException((CompositeConstraintViolationException) e);
+                }
+                if (e instanceof NodeConstraintViolationException) {
+                    properties.convertException((NodeConstraintViolationException) e);
+                }
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
+            } catch (LockException e) {
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
             }
 
             properties.saveI18nWorkInProgress(nodeWrapper, sharedProperties, langCodeProperties.keySet());

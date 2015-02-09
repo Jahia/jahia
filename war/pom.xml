@@ -538,6 +538,11 @@
                                     <artifactId>org.jahia.bundles.slf4j.loglistener</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.configadmin.persistence</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
 
                                 <artifactItem>
                                     <groupId>org.jahia.server</groupId>

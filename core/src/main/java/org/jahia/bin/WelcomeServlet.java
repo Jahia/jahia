@@ -181,28 +181,14 @@ public class WelcomeServlet extends HttpServlet {
     protected void defaultRedirect(HttpServletRequest request, HttpServletResponse response,
             ServletContext context) throws Exception {
         request.getSession(true);
-        final JahiaSitesService siteService = JahiaSitesService.getInstance();
-        JahiaSite defaultSite = null;
-        String defaultSitePath = null;
-        final JCRSiteNode site;
-        String siteKey = !Url.isLocalhost(request.getServerName()) ? siteService.getSitenameByServerName(request.getServerName()) : null;
-        if (siteKey != null) {
-            // site resolved by the hostname -> read it with user session to check the access rights
-            site = (JCRSiteNode) siteService.getSiteByKey(siteKey);
-        } else {
-            // use the default site
-            defaultSite = siteService.getDefaultSite();
-            defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
-            site = (JCRSiteNode) defaultSite;
-        }
-        
+        JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
+        String defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
+        final JCRSiteNode site = resolveSite(request, Constants.LIVE_WORKSPACE, defaultSitePath);
+        JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
         JCRUserNode userNode = user != null ? JahiaUserManagerService.getInstance().lookupUserByPath(user.getLocalPath()) : null;
         String redirect = null;
         String pathInfo = request.getPathInfo();
-<<<<<<< .working
         String language = resolveLanguage(request, site, userNode, false);
-=======
->>>>>>> .merge-right.r51954
 
         String defaultLocation = null;
         String mapping = null;
@@ -219,12 +205,6 @@ public class WelcomeServlet extends HttpServlet {
         if (site == null && (defaultLocation == null || defaultLocation.contains("$defaultSiteHome"))) {
             userRedirect(request, response, context);
         } else {
-            if (defaultSite == null) {
-                defaultSite = siteService.getDefaultSite();
-                defaultSitePath = defaultSite != null ? defaultSite.getJCRLocalPath() : null;
-            }
-            
-            String language = resolveLanguage(request, site, (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER), false);
             if (defaultLocation != null) {
                 if (site != null && defaultLocation.contains("$defaultSiteHome")) {
                     JCRNodeWrapper home = site.getHome();

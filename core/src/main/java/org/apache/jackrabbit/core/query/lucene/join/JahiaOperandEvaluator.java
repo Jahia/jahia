@@ -71,13 +71,19 @@
  */
 package org.apache.jackrabbit.core.query.lucene.join;
 
-import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
-
-import javax.jcr.*;
-import javax.jcr.query.Row;
-import javax.jcr.query.qom.*;
 import java.util.Locale;
 import java.util.Map;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.Row;
+import javax.jcr.query.qom.Operand;
+import javax.jcr.query.qom.PropertyValue;
+
+import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
 
 public class JahiaOperandEvaluator extends OperandEvaluator {
 
@@ -133,6 +139,10 @@ public class JahiaOperandEvaluator extends OperandEvaluator {
     private Value[] getPropertyValues(PropertyValue operand, Row row)
             throws RepositoryException {
         Property property = getProperty(operand, row);
+        return getValuesFrom(property);
+    }
+
+    private Value[] getValuesFrom(Property property) throws RepositoryException {
         if (property == null) {
             return new Value[0];
         } else if (property.isMultiple()) {
@@ -145,13 +155,7 @@ public class JahiaOperandEvaluator extends OperandEvaluator {
     private Value[] getPropertyValues(PropertyValue operand, Node node)
             throws RepositoryException {
         Property property = getProperty(operand, node);
-        if (property == null) {
-            return new Value[0];
-        } else if (property.isMultiple()) {
-            return property.getValues();
-        } else {
-            return new Value[] { property.getValue() };
-        }
+        return getValuesFrom(property);
     }
 
     /**

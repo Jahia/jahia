@@ -71,6 +71,17 @@
  */
 package org.jahia.services.templates;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.xml.transform.TransformerException;
+
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -116,16 +127,6 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
-import javax.jcr.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.xml.transform.TransformerException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.*;
-
 /**
  * Template and template set deployment and management service.
  *
@@ -149,16 +150,16 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         }
     };
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaTemplateManagerService.class);
 
-    private Map<Bundle, ModuleState> moduleStates = new TreeMap<Bundle, ModuleState>();
-    private Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<Bundle, JahiaTemplatesPackage>();
-    private Set<Bundle> installedBundles = new HashSet<Bundle>();
-    private Set<Bundle> initializedBundles = new HashSet<Bundle>();
-    private Map<String, List<Bundle>> toBeParsed = new HashMap<String, List<Bundle>>();
-    private Map<String, List<Bundle>> toBeStarted = new HashMap<String, List<Bundle>>();
+    private Map<Bundle, ModuleState> moduleStates = new TreeMap<>();
+    private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<>();
+    private final Set<Bundle> installedBundles = new HashSet<>();
+    private final Set<Bundle> initializedBundles = new HashSet<>();
+    private final Map<String, List<Bundle>> toBeParsed = new HashMap<>();
+    private final Map<String, List<Bundle>> toBeStarted = new HashMap<>();
 
-    private OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
+    private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
     private TemplatePackageDeployer templatePackageDeployer;
 
@@ -349,7 +350,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                 regenerateImportFile(moduleId, sources, session);
 
                 if (vi.hasProperty("j:scmURI")) {
-                    SourceControlManagement scm = null;
+                    SourceControlManagement scm;
                     scm = pack.getSourceControl();
                     if (scm != null) {
                         scm.update();
@@ -365,7 +366,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public File releaseModule(final JahiaTemplatesPackage module, ModuleReleaseInfo releaseInfo, File sources, String scmUrl, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
         File pom = new File(sources, "pom.xml");
-        Model model = null;
+        Model model;
         try {
             model = PomUtils.read(pom);
             if (scmUrl != null && !StringUtils.equals(model.getScm().getConnection(), scmUrl)) {
@@ -436,7 +437,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<File> regenerateImportFile(String moduleId, File sources, JCRSessionWrapper session) throws RepositoryException {
         logger.info("Re-generating initial import file for module {} in source folder {}", moduleId, sources);
         long startTime = System.currentTimeMillis();
-        List<File> modifiedFiles = new ArrayList<File>();
+        List<File> modifiedFiles = new ArrayList<>();
 
         if (session.getLocale() != null) {
             logger.error("Cannot generated export with i18n session");
@@ -462,14 +463,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                     logger.error(e.getMessage(), e);
                 }
             }
-        } catch (RepositoryException e1) {
+        } catch (RepositoryException | SAXException | TransformerException | IOException e1) {
             logger.error(e1.getMessage(), e1);
-        } catch (SAXException e11) {
-            logger.error(e11.getMessage(), e11);
-        } catch (IOException e12) {
-            logger.error(e12.getMessage(), e12);
-        } catch (TransformerException e13) {
-            logger.error(e13.getMessage(), e13);
         }
 
         logger.info("Initial import for module {} re-generated in {}", moduleId, DateUtils.formatDurationWords(System.currentTimeMillis() - startTime));
@@ -553,7 +548,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             }
         }
 
-        Set<String> modules = new TreeSet<String>();
+        Set<String> modules = new TreeSet<>();
 
         if (includeDirectDependencies) {
             modules.addAll(installedModules);
@@ -563,7 +558,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             includeTransitiveModuleDependencies(installedModules, modules);
         }
         Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> all = templatePackageRegistry.getAllModuleVersions();
-        List<JahiaTemplatesPackage> packages = new LinkedList<JahiaTemplatesPackage>();
+        List<JahiaTemplatesPackage> packages = new LinkedList<>();
         for (String m : modules) {
             JahiaTemplatesPackage pkg = getTemplatePackageById(m);
             pkg = pkg != null ? pkg : getTemplatePackage(m);
@@ -619,7 +614,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void installModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        installModules(Arrays.asList(module), sitePath, session);
+        installModules(Collections.singletonList(module), sitePath, session);
     }
 
     public void installModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
@@ -643,12 +638,12 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void uninstallModule(final JahiaTemplatesPackage module, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        uninstallModules(Arrays.asList(module), sitePath, session);
+        uninstallModules(Collections.singletonList(module), sitePath, session);
     }
 
 
     public void uninstallModules(final List<JahiaTemplatesPackage> modules, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
-        List<String> moduleIds = new ArrayList<String>();
+        List<String> moduleIds = new ArrayList<>();
         for (JahiaTemplatesPackage module : modules) {
             moduleIds.add(module.getId());
         }
@@ -660,7 +655,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public void uninstallModulesFromAllSites(final String module, final JCRSessionWrapper session) throws RepositoryException {
-        uninstallModulesFromAllSites(Arrays.asList(module), session);
+        uninstallModulesFromAllSites(Collections.singletonList(module), session);
     }
 
     public void uninstallModulesFromAllSites(final List<String> modules, final JCRSessionWrapper session) throws RepositoryException {
@@ -690,7 +685,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<JahiaTemplatesPackage> getNonSystemTemplateSetPackages() {
         final int packagesCount = getAvailableTemplatePackagesCount();
         if (packagesCount > 0) {
-            List<JahiaTemplatesPackage> result = new ArrayList<JahiaTemplatesPackage>(packagesCount);
+            List<JahiaTemplatesPackage> result = new ArrayList<>(packagesCount);
             for (JahiaTemplatesPackage templatePackage : getAvailableTemplatePackages()) {
                 if (templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getId().equals("templates-system")) {
                     result.add(templatePackage);
@@ -705,7 +700,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     public List<JahiaTemplatesPackage> getNonSystemModulePackages() {
         final int packagesCount = getAvailableTemplatePackagesCount();
         if (packagesCount > 0) {
-            List<JahiaTemplatesPackage> result = new ArrayList<JahiaTemplatesPackage>(packagesCount);
+            List<JahiaTemplatesPackage> result = new ArrayList<>(packagesCount);
             for (JahiaTemplatesPackage templatePackage : getAvailableTemplatePackages()) {
                 if (!templatePackage.getModuleType().equals(TemplatePackageRegistry.TEMPLATES_SET) && !templatePackage.getModuleType().equals("system")) {
                     result.add(templatePackage);
@@ -842,7 +837,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
                         public Set<String> doInJCR(JCRSessionWrapper session)
                                 throws RepositoryException {
                             QueryManager qm = session.getWorkspace().getQueryManager();
-                            Set<String> templateSets = new TreeSet<String>();
+                            Set<String> templateSets = new TreeSet<>();
                             for (NodeIterator nodes = qm
                                     .createQuery(
                                             "select * from [jnt:module] as module " +
@@ -949,12 +944,11 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     private boolean isTemplatePresent(String templateName, Set<String> templateSetNames,
-                                      JCRSessionWrapper session) throws InvalidQueryException, ValueFormatException,
-            PathNotFoundException, RepositoryException {
-        boolean found = false;
+                                      JCRSessionWrapper session) throws
+            RepositoryException {
         QueryManager queryManager = session.getWorkspace().getQueryManager();
 
-        StringBuilder query = new StringBuilder(256);
+        StringBuilder query = new StringBuilder(512);
         query.append("select * from [jnt:template] as t inner join ["
                 + Constants.JAHIANT_VIRTUALSITE
                 + "]"
@@ -1011,7 +1005,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      * @return list of module bundles in the specified state or an empty list if there no modules in that state
      */
     public List<Bundle> getModulesByState(ModuleState.State state) {
-        List<Bundle> modules = new LinkedList<Bundle>();
+        List<Bundle> modules = new LinkedList<>();
         for (Map.Entry<Bundle, ModuleState> entry : moduleStates.entrySet()) {
             if (entry.getValue().getState().equals(state)) {
                 modules.add(entry.getKey());
@@ -1048,7 +1042,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public static class ModuleDeployedOnSiteEvent extends ApplicationEvent {
         private static final long serialVersionUID = -6693201714720533228L;
-        private String targetSitePath;
+        private final String targetSitePath;
 
         public ModuleDeployedOnSiteEvent(String targetSitePath, Object source) {
             super(source);
@@ -1065,7 +1059,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
      */
     public static class ModuleDependenciesEvent extends ApplicationEvent {
         private static final long serialVersionUID = -6693201714720533228L;
-        private String moduleName;
+        private final String moduleName;
 
         public ModuleDependenciesEvent(String moduleName, Object source) {
             super(source);
@@ -1120,7 +1114,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     public void setModulesWithNoDefaultDependency(Set<String> modulesWithNoDefaultDependency) {
         if (modulesWithNoDefaultDependency != null && !modulesWithNoDefaultDependency.isEmpty()) {
-            HashSet<String> modules = new HashSet<String>(modulesWithNoDefaultDependency);
+            HashSet<String> modules = new HashSet<>(modulesWithNoDefaultDependency);
             modules.add("default");
             this.modulesWithNoDefaultDependency = Collections.unmodifiableSet(modules);
         } else {

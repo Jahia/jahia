@@ -73,6 +73,7 @@ package org.jahia.services.content.decorator;
 
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.*;
@@ -217,7 +218,7 @@ public class JCRGroupNode extends JCRNodeDecorator {
 
     public void removeMember(JCRNodeWrapper principal) {
         try {
-            Query q = getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'"+getPath()+"') and [j:member]='"+principal.getIdentifier()+"'", Query.JCR_SQL2);
+            Query q = getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'"+ JCRContentUtils.sqlEncode(getPath()) + "') and [j:member]='" + principal.getIdentifier() + "'", Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
             if (ni.hasNext()) {
                 ni.nextNode().remove();

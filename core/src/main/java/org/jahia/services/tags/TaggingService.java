@@ -492,7 +492,7 @@ public class TaggingService extends JahiaService{
     }
 
     private <X> X updateOrDeleteTagUnderPath(String startPath, JCRSessionWrapper session, String selectedTag, String tagNewName, TagActionCallback<X> callback) throws RepositoryException{
-        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + startPath + "') AND " +
+        String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + JCRContentUtils.sqlEncode(startPath) + "') AND " +
                 "(result.[j:tagList] = '" + Text.escapeIllegalXpathSearchChars(selectedTag).replaceAll("'", "''") + "')";
         QueryManager qm = session.getWorkspace().getQueryManager();
         Query q = qm.createQuery(query, Query.JCR_SQL2);

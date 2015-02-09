@@ -120,7 +120,7 @@ public class TagsFlowHandler implements Serializable {
     public Map<String, Integer> getTagsList(RenderContext renderContext) {
         try {
             JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
-            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + renderContext.getSite().getPath() + "') AND (result.[j:tagList] IS NOT NULL)";
+            String query = "SELECT * FROM [jmix:tagged] AS result WHERE ISDESCENDANTNODE(result, '" + JCRContentUtils.sqlEncode(renderContext.getSite().getPath()) + "') AND (result.[j:tagList] IS NOT NULL)";
             QueryManager qm = session.getWorkspace().getQueryManager();
             Query q = qm.createQuery(query, Query.JCR_SQL2);
             ScrollableQuery scrollableQuery = new ScrollableQuery(500, q);

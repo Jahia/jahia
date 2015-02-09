@@ -288,7 +288,7 @@ public class ModuleInstallationHelper implements ApplicationEventPublisherAware 
             while (nti.hasNext()) {
                 ExtendedNodeType next = (ExtendedNodeType) nti.next();
                 Query q = manager.createQuery("select * from ['" + next.getName()
-                        + "'] as c where isdescendantnode(c,'" + sitePath + "')", Query.JCR_SQL2);
+                        + "'] as c where isdescendantnode(c,'" + JCRContentUtils.sqlEncode(sitePath) + "')", Query.JCR_SQL2);
                 try {
                     NodeIterator ni = q.execute().getNodes();
                     while (ni.hasNext()) {

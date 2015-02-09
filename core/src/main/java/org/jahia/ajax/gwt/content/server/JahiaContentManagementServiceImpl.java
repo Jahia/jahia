@@ -2184,7 +2184,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaNode> getPortalNodes(String targetAreaName) {
         List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
         try {
-            Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentFolder] as l where localname()='" + targetAreaName + "' and isdescendantnode(l,['/sites'])", Query.JCR_SQL2);
+            Query q = retrieveCurrentSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:contentFolder] as l where localname()='" + JCRContentUtils.sqlEncode(targetAreaName) + "' and isdescendantnode(l,['/sites'])", Query.JCR_SQL2);
             QueryResult queryResult = q.execute();
             NodeIterator nodeIterator = queryResult.getNodes();
             while (nodeIterator.hasNext()) {

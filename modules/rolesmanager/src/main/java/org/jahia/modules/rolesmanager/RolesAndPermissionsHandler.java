@@ -410,8 +410,8 @@ public class RolesAndPermissionsHandler implements Serializable {
         }
 
         NodeIterator nodes = currentUserSession.getWorkspace().getQueryManager().createQuery(
-                "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
-                Query.JCR_SQL2).execute().getNodes();
+                "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(roleName) + "' and isdescendantnode(r,['/roles'])",
+                        Query.JCR_SQL2).execute().getNodes();
         if (nodes.hasNext()) {
             messageContext.addMessage(new MessageBuilder().source("roleName")
                     .defaultText(getMessage("rolesmanager.rolesAndPermissions.role.exists"))

@@ -202,7 +202,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             @Override
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 final QueryManagerWrapper queryManager = session.getWorkspace().getQueryManager();
-                                QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + fPath + "/')", Query.JCR_SQL2).execute();
+                                QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + JCRContentUtils.sqlEncode(fPath) + "/')", Query.JCR_SQL2).execute();
                                 for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
                                     String principal = nodeWrapper.getProperty("j:principal").getString();
                                     userGroupsKeyToFlush.add(principal);

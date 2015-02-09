@@ -503,7 +503,7 @@ public class JahiaGroupManagerService extends JahiaService {
                     }
                 }
                 String s = (siteKey == null) ? "/groups/" : "/sites/" + siteKey + "/groups/";
-                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g where isdescendantnode(g,'" + s + "')");
+                query.insert(0, "SELECT * FROM [" + Constants.JAHIANT_GROUP + "] as g where isdescendantnode(g,'" + JCRContentUtils.sqlEncode(s) + "')");
                 query.append(" ORDER BY g.[j:nodename]");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
@@ -661,7 +661,7 @@ public class JahiaGroupManagerService extends JahiaService {
             }
 
             // Update membership cache
-            Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'" + node.getPath() + "')", Query.JCR_SQL2);
+            Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'" + JCRContentUtils.sqlEncode(node.getPath()) + "')", Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
             if (ni.hasNext()) {
                 cacheHelper.getMembershipCache().remove("/" + StringUtils.substringAfter(ni.nextNode().getPath(), "/j:members/"));

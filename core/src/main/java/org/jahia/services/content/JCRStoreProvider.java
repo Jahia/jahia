@@ -944,7 +944,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public JCRNodeWrapper getUserFolder(JahiaUser user) throws RepositoryException {
         String username = ISO9075.encode(user.getUsername());
-        String sql = "select * from [jnt:user] as user where localname(user) = '" + username + "'";
+        String sql = "select * from [jnt:user] as user where localname(user) = '" + JCRContentUtils.sqlEncode(username) + "'";
 
         List<JCRNodeWrapper> results = queryFolders(sessionFactory.getCurrentUserSession(), sql);
         if (results.isEmpty()) {
@@ -971,7 +971,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public JCRNodeWrapper getSiteFolder(String site) throws RepositoryException {
         site = ISO9075.encode(site);
-        String xp = "select * from [jnt:virtualsite] as site where localname(site) = '" + site + "'";
+        String xp = "select * from [jnt:virtualsite] as site where localname(site) = '" + JCRContentUtils.sqlEncode(site) + "'";
 
         final List<JCRNodeWrapper> list = queryFolders(sessionFactory.getCurrentUserSession(), xp);
         if (list.isEmpty()) {

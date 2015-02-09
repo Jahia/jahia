@@ -509,7 +509,7 @@ public class ContentManagerHelper {
             JCRSiteNode targetSite = targetNode.getResolveSite();
             if (!sourceSite.equals(targetSite)) {
                 JCRSessionWrapper session = node.getSession();
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['" + sourceSite.getPath() + "/templates'])", Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:template] as t where isdescendantnode(t, ['" + JCRContentUtils.sqlEncode(sourceSite.getPath()) + "/templates'])", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper next = (JCRNodeWrapper) ni.next();

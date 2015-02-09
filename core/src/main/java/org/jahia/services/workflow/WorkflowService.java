@@ -413,7 +413,7 @@ public class WorkflowService implements BeanPostProcessor {
         }
         try {
             if (!permPath.contains("/")) {
-                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='" + permPath + "'", Query.JCR_SQL2);
+                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:permission] where name()='" + JCRContentUtils.sqlEncode(permPath) + "'", Query.JCR_SQL2);
                 NodeIterator ni = q.execute().getNodes();
                 if (ni.hasNext()) {
                     permPath = StringUtils.substringAfter(ni.nextNode().getPath(), "/permissions");
@@ -428,12 +428,12 @@ public class WorkflowService implements BeanPostProcessor {
 
             while (!StringUtils.isEmpty(permPath)) {
                 String permissionName = permPath.contains("/") ? StringUtils.substringAfterLast(permPath, "/") : permPath;
-                NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
+                NodeIterator ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:role] where [j:permissionNames] = '" + JCRContentUtils.sqlEncode(permissionName) + "'", Query.JCR_SQL2).execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
                     roles.add(roleNode.getName());
                 }
-                ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + permissionName + "'", Query.JCR_SQL2).execute().getNodes();
+                ni = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:externalPermissions] where [j:permissionNames] = '" + JCRContentUtils.sqlEncode(permissionName) + "'", Query.JCR_SQL2).execute().getNodes();
                 while (ni.hasNext()) {
                     JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.next();
                     extPerms.add(roleNode.getParent().getName() + "/" + roleNode.getName());

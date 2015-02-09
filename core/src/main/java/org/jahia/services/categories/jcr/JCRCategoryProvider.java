@@ -273,7 +273,7 @@ public class JCRCategoryProvider {
             if (session.getWorkspace().getQueryManager() != null) {
 				StringBuilder query = new StringBuilder("SELECT * FROM ["
 				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE localname(cat) = '");
-                query.append(categoryKey);
+                query.append(JCRContentUtils.sqlEncode(categoryKey));
                 query.append("' ");
                 if (logger.isDebugEnabled()) {
                     logger.debug(query.toString());
@@ -307,7 +307,7 @@ public class JCRCategoryProvider {
             	StringBuilder query = new StringBuilder("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY
                         + "] as cat WHERE localname(cat) LIKE '");
-                query.append(categoryKey);
+                query.append(JCRContentUtils.sqlEncode(categoryKey));
                 query.append("%' ");
                 query.append(" ORDER BY localname(cat)");
                 if (logger.isDebugEnabled()) {

@@ -354,7 +354,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                     @SuppressWarnings("unchecked")
                     public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
-                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + aclKey + "'",
+                                "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(aclKey) + "'",
                                 Query.JCR_SQL2);
                         QueryResult queryResult = query.execute();
                         NodeIterator rowIterator = queryResult.getNodes();

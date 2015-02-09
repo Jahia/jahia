@@ -71,6 +71,7 @@
  */
 package org.jahia.services.preferences.impl;
 
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.preferences.JahiaPreference;
@@ -401,7 +402,7 @@ public class JahiaPreferencesJCRProviders<T extends JCRNodeWrapper> implements J
 
     private NodeIterator findPreferenceNodeByJahiaPreferenceSQL(Principal p, String sqlConstraint) {
         String path = getPreferenceProviderNodePath(p);
-        return findNodeIteratorBySQL(p, "select * from ["+getNodeType()+"] as p where ischildnode(p,["+path+"])"+(sqlConstraint!=null?" and "+sqlConstraint:""));
+        return findNodeIteratorBySQL(p, "select * from ["+getNodeType()+"] as p where ischildnode(p,["+ JCRContentUtils.sqlEncode(path) + "])" + (sqlConstraint != null ? " and " + sqlConstraint : ""));
     }
 
     private NodeIterator findNodeIteratorBySQL(Principal p, String sqlRequest) {

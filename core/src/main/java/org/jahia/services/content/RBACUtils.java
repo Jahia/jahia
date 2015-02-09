@@ -198,7 +198,7 @@ public final class RBACUtils {
             role = session.getNode(rolePath);
         } else {
             NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(rolePath) + "' and isdescendantnode(r,['/roles'])",
                     Query.JCR_SQL2).execute().getNodes();
             if (ni.hasNext()) {
                 role = (JCRNodeWrapper) ni.nextNode();
@@ -270,7 +270,7 @@ public final class RBACUtils {
             role = session.getNode(rolePath);
         } else {
             NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(rolePath) + "' and isdescendantnode(r,['/roles'])",
                     Query.JCR_SQL2).execute().getNodes();
             if (ni.hasNext()) {
                 role = (JCRNodeWrapper) ni.nextNode();
@@ -334,8 +334,8 @@ public final class RBACUtils {
             role = session.getNode(rolePath);
         } else {
             NodeIterator ni = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + rolePath + "' and isdescendantnode(r,['/roles'])",
-                    Query.JCR_SQL2).execute().getNodes();
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(rolePath) + "' and isdescendantnode(r,['/roles'])",
+                            Query.JCR_SQL2).execute().getNodes();
             if (ni.hasNext()) {
                 role = (JCRNodeWrapper) ni.nextNode();
             }

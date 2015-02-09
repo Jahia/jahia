@@ -425,7 +425,7 @@ public class AclListener extends DefaultEventListener {
             return roleNode;
         }
         NodeIterator ni = systemSession.getWorkspace().getQueryManager().createQuery(
-                "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + roleName + "' and isdescendantnode(r,['/roles'])",
+                "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(roleName) + "' and isdescendantnode(r,['/roles'])",
                 Query.JCR_SQL2).execute().getNodes();
         if (ni.hasNext()) {
             JCRNodeWrapper roleNode = (JCRNodeWrapper) ni.nextNode();
@@ -474,7 +474,7 @@ public class AclListener extends DefaultEventListener {
                 JCRNodeWrapper externalPermission = session.getNodeByIdentifier(extPermId);
                 QueryManager q = session.getWorkspace().getQueryManager();
                 String role = externalPermission.getParent().getName();
-                String sql = "select * from [jnt:ace] as ace where ace.[j:roles] = '" + role + "'";
+                String sql = "select * from [jnt:ace] as ace where ace.[j:roles] = '" + JCRContentUtils.sqlEncode(role) + "'";
                 QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
@@ -493,8 +493,8 @@ public class AclListener extends DefaultEventListener {
         for (List<String> roleExtPerm : removedExtPermissions) {
             try {
                 QueryManager q = session.getWorkspace().getQueryManager();
-                String sql = "select * from [jnt:externalAce] as ace where ace.[j:roles] = '" + roleExtPerm.get(0) +
-                        "' and ace.[j:externalPermissionsName] ='" + roleExtPerm.get(1) + "'";
+                String sql = "select * from [jnt:externalAce] as ace where ace.[j:roles] = '" + JCRContentUtils.sqlEncode(roleExtPerm.get(0)) +
+                        "' and ace.[j:externalPermissionsName] ='" + JCRContentUtils.sqlEncode(roleExtPerm.get(1)) + "'";
                 QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
@@ -510,7 +510,7 @@ public class AclListener extends DefaultEventListener {
         for (String role : removedRoles) {
             try {
                 QueryManager q = session.getWorkspace().getQueryManager();
-                String sql = "select * from [jnt:ace] as ace where ace.[j:roles] = '" + role + "'";
+                String sql = "select * from [jnt:ace] as ace where ace.[j:roles] = '" + JCRContentUtils.sqlEncode(role) + "'";
                 QueryResult qr = q.createQuery(sql, Query.JCR_SQL2).execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {

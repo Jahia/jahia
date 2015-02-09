@@ -231,7 +231,7 @@ public class SearchHelper {
             return result;
         }
         try {
-            String s = "select * from [nt:query] as q where isdescendantnode(q, ['" + user.getPath() + "'])";
+            String s = "select * from [nt:query] as q where isdescendantnode(q, ['" + JCRContentUtils.sqlEncode(user.getPath()) + "'])";
             Query q = currentUserSession.getWorkspace().getQueryManager().createQuery(s, Query.JCR_SQL2);
             return navigation.executeQuery(q, null,null,null,null);
         } catch (RepositoryException e) {

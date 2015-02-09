@@ -270,7 +270,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public JCRSiteNode getSiteByServerName(String serverName, JCRSessionWrapper session) throws RepositoryException {
-        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where lower(s.[j:serverName])='" + StringUtils.lowerCase(serverName) + "' and ischildnode(s, '/sites/')", Query.JCR_SQL2);
+        Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:virtualsite] as s where lower(s.[j:serverName])='" + JCRContentUtils.sqlEncode(StringUtils.lowerCase(serverName)) + "' and ischildnode(s, '/sites/')", Query.JCR_SQL2);
         NodeIterator ni = q.execute().getNodes();
         if (ni.hasNext()) {
             return (JCRSiteNode) ni.next();

@@ -79,10 +79,7 @@ import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -436,7 +433,7 @@ public class RenderService {
             }
         } else {
             String query =
-                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + path + "'])";
+                    "select * from [" + type + "] as w where isdescendantnode(w, ['" + JCRContentUtils.sqlEncode(path) + "'])";
             if (templateName != null) {
                 query += " and name(w)='" + templateName + "'";
             }

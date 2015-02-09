@@ -160,14 +160,14 @@ public class RolesHandler implements Serializable {
         final JCRSessionWrapper defaultSession = JCRSessionFactory.getInstance().getCurrentUserSession(null, locale, fallbackLocale);
         QueryManager qm = defaultSession.getWorkspace().getQueryManager();
         if (role != null) {
-            Query q = qm.createQuery("select * from [jnt:role] where localname()='" + role + "'", Query.JCR_SQL2);
+            Query q = qm.createQuery("select * from [jnt:role] where localname()='" + JCRContentUtils.sqlEncode(role) + "'", Query.JCR_SQL2);
             getRoles(q, rolesFromName, result);
         } else if (roles == null) {
-            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + roleGroup + "'", Query.JCR_SQL2);
+            Query q = qm.createQuery("select * from [jnt:role] where [j:roleGroup]='" + JCRContentUtils.sqlEncode(roleGroup) + "'", Query.JCR_SQL2);
             getRoles(q, rolesFromName, result);
         } else {
             for (String r : roles) {
-                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + r + "'", Query.JCR_SQL2);
+                Query q = qm.createQuery("select * from [jnt:role] where localname()='" + JCRContentUtils.sqlEncode(r) + "'", Query.JCR_SQL2);
                 getRoles(q, rolesFromName, result);
             }
         }

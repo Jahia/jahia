@@ -496,8 +496,8 @@ public class JCRTagUtils {
         try {
             JCRSessionWrapper session = parentNode.getSession();
             Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
-                    Query.JCR_SQL2);
+                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + JCRContentUtils.sqlEncode(parentNode.getPath()) + "')",
+                            Query.JCR_SQL2);
             QueryResult groupQueryResult = groupQuery.execute();
             final NodeIterator nodeIterator = groupQueryResult.getNodes();
             while (nodeIterator.hasNext()) {
@@ -517,8 +517,8 @@ public class JCRTagUtils {
         try {
             JCRSessionWrapper session = parentNode.getSession();
             Query groupQuery = session.getWorkspace().getQueryManager().createQuery(
-                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + parentNode.getPath() + "')",
-                    Query.JCR_SQL2);
+                    "select * from ["+ nodeType + "] as u where isdescendantnode(u,'" + JCRContentUtils.sqlEncode(parentNode.getPath()) + "')",
+                            Query.JCR_SQL2);
             QueryResult groupQueryResult = groupQuery.execute();
             final NodeIterator nodeIterator = groupQueryResult.getNodes();
             while (nodeIterator.hasNext()) {

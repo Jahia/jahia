@@ -362,7 +362,7 @@ public class FilesAclImportHandler extends DefaultHandler {
                             List<Value> values = new ArrayList<Value>();
                             for (int i = 0; i < cats.length; i++) {
                                 String cat = cats[i];
-                                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:category] as cat where NAME(cat) = '" + cat + "'", Query.JCR_SQL2);
+                                Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:category] as cat where NAME(cat) = '" + JCRContentUtils.sqlEncode(cat) + "'", Query.JCR_SQL2);
                                 NodeIterator ni = q.execute().getNodes();
                                 if (ni.hasNext()) {
                                     values.add(session.getValueFactory().createValue(ni.nextNode()));

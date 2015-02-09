@@ -111,7 +111,7 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
                 JahiaTemplatesPackage module = service.getTemplatePackageById(s);
                 if (module != null) {
                     QueryResult result = qm.createQuery(
-                            "select * from [" + nodetype + "] as n where isdescendantnode(n,['/modules/" + module.getIdWithVersion() + "'])", Query.JCR_SQL2).execute();
+                            "select * from [" + nodetype + "] as n where isdescendantnode(n,['/modules/" + JCRContentUtils.sqlEncode(module.getIdWithVersion()) + "'])", Query.JCR_SQL2).execute();
                     final NodeIterator ni = result.getNodes();
                     while (ni.hasNext()) {
                         JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();

@@ -97,6 +97,7 @@ import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -766,8 +767,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private Node findRoleNode(String role) throws RepositoryException {
         try {
             NodeIterator nodes = getDefaultWorkspaceSecuritySession().getWorkspace().getQueryManager().createQuery(
-                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + role + "' and isdescendantnode(r,['/roles'])",
-                    Query.JCR_SQL2).execute().getNodes();
+                    "select * from [" + Constants.JAHIANT_ROLE + "] as r where localname()='" + JCRContentUtils.sqlEncode(role) + "' and isdescendantnode(r,['/roles'])",
+                            Query.JCR_SQL2).execute().getNodes();
             if (nodes.hasNext()) {
                 return nodes.nextNode();
             }

@@ -578,7 +578,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     public static NodeIterator getDescendantNodes(JCRNodeWrapper node, String type) {
         try {
-            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from [" + type + "] as sel where isdescendantnode(sel,['" + node.getPath() + "'])",
+            return node.getSession().getWorkspace().getQueryManager().createQuery("select * from [" + type + "] as sel where isdescendantnode(sel,['" + JCRContentUtils.sqlEncode(node.getPath()) + "'])",
                     Query.JCR_SQL2).execute().getNodes();
         } catch (InvalidQueryException e) {
             logger.error("Error while retrieving nodes", e);

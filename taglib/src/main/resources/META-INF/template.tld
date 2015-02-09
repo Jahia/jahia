@@ -223,6 +223,14 @@
         </attribute>
         <attribute>
             <description>
+                The target tag where the link will be inserted
+            </description>
+            <name>targetTag</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <description>
                 For css resource type, this attribute specify the relationship type of the link
             </description>
             <name>rel</name>

@@ -5,7 +5,7 @@ import org.jahia.taglibs.AbstractJahiaTag
  * @author rincevent
  * @since JAHIA 6.5
  */
-if (renderContext.mainResource.contextConfiguration == 'page') {
+if (renderContext.mainResource.contextConfiguration == 'page' && targetTag == 'HEAD') {
 	if (renderContext.editMode) {
 	    if (!renderContext.getServletPath().endsWith("frame")) {
 	        println GWTInitializer.generateInitializerStructure(renderContext.request,renderContext.request.session);
@@ -42,7 +42,7 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
           rel = css.value.get("rel");
           media = css.value.get("media");
           url = renderContext.response.encodeURL(css.key);
-          println "<link id=\"staticAssetCSS${i}\" rel=\"${rel!=null?rel:"stylesheet"}\" href=\"${url}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
+          println "<link id=\"staticAssetCSS${targetTag == 'HEAD'?'':targetTag}${i}\" rel=\"${rel!=null?rel:"stylesheet"}\" href=\"${url}\" media=\"${media!=null?media:"screen"}\" type=\"text/css\"/>";
           if (condition != null) println("<![endif]-->");
         }
         break;
@@ -51,13 +51,13 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
           condition = javascript.value != null ? javascript.value.get("condition") : null;
           if (condition != null) println("<!--["+condition+"]>");
           url = renderContext.response.encodeURL(javascript.key);
-          println "<script id=\"staticAssetJavascript${i}\" type=\"text/javascript\" src=\"${url}\"></script>";
+          println "<script id=\"staticAssetJavascript${targetTag == 'HEAD'?'':targetTag}${i}\" type=\"text/javascript\" src=\"${url}\"></script>";
           if (condition != null) println("<![endif]-->");
         }
         break;
       case "aggregatedjavascript" :
           if (type.getValue().size() > 0) {
-              println "<script id=\"staticAssetAggregatedJavascriptList0\" type=\"text/javascript\">";
+              println "<script id=\"staticAssetAggregatedJavascriptList${targetTag == 'HEAD'?'':targetTag}0\" type=\"text/javascript\">";
               println "if (typeof jAggregatedStaticAssetsJavascript == 'undefined') { var jAggregatedStaticAssetsJavascript = new Array(); }";
               type.value.eachWithIndex { javascript, i ->
                   condition = javascript.value != null ? javascript.value.get("condition") : null;

@@ -223,13 +223,27 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         Source source = new Source(previousOut);
 
-        @SuppressWarnings("unchecked")
-        Map<String, Map<String, Map<String, String>>> assets = LazySortedMap.decorate(
-                TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR), LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+        Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<String, Map<String, Map<String,Map<String,String>>>>();
 
         List<StartTag> esiResourceTags = source.getAllStartTags("jahia:resource");
         Set<String> keys = new HashSet<String>();
         for (StartTag esiResourceTag : esiResourceTags) {
+            Map<String, Map<String, Map<String, String>>> assets;
+            String targetTag = esiResourceTag.getAttributeValue("targetTag");
+            if (targetTag == null) {
+                targetTag = "HEAD";
+            } else {
+                targetTag = targetTag.toUpperCase();
+            }
+
+            if (!assetsByTarget.containsKey(targetTag)) {
+                assets = LazySortedMap.decorate(TransformedSortedMap.decorate(new TreeMap<String, Map<String, Map<String, String>>>(ASSET_COMPARATOR),
+                        LOW_CASE_TRANSFORMER, NOPTransformer.INSTANCE), new AssetsMapFactory());
+                assetsByTarget.put(targetTag,assets);
+            } else {
+                assets = assetsByTarget.get(targetTag);
+            }
+
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
             String rel = esiResourceTag.getAttributeValue("rel");
@@ -277,33 +291,35 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             assets.put(type, stringMap);
         }
 
-        renderContext.getRequest().setAttribute("staticAssets", assets);
-
         OutputDocument outputDocument = new OutputDocument(source);
 
         if (renderContext.isAjaxRequest()) {
             String templateContent = getAjaxResolvedTemplate();
             if (templateContent != null) {
-                Element element = source.getFirstElement();
-                final EndTag tag = element != null ? element.getEndTag() : null;
-                ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
-                ScriptContext scriptContext = new AssetsScriptContext();
-                final Bindings bindings = scriptEngine.createBindings();
-                bindings.put("renderContext", renderContext);
-                bindings.put("resource", resource);
-                scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
-                // The following binding is necessary for Javascript, which doesn't offer a console by default.
-                bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                scriptEngine.eval(templateContent, scriptContext);
-                StringWriter writer = (StringWriter) scriptContext.getWriter();
-                final String staticsAsset = writer.toString();
+                for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
+                    renderContext.getRequest().setAttribute("targetTag", entry.getKey());
+                    renderContext.getRequest().setAttribute("staticAssets", entry.getValue());
+                    Element element = source.getFirstElement();
+                    final EndTag tag = element != null ? element.getEndTag() : null;
+                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
+                    ScriptContext scriptContext = new AssetsScriptContext();
+                    final Bindings bindings = scriptEngine.createBindings();
+                    bindings.put("renderContext", renderContext);
+                    bindings.put("resource", resource);
+                    scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
+                    // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                    bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                    scriptEngine.eval(templateContent, scriptContext);
+                    StringWriter writer = (StringWriter) scriptContext.getWriter();
+                    final String staticsAsset = writer.toString();
 
-                if (StringUtils.isNotBlank(staticsAsset)) {
-                    if (tag != null) {
-                        outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
-                        out = outputDocument.toString();
-                    } else {
-                        out = staticsAsset + "\n" + previousOut;
+                    if (StringUtils.isNotBlank(staticsAsset)) {
+                        if (tag != null) {
+                            outputDocument.replace(tag.getBegin(), tag.getBegin() + 1, "\n" + staticsAsset + "\n<");
+                            out = outputDocument.toString();
+                        } else {
+                            out = staticsAsset + "\n" + previousOut;
+                        }
                     }
                 }
             }
@@ -346,27 +362,31 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
             }
-            List<Element> headElementList = source.getAllElements(HTMLElementName.HEAD);
-            for (Element element : headElementList) {
-                String templateContent = getResolvedTemplate();
-                if (templateContent != null) {
-                    final EndTag headEndTag = element.getEndTag();
-                    ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
-                    ScriptContext scriptContext = new AssetsScriptContext();
-                    final Bindings bindings = scriptEngine.createBindings();
+            for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
+                String targetTag = entry.getKey();
+                Map<String, Map<String, Map<String, String>>> assets = entry.getValue();
+                renderContext.getRequest().setAttribute("staticAssets", assets);
+                List<Element> headElementList = source.getAllElements(targetTag);
+                for (Element element : headElementList) {
+                    String templateContent = getResolvedTemplate();
+                    if (templateContent != null) {
+                        final EndTag headEndTag = element.getEndTag();
+                        ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
+                        ScriptContext scriptContext = new AssetsScriptContext();
+                        final Bindings bindings = scriptEngine.createBindings();
 
-                    bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
+                        bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
 
-                    if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
-                        assets.put("css", aggregate(assets.get("css"), "css"));
-                        Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
-                        Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
-                        assets.put("javascript", newScripts);
-                        scripts.keySet().removeAll(newScripts.keySet());
-                        assets.put("aggregatedjavascript", scripts);
-                    } else if (addLastModifiedDate) {
-                        addLastModified(assets);
-                    }
+                        if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
+                            assets.put("css", aggregate(assets.get("css"), "css"));
+                            Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
+                            Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
+                            assets.put("javascript", newScripts);
+                            scripts.keySet().removeAll(newScripts.keySet());
+                            assets.put("aggregatedjavascript", scripts);
+                        } else if (addLastModifiedDate) {
+                            addLastModified(assets);
+                        }
 
 //                    if (renderContext.getRequest().getParameter("channel") != null) {
 //                        Map<String,Map<String,String>> css  = assets.get("css");
@@ -377,41 +397,42 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 //                        }
 //                        assets.put("css",cssWithParam);
 //                    }
-                    bindings.put("renderContext", renderContext);
-                    bindings.put("resource", resource);
-                    bindings.put("contextPath", renderContext.getRequest().getContextPath());
-                    scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
-                    // The following binding is necessary for Javascript, which doesn't offer a console by default.
-                    bindings.put("out", new PrintWriter(scriptContext.getWriter()));
-                    scriptEngine.eval(templateContent, scriptContext);
-                    StringWriter writer = (StringWriter) scriptContext.getWriter();
-                    final String staticsAsset = writer.toString();
+                        bindings.put("targetTag", targetTag);
+                        bindings.put("renderContext", renderContext);
+                        bindings.put("resource", resource);
+                        bindings.put("contextPath", renderContext.getRequest().getContextPath());
+                        scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
+                        // The following binding is necessary for Javascript, which doesn't offer a console by default.
+                        bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+                        scriptEngine.eval(templateContent, scriptContext);
+                        StringWriter writer = (StringWriter) scriptContext.getWriter();
+                        final String staticsAsset = writer.toString();
 
-                    if (StringUtils.isNotBlank(staticsAsset)) {
-                        outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
-                                "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
+                        if (StringUtils.isNotBlank(staticsAsset)) {
+                            outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
+                                    "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
+                        }
                     }
-                }
 
 
-                // workaround for ie9 in gxt/gwt
-                // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
-                if (isEnforceIECompatibilityMode(renderContext)) {
-                    int idx = element.getBegin() + element.toString().indexOf(">");
-                    String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
-                            + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
-                    outputDocument.replace(idx, idx + 1, str);
-                }
-                if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
-                        "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
-                    for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
-                        int idx = title.getBegin() + title.toString().indexOf(">");
-                        String str = Messages.getInternal("label.preview", renderContext.getUILocale());
-                        str = ">" + str + " - ";
+                    // workaround for ie9 in gxt/gwt
+                    // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
+                    if (isEnforceIECompatibilityMode(renderContext)) {
+                        int idx = element.getBegin() + element.toString().indexOf(">");
+                        String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
+                                + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
                         outputDocument.replace(idx, idx + 1, str);
                     }
+                    if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
+                            "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
+                        for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
+                            int idx = title.getBegin() + title.toString().indexOf(">");
+                            String str = Messages.getInternal("label.preview", renderContext.getUILocale());
+                            str = ">" + str + " - ";
+                            outputDocument.replace(idx, idx + 1, str);
+                        }
+                    }
                 }
-
             }
             out = outputDocument.toString();
         }

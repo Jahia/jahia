@@ -82,6 +82,7 @@ import javax.jcr.*;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -103,6 +104,7 @@ import org.jahia.services.visibility.VisibilityService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
 
 import static org.jahia.services.content.JCRTemplate.*;
 
@@ -290,7 +292,7 @@ public class FileServlet extends HttpServlet {
                         fileEntry.getBinary().dispose();
                         fileEntry.setBinary(null);
                     }
-                    FileEvents.sendEvent(FileEvents.FILE_DOWNLOADED_EVENT_KEY, fileKey.getPath(), fileKey.getWorkspace(), fileEntry.getIdentifier(), fileEntry.getNodeTypes());
+                    SpringContextSingleton.getInstance().publishEvent(new FileDownloadEvent(this, req, fileEntry.getIdentifier(), fileKey.getPath(), fileEntry.getNodeTypes(), fileKey.getWorkspace()));
                 } else {
                     code = HttpServletResponse.SC_NOT_FOUND;
                     res.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -544,4 +546,42 @@ public class FileServlet extends HttpServlet {
         return true;
     }
 
+    public class FileDownloadEvent extends ApplicationEvent {
+        private static final long serialVersionUID = -7003604984285879294L;
+
+        HttpServletRequest request;
+        String nodeId;
+        String nodePath;
+        List<String> nodeTypes;
+        String workspace;
+
+        protected FileDownloadEvent(Object source, HttpServletRequest request, String nodeId, String nodePath, List<String> nodeTypes, String workspace) {
+            super(source);
+            this.request = request;
+            this.nodeId = nodeId;
+            this.nodePath = nodePath;
+            this.nodeTypes = nodeTypes;
+            this.workspace = workspace;
+        }
+
+        public HttpServletRequest getRequest() {
+            return request;
+        }
+
+        public String getNodeId() {
+            return nodeId;
+        }
+
+        public String getNodePath() {
+            return nodePath;
+        }
+
+        public List<String> getNodeTypes() {
+            return nodeTypes;
+        }
+
+        public String getWorkspace() {
+            return workspace;
+        }
+    }
 }

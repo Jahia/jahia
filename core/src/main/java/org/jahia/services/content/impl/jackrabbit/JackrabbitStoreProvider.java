@@ -77,6 +77,22 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeTypeDefinition;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.version.VersionManager;
+
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.spi.Name;
@@ -86,22 +102,11 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.version.VersionManager;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.nodetype.NodeTypeDefinition;
-
-import java.io.IOException;
-import java.util.*;
 
 /**
  * @author hollis
@@ -234,7 +239,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
         }
 
         jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
-        logger.info("Custom node types registered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
+        logger.info("Custom node types unregistered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
     }
 
     protected boolean canRegisterCustomNodeTypes() {

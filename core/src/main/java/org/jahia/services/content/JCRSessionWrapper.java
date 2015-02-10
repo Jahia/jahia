@@ -380,7 +380,7 @@ public class JCRSessionWrapper implements Session {
                 boolean isAliased = false;
                 if (session instanceof JahiaSessionImpl && getUser() != null &&
                         sessionFactory.getCurrentAliasedUser() != null &&
-                        !sessionFactory.getCurrentAliasedUser().equals(getUser())) {
+                        sessionFactory.getCurrentAliasedUser().equals(getUser())) {
                     ((JahiaSessionImpl) session).toggleThisSessionAsAliased();
                     isAliased = true;
                 }

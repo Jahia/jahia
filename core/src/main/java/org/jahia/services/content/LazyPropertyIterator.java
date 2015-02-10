@@ -128,7 +128,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                     propertyIterator = node.getRealNode().getProperties(singlePattern);
                 }
             } catch (RepositoryException e) {
-                throw new RuntimeException("getI18NPropertyIterator",e);
+                throw new RuntimeException("getI18NPropertyIterator", e);
             }
         }
         return propertyIterator;
@@ -153,7 +153,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
             } catch (ItemNotFoundException e) {
                 i18nPropertyIterator = new EmptyPropertyIterator();
             } catch (RepositoryException e) {
-                throw new RuntimeException("getI18NPropertyIterator",e);
+                throw new RuntimeException("getI18NPropertyIterator", e);
             }
         }
         return i18nPropertyIterator;
@@ -165,41 +165,16 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
     }
 
     public Property nextProperty() {
-        try {
-            if (tempNext != null) {
-                Property res = tempNext;
-                tempNext = null;
-                return res;
-            }
-
-            if (getPropertiesIterator().hasNext()) {
-                Property property = getPropertiesIterator().nextProperty();
-                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName());
-                if (epd == null) {
-                    return nextProperty();
-                }
-                return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), epd);
-            } else if (getI18NPropertyIterator().hasNext()) {
-                do {
-                    Property property = getI18NPropertyIterator().nextProperty();
-                    final String name = property.getName();
-                    final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
-                    if (def != null && def.isInternationalized()) {
-                        return new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
-                    }
-                } while (true);
-            } else {
-                return null;
-            }
-        } catch (ConstraintViolationException e) {
-            return nextProperty();
-        } catch (RepositoryException e) {
-            throw new RuntimeException("nextProperty",e);
+        if (hasNext()) {
+            Property res = tempNext;
+            tempNext = null;
+            return res;
         }
+        throw new NoSuchElementException();
     }
 
     public void skip(long skipNum) {
-        for (int i=0; i < skipNum; i++) {
+        for (int i = 0; i < skipNum; i++) {
             if (getPropertiesIterator().hasNext()) {
                 getPropertiesIterator().skip(1);
             } else if (getI18NPropertyIterator().hasNext()) {
@@ -224,7 +199,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         try {
             if (getPropertiesIterator().hasNext()) {
                 Property property = getPropertiesIterator().nextProperty();
-                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName(),property.getType(),property.isMultiple());
+                ExtendedPropertyDefinition epd = node.getApplicablePropertyDefinition(property.getName(), property.getType(), property.isMultiple());
                 if (epd == null) {
                     return hasNext();
                 }
@@ -235,7 +210,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
                     Property property = getI18NPropertyIterator().nextProperty();
                     final String name = property.getName();
                     final ExtendedPropertyDefinition def = node.getApplicablePropertyDefinition(name);
-                    if (def!=null && def.isInternationalized()) {
+                    if (def != null && def.isInternationalized()) {
                         tempNext = new JCRPropertyWrapperImpl(node, property, node.getSession(), node.getProvider(), def, name);
                         return true;
                     }
@@ -248,7 +223,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         } catch (NoSuchElementException e) {
             return false;
         } catch (RepositoryException e) {
-            throw new RuntimeException("nextProperty",e);
+            throw new RuntimeException("nextProperty", e);
         }
     }
 
@@ -262,11 +237,11 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
 
     public boolean containsKey(Object o) {
         try {
-            return node.hasProperty( (String) o );       
+            return node.hasProperty((String) o);
         } catch (ConstraintViolationException e) {
             return false;
         } catch (RepositoryException e) {
-            throw new RuntimeException("containsKey",e);
+            throw new RuntimeException("containsKey", e);
         }
     }
 
@@ -276,10 +251,10 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
 
     public Object get(Object o) {
         try {
-            if (!node.hasProperty((String) o) ) {
+            if (!node.hasProperty((String) o)) {
                 return null;
             }
-            Property p = node.getProperty( (String) o);
+            Property p = node.getProperty((String) o);
 
             if (p.isMultiple()) {
                 return p.getValues();
@@ -291,7 +266,7 @@ public class LazyPropertyIterator implements PropertyIterator, Map {
         } catch (ConstraintViolationException e) {
             return null;
         } catch (RepositoryException e) {
-            throw new RuntimeException("get",e);
+            throw new RuntimeException("get", e);
         }
     }
 

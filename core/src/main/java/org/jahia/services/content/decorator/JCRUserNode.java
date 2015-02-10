@@ -71,17 +71,22 @@
  */
 package org.jahia.services.content.decorator;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.util.*;
 
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.version.VersionException;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.LazyPropertyIterator;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -120,6 +125,59 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
         return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName(), getRealm());
 
+    }
+
+    @Override
+    public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
+        if (!canGetProperty(s)) {
+            throw new PathNotFoundException(s);
+        }
+        return super.getProperty(s);
+    }
+
+    @Override
+    public PropertyIterator getProperties() throws RepositoryException {
+        final Locale locale = getSession().getLocale();
+        return new LazyUserPropertyIterator(locale);
+    }
+
+    @Override
+    public PropertyIterator getProperties(String s) throws RepositoryException {
+        final Locale locale = getSession().getLocale();
+        return new LazyUserPropertyIterator(this, locale, s);
+    }
+
+    @Override
+    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
+        final Locale locale = getSession().getLocale();
+        return new LazyUserPropertyIterator(this, locale, strings);
+    }
+
+    @Override
+    public Map<String, String> getPropertiesAsString() throws RepositoryException {
+        return Maps.filterKeys(super.getPropertiesAsString(), new Predicate<String>() {
+            @Override
+            public boolean apply(String input) {
+                try {
+                    return canGetProperty(input);
+                } catch (RepositoryException e) {
+                    return false;
+                }
+            }
+        });
+    }
+
+    @Override
+    public String getPropertyAsString(String name) {
+        try {
+            if (!canGetProperty(name)) {
+                return null;
+            }
+        } catch (RepositoryException e) {
+            logger.error("Cannot read property",e);
+            return null;
+        }
+        return super.getPropertyAsString(name);
     }
 
     /**
@@ -224,5 +282,36 @@ public class JCRUserNode extends JCRNodeDecorator {
      */
     public String getLocalPath() {
         return getPath();
+    }
+
+    private class LazyUserPropertyIterator extends LazyPropertyIterator {
+        public LazyUserPropertyIterator(Locale locale) {
+            super(JCRUserNode.this, locale);
+        }
+
+        public LazyUserPropertyIterator(JCRNodeWrapper node, Locale locale, String singlePattern) {
+            super(node, locale, singlePattern);
+        }
+
+        public LazyUserPropertyIterator(JCRNodeWrapper node, Locale locale, String[] patternArray) {
+            super(node, locale, patternArray);
+        }
+
+        @Override
+        public boolean hasNext() {
+            while (super.hasNext()) {
+                try {
+                    if (!canGetProperty(tempNext.getName())) {
+                        tempNext = null;
+                    } else {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    tempNext = null;
+                    logger.error("Cannot read property",e);
+                }
+            }
+            return false;
+        }
     }
 }

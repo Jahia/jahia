@@ -139,7 +139,7 @@ public class JcrSessionFilter implements Filter {
                         .setCurrentUser(userManagerService.lookupUserByPath(JahiaUserManagerService.GUEST_USERPATH).getJahiaUser());
             } else {
                 JCRUserNode userNode = userManagerService.lookupUserByPath(sessionFactory.getCurrentUser().getLocalPath());
-                if (userNode != null && userNode.isAccountLocked()) {
+                if (userNode == null || userNode.isAccountLocked()) {
                     sessionFactory.setCurrentUser(null);
                 }
                 HttpSession httpSession = ((HttpServletRequest) servletRequest).getSession();

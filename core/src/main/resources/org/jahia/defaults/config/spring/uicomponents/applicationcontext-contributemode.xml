@@ -201,12 +201,14 @@
                         </property>
                         <property name="creationButtons">
                             <list>
+                                <ref bean="Engine.Button.WorkInProgress"/>
                                 <ref bean="Engine.Button.Create"/>
                                 <ref bean="Engine.Button.CreateAndNew"/>
                             </list>
                         </property>
                         <property name="editionButtons">
                             <list>
+                                <ref bean="Engine.Button.WorkInProgress"/>
                                 <ref bean="Engine.Button.Update"/>
                             </list>
                         </property>

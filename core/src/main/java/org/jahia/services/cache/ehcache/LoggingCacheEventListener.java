@@ -89,41 +89,48 @@ import java.util.Properties;
  */
 public class LoggingCacheEventListener implements CacheEventListener {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LoggingCacheEventListener.class);
+    private final Properties properties;
+
     public LoggingCacheEventListener(Properties properties) {
+        this.properties = properties;
     }
 
     public void notifyElementRemoved(Ehcache ehcache, Element element) throws CacheException {
-        if (logger.isDebugEnabled()) {
+        if (testLogging("removed")) {
             logger.debug(ehcache.getName() + ": Element " + element.getObjectKey() + " removed.");
         }
     }
 
+    private boolean testLogging(String type) {
+        return logger.isDebugEnabled() && (properties==null || properties.size()==0 || properties.containsKey(type));
+    }
+
     public void notifyElementPut(Ehcache ehcache, Element element) throws CacheException {
-        if (logger.isDebugEnabled()) {
+        if (testLogging("put")) {
             logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " put.");
         }
     }
 
     public void notifyElementUpdated(Ehcache ehcache, Element element) throws CacheException {
-        if (logger.isDebugEnabled()) {
+        if (testLogging("updated")) {
             logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " updated.");
         }
     }
 
     public void notifyElementExpired(Ehcache ehcache, Element element) {
-        if (logger.isInfoEnabled()) {
+        if (testLogging("expired")) {
             logger.info(ehcache.getName() +": Element " + element.getObjectKey() + " expired.");
         }
     }
 
     public void notifyElementEvicted(Ehcache ehcache, Element element) {
-        if (logger.isDebugEnabled()) {
+        if (testLogging("evicted")) {
             logger.debug(ehcache.getName() +": Element " + element.getObjectKey() + " evicted.");
         }
     }
 
     public void notifyRemoveAll(Ehcache ehcache) {
-        if (logger.isDebugEnabled()) {
+        if (testLogging("removeAll")) {
             logger.debug(ehcache.getName() +": All elements removed!");
         }
     }

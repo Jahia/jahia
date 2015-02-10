@@ -45,16 +45,19 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 
 /**
- * Created by IntelliJ IDEA.
+ * This Listener is flushing HTMLCache entries upon eviction of entries on the HTML dependencies cache.
  *
- * @author : rincevent
- * @since : JAHIA 6.1
+ * @author : cedric mailleux at jahia dot com
+ * @since : JAHIA 7.0.5
  * Created : 28/01/15
  */
 public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
     private static Logger logger = LoggerFactory.getLogger(DependenciesCacheEventListener.class);
 
     @Override
+    /**
+     * A dependency has been evicted, flush related entries.
+     */
     public void notifyElementEvicted(Ehcache cache, Element element) {
         logger.warn("EHCache has evicted: " + element.getObjectKey() + " from cache " + cache.getName());
         // Element is not present in the cache anymore

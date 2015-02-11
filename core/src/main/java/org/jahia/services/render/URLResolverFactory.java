@@ -71,6 +71,8 @@
  */
 package org.jahia.services.render;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,5 +133,22 @@ public class URLResolverFactory {
             nodePathCache.remove(result.getKey());
             siteInfoCache.remove(result.getKey());
         }
+    }
+
+    public synchronized void flushCaches(Collection<String> paths) {
+        @SuppressWarnings("unchecked")
+        final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(Query.VALUE.in(paths)).execute().all();
+        if (all.isEmpty()) {
+            return;
+        }
+        List<Object> keys = new LinkedList<Object>();
+        for (Result result : all) {
+            keys.add(result.getKey());
+        }
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing {} keys from URLResolver caches: {}", keys.size(), keys.toArray());
+        }
+        nodePathCache.removeAll(keys);
+        siteInfoCache.removeAll(keys);
     }
 }

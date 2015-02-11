@@ -73,13 +73,8 @@ package org.jahia.services.render;
 
 import net.sf.ehcache.Element;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.cache.CacheService;
-import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.DefaultEventListener;
-import org.jahia.services.content.JCRObservationManager;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
 import org.jahia.services.render.filter.cache.CacheClusterEvent;
@@ -94,6 +89,10 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -117,6 +116,8 @@ public class URLResolverListener extends DefaultEventListener {
             return;
         }
         try {
+            Set<String> pathsToFlush = null;
+            boolean flushVanityUrlCache = false;
             while (events.hasNext()) {
                 Event event = events.nextEvent();
 
@@ -134,10 +135,14 @@ public class URLResolverListener extends DefaultEventListener {
                             path = path.substring(0, pos);
                         }
                     }
-                    flushCaches(path);
-                    return;
+                    flushVanityUrlCache = flushVanityUrlCache || path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE);
+                    if (pathsToFlush == null) {
+                        pathsToFlush = new LinkedHashSet<String>();
+                    }
+                    pathsToFlush.add(path);
                 }
             }
+            flushCaches(pathsToFlush, flushVanityUrlCache);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -152,25 +157,30 @@ public class URLResolverListener extends DefaultEventListener {
         this.vanityUrlService = vanityUrlService;
     }
 
-    private void flushCaches(String path) throws RepositoryException {
-        urlResolverFactory.flushCaches(path);
-        boolean clusterActivated = SettingsBean.getInstance().isClusterActivated();
-        if (clusterActivated) {
+    private void flushCaches(Set<String> pathsToFlush, boolean flushVanityUrlCache) {
+        if (pathsToFlush != null) {
+            urlResolverFactory.flushCaches(pathsToFlush);
+        }
+        if (flushVanityUrlCache) {
+            vanityUrlService.flushCaches();
+        }
+        if ((pathsToFlush != null || flushVanityUrlCache) && SettingsBean.getInstance().isClusterActivated()) {
+            List<Element> syncEvents = new LinkedList<Element>();
             // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
             // to flush it across the cluster
-            moduleCacheProvider.getSyncCache().put(new Element("FLUSH_URLRESOLVER-" + UUID.randomUUID(),
-                            //Create an empty CacheClusterEvent to be executed after next Journal sync
+            if (pathsToFlush != null) {
+                for (String path : pathsToFlush) {
+                    syncEvents.add(new Element("FLUSH_URLRESOLVER-" + UUID.randomUUID(),
+                    // Create an empty CacheClusterEvent to be executed after next Journal sync
                             new CacheClusterEvent(path, getClusterRevision())));
-        }
-        if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
-            vanityUrlService.flushCaches();
-            if (clusterActivated) {
-                // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
-                // to flush it across the cluster
-                moduleCacheProvider.getSyncCache().put(new Element("FLUSH_VANITYURL-" + UUID.randomUUID(),
-                                //Create an empty CacheClusterEvent to be executed after next Journal sync
-                                new CacheClusterEvent("", getClusterRevision())));
+                }
             }
+            if (flushVanityUrlCache) {
+                syncEvents.add(new Element("FLUSH_VANITYURL-" + UUID.randomUUID(),
+                // Create an empty CacheClusterEvent to be executed after next Journal sync
+                        new CacheClusterEvent("", getClusterRevision())));
+            }
+            moduleCacheProvider.getSyncCache().putAll(syncEvents);
         }
     }
 

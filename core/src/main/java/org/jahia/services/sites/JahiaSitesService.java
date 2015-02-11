@@ -594,11 +594,9 @@ public class JahiaSitesService extends JahiaService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
-        int siteId = 0;
         String siteKey = null;
         String serverName = null;
         try {
-            siteId = site.getID();
             siteKey = site.getSiteKey();
             serverName = site.getServerName();
             final String key = siteKey; 
@@ -624,7 +622,7 @@ public class JahiaSitesService extends JahiaService {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    for (String groupPath : groupService.getGroupList(siteKey)) {
+                    for (String groupPath : groupService.getGroupList(key)) {
                         if (StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/")
                                 && !StringUtils.startsWith(groupPath, site.getJCRLocalPath() + "/groups/providers/")) {
                             groupService.deleteGroup(groupPath, session);
@@ -640,7 +638,7 @@ public class JahiaSitesService extends JahiaService {
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         } finally {
-            invalidateCache(siteId, siteKey, serverName);
+            invalidateCache(siteKey, serverName);
         }
     }
 
@@ -762,23 +760,18 @@ public class JahiaSitesService extends JahiaService {
         if (site == null) {
             return;
         }
-        invalidateCache(site.getID(), site.getSiteKey(), site.getServerName());
+        invalidateCache(site.getSiteKey(), site.getServerName());
     }
 
     /**
      * Invalidates the cache for the specified site.
      *
-     * @param siteId
-     *            the ID of the site
      * @param siteKey
      *            the key of the site
      * @param serverName
      *            the server name of the site
      */
-    public void invalidateCache(int siteId, String siteKey, String serverName) {
-        if (siteKeyByIdCache != null && siteId > 0) {
-            siteKeyByIdCache.remove(Integer.valueOf(siteId));
-        }
+    public void invalidateCache(String siteKey, String serverName) {
         if (siteDefaultLanguageBySiteKey != null && siteKey != null) {
             siteDefaultLanguageBySiteKey.remove(siteKey);
         }

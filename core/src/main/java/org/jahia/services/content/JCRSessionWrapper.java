@@ -1336,7 +1336,7 @@ public class JCRSessionWrapper implements Session {
             Session providerSession = getProviderSession(provider);
             PropertyIterator pi = provider.getWeakReferences(node, propertyName, providerSession);
             if (pi != null) {
-                propertyIterators.add(new PropertyIteratorImpl(pi, this));
+                propertyIterators.add(new PropertyIteratorImpl(pi, this, provider));
             }
         }
         return new MultiplePropertyIterator(propertyIterators, -1);

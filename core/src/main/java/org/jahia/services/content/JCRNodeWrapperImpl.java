@@ -2793,7 +2793,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences() throws RepositoryException {
-        return new PropertyIteratorImpl(objectNode.getReferences(), getSession());
+        return new PropertyIteratorImpl(objectNode.getReferences(), getSession(), getProvider());
     }
 
     /**
@@ -3236,7 +3236,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public PropertyIterator getReferences(String name) throws RepositoryException {
-        return new PropertyIteratorImpl(objectNode.getReferences(name), getSession());
+        return new PropertyIteratorImpl(objectNode.getReferences(name), getSession(), getProvider());
     }
 
     /**
@@ -3254,7 +3254,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     public PropertyIterator getWeakReferences(String name) throws RepositoryException {
         // shortcut if node isn't referenceable
         if (!isNodeType(Constants.MIX_REFERENCEABLE)) {
-            return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, getSession());
+            return new PropertyIteratorImpl(PropertyIteratorAdapter.EMPTY, getSession(), getProvider());
         }
 
         return getSession().getWeakReferences(this, name);

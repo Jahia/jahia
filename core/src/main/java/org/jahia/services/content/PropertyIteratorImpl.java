@@ -84,10 +84,12 @@ public class PropertyIteratorImpl implements PropertyIterator {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PropertyIteratorImpl.class);
     private PropertyIterator iterator;
     private JCRSessionWrapper session;
+    private JCRStoreProvider jcrStoreProvider;
 
-    public PropertyIteratorImpl(PropertyIterator iterator, JCRSessionWrapper session) {
+    public PropertyIteratorImpl(PropertyIterator iterator, JCRSessionWrapper session, JCRStoreProvider jcrStoreProvider) {
         this.iterator = iterator;
         this.session = session;
+        this.jcrStoreProvider = jcrStoreProvider;
     }
 
     /**
@@ -95,7 +97,7 @@ public class PropertyIteratorImpl implements PropertyIterator {
      */
     public Property nextProperty() {
         try {
-            return (Property) session.getItem(iterator.nextProperty().getPath());
+            return jcrStoreProvider.getPropertyWrapper(iterator.nextProperty(), session);
         } catch (RepositoryException e) {
             logger.error("",e);
         }

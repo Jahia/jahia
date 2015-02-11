@@ -103,10 +103,10 @@ public class NodeTypesDBServiceImpl {
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
                     DEFINITIONS_PROPERTIES).setReadOnly(true).uniqueResult();
+            session.getTransaction().commit();
             if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
             }
-            session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -155,10 +155,10 @@ public class NodeTypesDBServiceImpl {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
             NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename", filename).setReadOnly(true).uniqueResult();
+            session.getTransaction().commit();
             if (nodeTypesDBProvider != null) {
                 return nodeTypesDBProvider.getCndFile();
             }
-            session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
                 session.getTransaction().rollback();
@@ -178,10 +178,10 @@ public class NodeTypesDBServiceImpl {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
             List<String> nodeTypesDBProviderList = session.createQuery("select filename from NodeTypesDBProvider").setReadOnly(true).list();
+            session.getTransaction().commit();
             if (nodeTypesDBProviderList != null) {
                 return nodeTypesDBProviderList;
             }
-            session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {
                 session.getTransaction().rollback();

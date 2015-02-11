@@ -71,6 +71,18 @@
  */
 package org.jahia.services.content.nodetypes;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.util.*;
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.nodetype.*;
+
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.collections.bidimap.DualHashBidiMap;
@@ -87,12 +99,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.nodetype.*;
-import java.io.*;
-import java.util.*;
-
 /**
  * Jahia implementation of the {@link NodeTypeManager}.
  * User: toto
@@ -100,19 +106,18 @@ import java.util.*;
  * Time: 15:08:56
  */
 public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
-    public static final String SYSTEM = "system";
-    private static Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
+    private static final String SYSTEM = "system";
+    private static final Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
-    private List<ExtendedNodeType> nodeTypesList = new ArrayList<ExtendedNodeType>();
-    private Map<Name, ExtendedNodeType> nodetypes = new HashMap<Name, ExtendedNodeType>();
+    private final Map<Name, ExtendedNodeType> nodetypes = new HashMap<>();
 
-    private BidiMap namespaces = new DualHashBidiMap();
+    private final BidiMap namespaces = new DualHashBidiMap();
 
     @SuppressWarnings("unchecked")
-    private Map<String,List<Resource>> files = new ListOrderedMap();
+    private final Map<String, List<Resource>> files = new ListOrderedMap();
 
-    private Map<ExtendedNodeType,Set<ExtendedNodeType>> mixinExtensions = new HashMap<ExtendedNodeType,Set<ExtendedNodeType>>();
-    private Map<String,Set<ExtendedItemDefinition>> typedItems = new HashMap<String,Set<ExtendedItemDefinition>>();
+    private final Map<ExtendedNodeType, Set<ExtendedNodeType>> mixinExtensions = new HashMap<>();
+    private final Map<String, Set<ExtendedItemDefinition>> typedItems = new HashMap<>();
 
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
@@ -136,12 +141,12 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
             try {
                 PROVIDER_NODE_TYPE_INSTANCE.initSystemDefinitions();
 
-                List<String> files = new ArrayList<String>();
-                List<String> remfiles = null;
+                List<String> files = new ArrayList<>();
+                List<String> remfiles;
                 try {
-                    remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
+                    remfiles = new ArrayList<>(instance.getNodeTypesDBService().getFilesList());
                     while (!remfiles.isEmpty() && !remfiles.equals(files)) {
-                        files = new ArrayList<String>(remfiles);
+                        files = new ArrayList<>(remfiles);
                         remfiles.clear();
                         for (String file : files) {
                             try {
@@ -198,7 +203,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
         try {
             File f = new File(cnddir);
-            SortedSet<File> cndfiles = new TreeSet<File>(Arrays.asList(f.listFiles()));
+            SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(f.listFiles()));
             for (File file : cndfiles) {
                 addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
             }
@@ -354,7 +359,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public List<String> getSystemIds() {
-        return new ArrayList<String>(files.keySet());
+        return new ArrayList<>(files.keySet());
     }
 
     public List<Resource> getFiles(String systemId) {
@@ -370,28 +375,28 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public JahiaNodeTypeIterator getAllNodeTypes() {
-        return new JahiaNodeTypeIterator(nodeTypesList.iterator(),nodeTypesList.size());
+        final Collection<ExtendedNodeType> values = nodetypes.values();
+        return new JahiaNodeTypeIterator(values.iterator(), values.size());
     }
 
     public JahiaNodeTypeIterator getAllNodeTypes(List<String> systemIds) {
-        List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
+        if (systemIds == null || systemIds.isEmpty()) {
+            return getAllNodeTypes();
+        } else {
+            List<ExtendedNodeType> res = new ArrayList<>();
 
-        for (ExtendedNodeType nt : nodetypes.values()) {
-            if (systemIds == null || systemIds.contains(nt.getSystemId())) {
-                res.add(nt);
+            for (ExtendedNodeType nt : nodetypes.values()) {
+                if (systemIds.contains(nt.getSystemId())) {
+                    res.add(nt);
+                }
             }
+            return new JahiaNodeTypeIterator(res.iterator(), res.size());
         }
-        return new JahiaNodeTypeIterator(res.iterator(), res.size());
+
     }
 
     public JahiaNodeTypeIterator getNodeTypes(String systemId) {
-        List<ExtendedNodeType> l = new ArrayList<ExtendedNodeType>();
-        for (ExtendedNodeType nt : nodeTypesList) {
-            if (nt.getSystemId().equals(systemId)) {
-                l.add(nt);
-            }
-        }
-        return new JahiaNodeTypeIterator(l.iterator(),l.size());
+        return getAllNodeTypes(Collections.singletonList(systemId));
     }
 
     @SuppressWarnings("unchecked")
@@ -403,10 +408,11 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public NodeTypeIterator getPrimaryNodeTypes(List<String> systemIds) throws RepositoryException {
-        List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
-        for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
-            ExtendedNodeType nt = iterator.next();
-            if (!nt.isMixin() && (systemIds == null || systemIds.contains(nt.getSystemId()))) {
+        final boolean addAll = systemIds == null || systemIds.isEmpty();
+
+        List<ExtendedNodeType> res = new ArrayList<>();
+        for (ExtendedNodeType nt : nodetypes.values()) {
+            if (!nt.isMixin() && (addAll || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
         }
@@ -418,10 +424,11 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public NodeTypeIterator getMixinNodeTypes(List<String> systemIds) throws RepositoryException {
-        List<ExtendedNodeType> res = new ArrayList<ExtendedNodeType>();
-        for (Iterator<ExtendedNodeType> iterator = nodetypes.values().iterator(); iterator.hasNext();) {
-            ExtendedNodeType nt = iterator.next();
-            if (nt.isMixin() && (systemIds == null || systemIds.contains(nt.getSystemId()))) {
+        final boolean addAll = systemIds == null || systemIds.isEmpty();
+
+        List<ExtendedNodeType> res = new ArrayList<>();
+        for (ExtendedNodeType nt : nodetypes.values()) {
+            if (nt.isMixin() && (addAll || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
         }
@@ -430,13 +437,12 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
 
     public void addNodeType(Name name, ExtendedNodeType nodeType) throws NodeTypeExistsException {
         if (nodetypes.containsKey(name)) {
-            if (!nodetypes.get(name).getSystemId().equals(nodeType.getSystemId())) {
-                throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
-            } else {
-                nodeTypesList.remove(nodetypes.get(name));
+            final String systemId = nodetypes.get(name).getSystemId();
+            if (!systemId.equals(nodeType.getSystemId())) {
+                throw new NodeTypeExistsException("Node type '" + name + "' already defined with a different systemId (existing: '"
+                        + systemId + "', provided: '" + nodeType.getSystemId() + "' with name: '" + nodeType.getName() + "'");
             }
         }
-        nodeTypesList.add(nodeType);
         nodetypes.put(name, nodeType);
     }
 
@@ -465,12 +471,11 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public void unregisterNodeType(Name name) {
-        ExtendedNodeType nt = nodetypes.remove(name);
-        nodeTypesList.remove(nt);
+        nodetypes.remove(name);
     }
 
     public void unregisterNodeTypes(String systemId) {
-        for (Name n : new HashSet<Name>(nodetypes.keySet())) {
+        for (Name n : new HashSet<>(nodetypes.keySet())) {
             ExtendedNodeType nt = nodetypes.get(n);
             if (systemId.equals(nt.getSystemId())) {
                 unregisterNodeType(n);
@@ -505,7 +510,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
 public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType>  {
         private long size;
         private long pos=0;
-        private Iterator<ExtendedNodeType> iterator;
+    private final Iterator<ExtendedNodeType> iterator;
 
         JahiaNodeTypeIterator(Iterator<ExtendedNodeType> it, long size) {
             this.iterator = it;
@@ -592,7 +597,7 @@ public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<Extende
     public void unregisterNodeType(String name) throws ConstraintViolationException {
         Name n = new Name(name, namespaces);
         if (nodetypes.containsKey(n)) {
-            for (ExtendedNodeType type : nodeTypesList) {
+            for (ExtendedNodeType type : nodetypes.values()) {
                 if (!type.getName().equals(name)) {
                     for (ExtendedNodeType nt : type.getSupertypes()) {
                         if (nt.getName().equals(name)) {
@@ -611,7 +616,7 @@ public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<Extende
                     }
                 }
             }
-            nodeTypesList.remove(nodetypes.remove(n));
+            nodetypes.remove(n);
         }
     }
 

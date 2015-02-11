@@ -2943,7 +2943,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (provider.getMountPoint().equals("/")) {
             return objectNode.getCorrespondingNodePath(s);
         } else {
-            return provider.getMountPoint() + objectNode.getCorrespondingNodePath(s);
+            return objectNode.getCorrespondingNodePath(s).equals("/")?provider.getMountPoint():provider.getMountPoint() + objectNode.getCorrespondingNodePath(s);
         }
     }
 

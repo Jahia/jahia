@@ -1263,7 +1263,7 @@ public class JCRPublicationService extends JahiaService {
                 for (Value v : vs) {
                     try {
                         JCRNodeWrapper ref = node.getSession().getNodeByUUID(v.getString());
-                        if (!skipReferencedNodeType(ref)) {
+                        if (!skipReferencedNodeType(ref) && supportsPublication(sourceSession, ref)) {
                             if (logger.isDebugEnabled()) {
                                 logger.debug("Calculating publication status for the reference property {}", propName);
                             }

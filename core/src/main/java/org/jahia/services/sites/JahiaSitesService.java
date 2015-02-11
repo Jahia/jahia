@@ -594,15 +594,21 @@ public class JahiaSitesService extends JahiaService {
      * @param site the JahiaSite bean
      */
     public synchronized void removeSite(final JahiaSite site) throws JahiaException {
+        int siteId = 0;
+        String siteKey = null;
+        String serverName = null;
         try {
-            final String siteKey = site.getSiteKey();
+            siteId = site.getID();
+            siteKey = site.getSiteKey();
+            serverName = site.getServerName();
+            final String key = siteKey; 
             JCRCallback<Boolean> deleteCallback = new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     JCRNodeWrapper sites = session.getNode(SITES_JCR_PATH);
                     if (!sites.isCheckedOut()) {
                         session.checkout(sites);
                     }
-                    JCRNodeWrapper site1 = sites.getNode(siteKey);
+                    JCRNodeWrapper site1 = sites.getNode(key);
                     if (sites.hasProperty("j:defaultSite")) {
                         final JCRPropertyWrapper defaultSite = sites.getProperty("j:defaultSite");
                         if (defaultSite.getValue().getString().equals(site1.getIdentifier())) {
@@ -633,9 +639,9 @@ public class JahiaSitesService extends JahiaService {
             JCRTemplate.getInstance().doExecuteWithSystemSession(deleteCallback);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            invalidateCache(siteId, siteKey, serverName);
         }
-
-        invalidateCache(site);
     }
 
 
@@ -753,6 +759,32 @@ public class JahiaSitesService extends JahiaService {
      * @param site the site bean object
      */
     public void invalidateCache(JahiaSite site) throws JahiaException {
+        if (site == null) {
+            return;
+        }
+        invalidateCache(site.getID(), site.getSiteKey(), site.getServerName());
+    }
+
+    /**
+     * Invalidates the cache for the specified site.
+     *
+     * @param siteId
+     *            the ID of the site
+     * @param siteKey
+     *            the key of the site
+     * @param serverName
+     *            the server name of the site
+     */
+    public void invalidateCache(int siteId, String siteKey, String serverName) {
+        if (siteKeyByIdCache != null && siteId > 0) {
+            siteKeyByIdCache.remove(Integer.valueOf(siteId));
+        }
+        if (siteDefaultLanguageBySiteKey != null && siteKey != null) {
+            siteDefaultLanguageBySiteKey.remove(siteKey);
+        }
+        if (siteKeyByServerNameCache != null && serverName != null) {
+            siteKeyByServerNameCache.remove(serverName);
+        }
     }
 
     private boolean updateWorkspacePermissions(JCRSessionWrapper session, String ws, JahiaSite site) throws RepositoryException {

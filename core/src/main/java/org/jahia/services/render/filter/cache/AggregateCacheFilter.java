@@ -80,7 +80,6 @@ import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
-
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -88,7 +87,6 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
@@ -421,15 +419,20 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
+        return execute(previousOut, renderContext, resource, chain, false);
+    }
 
+    private String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain, boolean bypassDependencies) throws Exception {
         Properties properties = getAttributesForKey(renderContext, resource);
 
-        // Add self path as dependency for this fragment (for cache flush - will not impact the key)
-        resource.getDependencies().add(resource.getNode().getCanonicalPath());
+        if (!bypassDependencies) {
+            // Add self path as dependency for this fragment (for cache flush - will not impact the key)
+            resource.getDependencies().add(resource.getNode().getCanonicalPath());
 
-        // Add main resource if cache.mainResource is set
-        if ("true".equals(properties.getProperty("cache.mainResource"))) {
-            resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+            // Add main resource if cache.mainResource is set
+            if ("true".equals(properties.getProperty("cache.mainResource"))) {
+                resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+            }
         }
 
         // Get the key generated in prepare
@@ -456,31 +459,28 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         boolean debugEnabled = logger.isDebugEnabled();
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
 
-        try {
-            if (cacheable) {
-                final Cache cache = cacheProvider.getCache();
-                if (debugEnabled) {
-                    logger.debug("Caching content for final key : {}", finalKey);
-                }
-                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey);
-            } else {
-                notCacheableFragment.put(key, Boolean.TRUE);
+        if (cacheable) {
+            final Cache cache = cacheProvider.getCache();
+            if (debugEnabled) {
+                logger.debug("Caching content for final key : {}", finalKey);
             }
+            doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
+        } else {
+            notCacheableFragment.put(key, Boolean.TRUE);
+        }
 
-            // Append debug information
-            if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-                return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
-            }
+        // Append debug information
+        if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
+            return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
+        }
 
-            if (renderContext.getMainResource() == resource) {
-                return removeCacheTags(previousOut);
-            } else {
-                return surroundWithCacheTag(key, previousOut);
-            }
-        } catch (Exception e) {
-            throw e;
+        if (renderContext.getMainResource() == resource) {
+            return removeCacheTags(previousOut);
+        } else {
+            return surroundWithCacheTag(key, previousOut);
         }
     }
+
 
     /**
      * Create the fragment and store it into the cache.
@@ -497,6 +497,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
                            Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
+        doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, false);
+    }
+
+    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
+                           Cache cache, String key, String finalKey, boolean bypassDependencies) throws RepositoryException, ParseException {
         Long expiration = Long.parseLong(properties.getProperty(CACHE_EXPIRATION));
         Set<String> depNodeWrappers = Collections.emptySet();
 
@@ -511,7 +516,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (expiration > 0) {
             addExpirationToCacheElements(cache, finalKey, expiration, cachedElement);
         }
-        storeDependencies(renderContext, resource, finalKey, depNodeWrappers);
+        if (!bypassDependencies) {
+            storeDependencies(renderContext, resource, finalKey, depNodeWrappers);
+        }
         cache.put(cachedElement);
 
         if (logger.isDebugEnabled()) {
@@ -1006,8 +1013,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         try {
             renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
+
+            final Properties properties = getAttributesForKey(renderContext, resource);
+            final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+            final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+
+            Element element = null;
+            final Cache cache = cacheProvider.getCache();
+            try {
+                element = cache.get(finalKey);
+            } catch (LockTimeoutException ex) {
+                logger.warn("Error while rendering " + renderContext.getMainResource() + ex.getMessage(), ex);
+            }
+
+            if (element != null && element.getObjectValue() != null) {
+                return returnFromCache(renderContext, resource, key, finalKey, element, cache);
+            }
+
             // Returns a fragment with an error comment
-            return execute("<!-- Module error : " + e.getMessage() + "-->", renderContext, resource, chain);
+            return execute("<!-- Module error : " + e.getMessage() + "-->", renderContext, resource, chain, true);
         } catch (Exception e1) {
             return null;
         }

@@ -71,11 +71,16 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-
-import java.util.*;
 
 /**
  * Default implementation of the module output cache key generator.
@@ -85,7 +90,7 @@ import java.util.*;
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     private List<CacheKeyPartGenerator> partGenerators;
-    private List<String> fields;
+    private LinkedHashMap<String, Integer> fields;
 
     public List<CacheKeyPartGenerator> getPartGenerators() {
         return partGenerators;
@@ -93,12 +98,14 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     public void setPartGenerators(List<CacheKeyPartGenerator> partGenerators) {
         this.partGenerators = partGenerators;
-        this.fields = new ArrayList<String>();
+        this.fields = new LinkedHashMap<>(17);
+        int index = 0;
         for (CacheKeyPartGenerator generator : partGenerators) {
-            if (fields.contains(generator.getKey())) {
-                throw new RuntimeException("Cannot register key part generator with existing key " + generator.getKey() + " , " + generator);
+            final String key = generator.getKey();
+            if (fields.containsKey(key)) {
+                throw new RuntimeException("Cannot register key part generator with existing key " + key + " , " + generator);
             }
-            fields.add(generator.getKey());
+            fields.put(key, index++);
         }
     }
 
@@ -106,32 +113,37 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return StringUtils.join(getArguments(resource, renderContext, properties), "@@");
     }
 
-    private Object[] getArguments(Resource resource, RenderContext renderContext, Properties properties) {
-        List<String> args = new LinkedList<String>();
+    private Collection getArguments(Resource resource, RenderContext renderContext, Properties properties) {
+        List<String> args = new LinkedList<>();
         for (CacheKeyPartGenerator generator : partGenerators) {
             args.add(generator.getValue(resource, renderContext, properties));
         }
-        return args.toArray(new String[args.size()]);
+        return args;
     }
 
     public Map<String, String> parse(String key) {
         String[] values = getSplit(key);
-        Map<String, String> result = new LinkedHashMap<String, String>(fields.size());
-        for (int i = 0; i < values.length; i++) {
-            String value = values[i];
-            result.put(fields.get(i), value == null || value.equals("null") ? null : value);
+        Map<String, String> result = new LinkedHashMap<>(fields.size());
+        if (values.length != fields.size()) {
+            throw new IllegalStateException("Mismatched number of fields and values.");
         }
+
+        for (Map.Entry<String, Integer> entry : fields.entrySet()) {
+            String value = values[entry.getValue()];
+            result.put(entry.getKey(), value == null || value.equals("null") ? null : value);
+        }
+
         return result;
     }
 
     public String replaceField(String key, String fieldName, String newValue) {
         String[] args = getSplit(key);
-        args[fields.indexOf(fieldName)] = newValue;
+        args[fields.get(fieldName)] = newValue;
         return StringUtils.join(args, "@@");
     }
 
     public CacheKeyPartGenerator getPartGenerator(String field) {
-        return partGenerators.get(fields.indexOf(field));
+        return partGenerators.get(fields.get(field));
     }
 
     public String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {

@@ -76,6 +76,7 @@ import org.slf4j.Logger;
 import javax.jcr.Property;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
+import java.util.Map;
 
 /**
  * Iterator on properties
@@ -97,7 +98,15 @@ public class PropertyIteratorImpl implements PropertyIterator {
      */
     public Property nextProperty() {
         try {
-            return jcrStoreProvider.getPropertyWrapper(iterator.nextProperty(), session);
+            Property next = (Property) iterator.next();
+            if (jcrStoreProvider.getMountPoint().equals("/")) {
+                for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
+                    if (next.getPath().startsWith(entry.getKey())) {
+                        return entry.getValue().getPropertyWrapper(next, session);
+                    }
+                }
+            }
+            return jcrStoreProvider.getPropertyWrapper(next, session);
         } catch (RepositoryException e) {
             logger.error("",e);
         }

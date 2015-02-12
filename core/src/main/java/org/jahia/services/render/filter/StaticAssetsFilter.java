@@ -71,13 +71,29 @@
  */
 package org.jahia.services.render.filter;
 
+import java.io.*;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
+import java.security.MessageDigest;
+import java.util.*;
+import java.util.regex.Pattern;
+import javax.jcr.RepositoryException;
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
+
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
 import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
-
-import net.htmlparser.jericho.*;
-
+import net.htmlparser.jericho.Element;
+import net.htmlparser.jericho.EndTag;
+import net.htmlparser.jericho.HTMLElementName;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
@@ -107,20 +123,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
-import javax.jcr.RepositoryException;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.SimpleScriptContext;
-
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.MessageDigest;
-import java.util.*;
-import java.util.regex.Pattern;
-
 /**
  * Render filter that "injects" the static assets into the HEAD section of the
  * rendered HTML document.
@@ -149,19 +151,23 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
+    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
+    private static final String TARGET_TAG = "targetTag";
+    private static final String STATIC_ASSETS = "staticAssets";
+
     private String jahiaContext = null;
 
     private boolean addLastModifiedDate = false;
 
     static {
         RANK = new FastHashMap();
-        RANK.put("inlinebefore", Integer.valueOf(0));
-        RANK.put("css", Integer.valueOf(1));
-        RANK.put("inlinecss", Integer.valueOf(2));
-        RANK.put("javascript", Integer.valueOf(3));
-        RANK.put("inlinejavascript", Integer.valueOf(4));
-        RANK.put("inline", Integer.valueOf(5));
-        RANK.put("unknown", Integer.valueOf(6));
+        RANK.put("inlinebefore", 0);
+        RANK.put("css", 1);
+        RANK.put("inlinecss", 2);
+        RANK.put("javascript", 3);
+        RANK.put("inlinejavascript", 4);
+        RANK.put("inline", 5);
+        RANK.put("unknown", 6);
         RANK.setFast(true);
     }
 
@@ -229,7 +235,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         Set<String> keys = new HashSet<String>();
         for (StartTag esiResourceTag : esiResourceTags) {
             Map<String, Map<String, Map<String, String>>> assets;
-            String targetTag = esiResourceTag.getAttributeValue("targetTag");
+            String targetTag = esiResourceTag.getAttributeValue(TARGET_TAG);
             if (targetTag == null) {
                 targetTag = "HEAD";
             } else {
@@ -246,28 +252,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
             String type = esiResourceTag.getAttributeValue("type");
             String path = esiResourceTag.getAttributeValue("path");
-            String rel = esiResourceTag.getAttributeValue("rel");
-            String media = esiResourceTag.getAttributeValue("media");
-            String condition = esiResourceTag.getAttributeValue("condition");
             path = URLDecoder.decode(path, "UTF-8");
             Boolean insert = Boolean.parseBoolean(esiResourceTag.getAttributeValue("insert"));
-            String title = esiResourceTag.getAttributeValue("title");
             String key = esiResourceTag.getAttributeValue("key");
-            Map<String, String> optionsMap = new HashMap<String, String>();
 
-            // Manage Options
-            if (title != null && !"".equals(title.trim())) {
-                optionsMap.put("title", title);
-            }
-            if (rel != null && !"".equals(rel.trim())) {
-                optionsMap.put("rel", rel);
-            }
-            if (media != null && !"".equals(media.trim())) {
-                optionsMap.put("media", media);
-            }
-            if (condition != null && !"".equals(condition.trim())) {
-                optionsMap.put("condition", condition);
-            }
+            // get options
+            Map<String, String> optionsMap = getOptionMaps(esiResourceTag);
 
             Map<String, Map<String, String>> stringMap = assets.get(type);
             if (stringMap == null) {
@@ -297,13 +287,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             String templateContent = getAjaxResolvedTemplate();
             if (templateContent != null) {
                 for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
-                    renderContext.getRequest().setAttribute("targetTag", entry.getKey());
-                    renderContext.getRequest().setAttribute("staticAssets", entry.getValue());
+                    renderContext.getRequest().setAttribute(STATIC_ASSETS, entry.getValue());
                     Element element = source.getFirstElement();
                     final EndTag tag = element != null ? element.getEndTag() : null;
                     ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(ajaxTemplateExtension);
                     ScriptContext scriptContext = new AssetsScriptContext();
                     final Bindings bindings = scriptEngine.createBindings();
+                    bindings.put(TARGET_TAG, entry.getKey());
                     bindings.put("renderContext", renderContext);
                     bindings.put("resource", resource);
                     scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
@@ -365,7 +355,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
                 String targetTag = entry.getKey();
                 Map<String, Map<String, Map<String, String>>> assets = entry.getValue();
-                renderContext.getRequest().setAttribute("staticAssets", assets);
+                renderContext.getRequest().setAttribute(STATIC_ASSETS, assets);
                 List<Element> headElementList = source.getAllElements(targetTag);
                 for (Element element : headElementList) {
                     String templateContent = getResolvedTemplate();
@@ -397,7 +387,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 //                        }
 //                        assets.put("css",cssWithParam);
 //                    }
-                        bindings.put("targetTag", targetTag);
+                        bindings.put(TARGET_TAG, targetTag);
                         bindings.put("renderContext", renderContext);
                         bindings.put("resource", resource);
                         bindings.put("contextPath", renderContext.getRequest().getContextPath());
@@ -447,6 +437,28 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String s = outputDocument.toString();
         s = removeTempTags(s);
         return s.trim();
+    }
+
+    private Map<String, String> getOptionMaps(StartTag esiResourceTag) {
+        Map<String, String> optionsMap = null;
+
+        for (String attributeName : OPTIONAL_ATTRIBUTES) {
+            String attribute = esiResourceTag.getAttributeValue(attributeName);
+            if (attribute != null) {
+                attribute = attribute.trim();
+                if (!attribute.isEmpty()) {
+                    // create options map if it doesn't exist already
+                    if (optionsMap == null) {
+                        optionsMap = new HashMap<>(OPTIONAL_ATTRIBUTES.length);
+                    }
+
+                    optionsMap.put(attributeName, attribute);
+                }
+            }
+        }
+
+
+        return optionsMap != null ? optionsMap : Collections.<String, String>emptyMap();
     }
 
     private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {

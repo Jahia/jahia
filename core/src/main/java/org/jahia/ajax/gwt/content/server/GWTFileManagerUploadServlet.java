@@ -73,10 +73,17 @@ package org.jahia.ajax.gwt.content.server;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.FileItemHeaders;
+import org.apache.commons.fileupload.FileItemIterator;
+import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.fileupload.FileUploadException;
+import org.apache.commons.fileupload.FileUploadBase.FileSizeLimitExceededException;
+import org.apache.commons.fileupload.FileUploadBase.FileUploadIOException;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.commons.fileupload.util.LimitedInputStream;
+import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -96,6 +103,7 @@ import org.jahia.utils.i18n.Messages;
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.*;
+
 import java.io.*;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -116,11 +124,19 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
 
     private static Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
 
+    private static long getContentLength(FileItemHeaders pHeaders) {
+        try {
+            return Long.parseLong(pHeaders.getHeader(FileUploadBase.CONTENT_LENGTH));
+        } catch (Exception e) {
+            return -1;
+        }
+    }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         SettingsBean settingsBean = SettingsBean.getInstance();
-        upload.setSizeMax(settingsBean.getJahiaFileUploadMaxSize());
+        final long fileSizeLimit = settingsBean.getJahiaFileUploadMaxSize();
         upload.setHeaderEncoding("UTF-8");
         Map<String, FileItem> uploads = new HashMap<String, FileItem>();
         String location = null;
@@ -129,44 +145,69 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         response.setContentType("text/plain; charset=" + settingsBean.getCharacterEncoding());
         final PrintWriter printWriter = response.getWriter();
         try {
-            List<FileItem> items = upload.parseRequest(request);
-            for (FileItem item : items) {
-                if ("unzip".equals(item.getFieldName())) {
+            FileItemIterator itemIterator = upload.getItemIterator(request);
+            while (itemIterator.hasNext()) {
+                final FileItemStream item = itemIterator.next();
+                FileItem fileItem = factory.createItem(item.getFieldName(), item.getContentType(), item.isFormField(),
+                        item.getName());
+                long contentLength = getContentLength(item.getHeaders());
+                
+                // If we have a content length in the header we can use it
+                if (fileSizeLimit > 0 && contentLength != -1L && contentLength > fileSizeLimit) {
+                    throw new FileSizeLimitExceededException("The field " + item.getFieldName()
+                            + " exceeds its maximum permitted size of " + fileSizeLimit + " bytes.", contentLength,
+                            fileSizeLimit);
+                }
+                InputStream itemStream = item.openStream();
+
+                InputStream limitedInputStream = null;
+                try {
+                    limitedInputStream = fileSizeLimit > 0 ? new LimitedInputStream(itemStream, fileSizeLimit) {
+                        @Override
+                        protected void raiseError(long pSizeMax, long pCount) throws IOException {
+                            throw new FileUploadIOException(new FileSizeLimitExceededException("The field "
+                                    + item.getFieldName() + " exceeds its maximum permitted size of " + fileSizeLimit
+                                    + " bytes.", pCount, pSizeMax));
+                        }
+                    } : itemStream;
+
+                    Streams.copy(limitedInputStream, fileItem.getOutputStream(), true);
+                } finally {
+                    IOUtils.closeQuietly(limitedInputStream);
+                }
+
+                if ("unzip".equals(fileItem.getFieldName())) {
                     unzip = true;
-                } else if ("uploadLocation".equals(item.getFieldName())) {
-                    location = item.getString("UTF-8");
-                } else if ("asyncupload".equals(item.getFieldName())) {
-                    String name = item.getName();
+                } else if ("uploadLocation".equals(fileItem.getFieldName())) {
+                    location = fileItem.getString("UTF-8");
+                } else if ("asyncupload".equals(fileItem.getFieldName())) {
+                    String name = fileItem.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name, uploads), item);
+                        uploads.put(extractFileName(name, uploads), fileItem);
                     }
                     type = "async";
-                } else if (!item.isFormField() && item.getFieldName().startsWith("uploadedFile")) {
-                    String name = item.getName();
+                } else if (!fileItem.isFormField() && fileItem.getFieldName().startsWith("uploadedFile")) {
+                    String name = fileItem.getName();
                     if (name.trim().length() > 0) {
-                        uploads.put(extractFileName(name, uploads), item);
+                        uploads.put(extractFileName(name, uploads), fileItem);
                     }
                     type = "sync";
                 }
             }
-        } catch (FileUploadBase.SizeLimitExceededException e) {
-            Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
-            String locMsg = null;
-            try {
-                locMsg = Messages.getInternalWithArguments("fileSizeError.label", locale, settingsBean
-                        .getJahiaFileUploadMaxSize());
-            } catch (Exception ex) {
-                logger.debug("Error while using default engine resource bundle (internal) with locale " + locale, ex);
+        } catch (FileUploadBase.FileSizeLimitExceededException e) {
+            printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, e, request) + "\n");
+            return;
+        } catch (FileUploadIOException e) {
+            if (e.getCause() != null && (e.getCause() instanceof FileSizeLimitExceededException)) {
+                printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, (FileSizeLimitExceededException) e.getCause(), request) + "\n");
+            } else {
+                logger.error("UPLOAD-ISSUE", e);
+                printWriter.write("UPLOAD-ISSUE: " + e.getLocalizedMessage() + "\n");
             }
-            if (locMsg == null) {
-                locMsg = "File upload exceeding limit of " + settingsBean.getJahiaFileUploadMaxSize() + " bytes";
-            }
-            logger.error(locMsg, e);
-            printWriter.write("UPLOAD-ISSUE: " + locMsg + "\n");
             return;
         } catch (FileUploadException e) {
             logger.error("UPLOAD-ISSUE", e);
-            printWriter.write("UPLOAD-ISSUE" + "\n");
+            printWriter.write("UPLOAD-ISSUE: " + e.getLocalizedMessage() + "\n");
             return;
         }
 
@@ -249,6 +290,20 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         }
     }
 
+    private String getSizeLimitErrorMessage(final long fileSizeLimit, FileSizeLimitExceededException e,
+            HttpServletRequest request) {
+        Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
+        if (locale == null) {
+            locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
+        }
+        if (logger.isDebugEnabled()) {
+            logger.warn("File upload exceeding limit of " + fileSizeLimit + " bytes", e);
+        } else {
+            logger.warn("File upload exceeding limit of {} bytes", fileSizeLimit);
+        }
+        return Messages.getInternalWithArguments("fileSizeError.label", "File upload exceeding limit of {0} bytes",
+                locale, fileSizeLimit);
+    }
 
     private String extractFileName(String rawFileName, Map<String, FileItem> uploads) {
         String basename;

@@ -88,6 +88,7 @@ import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.*;
+
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -102,7 +103,6 @@ import java.util.*;
  * File upload window.
  *
  * @author rfelden
- * @version 7 juil. 2008 - 17:45:41
  */
 public class FileUploader extends Window {
     private int fieldCount = 0;
@@ -221,9 +221,16 @@ public class FileUploader extends Window {
         form.add(unzip);
 
         form.addListener(Events.Submit, new Listener<FormEvent>() {
-            public void handleEvent(FormEvent ce){
+            public void handleEvent(FormEvent ce) {
                 String r = ce.getResultHtml();
-                if (r != null && r.contains("UPLOAD-ISSUE:")) {
+                if (r == null) {
+                    return;
+                }
+                if (r.contains("UPLOAD-SIZE-ISSUE:")) {
+                    MessageBox.alert(Messages.get("label.error"),
+                            new DirectionalTextHelper((new HTML(r.replace("UPLOAD-SIZE-ISSUE:", ""))).getElement(),
+                                    true).getTextOrHtml(false), null);
+                } else if (r.contains("UPLOAD-ISSUE:")) {
                     unmask();
                     final Dialog dl = new Dialog();
                     dl.setModal(true);
@@ -232,7 +239,8 @@ public class FileUploader extends Window {
                     dl.setLayout(new FlowLayout());
                     dl.setWidth(300);
                     dl.setScrollMode(Style.Scroll.NONE);
-                    dl.add(new HTML(new DirectionalTextHelper((new HTML(r)).getElement(),true).getTextOrHtml(false)));
+                    dl.add(new HTML(new DirectionalTextHelper((new HTML(r.replace("UPLOAD-ISSUE:", ""))).getElement(),
+                            true).getTextOrHtml(false)));
                     dl.setHeight(150);
                     dl.show();
                 }

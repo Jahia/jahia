@@ -442,7 +442,6 @@
                             <excludes>
                                 <exclude>src/main/java/name/fraser/**</exclude>
                                 <exclude>src/main/java/org/apache/catalina/**</exclude>
-                                <exclude>src/main/java/org/apache/solr/**</exclude>
                             </excludes>
                             <useDefaultExcludes>true</useDefaultExcludes>
                             <mapping>

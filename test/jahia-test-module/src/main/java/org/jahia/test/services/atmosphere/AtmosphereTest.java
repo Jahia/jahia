@@ -109,52 +109,52 @@ public class AtmosphereTest extends JahiaTestCase {
     private transient static Logger logger = LoggerFactory.getLogger(AtmosphereTest.class);
     private String urlTarget = getBaseServerURL() + Jahia.getContextPath()+"/atmosphere/alert/testChannel";
 
-    @Test
-    public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {
-        logger.info("{}: running test: testHeaderBroadcasterCache", getClass().getSimpleName());
-
-        final CountDownLatch latch = new CountDownLatch(1);
-        long t1 = System.currentTimeMillis();
-        Builder builder = new Builder();
-        builder.setConnectionTimeoutInMs(Integer.MAX_VALUE);
-        builder.setRequestTimeoutInMs(Integer.MAX_VALUE);        
-        AsyncHttpClient c = new AsyncHttpClient(builder.build());
-        try {
-            // Suspend
-            c.preparePost(urlTarget).addParameter("message", "cacheme").execute().get();
-
-            // Broadcast
-            c.preparePost(urlTarget).addParameter("message", "cachememe").execute().get();
-
-            //Suspend
-            Response r = c.prepareGet(urlTarget).addHeader(HeaderConfig.X_CACHE_DATE, String.valueOf(t1)).execute(new AsyncCompletionHandler<Response>() {
-
-                @Override
-                public Response onCompleted(Response r) throws Exception {
-                    try {
-                        return r;
-                    } finally {
-                        latch.countDown();
-                    }
-                }
-            }).get();
-
-            try {
-                latch.await(20, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                fail(e.getMessage());
-            }
-
-            assertNotNull(r);
-            assertEquals(HttpStatus.SC_OK, r.getStatusCode());
-            assertEquals(r.getResponseBody(), "cacheme\ncachememe\n");
-        } catch (Exception e) {
-            logger.error("test failed", e);
-            fail(e.getMessage());
-        }
-
-        c.close();
-    }
+//    @Test
+//    public void testHeaderBroadcasterCache() throws IllegalAccessException, ClassNotFoundException, InstantiationException {
+//        logger.info("{}: running test: testHeaderBroadcasterCache", getClass().getSimpleName());
+//
+//        final CountDownLatch latch = new CountDownLatch(1);
+//        long t1 = System.currentTimeMillis();
+//        Builder builder = new Builder();
+//        builder.setConnectionTimeoutInMs(Integer.MAX_VALUE);
+//        builder.setRequestTimeoutInMs(Integer.MAX_VALUE);        
+//        AsyncHttpClient c = new AsyncHttpClient(builder.build());
+//        try {
+//            // Suspend
+//            c.preparePost(urlTarget).addParameter("message", "cacheme").execute().get();
+//
+//            // Broadcast
+//            c.preparePost(urlTarget).addParameter("message", "cachememe").execute().get();
+//
+//            //Suspend
+//            Response r = c.prepareGet(urlTarget).addHeader(HeaderConfig.X_CACHE_DATE, String.valueOf(t1)).execute(new AsyncCompletionHandler<Response>() {
+//
+//                @Override
+//                public Response onCompleted(Response r) throws Exception {
+//                    try {
+//                        return r;
+//                    } finally {
+//                        latch.countDown();
+//                    }
+//                }
+//            }).get();
+//
+//            try {
+//                latch.await(20, TimeUnit.SECONDS);
+//            } catch (InterruptedException e) {
+//                fail(e.getMessage());
+//            }
+//
+//            assertNotNull(r);
+//            assertEquals(HttpStatus.SC_OK, r.getStatusCode());
+//            assertEquals(r.getResponseBody(), "cacheme\ncachememe\n");
+//        } catch (Exception e) {
+//            logger.error("test failed", e);
+//            fail(e.getMessage());
+//        }
+//
+//        c.close();
+//    }
 
 
     private static JahiaSite site;

@@ -120,8 +120,8 @@
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
-        <atmosphere.version>2.1.5</atmosphere.version>
-        <atmosphere.gwt.version>2.1.2</atmosphere.gwt.version>
+        <atmosphere.version>2.2.4</atmosphere.version>
+        <atmosphere.gwt.version>2.2.1</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.11</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
@@ -129,7 +129,7 @@
         <mockito.version>1.9.5</mockito.version>
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
-        <jahia.tomcat.version>7.0.57</jahia.tomcat.version>
+        <jahia.tomcat.version>8.0.18</jahia.tomcat.version>
 
         <driver.derby.version>10.11.1.1</driver.derby.version>
         <driver.mssql.version>4.0.2206.100</driver.mssql.version>

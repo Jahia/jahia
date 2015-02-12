@@ -12,5 +12,9 @@
             timeBetweenEvictionRunsMillis="300000" minEvictableIdleTimeMillis="1800000" numTestsPerEvictionRun="5"/>
 
     <Loader delegate="true"/>
+    
+    <JarScanner>
+        <JarScanFilter defaultPluggabilityScan="false"/>
+    </JarScanner>
 
 </Context>

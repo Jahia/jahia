@@ -137,4 +137,9 @@ public class EventsLogger implements WebSocketEventListener {
     public void onClose(AtmosphereResourceEvent event) {
         logger.info("onClose(): {}", event);
     }
+
+    @Override
+    public void onHeartbeat(AtmosphereResourceEvent event) {
+        logger.info("onHeartbeat(): {}", event);
+    }
 }

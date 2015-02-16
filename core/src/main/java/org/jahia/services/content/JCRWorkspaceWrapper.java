@@ -204,9 +204,12 @@ public class JCRWorkspaceWrapper implements Workspace {
                 throw new ItemExistsException(dest);
             } catch (RepositoryException e) {
             }
-
-            copy(source,dest);
-            session.getItem(source).remove();
+            if (sessionMove) {
+                getSession().getNode(source).copy(StringUtils.substringBeforeLast(dest,"/"),StringUtils.substringAfterLast(dest,"/"));
+                session.getItem(source).remove();
+            } else {
+                throw new UnsupportedRepositoryOperationException();
+            }
         } else {
             if (provider.getMountPoint().length()>1) {
                 dest = dest.substring(provider.getMountPoint().length());

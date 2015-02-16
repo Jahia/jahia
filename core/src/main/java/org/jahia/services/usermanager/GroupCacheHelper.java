@@ -215,7 +215,7 @@ public class GroupCacheHelper {
             buff.append("and isdescendantnode(group,'/groups')");
         }
 
-        Query q = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null).getWorkspace()
+        Query q = JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null).getWorkspace()
                 .getQueryManager().createQuery(buff.toString(), Query.JCR_SQL2);
         RowIterator it = q.execute().getRows();
         if (!it.hasNext()) {
@@ -226,7 +226,7 @@ public class GroupCacheHelper {
 
     private List<String> internalGetMembershipByPath(String principalPath) {
         try {
-            JCRNodeWrapper principalNode = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null)
+            JCRNodeWrapper principalNode = JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null)
                     .getNode(principalPath);
             Set<String> groups = new LinkedHashSet<String>();
             try {

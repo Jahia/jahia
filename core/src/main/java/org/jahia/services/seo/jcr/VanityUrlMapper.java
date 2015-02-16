@@ -152,7 +152,7 @@ public class VanityUrlMapper {
                 }
             } else if (StringUtils.isNotEmpty((String) hsRequest.getAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK))) {
                 String host = (String) hsRequest.getAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK);
-                host = StringUtils.substringBetween(host, "://", ":");
+                host = StringUtils.substringBefore(StringUtils.substringAfter(host, "://"), ":");
                 siteKey = lookupSiteKeyByServerName(host);
             }
             if (StringUtils.equals(ctx, contextToCheck)) {
@@ -182,17 +182,6 @@ public class VanityUrlMapper {
                             if (serverName != null) {
                                 hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                             }                            
-                        }
-                    }
-                    if (!urlRewriteService.isSeoRulesEnabled() && !vanityUrlFound) {
-                        // Just in case the SEO is not activated, switch the servername anyway to avoid crosscontext pages
-                        try {
-                            // Switch to correct site for links
-                            hsRequest.setAttribute(VANITY_KEY, Url.appendServerNameIfNeeded(node, fullUrl, hsRequest));
-                        } catch (PathNotFoundException e) {
-                            // Cannot find node
-                        } catch (MalformedURLException e) {
-                            // Cannot find node
                         }
                     }
                 } catch (RepositoryException e) {

@@ -89,7 +89,7 @@ import javax.jcr.query.QueryResult;
 import java.util.*;
 
 /**
- * This is the manager/provider class to create/get/remove categories within Jahia's JCR. 
+ * This is the manager/provider class to create/get/remove categories within Jahia's JCR.
  *
  * @author Benjamin Papez
  *
@@ -102,7 +102,7 @@ public class JCRCategoryProvider {
 
     /**
      * Create an new instance of the Category provider if the instance do not exist, or return the existing instance.
-     * 
+     *
      * @return Return the instance of the Category provider.
      */
     public static JCRCategoryProvider getInstance() {
@@ -128,7 +128,7 @@ public class JCRCategoryProvider {
         JCRNodeWrapper rootNodeWrapper = null;
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             rootNodeWrapper = jcrSessionWrapper.getNode(JCRContentUtils.getSystemSitePath()+"/categories");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -139,7 +139,7 @@ public class JCRCategoryProvider {
     /**
      * Get all root categories accessible by the given user
      * @param user accessing the repository
-     * @return list of root categories (Category facade objects) 
+     * @return list of root categories (Category facade objects)
      */
     public List<Category> getRootCategories(JahiaUser user) {
         JCRNodeWrapper rootNodeWrapper = null;
@@ -147,7 +147,7 @@ public class JCRCategoryProvider {
         try {
             rootNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
             for (NodeIterator it = rootNodeWrapper.getNodes(); it.hasNext();) {
-                JCRNodeWrapper rootCategoryNode = (JCRNodeWrapper) it.nextNode(); 
+                JCRNodeWrapper rootCategoryNode = (JCRNodeWrapper) it.nextNode();
                 if (rootCategoryNode.isNodeType(Constants.JAHIANT_CATEGORY)) {
                     rootCategories.add(new Category(
                             createCategoryBeanFromNode(rootCategoryNode)));
@@ -182,7 +182,7 @@ public class JCRCategoryProvider {
             throw new JahiaException("Category " + key
                     + " already exists", "Category " + key
                     + " already exists", JahiaException.DATA_ERROR,
-                    JahiaException.ERROR_SEVERITY);            
+                    JahiaException.ERROR_SEVERITY);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -198,7 +198,7 @@ public class JCRCategoryProvider {
         Category categoryByUUID = null;
         try {
             JCRSessionWrapper session = sessionFactory
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             Node categoryNode = session.getNodeByUUID(categoryUUID);
             categoryByUUID = new Category(
                     createCategoryBeanFromNode(categoryNode));
@@ -220,7 +220,7 @@ public class JCRCategoryProvider {
         Category categoryByUUID = null;
         try {
             JCRSessionWrapper session = sessionFactory
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             Node categoryNode = session.getNode(categoryPath);
             categoryByUUID = new Category(
                     createCategoryBeanFromNode(categoryNode));
@@ -233,7 +233,7 @@ public class JCRCategoryProvider {
     }
 
     /**
-     * Get child category within a parent category (or null for root) by its key 
+     * Get child category within a parent category (or null for root) by its key
      * @param categoryKey
      * @param parentCategory
      * @return the category matching the key
@@ -242,7 +242,7 @@ public class JCRCategoryProvider {
         Category newCategory = null;
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             JCRNodeWrapper parentNodeWrapper = null;
             if (parentCategory != null) {
                 parentNodeWrapper = (JCRNodeWrapper) ((JCRCategory) parentCategory
@@ -298,11 +298,11 @@ public class JCRCategoryProvider {
      * Find categories by its key prefix anywhere in the tree
      * @param categoryKey
      * @return list of categories matching the key
-     */    
+     */
     public List<Category> findCategoriesStartingByKey(String categoryKey) {
         final List<Category> result = new ArrayList<Category>();
         try {
-            Session session = sessionFactory.getCurrentUserSession();
+            Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
             if (session.getWorkspace().getQueryManager() != null) {
             	StringBuilder query = new StringBuilder("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY
@@ -332,18 +332,18 @@ public class JCRCategoryProvider {
     /**
      * Find categories by its title prefix and language anywhere in the tree
      * @param titlePrefix
-     * @param language 
+     * @param language
      * @return list of categories matching the title prefix and langauge
      */
     public List<Category> findCategoriesStartingByTitle(String titlePrefix,
             String language) {
         throw new UnsupportedOperationException("not yet implemented");
     }
-    
+
     /**
      * Find categories containing term in title and language anywhere in the tree
      * @param title
-     * @param language 
+     * @param language
      * @return list of categories matching the title term and language
      */
     public List<Category> findCategoriesContainingTitleString(String title,
@@ -361,7 +361,7 @@ public class JCRCategoryProvider {
             throws JahiaException {
         Map<String, String> result = new HashMap<String, String>();
         try {
-            Session session = sessionFactory.getCurrentUserSession();
+            Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
             Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
             for (NodeIterator it = categoryNode
@@ -396,7 +396,7 @@ public class JCRCategoryProvider {
             throws JahiaException {
         String title = null;
         try {
-            Session session = sessionFactory.getCurrentUserSession(null, locale);
+            Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE, locale);
             Node categoryNode = session.getNodeByIdentifier(category
                     .getJahiaCategory().getId());
             Property titleProperty = categoryNode
@@ -405,7 +405,7 @@ public class JCRCategoryProvider {
                 title = titleProperty.getString();
             }
         } catch (PathNotFoundException e) {
-            logger.debug(e.getMessage(), e);            
+            logger.debug(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -449,7 +449,7 @@ public class JCRCategoryProvider {
             categoryNode.getProperty(Constants.JCR_TITLE).remove();
             session.save();
         } catch (PathNotFoundException e) {
-            logger.debug(e.getMessage(), e);            
+            logger.debug(e.getMessage(), e);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -476,7 +476,7 @@ public class JCRCategoryProvider {
                                     : " exists multiple times and could not be deleted");
                     throw new JahiaException(msg, msg,
                             JahiaException.DATA_ERROR,
-                            JahiaException.ERROR_SEVERITY);                       
+                            JahiaException.ERROR_SEVERITY);
                 }
             } else {
                 node = jcrSessionWrapper.getNodeByUUID(categoryBean.getId());
@@ -524,7 +524,7 @@ public class JCRCategoryProvider {
      * @return
      */
     public Properties getProperties(String categoryId) {
-        logger.error("method nor supported yet");        
+        logger.error("method nor supported yet");
         return null;
     }
 
@@ -538,7 +538,7 @@ public class JCRCategoryProvider {
     }
 
     /**
-     * Get all child categories from a parent category a user is able to see 
+     * Get all child categories from a parent category a user is able to see
      * @param parentCategory
      * @param user
      * @return all child category objects of a parent, which a user can see
@@ -549,7 +549,7 @@ public class JCRCategoryProvider {
         List<Category> rootCategories = new ArrayList<Category>();
         try {
             JCRSessionWrapper jcrSessionWrapper = sessionFactory
-                    .getCurrentUserSession();
+                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
             for (NodeIterator iterator = parentNodeWrapper.getNodes(); iterator.hasNext();) {

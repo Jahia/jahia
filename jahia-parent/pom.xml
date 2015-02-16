@@ -207,6 +207,7 @@
         <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
 
         <jahia.modules.importPackage>
+            org.apache.naming.java,
             org.jahia.defaults.config.spring,
             org.jahia.exceptions,
             org.jahia.services

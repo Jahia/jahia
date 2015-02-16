@@ -9,6 +9,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
+import org.jahia.services.seo.urlrewrite.ServerNameToSiteMapper;
 import org.jahia.services.seo.urlrewrite.UrlRewriteService;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
@@ -107,7 +108,6 @@ public class VanityUrlMapper {
     private static final Logger logger = LoggerFactory.getLogger(VanityUrlMapper.class);
 
     public static final String VANITY_KEY = "org.jahia.services.seo.jcr.VanityUrl";
-    public static final String VANITY_SERVER_KEY = "org.jahia.services.seo.jcr.VanityUrl.server";
 
     /**
      * checks if a vanity exists and put the result as an attribute of the request
@@ -119,8 +119,7 @@ public class VanityUrlMapper {
      */
     public void checkVanityUrl(HttpServletRequest hsRequest,String outboundContext, String outboundUrl) {
         hsRequest.removeAttribute(VANITY_KEY);
-        hsRequest.removeAttribute(VANITY_SERVER_KEY);
-        
+
         URLResolverFactory urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
         UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
@@ -151,6 +150,10 @@ public class VanityUrlMapper {
                 } catch (URISyntaxException e) {
                     // simply continue as siteKey will be determined later
                 }
+            } else if (StringUtils.isNotEmpty((String) hsRequest.getAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK))) {
+                String host = (String) hsRequest.getAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK);
+                host = StringUtils.substringBetween(host, "://", ":");
+                siteKey = lookupSiteKeyByServerName(host);
             }
             if (StringUtils.equals(ctx, contextToCheck)) {
                 String url = "/render" + outboundUrl;
@@ -177,7 +180,7 @@ public class VanityUrlMapper {
                             vanityUrlFound = true;
                             hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl());
                             if (serverName != null) {
-                                hsRequest.setAttribute(VANITY_SERVER_KEY, serverName);                        
+                                hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                             }                            
                         }
                     }
@@ -195,7 +198,7 @@ public class VanityUrlMapper {
                 } catch (RepositoryException e) {
                     logger.debug("Error when trying to obtain vanity url", e);
                     if (serverName != null) {
-                        hsRequest.setAttribute(VANITY_SERVER_KEY, serverName);                        
+                        hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                     }
                 }
             }

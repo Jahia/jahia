@@ -77,6 +77,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlManager;
+import org.jahia.services.seo.jcr.VanityUrlMapper;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;

@@ -74,6 +74,7 @@ package org.jahia.services.seo.urlrewrite;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.seo.jcr.VanityUrlMapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.settings.SettingsBean;
@@ -165,8 +166,6 @@ public class ServerNameToSiteMapper {
     public void analyzeLink(HttpServletRequest request, String ctx, String language,
             String siteKey, String path) {
         
-        resetStateForOutboundUrl(request);
-        
         String currentSiteKey = getSiteKeyByServerName(request);
         boolean matches = currentSiteKey.equals(siteKey);
         request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
@@ -195,7 +194,7 @@ public class ServerNameToSiteMapper {
                 }
             }
             request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
-            request.setAttribute(ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
+            request.setAttribute(ATTR_NAME_SERVERNAME_FOR_LINK, request.getScheme() + "://" + serverName);
         }
         
         checkCmsPrefix(request, ctx, path);
@@ -242,7 +241,7 @@ public class ServerNameToSiteMapper {
         request.setAttribute(ATTR_NAME_CMS_TOKEN, doRemove ? "" : "/cms");
     }
 
-    private void resetStateForOutboundUrl(HttpServletRequest request) {
+    public void resetStateForOutboundUrl(HttpServletRequest request) {
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_CMS_TOKEN);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_DEFAULT_LANG_MATCHES);
@@ -250,5 +249,6 @@ public class ServerNameToSiteMapper {
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_FOR_LINK);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK);
         request.removeAttribute(ServerNameToSiteMapper.ATTR_NAME_SITE_KEY_MATCHES);
+        request.removeAttribute(VanityUrlMapper.VANITY_KEY);
     }
 }

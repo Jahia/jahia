@@ -130,8 +130,13 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     private String charset;
     
     private ProducerTemplate template;
+    
+    private String templateCharset;
+    
     private ScriptEngineUtils scriptEngineUtils;
+    
     private JahiaTemplateManagerService templateManagerService;
+
     /**
      * Validates entered values for mail settings.
      * 
@@ -395,7 +400,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath.getURI().getPath(), ".") + ".subject."
                         + StringUtils.substringAfterLast(templateRealPath.getFilename(), ".");
                 InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
-                scriptContent = new InputStreamReader(stream);
+                scriptContent = templateCharset != null ? new InputStreamReader(stream, templateCharset) : new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
                 scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());
@@ -409,7 +414,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 IOUtils.closeQuietly(scriptContent);
             }
             try {
-                scriptContent = new InputStreamReader(scriptInputStream);
+                try {
+                    scriptContent = templateCharset != null ? new InputStreamReader(scriptInputStream, templateCharset) : new InputStreamReader(scriptInputStream);
+                } catch (UnsupportedEncodingException e) {
+                    throw new IllegalArgumentException(e);
+                }
                 scriptContext.setWriter(new StringWriter());
                 scriptContext.setErrorWriter(new StringWriter());
                 // The following binding is necessary for JavaScript, which
@@ -545,6 +554,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         } else if (charset.length() == 0) {
             charset = null;
         }
+        if (templateCharset == null) {
+            templateCharset = settingsBean.getCharacterEncoding();
+        } else if (templateCharset.length() == 0) {
+            templateCharset = null;
+        }
     }
 
     public void setCharset(String charset) {
@@ -553,5 +567,9 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
 
     public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
         this.templateManagerService = templateManagerService;
+    }
+
+    public void setTemplateCharset(String templateCharset) {
+        this.templateCharset = templateCharset;
     }
 }

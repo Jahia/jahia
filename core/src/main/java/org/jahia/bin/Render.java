@@ -826,7 +826,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                             jsite = (String) renderContext.getMainResource().getModuleParams().get("jsite");
                         }
                         if (jsite != null) {
-                            site = (JCRSiteNode) resource.getNode().getSession().getNodeByIdentifier(jsite);
+                            try {
+                                site = (JCRSiteNode) resource.getNode().getSession().getNodeByIdentifier(jsite);
+                            } catch (ItemNotFoundException e) {
+                                if (JahiaUserManagerService.isGuest(jcrSessionFactory.getCurrentUser())) {
+                                    throw new JahiaUnauthorizedException();
+                                } else {
+                                    throw new JahiaForbiddenAccessException();
+                                }
+                            }
                         }
                         if (resource.getNode().getPath().startsWith("/sites/") &&
                             (site == null || (!site.getPath().startsWith("/modules/") &&

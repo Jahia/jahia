@@ -13,6 +13,7 @@
     <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'loginForm')}"/>
 	<c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
     <form ${functions:attributes(attributes)}>
+<<<<<<< .working
         <input type="hidden" name="site" value="${renderContext != null ? renderContext.site.name : urlResolver.siteKey}"/>
         <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
         <c:if test="${not empty redirectTo}">
@@ -22,6 +23,42 @@
             <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
             <input type="hidden" name="failureRedirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
         </c:if>
+=======
+        <c:choose>
+            <c:when test="${not empty attributes.redirectTo}">
+                <input type="hidden" name="redirect" value="${attributes.redirectTo}"/>
+            </c:when>
+            <c:when test="${not empty requestScope['javax.servlet.error.request_uri']}">
+                <c:url var="redirect" value="${requestScope['javax.servlet.error.request_uri']}">
+                    <c:forEach items="${paramValues}" var="paramValueEntry">
+                        <c:forEach items="${paramValueEntry.value}" var="paramValue">
+                            <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                        </c:forEach>
+                    </c:forEach>
+                </c:url>
+                <input type="hidden" name="redirect" value="${redirect}"/>
+            </c:when>
+            <c:when test="${not empty renderContext && not empty renderContext.mainResource}">
+                <c:choose>
+                    <c:when test="${renderContext.mainResource.template != 'default'}">
+                        <c:set var="urlEnd" value=".${renderContext.mainResource.template}.html"/>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="urlEnd" value=".html"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:url var="redirect" value="${url.base}${renderContext.mainResource.node.path}${urlEnd}">
+                    <c:forEach items="${paramValues}" var="paramValueEntry">
+                        <c:forEach items="${paramValueEntry.value}" var="paramValue">
+                            <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                        </c:forEach>
+                    </c:forEach>
+                </c:url>
+                <input type="hidden" name="redirect" value="<c:url value='${redirect}'/>"/>
+                <input type="hidden" name="failureRedirect" value="<c:url value='${redirect}'/>"/>
+            </c:when>
+        </c:choose>
+>>>>>>> .merge-right.r52018
         <jsp:doBody/>
     </form>
 </c:if>

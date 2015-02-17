@@ -2205,7 +2205,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                 }
             } catch (Exception e) {
-                logger.warn("Unable to copy property '" + property.getName() + "'. Skipping.", e);
+                logger.debug("Unable to copy property '" + property.getName() + "'. Skipping.", e);
             }
         }
     }

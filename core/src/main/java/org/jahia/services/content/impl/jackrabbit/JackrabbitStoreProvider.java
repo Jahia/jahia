@@ -238,8 +238,13 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
             names.add(nti.nextNodeType().getName());
         }
 
-        jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
-        logger.info("Custom node types unregistered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
+        try {
+            jntm.unregisterNodeTypes(names.toArray(new String[names.size()]));
+            logger.info("Custom node types unregistered for {} in {} ms", systemId, System.currentTimeMillis() - timer);
+        } catch (ItemNotFoundException e) {
+            logger.info("Couldn't unregister custom node types {}. They probably have already been unregistered.", names);
+            logger.debug("Couldn't unregister custom node types " + names + ". They probably have already been unregistered.", e);
+        }
     }
 
     protected boolean canRegisterCustomNodeTypes() {

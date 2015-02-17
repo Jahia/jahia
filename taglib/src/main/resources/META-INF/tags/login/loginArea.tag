@@ -13,17 +13,7 @@
     <c:set target="${attributes}" property="name" value="${functions:default(attributes.name, 'loginForm')}"/>
 	<c:set target="${attributes}" property="method" value="${functions:default(attributes.method, 'post')}"/>
     <form ${functions:attributes(attributes)}>
-<<<<<<< .working
         <input type="hidden" name="site" value="${renderContext != null ? renderContext.site.name : urlResolver.siteKey}"/>
-        <c:set var="redirectTo" value="${functions:default(attributes.redirectTo, requestScope['javax.servlet.error.request_uri'])}"/>
-        <c:if test="${not empty redirectTo}">
-            <input type="hidden" name="redirect" value="${fn:escapeXml(redirectTo)}"/>
-        </c:if>
-        <c:if test="${empty redirectTo && not empty renderContext && not empty renderContext.mainResource}">
-            <input type="hidden" name="redirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
-            <input type="hidden" name="failureRedirect" value="<c:url value='${url.base}${renderContext.mainResource.node.path}.html'/>"/>
-        </c:if>
-=======
         <c:choose>
             <c:when test="${not empty attributes.redirectTo}">
                 <input type="hidden" name="redirect" value="${attributes.redirectTo}"/>
@@ -58,7 +48,6 @@
                 <input type="hidden" name="failureRedirect" value="<c:url value='${redirect}'/>"/>
             </c:when>
         </c:choose>
->>>>>>> .merge-right.r52018
         <jsp:doBody/>
     </form>
 </c:if>

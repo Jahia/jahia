@@ -115,12 +115,11 @@ public class WrapperFilterTest extends JahiaTestCase {
 
     @Before
     public void setUp() throws Exception {
+        session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        
         JahiaSite site = TestHelper.createSite("test", "localhost" + System.currentTimeMillis(), TestHelper.WEB_TEMPLATES, null, null,
                 new String[] {"jahia-test-module"});
         
-        setSessionSite(site);
-
-        session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
         this.site = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
 
         if (!this.site.isCheckedOut()) {

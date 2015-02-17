@@ -3,71 +3,71 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ======================================================================================
+ * 1/ GPL
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  *
  *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
  *
- *     For more information, please visit http://www.jahia.com
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.content;
 
@@ -198,11 +198,11 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;
-    
+
     private boolean registerObservers = true;
-    
+
     private boolean observersUseRelativeRoot = true;
-    
+
     private Map<String, JCRSessionWrapper> observerSessions;
 
     public String getKey() {
@@ -372,6 +372,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         start(true);
     }
 
+    /**
+     * Starts this provider if possible, checking its availability before attempting the starting procedure if so requested.
+     *
+     * @param checkAvailability whether or not to check the availability before attempting the starting procedure
+     * @return <code>true</code> if this provider is available or availability checking was not requested, <code>false</code> otherwise.
+     * @throws JahiaInitializationException
+     */
     public boolean start(boolean checkAvailability) throws JahiaInitializationException {
         String tmpAuthenticationType = authenticationType;
         try {
@@ -436,7 +443,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             }
             return false;
         } finally {
-            if(systemSession != null) {
+            if (systemSession != null) {
                 systemSession.logout();
             }
         }
@@ -477,7 +484,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                         start();
                         isAvailable();
                     } catch (JahiaInitializationException e) {
-                        logger.warn("Issue while trying to start an external provider ({}) upon startup" +getMountPoint());
+                        logger.warn("Issue while trying to start an external provider ({}) upon startup" + getMountPoint());
                         getService().getProviderChecker().checkPeriodically(this);
                     }
                 }
@@ -531,7 +538,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             listener.setMountPoint(mountPoint);
             listener.setRelativeRoot(relativeRoot);
             observationManager.addEventListener(listener, Event.NODE_ADDED + Event.NODE_REMOVED + Event.PROPERTY_ADDED
-                    + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
+                            + Event.PROPERTY_CHANGED + Event.PROPERTY_REMOVED + Event.NODE_MOVED,
                     observersUseRelativeRoot ? StringUtils.defaultIfEmpty(relativeRoot, "/") : "/", true, null, null,
                     false);
             observerSessions.put(ws, session);
@@ -717,7 +724,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         } catch (Exception e) {
             logger.error("Repository init error", e);
         }
-        if(files != null){
+        if (files != null) {
             for (Resource file : files) {
                 try {
                     String propKey = file.getURL().toString() + ".lastRegistered." + key;
@@ -832,7 +839,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         if ("shared".equals(authenticationType)) {
             credentials = username.startsWith(GUEST) ? getGuestCredentials() : getSystemCredentials();
         } else if ("storedPasswords".equals(authenticationType)) {
-            JCRUserNode user = userManagerService.lookupUser(username,realm,false);
+            JCRUserNode user = userManagerService.lookupUser(username, realm, false);
             username = user.getPropertyAsString("storedUsername_" + getKey());
             JCRPropertyWrapper passProp = user.getProperty("storedPassword_" + getKey());
             if (passProp != null) {
@@ -1036,7 +1043,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     /**
      * @deprecated now canExportNode and canExportProperty are used
      * Indicates if the nodes, backed by this provider, are considered during export operation.
-     * 
+     *
      * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
      *         they are skipped
      */
@@ -1312,7 +1319,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         if (!registerObservers || observerSessions == null || observerSessions.isEmpty()) {
             return;
         }
-        for (Iterator<Entry<String, JCRSessionWrapper>> it = observerSessions.entrySet().iterator(); it.hasNext();) {
+        for (Iterator<Entry<String, JCRSessionWrapper>> it = observerSessions.entrySet().iterator(); it.hasNext(); ) {
             Entry<String, JCRSessionWrapper> sessionEntry = it.next();
             try {
                 sessionEntry.getValue().logout();
@@ -1342,7 +1349,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
         return guestCredentials;
     }
-    
+
     protected Credentials getSystemCredentials() {
         if (systemCredentials == null) {
             if (systemUser != null) {

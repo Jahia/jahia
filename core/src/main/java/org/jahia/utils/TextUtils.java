@@ -54,13 +54,13 @@ public class TextUtils {
         return replaceBoundedString(initial, prefix, suffix, new ConstantStringReplacementGenerator(replacement));
     }
 
-    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, StringReplacementGenerator generator) {
+    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, BoundedStringVisitor<String> visitor) {
         if (initial == null || initial.length() == 0) {
             return initial;
         }
 
-        if (generator == null) {
-            generator = ConstantStringReplacementGenerator.REPLACE_BY_EMPTY;
+        if (visitor == null) {
+            visitor = ConstantStringReplacementGenerator.REPLACE_BY_EMPTY;
         }
 
         if (StringUtils.isEmpty(prefix) || StringUtils.isEmpty(suffix)) {
@@ -80,8 +80,8 @@ public class TextUtils {
             }
         }
 
-        // replace the prefix and suffix instances using the specified replacement generator in the string between the first prefix and last suffix
-        String replacement = new Replacer(prefix, suffix, initial.substring(prefixIndex, suffixIndex), generator).replace();
+        // replace the prefix and suffix instances using the specified replacement visitor in the string between the first prefix and last suffix
+        String replacement = new Replacer(prefix, suffix, initial.substring(prefixIndex, suffixIndex), visitor).replace();
 
         // add text before first prefix and after last suffix if any
         return initial.substring(0, prefixIndex) + replacement + initial.substring(suffixIndex + suffix.length());
@@ -94,10 +94,10 @@ public class TextUtils {
         private final int suffixLength;
         private final String tmp;
         private final int length;
-        private final StringReplacementGenerator generator;
+        private final BoundedStringVisitor<String> visitor;
         private final SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
 
-        public Replacer(String prefix, String suffix, String initial, StringReplacementGenerator generator) {
+        public Replacer(String prefix, String suffix, String initial, BoundedStringVisitor<String> visitor) {
             this.prefix = prefix;
             this.prefixLength = prefix.length();
 
@@ -107,7 +107,7 @@ public class TextUtils {
             this.tmp = initial;
             this.length = initial.length();
 
-            this.generator = generator;
+            this.visitor = visitor;
         }
 
         public String replace() {
@@ -118,7 +118,7 @@ public class TextUtils {
 
             // if we don't have a suffix, the whole String is a match, so replace it and return
             if(suffixIndex < 0) {
-                return generator.getReplacementFor(tmp.substring(prefixLength), prefix, suffix);
+                return visitor.visit(tmp.substring(prefixLength), prefix, suffix);
             }
 
             // as long as we can find new prefixes to match
@@ -175,7 +175,7 @@ public class TextUtils {
                 }
 
                 // use the generator to replace it
-                String replacement = generator.getReplacementFor(match, prefix, suffix);
+                String replacement = visitor.visit(match, prefix, suffix);
 
                 // if we had a previous suffix
                 if (previousSuffix > 0 && previousSuffix < length - suffixLength) {
@@ -222,11 +222,39 @@ public class TextUtils {
         }
     }
 
-    public static interface StringReplacementGenerator {
-        String getReplacementFor(String match, String prefix, String suffix);
+    public static interface BoundedStringVisitor<T> {
+        T visit(String match, String prefix, String suffix);
+
+        boolean isModifyingMatches();
     }
 
-    public static class ConstantStringReplacementGenerator implements StringReplacementGenerator {
+    public static abstract class StringReplacementGenerator implements BoundedStringVisitor<String> {
+        public abstract String getReplacementFor(String match, String prefix, String suffix);
+
+        @Override
+        public String visit(String match, String prefix, String suffix) {
+            return getReplacementFor(match, prefix, suffix);
+        }
+
+        @Override
+        public boolean isModifyingMatches() {
+            return true;
+        }
+    }
+
+    public static final BoundedStringVisitor<String> NULL_OP = new BoundedStringVisitor<String>() {
+        @Override
+        public String visit(String match, String prefix, String suffix) {
+            return match;
+        }
+
+        @Override
+        public boolean isModifyingMatches() {
+            return false;
+        }
+    };
+
+    public static class ConstantStringReplacementGenerator extends StringReplacementGenerator {
         public static final ConstantStringReplacementGenerator REPLACE_BY_EMPTY = new ConstantStringReplacementGenerator("");
         private String replacement;
 

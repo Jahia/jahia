@@ -464,7 +464,7 @@ public class TextUtilsTest {
         assertEquals(expected, TextUtils.replaceBoundedString(initial, prefix, suffix, gen));
     }
 
-    static class TestStringReplacementGenerator implements TextUtils.StringReplacementGenerator {
+    static class TestStringReplacementGenerator extends TextUtils.StringReplacementGenerator {
         private String replacement;
         private String[] expectedMatches;
         private int invocationCount;

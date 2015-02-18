@@ -542,7 +542,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 String key = getKey(entry.getKey());
                 org.springframework.core.io.Resource r = getResource(key);
-                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null && r.exists()) {
+                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null) {
                     pathsToAggregate.put(key, r);
                     long lastModified = r.lastModified();
                     if (filesDates < lastModified) {
@@ -708,7 +708,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (key.startsWith("/modules/")) {
             r = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId).getResource(filePath);
         } else if (key.startsWith("/files/")) {
-            r = getResourceFromFile(r, moduleId, "/" + filePath);
+            r = getResourceFromFile(moduleId, "/" + filePath);
         }
         return r;
     }
@@ -717,10 +717,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
     }
 
-    private org.springframework.core.io.Resource getResourceFromFile(org.springframework.core.io.Resource r, String workspace, final String fFilePath) {
+    private org.springframework.core.io.Resource getResourceFromFile(String workspace, final String fFilePath) {
         try {
             final JCRNodeWrapper contentNode = JCRSessionFactory.getInstance().getCurrentUserSession(workspace).getNode(fFilePath);
-            r = new org.springframework.core.io.Resource() {
+            return new org.springframework.core.io.Resource() {
                 @Override
                 public boolean exists() {
                     return true;
@@ -782,9 +782,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             };
         } catch (RepositoryException e) {
-
+            // Cannot get resource
         }
-        return r;
+        return null;
     }
 
     public String generateAggregateName(Collection<String> m) {

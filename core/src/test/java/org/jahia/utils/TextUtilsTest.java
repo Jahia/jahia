@@ -39,10 +39,15 @@
  */
 package org.jahia.utils;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
+import static junit.framework.Assert.*;
 
 /**
  * Based on GateIn Common class org.gatein.common.text.StringTestCase.
@@ -462,6 +467,13 @@ public class TextUtilsTest {
         gen.setExpectedMatches(expectedMatches);
 
         assertEquals(expected, TextUtils.replaceBoundedString(initial, prefix, suffix, gen));
+
+        CountingVisitor countingVisitor = new CountingVisitor();
+        assertEquals(expectedMatches.length, (int) TextUtils.visitBoundedString(initial, prefix, suffix, countingVisitor));
+
+        MatchRecordingVisitor matchRecordingVisitor = new MatchRecordingVisitor();
+        final boolean result = Arrays.equals(expectedMatches, TextUtils.visitBoundedString(initial, prefix, suffix, matchRecordingVisitor).toArray(new String[expectedMatches.length]));
+        assertTrue(result);
     }
 
     static class TestStringReplacementGenerator extends TextUtils.StringReplacementGenerator {
@@ -485,6 +497,40 @@ public class TextUtilsTest {
             String expected = expectedMatches[invocationCount++];
             assertEquals("'" + expected + "'", "'" + match + "'");
             return replacement;
+        }
+    }
+
+    static class CountingVisitor implements TextUtils.BoundedStringVisitor<Integer> {
+        private int count;
+
+        @Override
+        public Integer visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, String initialString) {
+            count++;
+            return count;
+        }
+
+        @Override
+        public Integer initialValue(String initial) {
+            return 0;
+        }
+
+        public int getCount() {
+            return count;
+        }
+    }
+
+    static class MatchRecordingVisitor implements TextUtils.BoundedStringVisitor<Collection<String>> {
+        private List<String> matches = new LinkedList<>();
+
+        @Override
+        public Collection<String> visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, String initialString) {
+            matches.add(match);
+            return matches;
+        }
+
+        @Override
+        public Collection<String> initialValue(String initial) {
+            return Collections.emptyList();
         }
     }
 

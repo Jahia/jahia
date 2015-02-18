@@ -45,23 +45,24 @@ import java.util.TreeMap;
 import org.apache.commons.lang.StringUtils;
 
 /**
- *
  * @author Christophe Laprun
  */
 public class TextUtils {
 
-    public static String replaceBoundedString(String initial, String prefix, String suffix, String replacement) {
-        return replaceBoundedString(initial, prefix, suffix, new ConstantStringReplacementGenerator(replacement));
+    public static <T> T visitBoundedString(String initial, String prefix, String suffix, BoundedStringVisitor<T> visitor) {
+        return visitBoundedString(initial, prefix, suffix, visitor, new Matcher<>(prefix, suffix, visitor));
     }
 
-    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, BoundedStringVisitor<String> visitor) {
-        if (initial == null || initial.length() == 0) {
-            return initial;
+    private static <T> T visitBoundedString(String initial, String prefix, String suffix, BoundedStringVisitor<T> visitor, Matcher<T> matcher) {
+        if (visitor == null) {
+            throw new IllegalArgumentException("Must provide a non-null visitor!");
         }
 
-        if (visitor == null) {
-            visitor = ConstantStringReplacementGenerator.REPLACE_BY_EMPTY;
+        final T initialValue = visitor.initialValue(initial);
+        if (initial == null || initial.isEmpty()) {
+            return initialValue;
         }
+
 
         if (StringUtils.isEmpty(prefix) || StringUtils.isEmpty(suffix)) {
             throw new IllegalArgumentException("Must provide non-null, non-empty prefix and suffix to match!");
@@ -71,63 +72,70 @@ public class TextUtils {
         int suffixIndex;
         if (prefixIndex < 0) {
             // we don't have a prefix
-            return initial;
+            return initialValue;
         } else {
             suffixIndex = initial.lastIndexOf(suffix);
             if (suffixIndex < 0 || suffixIndex < prefixIndex) {
                 // we don't have a suffix or it's not located after the prefix so no replacement
-                return initial;
+                return initialValue;
             }
         }
 
-        // replace the prefix and suffix instances using the specified replacement visitor in the string between the first prefix and last suffix
-        String replacement = new Replacer(prefix, suffix, initial.substring(prefixIndex, suffixIndex), visitor).replace();
+        // find all matches and visit them
+        final T result = matcher.match(initial.substring(prefixIndex, suffixIndex));
 
-        // add text before first prefix and after last suffix if any
-        return initial.substring(0, prefixIndex) + replacement + initial.substring(suffixIndex + suffix.length());
+        // give the matcher the opportunity to finish things up since we matched only what occurred between the first prefix and last suffix
+        return matcher.finish(initial, prefixIndex, suffixIndex, result);
     }
 
-    private static class Replacer {
-        private final String prefix;
-        private final String suffix;
-        private final int prefixLength;
-        private final int suffixLength;
-        private final String tmp;
-        private final int length;
-        private final BoundedStringVisitor<String> visitor;
-        private final SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
+    public static String replaceBoundedString(String initial, String prefix, String suffix, String replacement) {
+        return replaceBoundedString(initial, prefix, suffix, new ConstantStringReplacementGenerator(replacement));
+    }
 
-        public Replacer(String prefix, String suffix, String initial, BoundedStringVisitor<String> visitor) {
+    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, BoundedStringVisitor<String> visitor) {
+        return visitBoundedString(initial, prefix, suffix, visitor, new Replacer(prefix, suffix, visitor));
+    }
+
+    private static class Matcher<T> {
+        protected final String prefix;
+        protected final String suffix;
+        protected final int prefixLength;
+        protected final int suffixLength;
+        protected int length;
+        protected BoundedStringVisitor<T> visitor;
+        protected final SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
+
+        public Matcher(String prefix, String suffix, BoundedStringVisitor<T> visitor) {
             this.prefix = prefix;
             this.prefixLength = prefix.length();
 
             this.suffix = suffix;
             this.suffixLength = suffix.length();
 
-            this.tmp = initial;
-            this.length = initial.length();
-
             this.visitor = visitor;
         }
 
-        public String replace() {
+        public T match(final String initialString) {
             // we already match the first prefix
             int prefixIndex = 0;
             // look for first suffix right after
-            int suffixIndex = tmp.indexOf(suffix);
+            int suffixIndex = initialString.indexOf(suffix);
 
-            // if we don't have a suffix, the whole String is a match, so replace it and return
-            if(suffixIndex < 0) {
-                return visitor.visit(tmp.substring(prefixLength), prefix, suffix);
+            // adjust length to match the String we're considering
+            length = initialString.length();
+
+            // if we don't have a suffix, the whole String is a match, so visit it and return
+            if (suffixIndex < 0) {
+                return visitor.visit(initialString.substring(prefixLength), prefix, suffix, 0, initialString.length(), initialString);
             }
 
             // as long as we can find new prefixes to match
             while (prefixIndex >= 0) {
 
                 // check if the given prefix and suffix are matching until they do, match method accumulates in-between matches in matchedPairs map
-                while (!match(prefixIndex, suffixIndex)) {
+                while (!match(prefixIndex, suffixIndex, initialString)) {
                     // if not, we have a nested pair and we need to extend our search to the next suffix, checking that we don't go out of bounds
-                    final int nextSuffix = tmp.indexOf(suffix, suffixIndex + suffixLength);
+                    final int nextSuffix = initialString.indexOf(suffix, suffixIndex + suffixLength);
                     // if we didn't find one, then it means we've reached the end of the String which ended with a (excluded) suffix match, remember? :)
                     suffixIndex = ensureSuffixIndex(nextSuffix);
                 }
@@ -135,76 +143,64 @@ public class TextUtils {
                 // move on to the next potential prefix / suffix pair
                 final int previousSuffix = suffixIndex;
                 // next suffix is the one after the one we just matched to the prefix we were looking at, checking that we don't go out of bounds
-                final int nextSuffix = tmp.indexOf(suffix, matchedPairs.get(prefixIndex) + suffixLength);
+                final int nextSuffix = initialString.indexOf(suffix, matchedPairs.get(prefixIndex) + suffixLength);
                 suffixIndex = ensureSuffixIndex(nextSuffix);
                 // next prefix is the one after the suffix we just matched
-                prefixIndex = tmp.indexOf(prefix, previousSuffix + suffixLength);
+                prefixIndex = initialString.indexOf(prefix, previousSuffix + suffixLength);
             }
 
-            // once we have matched all our pairs, build the replaced String
-            StringBuilder builder = new StringBuilder(length);
-            replaceMatch(matchedPairs, builder, -1);
+            // once we have matched all our pairs, visit them
+            return visitMatches(matchedPairs, visitor.initialValue(initialString), initialString);
+        }
 
-            return builder.toString();
+        /**
+         * Visits matching prefix / suffix pairs, using the specified StringBuilder to build the final String
+         *
+         * @param matches        remaining matching pairs (key: prefix index, value: suffix index)
+         * @param previousResult the result that has been accumulated so far during the matching process
+         * @param initialString  the String on which the matching is performed
+         */
+        private T visitMatches(SortedMap<Integer, Integer> matches, T previousResult, String initialString) {
+            if (!matches.isEmpty()) {
+                int pairPrefix = matches.firstKey();
+                int pairSuffix = matches.get(pairPrefix);
+
+                // match
+                String match;
+                if (pairPrefix == pairSuffix || pairPrefix >= length - 1) {
+                    match = "";
+                } else {
+                    match = initialString.substring(pairPrefix + prefixLength, pairSuffix);
+                }
+
+                // visit the current match
+                T result = visitor.visit(match, prefix, suffix, pairPrefix, pairSuffix, initialString);
+
+                // remove current match
+                matchedPairs.remove(pairPrefix);
+                // repeat on all the pairs that are after the currently matched suffix since all in between pairs are replaced
+                return visitMatches(matchedPairs.tailMap(pairSuffix), result, initialString);
+            } else {
+                return previousResult;
+            }
         }
 
         private int ensureSuffixIndex(int potentialNextSuffix) {
             return potentialNextSuffix >= 0 ? potentialNextSuffix : length - 1;
         }
 
-        /**
-         * Replaces matching prefix / suffix pairs, using the specified StringBuilder to build the final String
-         *
-         * @param matches        remaining matching pairs (key: prefix index, value: suffix index)
-         * @param builder        the StringBuilder used to create the final replaced String
-         * @param previousSuffix the index of the last suffix we matched to add the text in between the previous match and the new ones or a strictly negative int if there isn't
-         *                       one
-         */
-        private void replaceMatch(SortedMap<Integer, Integer> matches, StringBuilder builder, int previousSuffix) {
-            if (!matches.isEmpty()) {
-                int pairPrefix = matches.firstKey();
-                int pairSuffix = matches.get(pairPrefix);
-
-                // text to replace
-                String match;
-                if(pairPrefix == pairSuffix || pairPrefix >= length - 1) {
-                    match = "";
-                }
-                else {
-                    match = tmp.substring(pairPrefix + prefixLength, pairSuffix);
-                }
-
-                // use the generator to replace it
-                String replacement = visitor.visit(match, prefix, suffix);
-
-                // if we had a previous suffix
-                if (previousSuffix > 0 && previousSuffix < length - suffixLength) {
-                    // add the text between the previous suffix and the new prefix
-                    builder.append(tmp.substring(previousSuffix + suffixLength, pairPrefix));
-                }
-
-                // add the replaced text
-                builder.append(replacement);
-
-                // remove current match
-                matchedPairs.remove(pairPrefix);
-                // repeat on all the pairs that are after the currently matched suffix since all in between pairs are replaced
-                replaceMatch(matchedPairs.tailMap(pairSuffix), builder, pairSuffix);
-            }
-        }
-
-        private boolean match(int prefixIndex, int suffixIndex) {
-            if(prefixIndex == suffixIndex) {
+        private boolean match(final int prefixIndex, final int suffixIndex, final String initialString) {
+            if (prefixIndex == suffixIndex) {
                 matchedPairs.put(prefixIndex, suffixIndex);
                 return true;
             }
 
-            int inBetweenPrefix = tmp.lastIndexOf(prefix, suffixIndex - 1);
+            int inBetweenPrefix = initialString.lastIndexOf(prefix, suffixIndex - 1);
 
             if (inBetweenPrefix >= 0) {
                 // if we already have matched this in between prefix, find the previous unmatched one
                 while (matchedPairs.get(inBetweenPrefix) != null) {
-                    inBetweenPrefix = tmp.lastIndexOf(prefix, inBetweenPrefix - 1);
+                    inBetweenPrefix = initialString.lastIndexOf(prefix, inBetweenPrefix - 1);
                 }
 
                 if (inBetweenPrefix == prefixIndex) {
@@ -213,50 +209,110 @@ public class TextUtils {
                     return true;
                 }
 
-                while (!match(inBetweenPrefix, suffixIndex)) {
-                    inBetweenPrefix = tmp.lastIndexOf(prefix, inBetweenPrefix - 1);
+                while (!match(inBetweenPrefix, suffixIndex, initialString)) {
+                    inBetweenPrefix = initialString.lastIndexOf(prefix, inBetweenPrefix - 1);
                 }
             }
 
             return false;
         }
+
+        public T finish(String initial, int prefixIndex, int suffixIndex, T result) {
+            return result;
+        }
+    }
+
+    private static class Replacer extends Matcher<String> {
+
+        public Replacer(String prefix, final String suffix, final BoundedStringVisitor<String> visitor) {
+            super(prefix, suffix, visitor);
+        }
+
+        @Override
+        public String match(String initialString) {
+            // wrap the original visitor to add our replacement behavior
+            final ReplacerVisitor replacerVisitor = new ReplacerVisitor(initialString, suffix, visitor);
+            this.visitor = replacerVisitor;
+
+            // perform matching
+            super.match(initialString);
+
+            // and finally, extract the new string
+            return replacerVisitor.builder.toString();
+        }
+
+        @Override
+        public String finish(String initial, int prefixIndex, int suffixIndex, String result) {
+            // add text before first prefix and after last suffix if any
+            return initial.substring(0, prefixIndex) + result + initial.substring(suffixIndex + suffixLength);
+        }
+
+        private class ReplacerVisitor implements BoundedStringVisitor<String> {
+            private final BoundedStringVisitor<String> visitor;
+            private final int length;
+            private final int suffixLength;
+            private final StringBuilder builder;
+
+            private int previousSuffix;
+
+            public ReplacerVisitor(String initial, String suffix, BoundedStringVisitor<String> visitor) {
+                this.visitor = visitor;
+                length = initial.length();
+                suffixLength = suffix.length();
+                previousSuffix = -1;
+                builder = new StringBuilder(initial.length());
+            }
+
+            @Override
+            public String visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString) {
+                // use the generator to replace it
+                String replacement = visitor.visit(match, prefix, suffix, prefixPosition, suffixPosition, initialString);
+
+                // if we had a previous suffix
+                if (previousSuffix > 0 && previousSuffix < length - suffixLength) {
+                    // add the text between the previous suffix and the new prefix
+                    builder.append(initialString.substring(previousSuffix + suffixLength, prefixPosition));
+                }
+
+                // add the replaced text
+                builder.append(replacement);
+
+                // update previous suffix
+                previousSuffix = suffixPosition;
+
+                return replacement;
+            }
+
+            @Override
+            public String initialValue(String initial) {
+                return initial;
+            }
+        }
     }
 
     public static interface BoundedStringVisitor<T> {
-        T visit(String match, String prefix, String suffix);
+        T visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString);
 
-        boolean isModifyingMatches();
+        T initialValue(String initial);
     }
 
     public static abstract class StringReplacementGenerator implements BoundedStringVisitor<String> {
         public abstract String getReplacementFor(String match, String prefix, String suffix);
 
         @Override
-        public String visit(String match, String prefix, String suffix) {
+        public String visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString) {
             return getReplacementFor(match, prefix, suffix);
         }
 
         @Override
-        public boolean isModifyingMatches() {
-            return true;
+        public String initialValue(String initial) {
+            return initial;
         }
     }
 
-    public static final BoundedStringVisitor<String> NULL_OP = new BoundedStringVisitor<String>() {
-        @Override
-        public String visit(String match, String prefix, String suffix) {
-            return match;
-        }
-
-        @Override
-        public boolean isModifyingMatches() {
-            return false;
-        }
-    };
-
     public static class ConstantStringReplacementGenerator extends StringReplacementGenerator {
         public static final ConstantStringReplacementGenerator REPLACE_BY_EMPTY = new ConstantStringReplacementGenerator("");
-        private String replacement;
+        private final String replacement;
 
         public ConstantStringReplacementGenerator(String replacement) {
             this.replacement = replacement;

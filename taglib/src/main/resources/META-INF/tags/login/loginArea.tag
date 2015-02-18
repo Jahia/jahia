@@ -19,7 +19,7 @@
                 <input type="hidden" name="redirect" value="${attributes.redirectTo}"/>
             </c:when>
             <c:when test="${not empty requestScope['javax.servlet.error.request_uri']}">
-                <c:url var="redirect" value="${requestScope['javax.servlet.error.request_uri']}">
+                <c:url var="redirect" value="${requestScope['javax.servlet.error.request_uri']}" context="/">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
                             <c:param name="${paramValueEntry.key}" value="${paramValue}"/>

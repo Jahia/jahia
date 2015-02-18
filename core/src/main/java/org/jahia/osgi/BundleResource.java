@@ -76,6 +76,7 @@ import org.springframework.core.io.UrlResource;
 
 import java.io.IOException;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * An implementation of a Spring resource that can resolve files inside bundles
@@ -105,4 +106,20 @@ public class BundleResource extends UrlResource {
         }
         return bundle.getLastModified();
     }
+
+    @Override
+    public boolean exists() {
+        try {
+            URL url = getURL();
+            URLConnection con = url.openConnection();
+            try {
+                return con.getContentLength() >= 0;
+            } finally {
+                con.getInputStream().close();
+            }
+        } catch (IOException e) {
+            return false;
+        }
+    }
+
 }

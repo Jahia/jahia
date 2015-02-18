@@ -4,6 +4,10 @@
 <%@ taglib prefix="jcr" uri="http://www.jahia.org/tags/jcr" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="functions" uri="http://www.jahia.org/tags/functions" %>
+
+<%--@elvariable id="handler" type="org.jahia.modules.rolesmanager.RolesAndPermissionsHandler"--%>
+<%--@elvariable id="flowRequestContext" type="org.springframework.webflow.execution.RequestContext"--%>
+
 <jcr:node var="sites" path="/sites"/>
 <jcr:nodeProperty name="j:defaultSite" node="${sites}" var="defaultSite"/>
 <c:set var="defaultPrepackagedSite" value="acmespace.zip"/>
@@ -160,6 +164,7 @@
     <input type="hidden" name="uuid" class="roleUuid"/>
 </form>
 
+
 <c:forEach var="msg" items="${flowRequestContext.messageContext.allMessages}">
     <div class="alert ${msg.severity == 'ERROR' ? 'validationError' : ''} ${msg.severity == 'ERROR' ? 'alert-error' : 'alert-success'}">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
@@ -263,7 +268,7 @@
                             <div class="span6">
                                 <label for="nodeTypes">
                                     <fmt:message key="rolesmanager.rolesAndPermissions.nodeTypes.onlyFor"/></label>
-                                <select multiple="true" size="20" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger'); updatedSelectedTypes();">
+                                <select multiple="multiple" size="20" id="nodeTypes" name="nodeTypes" onchange="$('.submitButton').addClass('btn-danger'); updatedSelectedTypes();">
                                     <c:forEach items="${handler.roleBean.nodeTypes}" var="nodeType">
                                         <option value="${nodeType.name}" ${nodeType.set ? 'selected="true"' : ''}>${nodeType.displayName}</option>
                                     </c:forEach>
@@ -367,7 +372,6 @@
                             </c:when>
                             <c:otherwise>
                                 <a href="#${permission.path}"> ${permission.title} </a>
-                                |
                             </c:otherwise>
                         </c:choose>
                     </c:if>
@@ -438,7 +442,7 @@
                     <c:set value="${entry.value}" var="permission"/>
                     <tr>
                         <td>
-                            <a name="${permission.path}"/>
+                            <a name="${permission.path}"></a>
 
                             <div class="triState" style="height:13px; overflow: hidden">
 

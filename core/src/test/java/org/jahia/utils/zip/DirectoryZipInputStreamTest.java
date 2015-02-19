@@ -62,7 +62,7 @@ public class DirectoryZipInputStreamTest {
         long bytesRead = 0;
         List<String> entryNamesFound = new ArrayList<String>();
         while ((zipEntry = directoryZipInputStream.getNextEntry()) != null) {
-            entryNamesFound.add(zipEntry.getName());
+            entryNamesFound.add(zipEntry.getName().replace('\\', '/'));
             if (zipEntry.isDirectory()) {
                 directoriesFound++;
             } else {

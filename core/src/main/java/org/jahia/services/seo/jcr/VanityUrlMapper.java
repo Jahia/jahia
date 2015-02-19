@@ -20,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -124,11 +123,11 @@ public class VanityUrlMapper {
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
         UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
 
-        String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
-        String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
+        String fullUrl = outboundContext + Render.getRenderServletPath() + outboundUrl;
         hsRequest.setAttribute(VANITY_KEY, fullUrl);
         
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
+            String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
             String serverName = null;
             String siteKey = null;
             String contextToCheck = outboundContext;            

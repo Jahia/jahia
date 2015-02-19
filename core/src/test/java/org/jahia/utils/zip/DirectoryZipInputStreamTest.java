@@ -1,5 +1,6 @@
 package org.jahia.utils.zip;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.AfterClass;
@@ -75,7 +76,7 @@ public class DirectoryZipInputStreamTest {
         Assert.assertEquals("Number of files read does not match number of files created", filesCreated, filesRead);
         Assert.assertEquals("Directories found does not match number of directories created", directoriesCreated, directoriesFound);
         Assert.assertEquals("Number of entry names does not match !", entryNames.size(), entryNamesFound.size());
-        Assert.assertArrayEquals("Entry names (or their order) do not match !", entryNames.toArray(), entryNamesFound.toArray());
+        Assert.assertTrue("Entry names do not match !", CollectionUtils.isEqualCollection(entryNames, entryNamesFound));
 
         fileInputStream.close();
         inputStreamFile.delete();

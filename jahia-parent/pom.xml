@@ -203,9 +203,6 @@
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
 		<jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
 
-        <!-- Releases properties -->
-        <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
-
         <jahia.modules.importPackage>
             org.apache.naming.java,
             org.jahia.defaults.config.spring,
@@ -545,7 +542,7 @@
                         <configuration>
                             <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
                             <serverId>staging-repository</serverId>
-                            <stagingProfileId>${jahia.nexus.staging.repository.id}</stagingProfileId>
+                            <stagingProfileId>64277f72646358</stagingProfileId>
                         </configuration>
                     </plugin>
                 </plugins>

@@ -145,6 +145,24 @@
                 <module>test</module>
             </modules>
         </profile>
+        <profile>
+            <id>release-to-staging-repository</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>${nexus.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
+                            <serverId>staging-repository</serverId>
+                            <stagingProfileId>64277f72646358</stagingProfileId>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 	
 	<build>

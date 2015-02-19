@@ -150,7 +150,8 @@ public class SuggestionsTag extends ResultsTag {
         if (retVal == SKIP_BODY && !runQuery) {
             retVal = EVAL_BODY_INCLUDE;
         } else if (retVal == EVAL_BODY_INCLUDE) {
-            int count = ((Integer)pageContext.getAttribute(getCountVar())).intValue();
+            final Object countVarValue = pageContext.getAttribute(getCountVar());
+            int count = countVarValue == null ? 0 : (Integer) countVarValue;
             List<String> allSuggestions = suggestion.getAllSuggestions();
             int iterationCount = 1;
             while (count == 0 && iterationCount < allSuggestions.size()) {

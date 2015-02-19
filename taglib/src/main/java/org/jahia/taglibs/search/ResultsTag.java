@@ -136,9 +136,9 @@ public class ResultsTag extends AbstractJahiaTag {
             return SKIP_BODY;
         }
 
-        searchAndSetAttributes(criteria, renderContext);
-        
-        return EVAL_BODY_INCLUDE;
+        final int result = searchAndSetAttributes(criteria, renderContext);
+
+        return result == SKIP_BODY ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
     
     protected int searchAndSetAttributes(SearchCriteria criteria, RenderContext renderContext) {
@@ -149,7 +149,9 @@ public class ResultsTag extends AbstractJahiaTag {
             searchResponse = ServicesRegistry.getInstance().getSearchService().search(criteria, renderContext);
             hits = searchResponse.getResults();
         } else {
-            hits = Collections.emptyList();
+            // if we don't have criteria and no searches, no need to go further since we don't have any hits, no need to further process
+            // and run into an NPE with a null SearchResponse after...
+            return SKIP_BODY;
         }
 
         int count = hits.size();
@@ -158,7 +160,7 @@ public class ResultsTag extends AbstractJahiaTag {
         if (searchResponse.hasMore()) {
             pageContext.setAttribute(getCountVar(), Integer.MAX_VALUE);
         } else {
-            pageContext.setAttribute(getCountVar(), Integer.valueOf(count));
+            pageContext.setAttribute(getCountVar(), count);
         }
         pageContext.setAttribute(getApproxCountVar(), searchResponse.getApproxCount());
         pageContext.setAttribute(getSearchCriteriaVar(), criteria);

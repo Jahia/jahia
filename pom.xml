@@ -157,7 +157,7 @@
                         <configuration>
                             <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
                             <serverId>staging-repository</serverId>
-                            <stagingProfileId>64277f72646358</stagingProfileId>
+                            <stagingProfileId>${jahia.nexus.staging.repository.id}</stagingProfileId>
                         </configuration>
                     </plugin>
                 </plugins>

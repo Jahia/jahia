@@ -203,6 +203,9 @@
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
 		<jahia.installers.version>${jahia.plugin.version}</jahia.installers.version>
 
+        <!-- Releases properties -->
+        <jahia.nexus.staging.repository.id>64277f72646358</jahia.nexus.staging.repository.id>
+
         <jahia.modules.importPackage>
             org.apache.naming.java,
             org.jahia.defaults.config.spring,
@@ -542,7 +545,7 @@
                         <configuration>
                             <nexusUrl>https://devtools.jahia.com/nexus/</nexusUrl>
                             <serverId>staging-repository</serverId>
-                            <stagingProfileId>64277f72646358</stagingProfileId>
+                            <stagingProfileId>${jahia.nexus.staging.repository.id}</stagingProfileId>
                         </configuration>
                     </plugin>
                 </plugins>
@@ -800,7 +803,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>

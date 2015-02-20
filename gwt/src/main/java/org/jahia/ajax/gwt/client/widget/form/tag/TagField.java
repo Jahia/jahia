@@ -43,7 +43,7 @@ public class TagField extends MultiField<List<String>> {
     @Override
     public void setValue(List<String> value) {
         for (String tag : value){
-            addTag(tag);
+            addSplitedTag(tag);
         }
     }
 

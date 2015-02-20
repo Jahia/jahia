@@ -74,6 +74,8 @@ import javax.annotation.Nullable;
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 
@@ -86,6 +88,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
 import java.util.*;
@@ -102,9 +105,10 @@ public class TaggingService extends JahiaService{
 
     private TagsSuggester tagsSuggester;
     private TagHandler tagHandler;
+    private String tagSeparator = null;
 
-    private static final String JMIX_TAGGED = "jmix:tagged";
-    private static final String J_TAG_LIST = "j:tagList";
+    public static final String JMIX_TAGGED = "jmix:tagged";
+    public static final String J_TAG_LIST = "j:tagList";
 
     private static final Function<JCRValueWrapper, String> JCR_VALUE_WRAPPER_STRING_FUNCTION = new Function<JCRValueWrapper, String>() {
         @Nullable
@@ -132,6 +136,11 @@ public class TaggingService extends JahiaService{
      */
     public static TaggingService getInstance() {
         return Holder.INSTANCE;
+    }
+
+    public void init() throws NoSuchNodeTypeException {
+        Map<String, String> tagPropSelectorOptions = NodeTypeRegistry.getInstance().getNodeType(TaggingService.JMIX_TAGGED).getPropertyDefinition(TaggingService.J_TAG_LIST).getSelectorOptions();
+        tagSeparator = tagPropSelectorOptions.get("separator");
     }
 
     /**
@@ -278,10 +287,13 @@ public class TaggingService extends JahiaService{
         }
         currentTags = new ArrayList<String>(Collections2.transform(currentTagValues, JCR_VALUE_WRAPPER_STRING_FUNCTION));
         for (String tag : tags) {
-            String cleanedTag = tagHandler.execute(tag);
-            if (StringUtils.isNotEmpty(cleanedTag) && !currentTags.contains(cleanedTag)) {
-                currentTags.add(cleanedTag);
-                addedTags.add(cleanedTag);
+            String[] splitedTags = tagSeparator != null ? tag.split(tagSeparator) : new String[]{tag};
+            for (String splitedTag : splitedTags){
+                String cleanedTag = tagHandler.execute(splitedTag);
+                if (StringUtils.isNotEmpty(cleanedTag) && !currentTags.contains(cleanedTag)) {
+                    currentTags.add(cleanedTag);
+                    addedTags.add(cleanedTag);
+                }
             }
         }
 
@@ -363,8 +375,13 @@ public class TaggingService extends JahiaService{
 
                 if(!deletedTags.isEmpty()){
                     if(currentTags.isEmpty()){
-                        tagsProp.remove();
-                        node.removeMixin(JMIX_TAGGED);
+                        try {
+                            node.removeMixin(JMIX_TAGGED);
+                            tagsProp.remove();
+                        } catch (NoSuchNodeTypeException noSuchNodeTypeException) {
+                            // mixin jmix:tagged is on the nodetype definition, can't remove it
+                            node.setProperty(J_TAG_LIST, new Value[]{});
+                        }
                     } else {
                         node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));
                     }
@@ -426,21 +443,19 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public void renameTag(final JCRNodeWrapper node, final String selectedTag, final String tagNewName) throws RepositoryException {
-        String cleanedTag = tagHandler.execute(tagNewName);
-        if(node.isNodeType(JMIX_TAGGED) && StringUtils.isNotEmpty(cleanedTag)){
+        if(node.isNodeType(JMIX_TAGGED)){
             Set<String> newValues = new TreeSet<String>();
             JCRValueWrapper[] tags = node.getProperty(J_TAG_LIST).getValues();
-            boolean containNewTag = false;
             for (JCRValueWrapper tag : tags) {
                 String tagValue = tag.getString();
                 if(!tagValue.equals(selectedTag)) {
                     newValues.add(tagValue);
                 }
-                containNewTag = (containNewTag || tagValue.equals(cleanedTag));
             }
 
-            if (!containNewTag) {
-                newValues.add(cleanedTag);
+            String[] splitedTags = tagSeparator != null ? tagNewName.split(tagSeparator) : new String[]{tagNewName};
+            for (String splitedTag : splitedTags){
+                newValues.add(tagHandler.execute(splitedTag));
             }
 
             node.setProperty("j:tagList", newValues.toArray(new String[newValues.size()]));

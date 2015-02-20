@@ -85,9 +85,9 @@
                 key="siteSettings.user.properties.selected"/></label>:&nbsp;
 
 
-            <input type="checkbox" class="propCheck" name="properties" value="name" id="propsUsersname"
+            <input type="checkbox" class="propCheck" name="properties" value="username" id="propsUsersname"
                    <c:if test="${searchCriteria.searchIn ne 'properties'}">disabled</c:if>
-                   <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'name')}">checked="checked"</c:if> >
+                   <c:if test="${not empty searchCriteria.properties and functions:contains(searchCriteria.properties, 'username')}">checked="checked"</c:if> >
             <label for="propsUsersname"><fmt:message key="label.username"/></label>
 
             <input type="checkbox" class="propCheck" name="properties" value="j:firstName" id="propsFirstName"

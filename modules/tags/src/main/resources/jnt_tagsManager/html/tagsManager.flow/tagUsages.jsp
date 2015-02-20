@@ -146,20 +146,22 @@
                     <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
                     <tr>
                         <td>
-                            <jcr:node var="tagPage" path="${jcr:findDisplayableNode(currentNodeTag, renderContext).path}"/>
-                            <i class="fa fa-external-link"></i>
-                            <c:choose>
-                                <c:when test="${workspace eq 'default'}">
-                                    <a href="<c:url value="${url.basePreview}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
-                                            ${tagPage.displayableName}
-                                    </a>
-                                </c:when>
-                                <c:otherwise>
-                                    <a href="<c:url value="${url.baseLive}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
-                                            ${tagPage.displayableName}
-                                    </a>
-                                </c:otherwise>
-                            </c:choose>
+                            <c:set var="tagPage" value="${jcr:findDisplayableNode(currentNodeTag, renderContext)}"/>
+                            <c:if test="${not empty tagPage}">
+                                <i class="fa fa-external-link"></i>
+                                <c:choose>
+                                    <c:when test="${workspace eq 'default'}">
+                                        <a href="<c:url value="${url.basePreview}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
+                                                ${tagPage.displayableName}
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <a href="<c:url value="${url.baseLive}${tagPage.path}.html"/>" title="<fmt:message key="label.pagesTab"/>" target="_blank">
+                                                ${tagPage.displayableName}
+                                        </a>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:if>
                         </td>
                         <td>
                                 ${currentNodeTag.path}

@@ -125,10 +125,19 @@ public class JCRCategoryProvider {
      * @return categories' root folder JCR node
      */
     public Node getCategoriesRoot() {
+        Node rootNodeWrapper = null;
+        try {
+            rootNodeWrapper = getCategoriesRoot(sessionFactory
+                    .getCurrentUserSession());
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+        return rootNodeWrapper;
+    }
+
+    private Node getCategoriesRoot(JCRSessionWrapper jcrSessionWrapper) {
         JCRNodeWrapper rootNodeWrapper = null;
         try {
-            JCRSessionWrapper jcrSessionWrapper = sessionFactory
-                    .getCurrentUserSession(Constants.LIVE_WORKSPACE);
             rootNodeWrapper = jcrSessionWrapper.getNode(JCRContentUtils.getSystemSitePath()+"/categories");
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -249,7 +258,7 @@ public class JCRCategoryProvider {
                         .getJahiaCategory()).getCategoryNode();
             }
             if (parentNodeWrapper == null) {
-                parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
+                parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot(jcrSessionWrapper);
             }
             final JCRNodeWrapper wrapper = (JCRNodeWrapper) parentNodeWrapper
                     .getNode(categoryKey);
@@ -573,7 +582,7 @@ public class JCRCategoryProvider {
                     .getJahiaCategory()).getCategoryNode();
         }
         if (parentNodeWrapper == null) {
-            parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot();
+            parentNodeWrapper = (JCRNodeWrapper) getCategoriesRoot(jcrSessionWrapper);
         }
         return parentNodeWrapper;
     }

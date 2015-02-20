@@ -685,12 +685,7 @@ public class ContentManagerHelper {
             if (results.isSuccessful()) {
                 try {
                     // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = navigation.getDefaultUserFolder(session, "/files/private");
-                    if (privateFilesFolder.isNew()) {
-                        privateFilesFolder.grantRoles("u:"+session.getUser().getName(), Collections.singleton("owner"));
-                        privateFilesFolder.setAclInheritanceBreak(true);
-                        session.save();
-                    }
+                    JCRNodeWrapper privateFilesFolder = navigation.getUserPrivateFilesFolder(session);
                     String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);

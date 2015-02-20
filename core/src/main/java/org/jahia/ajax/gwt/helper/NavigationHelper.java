@@ -97,6 +97,7 @@ import org.springframework.util.CollectionUtils;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 /**
@@ -494,6 +495,26 @@ public class NavigationHelper {
         return userNodes;
     }
 
+    /**
+     * Returns the /files/private folder for the current session user, creating it if it does not exist yet.
+     * 
+     * @param session
+     *            current JCR session
+     * @return the JCR node, which corresponds to the /files/private folder for the current user
+     * @throws RepositoryException
+     *             in case of an error
+     */
+    public JCRNodeWrapper getUserPrivateFilesFolder(JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper privateFilesFolder = getDefaultUserFolder(session, "/files/private");
+        if (privateFilesFolder.isNew()) {
+            privateFilesFolder.grantRoles("u:" + session.getUser().getName(), Collections.singleton("owner"));
+            privateFilesFolder.setAclInheritanceBreak(true);
+            session.save();
+        }
+
+        return privateFilesFolder;
+    }
+    
     public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path) throws RepositoryException {
         if (!session.itemExists(session.getUserNode().getPath() + path)) {
             final String name = StringUtils.substringAfterLast(path, "/");

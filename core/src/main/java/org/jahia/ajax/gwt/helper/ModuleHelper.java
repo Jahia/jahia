@@ -289,7 +289,7 @@ public class ModuleHelper {
             return null;
         }
 
-        JCRNodeWrapper privateFolder = session.getNode(session.getUserNode().getPath() + "/files/private");
+        JCRNodeWrapper privateFolder = navigation.getUserPrivateFilesFolder(session);
 
         if (!privateFolder.hasNode("modules")) {
             session.checkout(privateFolder);

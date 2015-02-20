@@ -166,6 +166,7 @@ import org.jahia.services.htmlvalidator.ValidatorResults;
 import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.services.seo.jcr.NonUniqueUrlMappingException;
 import org.jahia.services.tags.TaggingService;
+import org.jahia.services.translation.TranslationException;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.visibility.VisibilityConditionRule;
 import org.jahia.services.visibility.VisibilityService;
@@ -1218,7 +1219,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             return translationHelper.translate(property, definition, srcLanguage, destLanguage, (JCRSiteNode) retrieveCurrentSession().getNodeByIdentifier(siteUUID), getUILocale());
         } catch (Exception e) {
-            logger.error(e.getMessage(), e);
+            if (logger.isDebugEnabled()) {
+                logger.warn(e.getMessage(), e);
+            } else {
+                if (e instanceof TranslationException && ((TranslationException) e).getDetails() != null) {
+                    logger.warn("{}: {}", e.getMessage(), ((TranslationException) e).getDetails());
+                } else {
+                    logger.warn(e.getMessage());
+                }
+            }
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.translate", getUILocale(), e.getLocalizedMessage()));
         }
     }

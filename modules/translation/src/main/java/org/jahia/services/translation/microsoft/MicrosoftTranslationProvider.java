@@ -71,6 +71,7 @@
  */
 package org.jahia.services.translation.microsoft;
 
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -94,6 +95,7 @@ import org.w3c.dom.NodeList;
 import javax.jcr.RepositoryException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
 import java.io.IOException;
 import java.util.*;
 
@@ -143,11 +145,14 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
             try {
                 returnCode = httpClientService.getHttpClient().executeMethod(method);
                 bodyAsString = method.getResponseBodyAsString();
+                if (returnCode != HttpStatus.SC_OK) {
+                    throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale),
+                            "siteSettings.translation.microsoft.errorWithCode", returnCode), bodyAsString);
+                }
             } catch (IOException e) {
                 throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
-            }
-            if (returnCode != HttpStatus.SC_OK) {
-                throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
+            } finally {
+                method.releaseConnection();
             }
             try {
                 JSONObject jsonObject = new JSONObject(bodyAsString);
@@ -190,24 +195,41 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
                 new NameValuePair("contentType", isHtml ? "text/html" : "text/plain")
         });
         int returnCode;
-        try {
-            returnCode = httpClientService.getHttpClient().executeMethod(method);
-        } catch (Exception e) {
-            throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
-        }
-        if (returnCode != HttpStatus.SC_OK) {
-            throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
-        }
         String translatedText;
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(method.getResponseBodyAsStream());
-            translatedText = document.getElementsByTagName("string").item(0).getTextContent();
-        } catch (Exception e) {
-            throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToParse",uiLocale));
+            try {
+                returnCode = httpClientService.getHttpClient().executeMethod(method);
+            } catch (Exception e) {
+                throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
+            }
+            if (returnCode != HttpStatus.SC_OK) {
+                throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale),
+                        "siteSettings.translation.microsoft.errorWithCode", returnCode),
+                        getResponseBodyAsStringQuietly(method));
+            }
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document document = builder.parse(method.getResponseBodyAsStream());
+                translatedText = document.getElementsByTagName("string").item(0).getTextContent();
+            } catch (Exception e) {
+                throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToParse",uiLocale));
+            }
+        } finally {
+            method.releaseConnection();
         }
         return translatedText;
+    }
+
+    private String getResponseBodyAsStringQuietly(HttpMethodBase method) {
+        try {
+            return method.getResponseBodyAsString();
+        } catch (IOException e) {
+            if (logger.isDebugEnabled()) {
+                logger.warn("Unable to get response body as string", e);
+            }
+        }
+        return null;
     }
 
     /**
@@ -250,26 +272,32 @@ public class MicrosoftTranslationProvider extends AbstractTranslationProvider im
                 "<To>" + destLanguage + "</To>" +
                 "</TranslateArrayRequest>");
         int returnCode;
-        try {
-            method.setRequestEntity(new StringRequestEntity(body.toString(), "text/xml", "UTF-8"));
-            returnCode = httpClientService.getHttpClient().executeMethod(method);
-        } catch (Exception e) {
-            throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
-        }
-        if (returnCode != HttpStatus.SC_OK) {
-            throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale), "siteSettings.translation.microsoft.errorWithCode", returnCode));
-        }
         List<String> translatedTexts = new ArrayList<String>();
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document document = builder.parse(method.getResponseBodyAsStream());
-            NodeList nodes = document.getElementsByTagName("TranslatedText");
-            for (int i = 0; i < nodes.getLength(); i++) {
-                translatedTexts.add(nodes.item(i).getTextContent());
+            try {
+                method.setRequestEntity(new StringRequestEntity(body.toString(), "text/xml", "UTF-8"));
+                returnCode = httpClientService.getHttpClient().executeMethod(method);
+            } catch (Exception e) {
+                throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToCallService",uiLocale));
             }
-        } catch (Exception e) {
-            throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToParse",uiLocale));
+            if (returnCode != HttpStatus.SC_OK) {
+                throw new TranslationException(Messages.getWithArgs(ResourceBundles.get(module, uiLocale),
+                        "siteSettings.translation.microsoft.errorWithCode", returnCode),
+                        getResponseBodyAsStringQuietly(method));
+            }
+            try {
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document document = builder.parse(method.getResponseBodyAsStream());
+                NodeList nodes = document.getElementsByTagName("TranslatedText");
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    translatedTexts.add(nodes.item(i).getTextContent());
+                }
+            } catch (Exception e) {
+                throw new TranslationException(Messages.get(module,"siteSettings.translation.microsoft.failedToParse",uiLocale));
+            }
+        } finally {
+            method.releaseConnection();
         }
         return translatedTexts;
     }

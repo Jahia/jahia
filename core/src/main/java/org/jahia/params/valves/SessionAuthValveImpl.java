@@ -112,9 +112,7 @@ public class SessionAuthValveImpl extends BaseAuthValve {
         }
         if (jahiaUser != null) {
             JCRUserNode userNode = userManagerService.lookupUser(jahiaUser.getName(), jahiaUser.getRealm(), false);
-            if (userNode != null) {
-                jahiaUser = userNode.getJahiaUser();
-            }
+            jahiaUser = userNode != null ? userNode.getJahiaUser() : null;
         }
         if (jahiaUser == null || JahiaUserManagerService.isGuest(jahiaUser)) {
             valveContext.invokeNext(context);

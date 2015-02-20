@@ -77,6 +77,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.regex.Pattern;
+
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NamespaceException;
 import javax.jcr.NodeIterator;
@@ -97,14 +98,17 @@ import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
+
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.apache.jackrabbit.core.security.PrivilegeImpl;
+import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
@@ -183,7 +187,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private static final transient Logger logger = LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
-    private static final Pattern NBSP_PATTERN = Pattern.compile("&nbsp;");
 
     private NavigationHelper navigation;
     private ContentManagerHelper contentManager;
@@ -1738,13 +1741,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     public SessionValidationResult isValidSession() throws GWTJahiaServiceException {
-        // >0 : shedule poll repeating for this value
+        // >0 : schedule poll repeating for this value
         // 0 : session expire
-        // <0 : polling desactivated
-        final HttpServletRequest request = getRequest();
-        final String customLoginUrl = LoginConfig.getInstance().getCustomLoginUrl(request);
-        final String loginUrl = customLoginUrl != null ? customLoginUrl : Login.getServletPath();
-        final HttpSession session = request.getSession(false);
+        // <0 : polling deactivated
+        final String loginUrl = getLogingUrl();
+        final HttpSession session = getRequest().getSession(false);
         if (session != null) {
             Long date = (Long) session.getAttribute("lastPoll");
             long lastAccessed = session.getLastAccessedTime();
@@ -1773,6 +1774,23 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         } else {
             return new SessionValidationResult(loginUrl, 0);
         }
+    }
+
+    private String getLogingUrl() {
+        HttpServletRequest request = getRequest();
+        String loginUrl = StringUtils.defaultIfEmpty(LoginConfig.getInstance().getCustomLoginUrl(request),
+                Login.getServletPath());
+        boolean isAbsolute = ImportSupport.isAbsoluteUrl(loginUrl);
+        if (!isAbsolute) {
+            if (request.getContextPath().length() > 0) {
+                // need to prepend context path
+                loginUrl = request.getContextPath() + loginUrl;
+            }
+            // we run non-absolute URLs vie encodeURL()
+            loginUrl = getResponse().encodeURL(loginUrl);
+        }
+
+        return loginUrl;
     }
 
     public GWTJahiaCreateEngineInitBean initializeCreateEngine(String typename, String parentpath, String targetName)

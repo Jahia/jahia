@@ -26,6 +26,9 @@
 <template:addResources type="css" resources="datatables/css/bootstrap-theme.css,tablecloth.css"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
 
+<c:set var="groupCount" value="${fn:length(groups)}"/>
+<c:set var="groupsFound" value="${groupCount > 0}"/>
+
 <template:addResources>
 <script type="text/javascript">
 function submitGroupForm(act, group) {
@@ -34,6 +37,7 @@ function submitGroupForm(act, group) {
 	$('#groupForm').submit();
 }
 </script>
+<c:if test="${groupsFound}">
     <script type="text/javascript">
         $(document).ready(function () {
             var oldStart = 0;
@@ -53,6 +57,7 @@ function submitGroupForm(act, group) {
             });
         });
     </script>
+</c:if>
 </template:addResources>
 
 <c:set var="mainNode" value="${renderContext.mainResource.node}"/>
@@ -94,8 +99,6 @@ function submitGroupForm(act, group) {
     </p>
 
     <div>
-        <c:set var="groupCount" value="${fn:length(groups)}"/>
-        <c:set var="groupsFound" value="${groupCount > 0}"/>
         
         <div class="alert alert-info">
             <fmt:message key="siteSettings.groups.found">

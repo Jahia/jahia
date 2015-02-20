@@ -22,7 +22,9 @@
 <jsp:useBean id="nowDate" class="java.util.Date" />
 <fmt:formatDate value="${nowDate}" pattern="yyyy-MM-dd-HH-mm" var="now"/>
 <fmt:message key="label.workInProgressTitle" var="i18nWaiting"/><c:set var="i18nWaiting" value="${functions:escapeJavaScript(i18nWaiting)}"/>
-
+<fmt:message key="serverSettings.manageWebProjects.noWebProjectSelected" var="i18nNoSiteSelected"/>
+<c:set var="i18nNoSiteSelected" value="${functions:escapeJavaScript(i18nNoSiteSelected)}"/>
+<c:set var="exportAllowed" value="${renderContext.user.root}"/>
 <script type="text/javascript">
     function submitSiteForm(act, site) {
     	if (typeof site != 'undefined') {
@@ -43,13 +45,13 @@
     	$("a.sitesAction").click(function () {
     		var act=$(this).attr('id');
     		if (act != 'createSite' && $("#sitesForm input:checkbox[name='selectedSites']:checked").length == 0) {
-        		<fmt:message key="serverSettings.manageWebProjects.noWebProjectSelected" var="i18nNoSiteSelected"/>
-        		alert("${functions:escapeJavaScript(i18nNoSiteSelected)}");
+        		alert("${i18nNoSiteSelected}");
     			return false;
     		}
     		submitSiteForm(act);
     		return false;
     	});
+    	<c:if test="${exportAllowed}">
         $("#exportSites").click(function (){
             var selectedSites = [];
             var checkedSites = $("input[name='selectedSites']:checked");
@@ -57,7 +59,7 @@
                 selectedSites.push($(this).val());
             });
             if(selectedSites.length==0) {
-                alert('you should select at least one site');
+                alert("${i18nNoSiteSelected}");
                 return false;
             }
             var name = selectedSites.length>1?"sites":selectedSites;
@@ -76,7 +78,7 @@
                 selectedSites.push($(this).val());
             });
             if(selectedSites.length==0) {
-                alert('you should select at least one site');
+                alert("${i18nNoSiteSelected}");
                 return false;
             }
             var name = selectedSites.length>1?"sites":selectedSites;
@@ -87,6 +89,7 @@
             $(this).target = "_blank";
             window.open("${url.context}/cms/export/default/"+name+ '_staging_export_${now}.zip?exportformat=site&live=false'+sitebox);
         });
+        </c:if>
         $(":file").filestyle({classButton: "btn",classIcon: "icon-folder-open"/*,buttonText:"Translation"*/});
     })
 </script>
@@ -111,6 +114,7 @@
                 <i class="icon-plus"></i>
                 <fmt:message key="serverSettings.manageWebProjects.add"/>
             </a>
+            <c:if test="${exportAllowed}">
             <a href="#export" id="exportSites" class="btn sitesAction-hide">
                 <i class="icon-upload"></i>
                 <fmt:message key="label.export"/>
@@ -119,6 +123,7 @@
                 <i class=" icon-circle-arrow-up"></i>
                 <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
             </a>
+            </c:if>
             <a href="#delete" id="deleteSites" class="btn sitesAction">
                 <i class="icon-remove"></i>
                 <fmt:message key="label.delete"/>
@@ -217,6 +222,7 @@
             </tbody>
         </table>
 
+        <c:if test="${exportAllowed}">
         <div class="box-1">
             <p><fmt:message key="serverSettings.manageWebProjects.exportServerDirectory"/></p>
             <input class="span5" type="text"  name="exportPath"/>
@@ -230,9 +236,11 @@
                 &nbsp; <fmt:message key="label.export"/> (<fmt:message key="label.stagingContent"/>)
             </a>
         </div>
+        </c:if>
 
     </fieldset>
 
+    <c:if test="${exportAllowed}">
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.systemsite"/></h2>
         <div class="btn-group">
@@ -246,6 +254,7 @@
             </a>
         </div>
     </fieldset>
+    </c:if>
 
     <fieldset>
         <h2><fmt:message key="serverSettings.manageWebProjects.importprepackaged"/></h2>

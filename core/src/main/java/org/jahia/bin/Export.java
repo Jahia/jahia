@@ -89,6 +89,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -97,6 +98,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
@@ -175,8 +177,10 @@ public class Export extends JahiaController implements ServletContextAware {
             }
 
             if ("all".equals(exportFormat)) {
-                if (!session.getUserNode().isRoot()) {
-                    throw new JahiaUnauthorizedException("Only root user can perform export of all content");
+                if (!session.getUser().isRoot()) {
+                    throw JahiaUserManagerService.isGuest(session.getUser()) ? new JahiaUnauthorizedException(
+                            "Only root user can perform export of all content") : new JahiaForbiddenAccessException(
+                            "Only root user can perform export of all content");
                 }
 
                 response.setContentType("application/zip");
@@ -194,8 +198,10 @@ public class Export extends JahiaController implements ServletContextAware {
                 importExportService.exportAll(outputStream, params);
                 outputStream.close();
             } else if ("site".equals(exportFormat)) {
-                if (!session.getUserNode().isRoot()) {
-                    throw new JahiaUnauthorizedException("Only root user can perform export of a site");
+                if (!session.getUser().isRoot()) {
+                    throw JahiaUserManagerService.isGuest(session.getUser()) ? new JahiaUnauthorizedException(
+                            "Only root user can perform export of a site") : new JahiaForbiddenAccessException(
+                            "Only root user can perform export of a site");
                 }
 
                 List<JCRSiteNode> sites = new ArrayList<JCRSiteNode>();

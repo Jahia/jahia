@@ -232,21 +232,21 @@ public class TagsFlowHandler implements Serializable {
         if (StringUtils.isNotEmpty(tagNewName)) {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.TRUE);
             JCRNodeWrapper node = null;
-            // remove Capital and special character from tag
-            tagNewName = taggingService.getTagHandler().execute(tagNewName);
 
-            for (String workspace : workspaces) {
-                try {
+            try{
+                for (String workspace : workspaces) {
+                    try {
                         node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
                         taggingService.renameTag(node, selectedTag, tagNewName);
                         node.getSession().save();
-                } catch (RepositoryException e) {
-                    if (node != null) {
-                        messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
+                    } catch (RepositoryException e) {
+                        if (node != null) {
+                            messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.rename", renderContext.getUILocale(), selectedTag, workspace, node.getPath())).build());
+                        }
                     }
-                } finally {
-                    JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
                 }
+            } finally {
+                JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);
             }
         } else {
             messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.get("resources.JahiaTags", "jnt_tagsManager.error.newNameEmpty", renderContext.getUILocale())).build());
@@ -258,13 +258,15 @@ public class TagsFlowHandler implements Serializable {
         JCRNodeWrapper node = null;
         try {
             for (String workspace : workspaces) {
-                node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
-                taggingService.untag(node, selectedTag);
-                node.getSession().save();
-            }
-        } catch (RepositoryException e) {
-            if (node != null) {
-                messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, JCRContentUtils.getParentOfType(node, "jnt:page").getDisplayableName(), node.getPath())).build());
+                try {
+                    node = getSystemSessionWorkspace(renderContext, workspace).getNodeByIdentifier(nodeID);
+                    taggingService.untag(node, selectedTag);
+                    node.getSession().save();
+                }catch (RepositoryException e) {
+                    if (node != null) {
+                        messageContext.addMessage(new MessageBuilder().error().defaultText(Messages.getWithArgs("resources.JahiaTags", "jnt_tagsManager.error.delete", renderContext.getUILocale(), selectedTag, workspace, node.getPath())).build());
+                    }
+                }
             }
         } finally {
             JCRObservationManager.setAllEventListenersDisabled(Boolean.FALSE);

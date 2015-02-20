@@ -146,7 +146,7 @@
                     <jcr:node var="currentNodeTag" uuid="${nodeId}"/>
                     <tr>
                         <td>
-                            <jcr:node var="tagPage" path="${jcr:getParentOfType(currentNodeTag, 'jnt:page').path}"/>
+                            <jcr:node var="tagPage" path="${jcr:findDisplayableNode(currentNodeTag, renderContext).path}"/>
                             <i class="fa fa-external-link"></i>
                             <c:choose>
                                 <c:when test="${workspace eq 'default'}">

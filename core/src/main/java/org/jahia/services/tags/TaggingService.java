@@ -272,7 +272,7 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public List<String> tag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
-        if(tags.isEmpty()){
+        if(tags == null || tags.isEmpty()){
             return Collections.emptyList();
         }
 
@@ -355,12 +355,12 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public List<String> untag(final JCRNodeWrapper node, final List<String> tags) throws RepositoryException {
-        if(tags.isEmpty()){
+        if(tags == null || tags.isEmpty()){
             return Collections.emptyList();
         }
 
         List<String> deletedTags = new ArrayList<String>();
-        if(node.isNodeType(JMIX_TAGGED)){
+        if(node.isNodeType(JMIX_TAGGED) && node.hasProperty(J_TAG_LIST)){
             try{
                 JCRPropertyWrapper tagsProp = node.getProperty(J_TAG_LIST);
                 JCRValueWrapper[] currentTagValues = tagsProp.getValues();
@@ -443,7 +443,7 @@ public class TaggingService extends JahiaService{
      * @throws RepositoryException
      */
     public void renameTag(final JCRNodeWrapper node, final String selectedTag, final String tagNewName) throws RepositoryException {
-        if(node.isNodeType(JMIX_TAGGED)){
+        if(node.isNodeType(JMIX_TAGGED) && node.hasProperty(J_TAG_LIST) && tagNewName != null && tagNewName.length() > 0){
             Set<String> newValues = new TreeSet<String>();
             JCRValueWrapper[] tags = node.getProperty(J_TAG_LIST).getValues();
             for (JCRValueWrapper tag : tags) {

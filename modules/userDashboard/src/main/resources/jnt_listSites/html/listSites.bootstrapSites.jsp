@@ -121,7 +121,7 @@
         </tbody>
     </table>
     <c:if test="${moduleMap.end > 0 and moduleMap.end > moduleMap.begin}">
-        <c:if test="${currentNode.properties.export.boolean && jcr:hasPermission(root,'adminVirtualSites')}">
+        <c:if test="${renderContext.user.root && currentNode.properties.export.boolean}">
             <c:url var="stagingExportUrl" value="/cms/export/default/sites_staging_export_${now}.zip"/>
             <fmt:message key="label.manageSite.exportStaging" var="exportStagingTitle"/>
             <fmt:message key="label.manageSite.exportLive" var="exportLiveTitle"/>

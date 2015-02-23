@@ -33,10 +33,8 @@
 package org.jahia.services.cache.ehcache;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheException;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
 import net.sf.ehcache.event.CacheEventListenerAdapter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
@@ -59,13 +57,17 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
      * A dependency has been evicted, flush related entries.
      */
     public void notifyElementEvicted(Ehcache cache, Element element) {
-        logger.warn("EHCache has evicted: " + element.getObjectKey() + " from cache " + cache.getName());
+        if (logger.isDebugEnabled()) {
+            logger.debug("EHCache has evicted: " + element.getObjectKey() + " from cache " + cache.getName());
+        }
         // Element is not present in the cache anymore
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         if(cache.getName().equals(cacheProvider.getDependenciesCache().getName())) {
             // This is a dependency path that has been evicted
             Set<String> deps = (Set<String>) element.getObjectValue();
-            logger.warn("Evicting "+deps.size()+" dependencies related to "+element.getObjectKey()+".");
+            if (logger.isDebugEnabled()) {
+                logger.debug("Evicting "+deps.size()+" dependencies related to "+element.getObjectKey()+".");
+            }
             if (deps.contains("ALL")) {
                 // do not propagate
                 cacheProvider.getCache().removeAll(true);

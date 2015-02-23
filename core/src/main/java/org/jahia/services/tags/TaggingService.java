@@ -376,11 +376,10 @@ public class TaggingService extends JahiaService{
                 if(!deletedTags.isEmpty()){
                     if(currentTags.isEmpty()){
                         try {
-                            node.removeMixin(JMIX_TAGGED);
                             tagsProp.remove();
+                            node.removeMixin(JMIX_TAGGED);
                         } catch (NoSuchNodeTypeException noSuchNodeTypeException) {
                             // mixin jmix:tagged is on the nodetype definition, can't remove it
-                            node.setProperty(J_TAG_LIST, new Value[]{});
                         }
                     } else {
                         node.setProperty(J_TAG_LIST, currentTags.toArray(new String[currentTags.size()]));

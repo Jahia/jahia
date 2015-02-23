@@ -202,64 +202,6 @@
                 </plugins>
             </build>
         </profile>
-        <profile>
-            <id>docsite</id>
-            <activation>
-                <property>
-                    <name>documentation</name>
-                </property>
-            </activation>
-            <modules>
-                <module>assets</module>
-                <module>channels</module>
-                <module>default</module>
-                <module>siteSettings</module>
-                <module>facets</module>
-                <module>grid</module>
-                <module>macros</module>
-                <module>search</module>
-                <module>seo</module>
-                <module>skins</module>
-                <module>tasks</module>
-                <module>templates-system</module>
-                <module>visibility</module>
-                <module>jquery</module>
-            </modules>
-        </profile>
-        <profile>
-            <id>nodocsite</id>
-            <activation>
-                <property>
-                    <name>!documentation</name>
-                </property>
-            </activation>
-            <modules>
-                <module>assets</module>
-                <module>channels</module>
-                <module>contentRetrieval</module>
-                <module>contribute</module>
-                <module>default</module>
-                <module>default-skins</module>
-                <module>siteSettings</module>
-                <module>facets</module>
-                <module>grid</module>
-                <module>macros</module>
-                <module>profile</module>
-                <module>rolesmanager</module>
-                <module>search</module>
-                <module>seo</module>
-                <module>serverSettings</module>
-                <module>skins</module>
-                <module>tabularList</module>
-                <module>tags</module>
-                <module>tasks</module>
-                <module>templates-system</module>
-                <module>visibility</module>
-                <module>translation</module>
-                <module>jquery</module>
-                <module>userDashboard</module>
-            </modules>
-        </profile>
     </profiles>
 
     <build>

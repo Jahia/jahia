@@ -80,19 +80,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
-import org.jahia.services.content.JCRContentUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
@@ -225,7 +225,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
                         try {
                             JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent().getParent();
                             if (usageFilterSites == null || usageFilterSites.contains(refNode.getResolveSite().getName())) {
-                                JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context);
+                                JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context, refNode.getResolveSite());
                                 if (node == null) {
                                     node = refNode;
                                 }
@@ -255,7 +255,13 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     public JCRNodeWrapper getDisplayableNode() {
         if (displayableNode == null) {
-            displayableNode = JCRContentUtils.findDisplayableNode(resource, context);
+            JCRSiteNode site;
+            try {
+                site = resource.getResolveSite();
+            } catch (RepositoryException e) {
+                site = null;
+            }
+            displayableNode = JCRContentUtils.findDisplayableNode(resource, context, site);
             if (displayableNode == null) {
                 displayableNode = resource;
             }

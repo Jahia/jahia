@@ -3,73 +3,95 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ======================================================================================
+ * 1/ GPL
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  *
  *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
  *
- *     For more information, please visit http://www.jahia.com
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.content;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
+import javax.jcr.*;
+import javax.jcr.nodetype.ItemDefinition;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.servlet.ServletContext;
 
 import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.text.Normalizer;
@@ -86,7 +108,11 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.*;
+import org.jahia.services.content.decorator.JCRComponentNode;
+import org.jahia.services.content.decorator.JCRFileNode;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -105,16 +131,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
 
-import javax.jcr.*;
-import javax.jcr.nodetype.*;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.servlet.ServletContext;
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-
 import static org.jahia.api.Constants.*;
 
 /**
@@ -125,7 +141,7 @@ import static org.jahia.api.Constants.*;
 public final class JCRContentUtils implements ServletContextAware {
 
     public static final Pattern COLON_PATTERN = Patterns.COLON;
-    
+
     public static final Comparator<NodeType> NODE_TYPE_NAME_COMPARATOR = new Comparator<NodeType>() {
         public int compare(NodeType o1, NodeType o2) {
             return o1 == o2 ? 0 : o1.getName().compareTo(o2.getName());
@@ -194,7 +210,7 @@ public final class JCRContentUtils implements ServletContextAware {
     }
 
     private static void clearAllLocks(String path, boolean processChildNodes,
-                                     JCRSessionWrapper session) throws RepositoryException {
+                                      JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper node = session.getNode(path);
         node.clearAllLocks();
         if (processChildNodes) {
@@ -422,6 +438,18 @@ public final class JCRContentUtils implements ServletContextAware {
         return currentNode;
     }
 
+    public static JCRNodeWrapper findDisplayableNode(JCRNodeWrapper node, RenderContext context, JCRSiteNode contextSite) {
+        if (contextSite != null) {
+            final JCRSiteNode old = context.getSite();
+            context.setSite(contextSite);
+            final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
+            context.setSite(old);
+            return displayableNode;
+        } else {
+            return JCRContentUtils.findDisplayableNode(node, context);
+        }
+    }
+
     public static String generateNodeName(String text) {
         return generateNodeName(text, SettingsBean.getInstance().getMaxNameSize());
     }
@@ -506,7 +534,7 @@ public final class JCRContentUtils implements ServletContextAware {
             List<JCRNodeWrapper> matchingChildren = new LinkedList<JCRNodeWrapper>();
             try {
                 for (NodeIterator iterator = node.getNodes(); iterator.hasNext(); ) {
-                    if(limit > 0 && matchingChildren.size()==limit) {
+                    if (limit > 0 && matchingChildren.size() == limit) {
                         break;
                     }
                     Node child = iterator.nextNode();
@@ -526,6 +554,7 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return children;
     }
+
     /**
      * Returns a content object key for a node if available. Otherwise returns
      * node name.
@@ -701,6 +730,7 @@ public final class JCRContentUtils implements ServletContextAware {
         }
         return null;
     }
+
     public static String getIcon(JCRNodeWrapper f) throws RepositoryException {
         return getIconWithContext(f, false);
     }
@@ -713,9 +743,9 @@ public final class JCRContentUtils implements ServletContextAware {
         }
 
         if (f.isFile()) {
-            return (useContext?prefix:"") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+            return (useContext ? prefix : "") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
         } else if (f.isPortlet()) {
-            return (useContext?prefix:"") + folder + "jnt_portlet";
+            return (useContext ? prefix : "") + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
             ExtendedNodeType nt = primaryNodeType;
@@ -726,11 +756,11 @@ public final class JCRContentUtils implements ServletContextAware {
 
                 }
             }
-            return (useContext?prefix:"") + getIcon(nt, getSubType(nt, f));
+            return (useContext ? prefix : "") + getIcon(nt, getSubType(nt, f));
         } else if (!f.getProvider().isDefault() && f.isNodeType("jnt:folder")) {
-            return (useContext?prefix:"") + folder + "remoteFolder.png";
+            return (useContext ? prefix : "") + folder + "remoteFolder.png";
         } else {
-            return (useContext?prefix:"") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
+            return (useContext ? prefix : "") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
     }
 
@@ -833,7 +863,7 @@ public final class JCRContentUtils implements ServletContextAware {
             List<JCRNodeWrapper> res = new ArrayList<JCRNodeWrapper>();
             NodeIterator ni = node.getNodes();
             while (ni.hasNext()) {
-                if(limit > 0 && res.size() == limit) {
+                if (limit > 0 && res.size() == limit) {
                     break;
                 }
                 JCRNodeWrapper child = (JCRNodeWrapper) ni.next();
@@ -1179,7 +1209,7 @@ public final class JCRContentUtils implements ServletContextAware {
 
     /**
      * Checks if the specified language is marked as invalid for displaying.
-     * 
+     *
      * @param node
      *            the node to be checked
      * @param languageCode
@@ -1561,7 +1591,7 @@ public final class JCRContentUtils implements ServletContextAware {
             entries = reverse(entries);
         }
         String siteKey = null;
-        List<String> rolesList = Arrays.asList(StringUtils.splitByWholeSeparator(roles,null));
+        List<String> rolesList = Arrays.asList(StringUtils.splitByWholeSeparator(roles, null));
         JahiaUserManagerService userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         JahiaGroupManagerService groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 

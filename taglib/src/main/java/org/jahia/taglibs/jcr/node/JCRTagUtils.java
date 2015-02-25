@@ -71,11 +71,27 @@
  */
 package org.jahia.taglibs.jcr.node;
 
+import java.util.*;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.PublicationInfo;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -87,12 +103,6 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import java.util.*;
 
 /**
  * JCR content related utilities.
@@ -470,15 +480,7 @@ public class JCRTagUtils {
     }
 
     public static JCRNodeWrapper findDisplayableNodeInSite(JCRNodeWrapper node, RenderContext context,JCRSiteNode siteNode) {
-        if(siteNode!=null) {
-            JCRSiteNode old = context.getSite();
-            context.setSite(siteNode);
-            final JCRNodeWrapper displayableNode = JCRContentUtils.findDisplayableNode(node, context);
-            context.setSite(old);
-            return displayableNode;
-        } else {
-            return JCRContentUtils.findDisplayableNode(node, context);
-        }
+        return JCRContentUtils.findDisplayableNode(node, context, siteNode);
     }
 
     public static boolean isAllowedChildNodeType(JCRNodeWrapper node, String nodeType) throws RepositoryException {

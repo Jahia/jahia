@@ -1150,7 +1150,17 @@ public class LegacyImportHandler extends DefaultHandler {
                                         buf.replace(from, to, "##doc-context##/{workspace}/##ref:link" + count + "##");
                                     } else {
                                         ref = StringUtils.substringAfterLast(ref, "/");
-                                        buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html");
+                                        // we keep the URL parameters if any
+                                        String params = "";
+                                        int pos = ref.indexOf('?');
+                                        if (pos == -1) {
+                                            pos = ref.indexOf('#');
+                                        }
+                                        if (pos != -1) {
+                                            params = ref.substring(pos);
+                                            ref = ref.substring(0, pos);
+                                        }
+                                        buf.replace(from, to, "##cms-context##/{mode}/{lang}/##ref:link" + count + "##.html" + params);
                                     }
                                     try {
                                         ref = URLDecoder.decode(ref, "UTF-8");

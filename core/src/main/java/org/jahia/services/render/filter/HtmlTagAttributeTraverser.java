@@ -80,7 +80,6 @@ import net.htmlparser.jericho.Attributes;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
-
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
@@ -157,7 +156,7 @@ public class HtmlTagAttributeTraverser {
         }
 
         Source source = new Source(htmlContent);
-        OutputDocument document = new OutputDocument(source);
+        OutputDocument document = null;
 
         for (Map.Entry<String, Set<String>> tag : attributesToVisit.entrySet()) {
             List<StartTag> tags = source.getAllStartTags(tag.getKey());
@@ -172,6 +171,10 @@ public class HtmlTagAttributeTraverser {
                             value = visitor.visit(value, context, startTag.getName(), attrName, resource);
                         }
                         if (originalValue != value && originalValue != null && !originalValue.equals(value)) {
+                            // only create output document if we determined that we need to modify it
+                            if(document == null) {
+                                document = new OutputDocument(source);
+                            }
                             document.replace(attribute.getValueSegment(), value);
                         }
                     }
@@ -179,6 +182,6 @@ public class HtmlTagAttributeTraverser {
             }
         }
 
-        return document.toString();
+        return document != null ? document.toString() : htmlContent;
     }
 }

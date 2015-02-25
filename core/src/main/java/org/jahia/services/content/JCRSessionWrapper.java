@@ -1344,9 +1344,8 @@ public class JCRSessionWrapper implements Session {
 
     @Override
     public String toString() {
-        return "JCRSessionWrapper{" +
-                "sessions=" + sessions +
-                '}';
+        return "JCRSessionWrapper (" + workspace.getName() + ", " + locale + ", " + user + " [aliased as " + getAliasedUser()
+                + "]) {sessions=" + sessions + '}';
     }
     public JCRUserNode getUserNode() throws RepositoryException {
         return (JCRUserNode) getNode(user.getLocalPath());

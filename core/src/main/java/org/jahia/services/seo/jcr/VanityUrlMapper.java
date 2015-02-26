@@ -17,11 +17,9 @@ import org.jahia.utils.Url;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
@@ -164,7 +162,6 @@ public class VanityUrlMapper {
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
                 try {
                     JCRNodeWrapper node = urlResolver.getNode();
-                    boolean vanityUrlFound = false;
                     if (urlResolver.isMapped()) {
                         RenderContext context = (RenderContext) hsRequest.getAttribute("renderContext");
                         if (siteKey == null) {
@@ -176,7 +173,6 @@ public class VanityUrlMapper {
                                         urlResolver.getWorkspace(),
                                         urlResolver.getLocale(), siteKey);
                         if (vanityUrl != null && vanityUrl.isActive()) {
-                            vanityUrlFound = true;
                             hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl());
                             if (serverName != null) {
                                 hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);

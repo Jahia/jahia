@@ -97,8 +97,8 @@ public class FileCacheListener extends DefaultEventListener {
     private ModuleCacheProvider moduleCacheProvider;
 
     public FileCacheListener() {
-        cacheManager = FileCacheManager.getInstance();
         moduleCacheProvider = ModuleCacheProvider.getInstance();
+        cacheManager = FileCacheManager.getInstance();
     }
 
     public int getEventTypes() {

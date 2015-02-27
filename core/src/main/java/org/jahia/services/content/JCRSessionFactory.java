@@ -498,6 +498,7 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
                     }
                 }
             }
+            smap.clear();
             userSession.set(null);
         }
     }

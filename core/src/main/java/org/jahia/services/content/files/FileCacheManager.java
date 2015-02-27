@@ -73,8 +73,10 @@ package org.jahia.services.content.files;
 
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -92,14 +94,11 @@ public class FileCacheManager {
     public static final String LAST_MODIFIED_CACHE_NAME = "FileLastModifiedCache";
 
     private static Logger logger = LoggerFactory.getLogger(FileCacheManager.class);
+    private CacheFactory cacheFactory;
 
-    // Initialization on demand holder idiom: thread-safe singleton initialization
-    private static class Holder {
-        static final FileCacheManager INSTANCE = new FileCacheManager();
-    }
 
     public static FileCacheManager getInstance() {
-        return Holder.INSTANCE;
+        return (FileCacheManager) SpringContextSingleton.getBean("FileCacheManager");
     }
 
     private Cache<String, Map<String, FileCacheEntry>> contentCache;
@@ -114,7 +113,7 @@ public class FileCacheManager {
     public Cache<String, Map<String, FileCacheEntry>> getContentCache() {
         if (contentCache == null) {
             try {
-                contentCache = CacheFactory.getInstance().getCache(CONTENT_CACHE_NAME, true);
+                contentCache = cacheFactory.getCache(CONTENT_CACHE_NAME, true);
             } catch (JahiaInitializationException e) {
                 logger.error(e.getMessage(), e);
                 throw new JahiaRuntimeException(e);
@@ -128,7 +127,7 @@ public class FileCacheManager {
     public Cache<String, FileLastModifiedCacheEntry> getLastModifiedCache() {
         if (lastModifiedCache == null) {
             try {
-                lastModifiedCache = CacheFactory.getInstance().getCache(LAST_MODIFIED_CACHE_NAME, true);
+                lastModifiedCache = cacheFactory.getCache(LAST_MODIFIED_CACHE_NAME, true);
             } catch (JahiaInitializationException e) {
                 logger.error(e.getMessage(), e);
                 throw new JahiaRuntimeException(e);
@@ -145,5 +144,9 @@ public class FileCacheManager {
 
     public void invalidate(String workspace, String nodePath) {
         invalidate(new FileKey(workspace, nodePath));
+    }
+
+    public void setCacheFactory(CacheFactory cacheFactory) {
+        this.cacheFactory = cacheFactory;
     }
 }

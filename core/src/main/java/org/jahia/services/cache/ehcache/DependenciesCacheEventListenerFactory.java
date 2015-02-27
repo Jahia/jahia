@@ -49,11 +49,11 @@ import net.sf.ehcache.event.CacheEventListenerFactory;
 import java.util.Properties;
 
 /**
- * A very simple cache event listener factory that creates flush listeners.
+ * A very simple cache event listener factory that creates html cache dependencies listeners.
  *
- * @author cedric . mailleux @ jahia . com
- *
- * @since 6.6.2
+ * @author : cedric mailleux at jahia dot com
+ * @since : JAHIA 7.0.5
+ * Created : 28/01/15
  */
 public class DependenciesCacheEventListenerFactory extends CacheEventListenerFactory {
     public CacheEventListener createCacheEventListener(Properties properties) {

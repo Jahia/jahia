@@ -128,9 +128,7 @@ public final class CacheHelper {
         CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
 
         // legacy caches
-        Iterator<String> cacheNames = cacheService.getNames().iterator();
-        while (cacheNames.hasNext()) {
-            String curCacheName = cacheNames.next();
+        for (String curCacheName : cacheService.getNames()) {
             org.jahia.services.cache.Cache<Object, Object> cache = cacheService
                     .getCache(curCacheName);
             if (cache != null) {
@@ -195,8 +193,7 @@ public final class CacheHelper {
      */
     public static void flushEhcacheByName(String cacheName, boolean propagateInCluster) {
         logger.info("Flushing {}", cacheName);
-        CacheManager ehcacheManager = getJahiaCacheManager();
-        Ehcache cache = ehcacheManager.getEhcache(cacheName);
+        Ehcache cache = getEhcache(cacheName);
         if (cache != null) {
             // flush
             cache.removeAll(!propagateInCluster);
@@ -204,6 +201,11 @@ public final class CacheHelper {
         } else {
             logger.warn("Cache with the name {} not found. Skip flushing.", cacheName);
         }
+    }
+
+    private static Ehcache getEhcache(String cacheName) {
+        Ehcache ehcache = getJahiaCacheManager().getEhcache(cacheName);
+        return ehcache == null ? getBigCacheManager().getEhcache(cacheName) : ehcache;
     }
 
     /**
@@ -222,7 +224,14 @@ public final class CacheHelper {
     public static void flushOutputCaches(boolean propagateInCluster) {
         logger.info("Flushing HTML output caches{}",
                 propagateInCluster ? " also propagating it to all cluster members" : "");
-        CacheManager ehcacheManager = getJahiaCacheManager();
+        flushOutputCachesInManager(propagateInCluster, getJahiaCacheManager());
+        flushOutputCachesInManager(propagateInCluster, getBigCacheManager());
+        if (propagateInCluster) {
+            flushOutputCachesCluster();
+        }
+    }
+
+    private static void flushOutputCachesInManager(boolean propagateInCluster, CacheManager ehcacheManager) {
         for (String cacheName : ehcacheManager.getCacheNames()) {
             if (!cacheName.startsWith("HTML")) {
                 continue;
@@ -233,9 +242,6 @@ public final class CacheHelper {
                 cache.removeAll(!propagateInCluster);
                 logger.info("...done flushing {}", cacheName);
             }
-        }
-        if (propagateInCluster) {
-            flushOutputCachesCluster();
         }
     }
 
@@ -414,6 +420,11 @@ public final class CacheHelper {
 
     private static CacheManager getJahiaCacheManager() {
         return ((EhCacheProvider) SpringContextSingleton.getBean("ehCacheProvider"))
+                .getCacheManager();
+    }
+
+    private static CacheManager getBigCacheManager() {
+        return ((EhCacheProvider) SpringContextSingleton.getBean("bigEhCacheProvider"))
                 .getCacheManager();
     }
 

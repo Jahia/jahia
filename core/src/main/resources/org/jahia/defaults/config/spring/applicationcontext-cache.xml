@@ -22,14 +22,34 @@ when we flush this entry we will flush the whole cache
         <!-- enable cache statistics by default -->
         <property name="statisticsEnabled" value="true"/>
     </bean>
+
+    <bean id="bigEhCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" depends-on="jahiaProperties">
+        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.html.configuration.resource'] != null ? jahiaProperties['jahia.cache.html.configuration.resource'] : ('classpath:/ehcache-jahia-html' + (jahiaProperties['cluster.activated'] == 'true' ? '-cluster.xml' : '.xml'))}"/>
+        <!-- This property allows to fix a limit for cache entries dependencies management,
+if an entry have more than this value of dependencies then
+when we flush this entry we will flush the whole cache
+        A value of 0 disables groups cache
+        -->
+        <property name="groupsSizeLimit" value="0"/>
+        <property name="jmxActivated" value="true"/>
+        <!-- enable cache statistics by default -->
+        <property name="statisticsEnabled" value="true"/>
+    </bean>
+
     <bean id="JahiaCacheService" class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
 		<property name="cacheProviders">
 			<map>
 				<entry key="default" value-ref="ehCacheProvider" />
 				<entry key="ehcache" value-ref="ehCacheProvider"/>
                 <entry key="nocache" value-ref="noCacheProvider"/>
+                <entry key="bigcache" value-ref="bigEhCacheProvider"/>
 			</map>
 		</property>
+        <property name="cacheProviderForCache">
+            <map>
+                <entry key="FileContentCache" value="bigcache"/>
+            </map>
+        </property>
     </bean>
 
     <bean id="cacheKeyGenerator" class="org.jahia.services.render.filter.cache.DefaultCacheKeyGenerator">
@@ -60,7 +80,7 @@ when we flush this entry we will flush the whole cache
     </bean>
 
 	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
-        <property name="cacheProvider" ref="ehCacheProvider"/>
+        <property name="cacheProvider" ref="bigEhCacheProvider"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
 	</bean>
@@ -108,4 +128,7 @@ when we flush this entry we will flush the whole cache
         <property name="applyOnModes" value="live"/>
     </bean>
 
+    <bean id="FileCacheManager" class="org.jahia.services.content.files.FileCacheManager">
+        <property name="cacheFactory" ref="JahiaCacheService"/>
+    </bean>
 </beans>

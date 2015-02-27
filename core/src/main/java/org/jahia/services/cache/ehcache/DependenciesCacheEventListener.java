@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Set;
 
 /**
- * This Listener is flushing HTMLCache entries upon eviction of entries on the HTML dependencies cache.
+ * This Listener is flushing HTMLCache entries upon eviction/expiration of entries on the HTML dependencies cache.
  *
  * @author : cedric mailleux at jahia dot com
  * @since : JAHIA 7.0.5
@@ -60,13 +60,28 @@ public class DependenciesCacheEventListener extends CacheEventListenerAdapter {
         if (logger.isDebugEnabled()) {
             logger.debug("EHCache has evicted: " + element.getObjectKey() + " from cache " + cache.getName());
         }
+        removeDependentElements(cache, element);
+    }
+
+    @Override
+    /**
+     * A dependency has been expired, flush related entries.
+     */
+    public void notifyElementExpired(Ehcache cache, Element element) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("EHCache has expired: " + element.getObjectKey() + " from cache " + cache.getName());
+        }
+        removeDependentElements(cache, element);
+    }
+
+    private void removeDependentElements(Ehcache cache, Element element) {
         // Element is not present in the cache anymore
         ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         if(cache.getName().equals(cacheProvider.getDependenciesCache().getName())) {
             // This is a dependency path that has been evicted
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (logger.isDebugEnabled()) {
-                logger.debug("Evicting "+deps.size()+" dependencies related to "+element.getObjectKey()+".");
+                logger.debug("Evicting/Expiring "+deps.size()+" dependencies related to "+element.getObjectKey()+".");
             }
             if (deps.contains("ALL")) {
                 // do not propagate

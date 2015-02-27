@@ -61,9 +61,9 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
 <ehcache xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="ehcache.xsd"
          updateCheck="false" monitoring="autodetect"
-         name="org.jahia.ehcachemanager"
+         name="org.jahia.ehcachemanager.big"
          dynamicConfig="true"
-         maxBytesLocalHeap="15%">
+         maxBytesLocalHeap="20%">
 
     <!--
     DiskStore configuration
@@ -681,53 +681,22 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
 
     The defaultCache has an implicit name "default" which is a reserved cache name.
     -->
-    <defaultCache eternal="true">
+    <defaultCache timeToIdleSeconds="1800">
     </defaultCache>
 
-    <cache name="org.jahia.selfPopulatingReplicatedCache"
-           eternal="true" >
+    <cache name="HTMLCache"
+           timeToIdleSeconds="1800">
     </cache>
 
-    <cache name="urlResolverNodePath"
-           eternal="false"
-           timeToIdleSeconds="7200"
-           timeToLiveSeconds="0">
-        <searchable keys="false" values="true"/>
+    <cache name="HTMLDependenciesCache" timeToIdleSeconds="1800">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.DependenciesCacheEventListenerFactory" listenFor="local"/>
     </cache>
 
-    <cache name="urlResolverSiteInfo"
-           eternal="false"
-           timeToIdleSeconds="7200"
-           timeToLiveSeconds="0">
+    <cache name="HTMLREGEXPDependenciesCache" timeToIdleSeconds="1800">
+        <cacheEventListenerFactory class="org.jahia.services.cache.ehcache.DependenciesCacheEventListenerFactory" listenFor="local"/>
     </cache>
 
-    <cache name="RenderService.TemplatesCache"
-           eternal="true"
-           maxBytesLocalHeap="10M">
-    </cache>
-
-    <cache name="HTMLNodeUsersACLs"
-           eternal="true"
-           maxBytesLocalHeap="50M">
-    </cache>
-
-    <cache name="JCRGroupCache"
-           eternal="true"
-           maxBytesLocalHeap="100M">
-    </cache>
-
-    <cache name="JCRGroupMembershipCache"
-           eternal="true"
-           maxBytesLocalHeap="100M">
-    </cache>
-
-    <cache name="org.jahia.security.matchingPermissions"
-           eternal="true"
-           maxBytesLocalHeap="1M">
-    </cache>
-
-    <cache name="org.jahia.security.privilegesInRolesCache"
-           eternal="true">
+    <cache name="FileContentCache">
     </cache>
 
 </ehcache>

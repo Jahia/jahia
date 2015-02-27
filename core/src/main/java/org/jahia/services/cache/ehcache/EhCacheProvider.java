@@ -118,7 +118,7 @@ public class EhCacheProvider implements CacheProvider {
         InputStream is = null;
         try {
             is = configurationResource.getInputStream();
-            cacheManager = CacheManager.create(is);
+            cacheManager = CacheManager.newInstance(is);
         } catch (IOException e) {
             throw new JahiaInitializationException(e.getMessage(), e);
         } finally {

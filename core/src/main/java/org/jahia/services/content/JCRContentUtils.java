@@ -1697,7 +1697,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @return encoded string to be used in a JCR SQL2 query
      */
     public static String sqlEncode(String s) {
-        return s != null && s.contains("'") ? Patterns.SINGLE_QUOTE.matcher(s).replaceAll("''") : s;
+        return s != null && s.indexOf('\'') != -1 ? Patterns.SINGLE_QUOTE.matcher(s).replaceAll("''") : s;
     }
 
     /**

@@ -472,12 +472,13 @@ public class JahiaGroupManagerService extends JahiaService {
                                 if ("*".equals(propertyValue)) {
                                     propertyValue = "%";
                                 } else {
-                                    if (propertyValue.contains("*")) {
+                                    if (propertyValue.indexOf('*') != -1) {
                                         propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                     } else {
                                         propertyValue = propertyValue + "%";
                                     }
                                 }
+                                propertyValue = JCRContentUtils.sqlEncode(propertyValue);
                                 if ("*".equals(propertyKey)) {
                                     query.append("(CONTAINS(g.*,'").append(Patterns.PERCENT.matcher(propertyValue).replaceAll("")).append("') OR LOWER(g.[j:nodename]) LIKE '")
                                             .append(propertyValue.toLowerCase()).append("') ");

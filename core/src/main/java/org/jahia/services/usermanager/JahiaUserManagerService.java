@@ -537,12 +537,13 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                                 if ("*".equals(propertyValue)) {
                                     propertyValue = "%";
                                 } else {
-                                    if (propertyValue.contains("*")) {
+                                    if (propertyValue.indexOf('*') != -1) {
                                         propertyValue = Patterns.STAR.matcher(propertyValue).replaceAll("%");
                                     } else {
                                         propertyValue = propertyValue + "%";
                                     }
                                 }
+                                propertyValue = JCRContentUtils.sqlEncode(propertyValue);
                                 if ("*".equals(propertyKey)) {
                                     query.append("(CONTAINS(u.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
                                             + "') OR LOWER(u.[j:nodename]) LIKE '")

@@ -440,7 +440,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
             final String systemId = nodetypes.get(name).getSystemId();
             if (!systemId.equals(nodeType.getSystemId())) {
                 throw new NodeTypeExistsException("Node type '" + name + "' already defined with a different systemId (existing: '"
-                        + systemId + "', provided: '" + nodeType.getSystemId() + "' with name: '" + nodeType.getName() + "'");
+                        + systemId + "', provided: '" + nodeType.getSystemId() + "' with name: '" + nodeType.getName() + "')");
             }
         }
         nodetypes.put(name, nodeType);

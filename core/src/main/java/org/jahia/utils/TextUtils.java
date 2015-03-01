@@ -82,10 +82,9 @@ public class TextUtils {
         }
 
         // find all matches and visit them
-        final T result = matcher.match(initial.substring(prefixIndex, suffixIndex));
-
-        // give the matcher the opportunity to finish things up since we matched only what occurred between the first prefix and last suffix
-        return matcher.finish(initial, prefixIndex, suffixIndex, result);
+        return matcher.needsPreAndPostMatches() ?
+                matcher.match(initial.substring(0, prefixIndex), initial.substring(prefixIndex, suffixIndex), initial.substring(suffixIndex + suffix.length())) :
+                matcher.match(initial.substring(prefixIndex, suffixIndex));
     }
 
     public static String replaceBoundedString(String initial, String prefix, String suffix, String replacement) {
@@ -153,6 +152,10 @@ public class TextUtils {
             return visitMatches(matchedPairs, visitor.initialValue(initialString), initialString);
         }
 
+        public T match(String preMatches, String betweenMatches, String postMatches) {
+            return match(betweenMatches);
+        }
+
         /**
          * Visits matching prefix / suffix pairs, using the specified StringBuilder to build the final String
          *
@@ -217,8 +220,8 @@ public class TextUtils {
             return false;
         }
 
-        public T finish(String initial, int prefixIndex, int suffixIndex, T result) {
-            return result;
+        public boolean needsPreAndPostMatches() {
+            return false;
         }
     }
 
@@ -229,25 +232,31 @@ public class TextUtils {
         }
 
         @Override
-        public String match(String initialString) {
+        public String match(String beforeFirstPrefix, String initialString, String afterLastSuffix) {
             // wrap the original visitor to add our replacement behavior
-            final ReplacerVisitor replacerVisitor = new ReplacerVisitor(initialString, suffix, visitor);
-            this.visitor = replacerVisitor;
+            final StringBuilder builder = new StringBuilder(beforeFirstPrefix.length() + initialString.length() + afterLastSuffix.length());
+
+            // add String before first prefix
+            builder.append(beforeFirstPrefix);
+
+            this.visitor = new ReplacerVisitor(builder, suffix, visitor, initialString.length());
 
             // perform matching
             super.match(initialString);
 
+            // add String after last suffix
+            builder.append(afterLastSuffix);
+
             // and finally, extract the new string
-            return replacerVisitor.builder.toString();
+            return builder.toString();
         }
 
         @Override
-        public String finish(String initial, int prefixIndex, int suffixIndex, String result) {
-            // add text before first prefix and after last suffix if any
-            return initial.substring(0, prefixIndex) + result + initial.substring(suffixIndex + suffixLength);
+        public boolean needsPreAndPostMatches() {
+            return true;
         }
 
-        private class ReplacerVisitor implements BoundedStringVisitor<String> {
+        private static class ReplacerVisitor implements BoundedStringVisitor<String> {
             private final BoundedStringVisitor<String> visitor;
             private final int length;
             private final int suffixLength;
@@ -255,12 +264,12 @@ public class TextUtils {
 
             private int previousSuffix;
 
-            public ReplacerVisitor(String initial, String suffix, BoundedStringVisitor<String> visitor) {
+            public ReplacerVisitor(StringBuilder builder, String suffix, BoundedStringVisitor<String> visitor, int lengthOfBetweenMatchesString) {
                 this.visitor = visitor;
-                length = initial.length();
+                this.length = lengthOfBetweenMatchesString;
                 suffixLength = suffix.length();
                 previousSuffix = -1;
-                builder = new StringBuilder(initial.length());
+                this.builder = builder;
             }
 
             @Override

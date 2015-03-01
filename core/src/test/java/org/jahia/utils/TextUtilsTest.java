@@ -44,7 +44,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
 import org.junit.Test;
 
 import static junit.framework.Assert.*;
@@ -120,8 +124,42 @@ public class TextUtilsTest {
         buildTest("RaRcccReeeR", "PSaPScccPdSeeePS", "R", "P", "S", empty, empty, "d", empty);
     }
 
+    /*
+    // To quickly check memory usage in IDEA's unit test runner
+    @Test
+    public void testMemory() {
+        timeStrategy(10000, ReplacementStrategy.TEXT_UTILS);
+    }*/
+
+    @Test
+    public void performanceCheck() {
+        final int numberOfRuns = 10000;
+
+        long jerichoTime = timeStrategy(numberOfRuns, ReplacementStrategy.JERICHO);
+        long textUtilsTime = timeStrategy(numberOfRuns, ReplacementStrategy.TEXT_UTILS);
+
+        float ratio = ((float) jerichoTime) / textUtilsTime;
+
+        System.out.println("TextUtils took " + textUtilsTime + " ms");
+        System.out.println("Jericho took " + jerichoTime + " ms");
+        System.out.println("Ratio jericho time / TextUtils time: " + ratio);
+    }
+
+    private long timeStrategy(int numberOfRuns, ReplacementStrategy strategy) {
+        int runNb = 0;
+        long begin = System.currentTimeMillis();
+        while (runNb++ < numberOfRuns) {
+            checkCacheEntryReplacement(strategy);
+        }
+        return System.currentTimeMillis() - begin;
+    }
+
     @Test
     public void checkCacheEntryReplacement() {
+        checkCacheEntryReplacement(ReplacementStrategy.TEXT_UTILS);
+    }
+
+    public void checkCacheEntryReplacement(ReplacementStrategy strategy) {
         String initial = "<!-- jahia:temp value=\"URLParserStart80348f39\" --><ul class=\"nav\"><li class=\"dropdown\"><!-- cache:include src=\"en@@/sites/ACMESPACE/home/activities@@menuDropdown@@html@@%2Fsites%2FACMESPACE%2Fhome%2Factivities@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@608c6eab-e7b1-4802-be88-429838ad53fc@@true@@ACMESPACE:null@@{}\" -->\n" +
                 "<!-- jahia:temp value=\"URLParserStart2b56ff98\" --><a href=\"/jahia/sites/ACMESPACE/home/activities.html\" data-hover=\"dropdown\" data-delay=\"500\" class=\"dropdown-toggle\">Activities <b class=\"caret\"></b></a><!-- jahia:temp value=\"URLParserEnd2b56ff98\" -->\n" +
                 "<!-- /cache:include --><ul class=\"dropdown-menu\"><li><!-- cache:include src=\"en@@/sites/ACMESPACE/home/activities/space-exploration@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Factivities%2Fspace-exploration@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@52aa2c87-e2bc-4165-a808-857ec19c91a7@@true@@ACMESPACE:null@@{}\" -->\n" +
@@ -157,7 +195,7 @@ public class TextUtilsTest {
                 "<!-- /cache:include --><!-- jahia:temp value=\"URLParserEnd80348f39\" -->";
         String replaced = "<!-- jahia:temp value=\"URLParserStart80348f39\" --><ul class=\"nav\"><li class=\"dropdown\"><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/activities@@menuDropdown@@html@@%2Fsites%2FACMESPACE%2Fhome%2Factivities@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@608c6eab-e7b1-4802-be88-429838ad53fc@@true@@ACMESPACE:null@@{}\"></jahia_esi:include><ul class=\"dropdown-menu\"><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/activities/space-exploration@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Factivities%2Fspace-exploration@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@52aa2c87-e2bc-4165-a808-857ec19c91a7@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/activities/page@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Factivities%2Fpage@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@96969f18-887a-4bb8-a9fa-693e7970f93a@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li></ul></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/events@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fevents@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@4fa89c58-95fe-45f4-8dec-ceb0aaba84e3@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li class=\"dropdown\"><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/news@@menuDropdown@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fnews@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@b1f52ec7-6527-4331-a02b-43e2bf412d50@@true@@ACMESPACE:null@@{}\"></jahia_esi:include><ul class=\"dropdown-menu\"><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/news/corporate-news@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fnews%2Fcorporate-news@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@efc937b2-2b10-45df-9e99-ba678da54655@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/news/all-acme-space-news@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fnews%2Fall-acme-space-news@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@eafcf714-0a66-4be5-8f8c-8c1d48947b14@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li></ul></li><li class=\"dropdown\"><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/community@@menuDropdown@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fcommunity@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@1c5c3953-9578-436a-af4c-965b51588da3@@true@@ACMESPACE:null@@{}\"></jahia_esi:include><ul class=\"dropdown-menu\"><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/community/space-blogs@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fcommunity%2Fspace-blogs@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@3ad754a4-09a6-4617-ba48-01b195400048@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/community/knowledge-base@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fcommunity%2Fknowledge-base@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@b1ac257d-84a8-4c84-a34e-3ee1ee6ee48f@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/community/publication@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fcommunity%2Fpublication@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@47918292-b46d-48cf-a86d-b3bfb36349c1@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/community/forums@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fcommunity%2Fforums@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@f1a30df9-793f-4e6d-b187-b65a2257facf@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li></ul></li><li><jahia_esi:include src=\"en@@/sites/ACMESPACE/home/about-us@@menuElement@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fabout-us@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@721db48b-306c-46ab-ab18-dba93c0e1e27@@true@@ACMESPACE:null@@{}\"></jahia_esi:include></li></ul><jahia_esi:include src=\"en@@/modules/bootstrap-acme-space-templates/3.0.0-SNAPSHOT/templates/base/header/home/bootstrap-navigation-menu_mr_@@addResources@@html@@%2Fmodules%2Fbootstrap-acme-space-templates%2F3.0.0-SNAPSHOT%2Ftemplates%2Fbase%2Fheader%2Fhome%2Fbootstrap-navigation-menu,_mraclmr_@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@bootstrap/46c7e2cc-085c-4c1c-a459-e2885447e954/base|null/d1aa0bf3-aa7b-4a79-98af-206b188ba247/home@@f8280472-4c8f-4396-be4f-e2df81f102de@@true@@ACMESPACE:null@@{}\"></jahia_esi:include><!-- jahia:temp value=\"URLParserEnd80348f39\" -->";
 
-        assertEquals(replaced, TextUtils.replaceBoundedString(initial, "<!-- cache:include", "/cache:include -->", GENERATOR));
+        assertEquals(replaced, strategy.replace(initial));
 
         initial = "<!-- jahia:temp value=\"URLParserStart882f6c25\" --><jahia:resource type=\"css\" path=\"/jahia/files/live/sites/ACMESPACE/files/bootstrap/css/bootstrap" +
                 ".css\" insert=\"true\" resource=\"bootstrap.css\" title=\"\" key=\"\" />\n" +
@@ -341,7 +379,7 @@ public class TextUtilsTest {
                 "    </div>\n" +
                 "</div><!-- jahia:temp value=\"URLParserEnd882f6c25\" -->";
 
-        assertEquals(replaced, TextUtils.replaceBoundedString(initial, "<!-- cache:include", "/cache:include -->", GENERATOR));
+        assertEquals(replaced, strategy.replace(initial));
 
         initial = "<!-- jahia:temp value=\"URLParserStart0bf1b783\" --><!-- cache:include " +
                 "src=\"en@@/sites/ACMESPACE/home/slider-1/acme-space-demo-carousel@@default@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fslider-1%2Facme-space-demo-carousel@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@@@db6c9586-ea04-48cf-8fc3-4a6343dce5f8@@@@ACMESPACE:null@@{}\" -->\n" +
@@ -452,7 +490,7 @@ public class TextUtilsTest {
         replaced = "<!-- jahia:temp value=\"URLParserStart0bf1b783\" --><jahia_esi:include " +
                 "src=\"en@@/sites/ACMESPACE/home/slider-1/acme-space-demo-carousel@@default@@html@@%2Fsites%2FACMESPACE%2Fhome%2Fslider-1%2Facme-space-demo-carousel@@module@@false@@@@_qs[ec, v, cacheinfo, moduleinfo]_@@@@db6c9586-ea04-48cf-8fc3-4a6343dce5f8@@@@ACMESPACE:null@@{}\"></jahia_esi:include><div class=\"clear\"></div><!-- jahia:temp value=\"URLParserEnd0bf1b783\" -->";
 
-        assertEquals(replaced, TextUtils.replaceBoundedString(initial, "<!-- cache:include", "/cache:include -->", GENERATOR));
+        assertEquals(replaced, strategy.replace(initial));
     }
 
     private void buildTestWithDefaults(String expected, String initial, String... expectedMatches) {
@@ -474,6 +512,53 @@ public class TextUtilsTest {
         MatchRecordingVisitor matchRecordingVisitor = new MatchRecordingVisitor();
         final boolean result = Arrays.equals(expectedMatches, TextUtils.visitBoundedString(initial, prefix, suffix, matchRecordingVisitor).toArray(new String[expectedMatches.length]));
         assertTrue(result);
+    }
+
+    private static interface ReplacementStrategy {
+        String replace(String initial);
+
+        ReplacementStrategy TEXT_UTILS = new ReplacementStrategy() {
+            @Override
+            public String replace(String initial) {
+                return TextUtils.replaceBoundedString(initial, "<!-- cache:include", "/cache:include -->", GENERATOR);
+            }
+        };
+
+        ReplacementStrategy JERICHO = new ReplacementStrategy() {
+            private final Pattern ESI_INCLUDE_STARTTAG_REGEXP = Pattern.compile("<!-- cache:include src=\\\"(.*)\\\" -->");
+            private final Pattern ESI_INCLUDE_STOPTAG_REGEXP = Pattern.compile("<!-- /cache:include -->");
+
+            @Override
+            public String replace(String initial) {
+                // Replace <!-- cache:include --> tags of sub fragments by HTML tags that can be parsed by jericho
+                String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(initial).replaceAll("</jahia_esi:include>");
+                cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<jahia_esi:include src=\"$1\">");
+
+                if (cachedRenderContent.contains("<jahia_esi:include")) {
+                    Source source = new Source(cachedRenderContent);
+
+                    //// This will remove all blank line and drastically reduce data in memory
+                    // source = new Source((new SourceFormatter(source)).toString());
+
+                    // We will remove module:tag content here has we do not want to store them twice in memory
+                    List<StartTag> esiIncludeTags = source.getAllStartTags("jahia_esi:include");
+                    OutputDocument outputDocument = emptyEsiIncludeTagContainer(esiIncludeTags, source);
+
+                    return outputDocument.toString();
+                }
+
+
+                return initial;
+            }
+
+            private OutputDocument emptyEsiIncludeTagContainer(Iterable<StartTag> segments, Source source) {
+                OutputDocument outputDocument = new OutputDocument(source);
+                for (StartTag segment : segments) {
+                    outputDocument.replace(segment.getElement().getContent(), "");
+                }
+                return outputDocument;
+            }
+        };
     }
 
     static class TestStringReplacementGenerator extends TextUtils.StringReplacementGenerator {

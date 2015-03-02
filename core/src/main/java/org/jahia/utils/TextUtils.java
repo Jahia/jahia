@@ -39,6 +39,10 @@
  */
 package org.jahia.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -95,14 +99,210 @@ public class TextUtils {
         return visitBoundedString(initial, prefix, suffix, visitor, new Replacer(prefix, suffix, visitor));
     }
 
+
+    private static class SortedMapMatches implements Matches {
+        protected SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
+
+
+        public void matchingComplete() {
+            // nothing to do
+        }
+
+        public void add(int start, int end) {
+            matchedPairs.put(start, end);
+        }
+
+        @Override
+        public String toString() {
+            return matchedPairs.toString();
+        }
+
+        public boolean matchExists(int start) {
+            return matchedPairs.get(start) != null;
+        }
+
+        public void remove(int start) {
+            matchedPairs.remove(start);
+        }
+
+        public int get(int start) {
+            return matchedPairs.get(start);
+        }
+
+        public boolean isEmpty() {
+            return matchedPairs.isEmpty();
+        }
+
+        public int firstStart() {
+            return matchedPairs.firstKey();
+        }
+
+        public Matches after(int position) {
+            matchedPairs = matchedPairs.tailMap(position);
+            return this;
+        }
+
+    }
+
+    private static class ListMatches implements Matches {
+        private List<Match> matches = new LinkedList<>();
+        private int lastMatchIndex = 0;
+
+
+        public void matchingComplete() {
+            Collections.sort(matches);
+        }
+
+        public void add(int start, int end) {
+            matches.add(new Match(start, end));
+        }
+
+        @Override
+        public String toString() {
+            return matches.toString();
+        }
+
+        public boolean matchExists(int start) {
+            return matches.contains(new Match(start, -1));
+        }
+
+        public void remove(int start) {
+            lastMatchIndex++;
+        }
+
+        public int get(int start) {
+            final int i = matches.indexOf(new Match(start, -1));
+            return matches.get(i).end;
+        }
+
+        public boolean isEmpty() {
+            return lastMatchIndex == matches.size() || matches.isEmpty();
+        }
+
+        public int firstStart() {
+            return matches.get(lastMatchIndex).start;
+        }
+
+        public Matches after(int position) {
+            while (lastMatchIndex < matches.size()) {
+                final Match match = matches.get(lastMatchIndex);
+                if (match.start >= position) {
+                    break;
+                }
+                lastMatchIndex++;
+            }
+            return this;
+        }
+
+    }
+
+    private static class ArrayMatches implements Matches {
+        private Match[] matches = new Match[25];
+        private int lastMatchIndex = 0;
+        private int nbOfMatches = 0;
+        private boolean isMatching = false;
+        private static final Match INEXISTING = new Match(Integer.MAX_VALUE, -1);
+
+        public ArrayMatches() {
+            Arrays.fill(matches, INEXISTING);
+        }
+
+        public void matchingComplete() {
+            lastMatchIndex = 0;
+            Arrays.sort(matches);
+            isMatching = true;
+        }
+
+        public void add(int start, int end) {
+            // grow array if needed
+            final int length = matches.length;
+            if (lastMatchIndex == length - 1) {
+                final int newSize = length * 2;
+                Match[] newMatches = new Match[newSize];
+                System.arraycopy(matches, 0, newMatches, 0, length);
+                Arrays.fill(matches, length, newSize - 1, INEXISTING);
+                matches = newMatches;
+            }
+
+            matches[lastMatchIndex++] = new Match(start, end);
+            nbOfMatches++;
+        }
+
+        @Override
+        public String toString() {
+            return matches.toString();
+        }
+
+        public boolean matchExists(int start) {
+            return indexOf(start) >= 0;
+        }
+
+        private int indexOf(int start) {
+            // if we're matching, we are already sorted so no need to do it again
+            if (!isMatching) {
+                Arrays.sort(matches);
+            }
+            return Arrays.binarySearch(matches, new Match(start, -1));
+        }
+
+        public void remove(int start) {
+            lastMatchIndex++;
+        }
+
+        public int get(int start) {
+            final int i = indexOf(start);
+            return matches[i].end;
+        }
+
+        public boolean isEmpty() {
+            return lastMatchIndex == nbOfMatches || lastMatchIndex == matches.length || matches.length == 0;
+        }
+
+        public int firstStart() {
+            return matches[lastMatchIndex].start;
+        }
+
+        public Matches after(int position) {
+            while (lastMatchIndex < matches.length) {
+                final Match match = matches[lastMatchIndex];
+                if (match.start >= position) {
+                    break;
+                }
+                lastMatchIndex++;
+            }
+            return this;
+        }
+
+    }
+
+
+    private static interface Matches {
+        void matchingComplete();
+
+        void add(int start, int end);
+
+        boolean matchExists(int start);
+
+        void remove(int start);
+
+        int get(int start);
+
+        boolean isEmpty();
+
+        int firstStart();
+
+        Matches after(int position);
+    }
+
     private static class Matcher<T> {
+        private static final String EMPTY = "";
         protected final String prefix;
         protected final String suffix;
         protected final int prefixLength;
         protected final int suffixLength;
         protected int length;
         protected BoundedStringVisitor<T> visitor;
-        protected final SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
+        private final Matches matches = new ListMatches();
 
         public Matcher(String prefix, String suffix, BoundedStringVisitor<T> visitor) {
             this.prefix = prefix;
@@ -142,14 +342,15 @@ public class TextUtils {
                 // move on to the next potential prefix / suffix pair
                 final int previousSuffix = suffixIndex;
                 // next suffix is the one after the one we just matched to the prefix we were looking at, checking that we don't go out of bounds
-                final int nextSuffix = initialString.indexOf(suffix, matchedPairs.get(prefixIndex) + suffixLength);
+                final int nextSuffix = initialString.indexOf(suffix, matches.get(prefixIndex) + suffixLength);
                 suffixIndex = ensureSuffixIndex(nextSuffix);
                 // next prefix is the one after the suffix we just matched
                 prefixIndex = initialString.indexOf(prefix, previousSuffix + suffixLength);
             }
 
             // once we have matched all our pairs, visit them
-            return visitMatches(matchedPairs, visitor.initialValue(initialString), initialString);
+            matches.matchingComplete();
+            return visitMatches(matches, visitor.initialValue(initialString), initialString);
         }
 
         public T match(String preMatches, String betweenMatches, String postMatches) {
@@ -163,15 +364,15 @@ public class TextUtils {
          * @param previousResult the result that has been accumulated so far during the matching process
          * @param initialString  the String on which the matching is performed
          */
-        private T visitMatches(SortedMap<Integer, Integer> matches, T previousResult, String initialString) {
+        private T visitMatches(Matches matches, T previousResult, String initialString) {
             if (!matches.isEmpty()) {
-                int pairPrefix = matches.firstKey();
+                int pairPrefix = matches.firstStart();
                 int pairSuffix = matches.get(pairPrefix);
 
                 // match
                 String match;
                 if (pairPrefix == pairSuffix || pairPrefix >= length - 1) {
-                    match = "";
+                    match = EMPTY;
                 } else {
                     match = initialString.substring(pairPrefix + prefixLength, pairSuffix);
                 }
@@ -180,9 +381,10 @@ public class TextUtils {
                 T result = visitor.visit(match, prefix, suffix, pairPrefix, pairSuffix, initialString);
 
                 // remove current match
-                matchedPairs.remove(pairPrefix);
+                this.matches.remove(pairPrefix);
+
                 // repeat on all the pairs that are after the currently matched suffix since all in between pairs are replaced
-                return visitMatches(matchedPairs.tailMap(pairSuffix), result, initialString);
+                return visitMatches(matches.after(pairSuffix), result, initialString);
             } else {
                 return previousResult;
             }
@@ -194,7 +396,7 @@ public class TextUtils {
 
         private boolean match(final int prefixIndex, final int suffixIndex, final String initialString) {
             if (prefixIndex == suffixIndex) {
-                matchedPairs.put(prefixIndex, suffixIndex);
+                matches.add(prefixIndex, suffixIndex);
                 return true;
             }
 
@@ -202,13 +404,13 @@ public class TextUtils {
 
             if (inBetweenPrefix >= 0) {
                 // if we already have matched this in between prefix, find the previous unmatched one
-                while (matchedPairs.get(inBetweenPrefix) != null) {
+                while (matches.matchExists(inBetweenPrefix)) {
                     inBetweenPrefix = initialString.lastIndexOf(prefix, inBetweenPrefix - 1);
                 }
 
                 if (inBetweenPrefix == prefixIndex) {
                     // we have a match, record it
-                    matchedPairs.put(prefixIndex, suffixIndex);
+                    matches.add(prefixIndex, suffixIndex);
                     return true;
                 }
 
@@ -329,6 +531,41 @@ public class TextUtils {
 
         public String getReplacementFor(String match, String prefix, String suffix) {
             return replacement;
+        }
+    }
+
+    private static class Match implements Comparable<Match> {
+        public Match(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+
+        final int start;
+        final int end;
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Match match = (Match) o;
+
+            return start == match.start;
+        }
+
+        @Override
+        public int hashCode() {
+            return start;
+        }
+
+        @Override
+        public String toString() {
+            return "[" + start + ", " + end + "]";
+        }
+
+        @Override
+        public int compareTo(Match o) {
+            return o == null ? -1 : start - o.start;
         }
     }
 }

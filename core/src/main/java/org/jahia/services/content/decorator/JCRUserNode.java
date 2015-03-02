@@ -71,15 +71,6 @@
  */
 package org.jahia.services.content.decorator;
 
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.*;
-
-import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.version.VersionException;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
@@ -95,6 +86,9 @@ import org.jahia.services.usermanager.JahiaUserImpl;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import java.util.*;
 
 /**
  * Represent a user JCR node.
@@ -212,7 +206,10 @@ public class JCRUserNode extends JCRNodeDecorator {
     }
 
     private boolean canGetProperty(String s) throws RepositoryException {
-        if (publicProperties.contains(s) || hasPermission("jcr:write")) {
+        if (publicProperties.contains(s) || JahiaUserManagerService.isGuest(this) || hasPermission("jcr:write")) {
+            return true;
+        }
+        if (super.hasProperty(s) && !"jnt:user".equals(super.getProperty(s).getDefinition().getDeclaringNodeType().getName())) {
             return true;
         }
         if (!super.hasProperty(J_PUBLIC_PROPERTIES)) {

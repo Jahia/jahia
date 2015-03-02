@@ -80,6 +80,7 @@ import javax.servlet.http.HttpServletRequest;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
+import net.sf.ehcache.search.expression.Criteria;
 
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.slf4j.Logger;
@@ -120,24 +121,18 @@ public class URLResolverFactory {
         return new URLResolver(url, context, nodePathCache, siteInfoCache);
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized void flushCaches(String path) {
-        @SuppressWarnings("unchecked")
-        final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(Query.VALUE.eq(path)).execute().all();
-        if(logger.isDebugEnabled() && !all.isEmpty()) {
-            logger.debug("Flushing {} keys from URLResolver Caches.", all.size());
-        }
-        for (Result result : all) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Flushing key: {}", result.getKey());
-            }
-            nodePathCache.remove(result.getKey());
-            siteInfoCache.remove(result.getKey());
-        }
+        flushCaches(Query.VALUE.eq(path));
     }
 
+    @SuppressWarnings("unchecked")
     public synchronized void flushCaches(Collection<String> paths) {
-        @SuppressWarnings("unchecked")
-        final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(Query.VALUE.in(paths)).execute().all();
+        flushCaches(Query.VALUE.in(paths));
+    }
+
+    private void flushCaches(Criteria keySearchCriteria) {
+        final List<Result> all = nodePathCache.createQuery().includeKeys().addCriteria(keySearchCriteria).execute().all();
         if (all.isEmpty()) {
             return;
         }

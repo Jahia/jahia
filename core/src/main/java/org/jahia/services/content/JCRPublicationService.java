@@ -90,6 +90,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
+
 import java.util.*;
 
 import static org.jahia.api.Constants.*;
@@ -105,6 +106,9 @@ public class JCRPublicationService extends JahiaService {
     }
 
     private static transient Logger logger = LoggerFactory.getLogger(JCRPublicationService.class);
+    
+    private int batchSize;
+    
     private JCRSessionFactory sessionFactory;
     private MetricsLoggingService loggingService;
 
@@ -280,7 +284,7 @@ public class JCRPublicationService extends JahiaService {
 
         final JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
 
-        final List<String> checkedUuids = new ArrayList<String>();
+        final Set<String> checkedUuids = new LinkedHashSet<String>();
         if (checkPermissions) {
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
             for (String uuid : uuids) {
@@ -319,7 +323,48 @@ public class JCRPublicationService extends JahiaService {
         }
     }
 
-    private void publish(final List<String> uuidsToPublish, JCRSessionWrapper sourceSession,
+    private void publish(final Set<String> uuidsToPublish, JCRSessionWrapper sourceSession,
+            JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
+            throws RepositoryException {
+        int totalCount = uuidsToPublish.size();
+        if (batchSize < 0 || totalCount <= batchSize) {
+            // no limit on the batch size
+            long startTime = System.currentTimeMillis();
+            doPublish(uuidsToPublish, sourceSession, destinationSession, updateMetadata, comments);
+            logger.info("Published {} nodes in {} ms", totalCount, System.currentTimeMillis() - startTime);
+        } else {
+            logger.info("Publishing {} nodes in batches of {}", totalCount, batchSize);
+            long startTime = System.currentTimeMillis();
+            Set<String> batch = new LinkedHashSet<String>(batchSize);
+            int batchIndex = 1;
+            int batchTotalCount = (int) Math.ceil((double) totalCount / (double) batchSize);
+            while (uuidsToPublish.size() > batchSize) {
+                int batchCount = 0;
+                for (Iterator<String> iterator = uuidsToPublish.iterator(); iterator.hasNext();) {
+                    batch.add(iterator.next());
+                    iterator.remove();
+                    batchCount++;
+                    if (batchCount >= batchSize) {
+                        break;
+                    }
+                }
+
+                logger.info("Processing batch {}/{}", batchIndex++, batchTotalCount);
+
+                doPublish(batch, sourceSession, destinationSession, updateMetadata, comments);
+
+                batch.clear();
+            }
+
+            if (uuidsToPublish.size() > 0) {
+                doPublish(uuidsToPublish, sourceSession, destinationSession, updateMetadata, comments);
+            }
+
+            logger.info("Batch-published {} nodes in {} ms", totalCount, System.currentTimeMillis() - startTime);
+        }
+    }
+    
+    private void doPublish(final Set<String> uuidsToPublish, JCRSessionWrapper sourceSession,
                          JCRSessionWrapper destinationSession, boolean updateMetadata, final List<String> comments)
             throws RepositoryException {
         final Calendar calendar = new GregorianCalendar();
@@ -327,7 +372,7 @@ public class JCRPublicationService extends JahiaService {
 
         final String destinationWorkspace = destinationSession.getWorkspace().getName();
 
-        List<JCRNodeWrapper> toPublish = new ArrayList<JCRNodeWrapper>();
+        Set<JCRNodeWrapper> toPublish = new LinkedHashSet<JCRNodeWrapper>();
         for (String uuid : uuidsToPublish) {
             try {
                 JCRNodeWrapper node = sourceSession.getNodeByUUID(uuid);
@@ -384,7 +429,7 @@ public class JCRPublicationService extends JahiaService {
         try {
             List<String> toDelete = new ArrayList<String>();
             List<JCRNodeWrapper> toDeleteOnSource = new ArrayList<JCRNodeWrapper>();
-            for (ListIterator<JCRNodeWrapper> lit = toPublish.listIterator(); lit.hasNext(); ) {
+            for (Iterator<JCRNodeWrapper> lit = toPublish.iterator(); lit.hasNext(); ) {
                 JCRNodeWrapper nodeWrapper = lit.next();
                 if (nodeWrapper.hasProperty("j:deletedChildren")) {
                     JCRPropertyWrapper property = nodeWrapper.getProperty("j:deletedChildren");
@@ -541,7 +586,7 @@ public class JCRPublicationService extends JahiaService {
         return subCloneResult;
     }
 
-    private void mergeToDestinationWorkspace(final List<JCRNodeWrapper> toPublish, final List<String> uuids,
+    private void mergeToDestinationWorkspace(final Set<JCRNodeWrapper> toPublish, final Set<String> uuids,
                                              final JCRSessionWrapper sourceSession,
                                              final JCRSessionWrapper destinationSession, Calendar calendar, Set<JCRNodeWrapper> toCheckpoint)
             throws RepositoryException {
@@ -945,7 +990,7 @@ public class JCRPublicationService extends JahiaService {
                                                      final String destinationWorkspace) throws RepositoryException {
         List<PublicationInfo> infos = new ArrayList<PublicationInfo>();
 
-        List<String> allUuids = new ArrayList<String>();
+        Set<String> allUuids = new LinkedHashSet<String>();
 
         for (String uuid : uuids) {
             if (!allUuids.contains(uuid)) {
@@ -1409,4 +1454,9 @@ public class JCRPublicationService extends JahiaService {
 
         return result;
     }
+
+    public void setBatchSize(int batchSize) {
+        this.batchSize = batchSize;
+    }
+
 }

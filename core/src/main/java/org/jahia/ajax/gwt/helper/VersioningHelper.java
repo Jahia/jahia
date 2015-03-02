@@ -100,47 +100,51 @@ import java.util.List;
  * Date: Feb 2, 2009
  * Time: 7:03:31 PM
  */
-public class VersioningHelper implements InitializingBean {
+public class VersioningHelper {
     private static final FastDateFormat DF = FastDateFormat.getInstance("yyyy_MM_dd_HH_mm_ss");
 
     private static Logger logger = LoggerFactory.getLogger(VersioningHelper.class);
 
     /**
      * Returns the formatted timestamp for the version label.
+     *
      * @param timestamp the time stamp for the label
      * @return the formatted timestamp for the version label
      */
     public static String formatForLabel(long timestamp) {
         return DF.format(timestamp);
     }
-    
+
     /**
      * Returns the label for the new version of the file with the timestamp.
+     *
      * @param timestamp the time stamp for the label
      * @return the label for the new version of the file with the timestamp
      */
     public static String getVersionLabel(long timestamp) {
         return "uploaded_at_" + formatForLabel(timestamp);
     }
-    
+
     /**
      * Returns the label for the new version of the file with the current timestamp.
+     *
      * @param timestamp the time stamp for the label
      * @return the label for the new version of the file with the current timestamp
      */
     public static String getVersionLabelCurrent() {
         return getVersionLabel(System.currentTimeMillis());
     }
-    
+
     /**
      * Returns the label for the restored version of the file with the timestamp.
+     *
      * @param timestamp the time stamp for the label
      * @return the label for the restored version of the file with the timestamp
      */
     public static String getRestoreVersionLabel(long timestamp) {
         return "restored_at_" + formatForLabel(timestamp);
     }
-    
+
     private CacheService cacheService;
     private JCRVersionService versionService;
     private FileCacheManager cacheManager;
@@ -151,6 +155,10 @@ public class VersioningHelper implements InitializingBean {
 
     public void setVersionService(JCRVersionService versionService) {
         this.versionService = versionService;
+    }
+
+    public void setCacheManager(FileCacheManager cacheManager) {
+        this.cacheManager = cacheManager;
     }
 
     /**
@@ -174,14 +182,12 @@ public class VersioningHelper implements InitializingBean {
     }
 
 
-
     /**
      * Activate versioning if nested and add a new version
      *
      * @param node
      * @param tmpName
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
-     *
      */
     public void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
         try {
@@ -193,7 +199,7 @@ public class VersioningHelper implements InitializingBean {
                     session.save();
                 }
                 VersionIterator allVersions = versionManager.getVersionHistory(node.getPath()).getAllVersions();
-                if(allVersions.getSize()==1) {
+                if (allVersions.getSize() == 1) {
                     // First version ever apart root version
                     versionManager.checkpoint(node.getPath());
                     versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
@@ -215,7 +221,7 @@ public class VersioningHelper implements InitializingBean {
                     IOUtils.closeQuietly(is);
                     item.dispose();
                 }
-                
+
                 session.save();
                 versionManager.checkpoint(node.getPath());
                 versionService.addVersionLabel(node, getVersionLabelCurrent());
@@ -231,7 +237,7 @@ public class VersioningHelper implements InitializingBean {
             logger.error(e.getMessage(), e);
         }
 
-    }    
+    }
 
     public void restoreVersionLabel(String nodeUuid, Date versionDate, String versionLabel, boolean allSubTree,
                                     JCRSessionWrapper currentUserSession) {
@@ -247,7 +253,4 @@ public class VersioningHelper implements InitializingBean {
         }
     }
 
-    public void afterPropertiesSet() throws Exception {
-        cacheManager = FileCacheManager.getInstance();
-    }
 }

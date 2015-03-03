@@ -294,8 +294,13 @@ public class SiteSwitcherActionItem extends BaseActionItem {
 
     @Override
     public void handleNewMainNodeLoaded(GWTJahiaNode node) {
+        String path = JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()).getPath();
+        String s = node.getPath();
+        if (s.contains("@/") && s.startsWith("/sites")) {
+            path = s.substring(0, s.indexOf('/', 7));
+        }
         for (GWTJahiaNode site : sitesCombo.getStore().getModels()) {
-            if (site.getPath().equals(JahiaGWTParameters.getSitesMap().get(node.getSiteUUID()).getPath())) {
+            if (site.getPath().equals(path)) {
                 sitesCombo.setValue(site);
                 return;
             }

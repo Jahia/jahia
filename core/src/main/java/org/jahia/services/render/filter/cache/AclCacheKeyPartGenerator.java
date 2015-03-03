@@ -231,23 +231,38 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             keyPart = renderContext.getUser().getUserKey();
         } else {
             String[] paths = keyPart.split(",");
-            SortedSet<String> aclKeys = new TreeSet<String>();
-            for (String s : paths) {
-                try {
+            Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
+            StringBuilder r = new StringBuilder();
+            try {
+                Map<String, Set<String>> principalAcl = getUserAcl(renderContext.getUser());
+
+                for (String s : paths) {
                     if (s.equals(MR_ACL)) {
-                        aclKeys.add(getAclKeyPartForNode(renderContext, renderContext.getMainResource().getNode().getPath(), renderContext.getUser(), new HashSet<String>(), false));
+                        populateRolesForKey(renderContext.getMainResource().getNode().getPath(), principalAcl, rolesForKey, null);
                     } else if (s.equals(LOGGED_USER)) {
-                        aclKeys.add(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
+                        if(r.length() > 0){
+                            r.append("|");
+                        }
+                        r.append(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
                     } else if (s.startsWith("*")) {
-                        aclKeys.add(getAclKeyPartForNode(renderContext, decodeSpecificChars(s.substring(1)), renderContext.getUser(), new HashSet<String>(), true));
+                        String decodedNodePath = decodeSpecificChars(s.substring(1));
+                        populateRolesForKey(decodedNodePath, principalAcl, rolesForKey, Pattern.compile(decodedNodePath));
                     } else {
-                        aclKeys.add(getAclKeyPartForNode(renderContext, decodeSpecificChars(s), renderContext.getUser(), new HashSet<String>(), false));
+                        populateRolesForKey(decodeSpecificChars(s), principalAcl, rolesForKey, null);
                     }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
                 }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
             }
-            keyPart = StringUtils.join(aclKeys, "|");
+
+            for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
+                if(r.length() > 0){
+                    r.append("|");
+                }
+                r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey());
+            }
+
+            keyPart = StringUtils.replace(r.toString(), "@@", "%0");
         }
 //        try {
 //            byte[] b = DigestUtils.getSha256Digest().digest(keyPart.getBytes("UTF-8"));
@@ -261,11 +276,12 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         return keyPart;
     }
 
-    private void populateRolesForKey(Pattern regexp, Map<String, Set<String>> principalAcl, String nodePath, Map<String, Set<String>> rolesForKey , Set<String> aclPathChecked) {
-        if (regexp == null) {
+    private void populateRolesForKey(String nodePath, Map<String, Set<String>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern p) {
+        if (p == null) {
+            nodePath += "/";
             for (Map.Entry<String, Set<String>> entry : principalAcl.entrySet()) {
                 String grantPath = entry.getKey() + "/";
-                if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath)) && !aclPathChecked.contains(entry.getKey())) {
+                if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath))) {
                     Set<String> roles = entry.getValue();
                     if (!rolesForKey.containsKey(entry.getKey())) {
                         rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
@@ -276,7 +292,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             }
         } else {
             for (Map.Entry<String, Set<String>> entry : principalAcl.entrySet()) {
-                if (regexp.matcher(entry.getKey()).matches()) {
+                if (p.matcher(entry.getKey()).matches()) {
                     Set<String> roles = entry.getValue();
                     if (!rolesForKey.containsKey(entry.getKey())) {
                         rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
@@ -288,33 +304,16 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         }
     }
 
-    public String getAclKeyPartForNode(RenderContext renderContext, String nodePath,
-                                       JahiaUser principal, Set<String> aclPathChecked, boolean regexp)
-            throws RepositoryException {
-        Pattern p =  null;
-
-        if(!regexp) {
-            nodePath += "/";
-        } else {
-            p = Pattern.compile(nodePath);
-        }
-
-        Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
-        populateRolesForKey(p, getPrincipalAcl("u:" + principal.getName(), principal.getRealm()), nodePath, rolesForKey, aclPathChecked);
+    private Map<String, Set<String>> getUserAcl(JahiaUser principal) throws RepositoryException {
+        Map<String, Set<String>> principalAcl = new HashMap<>(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
 
         List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
-
         for (String group : groups) {
-            populateRolesForKey(p, getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"),
-                    group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null), nodePath, rolesForKey, aclPathChecked);
+            principalAcl.putAll(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"),
+                    group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null));
         }
 
-        aclPathChecked.addAll(rolesForKey.keySet());
-        StringBuilder r = new StringBuilder();
-        for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
-            r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey()).append("|");
-        }
-        return StringUtils.replace(r.toString(), "@@", "%0");
+        return principalAcl;
     }
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();

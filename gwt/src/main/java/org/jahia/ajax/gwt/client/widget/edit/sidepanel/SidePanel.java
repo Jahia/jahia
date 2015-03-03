@@ -129,15 +129,10 @@ public class SidePanel extends ContentPanel {
         this.config = config;
 
         final Storage storage = Storage.getSessionStorageIfSupported();
-        if (tabPanel == null) {
-            tabPanel = new TabPanel();
-        } else {
-            tabPanel.removeAll();
-            tabPanel.removeAllListeners();
-        }
+        tabPanel = new TabPanel();
         tabPanel.setBorders(false);
         tabPanel.setBodyBorder(false);
-        tabPanel.setHeight(800);
+
         // this id is for the container, each tab has its own ID concatenated with this one
         tabPanel.setId("JahiaGxtSidePanelTabs");
 

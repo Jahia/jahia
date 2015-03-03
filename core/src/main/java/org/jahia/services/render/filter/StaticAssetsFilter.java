@@ -575,6 +575,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         File minifiedFile = new File(getFileSystemPath(minifiedPath));
                         final org.springframework.core.io.Resource f = entry.getValue();
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
+<<<<<<< .working
                             Reader reader = new InputStreamReader(f.getInputStream(), "UTF-8");
                             Writer writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                             boolean compress = true;
@@ -602,12 +603,62 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                                             int line, String lineSource, int lineOffset) {
                                             if (!logger.isDebugEnabled()) {
                                                 return;
+=======
+                            Reader reader = null;
+                            Writer writer = null;
+                            try {
+                                reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
+                                writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                boolean compress = true;
+                                if (compress && type.equals("css")) {
+                                    String s = IOUtils.toString(reader);
+                                    IOUtils.closeQuietly(reader);
+    
+                                    if (s.indexOf("url(") != -1) {
+                                        String url = StringUtils.substringBeforeLast(path, "/") + "/";
+                                        s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                        s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
+                                        s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
+                                        s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
+                                    }
+                                    
+                                    reader = new StringReader(s);
+    
+                                    CssCompressor compressor = new CssCompressor(reader);
+                                    compressor.compress(writer, -1);
+                                } else if (compress && type.equals("js")) {
+                                    JavaScriptCompressor compressor = null;
+                                    try {
+                                        compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
+                                            public void warning(String message, String sourceName,
+                                                                int line, String lineSource, int lineOffset) {
+                                                if (!logger.isDebugEnabled()) {
+                                                    return;
+                                                }
+                                                if (line < 0) {
+                                                    logger.debug(message);
+                                                } else {
+                                                    logger.debug(line + ':' + lineOffset + ':' + message);
+                                                }
+>>>>>>> .merge-right.r52139
                                             }
+<<<<<<< .working
                                             if (line < 0) {
                                                 logger.debug(message);
                                             } else {
                                                 logger.debug(line + ":" + lineOffset + ":" + message);
+=======
+    
+                                            public void error(String message, String sourceName,
+                                                              int line, String lineSource, int lineOffset) {
+                                                if (line < 0) {
+                                                    logger.error(message);
+                                                } else {
+                                                    logger.error(line + ':' + lineOffset + ':' + message);
+                                                }
+>>>>>>> .merge-right.r52139
                                             }
+<<<<<<< .working
                                         }
 
                                         public void error(String message, String sourceName,
@@ -616,7 +667,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                                 logger.error(message);
                                             } else {
                                                 logger.error(line + ":" + lineOffset + ":" + message);
+=======
+    
+                                            public EvaluatorException runtimeError(String message, String sourceName,
+                                                                                   int line, String lineSource, int lineOffset) {
+                                                error(message, sourceName, line, lineSource, lineOffset);
+                                                return new EvaluatorException(message);
+>>>>>>> .merge-right.r52139
                                             }
+<<<<<<< .working
                                         }
 
                                         public EvaluatorException runtimeError(String message, String sourceName,
@@ -633,20 +692,33 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     reader = new InputStreamReader(f.getInputStream(), "UTF-8");
                                     writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                                     IOUtils.copy(reader, writer);
+=======
+                                        });
+                                        compressor.compress(writer, -1, true, true, false, false);
+                                    } catch (EvaluatorException e) {
+                                        logger.error("Error when minifying " + path, e);
+                                        IOUtils.closeQuietly(reader);
+                                        IOUtils.closeQuietly(writer);
+                                        reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
+                                        writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                        IOUtils.copy(reader, writer);
+                                    }
+                                } else {
+                                    BufferedWriter bw = new BufferedWriter(writer);
+                                    BufferedReader br = new BufferedReader(reader);
+                                    String s = null;
+                                    while ((s = br.readLine()) != null) {
+                                        bw.write(s);
+                                        bw.write("\n");
+                                    }
+                                    IOUtils.closeQuietly(bw);
+                                    IOUtils.closeQuietly(br);
+>>>>>>> .merge-right.r52139
                                 }
-                            } else {
-                                BufferedWriter bw = new BufferedWriter(writer);
-                                BufferedReader br = new BufferedReader(reader);
-                                String s = null;
-                                while ((s = br.readLine()) != null) {
-                                    bw.write(s);
-                                    bw.write("\n");
-                                }
-                                IOUtils.closeQuietly(bw);
-                                IOUtils.closeQuietly(br);
+                            } finally {
+                                IOUtils.closeQuietly(reader);
+                                IOUtils.closeQuietly(writer);
                             }
-                            IOUtils.closeQuietly(reader);
-                            IOUtils.closeQuietly(writer);
                         }
                         minifiedPaths.put(path, minifiedPath);
                     }

@@ -575,40 +575,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         File minifiedFile = new File(getFileSystemPath(minifiedPath));
                         final org.springframework.core.io.Resource f = entry.getValue();
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
-<<<<<<< .working
-                            Reader reader = new InputStreamReader(f.getInputStream(), "UTF-8");
-                            Writer writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
-                            boolean compress = true;
-                            if (compress && type.equals("css")) {
-                                String s = IOUtils.toString(reader);
-                                IOUtils.closeQuietly(reader);
-
-                                if (s.indexOf("url(") != -1) {
-                                    String url = StringUtils.substringBeforeLast(path, "/") + "/";
-                                    s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                                    s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
-                                    s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
-                                    s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
-                                }
-                                
-                                reader = new StringReader(s);
-
-                                CssCompressor compressor = new CssCompressor(reader);
-                                compressor.compress(writer, -1);
-                            } else if (compress && type.equals("js")) {
-                                JavaScriptCompressor compressor = null;
-                                try {
-                                    compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
-                                        public void warning(String message, String sourceName,
-                                                            int line, String lineSource, int lineOffset) {
-                                            if (!logger.isDebugEnabled()) {
-                                                return;
-=======
                             Reader reader = null;
                             Writer writer = null;
                             try {
-                                reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                                writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                reader = new InputStreamReader(f.getInputStream(), "UTF-8");
+                                writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                                 boolean compress = true;
                                 if (compress && type.equals("css")) {
                                     String s = IOUtils.toString(reader);
@@ -638,69 +609,32 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                                 if (line < 0) {
                                                     logger.debug(message);
                                                 } else {
-                                                    logger.debug(line + ':' + lineOffset + ':' + message);
+                                                    logger.debug(line + ":" + lineOffset + ":" + message);
                                                 }
->>>>>>> .merge-right.r52139
                                             }
-<<<<<<< .working
-                                            if (line < 0) {
-                                                logger.debug(message);
-                                            } else {
-                                                logger.debug(line + ":" + lineOffset + ":" + message);
-=======
     
                                             public void error(String message, String sourceName,
                                                               int line, String lineSource, int lineOffset) {
                                                 if (line < 0) {
                                                     logger.error(message);
                                                 } else {
-                                                    logger.error(line + ':' + lineOffset + ':' + message);
+                                                    logger.error(line + ":" + lineOffset + ":" + message);
                                                 }
->>>>>>> .merge-right.r52139
                                             }
-<<<<<<< .working
-                                        }
-
-                                        public void error(String message, String sourceName,
-                                                          int line, String lineSource, int lineOffset) {
-                                            if (line < 0) {
-                                                logger.error(message);
-                                            } else {
-                                                logger.error(line + ":" + lineOffset + ":" + message);
-=======
     
                                             public EvaluatorException runtimeError(String message, String sourceName,
                                                                                    int line, String lineSource, int lineOffset) {
                                                 error(message, sourceName, line, lineSource, lineOffset);
                                                 return new EvaluatorException(message);
->>>>>>> .merge-right.r52139
                                             }
-<<<<<<< .working
-                                        }
-
-                                        public EvaluatorException runtimeError(String message, String sourceName,
-                                                                               int line, String lineSource, int lineOffset) {
-                                            error(message, sourceName, line, lineSource, lineOffset);
-                                            return new EvaluatorException(message);
-                                        }
-                                    });
-                                    compressor.compress(writer, -1, true, true, false, false);
-                                } catch (EvaluatorException e) {
-                                    logger.error("Error when minifying " + path, e);
-                                    IOUtils.closeQuietly(reader);
-                                    IOUtils.closeQuietly(writer);
-                                    reader = new InputStreamReader(f.getInputStream(), "UTF-8");
-                                    writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
-                                    IOUtils.copy(reader, writer);
-=======
                                         });
                                         compressor.compress(writer, -1, true, true, false, false);
                                     } catch (EvaluatorException e) {
                                         logger.error("Error when minifying " + path, e);
                                         IOUtils.closeQuietly(reader);
                                         IOUtils.closeQuietly(writer);
-                                        reader = new InputStreamReader(new FileInputStream(f), "UTF-8");
-                                        writer = new OutputStreamWriter(new FileOutputStream(context.getRealPath(minifiedPath)), "UTF-8");
+                                        reader = new InputStreamReader(f.getInputStream(), "UTF-8");
+                                        writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
                                         IOUtils.copy(reader, writer);
                                     }
                                 } else {
@@ -713,7 +647,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     }
                                     IOUtils.closeQuietly(bw);
                                     IOUtils.closeQuietly(br);
->>>>>>> .merge-right.r52139
                                 }
                             } finally {
                                 IOUtils.closeQuietly(reader);
@@ -725,6 +658,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
                     try {
                         OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
+                        InputStream is = null;
                         try {
                             for (Map.Entry<String, String> entry : minifiedPaths.entrySet()) {
                                 if (type.equals("js")) {
@@ -732,7 +666,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                     outMerged.write(entry.getValue().getBytes());
                                     outMerged.write("\n".getBytes());
                                 }
-                                InputStream is = new FileInputStream(getFileSystemPath(entry.getValue()));
+                                is = new FileInputStream(getFileSystemPath(entry.getValue()));
                                 IOUtils.copy(is, outMerged);
                                 if (type.equals("js")) {
                                     outMerged.write(";\n".getBytes());
@@ -741,6 +675,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                             }
                         } finally {
                             IOUtils.closeQuietly(outMerged);
+                            IOUtils.closeQuietly(is);
                         }
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);

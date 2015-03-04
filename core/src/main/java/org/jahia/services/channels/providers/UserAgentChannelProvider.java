@@ -161,11 +161,11 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
     }
 
     public String getFallBack(String identifier) {
-        return channels.get(identifier).getFallBack();
+        return channels.containsKey(identifier) ? channels.get(identifier).getFallBack() : null;
     }
 
     public boolean isVisible(String identifier) {
-        return channels.get(identifier).isVisible();
+        return channels.containsKey(identifier) && channels.get(identifier).isVisible();
     }
 
     @Override

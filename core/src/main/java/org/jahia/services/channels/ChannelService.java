@@ -101,10 +101,10 @@ public class ChannelService {
             if (channelCapabilities != null) {
                 result.getCapabilities().putAll(channelCapabilities);
             }
-            if (provider.getAllChannels().contains(identifier)) {
+            if (provider.getFallBack(identifier) != null) {
                 result.setFallBack(provider.getFallBack(identifier));
-                result.setVisible(provider.isVisible(identifier));
             }
+            result.setVisible(provider.isVisible(identifier));
         }
         channelMap.put(identifier, result);
         return result;

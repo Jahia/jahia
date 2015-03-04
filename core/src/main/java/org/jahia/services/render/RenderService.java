@@ -123,7 +123,9 @@ public class RenderService {
         public int compare(Template o1, Template o2) {
             return o1.getPriority() - o2.getPriority();
         }
-    };
+    }
+
+    ;
 
     private static final Comparator<Template> TEMPLATE_PRIORITY_COMPARATOR = new TemplatePriorityComparator();
 
@@ -290,7 +292,7 @@ public class RenderService {
         return set;
     }
 
-    public Template resolveTemplate(Resource resource, RenderContext renderContext) throws AccessDeniedException {
+    public Template resolveTemplate(Resource resource, RenderContext renderContext) throws RepositoryException {
         final JCRNodeWrapper node = resource.getNode();
         String templateName = resource.getTemplate();
         if ("default".equals(templateName)) {
@@ -298,81 +300,76 @@ public class RenderService {
         }
 
         Template template = null;
-        try {
-            JCRNodeWrapper site = renderContext.getSite();
-            if (site == null) {
-                site = node.getResolveSite();
-            }
 
-            if (node.isNodeType("jnt:template")) {
-                // Display a template node in studio
-                if (!node.hasProperty("j:view") || "default".equals(node.getProperty("j:view").getString())) {
-                    JCRNodeWrapper parent = node.getParent();
-                    while (!(parent.isNodeType("jnt:templatesFolder"))) {
-                        template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
-                                templateName, parent.getIdentifier(), template, parent.getName());
-                        parent = parent.getParent();
-                    }
-
-                    String packageName = "templates-system";
-                    if (parent.hasProperty("j:templateSetContext")) {
-                        renderContext.setSite((JCRSiteNode) parent.getProperty("j:templateSetContext").getNode());
-                        packageName = parent.getProperty("j:templateSetContext").getNode().getName();
-                    }
-                    Set<String> installed = new LinkedHashSet<String>();
-                    installed.add(packageName);
-                    for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageById(packageName).getDependencies()) {
-                        installed.add(aPackage.getId());
-                    }
-                    template = addContextualTemplates(resource, renderContext, template, parent, installed);
-                }
-            } else {
-                if (resource.getTemplate().equals("default") && node.hasProperty("j:templateName")) {
-                    // A template node is specified on the current node
-                    templateName = node.getProperty("j:templateName").getString();
-                }
-
-                Set<String> installedModules = new LinkedHashSet<String>(((JCRSiteNode) site).getInstalledModulesWithAllDependencies());
-                installedModules.add("templates-system");
-
-                String type = "jnt:contentTemplate";
-                if (resource.getNode().isNodeType("jnt:page")) {
-                    type = "jnt:pageTemplate";
-                }
-                template = addTemplate(resource, renderContext, templateName, installedModules, type);
-
-                if (template != null) {
-                    // Add cascade of parent templates
-                    JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
-                    while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
-                        template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
-                                null, templateNode.getIdentifier(), template, templateNode.getName());
-
-                        templateNode = templateNode.getParent();
-                    }
-                    template = addContextualTemplates(resource, renderContext, template, templateNode, installedModules);
-                } else {
-                    return null;
-                }
-            }
-            if (template != null) {
-                Template currentTemplate = template;
-                // Be sure to take the first template which has a defined view
-                do {
-                    if (!currentTemplate.getView().equals("default")) {
-                        template = currentTemplate;
-                    }
-                    currentTemplate = currentTemplate.getNext();
-                } while (currentTemplate != null);
-            } else {
-                template = new Template(null, null, null, null);
-            }
-
-        } catch (AccessDeniedException e) {
-            throw e;
-        } catch (RepositoryException e) {
-            logger.error("Cannot find template", e);
+        JCRNodeWrapper site = renderContext.getSite();
+        if (site == null) {
+            site = node.getResolveSite();
         }
+
+        if (node.isNodeType("jnt:template")) {
+            // Display a template node in studio
+            if (!node.hasProperty("j:view") || "default".equals(node.getProperty("j:view").getString())) {
+                JCRNodeWrapper parent = node.getParent();
+                while (!(parent.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(parent.hasProperty("j:view") ? parent.getProperty("j:view").getString() :
+                            templateName, parent.getIdentifier(), template, parent.getName());
+                    parent = parent.getParent();
+                }
+
+                String packageName = "templates-system";
+                if (parent.hasProperty("j:templateSetContext")) {
+                    renderContext.setSite((JCRSiteNode) parent.getProperty("j:templateSetContext").getNode());
+                    packageName = parent.getProperty("j:templateSetContext").getNode().getName();
+                }
+                Set<String> installed = new LinkedHashSet<String>();
+                installed.add(packageName);
+                for (JahiaTemplatesPackage aPackage : templateManagerService.getTemplatePackageById(packageName).getDependencies()) {
+                    installed.add(aPackage.getId());
+                }
+                template = addContextualTemplates(resource, renderContext, template, parent, installed);
+            }
+        } else {
+            if (resource.getTemplate().equals("default") && node.hasProperty("j:templateName")) {
+                // A template node is specified on the current node
+                templateName = node.getProperty("j:templateName").getString();
+            }
+
+            Set<String> installedModules = new LinkedHashSet<String>(((JCRSiteNode) site).getInstalledModulesWithAllDependencies());
+            installedModules.add("templates-system");
+
+            String type = "jnt:contentTemplate";
+            if (resource.getNode().isNodeType("jnt:page")) {
+                type = "jnt:pageTemplate";
+            }
+            template = addTemplate(resource, renderContext, templateName, installedModules, type);
+
+            if (template != null) {
+                // Add cascade of parent templates
+                JCRNodeWrapper templateNode = resource.getNode().getSession().getNodeByIdentifier(template.getNode()).getParent();
+                while (!(templateNode.isNodeType("jnt:templatesFolder"))) {
+                    template = new Template(templateNode.hasProperty("j:view") ? templateNode.getProperty("j:view").getString() :
+                            null, templateNode.getIdentifier(), template, templateNode.getName());
+
+                    templateNode = templateNode.getParent();
+                }
+                template = addContextualTemplates(resource, renderContext, template, templateNode, installedModules);
+            } else {
+                return null;
+            }
+        }
+        if (template != null) {
+            Template currentTemplate = template;
+            // Be sure to take the first template which has a defined view
+            do {
+                if (!currentTemplate.getView().equals("default")) {
+                    template = currentTemplate;
+                }
+                currentTemplate = currentTemplate.getNext();
+            } while (currentTemplate != null);
+        } else {
+            template = new Template(null, null, null, null);
+        }
+
         return template;
     }
 
@@ -408,7 +405,7 @@ public class RenderService {
     }
 
     private SortedSet<Template> addTemplates(Resource resource, RenderContext renderContext, String templateName,
-                                                           JCRNodeWrapper templateNode, String type) throws RepositoryException {
+                                             JCRNodeWrapper templateNode, String type) throws RepositoryException {
         List<JCRNodeWrapper> nodes = getTemplateNodes(templateName, templateNode.getPath(), type, templateName == null, templateNode.getSession());
 
         SortedSet<Template> templates = new TreeSet<Template>(TEMPLATE_PRIORITY_COMPARATOR);
@@ -425,7 +422,7 @@ public class RenderService {
                 .append(templateName != null ? templateName : "*all*").toString();
 
         List<JCRNodeWrapper> nodes = new ArrayList<JCRNodeWrapper>();
-        List<String> nodeIds =  templatesCache.get(key);
+        List<String> nodeIds = templatesCache.get(key);
         if (nodeIds != null) {
             for (String nodeId : nodeIds) {
                 JCRNodeWrapper node = session.getNodeByIdentifier(nodeId);

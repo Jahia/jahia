@@ -333,6 +333,11 @@ public class SettingsTabItem extends SidePanelTabItem {
                 paths.add("/modules/" + module + "/$moduleversion/templates/" + settingsTemplateRoot + "/*");
             }
         }
+        if (JahiaGWTParameters.getSiteNode() != null && JahiaGWTParameters.getSiteNode().get("j:resolvedDependencies") != null) {
+            for (String module : ((List<String>) JahiaGWTParameters.getSiteNode().get("j:resolvedDependencies"))) {
+                paths.add("/modules/" + module + "/$moduleversion/templates/" + settingsTemplateRoot + "/*");
+            }
+        }
     }
 
     public void setSettingsTemplateRoot(String settingTemplateRoot) {

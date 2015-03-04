@@ -125,8 +125,6 @@ public class RenderService {
         }
     }
 
-    ;
-
     private static final Comparator<Template> TEMPLATE_PRIORITY_COMPARATOR = new TemplatePriorityComparator();
 
     public static final String RENDER_SERVICE_TEMPLATES_CACHE = "RenderService.TemplatesCache";

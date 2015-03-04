@@ -252,9 +252,7 @@ public class PrincipalViewHelper implements Serializable {
     public static String getFullName(Object p) {
         String firstName = null;
         String lastName = null;
-        if (p instanceof JCRGroupNode) {
-            firstName = getDisplayName((JCRGroupNode) p);
-        } else if (p instanceof JCRUserNode) {
+       if (p instanceof JCRUserNode) {
             JCRUserNode jahiaUser = (JCRUserNode) p;
             try {
                 firstName = jahiaUser.hasProperty("j:firstName")?jahiaUser.getProperty("j:firstName").getString():"";
@@ -272,7 +270,8 @@ public class PrincipalViewHelper implements Serializable {
         } else {
             throw new IllegalArgumentException("getFullName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
         }
-        return (StringUtils.isEmpty(firstName)?"":firstName) + (StringUtils.isEmpty(lastName)?"":(StringUtils.isEmpty(firstName)?"":" ") + lastName);
+        String fullName = (StringUtils.isEmpty(firstName)?"":firstName) + (StringUtils.isEmpty(lastName)?"":(StringUtils.isEmpty(firstName)?"":" ") + lastName);
+        return StringUtils.isEmpty(fullName)?getDisplayName(p):fullName;
     }
 
     /**

@@ -309,8 +309,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
         List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
         for (String group : groups) {
-            principalAcl.putAll(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"),
-                    group.startsWith("/sites/") ? StringUtils.substringBetween(group, "/sites/", "/") : null));
+            principalAcl.putAll(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"), JCRContentUtils.getSiteKey(group)));
         }
 
         return principalAcl;
@@ -319,7 +318,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
     private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
-        final String cacheKey = aclKey + ":" + siteKey;
+        final String cacheKey = siteKey != null ? aclKey + ":" + siteKey : aclKey;
         Element element = cache.get(cacheKey);
         if (element == null) {
             Semaphore semaphore = processings.get(cacheKey);

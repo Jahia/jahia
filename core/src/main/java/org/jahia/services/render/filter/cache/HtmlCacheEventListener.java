@@ -165,6 +165,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 if (path.contains(VanityUrlManager.VANITYURLMAPPINGS_NODE)) {
                     flushForVanityUrl = true;
                 }
+                final String siteKey = JCRContentUtils.getSiteKey(path);
                 if (path.contains("j:acl") && !path.endsWith("j:acl")) {
                     // Flushing cache of acl key for users as a group or an acl has been updated
                     if (cacheKeyGenerator != null) {
@@ -186,11 +187,18 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                             logger.warn("Cannot parse ACL event for : " + nodeName);
                         }
                         if (key.startsWith("u_")) {
-                            key = "u:" + key.substring(2);
+                            if(siteKey != null) {
+                                userGroupsKeyToFlush.add("u:" + key.substring(2) + ":" + siteKey);
+                            }
+                            userGroupsKeyToFlush.add("u:" + key.substring(2));
                         } else if (key.startsWith("g_")) {
-                            key = "g:" + key.substring(2);
+                            if(siteKey != null) {
+                                userGroupsKeyToFlush.add("g:" + key.substring(2) + ":" + siteKey);
+                            }
+                            userGroupsKeyToFlush.add("g:" + key.substring(2));
+                        } else {
+                            userGroupsKeyToFlush.add(key);
                         }
-                        userGroupsKeyToFlush.add(key);
                     }
                     flushParent = true;
                     flushChilds = true;
@@ -205,6 +213,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                                 QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + JCRContentUtils.sqlEncode(fPath) + "/')", Query.JCR_SQL2).execute();
                                 for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
                                     String principal = nodeWrapper.getProperty("j:principal").getString();
+                                    if(siteKey != null) {
+                                        userGroupsKeyToFlush.add(principal + ":" + siteKey);
+                                    }
                                     userGroupsKeyToFlush.add(principal);
                                 }
                                 return null;

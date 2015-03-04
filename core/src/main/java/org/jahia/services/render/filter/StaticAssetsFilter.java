@@ -106,10 +106,7 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.SimpleScriptContext;
+import javax.script.*;
 import java.io.*;
 import java.net.URI;
 import java.net.URL;
@@ -348,9 +345,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     }
                 }
             }
+            if (!assetsByTarget.containsKey("HEAD")) {
+                addResources(renderContext, resource, source, outputDocument, "HEAD", new HashMap<String, Map<String, Map<String, String>>>());
+            }
             for (Map.Entry<String, Map<String, Map<String, Map<String, String>>>> entry : assetsByTarget.entrySet()) {
                 String targetTag = entry.getKey();
                 Map<String, Map<String, Map<String, String>>> assets = entry.getValue();
+<<<<<<< .working
                 renderContext.getRequest().setAttribute(STATIC_ASSETS, assets);
                 Element element = source.getFirstElement(targetTag);
                 String templateContent = getResolvedTemplate();
@@ -406,6 +407,9 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         outputDocument.replace(idx, idx + 1, str);
                     }
                 }
+=======
+                addResources(renderContext, resource, source, outputDocument, targetTag, assets);
+>>>>>>> .merge-right.r52162
             }
             out = outputDocument.toString();
         }
@@ -422,6 +426,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return s.trim();
     }
 
+<<<<<<< .working
     private Map<String, String> getOptionMaps(StartTag esiResourceTag) {
         Map<String, String> optionsMap = null;
 
@@ -444,6 +449,66 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return optionsMap != null ? optionsMap : Collections.<String, String>emptyMap();
     }
 
+=======
+    private void addResources(RenderContext renderContext, Resource resource, Source source, OutputDocument outputDocument, String targetTag, Map<String, Map<String, Map<String, String>>> assets) throws IOException, ScriptException {
+        renderContext.getRequest().setAttribute("staticAssets", assets);
+        Element element = source.getFirstElement(targetTag);
+        String templateContent = getResolvedTemplate();
+        if (templateContent != null) {
+            final EndTag headEndTag = element.getEndTag();
+            ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);
+            ScriptContext scriptContext = new AssetsScriptContext();
+            final Bindings bindings = scriptEngine.createBindings();
+
+            bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
+
+            if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
+                assets.put("css", aggregate(assets.get("css"), "css"));
+                Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
+                Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
+                assets.put("javascript", newScripts);
+                scripts.keySet().removeAll(newScripts.keySet());
+                assets.put("aggregatedjavascript", scripts);
+            } else if (addLastModifiedDate) {
+                addLastModified(assets);
+            }
+
+            bindings.put(TARGET_TAG, targetTag);
+            bindings.put("renderContext", renderContext);
+            bindings.put("resource", resource);
+            bindings.put("contextPath", renderContext.getRequest().getContextPath());
+            scriptContext.setBindings(bindings, ScriptContext.GLOBAL_SCOPE);
+            // The following binding is necessary for Javascript, which doesn't offer a console by default.
+            bindings.put("out", new PrintWriter(scriptContext.getWriter()));
+            scriptEngine.eval(templateContent, scriptContext);
+            StringWriter writer = (StringWriter) scriptContext.getWriter();
+            final String staticsAsset = writer.toString();
+
+            if (StringUtils.isNotBlank(staticsAsset)) {
+                outputDocument.replace(headEndTag.getBegin(), headEndTag.getBegin() + 1,
+                        "\n" + AggregateCacheFilter.removeCacheTags(staticsAsset) + "\n<");
+            }
+        }
+        // workaround for ie9 in gxt/gwt
+        // renderContext.isEditMode() means that gwt is loaded, for contribute, edit or studio
+        if (isEnforceIECompatibilityMode(renderContext)) {
+            int idx = element.getBegin() + element.toString().indexOf(">");
+            String str = ">\n<meta http-equiv=\"X-UA-Compatible\" content=\""
+                    + SettingsBean.getInstance().getInternetExplorerCompatibility() + "\"/>";
+            outputDocument.replace(idx, idx + 1, str);
+        }
+        if ((renderContext.isPreviewMode()) && !Boolean.valueOf((String) renderContext.getRequest().getAttribute(
+                "org.jahia.StaticAssetFilter.doNotModifyDocumentTitle"))) {
+            for (Element title : element.getAllElements(HTMLElementName.TITLE)) {
+                int idx = title.getBegin() + title.toString().indexOf(">");
+                String str = Messages.getInternal("label.preview", renderContext.getUILocale());
+                str = ">" + str + " - ";
+                outputDocument.replace(idx, idx + 1, str);
+            }
+        }
+    }
+
+>>>>>>> .merge-right.r52162
     private void addLastModified(Map<String, Map<String, Map<String, String>>> assets) throws IOException {
         for (Map.Entry<String, Map<String, Map<String, String>>> assetsEntry : assets.entrySet()) {
             if (assetsEntry.getKey().equals("css") || assetsEntry.getKey().equals("javascript")) {

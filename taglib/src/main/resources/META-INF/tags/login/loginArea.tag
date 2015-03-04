@@ -44,8 +44,8 @@
                         </c:forEach>
                     </c:forEach>
                 </c:url>
-                <input type="hidden" name="redirect" value="<c:url value='${redirect}'/>"/>
-                <input type="hidden" name="failureRedirect" value="<c:url value='${redirect}'/>"/>
+                <input type="hidden" name="redirect" value="${redirect}"/>
+                <input type="hidden" name="failureRedirect" value="${redirect}"/>
             </c:when>
         </c:choose>
         <jsp:doBody/>

@@ -71,33 +71,11 @@
  */
 package org.jahia.services.render.filter;
 
-import java.io.*;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.security.MessageDigest;
-import java.util.*;
-import java.util.regex.Pattern;
-import javax.jcr.RepositoryException;
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.SimpleScriptContext;
-
 import com.yahoo.platform.yui.compressor.CssCompressor;
 import com.yahoo.platform.yui.compressor.JavaScriptCompressor;
 import com.yahoo.platform.yui.org.mozilla.javascript.ErrorReporter;
 import com.yahoo.platform.yui.org.mozilla.javascript.EvaluatorException;
-<<<<<<< .working
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.EndTag;
-import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTag;
-=======
 import net.htmlparser.jericho.*;
->>>>>>> .merge-right.r52159
 import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.collections.Transformer;
@@ -127,8 +105,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
-<<<<<<< .working
-=======
 import javax.jcr.RepositoryException;
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -142,7 +118,6 @@ import java.security.MessageDigest;
 import java.util.*;
 import java.util.regex.Pattern;
 
->>>>>>> .merge-right.r52159
 /**
  * Render filter that "injects" the static assets into the HEAD section of the
  * rendered HTML document.

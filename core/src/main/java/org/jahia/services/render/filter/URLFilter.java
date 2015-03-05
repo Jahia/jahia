@@ -106,24 +106,27 @@ public class URLFilter extends AbstractFilter {
 
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
-        if (handlers != null && handlers.length > 0 && previousOut.indexOf(TEMP_START_TAG) > -1) {
+        if (handlers != null && handlers.length > 0) {
             final String thisuuid = StringUtils.leftPad(Integer.toHexString(resource.hashCode()),8,"0");
             Map<String, String> alreadyParsedFragmentsMap = new HashMap<>();
-            StringBuilder sb = new StringBuilder(previousOut);
-
-            // store all the already processed url traverse
+            StringBuilder sb = null;
             int i;
-            while ((i = sb.indexOf(TEMP_START_TAG)) > -1) {
-                String uuid = sb.substring(i+ TEMP_START_TAG.length(), i+ TEMP_START_TAG.length() +8);
-                final String endTag = TEMP_END_TAG + uuid + TEMP_CLOSING;
-                int j = sb.indexOf(endTag);
-                alreadyParsedFragmentsMap.put(uuid, sb.substring(i + TEMP_FULL_START_TAG.length(), j));
-                sb.delete(i, j + endTag.length());
-                sb.insert(i, "\"/>").insert(i, uuid).insert(i, REPLACED_START_TAG);
+            if (previousOut.indexOf(TEMP_START_TAG) > -1) {
+                sb = new StringBuilder(previousOut);
+
+                // store all the already processed url traverse
+                while ((i = sb.indexOf(TEMP_START_TAG)) > -1) {
+                    String uuid = sb.substring(i + TEMP_START_TAG.length(), i + TEMP_START_TAG.length() + 8);
+                    final String endTag = TEMP_END_TAG + uuid + TEMP_CLOSING;
+                    int j = sb.indexOf(endTag);
+                    alreadyParsedFragmentsMap.put(uuid, sb.substring(i + TEMP_FULL_START_TAG.length(), j));
+                    sb.delete(i, j + endTag.length());
+                    sb.insert(i, "\"/>").insert(i, uuid).insert(i, REPLACED_START_TAG);
+                }
             }
 
             // traverse the fragment and wrap it with a temp tag
-            sb = new StringBuilder(urlTraverser.traverse(sb.toString(), renderContext, resource, handlers));
+            sb = new StringBuilder(urlTraverser.traverse(sb == null ? previousOut : sb.toString(), renderContext, resource, handlers));
             sb.insert(0, TEMP_CLOSING).insert(0, thisuuid).insert(0, TEMP_START_TAG);
             sb.append(TEMP_END_TAG).append(thisuuid).append(TEMP_CLOSING);
 

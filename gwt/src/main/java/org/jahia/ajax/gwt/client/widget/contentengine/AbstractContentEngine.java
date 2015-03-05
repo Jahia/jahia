@@ -208,18 +208,12 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
         languageSwitcher.addSelectionChangedListener(new SelectionChangedListener<GWTJahiaLanguage>() {
             @Override
             public void selectionChanged(SelectionChangedEvent<GWTJahiaLanguage> event) {
-                if (!event.getSelectedItem().getPropertyNames().contains("active") || event.getSelectedItem().isActive()) {
-                    GWTJahiaLanguage previous = language;
-                    language = event.getSelectedItem();
-                    onLanguageChange(previous);
-                } else {
-                    languageSwitcher.select(language);
-                    languageSwitcher.setSelection(Arrays.asList(language));
-                    languageSwitcher.getView().refresh();
-                }
+                GWTJahiaLanguage previous = language;
+                language = event.getSelectedItem();
+                onLanguageChange(previous);
             }
         });
-        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangEngineSwitchingTemplate());
+        languageSwitcher.setTemplate(LanguageSwitcherActionItem.getLangSwitchingTemplate());
         languageSwitcher.setTypeAhead(true);
         languageSwitcher.setTriggerAction(ComboBox.TriggerAction.ALL);
         languageSwitcher.setForceSelection(true);

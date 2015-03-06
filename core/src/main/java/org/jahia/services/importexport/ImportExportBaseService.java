@@ -1900,7 +1900,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     logger.debug("Saving JCR session for " + REPOSITORY_XML);
                     session.save(JCRObservationManager.IMPORT);
                     logger.info("Done importing " + REPOSITORY_XML + " in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timerDefault));
-                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name)) {
+                } else if (name.endsWith(".xml") && !name.equals(REPOSITORY_XML) && !name.equals(LIVE_REPOSITORY_XML) && !filesToIgnore.contains(name) && !name.contains("/")) {
                     long timerOther = System.currentTimeMillis();
                     logger.info("Start importing {}", name);
                     String thisPath = (parentNodePath != null ? (parentNodePath + (parentNodePath.endsWith("/") ? "" : "/")) : "") + StringUtils.substringBefore(name, ".xml");

@@ -131,6 +131,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
     private static final String CACHE_TAG_START_2 = "\" -->\n";
     private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
+    private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
+    private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
+    private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
     private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length() + CACHE_TAG_END.length();
 
     private static final String V = "v";
@@ -739,6 +742,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         return cacheProvider.getKeyGenerator().replacePlaceholdersInCacheKey(renderContext, key);
     }
 
+    private int replaceInContent(StringBuilder sb, int start, int end, String replacement) {
+        sb.replace(start, end, replacement);
+        return sb.indexOf(CACHE_ESI_TAG_START, start + replacement.length());
+    }
+
     /**
      * Aggregate the content that are inside the cached fragment to get a full HTML content with all sub modules
      * embedded.
@@ -751,14 +759,16 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @param allPaths
      * @return
      */
-    protected String aggregateContent(final Cache cache, final String cachedContent, final RenderContext renderContext, final String areaIdentifier,
-                                      final Stack<String> cacheKeyStack, final Set<String> allPaths) throws RenderException {
-        // aggregate content
-        return TextUtils.replaceBoundedString(cachedContent, "<jahia_esi:include src=\"", "</jahia_esi:include>", new TextUtils.StringReplacementGenerator() {
-            @Override
-            public String getReplacementFor(String match, String prefix, String suffix) {
-                match = match.substring(0, match.indexOf('\"'));
-                String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, match);
+    protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier,
+                                      Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
+        StringBuilder sb = new StringBuilder(cachedContent);
+
+        int esiTagStartIndex = sb.indexOf(CACHE_ESI_TAG_START);
+        while (esiTagStartIndex != -1){
+            int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
+            if (esiTagEndIndex != -1) {
+                String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
+                String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
 
                 if (logger.isDebugEnabled()) {
                     logger.debug("Check if {} is in cache", replacedCacheKey);
@@ -766,7 +776,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
                 boolean cacheable = true;
                 CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                Map<String, String> keyAttrbs = keyGenerator.parse(match);
+                Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
                 final String ecParameter = renderContext.getRequest().getParameter(EC);
                 if ((ecParameter != null && ecParameter.equals(keyAttrbs.get("resourceID"))) ||
                         (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn())) {
@@ -785,21 +795,24 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         String content = cacheEntry.getObject();
 
                         // Avoid loops
-                        if (cacheKeyStack.contains(match)) {
-                            return StringUtils.EMPTY;
+                        if (cacheKeyStack.contains(cacheKey)) {
+                            // replace by empty
+                            esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, StringUtils.EMPTY);
+                            continue;
                         }
-                        cacheKeyStack.push(match);
+                        cacheKeyStack.push(cacheKey);
 
                         try {
                             if (!cachedContent.equals(content)) {
                                 try {
-                                    return aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths"));
+                                    esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
+                                            aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
                                 } catch (RenderException e) {
                                     throw new RuntimeException(e.getMessage(), e);
                                 }
                             } else {
                                 // TODO: need to investigate here, seem's that the if condition is always true.
-                                return content;
+                                esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, content);
                             }
                         } finally {
                             cacheKeyStack.pop();
@@ -811,7 +824,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         }
                         // The fragment is not in the cache, generate it
                         try {
-                            return generateContent(renderContext, match, areaIdentifier, allPaths);
+                            esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
+                                    generateContent(renderContext, cacheKey, areaIdentifier, allPaths));
                         } catch (RenderException e) {
                             throw new RuntimeException(e.getMessage(), e);
                         }
@@ -822,13 +836,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     }
                     // The fragment is not in the cache, generate it
                     try {
-                        return generateContent(renderContext, match, areaIdentifier, allPaths);
+                        esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
+                                generateContent(renderContext, cacheKey, areaIdentifier, allPaths));
                     } catch (RenderException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
                 }
+            } else {
+                // no closed esi end tag found
+                return sb.toString();
             }
-        });
+        }
+
+        return sb.toString();
     }
 
     /**

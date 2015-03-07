@@ -39,6 +39,7 @@
  */
 package org.jahia.utils;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -52,6 +53,10 @@ import org.apache.commons.lang.StringUtils;
  * @author Christophe Laprun
  */
 public class TextUtils {
+
+    public static String getStringBetween(char[] charArray, int start, int end) {
+        return new String(charArray, start, end - start);
+    }
 
     public static <T> T visitBoundedString(String initial, String prefix, String suffix, BoundedStringVisitor<T> visitor) {
         return visitBoundedString(initial, prefix, suffix, visitor, new Matcher<>(prefix, suffix, visitor));
@@ -133,8 +138,9 @@ public class TextUtils {
             return matchedPairs.isEmpty();
         }
 
-        public int firstStart() {
-            return matchedPairs.firstKey();
+        public Match firstMatch() {
+            final Integer start = matchedPairs.firstKey();
+            return new Match(start, matchedPairs.get(start));
         }
 
         public Matches after(int position) {
@@ -179,8 +185,8 @@ public class TextUtils {
             return lastMatchIndex == matches.size() || matches.isEmpty();
         }
 
-        public int firstStart() {
-            return matches.get(lastMatchIndex).start;
+        public Match firstMatch() {
+            return matches.get(lastMatchIndex);
         }
 
         public Matches after(int position) {
@@ -258,8 +264,8 @@ public class TextUtils {
             return lastMatchIndex == nbOfMatches || lastMatchIndex == matches.length || matches.length == 0;
         }
 
-        public int firstStart() {
-            return matches[lastMatchIndex].start;
+        public Match firstMatch() {
+            return matches[lastMatchIndex];
         }
 
         public Matches after(int position) {
@@ -289,13 +295,12 @@ public class TextUtils {
 
         boolean isEmpty();
 
-        int firstStart();
+        Match firstMatch();
 
         Matches after(int position);
     }
 
     private static class Matcher<T> {
-        private static final String EMPTY = "";
         protected final String prefix;
         protected final String suffix;
         protected final int prefixLength;
@@ -325,7 +330,7 @@ public class TextUtils {
 
             // if we don't have a suffix, the whole String is a match, so visit it and return
             if (suffixIndex < 0) {
-                return visitor.visit(initialString.substring(prefixLength), prefix, suffix, 0, initialString.length(), initialString);
+                return visitor.visit(prefix, suffix, prefixLength, length, accessStringInternalArray(initialString));
             }
 
             // as long as we can find new prefixes to match
@@ -340,17 +345,36 @@ public class TextUtils {
                 }
 
                 // move on to the next potential prefix / suffix pair
-                final int previousSuffix = suffixIndex;
-                // next suffix is the one after the one we just matched to the prefix we were looking at, checking that we don't go out of bounds
-                final int nextSuffix = initialString.indexOf(suffix, matches.get(prefixIndex) + suffixLength);
-                suffixIndex = ensureSuffixIndex(nextSuffix);
-                // next prefix is the one after the suffix we just matched
-                prefixIndex = initialString.indexOf(prefix, previousSuffix + suffixLength);
+                if (suffixIndex < length) {
+                    final int previousSuffix = suffixIndex;
+                    // next suffix is the one after the one we just matched to the prefix we were looking at, checking that we don't go out of bounds
+                    final int nextSuffix = initialString.indexOf(suffix, matches.get(prefixIndex) + suffixLength);
+                    suffixIndex = ensureSuffixIndex(nextSuffix);
+                    // next prefix is the one after the suffix we just matched
+                    prefixIndex = initialString.indexOf(prefix, previousSuffix + suffixLength);
+                }
             }
 
             // once we have matched all our pairs, visit them
+            // prepare matches for visits if needed
             matches.matchingComplete();
-            return visitMatches(matches, visitor.initialValue(initialString), initialString);
+
+            // retrieve the String's internal array to avoid creating lots of object with substrings
+            final char[] internalStringArray = accessStringInternalArray(initialString);
+
+            return visitMatches(matches, visitor.initialValue(initialString), internalStringArray);
+        }
+
+        private char[] accessStringInternalArray(String initialString) {
+            char[] internalStringArray;
+            try {
+                Field field = String.class.getDeclaredField("value");
+                field.setAccessible(true);
+                internalStringArray = (char[]) field.get(initialString);
+            } catch (Exception e) {
+                throw new RuntimeException("TextUtils couldn't access the String's internal array.", e);
+            }
+            return internalStringArray;
         }
 
         public T match(String preMatches, String betweenMatches, String postMatches) {
@@ -359,32 +383,33 @@ public class TextUtils {
 
         /**
          * Visits matching prefix / suffix pairs, using the specified StringBuilder to build the final String
-         *
-         * @param matches        remaining matching pairs (key: prefix index, value: suffix index)
+         *  @param matches        remaining matching pairs (key: prefix index, value: suffix index)
          * @param previousResult the result that has been accumulated so far during the matching process
-         * @param initialString  the String on which the matching is performed
+         * @param stringAsCharArray  the String on which the matching is performed as a char[]
          */
-        private T visitMatches(Matches matches, T previousResult, String initialString) {
+        private T visitMatches(Matches matches, T previousResult, final char[] stringAsCharArray) {
             if (!matches.isEmpty()) {
-                int pairPrefix = matches.firstStart();
-                int pairSuffix = matches.get(pairPrefix);
-
-                // match
-                String match;
-                if (pairPrefix == pairSuffix || pairPrefix >= length - 1) {
-                    match = EMPTY;
-                } else {
-                    match = initialString.substring(pairPrefix + prefixLength, pairSuffix);
-                }
+                final Match match = matches.firstMatch();
+                int pairPrefix = match.start;
+                int pairSuffix = match.end;
 
                 // visit the current match
-                T result = visitor.visit(match, prefix, suffix, pairPrefix, pairSuffix, initialString);
+                final int prefixPosition;
+                final int suffixPosition;
+                if (pairPrefix >= length - 1) {
+                    prefixPosition = length;
+                    suffixPosition = length;
+                } else {
+                    prefixPosition = pairPrefix + prefixLength;
+                    suffixPosition = pairSuffix;
+                }
+                T result = visitor.visit(prefix, suffix, prefixPosition, suffixPosition, stringAsCharArray);
 
                 // remove current match
                 this.matches.remove(pairPrefix);
 
                 // repeat on all the pairs that are after the currently matched suffix since all in between pairs are replaced
-                return visitMatches(matches.after(pairSuffix), result, initialString);
+                return visitMatches(matches.after(pairSuffix), result, stringAsCharArray);
             } else {
                 return previousResult;
             }
@@ -401,6 +426,12 @@ public class TextUtils {
             }
 
             int inBetweenPrefix = initialString.lastIndexOf(prefix, suffixIndex - 1);
+
+            if (inBetweenPrefix == prefixIndex) {
+                // we have a match, record it
+                matches.add(prefixIndex, suffixIndex);
+                return true;
+            }
 
             if (inBetweenPrefix >= 0) {
                 // if we already have matched this in between prefix, find the previous unmatched one
@@ -475,21 +506,21 @@ public class TextUtils {
             }
 
             @Override
-            public String visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString) {
+            public String visit(String prefix, String suffix, int matchStart, int matchEnd, final char[] initialStringAsCharArray) {
                 // use the generator to replace it
-                String replacement = visitor.visit(match, prefix, suffix, prefixPosition, suffixPosition, initialString);
+                String replacement = visitor.visit(prefix, suffix, matchStart, matchEnd, initialStringAsCharArray);
 
                 // if we had a previous suffix
                 if (previousSuffix > 0 && previousSuffix < length - suffixLength) {
                     // add the text between the previous suffix and the new prefix
-                    builder.append(initialString.substring(previousSuffix + suffixLength, prefixPosition));
+                    builder.append(initialStringAsCharArray, previousSuffix + suffixLength, matchStart - prefix.length() - previousSuffix - suffixLength);
                 }
 
                 // add the replaced text
                 builder.append(replacement);
 
                 // update previous suffix
-                previousSuffix = suffixPosition;
+                previousSuffix = matchEnd;
 
                 return replacement;
             }
@@ -501,8 +532,8 @@ public class TextUtils {
         }
     }
 
-    public static interface BoundedStringVisitor<T> {
-        T visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString);
+    public interface BoundedStringVisitor<T> {
+        T visit(final String prefix, final String suffix, final int matchStart, final int matchEnd, final char[] initialStringAsCharArray);
 
         T initialValue(String initial);
     }
@@ -511,8 +542,8 @@ public class TextUtils {
         public abstract String getReplacementFor(String match, String prefix, String suffix);
 
         @Override
-        public String visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, final String initialString) {
-            return getReplacementFor(match, prefix, suffix);
+        public String visit(String prefix, String suffix, int matchStart, int matchEnd, final char[] initialStringAsCharArray) {
+            return getReplacementFor(getStringBetween(initialStringAsCharArray, matchStart, matchEnd), prefix, suffix);
         }
 
         @Override

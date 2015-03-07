@@ -63,11 +63,27 @@ public class TextUtilsTest {
     private static final String PREFIX = "PREFIX";
     private static final String SUFFIX = "SUF";
     private static final TestStringReplacementGenerator DEF_GEN = new TestStringReplacementGenerator(REPLACEMENT);
-    public static final TextUtils.StringReplacementGenerator GENERATOR = new TextUtils.StringReplacementGenerator() {
+    private static final String JAHIA_ESI_INCLUDE = "<jahia_esi:include src=\"";
+    private static final String JAHIA_ESI_INCLUDE_END = "\"></jahia_esi:include>";
+    public static final TextUtils.BoundedStringVisitor<String> GENERATOR = new TextUtils.BoundedStringVisitor<String>() {
         @Override
-        public String getReplacementFor(String match, String prefix, String suffix) {
-            match = match.substring(0, match.indexOf('"', match.indexOf('"') + 1) + 1);
-            return "<jahia_esi:include" + match + "></jahia_esi:include>";
+        public String visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
+            StringBuilder builder = new StringBuilder(JAHIA_ESI_INCLUDE.length() + JAHIA_ESI_INCLUDE_END.length() + matchEnd - matchStart);
+            // extract what's interesting from match
+            // find index of first quote
+            int firstQuoteIndex = matchStart;
+            while (initialStringAsCharArray[firstQuoteIndex++] != '"') ;
+
+            int secondQuoteIndex = firstQuoteIndex + 1;
+            while (initialStringAsCharArray[secondQuoteIndex++] != '"') ;
+
+            builder.append(JAHIA_ESI_INCLUDE).append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1).append(JAHIA_ESI_INCLUDE_END);
+            return builder.toString();
+        }
+
+        @Override
+        public String initialValue(String initial) {
+            return null;
         }
     };
 
@@ -133,7 +149,7 @@ public class TextUtilsTest {
 
     @Test
     public void performanceCheck() {
-        final int numberOfRuns = 10000;
+        final int numberOfRuns = 1000;
 
         long jerichoTime = timeStrategy(numberOfRuns, ReplacementStrategy.JERICHO);
         long textUtilsTime = timeStrategy(numberOfRuns, ReplacementStrategy.TEXT_UTILS);
@@ -534,7 +550,7 @@ public class TextUtilsTest {
                 String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(initial).replaceAll("</jahia_esi:include>");
                 cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<jahia_esi:include src=\"$1\">");
 
-                if (cachedRenderContent.contains("<jahia_esi:include")) {
+                if (cachedRenderContent.contains(JAHIA_ESI_INCLUDE)) {
                     Source source = new Source(cachedRenderContent);
 
                     //// This will remove all blank line and drastically reduce data in memory
@@ -589,7 +605,7 @@ public class TextUtilsTest {
         private int count;
 
         @Override
-        public Integer visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, String initialString) {
+        public Integer visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
             count++;
             return count;
         }
@@ -608,8 +624,8 @@ public class TextUtilsTest {
         private List<String> matches = new LinkedList<>();
 
         @Override
-        public Collection<String> visit(String match, String prefix, String suffix, int prefixPosition, int suffixPosition, String initialString) {
-            matches.add(match);
+        public Collection<String> visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
+            matches.add(TextUtils.getStringBetween(initialStringAsCharArray, matchStart, matchEnd));
             return matches;
         }
 
@@ -619,13 +635,4 @@ public class TextUtilsTest {
         }
     }
 
-    static class Pair {
-        String match;
-        boolean matchedPrefix;
-
-        public Pair(String match, boolean matchedPrefix) {
-            this.match = match;
-            this.matchedPrefix = matchedPrefix;
-        }
-    }
 }

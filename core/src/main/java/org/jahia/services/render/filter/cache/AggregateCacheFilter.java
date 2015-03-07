@@ -139,11 +139,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final String V = "v";
     private static final String EC = "ec";
 
-    private static final TextUtils.StringReplacementGenerator GENERATOR = new TextUtils.StringReplacementGenerator() {
+    public static final TextUtils.BoundedStringVisitor<String> GENERATOR = new TextUtils.BoundedStringVisitor<String>() {
         @Override
-        public String getReplacementFor(String match, String prefix, String suffix) {
-            match = match.substring(0, match.indexOf('\"', match.indexOf('\"') + 1) + 1);
-            return "<jahia_esi:include" + match + "></jahia_esi:include>";
+        public String visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
+            StringBuilder builder = new StringBuilder(CACHE_ESI_TAG_START.length() + CACHE_ESI_TAG_END.length() + matchEnd - matchStart);
+            // extract what's interesting from match
+            // find index of first quote
+            int firstQuoteIndex = matchStart;
+            while (initialStringAsCharArray[firstQuoteIndex++] != '"') ;
+
+            int secondQuoteIndex = firstQuoteIndex + 1;
+            while (initialStringAsCharArray[secondQuoteIndex++] != '"') ;
+
+            builder.append(CACHE_ESI_TAG_START)
+                    .append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1)
+                    .append(CACHE_ESI_TAG_END);
+            return builder.toString();
+        }
+
+        @Override
+        public String initialValue(String initial) {
+            return null;
         }
     };
     protected ModuleCacheProvider cacheProvider;

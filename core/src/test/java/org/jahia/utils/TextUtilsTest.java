@@ -63,27 +63,21 @@ public class TextUtilsTest {
     private static final String PREFIX = "PREFIX";
     private static final String SUFFIX = "SUF";
     private static final TestStringReplacementGenerator DEF_GEN = new TestStringReplacementGenerator(REPLACEMENT);
-    private static final String JAHIA_ESI_INCLUDE = "<jahia_esi:include src=\"";
-    private static final String JAHIA_ESI_INCLUDE_END = "\"></jahia_esi:include>";
-    public static final TextUtils.BoundedStringVisitor<String> GENERATOR = new TextUtils.BoundedStringVisitor<String>() {
+    private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
+    private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
+    public static final TextUtils.ReplacementGenerator GENERATOR = new TextUtils.ReplacementGenerator() {
         @Override
-        public String visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
-            StringBuilder builder = new StringBuilder(JAHIA_ESI_INCLUDE.length() + JAHIA_ESI_INCLUDE_END.length() + matchEnd - matchStart);
-            // extract what's interesting from match
-            // find index of first quote
+        public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
+            // expects match to start with: src="<what we want to extract>"
             int firstQuoteIndex = matchStart;
             while (initialStringAsCharArray[firstQuoteIndex++] != '"') ;
 
             int secondQuoteIndex = firstQuoteIndex + 1;
             while (initialStringAsCharArray[secondQuoteIndex++] != '"') ;
 
-            builder.append(JAHIA_ESI_INCLUDE).append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1).append(JAHIA_ESI_INCLUDE_END);
-            return builder.toString();
-        }
-
-        @Override
-        public String initialValue(String initial) {
-            return null;
+            builder.append(CACHE_ESI_TAG_START)
+                    .append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1)
+                    .append(CACHE_ESI_TAG_END);
         }
     };
 
@@ -92,11 +86,16 @@ public class TextUtilsTest {
     public void testNestedBounds() {
         final String prefix = "<tag";
         final String suffix = "/tag>";
-        final TextUtils.StringReplacementGenerator generator = new TextUtils.StringReplacementGenerator() {
+        final TextUtils.ReplacementGenerator generator = new TextUtils.ReplacementGenerator() {
             @Override
-            public String getReplacementFor(String match, String prefix, String suffix) {
-                match = match.substring(0, match.indexOf('\'', match.indexOf('\'') + 1) + 1);
-                return "<new" + match + "></new>";
+            public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
+                int firstQuoteIndex = matchStart;
+                while (initialStringAsCharArray[firstQuoteIndex++] != '\'') ;
+
+                int secondQuoteIndex = firstQuoteIndex + 1;
+                while (initialStringAsCharArray[secondQuoteIndex++] != '\'') ;
+
+                builder.append("<new src='").append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1).append("'></new>");
             }
         };
 
@@ -140,16 +139,15 @@ public class TextUtilsTest {
         buildTest("RaRcccReeeR", "PSaPScccPdSeeePS", "R", "P", "S", empty, empty, "d", empty);
     }
 
-    /*
     // To quickly check memory usage in IDEA's unit test runner
     @Test
     public void testMemory() {
-        timeStrategy(10000, ReplacementStrategy.TEXT_UTILS);
-    }*/
+        timeStrategy(100, ReplacementStrategy.TEXT_UTILS);
+    }
 
     @Test
     public void performanceCheck() {
-        final int numberOfRuns = 1000;
+        final int numberOfRuns = 100;
 
         long jerichoTime = timeStrategy(numberOfRuns, ReplacementStrategy.JERICHO);
         long textUtilsTime = timeStrategy(numberOfRuns, ReplacementStrategy.TEXT_UTILS);
@@ -550,7 +548,7 @@ public class TextUtilsTest {
                 String cachedRenderContent = ESI_INCLUDE_STOPTAG_REGEXP.matcher(initial).replaceAll("</jahia_esi:include>");
                 cachedRenderContent = ESI_INCLUDE_STARTTAG_REGEXP.matcher(cachedRenderContent).replaceAll("<jahia_esi:include src=\"$1\">");
 
-                if (cachedRenderContent.contains(JAHIA_ESI_INCLUDE)) {
+                if (cachedRenderContent.contains(CACHE_ESI_TAG_START)) {
                     Source source = new Source(cachedRenderContent);
 
                     //// This will remove all blank line and drastically reduce data in memory
@@ -577,7 +575,7 @@ public class TextUtilsTest {
         };
     }
 
-    static class TestStringReplacementGenerator extends TextUtils.StringReplacementGenerator {
+    static class TestStringReplacementGenerator implements TextUtils.ReplacementGenerator {
         private String replacement;
         private String[] expectedMatches;
         private int invocationCount;
@@ -591,13 +589,15 @@ public class TextUtilsTest {
             this.invocationCount = 0;
         }
 
-        public String getReplacementFor(String match, String prefix, String suffix) {
+        @Override
+        public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
             if (expectedMatches == null) {
                 fail("getReplacementFor shouldn't have been called");
             }
             String expected = expectedMatches[invocationCount++];
-            assertEquals("'" + expected + "'", "'" + match + "'");
-            return replacement;
+            assertEquals("'" + expected + "'", "'" + TextUtils.getStringBetween(initialStringAsCharArray, matchStart, matchEnd) + "'");
+
+            builder.append(replacement);
         }
     }
 

@@ -59,13 +59,15 @@ public class TextUtils {
     }
 
     public static <T> T visitBoundedString(String initial, String prefix, String suffix, BoundedStringVisitor<T> visitor) {
-        return visitBoundedString(initial, prefix, suffix, visitor, new Matcher<>(prefix, suffix, visitor));
+        return visitBoundedString(initial, prefix, suffix, new Matcher<>(prefix, suffix, visitor));
     }
 
-    private static <T> T visitBoundedString(String initial, String prefix, String suffix, BoundedStringVisitor<T> visitor, Matcher<T> matcher) {
-        if (visitor == null) {
-            throw new IllegalArgumentException("Must provide a non-null visitor!");
+    private static <T> T visitBoundedString(String initial, String prefix, String suffix, Matcher<T> matcher) {
+        if (matcher == null) {
+            throw new IllegalArgumentException("Must provide a non-null matcher!");
         }
+
+        final BoundedStringVisitor<T> visitor = matcher.getVisitor();
 
         final T initialValue = visitor.initialValue(initial);
         if (initial == null || initial.isEmpty()) {
@@ -100,8 +102,8 @@ public class TextUtils {
         return replaceBoundedString(initial, prefix, suffix, new ConstantStringReplacementGenerator(replacement));
     }
 
-    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, BoundedStringVisitor<String> visitor) {
-        return visitBoundedString(initial, prefix, suffix, visitor, new Replacer(prefix, suffix, visitor));
+    public static String replaceBoundedString(final String initial, final String prefix, final String suffix, ReplacementGenerator visitor) {
+        return visitBoundedString(initial, prefix, suffix, new Replacer(prefix, suffix, visitor));
     }
 
 
@@ -282,7 +284,7 @@ public class TextUtils {
     }
 
 
-    private static interface Matches {
+    private interface Matches {
         void matchingComplete();
 
         void add(int start, int end);
@@ -307,7 +309,7 @@ public class TextUtils {
         protected final int suffixLength;
         protected int length;
         protected BoundedStringVisitor<T> visitor;
-        private final Matches matches = new ListMatches();
+        private final Matches matches = new ArrayMatches();
 
         public Matcher(String prefix, String suffix, BoundedStringVisitor<T> visitor) {
             this.prefix = prefix;
@@ -456,23 +458,26 @@ public class TextUtils {
         public boolean needsPreAndPostMatches() {
             return false;
         }
+
+        public BoundedStringVisitor<T> getVisitor() {
+            return visitor;
+        }
     }
 
     private static class Replacer extends Matcher<String> {
 
-        public Replacer(String prefix, final String suffix, final BoundedStringVisitor<String> visitor) {
-            super(prefix, suffix, visitor);
+        public Replacer(String prefix, final String suffix, final ReplacementGenerator visitor) {
+            super(prefix, suffix, new ReplacerVisitor(suffix, visitor));
         }
 
         @Override
         public String match(String beforeFirstPrefix, String initialString, String afterLastSuffix) {
-            // wrap the original visitor to add our replacement behavior
-            final StringBuilder builder = new StringBuilder(beforeFirstPrefix.length() + initialString.length() + afterLastSuffix.length());
+            final ReplacerVisitor replacerVisitor = (ReplacerVisitor) getVisitor();
+            replacerVisitor.initVisitor(beforeFirstPrefix.length() + initialString.length() + afterLastSuffix.length(), initialString.length());
+            StringBuilder builder = replacerVisitor.builder;
 
             // add String before first prefix
             builder.append(beforeFirstPrefix);
-
-            this.visitor = new ReplacerVisitor(builder, suffix, visitor, initialString.length());
 
             // perform matching
             super.match(initialString);
@@ -490,26 +495,26 @@ public class TextUtils {
         }
 
         private static class ReplacerVisitor implements BoundedStringVisitor<String> {
-            private final BoundedStringVisitor<String> visitor;
-            private final int length;
+            private final ReplacementGenerator replacementGenerator;
             private final int suffixLength;
-            private final StringBuilder builder;
 
+            private int length;
+            private StringBuilder builder;
             private int previousSuffix;
 
-            public ReplacerVisitor(StringBuilder builder, String suffix, BoundedStringVisitor<String> visitor, int lengthOfBetweenMatchesString) {
-                this.visitor = visitor;
-                this.length = lengthOfBetweenMatchesString;
+            public ReplacerVisitor(String suffix, ReplacementGenerator replacementGenerator) {
+                this.replacementGenerator = replacementGenerator;
                 suffixLength = suffix.length();
                 previousSuffix = -1;
-                this.builder = builder;
+            }
+
+            void initVisitor(int builderCapacity, int lengthOfBetweenMatchesString) {
+                builder = new StringBuilder(builderCapacity);
+                this.length = lengthOfBetweenMatchesString;
             }
 
             @Override
             public String visit(String prefix, String suffix, int matchStart, int matchEnd, final char[] initialStringAsCharArray) {
-                // use the generator to replace it
-                String replacement = visitor.visit(prefix, suffix, matchStart, matchEnd, initialStringAsCharArray);
-
                 // if we had a previous suffix
                 if (previousSuffix > 0 && previousSuffix < length - suffixLength) {
                     // add the text between the previous suffix and the new prefix
@@ -517,12 +522,12 @@ public class TextUtils {
                 }
 
                 // add the replaced text
-                builder.append(replacement);
+                replacementGenerator.appendReplacementForMatch(matchStart, matchEnd, initialStringAsCharArray, builder, prefix, suffix);
 
                 // update previous suffix
                 previousSuffix = matchEnd;
 
-                return replacement;
+                return null;
             }
 
             @Override
@@ -532,27 +537,17 @@ public class TextUtils {
         }
     }
 
+    public interface ReplacementGenerator {
+        void appendReplacementForMatch(final int matchStart, final int matchEnd, final char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix);
+    }
+
     public interface BoundedStringVisitor<T> {
         T visit(final String prefix, final String suffix, final int matchStart, final int matchEnd, final char[] initialStringAsCharArray);
 
         T initialValue(String initial);
     }
 
-    public static abstract class StringReplacementGenerator implements BoundedStringVisitor<String> {
-        public abstract String getReplacementFor(String match, String prefix, String suffix);
-
-        @Override
-        public String visit(String prefix, String suffix, int matchStart, int matchEnd, final char[] initialStringAsCharArray) {
-            return getReplacementFor(getStringBetween(initialStringAsCharArray, matchStart, matchEnd), prefix, suffix);
-        }
-
-        @Override
-        public String initialValue(String initial) {
-            return initial;
-        }
-    }
-
-    public static class ConstantStringReplacementGenerator extends StringReplacementGenerator {
+    public static class ConstantStringReplacementGenerator implements ReplacementGenerator {
         public static final ConstantStringReplacementGenerator REPLACE_BY_EMPTY = new ConstantStringReplacementGenerator("");
         private final String replacement;
 
@@ -560,8 +555,9 @@ public class TextUtils {
             this.replacement = replacement;
         }
 
-        public String getReplacementFor(String match, String prefix, String suffix) {
-            return replacement;
+        @Override
+        public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
+            builder.append(replacement);
         }
     }
 

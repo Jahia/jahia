@@ -139,12 +139,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final String V = "v";
     private static final String EC = "ec";
 
-    public static final TextUtils.BoundedStringVisitor<String> GENERATOR = new TextUtils.BoundedStringVisitor<String>() {
+    public static final TextUtils.ReplacementGenerator GENERATOR = new TextUtils.ReplacementGenerator() {
         @Override
-        public String visit(String prefix, String suffix, int matchStart, int matchEnd, char[] initialStringAsCharArray) {
-            StringBuilder builder = new StringBuilder(CACHE_ESI_TAG_START.length() + CACHE_ESI_TAG_END.length() + matchEnd - matchStart);
-            // extract what's interesting from match
-            // find index of first quote
+        public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
+            // expects match to start with: src="<what we want to extract>"
             int firstQuoteIndex = matchStart;
             while (initialStringAsCharArray[firstQuoteIndex++] != '"') ;
 
@@ -154,12 +152,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             builder.append(CACHE_ESI_TAG_START)
                     .append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1)
                     .append(CACHE_ESI_TAG_END);
-            return builder.toString();
-        }
-
-        @Override
-        public String initialValue(String initial) {
-            return null;
         }
     };
     protected ModuleCacheProvider cacheProvider;

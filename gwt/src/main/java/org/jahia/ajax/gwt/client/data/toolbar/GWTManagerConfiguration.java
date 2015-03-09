@@ -137,6 +137,7 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
     private String title = null;
     
     private boolean suppressPublicationInfo;
+    private boolean showWorkInProgress;
 
     private boolean editableGrid = false;
 
@@ -467,5 +468,13 @@ public class GWTManagerConfiguration extends GWTConfiguration implements Seriali
 
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
         this.suppressPublicationInfo = suppressPublicationInfo;
+    }
+
+    public boolean isShowWorkInProgress() {
+        return showWorkInProgress;
+    }
+
+    public void setShowWorkInProgress(boolean showWorkInProgress) {
+        this.showWorkInProgress = showWorkInProgress;
     }
 }

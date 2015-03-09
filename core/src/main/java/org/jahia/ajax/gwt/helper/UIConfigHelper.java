@@ -414,6 +414,7 @@ public class UIConfigHelper {
                 }
                 
                 gwtConfig.setSuppressPublicationInfo(config.isSuppressPublicationInfo());
+                gwtConfig.setShowWorkInProgress(config.isShowWorkInProgress());
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
                 setAvailablePermissions(gwtConfig);

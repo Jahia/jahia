@@ -142,7 +142,9 @@ public class ManagerConfiguration implements Serializable {
     private String titleKey = null;
 
     private boolean suppressPublicationInfo;
-    
+
+    private boolean showWorkInProgress;
+
     public ManagerConfiguration() {
         tableColumns = new ArrayList<Column>();
         treeColumns = new ArrayList<Column>();
@@ -457,5 +459,13 @@ public class ManagerConfiguration implements Serializable {
 
     public void setSuppressPublicationInfo(boolean suppressPublicationInfo) {
         this.suppressPublicationInfo = suppressPublicationInfo;
+    }
+
+    public boolean isShowWorkInProgress() {
+        return showWorkInProgress;
+    }
+
+    public void setShowWorkInProgress(boolean showWorkInProgress) {
+        this.showWorkInProgress = showWorkInProgress;
     }
 }

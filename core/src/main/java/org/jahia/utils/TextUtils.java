@@ -228,7 +228,7 @@ public class TextUtils {
                 final int newSize = length * 2;
                 Match[] newMatches = new Match[newSize];
                 System.arraycopy(matches, 0, newMatches, 0, length);
-                Arrays.fill(matches, length, newSize - 1, INEXISTING);
+                Arrays.fill(newMatches, length, newSize, INEXISTING);
                 matches = newMatches;
             }
 
@@ -309,7 +309,7 @@ public class TextUtils {
         protected final int suffixLength;
         protected int length;
         protected BoundedStringVisitor<T> visitor;
-        private final Matches matches = new ListMatches();
+        private final Matches matches = new ArrayMatches();
 
         public Matcher(String prefix, String suffix, BoundedStringVisitor<T> visitor) {
             this.prefix = prefix;

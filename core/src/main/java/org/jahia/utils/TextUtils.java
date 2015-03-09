@@ -309,7 +309,7 @@ public class TextUtils {
         protected final int suffixLength;
         protected int length;
         protected BoundedStringVisitor<T> visitor;
-        private final Matches matches = new ArrayMatches();
+        private final Matches matches = new ListMatches();
 
         public Matcher(String prefix, String suffix, BoundedStringVisitor<T> visitor) {
             this.prefix = prefix;

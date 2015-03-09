@@ -72,23 +72,26 @@
 package org.jahia.services.workflow;
 
 import java.io.Serializable;
+import java.util.Map;
 
 /**
- * 
+ *
  * User: toto
  * Date: Sep 16, 2010
  * Time: 5:37:18 PM
- * 
+ *
  */
 public class WorkflowRule implements Serializable {
     private String definitionPath;
     private String providerKey;
     private String workflowDefinitionKey;
+    private Map<String,String> permissions;
 
-    public WorkflowRule(String definitionPath, String providerKey, String workflowDefinitionKey) {
+    public WorkflowRule(String definitionPath, String providerKey, String workflowDefinitionKey, Map<String,String> permissions) {
         this.definitionPath = definitionPath;
         this.providerKey = providerKey;
         this.workflowDefinitionKey = workflowDefinitionKey;
+        this.permissions = permissions;
     }
 
     public String getDefinitionPath() {
@@ -103,34 +106,31 @@ public class WorkflowRule implements Serializable {
         return workflowDefinitionKey;
     }
 
+    public Map<String, String> getPermissions() {
+        return permissions;
+    }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof WorkflowRule)) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        WorkflowRule rule = (WorkflowRule) o;
+        WorkflowRule that = (WorkflowRule) o;
 
-        if (providerKey != null ? !providerKey.equals(rule.providerKey) : rule.providerKey != null) {
+        if (definitionPath != null ? !definitionPath.equals(that.definitionPath) : that.definitionPath != null)
             return false;
-        }
-        if (workflowDefinitionKey != null ? !workflowDefinitionKey.equals(rule.workflowDefinitionKey) :
-                rule.workflowDefinitionKey != null) {
+        if (providerKey != null ? !providerKey.equals(that.providerKey) : that.providerKey != null) return false;
+        if (workflowDefinitionKey != null ? !workflowDefinitionKey.equals(that.workflowDefinitionKey) : that.workflowDefinitionKey != null)
             return false;
-        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        int result = providerKey != null ? providerKey.hashCode() : 0;
+        int result = definitionPath != null ? definitionPath.hashCode() : 0;
+        result = 31 * result + (providerKey != null ? providerKey.hashCode() : 0);
         result = 31 * result + (workflowDefinitionKey != null ? workflowDefinitionKey.hashCode() : 0);
         return result;
     }
-
 }

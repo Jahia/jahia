@@ -72,6 +72,7 @@
 package org.jahia.services.workflow;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -100,6 +101,7 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
+import javax.jcr.security.Privilege;
 
 import java.util.*;
 
@@ -971,7 +973,32 @@ public class WorkflowService implements BeanPostProcessor {
     public Collection<WorkflowRule> getWorkflowRules(JCRNodeWrapper objectNode) {
         try {
             Map<String,WorkflowRule> rules = recurseOnRules(objectNode);
-            return Collections.unmodifiableCollection(rules.values());
+
+            Map<String,List<String>> perms = new HashMap<>();
+            for (List<String[]> list : objectNode.getAclEntries().values()) {
+                for (String[] strings : list) {
+                    JahiaAccessManager accessControlManager = (JahiaAccessManager) objectNode.getRealNode().getSession().getAccessControlManager();
+                    for (Privilege privilege : accessControlManager.getPermissionsInRole(strings[2])) {
+                        if (!perms.containsKey(strings[0])) {
+                            perms.put(strings[0], new ArrayList<String>());
+                        }
+                        perms.get(strings[0]).add(JCRContentUtils.getJCRName(privilege.getName(), objectNode.getRealNode().getSession().getWorkspace().getNamespaceRegistry()));
+                    }
+                }
+            }
+            Map<String,WorkflowRule> rulesCopy = new HashMap<>(rules);
+            for (Map.Entry<String, WorkflowRule> ruleEntry : rules.entrySet()) {
+                WorkflowRule rule = ruleEntry.getValue();
+                for (Map.Entry<String, List<String>> aclEntry : perms.entrySet()) {
+                    if (aclEntry.getKey().startsWith(rule.getDefinitionPath().equals("/") ? "/" : rule.getDefinitionPath() + "/")) {
+                        if (!Collections.disjoint(aclEntry.getValue(), rule.getPermissions().values())) {
+                            rule = new WorkflowRule(aclEntry.getKey(), rule.getProviderKey(), rule.getWorkflowDefinitionKey(), rule.getPermissions());
+                            rulesCopy.put(ruleEntry.getKey(),rule);
+                        }
+                    }
+                }
+            }
+            return Collections.unmodifiableCollection(rulesCopy.values());
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -995,7 +1022,7 @@ public class WorkflowService implements BeanPostProcessor {
                 }
             }
             for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
-                results.put(entry.getValue().getType(), new WorkflowRule("/", entry.getValue().getProvider(), entry.getValue().getDefinition()));
+                results.put(entry.getValue().getType(), new WorkflowRule("/", entry.getValue().getProvider(), entry.getValue().getDefinition(), entry.getValue().getPermissions()));
             }
         } else {
             results = recurseOnRules(n.getParent());
@@ -1016,7 +1043,7 @@ public class WorkflowService implements BeanPostProcessor {
                     }
                     String wftype = type.getType();
 
-                    results.put(wftype, new WorkflowRule(n.getPath(), prov, name));
+                    results.put(wftype, new WorkflowRule(n.getPath(), prov, name, type.getPermissions()));
                 }
             }
         }

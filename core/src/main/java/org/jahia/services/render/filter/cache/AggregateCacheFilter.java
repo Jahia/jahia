@@ -586,8 +586,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : new CopyOnWriteArraySet<String>();
                 if (!dependencies.contains(ALL)) {
                     if ((dependencies.size() + 1) > dependenciesLimit) {
-                        dependencies.add(ALL);
-                        dependencies.retainAll(ALL_SET);
+                        dependencies = new CopyOnWriteArraySet<>(ALL_SET);
                         dependenciesCache.put(new Element(path, dependencies));
                     } else {
                         addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);

@@ -2940,10 +2940,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public String getCorrespondingNodePath(String s) throws ItemNotFoundException, NoSuchWorkspaceException, AccessDeniedException, RepositoryException {
+        String nodePath = objectNode.getCorrespondingNodePath(s);
         if (provider.getMountPoint().equals("/")) {
-            return objectNode.getCorrespondingNodePath(s);
+            return nodePath;
         } else {
-            return objectNode.getCorrespondingNodePath(s).equals("/")?provider.getMountPoint():provider.getMountPoint() + objectNode.getCorrespondingNodePath(s);
+            return nodePath.equals("/")?provider.getMountPoint():provider.getMountPoint() + nodePath;
         }
     }
 

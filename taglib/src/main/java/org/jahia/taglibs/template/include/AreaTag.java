@@ -277,9 +277,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (node == null) {
                         return;
                     }
-                    if ((limitedAbsoluteAreaEdit && !renderContext.getMainResource().getNode().getPath().equals(node.getPath())) || renderContext.getMainResource().getNode().getPath().startsWith("/modules")) {
+                    if ((limitedAbsoluteAreaEdit && !mainResource.getNode().getPath().equals(node.getPath())) || mainResource.getNode().getPath().startsWith("/modules")) {
                         parameters.put("readOnly", "true");
                         editable = false;
+                        renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);
                     }
 
                     if(logger.isDebugEnabled()) {

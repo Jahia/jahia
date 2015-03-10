@@ -975,9 +975,12 @@ public class WorkflowService implements BeanPostProcessor {
             Map<String,WorkflowRule> rules = recurseOnRules(objectNode);
 
             Map<String,List<String>> perms = new HashMap<>();
+
+            JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
+            JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
+
             for (List<String[]> list : objectNode.getAclEntries().values()) {
                 for (String[] strings : list) {
-                    JahiaAccessManager accessControlManager = (JahiaAccessManager) objectNode.getRealNode().getSession().getAccessControlManager();
                     for (Privilege privilege : accessControlManager.getPermissionsInRole(strings[2])) {
                         if (!perms.containsKey(strings[0])) {
                             perms.put(strings[0], new ArrayList<String>());

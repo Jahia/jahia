@@ -158,8 +158,13 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
-                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName();
-                    updateItem(ctx, gwtJahiaNode, title);
+                    String title;
+                    if (allSubTree) {
+                        title = Messages.getWithArgs("label.publihall.all.languages", "Publish all under {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()});
+                    } else {
+                        title = Messages.getWithArgs("label.publish.languages","Publish {0} in all languages",new String[]{gwtJahiaNode.getDisplayName()});
+                    }
+                    updateItem(ctx, gwtJahiaNode,title);
                 }
             }
         } else if (allSubTree) {
@@ -176,7 +181,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 if (isWorkInProgress(gwtJahiaNode)) {
                     setEnabled(false);
                 } else if (gwtJahiaNode != null) {
-                    String title = getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName() +
+                    String title = Messages.get("label.publishall") + " " + gwtJahiaNode.getDisplayName() +
                             " - " + JahiaGWTParameters.getLanguageDisplayName();
                     updateItem(ctx, gwtJahiaNode, title);
                 }
@@ -364,13 +369,11 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         if(!isChildOfMarkedForDeletion(ctx) && Boolean.TRUE.equals(gwtJahiaNode.get("supportsPublication")) && hasPermission(gwtJahiaNode) && isNodeTypeAllowed(gwtJahiaNode)) {
             setEnabled(true);
             if (gwtJahiaNode.isFile() || gwtJahiaNode.isNodeType("nt:folder")) {
-                updateTitle(getGwtToolbarItem().getTitle() + " " + gwtJahiaNode.getDisplayName());
                 if (gwtJahiaNode.isFile()) {
                     setEnabled(false);
                 }
-            } else {
-                updateTitle(title);
             }
+            updateTitle(title);
         }
     }
 

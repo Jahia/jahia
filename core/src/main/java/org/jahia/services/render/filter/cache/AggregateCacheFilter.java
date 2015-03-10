@@ -131,6 +131,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
     private static final String CACHE_TAG_START_2 = "\" -->\n";
     private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
+<<<<<<< .working
     private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
@@ -154,6 +155,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     .append(CACHE_ESI_TAG_END);
         }
     };
+=======
+    private static final String CACHE_TAG_START_1 = "<!-- cache:include src=\"";
+    private static final String CACHE_TAG_START_2 = "\" -->\n";
+    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length()
+            + CACHE_TAG_END.length();
+    public static final String ALL = "ALL";
+    public static final Set<String> ALL_SET = Collections.singleton(ALL);
+    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
+>>>>>>> .merge-right.r52202
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
 
@@ -573,15 +583,14 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             depNodeWrappers = resource.getDependencies();
             for (String path : depNodeWrappers) {
                 Element element1 = dependenciesCache.get(path);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
-                if (!dependencies.contains("ALL")) {
-                    Set<String> newDependencies = new CopyOnWriteArraySet<String>(dependencies);
-                    if ((newDependencies.size() + 1) > dependenciesLimit) {
-                        newDependencies.clear();
-                        newDependencies.add("ALL");
-                        dependenciesCache.put(new Element(path, newDependencies));
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : new CopyOnWriteArraySet<String>();
+                if (!dependencies.contains(ALL)) {
+                    if ((dependencies.size() + 1) > dependenciesLimit) {
+                        dependencies.add(ALL);
+                        dependencies.retainAll(ALL_SET);
+                        dependenciesCache.put(new Element(path, dependencies));
                     } else {
-                        addDependencies(renderContext, finalKey, dependenciesCache, path, newDependencies);
+                        addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
                     }
                 }
             }
@@ -589,9 +598,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
             for (String regexp : regexpDepNodeWrappers) {
                 Element element1 = regexpDependenciesCache.get(regexp);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.<String>emptySet();
-                Set<String> newDependencies = new CopyOnWriteArraySet<String>(dependencies);
-                addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, newDependencies);
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : new CopyOnWriteArraySet<String>();
+                addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, dependencies);
             }
         }
         resource.getDependencies().clear();

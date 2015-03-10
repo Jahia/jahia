@@ -93,6 +93,9 @@ import java.util.Map;
  */
 @SuppressWarnings("serial")
 public class RenameActionItem extends NodeTypeAwareBaseActionItem {
+
+    private int maxNameSize = -1;
+
     public void onComponentSelection() {
         final GWTJahiaNode selection = linker.getSelectionContext().getSingleSelection();
         if (selection != null) {
@@ -111,7 +114,9 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
             String newName = Window.prompt(Messages.get("confirm.newName.label") + " " + selection.getName(),
                     selection.getName());
             if (selection.isNodeType("nt:hierarchyNode") && newName != null && FileUploader.filenameHasInvalidCharacters(newName)) {
-                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "", new String[]{newName}), null);
+                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename", "{0} is an invalid name", new String[]{newName}), null);
+            } else if (maxNameSize > 0 && newName != null && newName.length() > 0 && newName.length() > maxNameSize) {
+                MessageBox.alert(Messages.get("label.error"), Messages.getWithArgs("failure.upload.invalid.filename.toolong", "The name is too long. The maximum length is {0}", new String[]{String.valueOf(maxNameSize)}), null);
             } else if (newName != null && newName.length() > 0 && !newName.equals(selection.getName())) {
                 JahiaContentManagementService.App.getInstance()
                         .rename(selection.getPath(), newName, new BaseAsyncCallback<GWTJahiaNode>() {
@@ -146,5 +151,9 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
                 && !lh.getSingleSelection().getPath().equals("/sites/"+lh.getSingleSelection().getSiteKey()+"/"+lh.getSingleSelection().getName())
                 && !lh.getSingleSelection().getPath().equals("/"+lh.getSingleSelection().getName())
                 && isNodeTypeAllowed(lh.getSingleSelection()));
+    }
+
+    public void setMaxNameSize(int maxNameSize) {
+        this.maxNameSize = maxNameSize;
     }
 }

@@ -768,66 +768,81 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      */
     protected String aggregateContent(Cache cache, String cachedContent, RenderContext renderContext, String areaIdentifier,
                                       Stack<String> cacheKeyStack, Set<String> allPaths) throws RenderException {
-        StringBuilder sb = new StringBuilder(cachedContent);
 
-        int esiTagStartIndex = sb.indexOf(CACHE_ESI_TAG_START);
-        while (esiTagStartIndex != -1){
-            int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
-            if (esiTagEndIndex != -1) {
-                String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
-                String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
+        int esiTagStartIndex = cachedContent.indexOf(CACHE_ESI_TAG_START);
+        if(esiTagStartIndex == -1){
+            return cachedContent;
+        } else {
+            StringBuilder sb = new StringBuilder(cachedContent);
+            while (esiTagStartIndex != -1){
+                int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
+                if (esiTagEndIndex != -1) {
+                    String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
+                    String replacedCacheKey = replacePlaceholdersInCacheKey(renderContext, cacheKey);
 
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Check if {} is in cache", replacedCacheKey);
-                }
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Check if {} is in cache", replacedCacheKey);
+                    }
 
-                boolean cacheable = true;
-                CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-                Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
-                final String ecParameter = renderContext.getRequest().getParameter(EC);
-                if ((ecParameter != null && ecParameter.equals(keyAttrbs.get("resourceID"))) ||
-                        (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn())) {
-                    cacheable = false;
-                }
+                    boolean cacheable = true;
+                    CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
+                    Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
+                    final String ecParameter = renderContext.getRequest().getParameter(EC);
+                    if ((ecParameter != null && ecParameter.equals(keyAttrbs.get("resourceID"))) ||
+                            (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn())) {
+                        cacheable = false;
+                    }
 
-                if (cacheable && cache.isKeyInCache(replacedCacheKey)) {
-                    // If fragment is in cache, get it from there and aggregate recursively
-                    final Element element = cache.get(replacedCacheKey);
-                    if (element != null && element.getObjectValue() != null) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("It has been found in cache");
-                        }
-                        @SuppressWarnings("unchecked")
-                        final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getObjectValue();
-                        String content = cacheEntry.getObject();
-
-                        // Avoid loops
-                        if (cacheKeyStack.contains(cacheKey)) {
-                            // replace by empty
-                            esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, StringUtils.EMPTY);
-                            continue;
-                        }
-                        cacheKeyStack.push(cacheKey);
-
-                        try {
-                            if (!cachedContent.equals(content)) {
-                                try {
-                                    esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
-                                            aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
-                                } catch (RenderException e) {
-                                    throw new RuntimeException(e.getMessage(), e);
-                                }
-                            } else {
-                                // TODO: need to investigate here, seem's that the if condition is always true.
-                                esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, content);
+                    if (cacheable && cache.isKeyInCache(replacedCacheKey)) {
+                        // If fragment is in cache, get it from there and aggregate recursively
+                        final Element element = cache.get(replacedCacheKey);
+                        if (element != null && element.getObjectValue() != null) {
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("It has been found in cache");
                             }
-                        } finally {
-                            cacheKeyStack.pop();
+                            @SuppressWarnings("unchecked")
+                            final CacheEntry<String> cacheEntry = (CacheEntry<String>) element.getObjectValue();
+                            String content = cacheEntry.getObject();
+
+                            // Avoid loops
+                            if (cacheKeyStack.contains(cacheKey)) {
+                                // replace by empty
+                                esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, StringUtils.EMPTY);
+                                continue;
+                            }
+                            cacheKeyStack.push(cacheKey);
+
+                            try {
+                                if (!cachedContent.equals(content)) {
+                                    try {
+                                        esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
+                                                aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
+                                    } catch (RenderException e) {
+                                        throw new RuntimeException(e.getMessage(), e);
+                                    }
+                                } else {
+                                    // TODO: need to investigate here, seem's that the if condition is always true.
+                                    esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, content);
+                                }
+                            } finally {
+                                cacheKeyStack.pop();
+                            }
+                        } else {
+                            cache.put(new Element(replacedCacheKey, null));
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("Content is expired");
+                            }
+                            // The fragment is not in the cache, generate it
+                            try {
+                                esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
+                                        generateContent(renderContext, cacheKey, areaIdentifier, allPaths));
+                            } catch (RenderException e) {
+                                throw new RuntimeException(e.getMessage(), e);
+                            }
                         }
                     } else {
-                        cache.put(new Element(replacedCacheKey, null));
                         if (logger.isDebugEnabled()) {
-                            logger.debug("Content is expired");
+                            logger.debug("Content is missing from cache");
                         }
                         // The fragment is not in the cache, generate it
                         try {
@@ -838,24 +853,12 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                         }
                     }
                 } else {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Content is missing from cache");
-                    }
-                    // The fragment is not in the cache, generate it
-                    try {
-                        esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
-                                generateContent(renderContext, cacheKey, areaIdentifier, allPaths));
-                    } catch (RenderException e) {
-                        throw new RuntimeException(e.getMessage(), e);
-                    }
+                    // no closed esi end tag found
+                    return sb.toString();
                 }
-            } else {
-                // no closed esi end tag found
-                return sb.toString();
             }
+            return sb.toString();
         }
-
-        return sb.toString();
     }
 
     /**

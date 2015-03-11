@@ -126,12 +126,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String PER_USER = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
+    public static final String ALL = "ALL";
+    public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
     private static final String CACHE_TAG_START_1_NOSRC = "<!-- cache:include";
     private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
     private static final String CACHE_TAG_START_2 = "\" -->\n";
     private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
-<<<<<<< .working
     private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
@@ -155,15 +156,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     .append(CACHE_ESI_TAG_END);
         }
     };
-=======
-    private static final String CACHE_TAG_START_1 = "<!-- cache:include src=\"";
-    private static final String CACHE_TAG_START_2 = "\" -->\n";
-    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length()
-            + CACHE_TAG_END.length();
-    public static final String ALL = "ALL";
-    public static final Set<String> ALL_SET = Collections.singleton(ALL);
-    protected transient static Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
->>>>>>> .merge-right.r52202
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
 

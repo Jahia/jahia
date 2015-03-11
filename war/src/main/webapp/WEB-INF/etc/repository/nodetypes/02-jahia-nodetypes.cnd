@@ -996,9 +996,12 @@ extends = jnt:content
 [jnt:containerList] > nt:base,  jmix:basemetadata orderable
  + * (jnt:container) version
 
-[jmix:legacyPage] mixin
+[jmix:legacyContent] mixin
+    - jmix:legacySiteKey (string) hidden nofulltext
+
+[jmix:legacyPage] > jmix:legacyContent mixin
     - jmix:legacyPid (string) hidden nofulltext
     - jmix:legacyPageKey (string) hidden nofulltext
 
-[jmix:legacyFile] mixin
+[jmix:legacyFile] > jmix:legacyContent mixin
     - jmix:legacyPath (string) hidden nofulltext

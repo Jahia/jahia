@@ -15,7 +15,11 @@
     </bean>
 
     <bean id="UrlRewriteService" class="org.jahia.services.seo.urlrewrite.UrlRewriteService">
+<<<<<<< .working
         <property name="confReloadCheckIntervalSeconds" value="300"/>
+=======
+        <property name="confReloadCheckIntervalSeconds" value="${urlRewriteReloadCheckInterval:300}" />
+>>>>>>> .merge-right.r52208
         <property name="configurationResources">
             <list>
                 <value>classpath*:org/jahia/services/seo/urlrewrite/urlrewrite.xml</value>

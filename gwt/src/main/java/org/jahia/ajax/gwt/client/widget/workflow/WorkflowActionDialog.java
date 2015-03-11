@@ -175,7 +175,8 @@ public class WorkflowActionDialog extends LayoutContainer {
         actionTab = new TabItem();
 
         this.container = container;
-        initTabs(wfDefinitionNodeType, language);
+
+        initTabs(wfDefinitionNodeType,workflow!=null?workflow.getVariables(): new HashMap<String, GWTJahiaNodeProperty>(), language);
 
         container.setEngine(this, this.title, buttonsBar, JahiaGWTParameters.getLanguage(language), this.linker);
         addCancelButton(container);
@@ -218,8 +219,7 @@ public class WorkflowActionDialog extends LayoutContainer {
 
     }
 
-    private void initTabs(final String formResourceName, String language) {
-        Map<String, GWTJahiaNodeProperty> variables = new HashMap<String, GWTJahiaNodeProperty>();
+    private void initTabs(final String formResourceName, Map<String, GWTJahiaNodeProperty> variables, String language) {
         if (title != null) {
             if (language != null) {
                 variables.put("jcr:title", new GWTJahiaNodeProperty("jcr:title",
@@ -229,10 +229,6 @@ public class WorkflowActionDialog extends LayoutContainer {
                         new GWTJahiaNodePropertyValue(title, GWTJahiaNodePropertyType.STRING)));
             }
         }
-        initTabs(formResourceName, variables);
-    }
-
-    private void initTabs(final String formResourceName, Map<String, GWTJahiaNodeProperty> variables) {
         TabItem action = initActionTab(formResourceName, variables);
         tabPanel.add(action);
         TabItem comments = initCommentTab();

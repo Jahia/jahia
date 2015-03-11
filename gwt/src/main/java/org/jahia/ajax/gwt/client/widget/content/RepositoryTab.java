@@ -86,7 +86,6 @@ import com.extjs.gxt.ui.client.widget.button.ToolButton;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
-
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTRepository;
@@ -312,7 +311,7 @@ public class RepositoryTab extends ContentPanel {
      */
     public void refresh(Map<String, Object> data) {
         boolean refresh = true;
-        if (data != null && data.containsKey(Linker.REFRESH_ALL)) {
+        if (data != null && data.containsKey(Linker.REFRESH_MAIN)) {
             refresh = isExpanded();
         }
         if (refresh) {

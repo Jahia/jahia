@@ -78,6 +78,7 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
+import org.slf4j.Logger;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -313,6 +314,7 @@ import java.util.Map;
  */
 public class XMLWriter extends XMLFilterImpl
 {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(XMLWriter.class);
 
 
 
@@ -1203,33 +1205,33 @@ public class XMLWriter extends XMLFilterImpl
      *            IOException wrapped in a SAXException.
      */
     private void writeEsc (char ch[], int start,
-                             int length, boolean isAttVal)
-        throws SAXException
+                           int length, boolean isAttVal)
+            throws SAXException
     {
         for (int i = start; i < start + length; i++) {
             switch (ch[i]) {
-            case '&':
-                write("&amp;");
-                break;
-            case '\n':
-                write("&#010;");
-                break;
-            case '\r':
-                write("&#013;");
-                break;
-            case '<':
-                write("&lt;");
-                break;
-            case '>':
-                write("&gt;");
-                break;
-            case '\"':
-                if (isAttVal) {
-                    write("&quot;");
-                } else {
-                    write('\"');
-                }
-                break;
+                case '&':
+                    write("&amp;");
+                    break;
+                case '\n':
+                    write("&#010;");
+                    break;
+                case '\r':
+                    write("&#013;");
+                    break;
+                case '<':
+                    write("&lt;");
+                    break;
+                case '>':
+                    write("&gt;");
+                    break;
+                case '\"':
+                    if (isAttVal) {
+                        write("&quot;");
+                    } else {
+                        write('\"');
+                    }
+                    break;
                 default:
                     //UNIL modification: because of XML parser compatibility for ISO/IEC 10646
                     if(ch[i] == '\u0009') {
@@ -1256,7 +1258,22 @@ public class XMLWriter extends XMLFilterImpl
                             }*/
                     else {
                         //nothing
-                        System.err.println("Avoided char: "+ch[i] +" or as: "+ Integer.toString(ch[i]));
+                        logger.error("Avoided char: " + ch[i] + " or as: " + Integer.toString(ch[i]));
+                        if (logger.isDebugEnabled()) {
+                            final StringBuilder stringBuilder = new StringBuilder("The avoided char is in: ");
+                            final StringBuilder stringBuilderInt = new StringBuilder("The avoided char is in (int values): ");
+                            for (int j=-10; j<=10; j++) {
+                                final int k = i+j;
+                                if (k>=0 && k<ch.length) {
+                                    stringBuilder.append(ch[k]);
+                                    if (j == 0) stringBuilderInt.append('{');
+                                    stringBuilderInt.append('[').append(Integer.toString(ch[k])).append(']');
+                                    if (j == 0) stringBuilderInt.append('}');
+                                }
+                            }
+                            logger.debug(stringBuilder.toString());
+                            logger.debug(stringBuilderInt.toString());
+                        }
                     }
                     break;
             }//switch

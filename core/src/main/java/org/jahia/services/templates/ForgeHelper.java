@@ -117,20 +117,27 @@ class ForgeHelper {
         // Get token from Private App Store home page
         GetMethod getMethod = new GetMethod(url + "/home.html");
         getMethod.addRequestHeader("Authorization", "Basic " + Base64.encode((releaseInfo.getUsername() + ":" + releaseInfo.getPassword()).getBytes()));
-        client.executeMethod(getMethod);
-        Source source = new Source(getMethod.getResponseBodyAsString());
         String token = "";
-        if (source.getFirstElementByClass("file_upload") != null) {
-            List<net.htmlparser.jericho.Element> els = source.getFirstElementByClass("file_upload").getAllElements("input");
-            for (net.htmlparser.jericho.Element el : els) {
-                if (StringUtils.equals(el.getAttributeValue("name"),"form-token")) {
-                    token = el.getAttributeValue("value");
+        try {
+            client.executeMethod(getMethod);
+            Source source = new Source(getMethod.getResponseBodyAsString());
+            if (source.getFirstElementByClass("file_upload") != null) {
+                List<net.htmlparser.jericho.Element> els = source
+                        .getFirstElementByClass("file_upload").getAllElements(
+                                "input");
+                for (net.htmlparser.jericho.Element el : els) {
+                    if (StringUtils.equals(el.getAttributeValue("name"),
+                            "form-token")) {
+                        token = el.getAttributeValue("value");
+                    }
                 }
+            } else {
+                throw new IOException(
+                        "Unable to get Private App Store site information, please check your credentials");
             }
-        } else {
-            throw new IOException("Unable to get Private App Store site information, please check your credentials");
+        } finally {
+            getMethod.releaseConnection();
         }
-
         Part[] parts = {new StringPart("form-token",token),new FilePart("file",jar) };
 
         // send module

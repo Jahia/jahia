@@ -140,7 +140,7 @@ public class CustomizedPreviewActionItem extends BaseActionItem {
                 if (userSearchField != null) {
                     String newSearch = userSearchField.getText().trim().replace("'","''");
 
-                    String query = "select * from [jnt:user] as u where isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/"+JahiaGWTParameters.getSiteKey().replace("'","''")+"/users/')";
+                    String query = "select * from [jnt:user] as u where (isdescendantnode(u,'/users/') or isdescendantnode(u,'/sites/"+JahiaGWTParameters.getSiteKey().replace("'","''")+"/users/'))";
                     if (newSearch.length() > 0) {
                         query += " and (CONTAINS(u.*,'*" + newSearch + "*') OR LOWER(u.[j:nodename]) LIKE '*" + newSearch.toLowerCase() + "*') ";
                     }

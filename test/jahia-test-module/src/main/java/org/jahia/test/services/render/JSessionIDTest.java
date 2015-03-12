@@ -171,19 +171,29 @@ public class JSessionIDTest extends JahiaTestCase {
         SettingsBean.getInstance().setJsessionIdParameterName(jsessionid);
 
         GetMethod displayLoginMethod = new GetMethod(getBaseServerURL() + Jahia.getContextPath()+"/start");
-        int statusCode = httpClient.executeMethod(displayLoginMethod);
-        
-        assertEquals("Method failed: " + displayLoginMethod.getStatusLine(), HttpStatus.SC_UNAUTHORIZED, statusCode);
-        
-        String responseBodyAsString = displayLoginMethod.getResponseBodyAsString();
+        try {
+            int statusCode = httpClient.executeMethod(displayLoginMethod);
 
-        Pattern p = Pattern.compile("action=\"([^\"]*)\"");
-        Matcher m = p.matcher(responseBodyAsString);
-        assertTrue (m.find());
+            assertEquals(
+                    "Method failed: " + displayLoginMethod.getStatusLine(),
+                    HttpStatus.SC_UNAUTHORIZED, statusCode);
 
-        String url = m.group(1);
+            String responseBodyAsString = displayLoginMethod
+                    .getResponseBodyAsString();
 
-        assertEquals("jsession ID is not "+(removeJsessionId?"removed":"present")+" in administration login url.", removeJsessionId, !url.contains("jsessionid"));
+            Pattern p = Pattern.compile("action=\"([^\"]*)\"");
+            Matcher m = p.matcher(responseBodyAsString);
+            assertTrue(m.find());
+
+            String url = m.group(1);
+
+            assertEquals("jsession ID is not "
+                    + (removeJsessionId ? "removed" : "present")
+                    + " in administration login url.", removeJsessionId,
+                    !url.contains("jsessionid"));
+        } finally {
+            displayLoginMethod.releaseConnection();
+        }
     }
 
 }

@@ -253,15 +253,20 @@ public class LogoutTest extends JahiaTestCase {
     }
     
     protected String logout(String url) throws Exception {
+        String returnUrl = null;
         String baseurl = getBaseServerURL() + Jahia.getContextPath();
         HttpMethod method = new GetMethod(baseurl + "/cms/logout");
-        method.setRequestHeader("Referer",baseurl + url);
-        getHttpClient().executeMethod(method);
-        return StringUtils.isEmpty(Jahia.getContextPath())
-                || !(method.getPath().startsWith(Jahia.getContextPath())) ? method
-                .getPath() : StringUtils.substringAfter(method.getPath(),
-                Jahia.getContextPath());
-
+        try {
+            method.setRequestHeader("Referer", baseurl + url);
+            getHttpClient().executeMethod(method);
+            returnUrl = StringUtils.isEmpty(Jahia.getContextPath())
+                    || !(method.getPath().startsWith(Jahia.getContextPath())) ? method
+                    .getPath() : StringUtils.substringAfter(method.getPath(),
+                    Jahia.getContextPath());
+        } finally {
+            method.releaseConnection();
+        }
+       return returnUrl;
     }
 
 }

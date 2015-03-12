@@ -153,6 +153,8 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertTrue("This text should be displayed on generic channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
     }
 
@@ -172,6 +174,8 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertFalse("This text shouldn't be displayed on iPhone channel", response.contains("This banner shouldn&#39;t appear on an iPhone."));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
     }
 
@@ -191,6 +195,8 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertTrue("Non supported channel should fall back on generic", response.contains("This banner shouldn&#39;t appear on an iPhone."));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
     }
 
@@ -210,6 +216,8 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertTrue("This text should be displayed when channel is not iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
     }
 
@@ -229,6 +237,8 @@ public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
             assertFalse("This text should be hidden when channel is iPad", response.contains("This text shouldn&#39;t appear on an iPad."));
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } finally {
+            nodeGet.releaseConnection();
         }
     }
 

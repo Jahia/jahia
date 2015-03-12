@@ -454,9 +454,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     private String getContent(URL url, String user, String password, String requestId) throws Exception {
-        GetMethod method = executeCall(url, user, password, requestId);
-        assertEquals("Bad result code", 200, method.getStatusCode());
-        return method.getResponseBodyAsString();
+        String content = null;
+        GetMethod method = null;
+        try {
+            method = executeCall(url, user, password, requestId);
+            assertEquals("Bad result code", 200, method.getStatusCode());
+            content = method.getResponseBodyAsString();
+        } finally {
+            method.releaseConnection();
+        }
+        return content;
     }
 
     private GetMethod executeCall(URL url, String user, String password, String requestId) throws IOException {
@@ -505,12 +512,17 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
         @Override
         public void run() {
+            GetMethod method = null;
             try {
-                GetMethod method = executeCall(url, user, password, requestId);
+                method = executeCall(url, user, password, requestId);
                 resultCode = method.getStatusCode();
                 result = method.getResponseBodyAsString();
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);
+            } finally {
+                if (method != null) {
+                    method.releaseConnection();
+                }    
             }
         }
     }

@@ -160,53 +160,77 @@ public class FindPrincipalTest extends JahiaTestCase {
         // todo we should really insert content to test the find.
 
         PostMethod loginMethod = new PostMethod(getLoginServletURL());
-        loginMethod.addParameter("username", "root");
-        loginMethod.addParameter("password", "root1234");
-        loginMethod.addParameter("redirectActive", "false");
-        // the next parameter is required to properly activate the valve check.
-        loginMethod.addParameter(LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
+        try {
+            loginMethod.addParameter("username", "root");
+            loginMethod.addParameter("password", "root1234");
+            loginMethod.addParameter("redirectActive", "false");
+            // the next parameter is required to properly activate the valve check.
+            loginMethod.addParameter(
+                    LoginEngineAuthValveImpl.LOGIN_TAG_PARAMETER, "1");
+            // Provide custom retry handler is necessary
+            loginMethod.getParams().setParameter(
+                    HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        int statusCode = client.executeMethod(loginMethod);
-        assertEquals("Method failed: " + loginMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);        
+            int statusCode = client.executeMethod(loginMethod);
+            assertEquals("Method failed: " + loginMethod.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
+        } finally {
+            loginMethod.releaseConnection();
+        }
     }
 
     @After
     public void tearDown() throws Exception {
 
         PostMethod logoutMethod = new PostMethod(getLogoutServletURL());
-        logoutMethod.addParameter("redirectActive", "false");
+        try {
+            logoutMethod.addParameter("redirectActive", "false");
+            // Provide custom retry handler is necessary
+            logoutMethod.getParams().setParameter(
+                    HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        int statusCode = client.executeMethod(logoutMethod);
-        assertEquals("Method failed: " + logoutMethod.getStatusLine(), HttpStatus.SC_OK, statusCode);
-
-        logoutMethod.releaseConnection();
-
+            int statusCode = client.executeMethod(logoutMethod);
+            assertEquals("Method failed: " + logoutMethod.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
+        } finally {
+            logoutMethod.releaseConnection();
+        }
     }
 
     @Test
     public void testFindUsers() throws IOException, JSONException, JahiaException {
 
         PostMethod method = new PostMethod(getFindPrincipalServletURL());
-        method.addParameter("principalType", "users");
-        method.addParameter("wildcardTerm", "*root*");
+        try {
+            method.addParameter("principalType", "users");
+            method.addParameter("wildcardTerm", "*root*");
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        // Execute the method.
-        int statusCode = client.executeMethod(method);
+            // Execute the method.
+            int statusCode = client.executeMethod(method);
 
-        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
+            assertEquals("Method failed: " + method.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
 
-        // Read the response body.
-        StringBuilder responseBodyBuilder = new StringBuilder();
-        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
-        String responseBody = responseBodyBuilder.toString();
+            // Read the response body.
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            String responseBody = responseBodyBuilder.toString();
 
-        JSONArray jsonResults = new JSONArray(responseBody);
+            JSONArray jsonResults = new JSONArray(responseBody);
 
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+            assertNotNull(
+                    "A proper JSONObject instance was expected, got null instead",
+                    jsonResults);
+        } finally {
+            method.releaseConnection();
+        }
 
         // @todo we need to add more tests to validate results.
 
@@ -216,27 +240,35 @@ public class FindPrincipalTest extends JahiaTestCase {
     public void testFindGroups() throws IOException, JSONException {
 
         PostMethod method = new PostMethod(getFindPrincipalServletURL());
-        method.addParameter("principalType", "groups");
-        method.addParameter("siteKey", TESTSITE_NAME);
-        method.addParameter("wildcardTerm", "*administrators*");
+        try {
+            method.addParameter("principalType", "groups");
+            method.addParameter("siteKey", TESTSITE_NAME);
+            method.addParameter("wildcardTerm", "*administrators*");
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        // Execute the method.
-        int statusCode = client.executeMethod(method);
+            // Execute the method.
+            int statusCode = client.executeMethod(method);
 
-        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
+            assertEquals("Method failed: " + method.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
 
-        // Read the response body.
-        StringBuilder responseBodyBuilder = new StringBuilder();
-        responseBodyBuilder.append("[").append(method.getResponseBodyAsString()).append("]");
-        String responseBody = responseBodyBuilder.toString();
+            // Read the response body.
+            StringBuilder responseBodyBuilder = new StringBuilder();
+            responseBodyBuilder.append("[")
+                    .append(method.getResponseBodyAsString()).append("]");
+            String responseBody = responseBodyBuilder.toString();
 
-        JSONArray jsonResults = new JSONArray(responseBody);
+            JSONArray jsonResults = new JSONArray(responseBody);
 
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
+            assertNotNull(
+                    "A proper JSONObject instance was expected, got null instead",
+                    jsonResults);
+        } finally {
+            method.releaseConnection();
+        }
 
         // @todo we need to add more tests to validate results.
 

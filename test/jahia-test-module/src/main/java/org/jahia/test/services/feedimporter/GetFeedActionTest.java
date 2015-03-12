@@ -176,13 +176,18 @@ public class GetFeedActionTest extends JahiaTestCase {
         client.getHostConfiguration().setHost(url.getHost(), url.getPort(), url.getProtocol());
 
         PostMethod getFeedAction = new PostMethod(url.toExternalForm());
-        getFeedAction.addRequestHeader(new Header("accept", "application/json"));
+        try {
+            getFeedAction.addRequestHeader(new Header("accept",
+                    "application/json"));
 
-        client.executeMethod(getFeedAction);
-        assertEquals("Bad result code", 200, getFeedAction.getStatusCode());
+            client.executeMethod(getFeedAction);
+            assertEquals("Bad result code", 200, getFeedAction.getStatusCode());
 
-        JSONObject response = new JSONObject(getFeedAction.getResponseBodyAsString());
-        getFeedAction.releaseConnection();
+            JSONObject response = new JSONObject(
+                    getFeedAction.getResponseBodyAsString());
+        } finally {
+            getFeedAction.releaseConnection();
+        }
 
         JCRSessionWrapper liveSession = JCRSessionFactory.getInstance()
                 .getCurrentUserSession(Constants.LIVE_WORKSPACE,

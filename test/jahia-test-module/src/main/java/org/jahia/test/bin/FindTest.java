@@ -198,135 +198,159 @@ public class FindTest extends JahiaTestCase {
     public void testFindEscapingWithXPath() throws IOException, JSONException, JahiaException {
 
         PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
-        method.addParameter("query", "/jcr:root"+SITECONTENT_ROOT_NODE+"//element(*, nt:base)[jcr:contains(.,'{$q}')]");
-        method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
-        method.addParameter("language", javax.jcr.query.Query.XPATH);
-        method.addParameter("propertyMatchRegexp", "{$q}.*");
-        method.addParameter("removeDuplicatePropValues", "true");
-        method.addParameter("depthLimit", "1");
+        try {
+            method.addParameter("query", "/jcr:root" + SITECONTENT_ROOT_NODE
+                    + "//element(*, nt:base)[jcr:contains(.,'{$q}')]");
+            method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
+            method.addParameter("language", javax.jcr.query.Query.XPATH);
+            method.addParameter("propertyMatchRegexp", "{$q}.*");
+            method.addParameter("removeDuplicatePropValues", "true");
+            method.addParameter("depthLimit", "1");
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        // Execute the method.
-        int statusCode = getHttpClient().executeMethod(method);
-        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
+            // Execute the method.
+            int statusCode = getHttpClient().executeMethod(method);
+            assertEquals("Method failed: " + method.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
 
-        // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
-        if (!responseBody.startsWith("[")) {
-            StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[")
-                    .append(method.getResponseBodyAsString()).append("]");
-            responseBody = responseBodyBuilder.toString();
+            // Read the response body.
+            String responseBody = method.getResponseBodyAsString();
+            if (!responseBody.startsWith("[")) {
+                StringBuilder responseBodyBuilder = new StringBuilder();
+                responseBodyBuilder.append("[")
+                        .append(method.getResponseBodyAsString()).append("]");
+                responseBody = responseBodyBuilder.toString();
+            }
+
+            logger.debug("Status code=" + statusCode + " JSON response="
+                    + responseBody);
+
+            JSONArray jsonResults = new JSONArray(responseBody);
+
+            assertNotNull(
+                    "A proper JSONObject instance was expected, got null instead",
+                    jsonResults);
+
+            assertTrue("Result should not be empty !",
+                    (jsonResults.length() > 0));
+
+            validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
+        } finally {
+            method.releaseConnection();
         }
-
-        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
-
-        JSONArray jsonResults = new JSONArray(responseBody);
-
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
-
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
-
-        validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
-
     }
 
     @Test
     public void testSimpleFindWithSQL2() throws IOException, JSONException {
 
         PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
-        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}*')");
-        method.addParameter("q", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-        method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
-        method.addParameter("propertyMatchRegexp", "{$q}.*");
-        method.addParameter("removeDuplicatePropValues", "true");
-        method.addParameter("depthLimit", "1");
-        method.addParameter("getNodes", "true");
+        try {
+            method.addParameter("query",
+                    "select * from [nt:base] as base where isdescendantnode(["
+                            + SITECONTENT_ROOT_NODE
+                            + "/]) and contains(base.*,'{$q}*')");
+            method.addParameter("q", INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+            method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
+            method.addParameter("propertyMatchRegexp", "{$q}.*");
+            method.addParameter("removeDuplicatePropValues", "true");
+            method.addParameter("depthLimit", "1");
+            method.addParameter("getNodes", "true");
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        // Execute the method.
-        int statusCode = getHttpClient().executeMethod(method);
+            // Execute the method.
+            int statusCode = getHttpClient().executeMethod(method);
 
-        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
+            assertEquals("Method failed: " + method.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
 
-        // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
-        if (!responseBody.startsWith("[")) {
-            StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[")
-                    .append(method.getResponseBodyAsString()).append("]");
-            responseBody = responseBodyBuilder.toString();
+            // Read the response body.
+            String responseBody = method.getResponseBodyAsString();
+            if (!responseBody.startsWith("[")) {
+                StringBuilder responseBodyBuilder = new StringBuilder();
+                responseBodyBuilder.append("[")
+                        .append(method.getResponseBodyAsString()).append("]");
+                responseBody = responseBodyBuilder.toString();
+            }
+
+            logger.debug("Status code=" + statusCode + " JSON response="
+                    + responseBody);
+
+            JSONArray jsonResults = new JSONArray(responseBody);
+
+            assertNotNull(
+                    "A proper JSONObject instance was expected, got null instead",
+                    jsonResults);
+
+            assertTrue("Result should not be empty !",
+                    (jsonResults.length() > 0));
+
+            validateFindJSONResults(jsonResults,
+                    INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
+        } finally {
+            method.releaseConnection();
         }
-
-        logger.debug("Status code=" + statusCode +" JSON response=" + responseBody);
-
-        JSONArray jsonResults = new JSONArray(responseBody);
-
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
-
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
-
-        validateFindJSONResults(jsonResults, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
-
     }
 
     @Test
     public void testFindEscapingWithSQL2() throws IOException, JSONException {
 
         PostMethod method = new PostMethod(getFindServletURL()+ "/"+Constants.EDIT_WORKSPACE+"/en");
-        method.addParameter("query", "select * from [nt:base] as base where isdescendantnode(["+SITECONTENT_ROOT_NODE+"/]) and contains(base.*,'{$q}')");
-        method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
-        method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
-        method.addParameter("propertyMatchRegexp", "{$q}.*");
-        method.addParameter("removeDuplicatePropValues", "true");
-        method.addParameter("depthLimit", "1");
-        method.addParameter("getNodes", "true");
+        try {
+            method.addParameter("query",
+                    "select * from [nt:base] as base where isdescendantnode(["
+                            + SITECONTENT_ROOT_NODE
+                            + "/]) and contains(base.*,'{$q}')");
+            method.addParameter("q", COMPLEX_QUERY_VALUE); // to test if the reserved characters work correctly.
+            method.addParameter("language", javax.jcr.query.Query.JCR_SQL2);
+            method.addParameter("propertyMatchRegexp", "{$q}.*");
+            method.addParameter("removeDuplicatePropValues", "true");
+            method.addParameter("depthLimit", "1");
+            method.addParameter("getNodes", "true");
 
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+            // Provide custom retry handler is necessary
+            method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
+                    new DefaultHttpMethodRetryHandler(3, false));
 
-        // Execute the method.
-        int statusCode = getHttpClient().executeMethod(method);
+            // Execute the method.
+            int statusCode = getHttpClient().executeMethod(method);
 
-        assertEquals("Method failed: " + method.getStatusLine(), HttpStatus.SC_OK, statusCode);
+            assertEquals("Method failed: " + method.getStatusLine(),
+                    HttpStatus.SC_OK, statusCode);
 
-        // Read the response body.
-        String responseBody = method.getResponseBodyAsString();
-        if (!responseBody.startsWith("[")) {
-            StringBuilder responseBodyBuilder = new StringBuilder();
-            responseBodyBuilder.append("[")
-                    .append(method.getResponseBodyAsString()).append("]");
-            responseBody = responseBodyBuilder.toString();
+            // Read the response body.
+            String responseBody = method.getResponseBodyAsString();
+            if (!responseBody.startsWith("[")) {
+                StringBuilder responseBodyBuilder = new StringBuilder();
+                responseBodyBuilder.append("[")
+                        .append(method.getResponseBodyAsString()).append("]");
+                responseBody = responseBodyBuilder.toString();
+            }
+
+            logger.debug("Status code=" + statusCode + " JSON response="
+                    + responseBody);
+
+            JSONArray jsonResults = new JSONArray(responseBody);
+
+            assertNotNull(
+                    "A proper JSONObject instance was expected, got null instead",
+                    jsonResults);
+
+            assertTrue("Result should not be empty !",
+                    (jsonResults.length() > 0));
+
+            validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
+        } finally {
+            method.releaseConnection();
         }
-
-
-        logger.debug("Status code=" + statusCode + " JSON response=" + responseBody);
-        
-        JSONArray jsonResults = new JSONArray(responseBody);
-
-        assertNotNull("A proper JSONObject instance was expected, got null instead", jsonResults);
-
-        assertTrue("Result should not be empty !", (jsonResults.length() > 0));
-
-        validateFindJSONResults(jsonResults, COMPLEX_QUERY_VALUE);
 
     }
     
-    private String getLoginServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/login";
-    }
-
-    private String getLogoutServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/cms/logout";
-    }
-
     private String getFindServletURL() {
         return getBaseServerURL() + Jahia.getContextPath() + Find.getFindServletPath();
     }

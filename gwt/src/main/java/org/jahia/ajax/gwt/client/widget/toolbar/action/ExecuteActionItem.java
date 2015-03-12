@@ -176,8 +176,8 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
     public void handleNewLinkerSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
 
-        boolean enabled = lh.getMultipleSelection().size() > 0;
-        if (enabled && isNodeTypeAllowed(lh.getMultipleSelection()) && requiredNodeTypes != null && !requiredNodeTypes.isEmpty()) {
+        boolean enabled = lh.getMultipleSelection().size() > 0 && isNodeTypeAllowed(lh.getMultipleSelection());
+        if (enabled && requiredNodeTypes != null && !requiredNodeTypes.isEmpty()) {
             for (GWTJahiaNode selected : lh.getMultipleSelection()) {
                 if (!selected.isNodeType(requiredNodeTypes)) {
                     enabled = false;
@@ -187,7 +187,9 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
             
         }
         setEnabled(enabled);
-        super.handleNewLinkerSelection();
+        if (enabled) {
+            super.handleNewLinkerSelection();
+        }
     }
 
     public void setAction(String action) {

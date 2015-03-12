@@ -102,7 +102,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
-
 import java.util.*;
 
 /**
@@ -996,6 +995,7 @@ public class WorkflowService implements BeanPostProcessor {
                     if (aclEntry.getKey().startsWith(rule.getDefinitionPath().equals("/") ? "/" : rule.getDefinitionPath() + "/")) {
                         if (!Collections.disjoint(aclEntry.getValue(), rule.getPermissions().values())) {
                             rule = new WorkflowRule(aclEntry.getKey(), rule.getProviderKey(), rule.getWorkflowDefinitionKey(), rule.getPermissions());
+                            rule.setWorkflowRootPath(ruleEntry.getValue().getDefinitionPath());
                             rulesCopy.put(ruleEntry.getKey(),rule);
                         }
                     }

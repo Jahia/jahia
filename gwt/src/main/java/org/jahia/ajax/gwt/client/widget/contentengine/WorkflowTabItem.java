@@ -152,7 +152,7 @@ public class WorkflowTabItem extends EditEngineTabItem {
                         workflowRules = result;
                         for (List<GWTJahiaWorkflowDefinition> list : workflowRules.values()) {
                             for (GWTJahiaWorkflowDefinition definition : list) {
-                                if (Boolean.TRUE.equals(definition.get("active")) && engine.getNode().getPath().equals(definition.get("definitionPath"))) {
+                                if (Boolean.TRUE.equals(definition.get("active")) && engine.getNode().getPath().equals(definition.get("workflowRootPath"))) {
                                     definition.set("set", Boolean.TRUE);
                                 }
                             }

@@ -522,6 +522,7 @@ public class WorkflowHelper {
                         final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
                         workflowDefinition.set("active", Boolean.TRUE);
                         workflowDefinition.set("definitionPath", rule.getDefinitionPath());
+                        workflowDefinition.set("workflowRootPath",rule.getWorkflowRootPath());
                         keyToMap.get(rev.get(definition.getKey())).remove(workflowDefinition);
                         keyToMap.get(rev.get(definition.getKey())).add(workflowDefinition);
                     } else {

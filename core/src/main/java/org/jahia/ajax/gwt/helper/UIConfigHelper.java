@@ -598,6 +598,7 @@ public class UIConfigHelper {
         }
         gwtToolbarItem.setLayout(getLayoutAsInt(item.getLayout()));
         gwtToolbarItem.setRequiredPermission(item.getRequiredPermission());
+        gwtToolbarItem.setRequiredModule(item.getRequiredModule());
         gwtToolbarItem.setHideWhenDisabled(item.isHideWhenDisabled());
         gwtToolbarItem.setProperties(pMap);
 

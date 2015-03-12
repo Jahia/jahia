@@ -89,6 +89,8 @@ public interface ActionItem extends Serializable {
 
     public void setEnabled(boolean enabled) ;
 
+    public void setVisible(boolean visible) ;
+
     /**
      * If implemented and doesn't return null, the actionItem component will be always the one returned by this method
      * @return

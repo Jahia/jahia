@@ -102,6 +102,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private Selected selected;
     private String layout;
     private String requiredPermission;
+    private String requiredModule;
     private boolean hideWhenDisabled;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
@@ -217,6 +218,14 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
 
     public String getRequiredPermission() {
         return requiredPermission;
+    }
+
+    public String getRequiredModule() {
+        return requiredModule;
+    }
+
+    public void setRequiredModule(String requiredModule) {
+        this.requiredModule = requiredModule;
     }
 
     public void setRequiredPermission(String requiredPermission) {

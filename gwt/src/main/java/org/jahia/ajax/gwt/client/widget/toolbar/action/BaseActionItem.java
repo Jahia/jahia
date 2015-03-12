@@ -81,6 +81,7 @@ import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -91,6 +92,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -259,6 +261,18 @@ public abstract class BaseActionItem implements ActionItem {
         }
     }
 
+    public void setVisible(boolean visible) {
+        if (isTextToolItem()) {
+            getTextToolItem().setVisible(visible);
+        }
+        if (isMenuItem()) {
+            getMenuItem().setVisible(visible);
+        }
+        if (isContextMenuItem()) {
+            getContextMenuItem().setVisible(visible);
+        }
+    }
+
 
     /**
      * Executed when the item is clicked
@@ -334,7 +348,14 @@ public abstract class BaseActionItem implements ActionItem {
      *  Called when there is a new liker selection. Override this method to provide custom behaviour
      */
     public  void handleNewLinkerSelection(){
-
+        if (getGwtToolbarItem().getRequiredModule() != null) {
+            List<String> installedModules = (List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules");
+            if (installedModules.contains(getGwtToolbarItem().getRequiredModule())) {
+                setVisible(true);
+            } else {
+                setVisible(false);
+            }
+        }
     }
 
     public  void handleNewMainNodeLoaded(GWTJahiaNode node){

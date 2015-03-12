@@ -91,6 +91,11 @@ public class SeparatorActionItem implements ActionItem {
     public void setEnabled(boolean enabled) {
     }
 
+    public void setVisible(boolean visible) {
+
+    }
+
+
     public Component getCustomItem() {
         return new Html("<span class=\"xtb-sep\">&nbsp;</span>");
     }

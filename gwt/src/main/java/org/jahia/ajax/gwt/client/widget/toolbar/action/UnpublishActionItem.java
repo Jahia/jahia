@@ -72,15 +72,10 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.publication.PublicationWorkflow;
 
 import java.util.List;
@@ -112,10 +107,5 @@ public class UnpublishActionItem extends PublishActionItem {
         } else {
             PublicationWorkflow.create(result, linker, checkForUnpublication);
         }
-    }
-
-    @Override
-    protected boolean isWorkInProgress(GWTJahiaNode gwtJahiaNode) {
-        return false;
     }
 }

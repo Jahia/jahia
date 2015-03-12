@@ -372,6 +372,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         renderContext.getRequest().setAttribute(STATIC_ASSETS, assets);
         Element element = source.getFirstElement(targetTag);
         String templateContent = getResolvedTemplate();
+        if(element == null) {
+            logger.warn("Trying to add resources to output but didn't find {} tag", targetTag);
+            return;
+        }
         if (templateContent != null) {
             final EndTag headEndTag = element.getEndTag();
             ScriptEngine scriptEngine = scriptEngineUtils.scriptEngine(templateExtension);

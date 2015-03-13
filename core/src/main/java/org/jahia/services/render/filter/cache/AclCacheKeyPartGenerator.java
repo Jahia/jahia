@@ -174,7 +174,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
             JCRNodeWrapper node = resource.getNode();
             final String nodePath = node.getPath();
-            final String nodeId = node.getIdentifier();
             final Set<String> aclsKeys = new TreeSet<String>();
 
             aclsKeys.add(encodeSpecificChars(nodePath));
@@ -191,44 +190,38 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 }
             }
 
-            final String ref = (String) properties.get("cache.dependsOnReference");
+            String ref = (String) properties.get("cache.dependsOnReference");
             if (ref != null && ref.length() > 0) {
-                aclsKeys.addAll(template.doExecuteWithSystemSession(new JCRCallback<Collection<? extends String>>() {
-                    @Override
-                    public Collection<? extends String> doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                        String[] refProperties = ref.split(",");
-                        Set<String> refPaths = new HashSet<>();
-                        JCRNodeWrapper currentNode = session.getNodeByIdentifier(nodeId);
-                        for (int i = 0; i < refProperties.length; i++) {
-                            final String refPropertyName = refProperties[i];
-                            try {
-                                JCRPropertyWrapper refProperty = currentNode.getProperty(refPropertyName);
-                                if(refProperty != null) {
-                                    if(refProperty.isMultiple() && refProperty.getValues().length > 0) {
-                                        for (JCRValueWrapper value : refProperty.getValues()){
-                                            try {
-                                                Node refNode = value.getNode();
-                                                refPaths.add(refNode.getPath());
-                                            } catch (ItemNotFoundException e) {
-                                                logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
-                                            }
-                                        }
-                                    } else {
-                                        try {
-                                            Node refNode = refProperty.getNode();
-                                            refPaths.add(refNode.getPath());
-                                        } catch (ItemNotFoundException e) {
-                                            logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
-                                        }
+                String[] refProperties = ref.split(",");
+                for (int i = 0; i < refProperties.length; i++) {
+                    String refPropertyName = refProperties[i];
+                    try {
+                        JCRPropertyWrapper refProperty = node.getProperty(refPropertyName);
+                        JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(node.getSession().getWorkspace().getName(), node.getSession().getLocale(), null);
+                        int propertyRequiredType = refProperty.getDefinition().getRequiredType();
+                        if (refProperty != null && (propertyRequiredType == PropertyType.REFERENCE || propertyRequiredType == PropertyType.WEAKREFERENCE)) {
+                            if (refProperty.isMultiple() && refProperty.getValues().length > 0) {
+                                for (JCRValueWrapper value : refProperty.getValues()) {
+                                    try {
+                                        Node refNode = systemSession.getNodeByIdentifier(value.getString());
+                                        aclsKeys.add(encodeSpecificChars(refNode.getPath()));
+                                    } catch (ItemNotFoundException e) {
+                                        logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
                                     }
                                 }
-                            } catch (PathNotFoundException e) {
-                                logger.warn("Trying to add cache dependency for reference but property '{}' not found on node '{}'", refPropertyName, nodePath);
+                            } else {
+                                try {
+                                    Node refNode = systemSession.getNodeByIdentifier(refProperty.getString());
+                                    aclsKeys.add(encodeSpecificChars(refNode.getPath()));
+                                } catch (ItemNotFoundException e) {
+                                    logger.debug("Trying to add cache dependency for reference but reference node '{}' not found", refProperty.getString());
+                                }
                             }
                         }
-                        return refPaths;
+                    } catch (PathNotFoundException e) {
+                        logger.warn("Trying to add cache dependency for reference but property '{}' not found on node '{}'", refPropertyName, nodePath);
                     }
-                }));
+                }
             }
 
             Element element = permissionCache.get(node.getPath());

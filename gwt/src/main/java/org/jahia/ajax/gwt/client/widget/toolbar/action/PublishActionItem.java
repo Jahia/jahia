@@ -160,7 +160,7 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
                 } else if (gwtJahiaNode != null) {
                     String title;
                     if (allSubTree) {
-                        title = Messages.getWithArgs("label.publihall.all.languages", "Publish all under {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()});
+                        title = Messages.getWithArgs("label.publishall.all.languages", "Publish all under {0} in all languages", new String[]{gwtJahiaNode.getDisplayName()});
                     } else {
                         title = Messages.getWithArgs("label.publish.languages","Publish {0} in all languages",new String[]{gwtJahiaNode.getDisplayName()});
                     }

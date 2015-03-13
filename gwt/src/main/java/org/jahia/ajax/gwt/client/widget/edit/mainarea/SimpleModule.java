@@ -176,7 +176,7 @@ public class SimpleModule extends Module {
 
             Listener<ComponentEvent> listener = new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent ce) {
-                    if (selectable) {
+                    if (selectable && !MainModule.isGlobalSelectionDisabled()) {
                         Log.info("click" + path + " : " + scriptInfo);
                         mainModule.setCtrlActive(ce);
                         if (!ce.isRightClick() || !mainModule.getSelections().containsKey(SimpleModule.this)) {

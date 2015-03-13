@@ -109,6 +109,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.contentengine.EditContentEnginePopupListener;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineLoader;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.InfoLayers;
 import org.jahia.ajax.gwt.client.widget.edit.ToolbarHeader;
@@ -150,6 +151,7 @@ public class MainModule extends Module {
 
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant;
+    private static boolean globalSelectionDisabled = false;
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
         super("main", path, template, nodeTypes, new BorderLayout());
@@ -232,6 +234,10 @@ public class MainModule extends Module {
 
     public boolean isInframe() {
         return inframe;
+    }
+
+    public static boolean isGlobalSelectionDisabled() {
+        return globalSelectionDisabled;
     }
 
     public Map<Module, Selection> getSelections() {
@@ -405,7 +411,7 @@ public class MainModule extends Module {
      * select current module
      */
     public void makeSelected() {
-        if (selectable) {
+        if (selectable && !MainModule.isGlobalSelectionDisabled()) {
             editLinker.onModuleSelection(null);
         }
     }
@@ -515,6 +521,11 @@ public class MainModule extends Module {
 
     public static void waitingMask(String text) {
         getInstance().mask(text, "x-mask-loading");
+    }
+
+    public static void editContent(String path) {
+        List<Module> modules = ModuleHelper.getModulesByPath().get(path);
+        EngineLoader.showEditEngine(getInstance().getEditLinker(),modules.get(0).getNode(), null);
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
@@ -1040,7 +1051,13 @@ public class MainModule extends Module {
         });
         $wnd.waitingMask = function (text) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::waitingMask(Ljava/lang/String;)(text);
-        }
+        };
+        $wnd.editContent = function (path) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(Ljava/lang/String;)(path);
+        };
+        $wnd.disableGlobalSelection = function (value) {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::globalSelectionDisabled = value;
+        };
     }-*/;
 
     public InfoLayers getInfoLayers() {

@@ -74,6 +74,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 import com.extjs.gxt.ui.client.event.ComponentEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
@@ -88,7 +89,7 @@ public class EditContentEnginePopupListener implements Listener<ComponentEvent> 
     }
 
     public void handleEvent(ComponentEvent ce) {
-        if (!module.isSelectable()) {
+        if (!module.isSelectable() || MainModule.isGlobalSelectionDisabled()) {
             return;
         }
         if (!Boolean.FALSE.equals(ModuleHelper.getNodeType(module.getNode().getNodeTypes().get(0)).get("canUseComponentForEdit"))) {

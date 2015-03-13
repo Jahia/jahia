@@ -295,7 +295,7 @@ public class Export extends JahiaController implements ServletContextAware {
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException e) {
             if (logger.isDebugEnabled())
-                logger.warn("Cannot export due to some IO exception", e);
+                logger.debug("Cannot export due to some IO exception", e);
             else logger.warn("Cannot export due to some IO exception :" + e.getMessage());
             DefaultErrorHandler.getInstance().handle(e, request, response);
         } catch (Exception e) {

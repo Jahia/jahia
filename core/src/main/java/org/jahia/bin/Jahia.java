@@ -3,7 +3,7 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -130,7 +130,7 @@ public final class Jahia {
     public static final String CODE_NAME = "Firestar";
     
     static public final String COPYRIGHT =
-            "&copy; Copyright 2002-2014  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+            "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
 
     public final static String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
 

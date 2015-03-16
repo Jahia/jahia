@@ -29,7 +29,7 @@ import java.net.URLDecoder;
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  * <p/>
- * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  * <p/>
  * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  * 1/GPL OR 2/JSEL

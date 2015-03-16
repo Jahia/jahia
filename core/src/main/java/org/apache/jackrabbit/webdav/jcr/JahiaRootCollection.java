@@ -3,7 +3,7 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -79,7 +79,7 @@ package org.apache.jackrabbit.webdav.jcr;
  *
  * For more information, please visit http://www.jahia.com.
  *
- * Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License

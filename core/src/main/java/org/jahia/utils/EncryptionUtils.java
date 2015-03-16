@@ -3,7 +3,7 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2014 Jahia Solutions Group SA. All rights reserved.
+ *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
@@ -188,7 +188,7 @@ public final class EncryptionUtils {
     public static void main(String[] args) {
         System.out.println("\nJahia 7.0 Password Encryption Tool");
         System.out
-                .println("Copyright 2002-2014 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
+                .println("Copyright 2002-2015 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
         String password = null;
         if (args.length > 0) {
             password = args[0];

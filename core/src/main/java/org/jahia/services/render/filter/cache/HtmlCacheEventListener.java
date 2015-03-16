@@ -310,8 +310,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             cacheProvider.invalidate(path, propagateToOtherClusterNodes);
             depCache.remove(element.getObjectKey());
         }
-        if (SettingsBean.getInstance().isClusterActivated()) {
-            cacheProvider.propagatePathFlushToCluster(path, propagateToOtherClusterNodes);
+
+        if (propagateToOtherClusterNodes && SettingsBean.getInstance().isClusterActivated()) {
+            cacheProvider.propagatePathFlushToCluster(path);
         }
     }
 

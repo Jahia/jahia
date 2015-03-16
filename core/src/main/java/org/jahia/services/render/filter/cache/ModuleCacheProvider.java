@@ -87,6 +87,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.text.ParseException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -192,19 +194,42 @@ public class ModuleCacheProvider implements InitializingBean {
             }
         }
         if(propagateToOtherClusterNodes) {
-            propagatePathFlushToCluster(nodePath, true);
+            propagatePathFlushToCluster(nodePath);
         }
     }
 
-    private void invalidateDependencies(Set<String> deps) {
-        for (String dep : deps) {
-            if (dep != null) {
-                boolean removed = htmlCache.remove(dep);
-                if (!removed && logger.isDebugEnabled()) {
-                    logger.debug("Failed to remove {} from cache", dep);
+    public void invalidate(Collection<String> nodePaths, boolean propagateToOtherClusterNodes) {
+        Set<String> all = new HashSet<>();
+        for (String nodePath : nodePaths) {
+            Element element = dependenciesCache.get(nodePath);
+            if (element != null) {
+                Set<String> deps = (Set<String>) element.getObjectValue();
+                if (deps.contains("ALL")) {
+                    // do not propagate
+                    htmlCache.removeAll(true);
+                    all.clear();
+                    break;
+                } else {
+                    all.addAll(deps);
                 }
             }
         }
+        invalidateDependencies(all);
+
+        if(propagateToOtherClusterNodes) {
+            for (String nodePath : nodePaths) {
+                propagatePathFlushToCluster(nodePath);
+            }
+        }
+    }
+
+
+    private void invalidateDependencies(Set<String> deps) {
+        if (deps.contains(null)) {
+            deps = new HashSet<>(deps);
+            deps.remove(null);
+        }
+        htmlCache.removeAll(deps);
     }
 
     public Cache getCache() {
@@ -282,8 +307,8 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-    public void propagatePathFlushToCluster(String nodePath, boolean propagateToOtherClusterNodes) {
-        if(propagateToOtherClusterNodes && syncCache != null) {
+    public void propagatePathFlushToCluster(String nodePath) {
+        if(syncCache != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of {} across cluster", nodePath);
             }

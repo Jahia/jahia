@@ -92,11 +92,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 import java.lang.management.ManagementFactory;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Cache manager utility.
@@ -265,29 +261,34 @@ public final class CacheHelper {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for paths: {}", paths);
         }
-        ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance(); 
+        ModuleCacheProvider cacheProvider = ModuleCacheProvider.getInstance();
         Cache cache = cacheProvider.getDependenciesCache();
+        Set<Object> cacheKeys = new HashSet<>();
         for (String path : paths) {
             Element element = cache.get(path);
             if (element != null) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Flushing path: {}", path);
                 }
-                cacheProvider.invalidate(path);
-                cache.remove(element.getObjectKey());
+                cacheKeys.add(element.getObjectKey());
             }
         }
         if (flushSubtree) {
+            Set<String> pathsWithSubTree = new HashSet<>(paths);
+
             @SuppressWarnings("rawtypes")
             List keys = cache.getKeys();
             for (Object key : keys) {
                 String stringKey = key.toString();
                 if (isKeyMatched(stringKey, paths)) {
-                    cacheProvider.invalidate(stringKey);
-                    cache.remove(key);
+                    pathsWithSubTree.add(stringKey);
+                    cacheKeys.add(key);
                 }
             }
+            paths = pathsWithSubTree;
         }
+        cacheProvider.invalidate(paths, true);
+        cache.removeAll(cacheKeys);
     }
     
     private static boolean isKeyMatched(String stringKey, Set<String> paths) {

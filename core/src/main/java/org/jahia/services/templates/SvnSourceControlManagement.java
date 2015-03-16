@@ -304,7 +304,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             separator = it.next();
         }
         String base = StringUtils.substringBeforeLast(uri, separator) + "/tags/";
-        String path = StringUtils.substringAfterLast(uri, separator + "/");
+        String path = StringUtils.substringAfter(StringUtils.substringAfterLast(uri, separator + "/"),"/");
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);
@@ -323,7 +323,7 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             separator = it.next();
         }
         String base = StringUtils.substringBeforeLast(uri, separator) + "/branches/";
-        String path = StringUtils.substringAfterLast(uri, separator + "/");
+        String path = StringUtils.substringAfter(StringUtils.substringAfterLast(uri, separator + "/"),"/");
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);

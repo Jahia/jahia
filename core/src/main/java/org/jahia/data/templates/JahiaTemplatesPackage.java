@@ -97,6 +97,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Holds Informations about a templates package
@@ -108,7 +109,17 @@ public class JahiaTemplatesPackage {
     private static final Resource[] NO_RESOURCES = new Resource[0];
 
     private static final String GIT_URI_END = ".git";
-    
+
+    private static URL NULL_URL;
+
+    static {
+        try {
+            NULL_URL = new URL("http://");
+        } catch (MalformedURLException e) {
+            //
+        }
+    }
+
     private Bundle bundle = null;
 
     private ModuleState state;
@@ -171,6 +182,8 @@ public class JahiaTemplatesPackage {
      */
     private List<String> resourceBundleHierarchy = new LinkedList<String>();
     private List<String> rulesDescriptorFiles = new LinkedList<String>();
+
+    private Map<String,URL> resourcesCache = new ConcurrentHashMap<String, URL>();
 
     /**
      * @deprecated with no replacement
@@ -491,7 +504,7 @@ public class JahiaTemplatesPackage {
 
     /**
      * Sets the list of content node definition files (CND) available in the module.
-     * 
+     *
      * @param definitionFile
      *            the list of content node definition files (CND) available in the module
      */
@@ -869,7 +882,7 @@ public class JahiaTemplatesPackage {
                 // file.toURI cannot return malformed URL
             }
         }
-        URL entryURL = bundle.getEntry(relativePath);
+        URL entryURL = getResourceFromCache(relativePath);
         if (entryURL != null) {
             return new BundleResource(entryURL, bundle);
         }
@@ -893,7 +906,16 @@ public class JahiaTemplatesPackage {
                 return true;
             }
         }
-        return bundle.getEntry(relativePath) != null;
+        return getResourceFromCache(relativePath) != null;
+    }
+
+    private URL getResourceFromCache(String relativePath) {
+        URL url = resourcesCache.get(relativePath);
+        if (url == null) {
+            url = bundle.getEntry(relativePath);
+            resourcesCache.put(relativePath, url != null ? url : NULL_URL);
+        }
+        return url != NULL_URL ? url : null;
     }
 
     /**

@@ -140,6 +140,10 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                 realm = StringUtils.substringAfter(value, ":");
                 value = StringUtils.substringBefore(value, ":");
             }
+            if (value.equals("deleted")) {
+                valveContext.invokeNext(context);
+                return;
+            }
             searchCriterias.setProperty(userPropertyName, value);
             Set<JCRUserNode> foundUsers = null;
             try {
@@ -158,6 +162,14 @@ public class CookieAuthValveImpl extends BaseAuthValve {
                             createAndSendCookie(authContext, jahiaUser, cookieAuthConfig);
                         }
                     }
+                } else {
+                    authCookie = new Cookie(cookieAuthConfig.getCookieName(), "deleted");
+                    authCookie.setPath(StringUtils.isNotEmpty(authContext.getRequest().getContextPath()) ?
+                            authContext.getRequest().getContextPath() : "/");
+                    authCookie.setMaxAge(0);
+                    authCookie.setHttpOnly(cookieAuthConfig.isHttpOnly());
+                    authCookie.setSecure(cookieAuthConfig.isSecure());
+                    authContext.getResponse().addCookie(authCookie);
                 }
             } catch (RepositoryException e) {
                 logger.error("Error while searching for users", e);

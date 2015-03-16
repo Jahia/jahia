@@ -146,8 +146,12 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         final PrintWriter printWriter = response.getWriter();
         try {
             FileItemIterator itemIterator = upload.getItemIterator(request);
+            FileSizeLimitExceededException sizeLimitExceededException = null;
             while (itemIterator.hasNext()) {
                 final FileItemStream item = itemIterator.next();
+                if (sizeLimitExceededException != null) {
+                    continue;
+                }
                 FileItem fileItem = factory.createItem(item.getFieldName(), item.getContentType(), item.isFormField(),
                         item.getName());
                 long contentLength = getContentLength(item.getHeaders());
@@ -172,6 +176,14 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                     } : itemStream;
 
                     Streams.copy(limitedInputStream, fileItem.getOutputStream(), true);
+                } catch (FileUploadIOException e) {
+                    if (e.getCause() != null && (e.getCause() instanceof FileSizeLimitExceededException)) {
+                        if (sizeLimitExceededException == null) {
+                            sizeLimitExceededException = (FileSizeLimitExceededException) e.getCause();
+                        }
+                    } else {
+                        throw e;
+                    }
                 } finally {
                     IOUtils.closeQuietly(limitedInputStream);
                 }
@@ -193,6 +205,9 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                     }
                     type = "sync";
                 }
+            }
+            if (sizeLimitExceededException != null) {
+                throw sizeLimitExceededException;
             }
         } catch (FileUploadBase.FileSizeLimitExceededException e) {
             printWriter.write("UPLOAD-SIZE-ISSUE: " + getSizeLimitErrorMessage(fileSizeLimit, e, request) + "\n");

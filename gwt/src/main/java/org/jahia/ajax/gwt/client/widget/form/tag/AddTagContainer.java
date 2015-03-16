@@ -85,8 +85,6 @@ public class AddTagContainer extends HorizontalPanel {
                             }
                         }));
                 setStore(store);
-                setTypeAhead(true);
-                setTypeAheadDelay(100);
                 setTriggerAction(TriggerAction.ALL);
                 setMinChars(2);
                 setQueryDelay(100);

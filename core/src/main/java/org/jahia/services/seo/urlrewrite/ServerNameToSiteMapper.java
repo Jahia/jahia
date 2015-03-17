@@ -107,6 +107,7 @@ public class ServerNameToSiteMapper {
     public static final String ATTR_NAME_SKIP_INBOUND_SEO_RULES = "jahiaSkipInboundSeoRules";
     public static final String ATTR_NAME_VANITY_LANG = "vanityUrlTargetLang";
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
+    public static final String ATTR_NAME_CONTEXT_PATH = "contextPath";
 
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 

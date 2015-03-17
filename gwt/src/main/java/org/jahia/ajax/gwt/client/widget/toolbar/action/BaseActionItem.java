@@ -349,12 +349,9 @@ public abstract class BaseActionItem implements ActionItem {
      */
     public  void handleNewLinkerSelection(){
         if (getGwtToolbarItem().getRequiredModule() != null) {
+            @SuppressWarnings("unchecked")
             List<String> installedModules = (List<String>) JahiaGWTParameters.getSiteNode().get("j:installedModules");
-            if (installedModules.contains(getGwtToolbarItem().getRequiredModule())) {
-                setVisible(true);
-            } else {
-                setVisible(false);
-            }
+            setVisible(installedModules != null && installedModules.contains(getGwtToolbarItem().getRequiredModule()));
         }
     }
 

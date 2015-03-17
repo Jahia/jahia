@@ -5,6 +5,11 @@
 <configuration>
 
 <property>
+  <name>hadoop.tmp.dir</name>
+  <value>/tmp/hadoop-${user.name}/${crawl.jahia.version}</value>
+</property>
+
+<property>
   <name>plugin.includes</name>
   <value>protocol-httpclient|parse-(html|tika|js)|urlfilter-regex|urlnormalizer-regex</value>
   <description>Enable required plugins.</description>

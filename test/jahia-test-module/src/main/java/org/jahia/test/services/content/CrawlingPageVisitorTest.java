@@ -174,6 +174,9 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
+            // This is added to allow this parallel crawling for different jahia versions (see crawl-tests.xml) 
+            System.setProperty("crawl.jahia.version", Jahia.VERSION);
+            
             conf = CrawlDBTestUtil.createConfiguration();
             conf.setClassLoader(CrawlingPageVisitorTest.class.getClassLoader());
 

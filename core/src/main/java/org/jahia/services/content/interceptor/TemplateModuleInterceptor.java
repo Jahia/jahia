@@ -75,16 +75,17 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueFactoryImpl;
 import org.jahia.services.render.RenderContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
+import javax.jcr.*;
 
 /**
  * Intercepts reading of reference/weakreference property values to translate the path from modules to site.
  */
 public class TemplateModuleInterceptor extends BaseInterceptor {
+
+    private static final Logger logger = LoggerFactory.getLogger(TemplateModuleInterceptor.class);
 
     static public ThreadLocal<RenderContext> renderContextThreadLocal = new ThreadLocal<RenderContext>();
 
@@ -123,6 +124,9 @@ public class TemplateModuleInterceptor extends BaseInterceptor {
                                             property.getSession().getNode(sitePath.toString()));
                                 }
                             }
+                        } catch (PathNotFoundException e) {
+                            logger.warn("Cannot get reference in local site " +e.getMessage());
+                            renderContext.getRequest().setAttribute("expiration", "0");
                         } catch (ItemNotFoundException e) {
                             // referenced node not available
                         }

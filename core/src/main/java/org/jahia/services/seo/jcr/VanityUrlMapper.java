@@ -121,11 +121,11 @@ public class VanityUrlMapper {
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
         UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
 
-        String fullUrl = outboundContext + Render.getRenderServletPath() + outboundUrl;
+        String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
+        String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;
         hsRequest.setAttribute(VANITY_KEY, fullUrl);
         
         if (StringUtils.isNotEmpty(outboundUrl) && !Url.isLocalhost(hsRequest.getServerName())) {
-            String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
             String serverName = null;
             String siteKey = null;
             String contextToCheck = outboundContext;            

@@ -88,11 +88,12 @@ public class WorkflowRule implements Serializable {
     private String workflowRootPath;
     private Map<String,String> permissions;
 
-    public WorkflowRule(String definitionPath, String providerKey, String workflowDefinitionKey, Map<String,String> permissions) {
+    public WorkflowRule(String definitionPath, String workflowRootPath, String providerKey, String workflowDefinitionKey, Map<String,String> permissions) {
         this.definitionPath = definitionPath;
         this.providerKey = providerKey;
         this.workflowDefinitionKey = workflowDefinitionKey;
         this.permissions = permissions;
+        this.workflowRootPath = workflowRootPath;
     }
 
     public String getDefinitionPath() {
@@ -101,10 +102,6 @@ public class WorkflowRule implements Serializable {
 
     public String getWorkflowRootPath() {
         return workflowRootPath;
-    }
-
-    public void setWorkflowRootPath(String workflowRootPath) {
-        this.workflowRootPath = workflowRootPath;
     }
 
     public String getProviderKey() {

@@ -994,8 +994,7 @@ public class WorkflowService implements BeanPostProcessor {
                 for (Map.Entry<String, List<String>> aclEntry : perms.entrySet()) {
                     if (aclEntry.getKey().startsWith(rule.getDefinitionPath().equals("/") ? "/" : rule.getDefinitionPath() + "/")) {
                         if (!Collections.disjoint(aclEntry.getValue(), rule.getPermissions().values())) {
-                            rule = new WorkflowRule(aclEntry.getKey(), rule.getProviderKey(), rule.getWorkflowDefinitionKey(), rule.getPermissions());
-                            rule.setWorkflowRootPath(ruleEntry.getValue().getDefinitionPath());
+                            rule = new WorkflowRule(aclEntry.getKey(), ruleEntry.getValue().getDefinitionPath(), rule.getProviderKey(), rule.getWorkflowDefinitionKey(), rule.getPermissions());
                             rulesCopy.put(ruleEntry.getKey(),rule);
                         }
                     }
@@ -1010,12 +1009,13 @@ public class WorkflowService implements BeanPostProcessor {
 
     private Map<String, WorkflowRule> recurseOnRules(final JCRNodeWrapper n)
             throws RepositoryException {
-        Map<String, WorkflowRule> results = cache.get(n.getPath());
+        String nodePath = n.getPath();
+        Map<String, WorkflowRule> results = cache.get(nodePath);
         if (results != null) {
             return results;
         }
 
-        if ("/".equals(n.getPath())) {
+        if ("/".equals(nodePath)) {
             results = new HashMap<String, WorkflowRule>();
             Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
             for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
@@ -1025,7 +1025,7 @@ public class WorkflowService implements BeanPostProcessor {
                 }
             }
             for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
-                results.put(entry.getValue().getType(), new WorkflowRule("/", entry.getValue().getProvider(), entry.getValue().getDefinition(), entry.getValue().getPermissions()));
+                results.put(entry.getValue().getType(), new WorkflowRule("/", "/", entry.getValue().getProvider(), entry.getValue().getDefinition(), entry.getValue().getPermissions()));
             }
         } else {
             results = recurseOnRules(n.getParent());
@@ -1046,11 +1046,11 @@ public class WorkflowService implements BeanPostProcessor {
                     }
                     String wftype = type.getType();
 
-                    results.put(wftype, new WorkflowRule(n.getPath(), prov, name, type.getPermissions()));
+                    results.put(wftype, new WorkflowRule(nodePath, nodePath, prov, name, type.getPermissions()));
                 }
             }
         }
-        cache.put(n.getPath(), results);
+        cache.put(nodePath, results);
         return results;
     }
 

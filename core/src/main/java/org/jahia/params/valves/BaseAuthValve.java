@@ -73,7 +73,6 @@ package org.jahia.params.valves;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.pipelines.valves.Valve;
-import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.beans.factory.BeanNameAware;
 
 /**

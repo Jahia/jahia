@@ -71,7 +71,6 @@
  */
 package org.jahia.ajax.gwt.client.service.content;
 
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
 import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;

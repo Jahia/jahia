@@ -81,7 +81,6 @@ import com.extjs.gxt.ui.client.widget.form.HiddenField;
 import com.google.gwt.i18n.client.Dictionary;
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONValue;
-import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.messages.Messages;

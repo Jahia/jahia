@@ -78,12 +78,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.security.Privilege;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundleEntry;

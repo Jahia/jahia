@@ -14,16 +14,16 @@
  *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
  *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
+ *     modify it under the terms of the GNU General License
  *     as published by the Free Software Foundation; either version 2
  *     of the License, or (at your option) any later version.
  *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ *     GNU General License for more details.
  *
- *     You should have received a copy of the GNU General Public License
+ *     You should have received a copy of the GNU General License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
@@ -82,42 +82,43 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import java.io.Serializable;
 
 /**
- * User: rfelden
- * Date: 7 janv. 2009 - 15:22:50
+ * Defines an action item that used in edit mode and content manager UIs. 
+ * 
+ * @author rfelden
  */
 public interface ActionItem extends Serializable {
 
-    public void setEnabled(boolean enabled) ;
+    void setEnabled(boolean enabled) ;
 
-    public void setVisible(boolean visible) ;
+    void setVisible(boolean visible) ;
 
     /**
      * If implemented and doesn't return null, the actionItem component will be always the one returned by this method
      * @return
      */
-    public Component getCustomItem() ;
+    Component getCustomItem() ;
 
-    public Component getTextToolItem() ;
+    Component getTextToolItem() ;
 
-    public Item getMenuItem() ;
+    Item getMenuItem() ;
 
-    public Item getContextMenuItem() ;
+    Item getContextMenuItem() ;
 
-    public void setTextToolitem(Component textToolitem);
+    void setTextToolitem(Component textToolitem);
 
-    public void setMenuItem(MenuItem menuItem);
+    void setMenuItem(MenuItem menuItem);
 
-    public void setContextMenuItem(MenuItem contextMenuItem);
+    void setContextMenuItem(MenuItem contextMenuItem);
 
-    public GWTJahiaToolbarItem getGwtToolbarItem();
+    GWTJahiaToolbarItem getGwtToolbarItem();
 
-    public void onComponentSelection();
+    void onComponentSelection();
 
-    public void handleNewLinkerSelection();
+    void handleNewLinkerSelection();
 
-    public void handleNewMainNodeLoaded(GWTJahiaNode node);
+    void handleNewMainNodeLoaded(GWTJahiaNode node);
 
-    public void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker);
+    void init(GWTJahiaToolbarItem gwtToolbarItem, Linker linker);
 
 
 }

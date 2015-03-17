@@ -74,7 +74,6 @@ package org.jahia.ajax.gwt.client.data;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * GWT bean used to encapsulate result of a rendering call.

@@ -72,12 +72,8 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.ContentExportTemplate;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-
-import java.util.List;
 
 /**
  * 

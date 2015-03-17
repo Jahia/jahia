@@ -83,18 +83,21 @@ import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**
- * User: rfelden
- * Date: 7 janv. 2009 - 15:24:18
+ * Action item that represents a separator.
+ * 
+ * @author rfelden
  */
 public class SeparatorActionItem implements ActionItem {
 
+    private static final long serialVersionUID = -888436606272080323L;
+
     public void setEnabled(boolean enabled) {
+        // do nothing
     }
 
     public void setVisible(boolean visible) {
-
+        // do nothing
     }
-
 
     public Component getCustomItem() {
         return new Html("<span class=\"xtb-sep\">&nbsp;</span>");

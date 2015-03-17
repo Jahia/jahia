@@ -84,8 +84,6 @@ import org.jahia.services.content.JCRVersionService;
 import org.jahia.services.content.files.FileCacheManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;

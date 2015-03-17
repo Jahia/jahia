@@ -94,7 +94,6 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAsync;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class NodeUsagesGrid {

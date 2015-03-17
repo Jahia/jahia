@@ -72,8 +72,6 @@
 package org.jahia.ajax.gwt.client.data.definition;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
-import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
-
 import java.io.Serializable;
 import java.util.Map;
 import java.util.HashMap;

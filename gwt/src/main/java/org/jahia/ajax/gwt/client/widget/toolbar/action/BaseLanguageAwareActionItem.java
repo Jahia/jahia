@@ -71,8 +71,6 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.List;
-
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 
 /**

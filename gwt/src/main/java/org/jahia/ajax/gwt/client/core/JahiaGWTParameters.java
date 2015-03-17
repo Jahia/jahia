@@ -75,8 +75,6 @@ import com.google.gwt.i18n.client.Dictionary;
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.widget.Linker;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

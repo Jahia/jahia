@@ -85,7 +85,6 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 import org.jahia.ajax.gwt.client.widget.content.ContentViews;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
-import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
 
 import java.util.Arrays;

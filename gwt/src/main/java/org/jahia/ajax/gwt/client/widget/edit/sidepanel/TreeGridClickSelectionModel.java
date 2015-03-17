@@ -71,11 +71,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
-import com.extjs.gxt.ui.client.GXT;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.aria.FocusFrame;
 import com.extjs.gxt.ui.client.event.GridEvent;
-import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;

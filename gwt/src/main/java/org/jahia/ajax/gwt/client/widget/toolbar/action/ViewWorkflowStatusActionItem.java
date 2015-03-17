@@ -93,7 +93,6 @@ public class ViewWorkflowStatusActionItem extends ViewStatusActionItem {
     public void viewStatus(List<Module> moduleList) {
         Listener<ComponentEvent> removeListener = createRemoveListener();
 
-        String lastUnpublished = null;
         boolean allPublished = true;
         for (Module module : moduleList) {
             if (module.getNode() != null) {

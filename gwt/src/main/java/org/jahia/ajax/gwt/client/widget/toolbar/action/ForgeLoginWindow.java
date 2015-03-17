@@ -77,14 +77,9 @@ import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import com.extjs.gxt.ui.client.widget.layout.FormLayout;
 import com.google.gwt.user.client.Element;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
 import org.jahia.ajax.gwt.client.messages.Messages;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ForgeLoginWindow extends Window {
     public static String username = "";

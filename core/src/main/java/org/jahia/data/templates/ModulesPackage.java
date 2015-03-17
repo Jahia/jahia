@@ -73,10 +73,7 @@ package org.jahia.data.templates;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.jahia.commons.Version;
-import org.osgi.framework.BundleException;
-
 import java.io.*;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;

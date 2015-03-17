@@ -77,7 +77,6 @@ import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow.Co
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.LabelField;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.allen_sauer.gwt.log.client.Log;
 
 /**
  * Wizard card responsible for displaying a form for entering content data.

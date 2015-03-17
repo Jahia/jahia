@@ -77,7 +77,6 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**

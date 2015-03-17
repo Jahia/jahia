@@ -79,7 +79,6 @@ import com.extjs.gxt.ui.client.event.DNDEvent;
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
 import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.user.client.Event;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 /**

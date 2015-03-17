@@ -75,8 +75,6 @@ import com.extjs.gxt.ui.client.widget.toolbar.PagingToolBar;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.content.AbstractView;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**

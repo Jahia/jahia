@@ -80,7 +80,6 @@ import org.jahia.ajax.gwt.client.widget.edit.EditModeDNDListener;
 import org.jahia.ajax.gwt.client.widget.edit.EditModeGridDragSource;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**

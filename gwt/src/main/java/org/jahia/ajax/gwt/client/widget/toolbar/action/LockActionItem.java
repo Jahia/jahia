@@ -70,15 +70,10 @@
  *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
-import com.google.gwt.user.client.ui.AbstractImagePrototype;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.util.content.actions.ContentActions;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.button.Button;
 
 /**
  * 

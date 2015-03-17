@@ -71,7 +71,6 @@
  */
 package org.jahia.ajax.gwt.client.data.definition;
 
-import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 
 import java.io.Serializable;

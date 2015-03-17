@@ -73,9 +73,7 @@ package org.jahia.params.valves;
 
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

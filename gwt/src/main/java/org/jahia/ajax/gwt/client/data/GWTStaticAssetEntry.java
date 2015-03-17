@@ -72,8 +72,6 @@
 package org.jahia.ajax.gwt.client.data;
 
 import com.google.gwt.dom.client.Node;
-import com.google.gwt.user.client.Element;
-
 import java.io.Serializable;
 import java.util.Map;
 

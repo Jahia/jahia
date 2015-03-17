@@ -71,16 +71,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.widget.MessageBox;
-import com.google.gwt.http.client.RequestBuilder;
-import com.google.gwt.http.client.URL;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 public class GoToModuleHomeActionItem extends GoToActionItem {
 

@@ -76,6 +76,7 @@ import com.extjs.gxt.ui.client.event.Events;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
@@ -84,10 +85,10 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 public class WorkInProgressButtonItem implements ButtonItem {
 
     private boolean checkedByDefault = false;
+    private transient final CheckboxWorkInProgress checkbox = new CheckboxWorkInProgress();
 
     @Override
     public BoxComponent create(final AbstractContentEngine engine) {
-        final CheckBox checkbox = new CheckBox();
 
         checkbox.setValue(checkedByDefault || (engine.getNode() != null && engine.getNode().get("j:workInProgress") != null && (Boolean) engine.getNode().get("j:workInProgress")));
         engine.setWorkInProgress(checkbox.getValue());
@@ -99,11 +100,16 @@ public class WorkInProgressButtonItem implements ButtonItem {
         });
         checkbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
         checkbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
-
         return checkbox;
     }
 
     public void setCheckedByDefault(boolean checkedByDefault) {
         this.checkedByDefault = checkedByDefault;
+    }
+
+    public class CheckboxWorkInProgress extends CheckBox {
+        public void refresh(GWTJahiaNode node) {
+            checkbox.setValue(node != null && node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
+        }
     }
 }

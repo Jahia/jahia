@@ -192,6 +192,14 @@ public class EditContentEngine extends AbstractContentEngine {
         setButtonsEnabled(false);
     }
 
+    private void refreshButtons() {
+        for (BoxComponent button : saveButtons) {
+            if (button instanceof WorkInProgressButtonItem.CheckboxWorkInProgress) {
+                ((WorkInProgressButtonItem.CheckboxWorkInProgress) button).refresh(node);
+            }
+        }
+    }
+
     /**
      * load node
      */
@@ -213,6 +221,7 @@ public class EditContentEngine extends AbstractContentEngine {
                 }
 
                 fillCurrentTab();
+                refreshButtons();
             }
         });
 
@@ -338,9 +347,9 @@ public class EditContentEngine extends AbstractContentEngine {
             properties = result.getProperties();
             currentLanguageBean = result.getCurrentLocale();
             fillCurrentTab();
+            refreshButtons();
         }
     }
-
 
     public void setButtonsEnabled(final boolean enabled) {
         for (BoxComponent button : saveButtons) {

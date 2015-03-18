@@ -71,39 +71,11 @@
  */
 package org.jahia.ajax.gwt.content.server;
 
-import java.net.MalformedURLException;
-import java.text.Collator;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.regex.Pattern;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NamespaceException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.security.Privilege;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.validation.ConstraintViolationException;
-
-import com.extjs.gxt.ui.client.data.BaseModelData;
-import com.extjs.gxt.ui.client.data.BasePagingLoadResult;
-import com.extjs.gxt.ui.client.data.ModelData;
-import com.extjs.gxt.ui.client.data.PagingLoadResult;
-import com.extjs.gxt.ui.client.data.RpcMap;
-
+import com.extjs.gxt.ui.client.data.*;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
 import net.htmlparser.jericho.StartTag;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
@@ -112,18 +84,9 @@ import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.*;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaGetPropertiesResult;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeUsage;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNodeVersion;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.data.node.*;
 import org.jahia.ajax.gwt.client.data.publication.GWTJahiaPublicationInfo;
 import org.jahia.ajax.gwt.client.data.seo.GWTJahiaUrlMapping;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -131,13 +94,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbar;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGViolation;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflow;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowComment;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowDefinition;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowInfo;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowOutcome;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
-import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowType;
+import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
@@ -152,12 +109,7 @@ import org.jahia.bin.Login;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.CompositeConstraintViolationException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.NodeConstraintViolationException;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -177,6 +129,21 @@ import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.security.Privilege;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.validation.ConstraintViolationException;
+import java.net.MalformedURLException;
+import java.text.Collator;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * GWT server code implementation for the DMS repository services.
@@ -655,15 +622,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     private GWTJahiaGetPropertiesResult getProperties(String path, Locale locale) throws GWTJahiaServiceException {
-        final GWTJahiaNode node = navigation.getNode(path, GWTJahiaNode.DEFAULT_FIELDS, retrieveCurrentSession(), getUILocale());
-        final HashMap<String, Object> map = new HashMap<String, Object>();
-        try {
-            JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
-            JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(node.getPath());
-            map.put("contextNode", nodeWrapper);
-        } catch (RepositoryException e) {
-            logger.error("Cannot get node", e);
-        }
+        final GWTJahiaNode node = navigation.getNode(path, GWTJahiaNode.DEFAULT_FIELDS, retrieveCurrentSession(locale != null ? locale : retrieveCurrentSession().getLocale()), getUILocale());
 
         // get node type
         final List<GWTJahiaNodeType> nodeTypes = contentDefinition.getNodeTypes(node.getNodeTypes(), getUILocale());

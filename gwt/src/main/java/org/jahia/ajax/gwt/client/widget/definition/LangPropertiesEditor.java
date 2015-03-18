@@ -79,7 +79,10 @@ import com.extjs.gxt.ui.client.widget.*;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.ComboBox;
 import com.extjs.gxt.ui.client.widget.form.Field;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.FlowData;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
@@ -124,19 +127,22 @@ public class LangPropertiesEditor extends LayoutContainer {
     private LayoutContainer topBar;
     private boolean translationEnabled;
     private LangPropertiesEditor translationSource;
+    private boolean wip;
+    private CallBack callback;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
-                                GWTJahiaLanguage displayedLanguage) {
-        this(node, dataType, editable, displayedLanguage, null);
+                                GWTJahiaLanguage displayedLanguage, CallBack callback) {
+        this(node, dataType, editable, displayedLanguage, null, callback);
     }
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
-                                GWTJahiaLanguage displayedLanguage, LangPropertiesEditor translationSource) {
+                                GWTJahiaLanguage displayedLanguage, LangPropertiesEditor translationSource, CallBack callBack) {
         this.node = node;
         this.dataType = dataType;
         langPropertiesEditorMap = new HashMap<String, PropertiesEditor>();
         this.editable = editable;
         this.translationSource = translationSource;
+        this.callback = callBack;
 
         setScrollMode(Style.Scroll.NONE);
         setBorders(false);
@@ -374,6 +380,10 @@ public class LangPropertiesEditor extends LayoutContainer {
                 }
 
                 updatePropertiesComponent(locale);
+                wip = node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress");
+                if (callback != null) {
+                    callback.execute();
+                }
             }
 
             public void onApplicationFailure(Throwable throwable) {
@@ -396,7 +406,6 @@ public class LangPropertiesEditor extends LayoutContainer {
                 mainPanel = new LayoutContainer();
                 mainPanel.setScrollMode(Style.Scroll.AUTOY);
                 add(mainPanel, new BorderLayoutData(Style.LayoutRegion.CENTER));
-
                 if (displayedLocale == null) {
                     displayedLocale = result.getCurrentLocale();
                     languageSwitcher.setVisible(true);
@@ -429,6 +438,10 @@ public class LangPropertiesEditor extends LayoutContainer {
                 } else {
                     updatePropertiesComponent(null);
                 }
+                wip = node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress");
+                if (callback != null) {
+                    callback.execute();
+                }
             }
 
             public void onApplicationFailure(Throwable throwable) {
@@ -437,7 +450,6 @@ public class LangPropertiesEditor extends LayoutContainer {
         });
 
     }
-
 
     /**
      * Get lang properties per map
@@ -454,4 +466,14 @@ public class LangPropertiesEditor extends LayoutContainer {
         return mapProperties;
     }
 
+    /**
+     * @return the work in progress status of the editor
+     */
+    public boolean isWip() {
+        return wip;
+    }
+
+    public interface CallBack {
+        public void execute();
+    }
 }

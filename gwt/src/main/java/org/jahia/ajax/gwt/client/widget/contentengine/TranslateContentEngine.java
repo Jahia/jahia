@@ -75,10 +75,13 @@ import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.form.*;
+import com.extjs.gxt.ui.client.widget.form.CheckBox;
+import com.extjs.gxt.ui.client.widget.form.Field;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
@@ -113,6 +116,7 @@ public class TranslateContentEngine extends Window {
     private Linker linker = null;
 
     private Button ok;
+    private CheckBox wipCheckbox;
     private LangPropertiesEditor sourceLangPropertiesEditor;
     private LangPropertiesEditor targetLangPropertiesEditor;
     protected ButtonBar buttonBar;
@@ -151,8 +155,13 @@ public class TranslateContentEngine extends Window {
         LayoutContainer panel = new LayoutContainer();
         panel.setLayout(new BorderLayout());
 
-        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage);
-        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage, sourceLangPropertiesEditor);
+        sourceLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), false, srcLanguage, null);
+        targetLangPropertiesEditor = new LangPropertiesEditor(node, Arrays.asList(GWTJahiaItemDefinition.CONTENT), true, destLanguage, sourceLangPropertiesEditor, new LangPropertiesEditor.CallBack() {
+            @Override
+            public void execute() {
+                wipCheckbox.setValue(targetLangPropertiesEditor.isWip());
+            }
+        });
 
         Button copyButton = new Button(Messages.get("label.translate.copy", "Copy to other language"));
         sourceLangPropertiesEditor.getTopBar().add(copyButton);
@@ -187,7 +196,6 @@ public class TranslateContentEngine extends Window {
         buttonsPanel.add(buttonBar);
 
         setBottomComponent(buttonsPanel);
-
         setFooter(true);
         layout();
     }
@@ -197,6 +205,11 @@ public class TranslateContentEngine extends Window {
      * init buttons
      */
     protected void initFooter() {
+        wipCheckbox = new CheckBox();
+        wipCheckbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
+        wipCheckbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
+        buttonBar.add(wipCheckbox);
+
         ok = new Button(Messages.get("label.save"));
         ok.setHeight(BUTTON_HEIGHT);
         ok.setIcon(StandardIconsProvider.STANDARD_ICONS.engineButtonOK());
@@ -223,11 +236,11 @@ public class TranslateContentEngine extends Window {
         public void componentSelected(ButtonEvent event) {
             // node
             final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
+            List<GWTJahiaNodeProperty> sharedProperties = new ArrayList<GWTJahiaNodeProperty>();
             nodes.add(node);
-
-
+            sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", wipCheckbox.getRawValue()));
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, targetLangPropertiesEditor.getLangPropertiesMap(), null, null, new BaseAsyncCallback<Object>() {
+            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, targetLangPropertiesEditor.getLangPropertiesMap(), sharedProperties, null, new BaseAsyncCallback<Object>() {
                 public void onApplicationFailure(Throwable throwable) {
                     String message = throwable.getMessage();
                     if (message.contains("Invalid link")) {
@@ -254,5 +267,6 @@ public class TranslateContentEngine extends Window {
     public void focus() {
         // do nothing to prevent menu to disappear when mouse over
     }
+
 }
 

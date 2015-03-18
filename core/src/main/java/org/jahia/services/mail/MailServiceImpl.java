@@ -71,38 +71,37 @@
  */
 package org.jahia.services.mail;
 
-import java.io.*;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.script.*;
-
 import org.apache.camel.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.ScriptEngineUtils;
+import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
-import org.jahia.api.Constants;
-import org.jahia.bin.listeners.JahiaContextLoaderListener.RootContextInitializedEvent;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.utils.i18n.ResourceBundles;
 import org.springframework.core.io.Resource;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.script.*;
+import java.io.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 /**
  * This service define method to send e-mails.
@@ -397,8 +396,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
             // Subject
             String subject;
             try {
-                String subjectTemplatePath = StringUtils.substringBeforeLast(templateRealPath.getURI().getPath(), ".") + ".subject."
-                        + StringUtils.substringAfterLast(templateRealPath.getFilename(), ".");
+                String subjectTemplatePath = StringUtils.substringBeforeLast(template, ".") + ".subject."+ StringUtils.substringAfterLast(template, ".");
                 InputStream stream = templatePackage.getResource(subjectTemplatePath).getInputStream();
                 scriptContent = templateCharset != null ? new InputStreamReader(stream, templateCharset) : new InputStreamReader(stream);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
@@ -407,8 +405,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
                 scriptEngine.eval(scriptContent, scriptContext);
                 subject = scriptContext.getWriter().toString().trim();
             } catch (Exception e) {
-                logger.warn("Exception while rendering mail subject using " + StringUtils.substringBeforeLast(templateRealPath.getFilename(), ".") + ".subject."
-                                        + StringUtils.substringAfterLast(templateRealPath.getFilename(), "."), e);
+                logger.warn("Not able to render mail subject using " + StringUtils.substringBeforeLast(template, ".") + ".subject."
+                                        + StringUtils.substringAfterLast(template, ".") + " template file - set org.jahia.services.mail.MailService in debug for more information");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("generating the mail subject throw an exception : ", e);
+                }
                 subject = resourceBundle.getString(StringUtils.substringBeforeLast(StringUtils.substringAfterLast(template, "/"), ".") + ".subject");
             } finally {
                 IOUtils.closeQuietly(scriptContent);

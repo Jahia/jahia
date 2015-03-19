@@ -194,8 +194,8 @@ public class EditContentEngine extends AbstractContentEngine {
 
     private void refreshButtons() {
         for (BoxComponent button : saveButtons) {
-            if (button instanceof WorkInProgressButtonItem.CheckboxWorkInProgress) {
-                ((WorkInProgressButtonItem.CheckboxWorkInProgress) button).refresh(node);
+            if (button instanceof CheckboxWorkInProgress) {
+                ((CheckboxWorkInProgress) button).refresh(node);
             }
         }
     }

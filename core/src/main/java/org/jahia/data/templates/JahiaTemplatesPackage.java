@@ -927,13 +927,16 @@ public class JahiaTemplatesPackage {
      * @see Bundle#findEntries(String, String, boolean)
      */
     public Resource[] getResources(String relativePath) {
-        List<Resource> resources = new ArrayList<Resource>();
-        if (getSourcesFolder() != null && getSourcesFolder().exists()) {
-            File f = new File(getSourcesFolder(), "src/main/resources/" + relativePath);
-            if (f.listFiles() == null || f.listFiles().length == 0) {
+        List<Resource> resources = null;
+        File sourceLocation = getSourcesFolder() != null ? new File(getSourcesFolder(), "src/main/resources/"
+                + relativePath) : null;
+        if (sourceLocation != null && sourceLocation.exists()) {
+            File[] files = sourceLocation.listFiles();
+            if (files == null || files.length == 0) {
                 return NO_RESOURCES;
             }
-            for (File file : f.listFiles()) {
+            resources = new ArrayList<Resource>();
+            for (File file : files) {
                 try {
                     resources.add(new UrlResource(file.toURI()));
                 } catch (MalformedURLException e) {
@@ -945,12 +948,13 @@ public class JahiaTemplatesPackage {
             if (resourceEnum == null) {
                 return NO_RESOURCES;
             } else {
+                resources = new ArrayList<Resource>();
                 while (resourceEnum.hasMoreElements()) {
                     resources.add(new BundleResource(resourceEnum.nextElement(), bundle));
                 }
             }
         }
-        return resources.toArray(new Resource[resources.size()]);
+        return resources != null ? resources.toArray(new Resource[resources.size()]) : NO_RESOURCES;
     }
 
     /**

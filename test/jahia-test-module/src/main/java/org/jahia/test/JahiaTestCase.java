@@ -79,10 +79,12 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
@@ -185,6 +187,10 @@ public class JahiaTestCase {
         loginMethod.addParameter("username", username);
         loginMethod.addParameter("password", password);
         loginMethod.addParameter("restMode", "true");
+        // Provide custom retry handler is necessary
+        loginMethod.getParams().setParameter(
+                HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
 
         try {
             int statusCode = getHttpClient().executeMethod(loginMethod);
@@ -203,6 +209,10 @@ public class JahiaTestCase {
     protected void logout() {
         PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
         logoutMethod.addParameter("redirectActive", "false");
+        // Provide custom retry handler is necessary
+        logoutMethod.getParams().setParameter(
+                HttpMethodParams.RETRY_HANDLER,
+                new DefaultHttpMethodRetryHandler(3, false));
 
         try {
             int statusCode = getHttpClient().executeMethod(logoutMethod);

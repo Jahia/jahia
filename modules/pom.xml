@@ -95,6 +95,7 @@
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
         <embed-dependency>*; scope=compile|runtime; type=!pom; inline=false</embed-dependency>
+        <jahia.source.folders>${project.basedir}</jahia.source.folders>
     </properties>
 
     <repositories>
@@ -283,7 +284,7 @@
                         <Jahia-Depends>${jahia-depends}</Jahia-Depends>
                         <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
                         <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
-                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Source-Folders>${jahia.source.folders}</Jahia-Source-Folders>
                         <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
                         <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
                         <Jahia-Source-Control-Tag>${project.scm.tag}</Jahia-Source-Control-Tag>

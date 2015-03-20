@@ -804,6 +804,7 @@
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
                     <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe</releaseProfiles>
+                    <arguments>-Djahia.source.folders=""</arguments>
                 </configuration>
             </plugin>
             <plugin>

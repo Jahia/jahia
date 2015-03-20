@@ -851,7 +851,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     if (urlResolver.getPath().endsWith(".do")) {
                         Action action = templateService.getActions().get(resource.getResolvedTemplate());
                         Map<String, List<String>> parameters = toParameterMapOfListOfString(req);
-                        doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
+                        if (action != null) {
+                            doAction(req, resp, urlResolver, renderContext, resource, action, parameters);
+                        } else {
+                            logger.error("Action {} does not exist", resource.getResolvedTemplate());
+                            throw new PathNotFoundException("Action does not exist");
+                        }
                     } else {
                         long lastModified = getLastModified(resource, renderContext);
 
@@ -950,7 +955,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                         requestWith.equals("XMLHttpRequest");
 
         final Action originalAction = action;
-        
+
         int tokenResult = TokenChecker.checkToken(req, resp, parameters);
 
         switch (tokenResult) {
@@ -1003,7 +1008,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             LicensedAction licensedAction = (LicensedAction) originalAction;
             if (!licensedAction.isAllowedByLicense()) {
                 logger.error("Action '{}' requires a licene feature '{}'"
-                        + " which is not allowed by the current license terms", originalAction.getName(),
+                                + " which is not allowed by the current license terms", originalAction.getName(),
                         licensedAction.getLicenseFeature());
                 throw new AccessDeniedException("Action '" + action.getName() + "' requires a licene feature '"
                         + licensedAction.getLicenseFeature() + "' which is not allowed by the current license terms");
@@ -1017,7 +1022,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             session = JCRSessionFactory.getInstance().getCurrentUserSession(urlResolver.getWorkspace(),
                     urlResolver.getLocale());
         }
-        ActionResult result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
+        ActionResult result;
+        try {
+            result = action.doExecute(req, renderContext, resource, session, parameters, urlResolver);
+        } catch (Exception e) {
+            logger.error("An error occurs when executing action {}", action.getName(), e);
+            throw e;
+        }
         if (result != null) {
             boolean returnJSON = "json".equals(parameters.get(RETURN_CONTENTTYPE) != null ? parameters.get(RETURN_CONTENTTYPE).get(0) : "")
                     || req.getHeader("accept") != null && req.getHeader("accept").contains("application/json");
@@ -1146,7 +1157,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             this.allowedMethods.add(method.toUpperCase());
         }
     }
-    
+
     public String getDefaultContentType(String templateType) {
     	if(templateType != null && defaultContentType.get(templateType) != null) {
 		    return defaultContentType.get(templateType);

@@ -212,6 +212,14 @@
             org.jahia.exceptions,
             org.jahia.services
         </jahia.modules.importPackage>
+
+        <jahia.modules.bundle.removeheaders>
+            Include-Resource,
+            Private-Package,
+            Embed-Dependency,
+            Embed-Transitive
+        </jahia.modules.bundle.removeheaders>
+        <custom.modules.bundle.removeheaders>${jahia.modules.bundle.removeheaders}</custom.modules.bundle.removeheaders>
     </properties>
 
     <scm>
@@ -633,6 +641,15 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <profile>
+            <id>no-source-folders</id>
+            <properties>
+                <custom.modules.bundle.removeheaders>
+                    ${jahia.modules.bundle.removeheaders},
+                    Jahia-Source-Folders
+                </custom.modules.bundle.removeheaders>
+            </properties>
         </profile>
     </profiles>
 

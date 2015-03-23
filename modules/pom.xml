@@ -85,12 +85,6 @@
     <packaging>pom</packaging>
 
     <properties>
-        <jahia.modules.bundle.removeheaders>
-            Include-Resource,
-            Private-Package,
-            Embed-Dependency,
-            Embed-Transitive
-        </jahia.modules.bundle.removeheaders>
         <jahia-depends>default</jahia-depends>
         <jahia-module-type>module</jahia-module-type>
         <jahia-static-resources>/css,/icons,/images,/img,/javascript</jahia-static-resources>
@@ -299,7 +293,7 @@
                         <Embed-Dependency>${embed-dependency}</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
                         <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
-                        <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>
+                        <_removeheaders>${custom.modules.bundle.removeheaders}</_removeheaders>
                     </instructions>
                 </configuration>
             </plugin>

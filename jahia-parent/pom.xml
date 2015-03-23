@@ -645,10 +645,13 @@
         <profile>
             <id>no-source-folders</id>
             <properties>
-                <custom.modules.bundle.removeheaders>
-                    ${jahia.modules.bundle.removeheaders},
+                <jahia.modules.bundle.removeheaders>
+                    Include-Resource,
+                    Private-Package,
+                    Embed-Dependency,
+                    Embed-Transitive,
                     Jahia-Source-Folders
-                </custom.modules.bundle.removeheaders>
+                </jahia.modules.bundle.removeheaders>
             </properties>
         </profile>
     </profiles>

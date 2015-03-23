@@ -527,6 +527,10 @@
     }
 
     protected boolean processNode(JspWriter out, JCRNodeWrapper node, Map<String, Long> results) throws RepositoryException, IOException {
+        if (JCRSessionFactory.getInstance().getMountPoints().containsKey(node.getPath()) && !node.getPath().equals("/")) {
+            return true;
+        }
+
         long nodesRead = results.get("nodesRead");
         // first let's try to read all the properties
         PropertyIterator propertyIterator = node.getProperties();

@@ -190,7 +190,7 @@ public class ModuleCacheProvider implements InitializingBean {
                 // do not propagate
                 htmlCache.removeAll(true);
             } else {
-                invalidateDependencies(deps);
+                htmlCache.removeAll(deps);
             }
         }
         if(propagateToOtherClusterNodes) {
@@ -214,7 +214,7 @@ public class ModuleCacheProvider implements InitializingBean {
                 }
             }
         }
-        invalidateDependencies(all);
+        htmlCache.removeAll(all);
 
         if(propagateToOtherClusterNodes) {
             for (String nodePath : nodePaths) {
@@ -223,14 +223,6 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-
-    private void invalidateDependencies(Set<String> deps) {
-        if (deps.contains(null)) {
-            deps = new HashSet<>(deps);
-            deps.remove(null);
-        }
-        htmlCache.removeAll(deps);
-    }
 
     public Cache getCache() {
         return htmlCache;
@@ -279,7 +271,7 @@ public class ModuleCacheProvider implements InitializingBean {
         if (element != null) {
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
-            invalidateDependencies(deps);
+            htmlCache.removeAll(deps);
         }
         if(propagateToOtherClusterNodes && syncCache != null) {
             if (logger.isDebugEnabled()) {

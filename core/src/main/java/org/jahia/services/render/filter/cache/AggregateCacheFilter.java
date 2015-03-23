@@ -113,6 +113,23 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
+<<<<<<< .working
+=======
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
+
+>>>>>>> .merge-right.r52310
 /**
  * Module content caching filter.
  *
@@ -575,11 +592,10 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             depNodeWrappers = resource.getDependencies();
             for (String path : depNodeWrappers) {
                 Element element1 = dependenciesCache.get(path);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : new CopyOnWriteArraySet<String>();
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
                 if (!dependencies.contains(ALL)) {
                     if ((dependencies.size() + 1) > dependenciesLimit) {
-                        dependencies = new CopyOnWriteArraySet<>(ALL_SET);
-                        dependenciesCache.put(new Element(path, dependencies));
+                        dependenciesCache.put(new Element(path, ALL_SET));
                     } else {
                         addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
                     }
@@ -589,7 +605,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             Set<String> regexpDepNodeWrappers = resource.getRegexpDependencies();
             for (String regexp : regexpDepNodeWrappers) {
                 Element element1 = regexpDependenciesCache.get(regexp);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : new CopyOnWriteArraySet<String>();
+                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
                 addDependencies(renderContext, finalKey, regexpDependenciesCache, regexp, dependencies);
             }
         }

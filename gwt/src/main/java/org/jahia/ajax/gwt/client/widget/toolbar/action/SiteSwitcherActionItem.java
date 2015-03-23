@@ -163,7 +163,7 @@ public class SiteSwitcherActionItem extends BaseActionItem {
     private void refreshSitesList(final Linker linker) {
         List<GWTJahiaNode> sites = new ArrayList<GWTJahiaNode>();
         for (GWTJahiaNode n : JahiaGWTParameters.getSitesMap().values()) {
-            if (!filterEditModeBlockedSites || !(Boolean)n.get(GWTJahiaNode.EDIT_MODE_BLOCKED)) {
+            if (!filterEditModeBlockedSites || (n.get(GWTJahiaNode.EDIT_MODE_BLOCKED) != null && !(Boolean)n.get(GWTJahiaNode.EDIT_MODE_BLOCKED))) {
                 if (!filterOnAvailableSources || n.get("j:sourcesFolder") != null) {
                     sites.add(n);
                 }

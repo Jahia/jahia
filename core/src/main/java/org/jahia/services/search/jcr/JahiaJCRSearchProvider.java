@@ -518,8 +518,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
         if(isFileSearch(params) && !isSiteSearch(params)) {
             return Constants.NT_HIERARCHYNODE;
-        } else if (!isFileSearch(params) && isSiteSearch(params)) {
-            return Constants.JAHIANT_CONTENT;
+//        } else if (!isFileSearch(params) && isSiteSearch(params)) {
+//            return Constants.JAHIANT_CONTENT;
         }
 
         return Constants.NT_BASE;

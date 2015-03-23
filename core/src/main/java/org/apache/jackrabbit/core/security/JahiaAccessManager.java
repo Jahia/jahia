@@ -956,7 +956,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (!permissionsInRole.isEmpty()) {
                 results.addAll(permissionsInRole);
             } else {
-                logger.warn("Role " + role + " is missing despite still being in use in path " + absPath + " (or parent). Please re-create it in the administration, remove all uses and then you can delete it !");
+                logger.debug("No permissions found for role '{}' on path '{}' (or parent)", role, absPath);
             }
         }
 

@@ -197,6 +197,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                                 || Constants.JCR_CONTENT.equals(node.getName()))) {
                             node = node.getParent();
                         }
+                        if (node != null && node.isNodeType("jnt:vanityUrl")) {
+                            node = node.getParent().getParent();
+                        }
                         if (node != null && addedNodes.add(node.getIdentifier())) {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
 

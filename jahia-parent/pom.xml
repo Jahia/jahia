@@ -823,7 +823,7 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <goals>deploy</goals>
                     <preparationGoals>clean install</preparationGoals>
-                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe</releaseProfiles>
+                    <releaseProfiles>do-attach-javadocs,aggregate-javadocs,attach-taglibdoc,gwt-production,installer,sign-installer-jar,windows-installer,sign-installer-exe,no-source-folders</releaseProfiles>
                 </configuration>
             </plugin>
             <plugin>

@@ -76,6 +76,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.utils.Patterns;
 
+import javax.jcr.RepositoryException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -93,6 +94,11 @@ public class QueryStringCacheKeyPartGenerator implements CacheKeyPartGenerator {
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         String property = properties.getProperty("cache.requestParameters");
         if (!StringUtils.isEmpty(property)) {
+            try {
+                property = property.replace("${currentNode.identifier}",resource.getNode().getIdentifier());
+            } catch (RepositoryException e) {
+                property = property.replace("${currentNode.identifier}","*");
+            }
             String[] params = Patterns.COMMA.split(property);
             return "_qs" + Arrays.toString(params) + "_";
         } else {

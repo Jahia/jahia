@@ -644,6 +644,12 @@
         </profile>
         <profile>
             <id>no-source-folders</id>
+            <activation>
+            	<property>
+            		<name>env.JAHIA_DISABLE_SOURCE_FOLDERS</name>
+            		<value>true</value>
+            	</property>
+            </activation>
             <properties>
                 <jahia.modules.bundle.removeheaders>
                     Include-Resource,

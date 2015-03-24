@@ -74,6 +74,7 @@ package org.jahia.services.usermanager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
@@ -545,7 +546,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                                 }
                                 propertyValue = JCRContentUtils.sqlEncode(propertyValue);
                                 if ("*".equals(propertyKey)) {
-                                    query.append("(CONTAINS(u.*,'" + Patterns.PERCENT.matcher(propertyValue).replaceAll("")
+                                    query.append("(CONTAINS(u.*,'" + QueryParser.escape(Patterns.PERCENT.matcher(propertyValue).replaceAll(""))
                                             + "') OR LOWER(u.[j:nodename]) LIKE '")
                                             .append(propertyValue.toLowerCase()).append("') ");
                                 } else {

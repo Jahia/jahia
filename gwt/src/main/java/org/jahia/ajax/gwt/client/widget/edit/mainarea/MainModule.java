@@ -521,6 +521,10 @@ public class MainModule extends Module {
         getInstance().mask(text, "x-mask-loading");
     }
 
+    public static void hideMask() {
+        getInstance().unmask();
+    }
+
     public static void editContent(String path) {
         List<Module> modules = ModuleHelper.getModulesByPath().get(path);
         EngineLoader.showEditEngine(getInstance().getEditLinker(),modules.get(0).getNode(), null);
@@ -1049,6 +1053,9 @@ public class MainModule extends Module {
         });
         $wnd.waitingMask = function (text) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::waitingMask(Ljava/lang/String;)(text);
+        };
+        $wnd.hideMask = function () {
+            @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::hideMask()();
         };
         $wnd.editContent = function (path) {
             @org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule::editContent(Ljava/lang/String;)(path);

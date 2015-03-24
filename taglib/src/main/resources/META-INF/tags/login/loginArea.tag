@@ -19,7 +19,20 @@
                 <input type="hidden" name="redirect" value="${attributes.redirectTo}"/>
             </c:when>
             <c:when test="${not empty requestScope['javax.servlet.error.request_uri']}">
-                <c:url var="redirect" value="${requestScope['javax.servlet.error.request_uri']}" context="/">
+                <c:choose>
+                    <c:when test="${fn:startsWith(requestScope['javax.servlet.error.request_uri'], '//')}">
+                        <c:set var="redirectUrl" value=""/>
+                        <c:forEach items="${fn:split(requestScope['javax.servlet.error.request_uri'], '/')}" var="path">
+                            <c:if test="${!empty path}">
+                                <c:set var="redirectUrl" value="${redirectUrl}/${path}"/>
+                            </c:if>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <c:set var="redirectUrl" value="${requestScope['javax.servlet.error.request_uri']}"/>
+                    </c:otherwise>
+                </c:choose>
+                <c:url var="redirect" value="${redirectUrl}" context="/">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
                             <c:param name="${paramValueEntry.key}" value="${paramValue}"/>

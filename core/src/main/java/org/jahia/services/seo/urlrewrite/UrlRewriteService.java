@@ -301,12 +301,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
     public boolean prepareInbound(final HttpServletRequest request, HttpServletResponse response) {
         resetState(request);
-<<<<<<< .working
         request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_CONTEXT_PATH, request.getContextPath());
-
-=======
-        request.setAttribute(ServerNameToSiteMapper.ATTR_NAME_CONTEXT_PATH, request.getContextPath());
->>>>>>> .merge-right.r52334
         String input = request.getRequestURI();
         if (request.getContextPath().length() > 0) {
             input = StringUtils.substringAfter(input, request.getContextPath());

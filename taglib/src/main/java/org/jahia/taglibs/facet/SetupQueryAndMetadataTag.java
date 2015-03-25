@@ -87,6 +87,7 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -117,6 +118,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
         this.var = var;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int doStartTag() throws JspException {
         try {
@@ -315,6 +317,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
 
     @Override
     public int doEndTag() throws JspException {
+        resetState();
         return EVAL_PAGE;
     }
 
@@ -325,5 +328,14 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
     private static String buildQueryString(String facetNodeTypeName, String key, String minCount, String extra) {
         final String nodeType = facetNodeTypeName != null ? "nodetype=" + facetNodeTypeName + "&" : "";
         return "rep:facet(" + nodeType + "key=" + key + "&mincount=" + minCount + (extra != null ? extra : "") + ")";
+    }
+    
+    @Override
+    protected void resetState() {
+        activeFacets = null;
+        boundComponent = null;
+        existing = null;
+        var = null;
+        super.resetState();
     }
 }

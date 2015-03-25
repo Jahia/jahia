@@ -211,7 +211,7 @@ public class ModuleBuildHelper implements InitializingBean {
             StringBuilder out = new StringBuilder();
             int r = 0;
             try {
-                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean", "install"}, null, sources, out, null);
+                r = ProcessHelper.execute(mavenExecutable, new String[]{"clean", "install", "-Dmaven.test.skip=true"}, null, sources, out, null);
             } catch (JahiaRuntimeException e) {
                 logger.error(e.getCause().getMessage(), e.getCause());
                 throw e;

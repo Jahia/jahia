@@ -109,6 +109,7 @@ public class ServerNameToSiteMapper {
     public static final String ATTR_NAME_VANITY_PATH = "vanityUrlTargetPath";
     public static final String ATTR_NAME_CONTEXT_PATH = "contextPath";
 
+
     private static final Logger logger = LoggerFactory.getLogger(ServerNameToSiteMapper.class);
 
     public static String getSiteKeyByServerName(HttpServletRequest request) {

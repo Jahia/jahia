@@ -139,15 +139,15 @@ public class ServerNameToSiteMapper {
     }
 
     private static String lookupSiteKeyByServerName(String host) {
-        JahiaSite site = null;
+        String site = null;
         if (SpringContextSingleton.getInstance().isInitialized()) {
             try {
-                site = JahiaSitesService.getInstance().getSiteByServerName(host);
+                site = JahiaSitesService.getInstance().getSitenameByServerName(host);
             } catch (JahiaException e) {
                 logger.error("Error resolving site by server name '" + host + "'", e);
             }
         }
-        return site != null ? site.getSiteKey() : "";
+        return site != null ? site : "";
     }
 
     private UrlRewriteService urlRewriteService;

@@ -172,18 +172,21 @@ public class ServerNameToSiteMapper {
         boolean matches = currentSiteKey.equals(siteKey);
         request.setAttribute(ATTR_NAME_SITE_KEY_MATCHES, Boolean.valueOf(matches));
 
-        JahiaSite siteByKey = null;
         try {
-            siteByKey = JahiaSitesService.getInstance().getSiteByKey(siteKey);
-            boolean languageMatches = siteByKey.getDefaultLanguage().equals(language);
+            boolean languageMatches = JahiaSitesService.getInstance().getSiteDefaultLanguage(siteKey).equals(language);
             request.setAttribute(ATTR_NAME_DEFAULT_LANG_MATCHES, languageMatches);
             request.setAttribute(ATTR_NAME_LANG_TOKEN, languageMatches ? "" : "/" + language);
         } catch (JahiaException e) {
-            logger.error("Error resolving site by key '" + siteKey + "'", e);
+            logger.error("Error resolving language " + language + " for siteKey '" + siteKey + "'", e);
         }
 
         if (!matches && currentSiteKey.length() > 0 && SettingsBean.getInstance().isUrlRewriteUseAbsoluteUrls()) {
-            String serverName = siteByKey != null && !Url.isLocalhost(siteByKey.getServerName()) ? siteByKey.getServerName() : null;
+            String serverName = null;
+            try {
+                serverName = JahiaSitesService.getInstance().getSiteByKey(siteKey).getServerName();
+            } catch (JahiaException e) {
+                logger.error("Error resolving site for site key " + siteKey,e);
+            }
             if (StringUtils.isNotEmpty(serverName)) {
                 int port = SettingsBean.getInstance().getSiteURLPortOverride();
                 if (port == 0) {

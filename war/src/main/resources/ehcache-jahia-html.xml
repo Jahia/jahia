@@ -141,6 +141,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     -->
     <cacheManagerEventListenerFactory class="" properties=""/>
 
+    <sizeOfPolicy maxDepth="15000" maxDepthExceededBehavior="abort"/>
 
     <!--
     TerracottaConfig
@@ -682,7 +683,6 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     The defaultCache has an implicit name "default" which is a reserved cache name.
     -->
     <defaultCache timeToIdleSeconds="1800">
-        <sizeOfPolicy maxDepth="10000" maxDepthExceededBehavior="abort"/>
     </defaultCache>
 
     <cache name="HTMLCache"

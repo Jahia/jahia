@@ -108,14 +108,22 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
 
     public void executeBackgroundAction(JCRNodeWrapper node) {
         String workspace = Constants.LIVE_WORKSPACE;
+        boolean log = logger.isDebugEnabled();
         try {
             JCRNodeWrapper currentNode = node;
             workspace = node.getSession().getWorkspace().getName();
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
-                    cacheProvider.invalidate(currentNode.getPath());
+                    String path = currentNode.getPath();
+                    cacheProvider.invalidate(path);
+                    if (log) {
+                        logger.debug("Flushed output caches for node {}", path);
+                    }
                     if (currentNode.isFile()) {
-                        fileCacheManager.invalidate(workspace, currentNode.getPath());
+                        fileCacheManager.invalidate(workspace, path);
+                        if (log) {
+                            logger.debug("Flushed file cache for node {}", path);
+                        }
                     }
                 }
                 currentNode = currentNode.getParent();
@@ -127,6 +135,9 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                 if (level >= startLevel) {
                     cacheProvider.invalidate(currentNode);
                     fileCacheManager.invalidate(workspace, currentNode);
+                    if (log) {
+                        logger.debug("Flushed output and file caches for node {}", currentNode);
+                    }
                 }
                 currentNode = StringUtils.substringBeforeLast(currentNode,"/");
             }

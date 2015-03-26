@@ -1,0 +1,3 @@
+#Filter out concurrent locks
+java.util.concurrent.locks.ReentrantLock$NonfairSync
+java.util.concurrent.locks.ReentrantLock

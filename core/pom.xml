@@ -1458,7 +1458,9 @@
                     <include>**/*.xsl</include>
                     <include>**/*.xml</include>
                     <include>**/*.properties</include>
+                    <include>**/jahiaSizeOfEngine.filter</include>
                     <include>org/jahia/migration/legacyDefinitions/**/*.cnd</include>
+                    <include>**/services/*</include>
                 </includes>
             </resource>
         </resources>

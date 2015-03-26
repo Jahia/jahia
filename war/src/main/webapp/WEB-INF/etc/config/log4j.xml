@@ -113,6 +113,10 @@
         <level value="error"/>
     </logger>
 
+    <logger name="net.sf.ehcache.pool.impl">
+        <level value="warn"/>
+    </logger>
+
     <logger name="org.quartz">
         <level value="info"/>
     </logger>

@@ -682,6 +682,7 @@ Here is an example of CacheManager level resource tuning, which will use up to 4
     The defaultCache has an implicit name "default" which is a reserved cache name.
     -->
     <defaultCache eternal="true">
+        <sizeOfPolicy maxDepth="10000" maxDepthExceededBehavior="abort"/>
     </defaultCache>
 
     <cache name="org.jahia.selfPopulatingReplicatedCache"

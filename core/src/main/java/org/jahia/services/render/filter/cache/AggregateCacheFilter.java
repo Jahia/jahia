@@ -573,7 +573,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
                     if (!dependencies.contains(ALL)) {
                         if ((dependencies.size() + 1) > dependenciesLimit) {
-                            dependenciesCache.put(new Element(path, ALL_SET));
+                            Element element = new Element(path, ALL_SET);
+                            element.setEternal(true);
+                            dependenciesCache.put(element);
                         } else {
                             addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
                         }

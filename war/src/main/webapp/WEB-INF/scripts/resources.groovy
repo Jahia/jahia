@@ -58,11 +58,11 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
       case "aggregatedjavascript" :
           if (type.getValue().size() > 0) {
               println "<script id=\"staticAssetAggregatedJavascriptList${targetTag == 'HEAD'?'':targetTag}0\" type=\"text/javascript\">";
-              println "if (typeof jAggregatedStaticAssetsJavascript == 'undefined') { var jAggregatedStaticAssetsJavascript = new Array(); }";
+              println "var jASAJ=jASAJ || new Array();";
               type.value.eachWithIndex { javascript, i ->
                   condition = javascript.value != null ? javascript.value.get("condition") : null;
                   if (condition != null) println("<!--["+condition+"]>");
-                  println "jAggregatedStaticAssetsJavascript.push('${javascript.key}');";
+                  println "jASAJ.push('${javascript.key}');";
                   if (condition != null) println("<![endif]-->");
               }
           }

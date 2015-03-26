@@ -568,13 +568,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             final Cache dependenciesCache = cacheProvider.getDependenciesCache();
             depNodeWrappers = resource.getDependencies();
             for (String path : depNodeWrappers) {
-                Element element1 = dependenciesCache.get(path);
-                Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-                if (!dependencies.contains(ALL)) {
-                    if ((dependencies.size() + 1) > dependenciesLimit) {
-                        dependenciesCache.put(new Element(path, ALL_SET));
-                    } else {
-                        addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
+                if(!path.startsWith("/modules")) {
+                    Element element1 = dependenciesCache.get(path);
+                    Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
+                    if (!dependencies.contains(ALL)) {
+                        if ((dependencies.size() + 1) > dependenciesLimit) {
+                            dependenciesCache.put(new Element(path, ALL_SET));
+                        } else {
+                            addDependencies(renderContext, finalKey, dependenciesCache, path, dependencies);
+                        }
                     }
                 }
             }

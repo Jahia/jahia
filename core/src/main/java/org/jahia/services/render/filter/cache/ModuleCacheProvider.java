@@ -78,6 +78,7 @@ import net.sf.ehcache.Element;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
@@ -149,6 +150,7 @@ public class ModuleCacheProvider implements InitializingBean {
             cacheManager.addCache(DEPS_CACHE_NAME);
             dependenciesCache = cacheManager.getCache(DEPS_CACHE_NAME);
         }
+        dependenciesCache.setMemoryStoreEvictionPolicy(new DependenciesCacheEvictionPolicy());
         regexpDependenciesCache = cacheManager.getCache(REGEXPDEPS_CACHE_NAME);
         if (regexpDependenciesCache == null) {
             cacheManager.addCache(REGEXPDEPS_CACHE_NAME);

@@ -71,12 +71,6 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.NameFileFilter;
 import org.apache.commons.io.filefilter.TrueFileFilter;
@@ -92,10 +86,20 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.PomUtils;
+import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
+
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Utility class for SCM related module operations.
@@ -286,8 +290,7 @@ public class SourceControlHelper {
             }
         } else {
             FileUtils.deleteQuietly(sources);
-            String msg = "Sources were not found for " + moduleId + "  " + StringUtils.defaultIfEmpty(version, "")
-                    + " in " + scmURI + " " + StringUtils.defaultIfEmpty(branchOrTag, "");
+            String msg = Messages.getInternalWithArguments("source.not.found.with.uri",LocaleContextHolder.getLocale(),moduleId,StringUtils.defaultIfEmpty(version, ""),scmURI,StringUtils.defaultIfEmpty(branchOrTag, ""));
             logger.error(msg);
             throw new IOException(msg);
         }

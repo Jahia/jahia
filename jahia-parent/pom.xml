@@ -120,7 +120,7 @@
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
-        <atmosphere.version>2.2.4</atmosphere.version>
+        <atmosphere.version>2.2.6</atmosphere.version>
         <atmosphere.gwt.version>2.2.1</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.11</junit.version>
@@ -173,20 +173,19 @@
         <dependency.plugin.version>2.8</dependency.plugin.version>
 
         <!-- OSGi versions -->
-        <felix.framework.version>4.4.1</felix.framework.version>
+        <felix.framework.version>4.6.1</felix.framework.version>
         <felix.http.version>2.2.1</felix.http.version>
-        <felix.bundlerepository.version>2.0.2</felix.bundlerepository.version>
-        <felix.webconsole.version>4.2.2</felix.webconsole.version>
+        <felix.bundlerepository.version>2.0.4</felix.bundlerepository.version>
+        <felix.webconsole.version>4.2.8</felix.webconsole.version>
         <felix.log.version>1.0.1</felix.log.version>
-        <felix.configadmin.version>1.8.0</felix.configadmin.version>
+        <felix.configadmin.version>1.8.2</felix.configadmin.version>
         <felix.eventadmin.version>1.4.2</felix.eventadmin.version>
         <felix.fileinstall.version>3.2.6-patch2</felix.fileinstall.version>
-        <felix.utils.version>1.6.0</felix.utils.version>
-        <felix.metatype.version>1.0.8</felix.metatype.version>
+        <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
-        <gogo.runtime.version>0.10.0</gogo.runtime.version>
+        <gogo.runtime.version>0.16.2</gogo.runtime.version>
         <gogo.shell.version>0.10.0</gogo.shell.version>
-        <gogo.command.version>0.12.0</gogo.command.version>
+        <gogo.command.version>0.14.0</gogo.command.version>
         <equinox.ver>3.2.2</equinox.ver>
         <slf4j.version>1.6.6</slf4j.version>
         <osgi.version>4.3.1</osgi.version>

@@ -181,12 +181,13 @@ public class ServerNameToSiteMapper {
         }
 
         if (!matches && currentSiteKey.length() > 0 && SettingsBean.getInstance().isUrlRewriteUseAbsoluteUrls()) {
-            String serverName = null;
+            JahiaSite siteByKey = null;
             try {
-                serverName = JahiaSitesService.getInstance().getSiteByKey(siteKey).getServerName();
+                siteByKey = JahiaSitesService.getInstance().getSiteByKey(siteKey);
             } catch (JahiaException e) {
                 logger.error("Error resolving site for site key " + siteKey,e);
             }
+            String serverName = siteByKey != null && !Url.isLocalhost(siteByKey.getServerName()) ? siteByKey.getServerName() : null;
             if (StringUtils.isNotEmpty(serverName)) {
                 int port = SettingsBean.getInstance().getSiteURLPortOverride();
                 if (port == 0) {

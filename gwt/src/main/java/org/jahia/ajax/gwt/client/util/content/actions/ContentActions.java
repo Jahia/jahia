@@ -87,6 +87,7 @@ import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.content.portlet.PortletWizardWindow;
 import org.jahia.ajax.gwt.client.widget.edit.ContentTypeWindow;
 
@@ -237,6 +238,9 @@ public class ContentActions {
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", node);
+                        if (linker instanceof ManagerLinker) {
+                            data.put(Linker.REFRESH_MAIN, "true");
+                        }
                         linker.refresh(data);
                     }
                 });
@@ -274,6 +278,9 @@ public class ContentActions {
                         linker.loaded();
                         Map<String, Object> data = new HashMap<String, Object>();
                         data.put("node", node);
+                        if (linker instanceof ManagerLinker) {
+                            data.put(Linker.REFRESH_MAIN, "true");
+                        }
                         linker.refresh(data);
                     }
 

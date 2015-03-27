@@ -311,7 +311,7 @@ public class RepositoryTab extends ContentPanel {
      */
     public void refresh(Map<String, Object> data) {
         boolean refresh = true;
-        if (data != null && data.containsKey(Linker.REFRESH_MAIN)) {
+        if (data != null && (data.containsKey(Linker.REFRESH_MAIN) || data.containsKey(Linker.REFRESH_ALL))) {
             refresh = isExpanded();
         }
         if (refresh) {

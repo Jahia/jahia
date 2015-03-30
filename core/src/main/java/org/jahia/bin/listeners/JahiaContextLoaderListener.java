@@ -106,6 +106,7 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.jstl.core.Config;
+
 import java.io.File;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -281,6 +282,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             // set fallback locale
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
+            
+            // start schedulers
+            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
             
             jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
             if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {

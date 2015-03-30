@@ -74,7 +74,6 @@ package org.jahia.services.scheduler;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.quartz.*;
 import org.slf4j.Logger;
@@ -91,7 +90,7 @@ import static org.jahia.services.scheduler.BackgroundJob.*;
  *
  * @author Sergiy Shyrkov
  */
-public class SchedulerService extends JahiaService implements JahiaAfterInitializationService {
+public class SchedulerService extends JahiaService {
 
     /**
      * Jahia Spring factory bean that creates, but does not start Quartz scheduler instance. So the instance remain in standby mode until
@@ -275,7 +274,7 @@ public class SchedulerService extends JahiaService implements JahiaAfterInitiali
         return isRamScheduler ? ramScheduler : scheduler;
     }
 
-    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+    public void startSchedulers() throws JahiaInitializationException {
         try {
             ramScheduler.start();
 

@@ -76,7 +76,6 @@ import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheFactory;
-import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

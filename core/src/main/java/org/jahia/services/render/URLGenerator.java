@@ -88,14 +88,16 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Url;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Main URL generation class. This class is exposed to the template developers to make it easy to them to access basic URLs such as <code>${url.edit}</code>, <code>${url.userProfile}</code>. User: toto Date: Sep 14, 2009 Time: 11:13:37 AM
  */
 public class URLGenerator {
+    private static final String SLASH_LIVE_SLASH = "/" + Constants.LIVE_WORKSPACE + "/";
+    private static final String SLASH_EDIT_SLASH = "/" + Constants.EDIT_WORKSPACE + "/";
     private String base;
 
     private String live;
@@ -147,6 +149,10 @@ public class URLGenerator {
         }
     }
 
+    public boolean uses(Resource resource) {
+        return this.resource.equals(resource);
+    }
+
     /**
      * Set workspace url as attribute of the current request
      */
@@ -157,24 +163,28 @@ public class URLGenerator {
         final String resourcePath = getResourcePath();
 
         final String renderServletPath = Render.getRenderServletPath();
-        baseLive = renderServletPath + "/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
+        final String liveLanguage = SLASH_LIVE_SLASH + languageCode;
+        final String editLanguage = SLASH_EDIT_SLASH + languageCode;
+
+        baseLive = renderServletPath + liveLanguage;
         live = baseLive + resourcePath;
         if (!SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            baseEdit = "/cms/edit/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
+            baseEdit = "/cms/edit" + editLanguage;
             edit = baseEdit + resourcePath;
-            baseContribute = "/cms/contribute/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
+            baseContribute = "/cms/contribute" + editLanguage;
             contribute = baseContribute + resourcePath;
         }
-        basePreview = renderServletPath + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
+        basePreview = renderServletPath + editLanguage;
         preview = basePreview + resourcePath;
-        find = Find.getFindServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
-        initializers = Initializers.getInitializersServletPath() + "/" + resource.getWorkspace() + "/" + languageCode;
+        final String workspaceLanguage = "/" + resource.getWorkspace() + "/" + languageCode;
+        find = Find.getFindServletPath() + workspaceLanguage;
+        initializers = Initializers.getInitializersServletPath() + workspaceLanguage;
         convert = DocumentConverter.getPath() + "/" + resource.getWorkspace();
         templatesPath = "/modules";
-        baseUserBoardEdit = "/cms/dashboard/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
-        baseUserBoardLive = "/cms/dashboard/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
-        baseUserBoardFrameEdit = "/cms/dashboardframe/" + Constants.EDIT_WORKSPACE + "/" + languageCode;
-        baseUserBoardFrameLive = "/cms/dashboardframe/" + Constants.LIVE_WORKSPACE + "/" + languageCode;
+        baseUserBoardEdit = "/cms/dashboard" + editLanguage;
+        baseUserBoardLive = "/cms/dashboard" + liveLanguage;
+        baseUserBoardFrameEdit = "/cms/dashboardframe" + editLanguage;
+        baseUserBoardFrameLive = "/cms/dashboardframe" + liveLanguage;
     }
 
     public String getResourcePath() {
@@ -247,7 +257,7 @@ public class URLGenerator {
         if (site != null) {
             final String path = site.getPath();
             if (path.startsWith("/modules/")) {
-                return "/cms/" + mode + "/" + Constants.EDIT_WORKSPACE + "/" + languageCode + path + ".html";
+                return "/cms/" + mode + SLASH_EDIT_SLASH + languageCode + path + ".html";
             }
         }
         return isVisual ? "/welcome/studiovisualmode" : "/welcome/studiomode";

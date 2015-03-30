@@ -726,7 +726,7 @@ public class JahiaSearchIndex extends SearchIndex {
     /**
      * Prepares for a re-indexing of the repository content, creating a secondary index instance.
      */
-    public boolean prepareReindexing() {
+    public synchronized boolean prepareReindexing() {
         if (newIndex != null || switching) {
             return false;
         }
@@ -805,7 +805,7 @@ public class JahiaSearchIndex extends SearchIndex {
 
         SpellChecker spellChecker = getSpellChecker();
         if (spellChecker instanceof CompositeSpellChecker) {
-            ((CompositeSpellChecker) spellChecker).updateIndex();
+            ((CompositeSpellChecker) spellChecker).updateIndex(false);
             log.info("Triggered update of the spellchecker index");
         }
 

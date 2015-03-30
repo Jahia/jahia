@@ -292,10 +292,19 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
      * Triggers update of the spell checker dictionary index.
      */
     public void updateIndex() {
-        spellChecker.lastRefresh = 0;
-        spellChecker.refreshSpellChecker();
+        updateIndex(true);
     }
 
+    /**
+     * Triggers update of the spell checker dictionary index.
+     * 
+     * @param inBackground
+     *            specifies if the update should be done in a separate thread
+     */
+    public void updateIndex(boolean inBackground) {
+        spellChecker.lastRefresh = 0;
+        spellChecker.refreshSpellChecker(inBackground);
+    }
 
     private final class InternalSpellChecker {
 
@@ -512,12 +521,22 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
         }
 
         /**
-         * Refreshes the underlying spell checker in a background thread.
-         * Synchronization is done on this <code>CompositeSpellChecker</code>
-         * instance. While the refresh takes place {@link #refreshing} is set to
-         * <code>true</code>.
+         * Refreshes the underlying spell checker in a background thread. Synchronization is done on this <code>CompositeSpellChecker</code>
+         * instance. While the refresh takes place {@link #refreshing} is set to <code>true</code>.
          */
         private void refreshSpellChecker() {
+            refreshSpellChecker(true);
+        }
+        
+        /**
+         * Refreshes the underlying spell checker. Synchronization is done on this <code>CompositeSpellChecker</code>
+         * instance. While the refresh takes place {@link #refreshing} is set to <code>true</code>.
+         * 
+         * @param inBackground
+         *            specifies if the update should be done in a separate thread; if <code>false</code> the update will be done in the main
+         *            thread, blocking the return until it is finished
+         */
+        private void refreshSpellChecker(boolean inBackground) {
             if (lastRefresh + refreshInterval < System.currentTimeMillis()) {
                 synchronized (this) {
                     if (!refreshing) {
@@ -598,7 +617,11 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                                 }
                             }
                         };
-                        new Thread(refresh, "SpellChecker Refresh").start();
+                        if (inBackground) {
+                            new Thread(refresh, "SpellChecker Refresh").start();
+                        } else {
+                            refresh.run();
+                        }
                         lastRefresh = System.currentTimeMillis();
                     }
                 }

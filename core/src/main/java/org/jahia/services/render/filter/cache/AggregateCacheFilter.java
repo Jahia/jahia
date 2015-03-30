@@ -717,6 +717,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 //        if (renderContext.getRequest().getAttribute("lastResourceRenderedByScript") != null && renderContext.getRequest().getAttribute("lastResourceRenderedByScript").equals(resource)) {
 //            allPaths.add(resource.getNode().getPath());
 //        }
+        Map<String,Object> m = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
+        if (m != null && m.containsKey("requestAttributesToCache")){
+            HashMap<String,Serializable> attributes = new HashMap<>();
+            Collection<String> requestAttributesToCache = (Collection<String>) m.get("requestAttributesToCache");
+            for (String attributesToCache : requestAttributesToCache) {
+                if (renderContext.getRequest().getAttribute(attributesToCache) instanceof Serializable) {
+                    attributes.put(attributesToCache, (Serializable) renderContext.getRequest().getAttribute(attributesToCache));
+                }
+            }
+            cacheEntry.setProperty("requestAttributes", attributes);
+        }
+
         cacheEntry.setProperty("allPaths", allPaths);
     }
 
@@ -812,6 +824,13 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                             try {
                                 if (!cachedContent.equals(content)) {
                                     try {
+                                        if (cacheEntry.getProperty("requestAttributes") != null) {
+                                            Map<String,Serializable> requestAttributesToCache = (Map<String, Serializable>) cacheEntry.getProperty("requestAttributes");
+                                            for (Map.Entry<String, Serializable> entry : requestAttributesToCache.entrySet()) {
+                                                renderContext.getRequest().setAttribute(entry.getKey(), entry.getValue());
+                                            }
+                                        }
+
                                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
                                                 aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
                                     } catch (RenderException e) {

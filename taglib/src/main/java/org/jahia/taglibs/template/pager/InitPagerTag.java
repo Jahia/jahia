@@ -77,8 +77,7 @@ import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 
@@ -183,6 +182,8 @@ public class InitPagerTag extends TagSupport {
             pageContext.setAttribute("moduleMap",moduleMap);
             pageContext.setAttribute("begin_"+id,begin,PageContext.REQUEST_SCOPE);
             pageContext.setAttribute("end_"+id,end,PageContext.REQUEST_SCOPE);
+
+            moduleMap.put("requestAttributesToCache", Arrays.asList("begin_"+id, "end_"+id));
         } catch (Exception e) {
             throw new JspException(e);
         }        

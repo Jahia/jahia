@@ -82,6 +82,7 @@ import com.extjs.gxt.ui.client.widget.layout.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.DateTimeFormat.PredefinedFormat;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreateEngineInitBean;
@@ -124,6 +125,8 @@ public class WorkflowActionDialog extends LayoutContainer {
     private Linker linker;
     private PropertiesEditor propertiesEditor;
     private ButtonBar buttonsBar;
+
+    private static Map<String,NodeTypeCreationCaller> nodeTypeCreationCallers = new HashMap<String, NodeTypeCreationCaller>();
 
     public WorkflowActionDialog(final String nodePath, final String title, final GWTJahiaWorkflowDefinition wfDefinition,
                                 final Linker linker, CustomWorkflow custom, EngineContainer container) {
@@ -235,30 +238,25 @@ public class WorkflowActionDialog extends LayoutContainer {
         tabPanel.add(comments);
     }
 
-
-    private TabItem initActionTab(String formResourceName, final Map<String, GWTJahiaNodeProperty> variables) {
+    private TabItem initActionTab(final String formResourceName, final Map<String, GWTJahiaNodeProperty> variables) {
         actionTab = new TabItem(Messages.get("label.action", "Action"));
         actionTab.setLayout(new BorderLayout());
         if (formResourceName != null && !"".equals(formResourceName)) {
-            contentManagement.getWFFormForNodeAndNodeType(formResourceName, new BaseAsyncCallback<GWTJahiaNodeType>() {
-                public void onSuccess(final GWTJahiaNodeType result) {
-                    JahiaContentManagementService.App.getInstance().initializeCreateEngine(result.getName(),
-                            linker.getSelectionContext().getMultipleSelection().size() > 1 ? linker.getSelectionContext().getMultipleSelection().get(0).getPath() : linker.getSelectionContext().getSingleSelection().getPath(), null,
-                            new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
-                                public void onSuccess(GWTJahiaCreateEngineInitBean result2) {
-                                    propertiesEditor = new PropertiesEditor(Arrays.asList(result), variables,
-                                            Arrays.asList(GWTJahiaItemDefinition.CONTENT));
-                                    propertiesEditor.setChoiceListInitializersValues(result2.getChoiceListInitializersValues());
-                                    propertiesEditor.setViewInheritedItems(true);
-                                    propertiesEditor.renderNewFormPanel();
-                                    propertiesEditor.setFrame(true);
-                                    propertiesEditor.setBorders(false);
-                                    propertiesEditor.setBodyBorder(false);
-                                    actionTab.add(propertiesEditor, new BorderLayoutData(Style.LayoutRegion.CENTER));
-                                    actionTab.layout();
-                                }
-                            }
-                    );
+            if (!nodeTypeCreationCallers.containsKey(formResourceName)) {
+                nodeTypeCreationCallers.put(formResourceName, new NodeTypeCreationCaller(formResourceName));
+            }
+            nodeTypeCreationCallers.get(formResourceName).add(new BaseAsyncCallback<NodeTypeCreationInfo>() {
+                @Override
+                public void onSuccess(NodeTypeCreationInfo result) {
+                    propertiesEditor = new PropertiesEditor(Arrays.asList(result.getNodeType()), variables, Arrays.asList(GWTJahiaItemDefinition.CONTENT));
+                    propertiesEditor.setChoiceListInitializersValues(result.getEngine().getChoiceListInitializersValues());
+                    propertiesEditor.setViewInheritedItems(true);
+                    propertiesEditor.renderNewFormPanel();
+                    propertiesEditor.setFrame(true);
+                    propertiesEditor.setBorders(false);
+                    propertiesEditor.setBodyBorder(false);
+                    actionTab.add(propertiesEditor, new BorderLayoutData(Style.LayoutRegion.CENTER));
+                    actionTab.layout();
                 }
             });
         }
@@ -538,4 +536,64 @@ public class WorkflowActionDialog extends LayoutContainer {
             workflowDashboard.hide();
         }
     }
+
+    class NodeTypeCreationCaller {
+        private NodeTypeCreationInfo result;
+        private List<AsyncCallback<NodeTypeCreationInfo>> deferedCallbacks = new ArrayList<AsyncCallback<NodeTypeCreationInfo>>();
+
+        public NodeTypeCreationCaller(String nodeTypeName) {
+            contentManagement.getWFFormForNodeAndNodeType(nodeTypeName, new BaseAsyncCallback<GWTJahiaNodeType>() {
+                public void onSuccess(final GWTJahiaNodeType nodeType) {
+                    JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeType.getName(),
+                            linker.getSelectionContext().getMultipleSelection().size() > 1 ? linker.getSelectionContext().getMultipleSelection().get(0).getPath() : linker.getSelectionContext().getSingleSelection().getPath(), null,
+                            new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
+                                public void onSuccess(GWTJahiaCreateEngineInitBean engine) {
+                                    NodeTypeCreationCaller.this.result = new NodeTypeCreationInfo(nodeType, engine);
+                                    for (AsyncCallback<NodeTypeCreationInfo> callback : deferedCallbacks) {
+                                        callback.onSuccess(result);
+                                    }
+                                    deferedCallbacks.clear();
+                                }
+                            }
+                    );
+                }
+            });
+        }
+
+        public void add(AsyncCallback<NodeTypeCreationInfo> async) {
+            if (result != null) {
+                async.onSuccess(result);
+            } else {
+                deferedCallbacks.add(async);
+            }
+        }
+    }
+
+    class NodeTypeCreationInfo {
+        private GWTJahiaNodeType nodeType;
+        private GWTJahiaCreateEngineInitBean engine;
+
+        public NodeTypeCreationInfo(GWTJahiaNodeType nodeType, GWTJahiaCreateEngineInitBean engine) {
+            this.nodeType = nodeType;
+            this.engine = engine;
+        }
+
+        public GWTJahiaCreateEngineInitBean getEngine() {
+            return engine;
+        }
+
+        public void setEngine(GWTJahiaCreateEngineInitBean engine) {
+            this.engine = engine;
+        }
+
+        public GWTJahiaNodeType getNodeType() {
+            return nodeType;
+        }
+
+        public void setNodeType(GWTJahiaNodeType nodeType) {
+            this.nodeType = nodeType;
+        }
+    }
+
+
 }

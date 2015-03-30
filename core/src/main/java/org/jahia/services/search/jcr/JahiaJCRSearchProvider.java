@@ -776,15 +776,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isKeywords()) {
                     addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_KEYWORDS, searchExpression, xpath));
                 }
-<<<<<<< .working
-                if (searchFields.isFilename()) {
-                    String[] terms = null;
-                    String constraint = OR;
-=======
+
                 String[] terms = null;
                 String constraint = "or";
                 if (searchFields.isFilename() || searchFields.isTags()) {
->>>>>>> .merge-right.r52378
                     if (textSearch.getMatch() == MatchType.ANY_WORD || textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
                         terms = Patterns.SPACE.split(cleanMultipleWhiteSpaces(textSearch.getTerm()));
                         if (textSearch.getMatch() == MatchType.ALL_WORDS || textSearch.getMatch() == MatchType.WITHOUT_WORDS) {
@@ -813,27 +808,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 if (searchFields.isTags() && getTaggingService() != null
                         && (params.getSites().getValue() != null || params.getOriginSiteKey() != null)
                         && !StringUtils.containsAny(textSearch.getTerm(), "?*")) {
-<<<<<<< .working
-                    addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(taggingService.getTagHandler().execute(textSearch.getTerm())));
-=======
-                    try {
-                        for (String term : terms) {
-                            JCRNodeWrapper tag = getTaggingService().getTag(term, params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
-                            if (tag != null) {
-                                addConstraint(textSearchConstraints, "or", getPropertyName(Constants.TAGS, xpath) + "=" + stringToJCRSearchExp(tag.getIdentifier()));
-                            }
+                    for (String term : terms) {
+                        String tag = taggingService.getTagHandler().execute(term);
+                        if (!StringUtils.isEmpty(tag)) {
+                            addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
                         }
-                        if (terms.length > 1) {
-                            JCRNodeWrapper tag = getTaggingService().getTag(textSearch.getTerm(), params.getSites().getValue() != null ? params.getSites().getValue() : params.getOriginSiteKey(), session);
-
-                            if (tag != null) {
-                                addConstraint(textSearchConstraints, "or", getPropertyName(Constants.TAGS, xpath) + "=" + stringToJCRSearchExp(tag.getIdentifier()));
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.warn("Error resolving tag for search", e);
                     }
->>>>>>> .merge-right.r52378
+                    if (terms.length > 1) {
+                        String tag = taggingService.getTagHandler().execute(textSearch.getTerm());                            
+                        if (!StringUtils.isEmpty(tag)) {
+                            addConstraint(textSearchConstraints, OR, getPropertyName("j:tagList", xpath) + "=" + stringToJCRSearchExp(tag));
+                        }
+                    }
                 }
                 if (textSearchConstraints.length() > 0) {
                     addConstraint(constraints, AND, "("

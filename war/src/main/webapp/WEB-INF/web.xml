@@ -459,7 +459,8 @@
             <param-name>csrf-protection</param-name>
             <param-value>host1.domain.com,host2.domain.org</param-value>
         </init-param>
-        -->       <load-on-startup>5</load-on-startup>
+        -->
+       <load-on-startup>5</load-on-startup>
     </servlet>
 
     <!-- ====================================================================== -->
@@ -509,6 +510,7 @@
         </description>
         <servlet-name>ErrorServlet</servlet-name>
         <servlet-class>org.jahia.bin.errors.ErrorServlet</servlet-class>
+        <load-on-startup>99</load-on-startup>
     </servlet>
 
     <!-- ====================================================================== -->
@@ -535,6 +537,7 @@
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
+        <load-on-startup>99</load-on-startup>
     </servlet>
 
     <servlet>
@@ -552,7 +555,8 @@
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
-        <async-supported>true </async-supported>
+        <async-supported>true</async-supported>
+        <load-on-startup>99</load-on-startup>
     </servlet>
     
     <!-- OSGi Proxy Servlet -->
@@ -613,6 +617,7 @@
             <param-name>cleanupAfterInclude</param-name>
             <param-value>false</param-value>
         </init-param>
+        <load-on-startup>99</load-on-startup>
     </servlet>
     
     <!-- Servlet mappings -->

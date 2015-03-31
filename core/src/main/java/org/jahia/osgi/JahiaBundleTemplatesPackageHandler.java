@@ -139,8 +139,9 @@ class JahiaBundleTemplatesPackageHandler {
         boolean isSourcesDownloadable = SettingsBean.getInstance().isMavenExecutableSet();
         if (isSourcesDownloadable) {
             String downloadSourcesHeader = getHeader(bundle, "Jahia-Download-Sources-Available");
-            if (downloadSourcesHeader != null) {
-                isSourcesDownloadable = Boolean.valueOf(downloadSourcesHeader);
+            if (downloadSourcesHeader != null
+                    && ("false".equalsIgnoreCase(downloadSourcesHeader) || "no".equalsIgnoreCase(downloadSourcesHeader))) {
+                isSourcesDownloadable = false;
             }
         }
         pkg.setSourcesDownloadable(isSourcesDownloadable);

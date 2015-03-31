@@ -447,9 +447,10 @@ public class SearchHelper {
         SearchCriteria.DateValue lastModifiedDate = new SearchCriteria.DateValue();
         lastModifiedDate.setType(SearchCriteria.DateValue.Type.RANGE);
         criteria.setLastModified(lastModifiedDate);
-        SearchCriteria.DateValue lastPublished = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").getDateValue();
-        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setType(SearchCriteria.NodeProperty.Type.DATE);
-        criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished").setName("j:lastPublished");
+        final SearchCriteria.NodeProperty lastPublishedProp = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished");
+        SearchCriteria.DateValue lastPublished = lastPublishedProp.getDateValue();
+        lastPublishedProp.setType(SearchCriteria.NodeProperty.Type.DATE);
+        lastPublishedProp.setName("j:lastPublished");
         lastPublished.setType(SearchCriteria.DateValue.Type.RANGE);
 
         if (gwtQuery.getTimeInDays() != null) {

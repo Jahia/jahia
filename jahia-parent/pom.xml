@@ -228,6 +228,12 @@
     </scm>
     <developers>
         <developer>
+            <name>Alexander Karmanov</name>
+            <email>alexander.karmanov@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Anna Afshar</name>
             <email>anna.afshar@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
@@ -246,14 +252,20 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
+            <name>Christophe Laprun</name>
+            <email>christophe.laprun@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Clément Egger</name>
             <email>clement.egger@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
-            <name>Christophe Laprun</name>
-            <email>christophe.laprun@jahia.com</email>
+            <name>Damien Gaillard</name>
+            <email>damien.gaillard@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
@@ -288,12 +300,6 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
-            <name>Guillaume Lucazeau</name>
-            <email>guillaume.lucazeau@jahia.com</email>
-            <organization>Jahia Solutions Group SA</organization>
-            <organizationUrl>http://www.jahia.com/</organizationUrl>
-        </developer>
-        <developer>
             <name>Julian Maurel</name>
             <email>julian.maurel@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
@@ -324,6 +330,12 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
+            <name>Rizak Ahmed</name>
+            <email>rizak.ahmed@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Serge Huber</name>
             <email>serge.huber@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
@@ -348,6 +360,12 @@
             <organizationUrl>http://www.jahia.com/</organizationUrl>
         </developer>
         <developer>
+            <name>Wanda Egger</name>
+            <email>wanda.egger@jahia.com</email>
+            <organization>Jahia Solutions Group SA</organization>
+            <organizationUrl>http://www.jahia.com/</organizationUrl>
+        </developer>
+        <developer>
             <name>Werner Assek</name>
             <email>werner.assek@jahia.com</email>
             <organization>Jahia Solutions Group SA</organization>
@@ -364,6 +382,9 @@
         </contributor>
         <contributor>
             <name>Frédéric Pierre</name>
+        </contributor>
+        <contributor>
+            <name>Guillaume Lucazeau</name>
         </contributor>
         <contributor>
             <name>Islam El-Sayed</name>
@@ -387,7 +408,7 @@
     
     <issueManagement>
         <system>Jira</system>
-        <url>http://jira.jahia.org/</url>
+        <url>https://jira.jahia.org/</url>
     </issueManagement>
 
     <repositories>

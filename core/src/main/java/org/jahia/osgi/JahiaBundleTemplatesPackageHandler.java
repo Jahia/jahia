@@ -136,12 +136,14 @@ class JahiaBundleTemplatesPackageHandler {
         }
 
         //Check if sources are downloadable for this package
-        Boolean isSourcesDownloadable = Boolean.TRUE;
-        String downloadSourcesHeader = getHeader(bundle, "Jahia-Download-Sources-Available");
-        if(downloadSourcesHeader!=null) {
-            isSourcesDownloadable = Boolean.valueOf(downloadSourcesHeader);
+        boolean isSourcesDownloadable = SettingsBean.getInstance().isMavenExecutableSet();
+        if (isSourcesDownloadable) {
+            String downloadSourcesHeader = getHeader(bundle, "Jahia-Download-Sources-Available");
+            if (downloadSourcesHeader != null) {
+                isSourcesDownloadable = Boolean.valueOf(downloadSourcesHeader);
+            }
         }
-        pkg.setSourcesDownloadable(SettingsBean.getInstance().isMavenExecutableSet() && isSourcesDownloadable);
+        pkg.setSourcesDownloadable(isSourcesDownloadable);
 
         URL rootEntry = bundle.getEntry("/");
         if (rootEntry != null) {

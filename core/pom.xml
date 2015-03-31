@@ -818,6 +818,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- PDFBox dependency we override form Tika -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+             <version>1.8.9</version>
+        </dependency>
+        <!-- End of PDFBox dependency we override form Tika -->
 
         <dependency>
             <groupId>net.sf.ehcache</groupId>

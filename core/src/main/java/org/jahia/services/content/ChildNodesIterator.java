@@ -160,10 +160,10 @@ public class ChildNodesIterator implements JCRNodeIteratorWrapper {
     @Override
     public void skip(long skipNum) {
         for (int i = 0; i< skipNum; i++) {
+            if (nextNode == null) {
+                throw new NoSuchElementException();
+            }
             prefetchNext();
-        }
-        if (nextNode == null) {
-            throw new NoSuchElementException();
         }
     }
 
@@ -175,7 +175,7 @@ public class ChildNodesIterator implements JCRNodeIteratorWrapper {
 
     @Override
     public long getPosition() {
-        return position;
+        return hasNext() ? (position - 1) : position;
     }
 
     @Override

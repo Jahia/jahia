@@ -106,9 +106,7 @@ public class OrphanedActionPurgeJob extends BackgroundJob {
         long timer = System.currentTimeMillis();
         final JobDataMap data = ctx.getJobDetail().getJobDataMap();
         final String workspace = StringUtils.defaultIfEmpty(data.getString("workspace"), Constants.LIVE_WORKSPACE);
-        Object val = data.get("jobGroupNames");
-        @SuppressWarnings("unchecked")
-        final Set<String> jobGroupNames = val != null && val instanceof Set<?> ? (Set<String>) val : null;
+        final Set<String> jobGroupNames = getJobGroupNames(data);
         if (jobGroupNames == null || jobGroupNames.isEmpty()) {
             logger.debug("No job group names to scan. Skipping.");
             return;
@@ -126,6 +124,12 @@ public class OrphanedActionPurgeJob extends BackgroundJob {
 
         logger.info("Finished scanning {} action jobs. Deleted {} orphaned jobs. Execution took {} ms", new Long[] {
                 Long.valueOf(counts[0]), Long.valueOf(counts[1]), (System.currentTimeMillis() - timer) });
+    }
+
+    @SuppressWarnings("unchecked")
+    protected Set<String> getJobGroupNames(JobDataMap data) {
+        Object val = data.get("jobGroupNames");
+        return val != null && val instanceof Set<?> ? (Set<String>) val : null;
     }
 
     private boolean jobValid(String uuid, JCRSessionWrapper session) throws RepositoryException {

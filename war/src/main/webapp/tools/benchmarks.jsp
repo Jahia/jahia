@@ -15,6 +15,7 @@
 <%@ page import="java.sql.*" %>
 <%@ page import="java.text.SimpleDateFormat" %>
 <%@ page import="java.util.*" %>
+<%@ page import="org.jahia.services.content.decorator.JCRUserNode" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jsp/jstl/sql" %>
@@ -411,6 +412,60 @@
         }
     }
 
+    private void runLDAPTest(final JspWriter out, HttpServletRequest request, JspContext pageContext) throws Exception {
+        printTestName(out, "LDAP Read test");
+        final JahiaUserManagerService userManagerService = JahiaUserManagerService.getInstance();
+        final JCRSessionFactory sessionFactory = JCRSessionFactory.getInstance();
+        sessionFactory.setCurrentUser(userManagerService.lookupRootUser().getJahiaUser());
+        JCRSessionWrapper session = sessionFactory.getCurrentUserSession();
+
+        final List<JCRStoreProvider> providers = userManagerService.getProviderList(session);
+        if (!providers.isEmpty()) {
+
+            long totalTime = 0;
+            int totalUsers = 0;
+
+            final int nbOfRuns = 10;
+
+            Properties criteria = new Properties();
+            criteria.put(JahiaUserManagerService.COUNT_LIMIT, "100");
+
+            out.println("<ul>");
+
+            for (JCRStoreProvider provider : providers) {
+                final String key = provider.getKey();
+                if(key.startsWith("ldap")) {
+
+                    final String[] providerKeys = {key};
+
+                    long begin = System.currentTimeMillis();
+                    final Set<JCRUserNode> users = userManagerService.searchUsers(criteria, providerKeys, session);
+                    long firstRun = System.currentTimeMillis() - begin;
+                    for (int i = 0; i < nbOfRuns - 2; i++) {
+                        userManagerService.searchUsers(criteria, providerKeys, session);
+                    }
+                    long runTime = System.currentTimeMillis() - begin;
+
+                    final int usersPerRun = users.size();
+                    int userNb = usersPerRun * nbOfRuns;
+
+                    out.println("<li>Provider " + key + " read " + userNb + " users (" + usersPerRun + " users x " + nbOfRuns +
+                            " runs) in " + runTime + " ms" +
+                            (userNb > 0 ? ", averaging " + ((float) runTime / userNb) + " ms per user.": ".")
+                            + " First run took " + firstRun + " ms.</li>");
+
+                    totalUsers += userNb;
+                    totalTime += runTime;
+                }
+            }
+
+            out.println("</ul>");
+
+            out.println("LDAP read time summary: " + totalUsers + " users were read in " + totalTime + " ms" +
+                    (totalUsers > 0 ? ", averaging " + ((float) totalTime / totalUsers) + " ms per user." : "."));
+        }
+    }
+
     private void printTestName(JspWriter out, String testName) throws IOException {
         out.println("<h3>");
         println(out, testName);
@@ -612,6 +667,14 @@
             runJCRWriteTest(out, request, pageContext);
         }
 
+        if (isParameterActive(request, "runLDAPTest")) {
+            try {
+                runLDAPTest(out, request, pageContext);
+            } catch (Exception e) {
+                out.println(e);
+            }
+        }
+
         out.println("<h2>Benchmark completed.</h2>");
     } else {
         out.println("<form>");
@@ -619,6 +682,7 @@
         renderCheckbox(out, "runFileSystemTest", "Run file system benchmark", true);
         renderCheckbox(out, "runJCRTest", "Run Java Content Repository read benchmark", true);
         renderCheckbox(out, "runJCRWriteTest", "Run Java Content Repository write benchmark", true);
+        renderCheckbox(out, "runLDAPTest", "Run LDAP user read benchmark", true);
         out.println("<input type=\"submit\" name=\"submit\" value=\"Submit\">");
         out.println("</form>");
     }

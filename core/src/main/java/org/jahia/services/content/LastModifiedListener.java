@@ -135,7 +135,7 @@ public class LastModifiedListener extends DefaultEventListener {
                                         // Test if published and has lastPublished property
                                         boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, Constants.LIVE_WORKSPACE, null, new JCRCallback<Boolean>() {
                                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                                return session.getNodeByIdentifier(event.getIdentifier()).hasProperty("j:lastPublished");
+                                                return session.getNodeByIdentifier(event.getIdentifier()).hasProperty(Constants.LASTPUBLISHED);
                                             }
                                         });
 

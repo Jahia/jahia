@@ -1804,9 +1804,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         documentViewImportHandler.setAttributeProcessors(attributeProcessors);
 
                         Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
-                        props.remove("j:lastPublished");
-                        props.remove("j:lastPublishedBy");
-                        props.remove("j:published");
+                        props.remove(Constants.LASTPUBLISHED);
+                        props.remove(Constants.LASTPUBLISHEDBY);
+                        props.remove(Constants.PUBLISHED);
                         documentViewImportHandler.setPropertiesToSkip(props);
                         handleImport(zis, documentViewImportHandler, LIVE_REPOSITORY_XML);
 
@@ -1876,9 +1876,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                     if (importLive) {
                         // Restore publication status
                         Set<String> props = new HashSet<String>(documentViewImportHandler.getPropertiesToSkip());
-                        props.remove("j:lastPublished");
-                        props.remove("j:lastPublishedBy");
-                        props.remove("j:published");
+                        props.remove(Constants.LASTPUBLISHED);
+                        props.remove(Constants.LASTPUBLISHEDBY);
+                        props.remove(Constants.PUBLISHED);
                         documentViewImportHandler.setPropertiesToSkip(props);
                         documentViewImportHandler.setEnforceUuid(true);
                         documentViewImportHandler.setUuidBehavior(DocumentViewImportHandler.IMPORT_UUID_COLLISION_MOVE_EXISTING);

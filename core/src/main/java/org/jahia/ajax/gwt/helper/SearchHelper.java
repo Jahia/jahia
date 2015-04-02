@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
@@ -447,10 +448,10 @@ public class SearchHelper {
         SearchCriteria.DateValue lastModifiedDate = new SearchCriteria.DateValue();
         lastModifiedDate.setType(SearchCriteria.DateValue.Type.RANGE);
         criteria.setLastModified(lastModifiedDate);
-        final SearchCriteria.NodeProperty lastPublishedProp = criteria.getProperties().get("jmix:lastPublished").get("j:lastPublished");
+        final SearchCriteria.NodeProperty lastPublishedProp = criteria.getProperties().get(Constants.JAHIAMIX_LASTPUBLISHED).get(Constants.LASTPUBLISHED);
         SearchCriteria.DateValue lastPublished = lastPublishedProp.getDateValue();
         lastPublishedProp.setType(SearchCriteria.NodeProperty.Type.DATE);
-        lastPublishedProp.setName("j:lastPublished");
+        lastPublishedProp.setName(Constants.LASTPUBLISHED);
         lastPublished.setType(SearchCriteria.DateValue.Type.RANGE);
 
         if (gwtQuery.getTimeInDays() != null) {

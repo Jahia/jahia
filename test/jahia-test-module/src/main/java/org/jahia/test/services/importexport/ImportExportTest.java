@@ -235,14 +235,14 @@ public class ImportExportTest {
     private final static String ILLEGAL_STATE = "illegal state";
 
     private final static Set<String> ignoredProperties = Sets.newHashSet("jcr:baseVersion", "jcr:created", "j:deletedChildren",
-            "j:installedModules", "jcr:lastModified", "jcr:lastModifiedBy", "j:lastPublished", "jcr:predecessors", "j:serverName",
+            "j:installedModules", "jcr:lastModified", "jcr:lastModifiedBy", Constants.LASTPUBLISHED, "jcr:predecessors", "j:serverName",
             "j:siteId", "j:templateNode", "jcr:uuid", "jcr:versionHistory", "result", "j:fullpath", "j:allowsUnlistedLanguages");
 
     private final static Set<String> notExportedProperties = Sets.newHashSet("jcr:lockIsDeep", "j:lockTypes", "jcr:lockOwner",
             "j:locktoken");
 
-    private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", "j:published", "j:lastPublished",
-            "j:lastPublishedBy", "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
+    private final static Set<String> optionalProperties = Sets.newHashSet("jcr:mixinTypes", Constants.PUBLISHED, Constants.LASTPUBLISHED,
+            Constants.LASTPUBLISHEDBY, "j:deletedChildren", "j:fullpath", "j:allowsUnlistedLanguages");
     
     private final static Set<String> optionalNodes = Sets.newHashSet("templates");    
     

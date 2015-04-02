@@ -77,6 +77,7 @@ package org.jahia.services;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.ArrayUtils;
@@ -131,7 +132,28 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         }
         throw new NoSuchBeanDefinitionException(beanId);
     }
+    
+    /**
+     * Returns a map with beans of the specified type, including beans in modules.
+     * 
+     * @param type
+     *            the bean type to search for
+     * @return a map with beans of the specified type, including beans in modules
+     * @throws BeansException
+     *             in case of a lookup error
+     */
+    public static <T> Map<String, T> getBeansOfType(Class<T> type) throws BeansException {
+        Map<String, T> found = new LinkedHashMap<String, T>();
+        found.putAll(SpringContextSingleton.getInstance().getContext().getBeansOfType(type));
+        for (JahiaTemplatesPackage aPackage : ServicesRegistry.getInstance().getJahiaTemplateManagerService()
+                .getAvailableTemplatePackages()) {
+            if (aPackage.getContext() != null) {
+                found.putAll(aPackage.getContext().getBeansOfType(type));
+            }
+        }
 
+        return found;
+    }
 
     public static SpringContextSingleton getInstance() {
         return ourInstance;

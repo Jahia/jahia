@@ -51,17 +51,6 @@
     </rule>
 
     <rule>
-        <note>Add language to URL if not present (with context)</note>
-        <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
-        <condition type="attribute" name="siteDefaultLanguage" operator="notequal">^$</condition>
-        <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
-        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)/(cms/)?[a-z]{2}(_[A-Z]{2})?/.*</condition>
-        <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
-        <from>^/cms/(.*)$</from>
-        <to>/cms/%{attribute:siteDefaultLanguage}/$1</to>
-    </rule>
-
-    <rule>
         <note>Add the key of the site if it was resolved by server name, and if URL does not start with /users or /sites (no context)</note>
         <condition type="attribute" name="jahiaSkipInboundSeoRules" operator="notequal">^true$</condition>
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>

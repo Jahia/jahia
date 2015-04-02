@@ -312,11 +312,11 @@ public class ModulesProviderTest {
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
-                if (n == 27) {
+                if (n == 31) {
                     assertEquals("[jnt:testComponent4] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
-                } else if (n == 28) {
+                } else if (n == 32) {
                     assertEquals(" - property1 (string) mandatory", line);
-                } else if (n == 29) {
+                } else if (n == 33) {
                     assertEquals(" - property2 (long) protected", line);
                 }
                 n++;
@@ -353,9 +353,9 @@ public class ModulesProviderTest {
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
-                if (n == 28) {
+                if (n == 32) {
                     assertEquals(" - property2 (long) protected", line);
-                } else if (n == 29) {
+                } else if (n == 33) {
                     assertEquals(" - property1 (string) mandatory", line);
                 }
                 n++;
@@ -379,7 +379,7 @@ public class ModulesProviderTest {
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
-                if (n == 27) {
+                if (n == 31) {
                     assertEquals("[jnt:testRenamedComponent] > jnt:content, jmix:tagged, jmix:structuredContent orderable noquery", line);
                 }
                 n++;
@@ -406,9 +406,9 @@ public class ModulesProviderTest {
             String line = null;
             int n = 1;
             while ((line = input.readLine()) != null) {
-                if (n == 28) {
+                if (n == 32) {
                     assertEquals(" - property2 (long) protected", line);
-                } else if (n == 29) {
+                } else if (n == 33) {
                     assertEquals(" - property1 (string) mandatory", line);
                 }
                 n++;

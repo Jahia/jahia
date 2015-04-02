@@ -188,45 +188,10 @@ public class TestServlet extends BaseTestController {
                 myTestNG.setConfigFailurePolicy("continue");
                 myTestNG.setPreserveOrder(true);
                 myTestNG.run();
-            } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*")) {
-
-                final Set<String> ignoreTests = getIgnoreTests();
-                // Execute one test
-                String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
-                try {
-                    JUnitCore junitcore = new JUnitCore();
-                    SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
-                    junitcore.addListener(xmlResultFormatter);
-                    JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
-                    Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
-                    if (testClass == null) {
-                        throw new Exception("Couldn't find origin module for test " + className);
-                    }                    
-                    List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());
-                    if (classes.isEmpty()) {
-                        Description description = Description.createSuiteDescription(testClass);
-                        xmlResultFormatter.testRunStarted(description);
-                        xmlResultFormatter.testRunFinished(new Result());
-                    } else {
-                        junitcore.run(new FilterRequest(Request.classes(classes
-                                .toArray(new Class[classes.size()])), new Filter() {
-
-                            @Override
-                            public boolean shouldRun(Description description) {
-                                return !ignoreTests.contains(description.getDisplayName());
-                            }
-
-                            @Override
-                            public String describe() {
-                                return "Filter out Jahia configured methods";
-                            }
-                        }));
-                    }
-                } catch (Exception e) {
-                    logger.error("Error executing test", e);
-                }
+            } else if (StringUtils.isNotEmpty(pathInfo) && !pathInfo.contains("*") && !pathInfo.trim().equals("/")) {
+                runTest(httpServletRequest, httpServletResponse, pathInfo);
             } else {
-                Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) ? Pattern
+                Pattern testNamePattern = StringUtils.isNotEmpty(pathInfo) && !pathInfo.trim().equals("/") ? Pattern
                         .compile(pathInfo.length() > 1 && pathInfo.startsWith("/") ? pathInfo
                                 .substring(1) : pathInfo) : null;
                 Set<String> testCases = getAllTestCases(Boolean.valueOf(httpServletRequest.getParameter("skipCoreTests")));
@@ -245,6 +210,49 @@ public class TestServlet extends BaseTestController {
                     pw.println(c);
                 }
             }
+    }
+
+    private void runTest(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, String pathInfo) {
+        // Execute one test
+        String className = pathInfo.substring(pathInfo.lastIndexOf('/')+1);
+        String methodName = httpServletRequest.getParameter("test");
+        try {
+            JUnitCore junitcore = new JUnitCore();
+            SurefireJUnitXMLResultFormatter xmlResultFormatter = new SurefireJUnitXMLResultFormatter(httpServletResponse.getOutputStream());
+            junitcore.addListener(xmlResultFormatter);
+            JahiaTemplatesPackage testPackage = findPackageForTestCase(className);
+            Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
+            if (testClass == null) {
+                throw new Exception("Couldn't find origin module for test " + className);
+            }                    
+            List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());;
+            if (classes.isEmpty()) {
+                Description description = Description.createSuiteDescription(testClass);
+                xmlResultFormatter.testRunStarted(description);
+                xmlResultFormatter.testRunFinished(new Result());
+            } else {
+                if (methodName != null) {
+                    junitcore.run(Request.method(testClass, methodName));
+                } else {
+                    final Set<String> ignoreTests = getIgnoreTests();
+                    junitcore.run(new FilterRequest(Request.classes(classes
+                            .toArray(new Class[classes.size()])), new Filter() {
+    
+                        @Override
+                        public boolean shouldRun(Description description) {
+                            return !ignoreTests.contains(description.getDisplayName());
+                        }
+    
+                        @Override
+                        public String describe() {
+                            return "Filter out Jahia configured methods";
+                        }
+                    }));
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Error executing test", e);
+        }
     }
 
     private Set<String> getAllTestCases(boolean skipCore) {

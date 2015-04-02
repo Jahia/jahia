@@ -541,7 +541,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
     }
 
     @Override
-    protected Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
+    public Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
         Node node1 = super.getI18N(locale, fallback);
         if (node1.hasProperty("jcr:childVersionHistory")) {
             VersionHistory versionHistory = (VersionHistory) getSession().getProviderSession(provider).getNodeByIdentifier(node1.getProperty(

@@ -890,13 +890,13 @@ class NodeHelper {
 
         // Add 'work in progress' info
         try {
-            if (node.hasProperty("j:workInProgress")) {
-                n.set("j:workInProgress", node.getProperty("j:workInProgress").getBoolean());
+            if (node.hasProperty(Constants.WORKINPROGRESS)) {
+                n.set(Constants.WORKINPROGRESS, node.getProperty(Constants.WORKINPROGRESS).getBoolean());
             }
             if (node.hasI18N(node.getSession().getLocale())) {
                 final Node i18n = node.getI18N(node.getSession().getLocale());
-                if (i18n.hasProperty("j:workInProgress")){
-                    n.set("j:workInProgress", i18n.getProperty("j:workInProgress").getBoolean());
+                if (i18n.hasProperty(Constants.WORKINPROGRESS)){
+                    n.set(Constants.WORKINPROGRESS, i18n.getProperty(Constants.WORKINPROGRESS).getBoolean());
                 }
             }
         } catch (RepositoryException e) {

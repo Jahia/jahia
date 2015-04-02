@@ -247,6 +247,8 @@ public class Constants {
     public static final String LASTPUBLISHED = "j:lastPublished";
     public static final String LASTPUBLISHEDBY = "j:lastPublishedBy";
     public static final String PUBLISHED = "j:published";
+    public static final String WORKINPROGRESS = "j:workInProgress";
+
     public static final String CONTENT = "content";
     public static final String SYSTEM = "j:system";
     public static final String FILTERS = "j:filters";
@@ -339,4 +341,11 @@ public class Constants {
 
     public static final String JAHIA_PROJECT_VERSION = "${project.version}"; // this is filtered by Maven.
     public static final String SCM_DUMMY_URI = "scm:dummy:uri";
+
+    /**
+     * The set of properties that are <strong>NOT</strong> internationalized properties but are still copied to translation nodes.
+     *
+     * TODO: this set might not be exhaustive at the moment. Please complete if needed!
+     */
+    public static final Set<String> nonI18nPropertiesCopiedToTranslationNodes = new HashSet<>(Arrays.asList(PUBLISHED, LASTPUBLISHED, LASTPUBLISHEDBY, WORKINPROGRESS));
 }

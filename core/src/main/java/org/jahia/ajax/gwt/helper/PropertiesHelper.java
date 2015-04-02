@@ -143,6 +143,20 @@ public class PropertiesHelper {
                 // definition can be null if the file is versionned
                 if (def != null && !ignoredProperties.contains(def.getName()) && ((ExtendedPropertyDefinition) def).getSelectorOptions().get("password") == null) {
                     propName = def.getName();
+
+                    // check that we're not dealing with a not-set property from the translation nodes,
+                    // in which case it needs to be omitted
+                    final Locale locale = currentUserSession.getLocale();
+                    if(Constants.nonI18nPropertiesCopiedToTranslationNodes.contains(propName) && objectNode.hasI18N(locale, false)) {
+                        // get the translation node for the current locale
+                        final Node i18N = objectNode.getI18N(locale, false);
+                        if(!i18N.hasProperty(propName)) {
+                            // if the translation node doesn't have the property and it's part of the set of copied properties, then we shouldn't return it
+                            continue;
+                        }
+                    }
+
+
                     // create the corresponding GWT bean
                     GWTJahiaNodeProperty nodeProp = new GWTJahiaNodeProperty();
                     nodeProp.setName(propName);
@@ -292,22 +306,22 @@ public class PropertiesHelper {
         if (node.hasTranslations()) {
             GWTJahiaNodeProperty wipProperty = null;
             for (GWTJahiaNodeProperty property : sharedProperties) {
-                if (property.getName().equals("j:workInProgress")) {
+                if (property.getName().equals(Constants.WORKINPROGRESS)) {
                     wipProperty = property;
                     break;
                 }
             }
             if (wipProperty != null) {
-                if (node.hasProperty("j:workInProgress")) {
-                    node.getProperty("j:workInProgress").remove();
+                if (node.hasProperty(Constants.WORKINPROGRESS)) {
+                    node.getProperty(Constants.WORKINPROGRESS).remove();
                 }
                 Boolean workInProgress = wipProperty.getValues().get(0).getBoolean();
                 for (String language : languages) {
                     Node i18N = node.getI18N(LanguageCodeConverters.languageCodeToLocale(language));
                     if (workInProgress != null && workInProgress.booleanValue()) {
-                        i18N.setProperty("j:workInProgress", workInProgress);
-                    } else if (i18N.hasProperty("j:workInProgress")) {
-                        i18N.getProperty("j:workInProgress").remove();
+                        i18N.setProperty(Constants.WORKINPROGRESS, workInProgress);
+                    } else if (i18N.hasProperty(Constants.WORKINPROGRESS)) {
+                        i18N.getProperty(Constants.WORKINPROGRESS).remove();
                     }
                 }
             }

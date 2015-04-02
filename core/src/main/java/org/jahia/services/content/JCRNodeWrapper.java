@@ -3,71 +3,71 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ======================================================================================
+ * 1/ GPL
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  *
  *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
  *
- *     For more information, please visit http://www.jahia.com
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.content;
 
@@ -79,7 +79,6 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;
@@ -91,7 +90,6 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -149,7 +147,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * {@inheritDoc}
      *
      * @return the <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code> set, or <code>null</code>
-     *         if this method was used to remove a property (by setting its value to <code>null</code>).
+     * if this method was used to remove a property (by setting its value to <code>null</code>).
      */
     JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
@@ -192,7 +190,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * {@inheritDoc}
      *
      * @return the <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code> set, or <code>null</code>
-     *         if this method was used to remove a property (by setting its value to <code>null</code>).
+     * if this method was used to remove a property (by setting its value to <code>null</code>).
      */
     JCRPropertyWrapper setProperty(String name, String value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
@@ -201,7 +199,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      *
      * @return The updated <code>Property</code> object wrapped in <code>JCRPropertywWrapper</code>
      * @deprecated As of JCR 2.0, {@link #setProperty(String, javax.jcr.Binary)} should
-     *             be used instead.
+     * be used instead.
      */
     JCRPropertyWrapper setProperty(String name, InputStream value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException;
 
@@ -344,8 +342,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     /**
      * Grant roles to a principal on this node.
+     *
      * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
-     * @param roles the names of roles that this principal should be granted.
+     * @param roles        the names of roles that this principal should be granted.
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
@@ -353,8 +352,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     /**
      * Deny roles to a principal on this node.
+     *
      * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
-     * @param roles the names of roles that this principal should be denied.
+     * @param roles        the names of roles that this principal should be denied.
      * @return true if action was successful, or false if not
      * @throws RepositoryException
      */
@@ -364,7 +364,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Change the permissions of a principal on the node.
      *
      * @param principalKey the name of a principal with a prefix, such as "u:" for users, "g:" for groups
-     * @param perms A map with the name of the permission, and "GRANT" or "DENY" as a value
+     * @param perms        A map with the name of the permission, and "GRANT" or "DENY" as a value
      * @return true if action was successful, or false if not
      */
     boolean changeRoles(String principalKey, Map<String, String> perms) throws RepositoryException;
@@ -706,7 +706,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * Retrieves the list of versions, in all workspaces, ignoring internal version created in the publication process.
      *
      * @return a List of VersionInfo objects containing the resolved versions, as well as extra information such as the
-     *         checkinDate if available.
+     * checkinDate if available.
      * @throws RepositoryException happens if there was a problem retrieving the list of versions.
      */
     public List<VersionInfo> getVersionInfos() throws RepositoryException;
@@ -717,7 +717,7 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * the getAllLinearVersions.
      *
      * @return a List of VersionInfo objects containing the resolved versions, as well as extra information such as the
-     *         checkinDate if available.
+     * checkinDate if available.
      * @throws RepositoryException happens if there was a problem retrieving the list of versions.
      */
     public List<VersionInfo> getLinearVersionInfos() throws RepositoryException;
@@ -772,9 +772,9 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     /**
      * Get the property definition object applicable to the given property name
      *
-     * @param propertyName the name of the property to find the corresponding definition
+     * @param propertyName         the name of the property to find the corresponding definition
      * @param requiredPropertyType the type of the property to find the corresponding definition
-     * @param isMultiple is the property multiple
+     * @param isMultiple           is the property multiple
      * @return the <code>ExtendedPropertyDefinition</code> for the given property
      * @throws RepositoryException
      */
@@ -851,14 +851,23 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     Node getI18N(Locale locale) throws RepositoryException;
 
     /**
-     * Returns available translation sub-nodes of this node.
-     * 
-     * @return available translation sub-nodes of this node
+     * Get the translation node
+     * Use only in un-localized session
+     *
+     * @param locale
+     * @return
      * @throws RepositoryException
-     *             in case of a JCR exception
+     */
+    Node getI18N(Locale locale, boolean fallback) throws RepositoryException;
+
+    /**
+     * Returns available translation sub-nodes of this node.
+     *
+     * @return available translation sub-nodes of this node
+     * @throws RepositoryException in case of a JCR exception
      */
     NodeIterator getI18Ns() throws RepositoryException;
-    
+
     /**
      * Checks if the translation node exists
      * Use only in un-localized session
@@ -868,6 +877,17 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
      * @throws RepositoryException
      */
     boolean hasI18N(Locale locale) throws RepositoryException;
+
+    /**
+     * Checks if the translation node exists
+     * Use only in un-localized session
+     *
+     * @param locale   the locale for which we want to check if a translation exists
+     * @param fallback whether or not we should fallback on the default locale if we didn't find an exact translation
+     * @return <code>true</code> if the translation node exists
+     * @throws RepositoryException
+     */
+    boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException;
 
     /**
      * Get or create the translation node
@@ -904,10 +924,10 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean checkI18nAndMandatoryPropertiesForLocale(Locale locale) throws RepositoryException;
 
     String getDisplayableName();
-    
+
     /**
      * Returns an unescaped node local name for displaying.
-     * 
+     *
      * @return an unescaped node local name
      */
     String getUnescapedName();
@@ -925,29 +945,25 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     /**
      * Returns true if this node is marked for deletion.
-     * 
+     *
      * @return true if this node is marked for deletion.
-     * @throws RepositoryException
-     *             in case of a repository access error
+     * @throws RepositoryException in case of a repository access error
      */
     boolean isMarkedForDeletion() throws RepositoryException;
 
     /**
      * Marks this node and all the sub-nodes for deletion. Additionally the deletion info is stored in this node, including the user, date
      * and optional comment. This operation does not call session.save() after modifications.
-     * 
-     * @param comment
-     *            the deletion comment
-     * @throws RepositoryException
-     *             in case of repository access errors
+     *
+     * @param comment the deletion comment
+     * @throws RepositoryException in case of repository access errors
      */
     void markForDeletion(String comment) throws RepositoryException;
 
     /**
      * Unmarks this node and all the sub-nodes for deletion. This operation does not call session.save() after modifications.
-     * 
-     * @throws RepositoryException
-     *             in case of repository access errors
+     *
+     * @throws RepositoryException in case of repository access errors
      */
     void unmarkForDeletion() throws RepositoryException;
 

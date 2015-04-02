@@ -101,6 +101,7 @@ import static org.jahia.api.Constants.*;
  * @author toto
  */
 public class JCRPublicationService extends JahiaService {
+
     private static class Holder {
         static final JCRPublicationService INSTANCE = new JCRPublicationService();
     }
@@ -395,24 +396,24 @@ public class JCRPublicationService extends JahiaService {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Publishing node {}", jcrNodeWrapper.getPath());
                 }
-                if (jcrNodeWrapper.isNodeType("jmix:lastPublished") && (!jcrNodeWrapper.hasProperty("j:published") ||
-                        !jcrNodeWrapper.getProperty("j:published").getBoolean())) {
-                    sourceSession.checkout(jcrNodeWrapper);
-                    jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
-                    jcrNodeWrapper.setProperty("j:lastPublished", calendar);
-                    jcrNodeWrapper.setProperty("j:lastPublishedBy", userID);
 
-                    try {
-                        JCRNodeWrapper destNode = destinationSession
-                                .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
-                        destinationSession.checkout(destNode);
-                        destNode.setProperty("j:published", Boolean.TRUE);
-                    } catch (ItemNotFoundException e) {
+                final boolean hasLastPublishedMixin = jcrNodeWrapper.isNodeType(Constants.JAHIAMIX_LASTPUBLISHED);
+                if(hasLastPublishedMixin) {
+                    jcrNodeWrapper.setProperty(Constants.PUBLISHED, Boolean.TRUE);
+                    jcrNodeWrapper.setProperty(Constants.LASTPUBLISHED, calendar);
+                    jcrNodeWrapper.setProperty(Constants.LASTPUBLISHEDBY, userID);
+
+                    if(!jcrNodeWrapper.hasProperty(Constants.PUBLISHED) || !jcrNodeWrapper.getProperty(Constants.PUBLISHED).getBoolean()) {
+                        sourceSession.checkout(jcrNodeWrapper);
+
+                        try {
+                            JCRNodeWrapper destNode = destinationSession
+                                    .getNode(jcrNodeWrapper.getCorrespondingNodePath(destinationWorkspace));
+                            destinationSession.checkout(destNode);
+                            destNode.setProperty(Constants.PUBLISHED, Boolean.TRUE);
+                        } catch (ItemNotFoundException e) {
+                        }
                     }
-                } else if (jcrNodeWrapper.isNodeType("jmix:lastPublished")) {
-                    jcrNodeWrapper.setProperty("j:published", Boolean.TRUE);
-                    jcrNodeWrapper.setProperty("j:lastPublished", calendar);
-                    jcrNodeWrapper.setProperty("j:lastPublishedBy", userID);
                 }
             }
             if (sourceSession.hasPendingChanges()) {
@@ -1117,7 +1118,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
 
-            if(node.hasProperty("j:workInProgress") && node.getProperty("j:workInProgress").getBoolean()
+            if(node.hasProperty(Constants.WORKINPROGRESS) && node.getProperty(Constants.WORKINPROGRESS).getBoolean()
                     && !node.isMarkedForDeletion() && (!node.isNodeType(Constants.JAHIANT_TRANSLATION) || !node.getParent().isMarkedForDeletion())) {
                 info.setWorkInProgress(true);
             }

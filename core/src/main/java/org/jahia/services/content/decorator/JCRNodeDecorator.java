@@ -796,10 +796,20 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getI18N(locale);
     }
 
+    @Override
+    public Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
+        return node.getI18N(locale, fallback);
+    }
+
     public boolean hasI18N(Locale locale) throws RepositoryException {
         return node.hasI18N(locale);
     }
-    
+
+    @Override
+    public boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
+        return node.hasI18N(locale, fallback);
+    }
+
     public Node getOrCreateI18N(Locale locale) throws RepositoryException {
         return node.getOrCreateI18N(locale);
     }

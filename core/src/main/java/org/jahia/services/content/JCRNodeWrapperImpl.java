@@ -132,6 +132,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
 
     public static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
+    private static final String TRANSLATION_PREFIX = "j:translation_";
 
     protected Node objectNode = null;
     protected JCRFileContent fileContent = null;
@@ -1359,7 +1360,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return hasI18N(locale, true);
     }
 
-    private boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
+    public boolean hasI18N(Locale locale, boolean fallback) throws RepositoryException {
         return hasI18N(locale,fallback, true);
     }
 
@@ -1376,11 +1377,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private boolean checkI18NNode(Locale locale, boolean checkPublication) throws RepositoryException {
         boolean b = false;
-        if ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(
-                "j:translation_" + locale)) {
+        final String transName = getTranslationNodeName(locale);
+        if ((i18NobjectNodes != null && i18NobjectNodes.containsKey(locale)) || objectNode.hasNode(transName)) {
             if (checkPublication && Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName())) {
-                final Node node = objectNode.getNode("j:translation_" + locale);
-                b = !node.hasProperty("j:published") || node.getProperty("j:published").getBoolean();
+                final Node node = objectNode.getNode(transName);
+                b = !node.hasProperty(Constants.PUBLISHED) || node.getProperty(Constants.PUBLISHED).getBoolean();
             } else {
                 b = true;
             }
@@ -1388,7 +1389,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         return b;
     }
 
-    protected Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
+    private String getTranslationNodeName(Locale locale) {
+        return TRANSLATION_PREFIX + locale;
+    }
+
+    public Node getI18N(Locale locale, boolean fallback) throws RepositoryException {
         //getSession().getLocale()
         if (i18NobjectNodes == null) {
             i18NobjectNodes = new HashMap<Locale, Node>();
@@ -1399,11 +1404,14 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             if (node != null) {
                 return node;
             }
-        } else if (objectNode.hasNode("j:translation_" + locale)) {
-            node = objectNode.getNode("j:translation_" + locale);
-            if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) || !node.hasProperty("j:published") || node.getProperty("j:published").getBoolean()) {
-                i18NobjectNodes.put(locale, node);
-                return node;
+        } else {
+            final String translationNodeName = getTranslationNodeName(locale);
+            if (objectNode.hasNode(translationNodeName)) {
+                node = objectNode.getNode(translationNodeName);
+                if (!Constants.LIVE_WORKSPACE.equals(session.getWorkspace().getName()) || !node.hasProperty(Constants.PUBLISHED) || node.getProperty(Constants.PUBLISHED).getBoolean()) {
+                    i18NobjectNodes.put(locale, node);
+                    return node;
+                }
             }
         }
 
@@ -1425,7 +1433,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             return getI18N(locale, false);
         } catch (RepositoryException e) {
-            Node t = objectNode.addNode("j:translation_" + locale, Constants.JAHIANT_TRANSLATION);
+            Node t = objectNode.addNode(getTranslationNodeName(locale), Constants.JAHIANT_TRANSLATION);
             t.setProperty("jcr:language", locale.toString());
             i18NobjectNodes.put(locale, t);
             return t;
@@ -1444,7 +1452,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 jrSession.getNodeTypeInstanceHandler().setLastModified(lastModified);
                 jrSession.getNodeTypeInstanceHandler().setLastModifiedBy(lastModifiedBy);
 
-                Node t = objectNode.addNode("j:translation_" + locale, Constants.JAHIANT_TRANSLATION);
+                Node t = objectNode.addNode(getTranslationNodeName(locale), Constants.JAHIANT_TRANSLATION);
                 t.setProperty("jcr:language", locale.toString());
 
                 i18NobjectNodes.put(locale, t);
@@ -2871,7 +2879,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 try {
                     Node child = ni.nextNode();
                     String childName = child.getName();
-                    if (session.getLocale() != null && childName.startsWith("j:translation_")) {
+                    if (session.getLocale() != null && childName.startsWith(TRANSLATION_PREFIX)) {
                         // skip j:translation_* nodes in localized session
                         continue;
                     }

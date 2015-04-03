@@ -209,14 +209,14 @@ public class GroupCacheHelper {
         buff.append("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='")
                 .append(name).append("' ");
         if (siteKey != null) {
-            buff.append("and (isdescendantnode(group,'/sites/").append(siteKey)
-                    .append("/groups') or isdescendantnode(group,'/groups/providers'))");
+            buff.append("and isdescendantnode(group,'/sites/").append(siteKey).append("/groups')");
         } else {
             buff.append("and isdescendantnode(group,'/groups')");
         }
 
         Query q = JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null).getWorkspace()
                 .getQueryManager().createQuery(buff.toString(), Query.JCR_SQL2);
+        q.setLimit(1);
         RowIterator it = q.execute().getRows();
         if (!it.hasNext()) {
             return null;

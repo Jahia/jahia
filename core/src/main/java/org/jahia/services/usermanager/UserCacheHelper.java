@@ -184,6 +184,7 @@ public class UserCacheHelper {
                 .createQuery(
                         "SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('"
                                 + path + "/users/')", Query.JCR_SQL2);
+        query.setLimit(1);
         RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {
             return null;

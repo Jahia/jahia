@@ -80,7 +80,7 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
     @Override
     public void doValidate(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, TabPanel tabs) {
         if (doValidateMethodName != null) {
-            doCall(doValidateMethodName, getValidateOperations(validateResult, engine, selectedLanguage, changedI18NProperties));
+            doCall(doValidateMethodName, getValidateOperations(validateResult, engine, tab, selectedLanguage, changedI18NProperties));
         }
     }
 
@@ -176,6 +176,13 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         ((List<GWTJahiaNodeProperty>)children.get(uuid).get("nodeProperties")).add(new GWTJahiaNodeProperty(name, value, type));
     }
 
+    public static void addValidationError(List<EngineValidation.ValidateResult> validateResult, TabItem tab, String message) {
+        EngineValidation.ValidateResult result = new EngineValidation.ValidateResult();
+        result.canIgnore = false;
+        result.errorTab = tab;
+        result.message = message;
+        validateResult.add(result);
+    }
 
     public static native JavaScriptObject convertExistingNode(GWTJahiaNode node, Map<String,GWTJahiaNodeProperty> properties, JsArrayString types, String language) /*-{
         var jsnode = {
@@ -222,9 +229,11 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
         return jsnode;
     }-*/;
 
-    public static native JavaScriptObject getValidateOperations(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) /*-{
+    public static native JavaScriptObject getValidateOperations(List<EngineValidation.ValidateResult> validateResult, NodeHolder engine, TabItem tab, String selectedLanguage, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties) /*-{
         var jsnode = {
-
+            'addValidationError': function (message) {
+                @org.jahia.ajax.gwt.client.widget.contentengine.CustomEditEngineTabItem::addValidationError(Ljava/util/List;Lcom/extjs/gxt/ui/client/widget/TabItem;Ljava/lang/String;)(validateResult, tab, message);
+            }
         }
         return jsnode;
     }-*/;

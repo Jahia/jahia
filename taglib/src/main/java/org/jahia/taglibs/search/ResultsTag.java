@@ -162,7 +162,7 @@ public class ResultsTag extends AbstractJahiaTag {
         } else {
             pageContext.setAttribute(getCountVar(), count);
         }
-        pageContext.setAttribute(getApproxCountVar(), searchResponse!=null ? searchResponse.getApproxCount() : 0););
+        pageContext.setAttribute(getApproxCountVar(), searchResponse!=null ? searchResponse.getApproxCount() : 0);
         pageContext.setAttribute(getSearchCriteriaVar(), criteria);
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
             pageContext.setAttribute(getTermVar(), criteria.getTerms().get(0).getTerm());

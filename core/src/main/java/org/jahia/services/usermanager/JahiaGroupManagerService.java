@@ -794,7 +794,7 @@ public class JahiaGroupManagerService extends JahiaService {
 
         if (principalPath.startsWith("/users/") && !principalPath.equals(JahiaUserManagerService.GUEST_USERPATH)) {
             // Dynamically add all site-users groups for global users
-            owners = new ArrayList<String>(owners);
+            owners = owners != null ? new ArrayList<String>(owners) : new ArrayList<String>();
             for (String s : JahiaSitesService.getInstance().getSitesNames()) {
                 String siteUsersGroup = "/sites/" + s + "/groups/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME;
                 owners.add(siteUsersGroup);

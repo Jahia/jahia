@@ -108,7 +108,7 @@ public class GroupCacheHelper {
             if (path != null) {
                 return new Element(key, path);
             } else {
-                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForEmptyPath);
+                return new Element(key, null, 0, timeToLiveForEmptyPath);
             }
         }
     }
@@ -173,9 +173,6 @@ public class GroupCacheHelper {
 
     public String getGroupPath(String siteKey, String name) {
         final String value = (String) getGroupPathByGroupNameCache().get(new GroupPathByGroupNameCacheKey(siteKey, name)).getObjectValue();
-        if (value.equals(StringUtils.EMPTY)) {
-            return null;
-        }
         return value;
     }
 
@@ -196,12 +193,8 @@ public class GroupCacheHelper {
     }
 
     private GroupPathByGroupNameCacheKey getPathCacheKey(String groupPath) {
-        String groupName = StringUtils.substringAfterLast(groupPath, "/");
-        String siteKey = null;
-        if (groupPath.startsWith("/sites/")) {
-            siteKey = StringUtils.substringBefore(StringUtils.removeStart(groupPath, "/sites/"), "/");
-        }
-        return new GroupPathByGroupNameCacheKey(siteKey, groupName);
+        return new GroupPathByGroupNameCacheKey(groupPath.startsWith("/sites/") ? StringUtils.substringBetween(
+                groupPath, "/sites/", "/") : null, StringUtils.substringAfterLast(groupPath, "/"));
     }
 
     public String internalGetGroupPath(String siteKey, String name) throws RepositoryException {
@@ -293,6 +286,6 @@ public class GroupCacheHelper {
     }
 
     public void updatePathCacheRemoved(String groupPath) {
-        getGroupPathByGroupNameCache().put(new Element(getPathCacheKey(groupPath), StringUtils.EMPTY, 0, timeToLiveForEmptyPath));
+        getGroupPathByGroupNameCache().remove(getPathCacheKey(groupPath));
     }
 }

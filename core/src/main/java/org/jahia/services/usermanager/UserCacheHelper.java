@@ -99,7 +99,7 @@ public class UserCacheHelper {
             if (path != null) {
                 return new Element(key, path);
             } else {
-                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForEmptyPath);
+                return new Element(key, null, 0, timeToLiveForEmptyPath);
             }
         }
     }
@@ -158,11 +158,8 @@ public class UserCacheHelper {
 
     public String getUserPath(String name, String site) {
         final String value = (String) getUserPathByUserNameCache().get(
-                new UserPathCacheKey(name, StringUtils.isEmpty(site) ? StringUtils.EMPTY : "/sites/" + site))
+                new UserPathCacheKey(name, StringUtils.isEmpty(site) ? null : site))
                 .getObjectValue();
-        if (value.equals(StringUtils.EMPTY)) {
-            return null;
-        }
         return value;
     }
 
@@ -183,7 +180,7 @@ public class UserCacheHelper {
                 .getQueryManager()
                 .createQuery(
                         "SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('"
-                                + path + "/users/')", Query.JCR_SQL2);
+                                + StringUtils.defaultString(path) + "/users/')", Query.JCR_SQL2);
         query.setLimit(1);
         RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {
@@ -201,18 +198,17 @@ public class UserCacheHelper {
     }
 
     public void updateAdded(String userPath) {
-        String sitePath = userPath.startsWith("/sites/") ? "/sites/"
-                + StringUtils.substringBetween(userPath, "/sites/", "/") : StringUtils.EMPTY;
         getUserPathByUserNameCache().put(
-                new Element(new UserPathCacheKey(StringUtils.substringAfterLast(userPath, "/"), sitePath), userPath));
+                new Element(new UserPathCacheKey(StringUtils.substringAfterLast(userPath, "/"), getSiteKey(userPath)),
+                        userPath));
     }
 
     public void updateRemoved(String userPath) {
-        String sitePath = userPath.startsWith("/sites/") ? "/sites/"
-                + StringUtils.substringBetween(userPath, "/sites/", "/") : StringUtils.EMPTY;
-        getUserPathByUserNameCache().put(
-                new Element(new UserPathCacheKey(StringUtils.substringAfterLast(userPath, "/"), sitePath),
-                        StringUtils.EMPTY, 0, timeToLiveForEmptyPath));
+        getUserPathByUserNameCache().remove(
+                new UserPathCacheKey(StringUtils.substringAfterLast(userPath, "/"), getSiteKey(userPath)));
     }
 
+    private String getSiteKey(String userPath) {
+        return userPath.startsWith("/sites/") ? StringUtils.substringBetween(userPath, "/sites/", "/") : null;
+    }
 }

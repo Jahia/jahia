@@ -76,6 +76,7 @@ import difflib.Patch;
 import difflib.PatchFailedException;
 import difflib.myers.Equalizer;
 import difflib.myers.MyersDiff;
+
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
@@ -117,6 +118,7 @@ import org.xml.sax.SAXException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.xml.transform.TransformerException;
+
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -500,14 +502,26 @@ public class ModuleBuildHelper implements InitializingBean {
      * @param mavenExecutable
      */
     public void setMavenExecutable(String mavenExecutable) {
-        if (System.getProperty("os.name").toLowerCase().startsWith("windows") && !mavenExecutable.endsWith(".bat")) {
-            mavenExecutable = mavenExecutable + ".bat";
-        }
         // test maven version
         if (settingsBean.isDevelopmentMode()) {
             StringBuilder resultOut = new StringBuilder();
             try {
-                int res = ProcessHelper.execute(mavenExecutable, new String[]{"-version"}, null, null, resultOut, null);
+                String[] args = new String[] { "-version" };
+                int res = 0;
+                if (System.getProperty("os.name").toLowerCase().startsWith("windows")
+                        && !mavenExecutable.endsWith(".bat") && !mavenExecutable.endsWith(".cmd")) {
+                    // check for Maven 3.3.x+
+                    mavenExecutable = mavenExecutable + ".cmd";
+                    try {
+                        res = ProcessHelper.execute(mavenExecutable, args, null, null, resultOut, null);
+                    } catch (JahiaRuntimeException e) {
+                        // assume Maven < 3.3.x
+                        mavenExecutable = mavenExecutable + ".bat";
+                    }
+                }
+                if (res > 0 || resultOut.length() == 0) {
+                    res = ProcessHelper.execute(mavenExecutable, args, null, null, resultOut, null);
+                }
                 if (res > 0) {
                     toolbarWarningsService.addMessage("warning.maven.missing");
                     logger.error("Cannot set maven executable to " + mavenExecutable + ", please check your configuration");

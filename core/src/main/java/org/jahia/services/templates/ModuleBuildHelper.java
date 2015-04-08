@@ -510,10 +510,13 @@ public class ModuleBuildHelper implements InitializingBean {
                 int res = 0;
                 if (System.getProperty("os.name").toLowerCase().startsWith("windows")
                         && !mavenExecutable.endsWith(".bat") && !mavenExecutable.endsWith(".cmd")) {
-                    // check for Maven 3.3.x+
-                    mavenExecutable = mavenExecutable + ".cmd";
+                    // check for Maven 3.3.x
                     try {
-                        res = ProcessHelper.execute(mavenExecutable, args, null, null, resultOut, null);
+                        res = ProcessHelper.execute(mavenExecutable + ".cmd", args, null, null, resultOut, null);
+                        if (res == 0) {
+                            // we are dealing with Maven 3.3.x
+                            mavenExecutable = mavenExecutable + ".cmd";
+                        }
                     } catch (JahiaRuntimeException e) {
                         // assume Maven < 3.3.x
                         mavenExecutable = mavenExecutable + ".bat";

@@ -304,13 +304,17 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             separator = it.next();
         }
         String base = StringUtils.substringBeforeLast(uri, separator) + "/tags/";
-        String path = StringUtils.substringAfter(StringUtils.substringAfterLast(uri, separator + "/"),"/");
+        String path = StringUtils.substringAfterLast(uri, separator + "/");
+        if (!separator.equals("/trunk")) {
+            path = StringUtils.substringAfter(path, "/");
+        }
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);
         Collections.reverse(lines);
         for (String line : lines) {
-            infos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
+            String tag = StringUtils.removeEnd(line, "/");
+            infos.put(tag, "scm:svn:" + base + tag + (path.length() > 0 ? "/" + path : ""));
         }
         return infos;
     }
@@ -323,14 +327,18 @@ public class SvnSourceControlManagement extends SourceControlManagement {
             separator = it.next();
         }
         String base = StringUtils.substringBeforeLast(uri, separator) + "/branches/";
-        String path = StringUtils.substringAfter(StringUtils.substringAfterLast(uri, separator + "/"),"/");
+        String path = StringUtils.substringAfterLast(uri, separator + "/");
+        if (!separator.equals("/trunk")) {
+            path = StringUtils.substringAfter(path, "/");
+        }
         Map<String, String> infos = new LinkedHashMap<>();
         ExecutionResult result = executeCommand(executable, new String[]{"list", base});
         List<String> lines = readLines(result.out);
         Collections.reverse(lines);
         infos.put("trunk", uri);
         for (String line : lines) {
-            infos.put(StringUtils.removeEnd(line, "/"), "scm:svn:" + base + line + path);
+            String branch = StringUtils.removeEnd(line, "/");
+            infos.put(branch, "scm:svn:" + base + branch + (path.length() > 0 ? "/" + path : ""));
         }
         return infos;
     }

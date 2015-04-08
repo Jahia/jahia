@@ -71,12 +71,18 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.json.JSONObject;
 
+import java.io.Serializable;
+import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Cache key part generator that serializes (JSON) module parameters, if present. 
+ */
 public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
@@ -85,7 +91,8 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator 
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        return encodeString(new JSONObject(resource.getModuleParams()).toString()).replaceAll("\"","'");
+        Map<String, Serializable> params = resource.getModuleParams();
+        return params.size() == 0 ? StringUtils.EMPTY : encodeString(new JSONObject(params).toString());
     }
 
     @Override
@@ -94,7 +101,7 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator 
     }
 
     private String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? toBeEncoded.replaceAll("#", "@@") : toBeEncoded;
+        return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##").replace('"', '\'') : toBeEncoded;
     }
 
 }

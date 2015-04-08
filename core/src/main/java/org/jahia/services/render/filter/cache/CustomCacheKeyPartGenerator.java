@@ -71,12 +71,16 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
+/**
+ * Cache key part generator that takes the string representation of the <code>module.cache.additional.key</code> request attribute if
+ * available.
+ */
 public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String getKey() {
@@ -85,9 +89,9 @@ public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        HttpServletRequest request = renderContext.getRequest();
+        Object value = renderContext.getRequest().getAttribute("module.cache.additional.key");
 
-        return request.getAttribute("module.cache.additional.key") != null ? encodeString(request.getAttribute("module.cache.additional.key").toString()) : "";
+        return value != null ? encodeString(value.toString()) : StringUtils.EMPTY;
     }
 
     @Override
@@ -96,7 +100,7 @@ public class CustomCacheKeyPartGenerator implements CacheKeyPartGenerator {
     }
 
     private String encodeString(String toBeEncoded) {
-        return toBeEncoded != null ? toBeEncoded.replaceAll("#", "@@") : toBeEncoded;
+        return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##") : toBeEncoded;
     }
 
 

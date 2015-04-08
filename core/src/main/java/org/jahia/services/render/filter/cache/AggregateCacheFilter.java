@@ -74,6 +74,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
@@ -98,6 +99,7 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -949,15 +951,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             }
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
 
-            try {
-                JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
-                Iterator keys = map.keys();
-                while (keys.hasNext()) {
-                    String next = (String) keys.next();
-                    resource.getModuleParams().put(next, (Serializable) map.get(next));
+            String params = keyAttrbs.get("moduleParams");
+            if (StringUtils.isNotEmpty(params)) {
+                try {
+                    JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
+                    Iterator keys = map.keys();
+                    while (keys.hasNext()) {
+                        String next = (String) keys.next();
+                        resource.getModuleParams().put(next, (Serializable) map.get(next));
+                    }
+                } catch (JSONException e) {
+                    logger.error(e.getMessage(), e);
                 }
-            } catch (JSONException e) {
-                logger.error(e.getMessage(), e);
             }
 
             // Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning

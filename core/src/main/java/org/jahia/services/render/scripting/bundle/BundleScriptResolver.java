@@ -335,7 +335,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         for (ExtendedNodeType type : nodeTypeList) {
             cacheKey.append(type.getName()).append("_");
         }
-        cacheKey.append("_").append((site != null ? site.getSiteKey() : "")).append("__");
+        cacheKey.append("_").append((site != null ? site.getPath() : "")).append("__");
         for (String type : templateTypes) {
             cacheKey.append(type).append("_");
         }

@@ -182,6 +182,10 @@ public class JCRCategoryProvider {
                     .getCurrentUserSession();
             JCRNodeWrapper parentNodeWrapper = getParentNode(parentCategory,
                     jcrSessionWrapper);
+            if (!Constants.EDIT_WORKSPACE.equals(parentNodeWrapper.getSession().getWorkspace().getName())) {
+                parentNodeWrapper = jcrSessionWrapper.getNodeByIdentifier(parentNodeWrapper.getIdentifier());
+            }
+            
             jcrSessionWrapper.checkout(parentNodeWrapper);
             final JCRNodeWrapper wrapper = parentNodeWrapper.addNode(key,
                     Constants.JAHIANT_CATEGORY);

@@ -82,7 +82,7 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
  */
 public interface LicenseCheckerService {
 
-    public static class Stub {
+    class Stub {
         private static boolean initialized = false;
         private static LicenseCheckerService instance;
 

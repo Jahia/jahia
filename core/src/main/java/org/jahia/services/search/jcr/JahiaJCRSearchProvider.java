@@ -1232,4 +1232,9 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     public void setName(String name) {
         this.name = name;
     }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

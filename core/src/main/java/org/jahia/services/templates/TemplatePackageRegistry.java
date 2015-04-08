@@ -1055,7 +1055,13 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof SearchProvider) {
                 try {
-                    searchService.registerSearchProvider((SearchProvider) bean);
+                    final SearchProvider provider = (SearchProvider) bean;
+                    if (provider.isEnabled()) {
+                        searchService.registerSearchProvider(provider);
+                    }
+                    else {
+                        logger.warn("Provider {} is not enabled, possibly due to licensing issues and was thus not registered.", provider.getName());
+                    }
                 } catch (Exception e) {
                     logger.error("Cannot register search provider", e);
                 }
@@ -1071,7 +1077,7 @@ public class TemplatePackageRegistry {
                         gwtResourceConfig.getJavaScripts().addAll(moduleGWTResources.getJavascriptResources());
                     }
                 } catch (Exception e) {
-                    logger.error("Cannot unregistered search provider", e);
+                    logger.error("Cannot register module GWT resources", e);
                 }
             }
 

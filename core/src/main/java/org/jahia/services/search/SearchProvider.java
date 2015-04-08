@@ -89,7 +89,7 @@ public interface SearchProvider {
      * @param context context object, containing information about current user, locale etc.
      * @return SearchResponse object with the list of hits matching the criteria
      */
-    public abstract SearchResponse search(SearchCriteria criteria, RenderContext context);
+    SearchResponse search(SearchCriteria criteria, RenderContext context);
     
     /**
      * Returns a modified suggestion for the original query based on the spell
@@ -105,7 +105,14 @@ public interface SearchProvider {
      *         checker does not know how to correct the query <code>null</code>
      *         is returned.
      */
-    public abstract Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest);
+    Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest);
 
-    public String getName();
+    String getName();
+
+    /**
+     * Checks whether this provider is enabled. This can be used to perform licensing checks for example.
+     *
+     * @return <code>true</code> if the provider is enabled, <code>false</code> otherwise.
+     */
+    boolean isEnabled();
 }

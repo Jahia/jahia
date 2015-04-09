@@ -224,7 +224,8 @@ public class TestServlet extends BaseTestController {
             Class<?> testClass = testPackage != null ? testPackage.getClassLoader().loadClass(className) : Class.forName(className);
             if (testClass == null) {
                 throw new Exception("Couldn't find origin module for test " + className);
-            }                    
+            }
+            logger.info("Will use test class {}", testClass.getName());
             List<Class<?>> classes = getTestClasses(testClass, new ArrayList<Class<?>>());;
             if (classes.isEmpty()) {
                 Description description = Description.createSuiteDescription(testClass);
@@ -232,8 +233,14 @@ public class TestServlet extends BaseTestController {
                 xmlResultFormatter.testRunFinished(new Result());
             } else {
                 if (methodName != null) {
+                    logger.info("Executing test method {}.{}()", testClass.getName(), methodName);
+                    long start = System.currentTimeMillis();
                     junitcore.run(Request.method(testClass, methodName));
+                    logger.info("Done executing test method {}.{}() in {} ms", new Object[] { testClass.getName(),
+                            methodName, System.currentTimeMillis() - start });
                 } else {
+                    logger.info("Executing test classes {}", classes.toArray());
+                    long start = System.currentTimeMillis();
                     final Set<String> ignoreTests = getIgnoreTests();
                     junitcore.run(new FilterRequest(Request.classes(classes
                             .toArray(new Class[classes.size()])), new Filter() {
@@ -248,6 +255,8 @@ public class TestServlet extends BaseTestController {
                             return "Filter out Jahia configured methods";
                         }
                     }));
+                    logger.info("Done executing test classes {} in {} ms", classes.toArray(),
+                            System.currentTimeMillis() - start);
                 }
             }
         } catch (Exception e) {

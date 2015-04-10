@@ -83,6 +83,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.query.QueryWrapper;
+import org.jahia.services.sites.JahiaSitesService;
 
 /**
  * User path by user name cache helper.
@@ -173,14 +174,19 @@ public class UserCacheHelper {
     }
 
     private String internalGetUserPath(String name, String path) throws RepositoryException {
+        StringBuilder q = new StringBuilder(128);
+        q.append("SELECT [j:nodename] from [jnt:user] where localname()='").append(name)
+                .append("' and isdescendantnode('");
+        if (path != null) {
+            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(path);
+        }
+        q.append("/users/')");
         final QueryWrapper query = JCRSessionFactory
                 .getInstance()
                 .getCurrentSystemSession(null, null, null)
                 .getWorkspace()
                 .getQueryManager()
-                .createQuery(
-                        "SELECT [j:nodename] from [jnt:user] where localname()='" + name + "' and isdescendantnode('"
-                                + StringUtils.defaultString(path) + "/users/')", Query.JCR_SQL2);
+                .createQuery(q.toString(), Query.JCR_SQL2);
         query.setLimit(1);
         RowIterator it = query.execute().getRows();
         if (!it.hasNext()) {

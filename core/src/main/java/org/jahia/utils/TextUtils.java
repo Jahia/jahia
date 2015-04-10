@@ -238,7 +238,7 @@ public class TextUtils {
 
         @Override
         public String toString() {
-            return matches.toString();
+            return Arrays.toString(matches);
         }
 
         public boolean matchExists(int start) {

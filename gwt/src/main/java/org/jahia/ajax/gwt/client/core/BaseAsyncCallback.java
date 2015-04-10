@@ -112,7 +112,7 @@ public abstract class BaseAsyncCallback<T> implements AsyncCallback<T> {
             public void onSuccess() {
                 final String loginUrl = CommonEntryPoint.getLoginUrl();
                 if (loginUrl != null && !loginUrl.isEmpty()) {
-                    Window.Location.assign(loginUrl + (loginUrl.contains("?") ? "&" : "?") + "redirectTo=" + URL.encodeQueryString(Window.Location.getHref()));
+                    Window.Location.assign(loginUrl + (loginUrl.contains("?") ? "&" : "?") + "redirect=" + URL.encodeQueryString(Window.Location.getHref()));
                 } else {
                     if (!LoginBox.getInstance().isVisible()) {
                         LoginBox.getInstance().show();

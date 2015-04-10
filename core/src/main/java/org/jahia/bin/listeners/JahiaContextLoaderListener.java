@@ -179,11 +179,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         Object interceptorActivatedObject = jahiaContextListenersConfiguration.get(interceptorName);
         if (interceptorActivatedObject instanceof Boolean) {
             return (Boolean) interceptorActivatedObject;
-        } else if (interceptorActivatedObject instanceof String) {
-            return Boolean.parseBoolean((String) interceptorActivatedObject);
-        } else {
-            return false;
-        }
+        } else
+            return interceptorActivatedObject instanceof String && Boolean.parseBoolean((String) interceptorActivatedObject);
     }
 
     @SuppressWarnings("unchecked")
@@ -255,14 +252,14 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             // start OSGi container
             timer = System.currentTimeMillis();
             logger.info("Starting OSGi platform service");
-            
-            new FrameworkService(event.getServletContext());
-            FrameworkService.getInstance().start();
+
+            final FrameworkService instance = FrameworkService.getInstance();
+            instance.start();
             boolean stopWaiting = false;
-            synchronized (FrameworkService.getInstance()) {
-                while (!stopWaiting && !FrameworkService.getInstance().isStarted()) {
+            synchronized (instance) {
+                while (!stopWaiting && !instance.isStarted()) {
                     try {
-                        FrameworkService.getInstance().wait(10 * 60 * 1000L);
+                        instance.wait(10 * 60 * 1000L);
                         stopWaiting = true;
                         logger.info("Stopped waiting for OSGi framework startup");
                     } catch (InterruptedException e) {
@@ -299,11 +296,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 // we leave the possibility to provide Groovy scripts for non-processing servers 
                 GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
             }
-        } catch (JahiaException e) {
-            running = false;
-            logger.error(e.getMessage(), e);
-            throw new JahiaRuntimeException(e);
-        } catch (BundleException e) {
+        } catch (JahiaException | BundleException e) {
             running = false;
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);

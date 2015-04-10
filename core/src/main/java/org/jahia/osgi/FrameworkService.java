@@ -73,6 +73,7 @@ package org.jahia.osgi;
 
 import org.apache.felix.framework.Felix;
 import org.apache.felix.framework.util.FelixConstants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -83,10 +84,7 @@ import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.servlet.ServletContext;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * OSGi framework service
@@ -96,17 +94,27 @@ import java.util.Properties;
 public class FrameworkService {
     
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
-    
-    private static FrameworkService instance;
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final FrameworkService INSTANCE = new FrameworkService(JahiaContextLoaderListener.getServletContext());
+
+        private Holder() {
+        }
+    }
+
+    public static FrameworkService getInstance() {
+        return Holder.INSTANCE;
+    }
+
     private final ServletContext context;
     private Felix felix;
     private ProvisionActivator provisionActivator = null;
     
     private boolean started;
 
-    public FrameworkService(ServletContext context) {
+    private FrameworkService(ServletContext context) {
         this.context = context;
-        instance = this;
     }
 
     public void start() throws BundleException {
@@ -118,16 +126,15 @@ public class FrameworkService {
     public void stop() throws BundleException {
         provisionActivator = null;
         if (this.felix != null) {
-            FrameworkEvent stopEvent = null;
+            FrameworkEvent stopEvent;
             this.felix.stop();
             logger.info("Waiting for OSGi framework shutdown...");
             try {
                 stopEvent = this.felix.waitForStop(30000);
+                logger.info("Framework stopped with event {}", stopEvent.getType());
             } catch (InterruptedException e) {
                 logger.error(e.getMessage(), e);
             }
-            
-            logger.info("Framework stopped with event {}", stopEvent.getType());
         }
 
         logger.info("OSGi framework stopped");
@@ -144,7 +151,7 @@ public class FrameworkService {
         
         PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper("${", "}");
         Properties systemProps = System.getProperties();
-        HashMap<String, Object> map = new HashMap<String, Object>();
+        HashMap<String, Object> map = new HashMap<>();
         for (Map.Entry<String, String> entry : unreplaced.entrySet()) {
             map.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
         }
@@ -164,7 +171,7 @@ public class FrameworkService {
         map.put("org.jahia.servlet.context", context);
 
         provisionActivator = new ProvisionActivator(this.context);
-        map.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, Arrays.asList(provisionActivator));
+        map.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, Collections.singletonList(provisionActivator));
         return map;
     }
 
@@ -173,6 +180,7 @@ public class FrameworkService {
     }
     
     public static BundleContext getBundleContext() {
+        final FrameworkService instance = getInstance();
         if (instance != null && instance.felix != null) {
             return instance.felix.getBundleContext();
         } else {
@@ -185,17 +193,12 @@ public class FrameworkService {
      */
     public static void notifyStarted() {
         logger.info("Got started event");
-        if (instance != null) {
-            synchronized (instance) {
-                logger.info("Started event arrived");
-                instance.started = true;
-                instance.notifyAll();
-                logger.info("Notified all about framework started event");
-            }
+        final FrameworkService instance = getInstance();
+        synchronized (instance) {
+            logger.info("Started event arrived");
+            instance.started = true;
+            instance.notifyAll();
+            logger.info("Notified all about framework started event");
         }
-    }
-
-    public static FrameworkService getInstance() {
-        return instance;
     }
 }

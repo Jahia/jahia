@@ -177,7 +177,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
 
                     Streams.copy(limitedInputStream, fileItem.getOutputStream(), true);
                 } catch (FileUploadIOException e) {
-                    if (e.getCause() != null && (e.getCause() instanceof FileSizeLimitExceededException)) {
+                    if (e.getCause() instanceof FileSizeLimitExceededException) {
                         if (sizeLimitExceededException == null) {
                             sizeLimitExceededException = (FileSizeLimitExceededException) e.getCause();
                         }

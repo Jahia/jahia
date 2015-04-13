@@ -681,14 +681,16 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // save shared properties
             properties.saveProperties(nodes, sharedProperties, removedTypes, session, getUILocale());
 
+
             // save properties per lang
             for (String currentLangCode : langCodeProperties.keySet()) {
                 List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
                 final Locale locale = LanguageCodeConverters.languageCodeToLocale(currentLangCode);
                 session = retrieveCurrentSession(locale);
                 sessions.add(session);
-                properties.saveProperties(nodes, props, removedTypes, session, locale);
+                properties.saveProperties(nodes, props, removedTypes, session, getUILocale());
             }
+            properties.saveWorkInProgress(nodes, langCodeProperties, session);
             for (JCRSessionWrapper sessionWrapper : sessions) {
                 sessionWrapper.validate();
             }
@@ -787,7 +789,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
             }
 
-            properties.saveI18nWorkInProgress(nodeWrapper, sharedProperties, langCodeProperties.keySet());
+            properties.saveWorkInProgress(nodeWrapper, langCodeProperties);
 
             if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
                 List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
@@ -979,7 +981,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     }
                 }
 
-                properties.saveI18nWorkInProgress(nodeWrapper, props, langCodeProperties.keySet());
+                properties.saveWorkInProgress(nodeWrapper, langCodeProperties);
             }
             session.save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {

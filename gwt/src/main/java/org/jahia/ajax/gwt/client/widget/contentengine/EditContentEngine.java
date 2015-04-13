@@ -195,7 +195,7 @@ public class EditContentEngine extends AbstractContentEngine {
     private void refreshButtons() {
         for (BoxComponent button : saveButtons) {
             if (button instanceof CheckboxWorkInProgress) {
-                ((CheckboxWorkInProgress) button).refresh(node);
+                ((CheckboxWorkInProgress) button).refresh(this, language);
             }
         }
     }
@@ -219,6 +219,8 @@ public class EditContentEngine extends AbstractContentEngine {
                 if (getSelectedLanguage() != null) {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage(), result);
                 }
+
+                setWorkInProgress(node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
 
                 fillCurrentTab();
                 refreshButtons();
@@ -279,6 +281,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
                     container.getPanel().setHeadingHtml(heading);
                 }
+                setWorkInProgress(node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
 
                 setAvailableLanguages(result.getAvailabledLanguages());
 

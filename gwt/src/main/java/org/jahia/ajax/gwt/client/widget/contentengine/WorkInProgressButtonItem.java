@@ -91,9 +91,6 @@ public class WorkInProgressButtonItem implements ButtonItem {
 
         final CheckboxWorkInProgress checkbox = new CheckboxWorkInProgress();
 
-        checkbox.setValue(checkedByDefault || (engine.getNode() != null && engine.getNode().get("j:workInProgress") != null && (Boolean) engine.getNode().get("j:workInProgress")));
-        engine.setWorkInProgress(checkbox.getValue());
-
         checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 engine.setWorkInProgress(checkbox.getValue());

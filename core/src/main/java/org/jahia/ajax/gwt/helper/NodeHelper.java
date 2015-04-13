@@ -73,7 +73,6 @@ package org.jahia.ajax.gwt.helper;
 
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -109,7 +108,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.version.Version;
-
 import java.io.File;
 import java.util.*;
 
@@ -897,6 +895,8 @@ class NodeHelper {
                 final Node i18n = node.getI18N(node.getSession().getLocale());
                 if (i18n.hasProperty(Constants.WORKINPROGRESS)){
                     n.set(Constants.WORKINPROGRESS, i18n.getProperty(Constants.WORKINPROGRESS).getBoolean());
+                } else {
+                    n.set(Constants.WORKINPROGRESS, false);
                 }
             }
         } catch (RepositoryException e) {

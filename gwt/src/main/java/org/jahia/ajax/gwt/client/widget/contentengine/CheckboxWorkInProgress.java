@@ -1,7 +1,7 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.extjs.gxt.ui.client.widget.form.CheckBox;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 
 /**
  * ==========================================================================================
@@ -82,10 +82,10 @@ import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 public class CheckboxWorkInProgress extends CheckBox {
 
     /**
-     * refresh the value of the button according to the node value
-     * @param node
+     * refresh the value of the button according to the engine value
+     * @param engine
      */
-    public void refresh(GWTJahiaNode node) {
-        setValue(node != null && node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
+    public void refresh(AbstractContentEngine engine, GWTJahiaLanguage language) {
+        setValue(engine.isWorkInProgress(language.getLanguage()));
     }
 }

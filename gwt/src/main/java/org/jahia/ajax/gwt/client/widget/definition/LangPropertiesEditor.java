@@ -127,7 +127,7 @@ public class LangPropertiesEditor extends LayoutContainer {
     private LayoutContainer topBar;
     private boolean translationEnabled;
     private LangPropertiesEditor translationSource;
-    private boolean wip;
+    private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
     private CallBack callback;
 
     public LangPropertiesEditor(GWTJahiaNode node, List<String> dataType, boolean editable,
@@ -380,10 +380,14 @@ public class LangPropertiesEditor extends LayoutContainer {
                 }
 
                 updatePropertiesComponent(locale);
-                wip = node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress");
+                if (!workInProgressByLocale.containsKey(locale)) {
+                    workInProgressByLocale.put(locale, node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
+                }
+
                 if (callback != null) {
                     callback.execute();
                 }
+
             }
 
             public void onApplicationFailure(Throwable throwable) {
@@ -438,10 +442,6 @@ public class LangPropertiesEditor extends LayoutContainer {
                 } else {
                     updatePropertiesComponent(null);
                 }
-                wip = node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress");
-                if (callback != null) {
-                    callback.execute();
-                }
             }
 
             public void onApplicationFailure(Throwable throwable) {
@@ -469,8 +469,16 @@ public class LangPropertiesEditor extends LayoutContainer {
     /**
      * @return the work in progress status of the editor
      */
+    public boolean isWip(String locale) {
+        return workInProgressByLocale.get(locale);
+    }
+
     public boolean isWip() {
-        return wip;
+        return isWip(displayedLocale.getLanguage());
+    }
+
+    public void setWorkInProgress(boolean wip) {
+        workInProgressByLocale.put(displayedLocale.getLanguage(), wip);
     }
 
     public interface CallBack {

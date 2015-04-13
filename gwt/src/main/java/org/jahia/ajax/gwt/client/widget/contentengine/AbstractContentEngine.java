@@ -138,7 +138,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaNodeACL acl;
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
-    private boolean workInProgress = false;
+    private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -563,25 +563,21 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     }
 
     public void setWorkInProgress(boolean workInProgress) {
-        this.workInProgress = workInProgress;
+        workInProgressByLocale.put(getSelectedLanguage(), workInProgress);
+    }
+
+    public boolean isWorkInProgress(String locale) {
+        return workInProgressByLocale.containsKey(locale) && workInProgressByLocale.get(locale);
     }
 
     public void setWorkInProgressProperty() {
         if (isNodeOfJmixLastPublishedType()) {
-            for (GWTJahiaNodeProperty property : changedProperties) {
-                if (property.getName().equals("j:workInProgress")) {
-                    if (workInProgress) {
-                        property.setValue(new GWTJahiaNodePropertyValue(Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
-                    } else {
-                        property.setValue(new GWTJahiaNodePropertyValue((String) null, GWTJahiaNodePropertyType.BOOLEAN));
-                    }
-                    return;
+            for (String locale : workInProgressByLocale.keySet()) {
+                if (!changedI18NProperties.containsKey(locale)) {
+                    changedI18NProperties.put(locale, new ArrayList<GWTJahiaNodeProperty>());
                 }
-            }
-            if (workInProgress) {
-                changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
-            } else {
-                changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", null, GWTJahiaNodePropertyType.BOOLEAN));
+                GWTJahiaNodePropertyValue wipValue = new GWTJahiaNodePropertyValue(String.valueOf(workInProgressByLocale.get(locale)), GWTJahiaNodePropertyType.BOOLEAN);
+                changedI18NProperties.get(locale).add(new GWTJahiaNodeProperty("j:workInProgress", wipValue));
             }
         }
     }

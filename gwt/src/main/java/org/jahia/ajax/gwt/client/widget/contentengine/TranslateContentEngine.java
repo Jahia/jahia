@@ -73,8 +73,7 @@ package org.jahia.ajax.gwt.client.widget.contentengine;
 
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.Window;
@@ -89,6 +88,8 @@ import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -208,6 +209,12 @@ public class TranslateContentEngine extends Window {
         wipCheckbox = new CheckBox();
         wipCheckbox.setBoxLabel(Messages.get("label.saveAsWIP", "Save as work in progress"));
         wipCheckbox.setToolTip(Messages.get("label.saveAsWIP.information", "If checked, this content will ne be part of publication process"));
+        wipCheckbox.addListener(Events.Change, new Listener<BaseEvent>() {
+            @Override
+            public void handleEvent(BaseEvent be) {
+                targetLangPropertiesEditor.setWorkInProgress(wipCheckbox.getValue());
+            }
+        });
         buttonBar.add(wipCheckbox);
 
         ok = new Button(Messages.get("label.save"));
@@ -238,9 +245,16 @@ public class TranslateContentEngine extends Window {
             final List<GWTJahiaNode> nodes = new ArrayList<GWTJahiaNode>();
             List<GWTJahiaNodeProperty> sharedProperties = new ArrayList<GWTJahiaNodeProperty>();
             nodes.add(node);
-            sharedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", wipCheckbox.getRawValue()));
+            Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties = targetLangPropertiesEditor.getLangPropertiesMap();
+            for (String language : targetLangPropertiesEditor.getLangPropertiesMap().keySet()) {
+                if (!changedI18NProperties.containsKey(language)) {
+                    changedI18NProperties.put(language, new ArrayList<GWTJahiaNodeProperty>());
+                }
+                GWTJahiaNodePropertyValue wipValue = new GWTJahiaNodePropertyValue(String.valueOf(targetLangPropertiesEditor.isWip(language)), GWTJahiaNodePropertyType.BOOLEAN);
+                changedI18NProperties.get(language).add(new GWTJahiaNodeProperty("j:workInProgress", wipValue));
+            }
             // Ajax call to update values
-            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, targetLangPropertiesEditor.getLangPropertiesMap(), sharedProperties, null, new BaseAsyncCallback<Object>() {
+            JahiaContentManagementService.App.getInstance().savePropertiesAndACL(nodes, null, changedI18NProperties, sharedProperties, null, new BaseAsyncCallback<Object>() {
                 public void onApplicationFailure(Throwable throwable) {
                     String message = throwable.getMessage();
                     if (message.contains("Invalid link")) {

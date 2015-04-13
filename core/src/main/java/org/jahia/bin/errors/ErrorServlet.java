@@ -111,13 +111,13 @@ public class ErrorServlet extends HttpServlet {
 
     private static final long serialVersionUID = -6990851339777685000L;
 
-    protected boolean siteLevelErrorPagesEnabled;
+    private transient boolean siteLevelErrorPagesEnabled;
 
-    protected JahiaSitesService sitesService;
+    private transient JahiaSitesService sitesService;
 
-    protected JahiaTemplateManagerService templateService;
+    private transient JahiaTemplateManagerService templateService;
 
-    protected URLResolverFactory urlResolverFactory;
+    private transient URLResolverFactory urlResolverFactory;
 
     protected void forwardToErrorPage(String errorPagePath, HttpServletRequest request,
                                       HttpServletResponse response) throws ServletException, IOException {

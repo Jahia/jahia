@@ -99,7 +99,7 @@ public class EndInit extends HttpServlet {
 
     private static final long serialVersionUID = -2221764992780224013L;
 
-	private static Logger logger = org.slf4j.LoggerFactory.getLogger(EndInit.class);
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(EndInit.class);
 
     private boolean initialized = false;
 
@@ -117,10 +117,10 @@ public class EndInit extends HttpServlet {
             "\n  recommended to switch to production mode when running performance tests or going live. The " +
             "\n  setting to change modes is called operatingMode in the jahia.properties configuration file.");
         } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            out.append("\n--------------------------------------------------------------------------------------------------" + 
+            out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");
         } else {
-            out.append("\n--------------------------------------------------------------------------------------------------" + 
+            out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  P R O D U C T I O N   M O D E   A C T I V E");
         }
         out.append("\n--------------------------------------------------------------------------------------------------\n");

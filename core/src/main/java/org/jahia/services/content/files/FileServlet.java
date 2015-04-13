@@ -120,19 +120,19 @@ public class FileServlet extends HttpServlet {
 
     private static final long serialVersionUID = -414690364676304370L;
 
-    protected FileCacheManager cacheManager;
+    private transient FileCacheManager cacheManager;
 
-    protected int cacheThreshold = 64 * 1024;
+    private int cacheThreshold = 64 * 1024;
 
-    protected boolean cacheForLoggedUsers = true;
+    private boolean cacheForLoggedUsers = true;
 
-    protected boolean cacheFromExternalProviders;
+    private boolean cacheFromExternalProviders;
 
-    protected String characterEncoding = null;
+    private String characterEncoding = null;
 
-    protected MetricsLoggingService loggingService;
+    private transient MetricsLoggingService loggingService;
 
-    private JCRSessionFactory sessionFactory;
+    private transient JCRSessionFactory sessionFactory;
 
     private boolean canCache(JCRNodeWrapper n) {
         return cacheFromExternalProviders || n.getProvider().canCacheNode(n);
@@ -441,12 +441,12 @@ public class FileServlet extends HttpServlet {
 
         value = config.getInitParameter("cache-for-logged-in-users");
         if (value != null) {
-            cacheForLoggedUsers = new Boolean(value);
+            cacheForLoggedUsers = Boolean.parseBoolean(value);
         }
 
         value = config.getInitParameter("cache-from-external-providers");
         if (value != null) {
-            cacheFromExternalProviders = new Boolean(value);
+            cacheFromExternalProviders = Boolean.parseBoolean(value);
         }
 
         try {

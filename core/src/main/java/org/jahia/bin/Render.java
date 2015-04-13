@@ -191,10 +191,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient JahiaTemplateManagerService templateService;
     private transient Action defaultPostAction;
     private transient Action defaultPutAction;
-    private transient Action defaultDeleteAction = new DefaultDeleteAction();
-    private transient Map<String, String> defaultContentType = new HashMap<String, String>();
+    private final transient Action defaultDeleteAction = new DefaultDeleteAction();
+    private transient Map<String, String> defaultContentType = new HashMap<>();
 
-    protected transient SettingsBean settingsBean;
+    private transient SettingsBean settingsBean;
     private transient RenderService renderService;
     private transient JCRSessionFactory jcrSessionFactory;
     private transient URLResolverFactory urlResolverFactory;
@@ -278,7 +278,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected void doGet(HttpServletRequest req, HttpServletResponse resp, RenderContext renderContext,
                          Resource resource, long startTime) throws RepositoryException, RenderException, IOException {
         loggingService.startProfiler("MAIN");
-        resp.setCharacterEncoding(settingsBean.getCharacterEncoding());
+        resp.setCharacterEncoding(getSettingsBean().getCharacterEncoding());
         String out = renderService.render(resource, renderContext).trim();
         if (renderContext.getRedirect() != null && !resp.isCommitted()) {
             resp.sendRedirect(renderContext.getRedirect());
@@ -487,7 +487,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             // multipart is processed only if it's not a portlet request.
             // otherwise it's the task the portlet
             if (!isPortletRequest(req)) {
-                final String savePath = settingsBean.getTmpContentDiskPath();
+                final String savePath = getSettingsBean().getTmpContentDiskPath();
                 final File tmp = new File(savePath);
                 if (!tmp.exists()) {
                     tmp.mkdirs();
@@ -1168,4 +1168,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 	public void setDefaultContentType(Map<String, String> defaultContentType) {
 		this.defaultContentType = defaultContentType;
 	}
+
+    public SettingsBean getSettingsBean() {
+        return settingsBean;
+    }
 }

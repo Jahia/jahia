@@ -111,7 +111,7 @@ import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
 
 /**
- * Portlet Invocation Servlet. This servlet recieves cross context requests from
+ * Portlet Invocation Servlet. This servlet receives cross context requests from
  * the the container and services the portlet request for the specified method.
  *
  * @version 1.1
@@ -154,7 +154,7 @@ public class PortletServlet extends HttpServlet {
     /**
      * The portlet instance wrapped by this servlet.
      */
-    private Map<String, Portlet> portlets = new HashMap<String, Portlet>();
+    private Map<String, Portlet> portlets = new HashMap<>();
 
     /**
      * The internal portlet context instance.
@@ -164,22 +164,22 @@ public class PortletServlet extends HttpServlet {
     /**
      * The internal portlet config instance.
      */
-    private Map<String, DriverPortletConfig> portletConfigs = new HashMap<String, DriverPortletConfig>();
+    private Map<String, DriverPortletConfig> portletConfigs = new HashMap<>();
 
     /**
      * The Event Portlet instance (the same object as portlet) wrapped by this servlet.
      */
-    private Map<String, EventPortlet> eventPortlets = new HashMap<String, EventPortlet>();
+    private Map<String, EventPortlet> eventPortlets = new HashMap<>();
 
     /**
      * The resource serving portlet instance wrapped by this servlet.
      */
-    private Map<String, ResourceServingPortlet> resourceServingPortlets = new HashMap<String, ResourceServingPortlet>();
+    private Map<String, ResourceServingPortlet> resourceServingPortlets = new HashMap<>();
 
     private PortletContextService contextService;
 
     private boolean started = false;
-    Timer startTimer;
+    private Timer startTimer;
 
     // HttpServlet Impl --------------------------------------------------------
 

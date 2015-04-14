@@ -2146,6 +2146,13 @@ public class DiffMatchPatch {
         return false;
       }
     }
+
+    @Override
+    public int hashCode() {
+      int result = operation.hashCode();
+      result = 31 * result + text.hashCode();
+      return result;
+    }
   }
 
 

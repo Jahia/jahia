@@ -461,7 +461,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             assertEquals("Bad result code", 200, method.getStatusCode());
             content = method.getResponseBodyAsString();
         } finally {
-            method.releaseConnection();
+            if (method != null) {
+                method.releaseConnection();
+            }
         }
         return content;
     }

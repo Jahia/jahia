@@ -188,17 +188,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             }
             JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping().putAll(pathMapping);
             return newImportFile;
-        } catch (IOException e) {
-            logger.error("An error occured while updating import file", e);
-        } catch (RepositoryException e) {
-            logger.error("An error occured while updating import file", e);
-        } catch (ParserConfigurationException e) {
-            logger.error("An error occured while updating import file", e);
-        } catch (SAXException e) {
-            logger.error("An error occured while updating import file", e);
-        } catch (XPathExpressionException e) {
-            logger.error("An error occured while updating import file", e);
-        } catch (TransformerException e) {
+        } catch (IOException | RepositoryException | ParserConfigurationException | XPathExpressionException | SAXException | TransformerException e) {
             logger.error("An error occured while updating import file", e);
         } finally {
             try {
@@ -208,7 +198,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
                 zin.closeEntry();
                 zin.reallyClose();
                 in.close();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 logger.debug("Steam already closed", e);
             }
         }

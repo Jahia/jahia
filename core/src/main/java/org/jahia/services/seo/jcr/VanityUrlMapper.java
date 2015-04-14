@@ -119,7 +119,6 @@ public class VanityUrlMapper {
 
         URLResolverFactory urlResolverFactory = (URLResolverFactory) SpringContextSingleton.getBean("urlResolverFactory");
         VanityUrlService vanityUrlService = (VanityUrlService) SpringContextSingleton.getBean("org.jahia.services.seo.jcr.VanityUrlService");
-        UrlRewriteService urlRewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
 
         String ctx = StringUtils.defaultIfEmpty(hsRequest.getContextPath(), "");
         String fullUrl = ctx + Render.getRenderServletPath() + outboundUrl;

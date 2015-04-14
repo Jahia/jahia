@@ -242,7 +242,7 @@ public class JahiaClusterNode extends ClusterNode {
             } catch (JournalException e) {
                 String msg = "Unable to create log entry: " + e.getMessage();
                 throw new ClusterException(msg, e);
-            } catch (Throwable e) {
+            } catch (Exception e) {
                 String msg = "Unexpected error while creating log entry: "
                         + e.getMessage();
                 throw new ClusterException(msg, e);

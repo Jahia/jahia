@@ -127,7 +127,7 @@ public class JCRFrozenNodeAsRegular extends JCRNodeWrapperImpl {
             return property.getString();
         } catch (RepositoryException e) {
             String currentPath = getName();
-            JCRNodeWrapper currentParent = null;
+            JCRNodeWrapper currentParent;
             try {
                 currentParent = getParent();
                 while (currentParent != null) {

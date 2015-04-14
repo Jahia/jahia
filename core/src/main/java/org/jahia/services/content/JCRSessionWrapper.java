@@ -461,7 +461,7 @@ public class JCRSessionWrapper implements Session {
 
     private void updatePathInCache(String source, String dest, Map<String, JCRNodeWrapper> cacheByPath) {
         String sourcePrefix = source + "/";
-        Set<String> paths = new HashSet<String>(cacheByPath.keySet());
+        Set<String> paths = new HashSet<>(cacheByPath.keySet());
         for (String s : paths) {
             if (s.equals(source) || s.startsWith(sourcePrefix)) {
                 JCRNodeWrapper n = cacheByPath.remove(s);

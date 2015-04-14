@@ -124,7 +124,7 @@ public class ZipHelper {
             final byte[] buffer = new byte[4096];
             String parentDir = parentDirectory.getPath();
             if (!parentDir.endsWith("/")) {
-                parentDir = new StringBuilder(parentDir).append("/").toString();
+                parentDir = parentDir + "/";
             }
             for (JCRNodeWrapper file : files) {
                 try {
@@ -132,7 +132,7 @@ public class ZipHelper {
                 } catch (IOException e) {
                     logger.error("Error zipping file " + file.getPath(), e);
                     if (missedPaths == null) {
-                        missedPaths = new ArrayList<String>();
+                        missedPaths = new ArrayList<>();
                     }
                     missedPaths.add(file.getPath());
                 }
@@ -142,15 +142,9 @@ public class ZipHelper {
                 zout.close();
                 JCRNodeWrapper result = parentDirectory.uploadFile(zipname, is, "application/zip");
                 result.saveSession();
-            } catch (IOException e) {
+            } catch (IOException | RepositoryException e) {
                 logger.error("Error writing resulting zipped file", e);
-                missedPaths = new ArrayList<String>();
-                for (JCRNodeWrapper node : files) {
-                    missedPaths.add(node.getName());
-                }
-            } catch (RepositoryException e) {
-                logger.error("Error writing resulting zipped file", e);
-                missedPaths = new ArrayList<String>();
+                missedPaths = new ArrayList<>();
                 for (JCRNodeWrapper node : files) {
                     missedPaths.add(node.getName());
                 }
@@ -159,7 +153,7 @@ public class ZipHelper {
             }
         } catch (final IOException e) {
             logger.error("Error creating zipped file", e);
-            missedPaths = new ArrayList<String>();
+            missedPaths = new ArrayList<>();
             for (JCRNodeWrapper node : files) {
                 missedPaths.add(node.getName());
             }

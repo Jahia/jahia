@@ -303,8 +303,9 @@ public class JahiaCndWriter {
             out.write(" indexed=" + IndexType.nameFromValue(pd.getIndex()));
         }
 
-        if (pd.getScoreboost() != 1.) {
-            out.write(" scoreboost=" + pd.getScoreboost());
+        final Double scoreboost = pd.getScoreboost();
+        if (!scoreboost.isInfinite() && !scoreboost.isNaN() && !scoreboost.equals(1.0)) {
+            out.write(" scoreboost=" + scoreboost);
         }
         if (pd.getAnalyzer() != null) {
             out.write(" analyzer=" + pd.getAnalyzer());

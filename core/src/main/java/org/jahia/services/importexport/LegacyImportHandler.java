@@ -1267,6 +1267,7 @@ public class LegacyImportHandler extends DefaultHandler {
                             logger.warn("Multiple category match : " + value);
                         }
                     }
+                    break;
                 }
                 default: {
                     if (value.startsWith("/")) {

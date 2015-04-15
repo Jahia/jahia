@@ -84,6 +84,7 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.Cache;
+import org.jahia.services.cache.ehcache.EhCacheImpl;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
@@ -558,19 +559,16 @@ public class ErrorFileDumper {
                 strOut.println("--------------");
 
                 // non Ehcaches
-                SortedSet sortedCacheNames = new TreeSet(ServicesRegistry.getInstance().getCacheService().getNames());
-                Iterator cacheNameIte = sortedCacheNames.iterator();
-                while (cacheNameIte.hasNext()) {
-                    String curCacheName = (String) cacheNameIte.next();
-                    Object objectCache = ServicesRegistry.getInstance().getCacheService().getCache(curCacheName);
-                    if (objectCache instanceof Cache && !(((Cache) objectCache).getCacheImplementation() instanceof org.jahia.services.cache.ehcache.EhCacheImpl)) {
-                        Cache curCache = (Cache) objectCache;
+                SortedSet<String> sortedCacheNames = new TreeSet<>(ServicesRegistry.getInstance().getCacheService().getNames());
+                for (String sortedCacheName : sortedCacheNames) {
+                    final Cache<Object, Object> objectCache = ServicesRegistry.getInstance().getCacheService().getCache(sortedCacheName);
+                    if (objectCache != null && !(((Cache) objectCache).getCacheImplementation() instanceof EhCacheImpl)) {
                         String efficiencyStr = "0";
-                        if (!Double.isNaN(curCache.getCacheEfficiency())) {
-                            efficiencyStr = percentFormat.format(curCache.getCacheEfficiency());
+                        if (!Double.isNaN(objectCache.getCacheEfficiency())) {
+                            efficiencyStr = percentFormat.format(objectCache.getCacheEfficiency());
                         }
-                        strOut.println(curCacheName + ": size=" + curCache.size() + ", successful hits=" + curCache.getSuccessHits() +
-                                ", total hits=" + curCache.getTotalHits() + ", efficiency=" + efficiencyStr + "%");
+                        strOut.println(sortedCacheName + ": size=" + objectCache.size() + ", successful hits=" + objectCache.getSuccessHits() +
+                                ", total hits=" + objectCache.getTotalHits() + ", efficiency=" + efficiencyStr + "%");
                     }
                 }
             }

@@ -1135,9 +1135,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         // ToDo: handle pagination directly in the jcr
         final List<GWTJahiaNode> result = getNodesByCategory(category);
-        int size = result.size();
-        new ArrayList<GWTJahiaNode>(result.subList(offset, Math.min(size, offset + limit)));
-        return new BasePagingLoadResult<GWTJahiaNode>(result, offset, size);
+        return new BasePagingLoadResult<>(result, offset, result.size());
     }
 
 

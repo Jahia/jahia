@@ -196,18 +196,20 @@ public class ImportJob extends BackgroundJob {
     private static void importContent(String parentPath, boolean replaceContent, File file, String contentType)
             throws IOException, RepositoryException, JahiaException {
         ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-        if ("application/zip".equals(contentType)) {
-            importExport.importZip(parentPath, new FileSystemResource(file),
-                    replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
+        switch (contentType) {
+            case "application/zip":
+                importExport.importZip(parentPath, new FileSystemResource(file), DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
 
-        } else if ("application/xml".equals(contentType) || "text/xml".equals(contentType)) {
-            InputStream is = new FileInputStream(file);
-            try {
-                importExport.importXML(parentPath, is,
-                        replaceContent ? DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE : DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
-            } finally {
-                IOUtils.closeQuietly(is);
-            }
+                break;
+            case "application/xml":
+            case "text/xml":
+                InputStream is = new FileInputStream(file);
+                try {
+                    importExport.importXML(parentPath, is, DocumentViewImportHandler.ROOT_BEHAVIOUR_REPLACE);
+                } finally {
+                    IOUtils.closeQuietly(is);
+                }
+                break;
         }
     }
 

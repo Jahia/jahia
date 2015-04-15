@@ -156,7 +156,8 @@ public class VanityUrlMapper {
                 try {
                     url = URLDecoder.decode(url, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
+                    // shouldn't happen
+                    throw new RuntimeException(e);
                 }
                 URLResolver urlResolver = urlResolverFactory.createURLResolver(url, hsRequest.getServerName(), hsRequest);
                 try {

@@ -80,7 +80,7 @@ import org.apache.felix.cm.file.FilePersistenceManager;
 import org.osgi.framework.BundleContext;
 
 /**
- * Adjusted {@link PersistenceManager} service for CondifugationAdmin service.
+ * Adjusted {@link PersistenceManager} service for ConfigurationAdmin service.
  * 
  * @author Sergiy Shyrkov
  */
@@ -111,7 +111,7 @@ public class JahiaFilePersistenceManager extends FilePersistenceManager {
                     timestamp = source.lastModified();
                 }
             } catch (URISyntaxException e) {
-                e.printStackTrace();
+                throw new RuntimeException("Improper file location for property felix.fileinstall.filename: " + fileLocation, e);
             }
         }
 

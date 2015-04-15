@@ -117,7 +117,13 @@ public class CopyPasteEngine {
                     .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, isCut(), childNodeTypesToSkip, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
                     Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
-                    linker.loaded();
+                    if (linker instanceof ManagerLinker) {
+                        ManagerLinker managerLinker = (ManagerLinker) linker;
+                        managerLinker.getLeftComponent().unmask();
+                        managerLinker.getTopRightComponent().unmask();
+                    } else {
+                        linker.loaded();
+                    }
                 }
 
                 public void onSuccess(Object o) {
@@ -131,7 +137,13 @@ public class CopyPasteEngine {
                 .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable throwable) {
                 Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
-                linker.loaded();
+                if (linker instanceof ManagerLinker) {
+                    ManagerLinker managerLinker = (ManagerLinker) linker;
+                    managerLinker.getLeftComponent().unmask();
+                    managerLinker.getTopRightComponent().unmask();
+                } else {
+                    linker.loaded();
+                }
             }
 
             public void onSuccess(Object o) {
@@ -151,6 +163,9 @@ public class CopyPasteEngine {
         data.put("node", getCopiedNodes().get(0));
         data.put("nodes", newPaths);
         if (linker instanceof ManagerLinker) {
+            ManagerLinker managerLinker = (ManagerLinker) linker;
+            managerLinker.getLeftComponent().unmask();
+            managerLinker.getTopRightComponent().unmask();
             data.put(Linker.REFRESH_ALL,true);
             linker.refresh(data);
         } else if (isCut() && MainModule.getInstance().getPath().contains(getCopiedNodes().get(0).getPath())) {

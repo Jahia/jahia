@@ -76,6 +76,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.content.CopyPasteEngine;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 
 import java.util.List;
@@ -104,7 +105,15 @@ public class PasteActionItem extends NodeTypeAwareBaseActionItem {
             m = linker.getSelectionContext().getMainNode();
         }
         if (m != null) {
-            linker.loading(Messages.get("statusbar.pasting.label"));
+            final String pastingMessage = Messages.get("statusbar.pasting.label");
+            final String messageStyleName = "x-mask-loading";
+            if (linker instanceof ManagerLinker) {
+                ManagerLinker managerLinker = (ManagerLinker) linker;
+                managerLinker.getLeftComponent().mask(pastingMessage, messageStyleName);
+                managerLinker.getTopRightComponent().mask(pastingMessage, messageStyleName);
+            } else {
+                linker.loading(pastingMessage);
+            }
             final CopyPasteEngine copyPasteEngine = CopyPasteEngine.getInstance();
             copyPasteEngine.paste(m, linker, childNodeTypesToSkip);
         }

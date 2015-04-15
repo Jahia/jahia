@@ -84,25 +84,25 @@ import java.util.Map;
  *        Created : 23 sept. 2009
  */
 public interface Linker {
-    public final static String REFRESH_ALL = "refreshAll";
-    public final static String REFRESH_MAIN = "refreshMain";
+    String REFRESH_ALL = "refreshAll";
+    String REFRESH_MAIN = "refreshMain";
 
-    public void loaded();
+    void loaded();
 
-    public void loading(String resource);
+    void loading(String resource);
 
-    public void refresh(Map<String, Object> data);
+    void refresh(Map<String, Object> data);
 
-    public void select(Object o);
+    void select(Object o);
 
-    public void setSelectPathAfterDataUpdate(List<String> paths);
+    void setSelectPathAfterDataUpdate(List<String> paths);
 
-    public LinkerSelectionContext getSelectionContext();
+    LinkerSelectionContext getSelectionContext();
 
-    public void syncSelectionContext(int context);
+    void syncSelectionContext(int context);
 
-    public GWTConfiguration getConfig();
+    GWTConfiguration getConfig();
 
-    public boolean isDisplayHiddenProperties();
+    boolean isDisplayHiddenProperties();
 
 }

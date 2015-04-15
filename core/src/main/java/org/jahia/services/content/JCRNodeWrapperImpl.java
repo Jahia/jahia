@@ -131,7 +131,7 @@ import static org.jahia.api.Constants.*;
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
 
-    public static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
+    private static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
     private static final String TRANSLATION_PREFIX = "j:translation_";
 
     protected Node objectNode = null;

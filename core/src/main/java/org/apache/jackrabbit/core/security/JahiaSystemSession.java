@@ -98,7 +98,7 @@ import java.util.Set;
  */
 public class JahiaSystemSession extends SessionImpl {
     
-    static final AccessControlPolicy[] ACCESS_CONTROL_POLICIES = new AccessControlPolicy[0];
+    private static final AccessControlPolicy[] ACCESS_CONTROL_POLICIES = new AccessControlPolicy[0];
     
     private static final String SYSTEM_PRINCIPAL_NAME = new SystemPrincipal().getName();
 

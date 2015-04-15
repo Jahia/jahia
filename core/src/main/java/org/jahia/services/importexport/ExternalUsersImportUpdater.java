@@ -192,13 +192,21 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             logger.error("An error occurred while updating import file", e);
         } finally {
             try {
-                zout.closeEntry();
-                zout.finish();
-                out.close();
-                zin.closeEntry();
-                zin.reallyClose();
-                in.close();
-            } catch (Exception e) {
+                if (zout != null) {
+                    zout.closeEntry();
+                    zout.finish();
+                }
+                if (out != null) {
+                    out.close();
+                }
+                if (zin != null) {
+                    zin.closeEntry();
+                    zin.reallyClose();
+                }
+                if (in != null) {
+                    in.close();
+                }
+            } catch (IOException e) {
                 logger.debug("Stream already closed", e);
             }
         }

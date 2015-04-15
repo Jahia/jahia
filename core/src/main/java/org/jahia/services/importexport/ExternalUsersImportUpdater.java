@@ -189,7 +189,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
             JCRSessionFactory.getInstance().getCurrentUserSession().getPathMapping().putAll(pathMapping);
             return newImportFile;
         } catch (IOException | RepositoryException | ParserConfigurationException | XPathExpressionException | SAXException | TransformerException e) {
-            logger.error("An error occured while updating import file", e);
+            logger.error("An error occurred while updating import file", e);
         } finally {
             try {
                 zout.closeEntry();
@@ -199,7 +199,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
                 zin.reallyClose();
                 in.close();
             } catch (Exception e) {
-                logger.debug("Steam already closed", e);
+                logger.debug("Stream already closed", e);
             }
         }
 

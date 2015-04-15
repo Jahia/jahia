@@ -1171,7 +1171,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             return false;
         }
         try {
-            versioningAvailable = versioningOptionValue.getBoolean() & simpleVersioningOptionValue.getBoolean();
+            versioningAvailable = versioningOptionValue.getBoolean() && simpleVersioningOptionValue.getBoolean();
         } catch (RepositoryException e) {
             logger.warn("Error while trying to check for versioning support", e);
             versioningAvailable = Boolean.FALSE;

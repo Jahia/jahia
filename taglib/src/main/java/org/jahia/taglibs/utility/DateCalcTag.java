@@ -165,7 +165,7 @@ public class DateCalcTag extends AbstractDateTag {
 
             if (months == Utils.TO_MIN) {
                 cal.set(Calendar.MONTH, cal.getActualMinimum(Calendar.MONTH));
-            } else if (months == Utils.TO_MIN) {
+            } else if (months == Utils.TO_MAX) {
                 cal.set(Calendar.MONTH, cal.getActualMaximum(Calendar.MONTH));
             }
             if (days == Utils.TO_MIN) {

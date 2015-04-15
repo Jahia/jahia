@@ -165,7 +165,7 @@ public class Login implements Controller {
         if (redirectUrl.contains("://")) {
             if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://")) {
                 String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "://");
-                String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString()), "://");
+                String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI()), "://");
                 if (redirectUrlAfterProtocol.startsWith(urlBase)) {
                     return true;
                 }

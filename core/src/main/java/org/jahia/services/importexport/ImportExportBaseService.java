@@ -354,15 +354,14 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         ZipEntry anEntry = new ZipEntry(EXPORT_PROPERTIES);
         zout.putNextEntry(anEntry);
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(zout))) {
-            bw.write("JahiaRelease = " + Jahia.getReleaseNumber() + "\n");
-            bw.write("Patch = " + Jahia.getPatchNumber() + "\n");
-            bw.write("BuildNumber = " + Jahia.getBuildNumber() + "\n");
-            bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
-            bw.flush();
-        }
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(zout));
+        bw.write("JahiaRelease = " + Jahia.getReleaseNumber() + "\n");
+        bw.write("Patch = " + Jahia.getPatchNumber() + "\n");
+        bw.write("BuildNumber = " + Jahia.getBuildNumber() + "\n");
+        bw.write("ExportDate = " + new SimpleDateFormat(ImportExportService.DATE_FORMAT).format(new Date()) + "\n");
+        bw.flush();
 
-        Set<String> externalReferences = new HashSet<String>();
+        Set<String> externalReferences = new HashSet<>();
 
         for (JCRSiteNode jahiaSite : sites) {
             if (serverDirectory == null) {

@@ -72,6 +72,7 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanelTabItem;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.Column;
@@ -82,6 +83,8 @@ import org.springframework.beans.factory.InitializingBean;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -259,9 +262,6 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
             } else {
                 addToParent(parent);
             }
-
-            // clean the reference
-            parent = null;
         }
     }
 
@@ -300,7 +300,44 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
 
     @Override
     public void destroy() throws Exception {
-        // todo remove tab
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
+        if (parent instanceof List) {
+            for (Object o : (List<?>) parent) {
+                removeTab(getSidePanelTabs(o), getKey());
+            }
+        } else {
+            removeTab(getSidePanelTabs(parent), getKey());
+        }
+    }
+
+    private void removeTab(List<SidePanelTab> tabs, String tabKey) {
+        if (tabs != null && tabKey != null && tabKey.length() > 0) {
+            for (Iterator<SidePanelTab> iterator = tabs.iterator(); iterator.hasNext();) {
+                SidePanelTab tab = iterator.next();
+                if (tab.getKey() != null && tab.getKey().equals(tabKey)) {
+                    iterator.remove();
+                }
+            }
+        }
+    }
+
+    private List<SidePanelTab> getSidePanelTabs(Object parent) {
+        if (parent == null) {
+            return null;
+        }
+        if (parent instanceof String) {
+            parent = SpringContextSingleton.getBean((String) parent);
+        }
+        List<SidePanelTab> tabs = null;
+        if (parent instanceof EditConfiguration) {
+            tabs = ((EditConfiguration) parent).getTabs();
+            if (tabs == null) {
+                tabs = new LinkedList<>();
+                ((EditConfiguration) parent).setTabs(tabs);
+            }
+        }
+        return tabs;
     }
 }
-

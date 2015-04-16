@@ -155,4 +155,13 @@ public class ChannelService {
         return false;
     }
 
+    /**
+     * Unregisters the specified provider.
+     * 
+     * @param provider
+     *            a provider to be removed
+     */
+    public void removeProvider(ChannelProvider provider) {
+        channelProviders.remove(provider);
+    }
 }

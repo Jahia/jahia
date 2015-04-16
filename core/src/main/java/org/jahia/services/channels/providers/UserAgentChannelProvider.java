@@ -71,13 +71,16 @@
  */
 package org.jahia.services.channels.providers;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelProvider;
 import org.jahia.services.channels.ChannelService;
 import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +88,7 @@ import java.util.regex.Pattern;
 /**
  * A basic channel provider configured through Spring files
  */
-public class UserAgentChannelProvider implements ChannelProvider, InitializingBean, BeanNameAware {
+public class UserAgentChannelProvider implements ChannelProvider, InitializingBean, DisposableBean, BeanNameAware {
 
     public static final String USER_AGENT_HEADER_NAME = "user-agent";
 
@@ -180,5 +183,12 @@ public class UserAgentChannelProvider implements ChannelProvider, InitializingBe
     @Override
     public int hashCode() {
         return beanName != null ? beanName.hashCode() : 0;
+    }
+
+    @Override
+    public void destroy() throws Exception {
+        if (JahiaContextLoaderListener.isRunning()) {
+            channelService.removeProvider(this);
+        }
     }
 }

@@ -471,7 +471,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private Object getContextJsParameters(Map<String, Map<String, Map<String, String>>> assets, RenderContext ctx) {
-        StringBuilder params = new StringBuilder(128);
+        StringBuilder params = new StringBuilder(1024);
         params.append("{contextPath:\"").append(ctx.getRequest().getContextPath()).append("\",lang:\"")
                 .append(ctx.getMainResourceLocale()).append("\",uilang:\"").append(ctx.getUILocale());
         try {
@@ -783,15 +783,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return null;
     }
 
-    public String generateAggregateName(Collection<String> m) {
-        StringBuilder sb = new StringBuilder();
+    private String generateAggregateName(Collection<String> m) {
+        final StringBuilder sb = new StringBuilder(m.size() * 128);
         for (String s1 : m) {
             sb.append(s1);
         }
         try {
             MessageDigest digester = MessageDigest.getInstance("MD5");
             byte[] digest = digester.digest(sb.toString().getBytes("UTF-8"));
-            StringBuilder hexString = new StringBuilder();
+            final StringBuilder hexString = new StringBuilder(digest.length * 2);
             for (byte aDigest : digest) {
                 hexString.append(Integer.toHexString(0xFF & aDigest));
             }

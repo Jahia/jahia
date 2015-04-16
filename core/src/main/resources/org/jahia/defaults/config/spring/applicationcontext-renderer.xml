@@ -60,6 +60,7 @@
     <bean id="plutoProcessActionFilter" class="org.jahia.services.render.filter.portlet.PlutoProcessActionFilter">
         <property name="priority" value="-3"/>
         <property name="description" value="portlet rendering"/>
+<<<<<<< .working
         <property name="applyOnConfigurations" value="page"/>
     </bean>
 
@@ -71,6 +72,14 @@
     <!--
     <bean class="org.jahia.services.render.filter.SourceFormatterFilter">
         <property name="priority" value="-2" />
+=======
+		<property name="applyOnConfigurations" value="page" />
+        <property name="renderOnAction" value="${jahia.portlets.renderingPolicy.renderOnAction:false}"/>
+	</bean>
+	<!--
+	<bean class="org.jahia.services.render.filter.SourceFormatterFilter">
+		<property name="priority" value="-2" />
+>>>>>>> .merge-right.r52459
         <property name="description" value="HTML output formatting filter"/>
         <property name="applyOnModes" value="live,preview" />
         <property name="applyOnConfigurations" value="page" />

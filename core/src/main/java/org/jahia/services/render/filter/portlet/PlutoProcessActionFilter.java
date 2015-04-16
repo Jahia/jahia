@@ -71,6 +71,7 @@
  */
 package org.jahia.services.render.filter.portlet;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.pluto.container.PortletContainer;
 import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.driver.AttributeKeys;
@@ -102,9 +103,25 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PlutoProcessActionFilter extends AbstractFilter {
     private static final Logger logger = LoggerFactory.getLogger(PlutoProcessActionFilter.class);
+    
+    private boolean renderOnAction;
+    
+    @Override
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
+            throws Exception {
+        if (renderOnAction) {
+            return StringUtils.defaultString(performAction(previousOut, renderContext, resource, chain), previousOut);
+        } else {
+            return previousOut;
+        }
+    }
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        return !renderOnAction ? performAction(null, renderContext, resource, chain) : null;
+    }
+
+    private String performAction(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         try {
             final JahiaUserRequestWrapper request = new JahiaUserRequestWrapper(renderContext.getUser(), renderContext.getRequest(), renderContext.getMainResource().getWorkspace());
             final HttpServletResponse response = renderContext.getResponse();
@@ -143,7 +160,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
 
                 try {
                     container.doAction(portletWindow, request, renderContext.getResponse());
-                    renderContext.setPortletActionRequest(true);
+                    renderContext.setPortletActionRequest(!renderOnAction);
                     JahiaPortletUtil.copySharedMapFromPortletToJahia(renderContext.getRequest().getSession(), request, portletWindow);
                 } catch (PortletContainerException ex) {
                     throw new ServletException(ex);
@@ -166,7 +183,7 @@ public class PlutoProcessActionFilter extends AbstractFilter {
                 }
                 try {
                     container.doServeResource(portletWindow, request, response);
-                    renderContext.setPortletActionRequest(true);
+                    renderContext.setPortletActionRequest(!renderOnAction);
                 } catch (PortletContainerException ex) {
                     logger.error(ex.getMessage(), ex);
                     throw new ServletException(ex);
@@ -187,4 +204,12 @@ public class PlutoProcessActionFilter extends AbstractFilter {
         }
         return null;
     }
+<<<<<<< .working
  }
+=======
+    
+    public void setRenderOnAction(boolean renderOnAction) {
+        this.renderOnAction = renderOnAction;
+    }
+}
+>>>>>>> .merge-right.r52459

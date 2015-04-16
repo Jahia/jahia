@@ -72,6 +72,7 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
@@ -197,6 +198,9 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     }
 
     public void destroy() throws Exception {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         if (parent instanceof List) {
             for (Object o : (List) parent) {
                 removeTab(getEngineTabs(o), getId());

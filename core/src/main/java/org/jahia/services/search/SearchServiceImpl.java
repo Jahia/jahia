@@ -102,7 +102,7 @@ import java.util.Map;
  *
  * @author Benjamin Papez
  */
-public class SearchServiceImpl extends SearchService implements InitializingBean, DisposableBean, ApplicationListener<ApplicationEvent> {
+public class SearchServiceImpl extends SearchService implements InitializingBean, ApplicationListener<ApplicationEvent> {
     private List<SearchProvider> availableSearchProviders = new ArrayList<SearchProvider>();
     private SearchProvider selectedSearchProvider;
     private SearchProvider defaultSearchProvider;
@@ -111,11 +111,6 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
 
     // Search settings
     private SearchSettings settings;
-
-    @Override
-    public void destroy() throws Exception {
-
-    }
 
     public SearchSettings getSettings() {
         return settings;

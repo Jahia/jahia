@@ -71,6 +71,7 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.workflow.WorkflowObservationManager;
 import org.jahia.services.workflow.jbpm.JBPM6WorkflowProvider;
 import org.jbpm.services.task.lifecycle.listeners.TaskLifeCycleEventListener;
@@ -124,7 +125,9 @@ public abstract class AbstractTaskLifeCycleEventListener extends JbpmServicesEve
 
     @Override
     public void destroy() throws Exception {
-        workflowProvider.unregisterTaskLifeCycleEventListener(name);
+        if (JahiaContextLoaderListener.isRunning()) {
+            workflowProvider.unregisterTaskLifeCycleEventListener(name);
+        }
     }
 
     @SuppressWarnings("unchecked")

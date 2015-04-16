@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content.interceptor;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRStoreService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,7 +109,7 @@ public class PropertyInterceptorRegistrator implements InitializingBean, Disposa
     }
 
     public void destroy() throws Exception {
-        if (jcrStoreService != null && propertyInterceptor != null) {
+        if (JahiaContextLoaderListener.isRunning() && jcrStoreService != null && propertyInterceptor != null) {
             if (propertyInterceptor instanceof BaseInterceptor) {
                 logger.info("Unregistering property interceptor "
                         + propertyInterceptor.getClass().getName() + " for types "

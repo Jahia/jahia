@@ -72,6 +72,7 @@
 package org.jahia.services.uicomponents.bean.editmode;
 
 import org.jahia.ajax.gwt.client.widget.contentengine.ButtonItem;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.uicomponents.bean.contentmanager.ManagerConfiguration;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -172,6 +173,9 @@ public class EngineConfiguration implements Serializable , InitializingBean, Dis
     }
 
     public void destroy() throws Exception {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         if (parent instanceof List) {
             for (Object o : (List) parent) {
                 removeFromParent(o);

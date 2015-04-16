@@ -61,6 +61,7 @@
         <property name="priority" value="-3"/>
         <property name="description" value="portlet rendering"/>
         <property name="applyOnConfigurations" value="page"/>
+        <property name="renderOnAction" value="${jahia.portlets.renderingPolicy.renderOnAction:false}"/>
     </bean>
 
     <bean id="templateModuleInterceptorFilter" class="org.jahia.services.render.filter.TemplateModuleInterceptorFilter">

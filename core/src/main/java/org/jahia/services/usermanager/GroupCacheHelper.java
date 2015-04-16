@@ -108,7 +108,7 @@ public class GroupCacheHelper {
             if (path != null) {
                 return new Element(key, path);
             } else {
-                return new Element(key, null, 0, timeToLiveForEmptyPath);
+                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForEmptyPath);
             }
         }
     }
@@ -173,6 +173,9 @@ public class GroupCacheHelper {
 
     public String getGroupPath(String siteKey, String name) {
         final String value = (String) getGroupPathByGroupNameCache().get(new GroupPathByGroupNameCacheKey(siteKey, name)).getObjectValue();
+        if (value.equals(StringUtils.EMPTY)) {
+            return null;
+        }
         return value;
     }
 

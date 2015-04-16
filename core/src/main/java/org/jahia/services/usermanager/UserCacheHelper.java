@@ -100,7 +100,7 @@ public class UserCacheHelper {
             if (path != null) {
                 return new Element(key, path);
             } else {
-                return new Element(key, null, 0, timeToLiveForEmptyPath);
+                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForEmptyPath);
             }
         }
     }
@@ -161,6 +161,9 @@ public class UserCacheHelper {
         final String value = (String) getUserPathByUserNameCache().get(
                 new UserPathCacheKey(name, StringUtils.isEmpty(site) ? null : site))
                 .getObjectValue();
+        if (value.equals(StringUtils.EMPTY)) {
+            return null;
+        }
         return value;
     }
 

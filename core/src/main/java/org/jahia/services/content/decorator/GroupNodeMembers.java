@@ -3,7 +3,9 @@ package org.jahia.services.content.decorator;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.util.*;
 
 /**
@@ -152,7 +154,11 @@ public class GroupNodeMembers extends AbstractList<JCRNodeWrapper> {
                         if (node.isNodeType("jnt:members")) {
                             its.push(node.getNodes());
                         } else if (node.isNodeType("jnt:member")) {
-                            return (next = node.getProperty("j:member").getValue().getNode());
+                            try {
+                                return (next = node.getProperty("j:member").getValue().getNode());
+                            } catch (PathNotFoundException e) {
+                                // member node has no j:member property, skipping it
+                            }
                         }
                     } else if (!its.isEmpty()) {
                         its.pop();

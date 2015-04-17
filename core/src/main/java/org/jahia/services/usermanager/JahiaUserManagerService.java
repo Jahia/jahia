@@ -941,4 +941,27 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public void setCacheHelper(UserCacheHelper userPathCache) {
         this.cacheHelper = userPathCache;
     }
+
+    /**
+     * Performs the lookup of the user, detecting the type of the provided lookup key (either a JCR path, a user name or a legacy user key).
+     *
+     * @param lookupKey
+     *            the identifier to lookup the user (can be a JCR path, user name or legacy user key)
+     * @return the corresponding user node or null if no user can be found for the specified key
+     */
+    public JCRUserNode lookup(String lookupKey) {
+        JCRUserNode user = null;
+        char first = lookupKey.charAt(0);
+        if ('/' == first) {
+            // by path
+            user = lookupUserByPath(lookupKey);
+        } else if ('{' == first) {
+            // by legacy user key
+            user = lookupUser(StringUtils.substringAfter(lookupKey, "}"));
+        } else {
+            // by user name
+            user = lookupUser(lookupKey);
+        }
+        return user;
+    }
 }

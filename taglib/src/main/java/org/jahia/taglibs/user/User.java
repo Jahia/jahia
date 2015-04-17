@@ -147,7 +147,7 @@ public class User {
     }
 
     /**
-     * Looks up the user by the specified user key (with provider prefix) or username.
+     * Looks up the user by the specified user key (user node path) or username.
      *
      * @param user the key or the name of the user to perform lookup for
      * @return the user for the specified user key or name or <code>null</code> if the corresponding user cannot be found
@@ -157,9 +157,7 @@ public class User {
         if (user == null) {
             throw new IllegalArgumentException("Specified user key is null");
         }
-        return user.startsWith("/") ? ServicesRegistry.getInstance().getJahiaUserManagerService()
-                .lookupUserByPath(user) : ServicesRegistry.getInstance()
-                .getJahiaUserManagerService().lookupUser(user);
+        return ServicesRegistry.getInstance().getJahiaUserManagerService().lookup(user);
     }
 
     public static JCRUserNode lookupUser(String user, String site) throws IllegalArgumentException {

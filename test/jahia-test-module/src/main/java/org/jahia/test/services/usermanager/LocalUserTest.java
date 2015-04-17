@@ -89,8 +89,7 @@ import java.util.Collections;
 import java.util.Locale;
 import java.util.Properties;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * Local user tests
@@ -186,5 +185,31 @@ public class LocalUserTest {
                 return null;
             }
         });
+    }
+    
+    @Test
+    public void testLookup() {
+        JahiaUserManagerService userService = JahiaUserManagerService.getInstance();
+        
+        assertEquals("Lookup for global user by name failed", globalUser.getUserKey(),
+                userService.lookupUser(globalUser.getUsername()).getUserKey());
+        assertEquals("Lookup for global user by path failed", globalUser.getUserKey(),
+                userService.lookupUserByPath(globalUser.getUserKey()).getUserKey());
+        
+        assertEquals("Lookup for local user by path failed", localUser.getUserKey(),
+                userService.lookupUserByPath(localUser.getUserKey()).getUserKey());
+        assertEquals("Lookup for local user by name and site failed", localUser.getUserKey(),
+                userService.lookupUser(localUser.getUsername(), localUser.getRealm()).getUserKey());
+        
+        // Detect the lookup type
+        // by path
+        assertEquals("Lookup for global user by path failed", globalUser.getUserKey(),
+                userService.lookup(globalUser.getUserKey()).getUserKey());
+        // by name
+        assertEquals("Lookup for global user by name failed", globalUser.getUserKey(),
+                userService.lookup(globalUser.getUsername()).getUserKey());
+        // by legacy user key 
+        assertEquals("Lookup for global user by name failed", globalUser.getUserKey(),
+                userService.lookup("{jcr}" + globalUser.getUsername()).getUserKey());
     }
 }

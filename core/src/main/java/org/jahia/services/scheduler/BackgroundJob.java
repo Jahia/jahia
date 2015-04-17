@@ -79,7 +79,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.LanguageCodeConverters;
@@ -151,7 +150,7 @@ public abstract class BackgroundJob implements StatefulJob {
         try {
         	String userKey = data.getString(JOB_USERKEY);
         	if (userKey != null && !userKey.equals(JahiaLoginModule.SYSTEM)) {
-                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookupUserByPath(userKey);
+                JCRUserNode userNode = JahiaUserManagerService.getInstance().lookup(userKey);
                 if (userNode != null) {
                     sessionFactory.setCurrentUser(userNode.getJahiaUser());
 	            	logger.debug("Executing job as user {}", userKey);

@@ -81,6 +81,7 @@ import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.FileUploader;
+import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
 import java.util.Arrays;
@@ -133,7 +134,9 @@ public class RenameActionItem extends NodeTypeAwareBaseActionItem {
                                 linker.loaded();
                                 Map<String, Object> data = new HashMap<String, Object>();
                                 data.put("node", node);
-                                data.put(Linker.REFRESH_ALL,true);
+                                if (linker instanceof ManagerLinker) {
+                                    data.put(Linker.REFRESH_ALL,true);
+                                }
                                 linker.refresh(data);
                             }
                         });

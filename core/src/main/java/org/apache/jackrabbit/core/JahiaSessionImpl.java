@@ -76,9 +76,11 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.apache.jackrabbit.core.security.authentication.AuthContext;
 
 import javax.jcr.AccessDeniedException;
+import javax.jcr.Item;
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -144,5 +146,17 @@ public class JahiaSessionImpl extends XASessionImpl {
         if (jahiaAttributes.containsKey("isAliasedUser") && (Boolean) jahiaAttributes.get("isAliasedUser")) {
             accessManager.setAliased(true);
         }
+    }
+    
+    /**
+     * Forces the removal of the node or property, skipping various checks, like constraints etc.
+     * 
+     * @param itemToRemove
+     *            the item to be removed
+     * @throws RepositoryException
+     *             in case of a remove operation failure
+     */
+    public void removeItemForce(Item itemToRemove) throws RepositoryException {
+        new ItemRemoveOperation((ItemImpl) itemToRemove, false).perform(this.context);
     }
 }

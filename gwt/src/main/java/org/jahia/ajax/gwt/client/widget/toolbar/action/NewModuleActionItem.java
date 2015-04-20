@@ -75,6 +75,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 
@@ -186,7 +187,11 @@ public class NewModuleActionItem extends BaseActionItem {
 
                             public void onApplicationFailure(Throwable caught) {
                                 linker.loaded();
-                                Info.display(Messages.get("label.error", "Error"), caught.getLocalizedMessage());
+                                final InfoConfig config = new InfoConfig(Messages.get("label.error", "Error"), caught.getLocalizedMessage());
+                                config.display = 5000;
+                                config.height = 100;
+                                config.width = 250;
+                                Info.display(config);
                             }
                         });
                     } else {

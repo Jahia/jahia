@@ -143,7 +143,7 @@ public class NodeVersionHistoryListener extends DefaultEventListener {
                 ids.size(), site);
 
         try {
-            schedulerService.scheduleJobNow(jobDetail);
+            schedulerService.scheduleJobAtEndOfRequest(jobDetail);
         } catch (SchedulerException e) {
             logger.error(e.getMessage(), e);
         }

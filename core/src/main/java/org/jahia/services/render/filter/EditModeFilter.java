@@ -85,6 +85,7 @@ import org.jahia.utils.StringResponseWrapper;
 
 import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -159,5 +160,18 @@ public class EditModeFilter extends AbstractFilter {
 
     public void setBlockableModes(String blockableModes) {
         this.blockableModes = Arrays.asList(Patterns.COMMA.split(blockableModes));
+    }
+
+    @Override
+    public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
+        try {
+            StringResponseWrapper wrapper = new StringResponseWrapper(renderContext.getResponse());
+            final HttpServletRequest request = renderContext.getRequest();
+            request.setAttribute("org.jahia.exception", e);
+            request.getRequestDispatcher("/errors/error.jsp").forward(request, wrapper);
+            return wrapper.getString();
+        } catch (Exception ex) {
+            return null;
+        }
     }
 }

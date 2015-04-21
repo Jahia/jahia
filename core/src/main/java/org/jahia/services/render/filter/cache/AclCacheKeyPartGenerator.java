@@ -414,7 +414,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                 grantedPath = StringUtils.substringBeforeLast(grantedPath, "/");
                                 if (mapGranted.containsKey(grantedPath)) {
                                     Collection<String> intersection = CollectionUtils.intersection(mapGranted.get(grantedPath), mapDenied.get(deniedPath));
-                                    mapGranted.get(grantedPath).removeAll(intersection);
                                     for (String s : intersection) {
                                         mapGranted.get(grantedPath).add(s + " -> " + deniedPath);
                                     }

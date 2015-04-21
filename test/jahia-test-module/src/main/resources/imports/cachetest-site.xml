@@ -940,6 +940,143 @@
                               jcr:uuid="b1d4e1ed-b0cf-4f68-99c4-db61d47a3595"/>
         </maincontent>
     </peruser>
+    <user-per-content-test changefreq="monthly"
+                           j:originWS="default"
+                           j:templateName="simple"
+                           jcr:created="2015-04-21T22:16:04.657+02:00"
+                           jcr:createdBy="root"
+                           jcr:lastModified="2015-04-21T22:17:19.619+02:00"
+                           jcr:lastModifiedBy="root"
+                           jcr:mixinTypes="jmix:accessControlled jmix:sitemap"
+                           jcr:primaryType="jnt:page"
+                           priority="0.5">
+        <j:translation_en jcr:language="en"
+                         jcr:lastModified="2015-04-21T22:16:04.707+02:00"
+                         jcr:lastModifiedBy="root"
+                         jcr:primaryType="jnt:translation"
+                         jcr:title="User per content test"/>
+        <maincontent j:originWS="default"
+                    jcr:created="2015-04-21T22:16:08.701+02:00"
+                    jcr:createdBy="root"
+                    jcr:lastModified="2015-04-21T22:16:08.741+02:00"
+                    jcr:lastModifiedBy="root"
+                    jcr:primaryType="jnt:contentList">
+            <simple-text-1 j:lastPublished="2015-04-21T13:30:51.784+02:00"
+                         j:lastPublishedBy="root"
+                         j:originWS="default"
+                         jcr:created="2015-04-21T22:16:19.813+02:00"
+                         jcr:createdBy="root"
+                         jcr:lastModified="2015-04-21T22:16:19.853+02:00"
+                         jcr:lastModifiedBy="root"
+                         jcr:mixinTypes="jmix:accessControlled"
+                         jcr:primaryType="jnt:text">
+                <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+                    <DENY_u_user2 j:aceType="DENY"
+                              j:principal="u:user2"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                    <DENY_u_user3 j:aceType="DENY"
+                              j:principal="u:user3"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                </j:acl>
+                <j:translation_en j:lastPublished="2015-04-21T13:30:51.784+02:00"
+                               j:lastPublishedBy="root"
+                               jcr:language="en"
+                               jcr:lastModified="2015-04-21T22:16:19.853+02:00"
+                               jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:translation"
+                               text="content for user1"/>
+            </simple-text-1>
+            <simple-text-2 j:lastPublished="2015-04-21T13:30:40.473+02:00"
+                         j:lastPublishedBy="root"
+                         j:originWS="default"
+                         jcr:created="2015-04-21T22:16:19.873+02:00"
+                         jcr:createdBy="root"
+                         jcr:lastModified="2015-04-21T22:16:19.903+02:00"
+                         jcr:lastModifiedBy="root"
+                         jcr:mixinTypes="jmix:accessControlled"
+                         jcr:primaryType="jnt:text">
+                <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+                    <DENY_u_user1 j:aceType="DENY"
+                              j:principal="u:user1"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                    <DENY_u_user3 j:aceType="DENY"
+                              j:principal="u:user3"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                </j:acl>
+                <j:translation_en j:lastPublished="2015-04-21T13:30:40.473+02:00"
+                               j:lastPublishedBy="root"
+                               jcr:language="en"
+                               jcr:lastModified="2015-04-21T22:16:19.903+02:00"
+                               jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:translation"
+                               text="content for user2"/>
+            </simple-text-2>
+            <simple-text-3 j:lastPublished="2015-04-21T13:30:28.802+02:00"
+                         j:lastPublishedBy="root"
+                         j:originWS="default"
+                         jcr:created="2015-04-21T22:16:19.923+02:00"
+                         jcr:createdBy="root"
+                         jcr:lastModified="2015-04-21T22:16:19.953+02:00"
+                         jcr:lastModifiedBy="root"
+                         jcr:mixinTypes="jmix:accessControlled"
+                         jcr:primaryType="jnt:text">
+                <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+                    <DENY_u_user1 j:aceType="DENY"
+                              j:principal="u:user1"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                    <DENY_u_user2 j:aceType="DENY"
+                              j:principal="u:user2"
+                              j:protected="false"
+                              j:roles="reader"
+                              jcr:primaryType="jnt:ace"/>
+                </j:acl>
+                <j:translation_en j:lastPublished="2015-04-21T13:30:28.802+02:00"
+                               j:lastPublishedBy="root"
+                               jcr:language="en"
+                               jcr:lastModified="2015-04-21T22:16:19.953+02:00"
+                               jcr:lastModifiedBy="root"
+                               jcr:primaryType="jnt:translation"
+                               text="content for user3"/>
+            </simple-text-3>
+        </maincontent>
+        <j:acl j:inherit="true" jcr:primaryType="jnt:acl">
+            <DENY_u_guest j:aceType="DENY"
+                        j:principal="u:guest"
+                        j:protected="false"
+                        j:roles="reader"
+                        jcr:primaryType="jnt:ace"/>
+            <DENY_g_users j:aceType="DENY"
+                        j:principal="g:users"
+                        j:protected="false"
+                        j:roles="reader"
+                        jcr:primaryType="jnt:ace"/>
+            <GRANT_u_user1 j:aceType="GRANT"
+                         j:principal="u:user1"
+                         j:protected="false"
+                         j:roles="reader"
+                         jcr:primaryType="jnt:ace"/>
+            <GRANT_u_user2 j:aceType="GRANT"
+                         j:principal="u:user2"
+                         j:protected="false"
+                         j:roles="reader"
+                         jcr:primaryType="jnt:ace"/>
+            <GRANT_u_user3 j:aceType="GRANT"
+                         j:principal="u:user3"
+                         j:protected="false"
+                         j:roles="reader"
+                         jcr:primaryType="jnt:ace"/>
+        </j:acl>
+    </user-per-content-test>
     <references changefreq="monthly"
                 j:lastPublished="2013-06-24T13:04:30.655+02:00"
                 j:lastPublishedBy="root"

@@ -74,6 +74,7 @@ package org.jahia.test.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -102,6 +103,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -133,6 +135,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             final JCRUserNode userAB = userManagerProvider.createUser("userAB", "password", new Properties(), session);
             final JCRUserNode userAC = userManagerProvider.createUser("userAC", "password", new Properties(), session);
             final JCRUserNode userBC = userManagerProvider.createUser("userBC", "password", new Properties(), session);
+            userManagerProvider.createUser("user1", "password", new Properties(), session);
+            userManagerProvider.createUser("user2", "password", new Properties(), session);
+            userManagerProvider.createUser("user3", "password", new Properties(), session);
 
             // Create three groups
             final JahiaGroupManagerService groupManagerProvider = JahiaGroupManagerService.getInstance();
@@ -171,6 +176,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAB").getPath(), session);
             userManagerProvider.deleteUser(userManagerProvider.lookupUser("userAC").getPath(), session);
             userManagerProvider.deleteUser(userManagerProvider.lookupUser("userBC").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user1").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user2").getPath(), session);
+            userManagerProvider.deleteUser(userManagerProvider.lookupUser("user3").getPath(), session);
             session.save();
         } catch (Exception e) {
             logger.warn("Exception during test tearDown", e);
@@ -428,6 +436,16 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             checkCacheContent(cache, cacheCopy, toFlush);
         }
     }
+    
+    @Test
+    public void testACLsUserPerContent() throws Exception {
+        // test for https://jira.jahia.org/browse/QA-7383
+        String path = SITECONTENT_ROOT_NODE + "/home/user-per-content-test";
+        assertTrue("Wrong content for user1", getContent(getUrl(path), "user1", "password", "testACLs11").contains("content for user1"));
+        assertTrue("Wrong content for user2", getContent(getUrl(path), "user2", "password", "testACLs12").contains("content for user2"));
+        assertTrue("Wrong content for user3", getContent(getUrl(path), "user3", "password", "testACLs13").contains("content for user3"));
+    }
+    
 
     private void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
         List<String> keysNow = cache.getKeys();

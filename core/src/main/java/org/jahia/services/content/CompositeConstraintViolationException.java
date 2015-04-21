@@ -78,7 +78,7 @@ import java.util.List;
 
 public class CompositeConstraintViolationException extends ConstraintViolationException {
     private static final long serialVersionUID = 2406482282092956625L;
-    private List<ConstraintViolationException> errors = new ArrayList<ConstraintViolationException>();
+    private List<ConstraintViolationException> errors = new ArrayList<>();
 
     public CompositeConstraintViolationException() {
     }
@@ -89,10 +89,9 @@ public class CompositeConstraintViolationException extends ConstraintViolationEx
 
     @Override
     public String getMessage() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder(512);
         for (ConstraintViolationException error : errors) {
-            sb.append(error.getMessage());
-            sb.append("\n");
+            sb.append(error.getMessage()).append('\n');
         }
         return sb.toString();
     }

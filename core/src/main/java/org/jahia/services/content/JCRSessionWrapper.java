@@ -71,39 +71,6 @@
  */
 package org.jahia.services.content;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.security.AccessControlException;
-import java.util.*;
-import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.concurrent.atomic.AtomicLong;
-import javax.jcr.*;
-import javax.jcr.lock.LockException;
-import javax.jcr.lock.LockManager;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.retention.RetentionManager;
-import javax.jcr.security.AccessControlManager;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionException;
-import javax.jcr.version.VersionHistory;
-import javax.jcr.version.VersionManager;
-import javax.validation.ConstraintViolation;
-import javax.validation.groups.Default;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactoryConfigurationError;
-import javax.xml.transform.sax.SAXTransformerFactory;
-import javax.xml.transform.sax.TransformerHandler;
-import javax.xml.transform.stream.StreamResult;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
@@ -131,6 +98,39 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
+
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.lock.LockManager;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.retention.RetentionManager;
+import javax.jcr.security.AccessControlManager;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionException;
+import javax.jcr.version.VersionHistory;
+import javax.jcr.version.VersionManager;
+import javax.validation.ConstraintViolation;
+import javax.validation.groups.Default;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.sax.SAXTransformerFactory;
+import javax.xml.transform.sax.TransformerHandler;
+import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.AccessControlException;
+import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Jahia specific wrapper around <code>javax.jcr.Session</code> to be able to inject
@@ -609,11 +609,7 @@ public class JCRSessionWrapper implements Session {
                         }
                         
                         constraintViolations.addAll(validate);
-                    } catch (InstantiationException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (IllegalAccessException e) {
-                        logger.error(e.getMessage(), e);
-                    } catch (InvocationTargetException e) {
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
                         logger.error(e.getMessage(), e);
                     }
                 }

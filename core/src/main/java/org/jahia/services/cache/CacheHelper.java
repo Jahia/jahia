@@ -430,13 +430,13 @@ public final class CacheHelper {
     }
 
     /**
-     * Returns a value of the specified cache element (by key), considering also classloader-aware desirialization if required.
+     * Returns a value of the specified cache element (by key), considering also classloader-aware deserialization if required.
      * 
      * @param cache
      *            the target cache
      * @param key
      *            the element key
-     * @return a value of the specified cache element (by key), considering also classloader-aware desirialization if required
+     * @return a value of the specified cache element (by key), considering also classloader-aware deserialization if required
      */
     public static Object getObjectValue(Ehcache cache, String key) {
         return getObjectValue(cache.get(key));

@@ -78,10 +78,12 @@ import org.jahia.utils.ClassLoaderUtils;
 import org.jahia.utils.ClassLoaderUtils.Callback;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.junit.internal.requests.FilterRequest;
+import org.junit.internal.runners.ErrorReportingRunner;
 import org.junit.runner.Description;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.Request;
 import org.junit.runner.Result;
+import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -242,7 +244,7 @@ public class TestServlet extends BaseTestController {
                     logger.info("Executing test classes {}", classes.toArray());
                     long start = System.currentTimeMillis();
                     final Set<String> ignoreTests = getIgnoreTests();
-                    junitcore.run(new FilterRequest(Request.classes(classes
+                    Runner runner = new FilterRequest(Request.classes(classes
                             .toArray(new Class[classes.size()])), new Filter() {
     
                         @Override
@@ -254,9 +256,16 @@ public class TestServlet extends BaseTestController {
                         public String describe() {
                             return "Filter out Jahia configured methods";
                         }
-                    }));
-                    logger.info("Done executing test classes {} in {} ms", classes.toArray(),
-                            System.currentTimeMillis() - start);
+                    }).getRunner();
+                    
+                    if (runner instanceof ErrorReportingRunner) {
+                        logger.warn("No tests remain after applying ignoreTests filter {} in {}", ignoreTests,
+                                classes.toArray());
+                    } else {
+                        junitcore.run(runner);
+                        logger.info("Done executing test classes {} in {} ms", classes.toArray(),
+                                System.currentTimeMillis() - start);                        
+                    }
                 }
             }
         } catch (Exception e) {

@@ -85,6 +85,7 @@ import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.notification.HttpClientService;
@@ -289,7 +290,7 @@ public class ModuleHelper {
             return null;
         }
 
-        JCRNodeWrapper privateFolder = navigation.getUserPrivateFilesFolder(session);
+        JCRNodeWrapper privateFolder = JCRContentUtils.getInstance().getUserPrivateFilesFolder(session);
 
         if (!privateFolder.hasNode("modules")) {
             session.checkout(privateFolder);

@@ -97,7 +97,6 @@ import org.springframework.util.CollectionUtils;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.*;
 
 /**
@@ -115,8 +114,6 @@ public class NavigationHelper {
     
     private NodeHelper nodeHelper;
 
-    private Map<String,String> defaultUserFolderTypes;
-
 
     public void setIgnoreInUsages(Set<String> ignoreInUsages) {
         this.ignoreInUsages = ignoreInUsages;
@@ -124,10 +121,6 @@ public class NavigationHelper {
 
     public void setNodeHelper(NodeHelper nodeHelper) {
         this.nodeHelper = nodeHelper;
-    }
-
-    public void setDefaultUserFolderTypes(Map<String, String> defaultUserFolderTypes) {
-        this.defaultUserFolderTypes = defaultUserFolderTypes;
     }
 
     /**
@@ -467,10 +460,8 @@ public class NavigationHelper {
                 });
             }
             if (path.contains("$user")) {
-                final JCRNodeWrapper userFolder = getDefaultUserFolder(currentUserSession, StringUtils.substringAfter(path, "$user"));
-                if (userFolder.isNew()) {
-                    currentUserSession.save();
-                }
+                final JCRNodeWrapper userFolder = JCRContentUtils.getInstance().getDefaultUserFolder(currentUserSession, StringUtils.substringAfter(path, "$user"));
+
                 path = userFolder.getPath();
                 displayName = Messages.getInternal("label.personalFolder", uiLocale, "label.personalFolder");
             }
@@ -496,34 +487,6 @@ public class NavigationHelper {
     }
 
     /**
-     * Returns the /files/private folder for the current session user, creating it if it does not exist yet.
-     * 
-     * @param session
-     *            current JCR session
-     * @return the JCR node, which corresponds to the /files/private folder for the current user
-     * @throws RepositoryException
-     *             in case of an error
-     */
-    public JCRNodeWrapper getUserPrivateFilesFolder(JCRSessionWrapper session) throws RepositoryException {
-        JCRNodeWrapper privateFilesFolder = getDefaultUserFolder(session, "/files/private");
-        if (privateFilesFolder.isNew()) {
-            privateFilesFolder.grantRoles("u:" + session.getUser().getName(), Collections.singleton("owner"));
-            privateFilesFolder.setAclInheritanceBreak(true);
-            session.save();
-        }
-
-        return privateFilesFolder;
-    }
-    
-    public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path) throws RepositoryException {
-        if (!session.itemExists(session.getUserNode().getPath() + path)) {
-            final String name = StringUtils.substringAfterLast(path, "/");
-            return getDefaultUserFolder(session, StringUtils.substringBeforeLast(path, "/")).addNode(name,defaultUserFolderTypes.get(path));
-        }
-        return session.getNode(session.getUserNode().getPath() + path);
-    }
-
-    /**
      * Return a node if existing exception otherwise
      *
      *
@@ -538,8 +501,7 @@ public class NavigationHelper {
         try {
             return getGWTJahiaNode(currentUserSession.getNode(path), fields, uiLocale);
         } catch (RepositoryException e) {
-            throw new GWTJahiaServiceException(
-                    new StringBuilder(path).append(Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale)).append(e.toString()).toString());
+            throw new GWTJahiaServiceException(path + Messages.getInternal("label.gwt.error.could.not.be.accessed", uiLocale) + e);
         }
     }
 

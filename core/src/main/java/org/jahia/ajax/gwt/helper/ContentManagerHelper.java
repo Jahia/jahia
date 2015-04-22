@@ -685,7 +685,7 @@ public class ContentManagerHelper {
             if (results.isSuccessful()) {
                 try {
                     // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = navigation.getUserPrivateFilesFolder(session);
+                    JCRNodeWrapper privateFilesFolder = JCRContentUtils.getInstance().getUserPrivateFilesFolder(session);
                     String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);

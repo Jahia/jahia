@@ -121,6 +121,14 @@
             </map>
         </constructor-arg>
         <constructor-arg index="1" ref="fileExtensionIcons"/>
+        <constructor-arg index="2">
+            <map>
+                <entry key="/contents" value="jnt:contentFolder"/>
+                <entry key="/files" value="jnt:folder"/>
+                <entry key="/files/private" value="jnt:folder"/>
+                <entry key="/portlets" value="jnt:portletFolder"/>
+            </map>
+        </constructor-arg>
         
         <property name="nameGenerationHelper">
             <bean id="defaultNameGenerationHelper" class="org.jahia.services.content.DefaultNameGenerationHelperImpl">

@@ -71,28 +71,6 @@
  */
 package org.jahia.services.content;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-import javax.jcr.*;
-import javax.jcr.nodetype.ItemDefinition;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.Query;
-import javax.servlet.ServletContext;
-
 import com.google.common.collect.ImmutableSet;
 import com.ibm.icu.text.Normalizer;
 import org.apache.commons.collections.map.UnmodifiableMap;
@@ -108,11 +86,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.decorator.JCRComponentNode;
-import org.jahia.services.content.decorator.JCRFileNode;
-import org.jahia.services.content.decorator.JCRGroupNode;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.content.decorator.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -130,6 +104,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.*;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.servlet.ServletContext;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Pattern;
 
 import static org.jahia.api.Constants.*;
 
@@ -1493,9 +1477,11 @@ public final class JCRContentUtils implements ServletContextAware {
                 .unescapeIllegalJcrChars(encodedLocalName) : encodedLocalName;
     }
 
-    private Map<String, String> fileExtensionIcons;
+    private final Map<String, String> fileExtensionIcons;
 
-    private Map<String, List<String>> mimeTypes;
+    private final Map<String, List<String>> mimeTypes;
+
+    private final Map<String, String> defaultUserFolderTypes;
 
     private NameGenerationHelper nameGenerationHelper;
 
@@ -1512,11 +1498,12 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param fileExtensionIcons mapping between file extensions and corresponding icons
      */
     @SuppressWarnings("unchecked")
-    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons) {
+    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons, Map<String, String> defaultUserFolderTypes) {
         super();
         instance = this;
         this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
         this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
+        this.defaultUserFolderTypes = UnmodifiableMap.decorate(defaultUserFolderTypes);
     }
 
     /**
@@ -1755,5 +1742,68 @@ public final class JCRContentUtils implements ServletContextAware {
 
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    /**
+     * Returns the /files/private folder for the current session user, creating it if it does not exist yet.
+     *
+     * @param session current JCR session
+     * @return the JCR node, which corresponds to the /files/private folder for the current user
+     * @throws RepositoryException in case of an error
+     */
+    public JCRNodeWrapper getUserPrivateFilesFolder(JCRSessionWrapper session) throws RepositoryException {
+        JCRNodeWrapper privateFilesFolder = getDefaultUserFolder(session, "/files/private", false);
+        if (privateFilesFolder.isNew()) {
+            privateFilesFolder.grantRoles("u:" + session.getUser().getName(), Collections.singleton("owner"));
+            privateFilesFolder.setAclInheritanceBreak(true);
+            session.save();
+        }
+
+        return privateFilesFolder;
+    }
+
+    public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path) throws RepositoryException {
+        return getDefaultUserFolder(session, path, true);
+    }
+
+    /**
+     * Retrieves the default user folder found at the specified path, creating it (and all intermediate folders) if needed, saving the session if requested.
+     * @param session the session with which to access the JCR data
+     * @param path the path of the default user folder to retrieve, if path is empty or <code>null</code> the user's node is returned
+     * @param saveIfCreate <code>true</code> if we want the session to be immediately saved, <code>false</code> if the client code will save the session to commit the changes
+     * @return the JCR node associated with the requested default user folder
+     * @throws RepositoryException
+     */
+    public JCRNodeWrapper getDefaultUserFolder(JCRSessionWrapper session, String path, boolean saveIfCreate) throws RepositoryException {
+        // if path is null or empty, return the user's node
+        if(StringUtils.isEmpty(path)) {
+            return session.getUserNode();
+        }
+
+        // make it possible to use relative paths without '/' prefix
+        if(!path.startsWith("/")) {
+            path = "/" + path;
+        }
+
+        // first check that we know this default user folder
+        final String primaryNodeTypeName = defaultUserFolderTypes.get(path);
+        if(primaryNodeTypeName == null) {
+            throw new IllegalArgumentException("Unknown default user folder: " + path + ". Known default user folders are: " + defaultUserFolderTypes);
+        }
+
+        final String userPath = session.getUserNode().getPath();
+        if (!session.itemExists(userPath + path)) {
+            final String name = StringUtils.substringAfterLast(path, "/");
+            final JCRNodeWrapper parentUserFolder = getDefaultUserFolder(session, StringUtils.substringBeforeLast(path, "/"), false);
+            final JCRNodeWrapper userFolder = parentUserFolder.addNode(name, primaryNodeTypeName);
+
+            if(saveIfCreate) {
+                session.save();
+            }
+
+            return userFolder;
+        }
+
+        return session.getNode(userPath + path);
     }
 }

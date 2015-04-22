@@ -385,13 +385,13 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
         NodeIterator nodes = q.execute().getNodes();
+        Set<String> skipped = new HashSet<>(Arrays.asList("long", "error", "user-per-content-test"));
         while (nodes.hasNext()) {
             JCRNodeWrapper next = (JCRNodeWrapper) nodes.next();
-            if (!next.getName().equals("long") && !next.getName().equals("error")) {
+            if (!skipped.contains(next.getName())) {
                 paths.add(next.getPath());
             }
         }
-
         List<String> users = Arrays.asList("userAB", "userAC", "userBC");
         Map<String, String> m = new HashMap<String, String>();
         for (String user : users) {

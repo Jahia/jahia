@@ -71,10 +71,6 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
-import java.io.IOException;
-import java.net.URL;
-import java.util.List;
-
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
@@ -89,6 +85,11 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
 /**
  * A bundle observer for Jahia Modules. Used by the BundleWatcher defined in the activator.
@@ -124,9 +125,7 @@ public class CndBundleObserver implements BundleObserver<URL> {
                     jcrStoreService.deployDefinitions(bundle.getSymbolicName());
                 }
                 logger.info("Registered definitions from file {} for bundle {}", url, bundleName);
-            } catch (IOException e) {
-                logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);
-            } catch (ParseException e) {
+            } catch (IOException | ParseException | RepositoryException e) {
                 logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);
             }
         }

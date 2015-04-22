@@ -271,7 +271,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return w;
     }
 
-    public void deployDefinitions(String systemId) {
+    public void deployDefinitions(String systemId) throws RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
                 provider.deployDefinitions(systemId);

@@ -71,35 +71,6 @@
  */
 package org.jahia.services.content;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.rmi.Naming;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Set;
-import javax.jcr.*;
-import javax.jcr.nodetype.PropertyDefinition;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.ObservationManager;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.naming.Reference;
-import javax.naming.StringRefAddr;
-import javax.naming.spi.ObjectFactory;
-import javax.servlet.ServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.JahiaQueryObjectModelImpl;
 import org.apache.jackrabbit.core.query.lucene.JahiaLuceneQueryFactoryImpl;
@@ -129,6 +100,27 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.PropertyDefinition;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.ObservationManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.naming.Reference;
+import javax.naming.StringRefAddr;
+import javax.naming.spi.ObjectFactory;
+import javax.servlet.ServletRequest;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
+import java.lang.reflect.Constructor;
+import java.rmi.Naming;
+import java.util.*;
+import java.util.Map.Entry;
 
 import static org.apache.jackrabbit.core.security.JahiaLoginModule.GUEST;
 import static org.apache.jackrabbit.core.security.JahiaLoginModule.SYSTEM;
@@ -635,7 +627,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return false;
     }
 
-    public void deployDefinitions(String systemId) {
+    public void deployDefinitions(String systemId) throws RepositoryException {
         try {
             if (deployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
                 NodeTypeRegistry.getInstance().saveProperties();
@@ -645,7 +637,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    private boolean deployDefinitions(String systemId, Properties p) {
+    private boolean deployDefinitions(String systemId, Properties p) throws IOException, RepositoryException {
         List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
         boolean needUpdate = false;
         for (Resource file : files) {
@@ -681,6 +673,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                         registerCustomNodeTypes(systemId, workspace);
                     } catch (RepositoryException e) {
                         logger.error("Cannot register nodetypes", e);
+                        throw e;
                     }
                     session.save();
                 } finally {
@@ -688,6 +681,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 }
             } catch (Exception e) {
                 logger.error("Repository init error", e);
+                throw e;
             }
         }
         return needUpdate;

@@ -72,43 +72,34 @@
 package org.jahia.portlets;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.pluto.container.*;
 import org.apache.pluto.container.driver.*;
 import org.apache.pluto.container.om.portlet.PortletDefinition;
+import org.apache.pluto.driver.container.InitParameterApplicationIdResolver;
+import org.jahia.bin.Jahia;
+import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
+import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 
+import javax.portlet.*;
+import javax.servlet.*;
 import javax.servlet.descriptor.JspConfigDescriptor;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
- * 
  * User: jahia
  * Date: 9 juin 2009
  * Time: 16:25:27
- * 
  */
-
-import java.io.InputStream;
-import java.io.File;
-import java.util.*;
-import java.net.URL;
-import java.net.MalformedURLException;
-
-import javax.portlet.*;
-import javax.servlet.*;
-
-import org.apache.pluto.container.FilterManager;
-import org.apache.pluto.container.PortletInvokerService;
-import org.apache.pluto.container.PortletRequestContext;
-import org.apache.pluto.container.PortletResponseContext;
-import org.apache.pluto.container.PortletWindow;
-import org.apache.pluto.driver.container.InitParameterApplicationIdResolver;
-import org.jahia.bin.Jahia;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
-import org.jahia.services.applications.pluto.JahiaPortalServletRequest;
 
 /**
  * Portlet Invocation Servlet. This servlet receives cross context requests from
@@ -265,9 +256,7 @@ public class PortletServlet extends HttpServlet {
                         try {
                             NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), null);
                             JCRStoreService.getInstance().deployDefinitions(portletConfig.getPortletName());
-                        } catch (ParseException e) {
-                            logger.error(e.getMessage(), e);
-                        } catch (IOException e) {
+                        } catch (ParseException | IOException e) {
                             logger.error(e.getMessage(), e);
                         }
                     }

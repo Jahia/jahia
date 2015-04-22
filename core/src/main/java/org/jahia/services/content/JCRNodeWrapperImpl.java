@@ -2644,8 +2644,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     private List<String> getLockInfos(Node node) throws RepositoryException {
         List<String> r = new ArrayList<String>();
-        if (node.hasProperty("j:lockTypes")) {
-            Value[] values = node.getProperty("j:lockTypes").getValues();
+        Value[] values = null;
+        try {
+            values = node.getProperty("j:lockTypes").getValues();
+        } catch (PathNotFoundException e) {
+            // no j:lockTypes property found -> skipping
+        }
+        if (values != null) {
             for (Value value : values) {
                 if (!r.contains(value.getString())) {
                     r.add(value.getString());

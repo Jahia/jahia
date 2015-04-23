@@ -71,18 +71,17 @@
  */
 package org.jahia.services.content;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * External listener for the creation and deletion of a mount point nodes on other DF nodes to be able to mount/unmount the provider
@@ -156,7 +155,7 @@ public class MountPointListener extends DefaultEventListener implements External
                         if (!provider.isAvailable(true)) {
                             logger.warn("Issue while trying to mount an external provider ({}) upon startup,"
                                             + " all references to file coming from this mount won't be"
-                                            + " available until it is fixed. If you migrating from Jahia 6.6 this"
+                                            + " available until it is fixed. If you are migrating from Jahia 6.6 this"
                                             + " might be normal until the migration scripts have been completed.",
                                     mountPointTarget.getPath());
                             mountPoint.setMountStatus(JCRMountPointNode.MountStatus.waiting);

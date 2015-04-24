@@ -107,6 +107,7 @@
         <property name="template" value="/WEB-INF/scripts/resources.groovy"/>
         <property name="aggregateAndCompress" value="${aggregateAndCompressAssets:true}"/>
         <property name="excludesFromAggregateAndCompress" ref="excludesFromAggregateAndCompress"/>
+        <property name="forceLiveIEcompatiblity" value="false"/>
         <property name="ieHeaderRecognitions">
             <set>
                 <value>msie</value>

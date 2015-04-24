@@ -213,7 +213,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private Set<String> ieHeaderRecognitions = new HashSet<String>();
     private String ieCompatibilityContent = "IE=8";
+<<<<<<< .working
 
+=======
+    private Boolean forceLiveIEcompatiblity;
+
+>>>>>>> .merge-right.r52507
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
@@ -494,7 +499,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
-        if (!renderContext.isEditMode()) {
+
+        if (forceLiveIEcompatiblity!=null && !forceLiveIEcompatiblity && !renderContext.isEditMode()) {
             return false;
         }
         String header = renderContext.getRequest().getHeader("user-agent");
@@ -872,6 +878,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.ieCompatibilityContent = ieCompatibilityContent;
     }
 
+<<<<<<< .working
     public void setCkeditorJavaScript(String ckeditorJavaScript) {
         this.ckeditorJavaScript = ckeditorJavaScript;
     }
@@ -879,4 +886,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void setAddLastModifiedDate(boolean addLastModifiedDate) {
         this.addLastModifiedDate = addLastModifiedDate;
     }
+=======
+    public void setForceLiveIEcompatiblity(Boolean forceLiveIEcompatiblity) {
+            this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
+    }
+
+    public Boolean getForceLiveIEcompatiblity() {
+        return forceLiveIEcompatiblity;
+    }
+
+>>>>>>> .merge-right.r52507
 }

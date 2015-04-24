@@ -294,7 +294,7 @@ public class VersionViewer extends ContentPanel {
      */
     private void load() {
         if (uuid != null) {
-            mask(Messages.get("label.loading", "Loading") + "...", "x-mask-loading");
+            mask(Messages.get("label.loading", "Loading"), "x-mask-loading");
             // version is not specified. Current.
             contentService.getNodeURLByIdentifier(null, uuid, previousValue[0], null, workspace, locale,
                     new BaseAsyncCallback<String>() {

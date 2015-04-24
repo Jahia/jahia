@@ -257,7 +257,7 @@ public class GWTJahiaNodeTreeFactory {
 
         @Override
         public void loaderBeforeLoad(LoadEvent le) {
-            grid.mask(Messages.get("label.loading", "Loading") + "...", "x-mask-loading");
+            grid.mask(Messages.get("label.loading", "Loading"), "x-mask-loading");
         }
 
         @Override

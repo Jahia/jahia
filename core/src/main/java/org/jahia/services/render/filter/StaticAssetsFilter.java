@@ -874,7 +874,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.ieCompatibilityContent = ieCompatibilityContent;
     }
 
-<<<<<<< .working
     public void setCkeditorJavaScript(String ckeditorJavaScript) {
         this.ckeditorJavaScript = ckeditorJavaScript;
     }
@@ -882,7 +881,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     public void setAddLastModifiedDate(boolean addLastModifiedDate) {
         this.addLastModifiedDate = addLastModifiedDate;
     }
-=======
+
     public void setForceLiveIEcompatiblity(Boolean forceLiveIEcompatiblity) {
             this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
     }
@@ -891,5 +890,4 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return forceLiveIEcompatiblity;
     }
 
->>>>>>> .merge-right.r52507
 }

@@ -138,6 +138,9 @@ public class FileCacheListener extends DefaultEventListener {
                     parentPath = parentPath.substring(0, parentPath.lastIndexOf('/'));
                     nodes.add(parentPath);
                 }
+                if (event.getType() == Event.PROPERTY_CHANGED && name.equals("j:published")) {
+                    nodes.add(parentPath);
+                }
                 if ((event.getType() == Event.NODE_REMOVED) && name.indexOf(':') == -1) {
                     nodes.add(path);
                 }

@@ -79,6 +79,7 @@
                 <value>nt:folder</value>
                 <value>jnt:user</value>
                 <value>jnt:usersFolder</value>
+                <value>jnt:mounts</value>
             </list>
         </property>
         <property name="toolbars">

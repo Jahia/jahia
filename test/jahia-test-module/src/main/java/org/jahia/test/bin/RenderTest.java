@@ -179,16 +179,22 @@ public class RenderTest extends JahiaTestCase {
             logger.debug("New activity=" + versioningTestActivity.getName());
         }
 
+        Set<String> languagesStringSet = new LinkedHashSet<String>();
+        languagesStringSet.add(Locale.ENGLISH.toString());
+        
+        // publish search-results page
+        jcrService.publishByInfoList(jcrService.getPublicationInfo(stageRootNode.getNode("search-results").getIdentifier(),
+                languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE,
+                Collections.<String>emptyList());        
+        
         // get home page
         JCRNodeWrapper stageNode = stageRootNode.getNode("home");
-
         editSession.checkout(stageNode);
         JCRNodeWrapper stagedSubPage = stageNode.addNode("home_subpage1", "jnt:page");
         stagedSubPage.setProperty("j:templateName", "simple");
         stagedSubPage.setProperty("jcr:title", "title0");
         editSession.save();
-        Set<String> languagesStringSet = new LinkedHashSet<String>();
-        languagesStringSet.add(Locale.ENGLISH.toString());
+
         // publish it
         List<PublicationInfo> publicationInfo = jcrService.getPublicationInfo(stageNode.getIdentifier(),
                 languagesStringSet, true, true, true, Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE);

@@ -127,6 +127,10 @@ public class CacheFilterTest extends JahiaTestCase {
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
             JCRNodeWrapper siteNode = (JCRSiteNode) session.getNode("/sites/"+site.getSiteKey());
+
+            JCRPublicationService.getInstance().publishByMainId(siteNode.getNode("search-results").getIdentifier(), Constants.EDIT_WORKSPACE,
+                    Constants.LIVE_WORKSPACE, new LinkedHashSet<String>(Arrays.asList(Locale.ENGLISH.toString())),
+                    true, Collections.<String> emptyList());            
             
             JCRNodeWrapper shared = siteNode.getNode("home");
             if (shared.hasNode("testContent")) {

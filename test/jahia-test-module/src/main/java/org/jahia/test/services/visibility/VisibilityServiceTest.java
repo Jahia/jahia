@@ -115,6 +115,7 @@ public class VisibilityServiceTest extends JahiaTestCase {
         site = TestHelper.createSite(TESTSITE_NAME, TestHelper.INTRANET_TEMPLATES);
         assertNotNull(site);
         publicationService = ServicesRegistry.getInstance().getJCRPublicationService();
+        
         Properties properties = new Properties();
         properties.setProperty("j:firstName", "John");
         properties.setProperty("j:lastName", "Doe");
@@ -123,6 +124,9 @@ public class VisibilityServiceTest extends JahiaTestCase {
         JCRUserNode john = ServicesRegistry.getInstance().getJahiaUserManagerService().createUser(USERNAME, PASSWORD, properties, session);
         session.getNode("/sites/" + site.getSiteKey()).grantRoles("u:" + john.getName(), ImmutableSet.of("editor-in-chief"));
         session.save();
+        
+        session = publicationService.getSessionFactory().getCurrentUserSession(Constants.EDIT_WORKSPACE, Locale.ENGLISH);
+        publicationService.publishByMainId(session.getNode("/sites/" + TESTSITE_NAME + "/search-results").getIdentifier());        
     }
 
     @AfterClass

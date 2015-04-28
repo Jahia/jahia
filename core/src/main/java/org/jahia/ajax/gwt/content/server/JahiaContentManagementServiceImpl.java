@@ -690,7 +690,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 sessions.add(session);
                 properties.saveProperties(nodes, props, removedTypes, session, getUILocale());
             }
-            properties.saveWorkInProgress(nodes, langCodeProperties, session);
             for (JCRSessionWrapper sessionWrapper : sessions) {
                 sessionWrapper.validate();
             }
@@ -788,8 +787,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), e.getLocalizedMessage()));
             }
-
-            properties.saveWorkInProgress(nodeWrapper, langCodeProperties);
 
             if (node.get(GWTJahiaNode.INCLUDE_CHILDREN) != null) {
                 List<String> removedChildrenPaths = node.getRemovedChildrenPaths();
@@ -980,8 +977,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         langSession.validate();
                     }
                 }
-
-                properties.saveWorkInProgress(nodeWrapper, langCodeProperties);
             }
             session.save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {

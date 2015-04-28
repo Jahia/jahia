@@ -384,7 +384,11 @@ public class PropertiesHelper {
 
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
-                if (prop != null && !prop.getName().equals("*") && !Constants.forbiddenPropertiesToCopy.contains(prop.getName())) {
+                if (prop != null &&
+                        !prop.getName().equals("*") &&
+                        !Constants.forbiddenPropertiesToCopy.contains(prop.getName()) &&
+                        !StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)
+                        ) {
                     if (prop.isMultiple()) {
                         List<Value> values = new ArrayList<Value>();
                         for (GWTJahiaNodePropertyValue val : prop.getValues()) {
@@ -485,6 +489,20 @@ public class PropertiesHelper {
                         }
                     }
 
+                } else if (StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
+                    Node n;
+                    boolean wip = prop.getValues().get(0).getBoolean();
+                    Locale locale = objectNode.getSession().getLocale();
+                    if (locale == null || !objectNode.hasI18N(locale)) {
+                        n = objectNode;
+                    } else {
+                        n = objectNode.getI18N(locale);
+                    }
+                    if (!wip && n.hasProperty(Constants.WORKINPROGRESS)) {
+                        n.getProperty(Constants.WORKINPROGRESS).remove();
+                    } else {
+                        n.setProperty(Constants.WORKINPROGRESS, wip);
+                    }
                 }
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {

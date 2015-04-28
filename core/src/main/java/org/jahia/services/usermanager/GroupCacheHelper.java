@@ -256,22 +256,26 @@ public class GroupCacheHelper {
     }
 
     private void recurseOnGroups(Set<String> groups, JCRNodeWrapper principal) throws RepositoryException, JahiaException {
-        PropertyIterator weakReferences = principal.getWeakReferences("j:member");
-        while (weakReferences.hasNext()) {
-            try {
-                Property property = weakReferences.nextProperty();
-                if (property.getPath().contains("/j:members/")) {
-                    JCRNodeWrapper group = (JCRNodeWrapper) property.getSession().getNode(StringUtils.substringBefore(property.getPath(), "/j:members/"));
-                    if (group.isNodeType("jnt:group")) {
-                        if (groups.add(group.getPath())) {
-                            // recurse on the found group only we have not done it yet
-                            recurseOnGroups(groups, group);
+        try {
+            PropertyIterator weakReferences = principal.getWeakReferences("j:member");
+            while (weakReferences.hasNext()) {
+                try {
+                    Property property = weakReferences.nextProperty();
+                    if (property.getPath().contains("/j:members/")) {
+                        JCRNodeWrapper group = (JCRNodeWrapper) property.getSession().getNode(StringUtils.substringBefore(property.getPath(), "/j:members/"));
+                        if (group.isNodeType("jnt:group")) {
+                            if (groups.add(group.getPath())) {
+                                // recurse on the found group only we have not done it yet
+                                recurseOnGroups(groups, group);
+                            }
                         }
                     }
+                } catch (ItemNotFoundException e) {
+                    logger.warn("Cannot find group for " + principal.getPath(), e);
                 }
-            } catch (ItemNotFoundException e) {
-                logger.warn("Cannot find group for " + principal.getPath(), e);
             }
+        } catch (InvalidItemStateException e) {
+            logger.warn("Cannot find membership for " + principal.getPath(), e);
         }
     }
 

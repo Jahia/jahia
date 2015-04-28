@@ -373,7 +373,7 @@ public class ModulesProviderTest {
         s.move("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources/META-INF/definitions.cnd/jnt:testComponent4",
                 "/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources/META-INF/definitions.cnd/jnt:testRenamedComponent");
         s.save();
-        s.logout();
+
         input = new BufferedReader(new FileReader(cndPath));
         try {
             String line = null;

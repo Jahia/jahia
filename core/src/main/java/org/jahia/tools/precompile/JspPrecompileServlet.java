@@ -73,31 +73,21 @@ package org.jahia.tools.precompile;
 
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.utils.StringResponseWrapper;
+import org.jahia.utils.NoOutputResponseWrapper;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-<<<<<<< .working
 import java.net.URL;
 import java.util.*;
-=======
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
->>>>>>> .merge-right.r52526
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.jahia.utils.NoOutputResponseWrapper;
-import org.jahia.utils.StringResponseWrapper;
 
 /**
  * Helps to precompile JSPs of a WebApp. The Servlet performs 3 actions depending on the passed params: - if jsp_name param is passed, the
@@ -325,14 +315,8 @@ public class JspPrecompileServlet extends HttpServlet {
         int i = 1;
         for (final String jspPath : foundJsps) {
             try {
-<<<<<<< .working
-                StringResponseWrapper responseWrapper = new StringResponseWrapper(aResponse);
-                compile(jspPath, aRequest, responseWrapper, i);
-=======
-                System.out.print("Compiling (" + i + ") " + jspPath + "...");
                 NoOutputResponseWrapper responseWrapper = new NoOutputResponseWrapper(aResponse);
-                rd.include(aRequest, responseWrapper);
->>>>>>> .merge-right.r52526
+                compile(jspPath, aRequest, responseWrapper, i);
                 System.out.println(" OK.");
             } catch (Exception e) {
                 logger.error(e.getMessage(), e);

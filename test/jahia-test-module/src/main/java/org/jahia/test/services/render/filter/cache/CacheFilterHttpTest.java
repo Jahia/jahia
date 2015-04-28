@@ -441,9 +441,21 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public void testACLsUserPerContent() throws Exception {
         // test for https://jira.jahia.org/browse/QA-7383
         String path = SITECONTENT_ROOT_NODE + "/home/user-per-content-test";
-        assertTrue("Wrong content for user1", getContent(getUrl(path), "user1", "password", "testACLs11").contains("content for user1"));
-        assertTrue("Wrong content for user2", getContent(getUrl(path), "user2", "password", "testACLs12").contains("content for user2"));
-        assertTrue("Wrong content for user3", getContent(getUrl(path), "user3", "password", "testACLs13").contains("content for user3"));
+        
+        String contentForUser1 = getContent(getUrl(path), "user1", "password", "testACLs11");
+        assertTrue("user1 cannot see content, she should see", contentForUser1.contains("content for user1"));
+        assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user2"));
+        assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user3"));
+        
+        String contentForUser2 = getContent(getUrl(path), "user2", "password", "testACLs12");
+        assertTrue("user2 cannot see content, she should see", contentForUser2.contains("content for user2"));
+        assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user1"));
+        assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user3"));
+        
+        String contentForUser3 = getContent(getUrl(path), "user3", "password", "testACLs13");
+        assertTrue("user3 cannot see content, she should see", contentForUser3.contains("content for user3"));
+        assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user1"));
+        assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
     }
     
 

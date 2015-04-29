@@ -120,6 +120,7 @@
                 <entry key="jnt:group" value="org.jahia.services.content.decorator.JCRGroupNode"/>
                 <entry key="jnt:component" value="org.jahia.services.content.decorator.JCRComponentNode"/>
                 <entry key="jnt:componentFolder" value="org.jahia.services.content.decorator.JCRComponentNode"/>
+                <entry key="jnt:passwordHistoryEntry" value="org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode"/>
             </map>
         </property>
         <property name="noValidityCheckTypes">

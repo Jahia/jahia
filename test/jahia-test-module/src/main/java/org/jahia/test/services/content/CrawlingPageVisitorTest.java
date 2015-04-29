@@ -91,6 +91,7 @@ import org.apache.nutch.fetcher.Fetcher;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.BundleResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -122,7 +123,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
@@ -159,15 +162,20 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     private LogToJUnitOutputAppender appender = null;
 
     private static void extract(JahiaTemplatesPackage p, org.springframework.core.io.Resource r, File f) throws Exception {
-        if (r.contentLength() == 0) {
+        if ((r instanceof BundleResource && r.contentLength() == 0) || (!(r instanceof BundleResource) && r.getFile().isDirectory())) {
             f.mkdirs();
-            for (org.springframework.core.io.Resource resource : p.getResources(r.getURI().getPath())) {
+            String path = r.getURI().getPath();
+            for (org.springframework.core.io.Resource resource : p.getResources(path.substring(path.indexOf("/plugins")))) {
                 extract(p, resource, new File(f, resource.getFilename()));
             }
         } else {
-            final FileOutputStream output = new FileOutputStream(f);
-            IOUtils.copy(r.getInputStream(), output);
-            output.close();
+            FileOutputStream output = null;
+            try {
+                output = new FileOutputStream(f);
+                IOUtils.copy(r.getInputStream(), output);
+            } finally {
+                IOUtils.closeQuietly(output);
+            }            
         }
     }
 

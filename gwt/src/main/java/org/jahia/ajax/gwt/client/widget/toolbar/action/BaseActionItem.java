@@ -80,7 +80,6 @@ import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.button.ToggleButton;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
@@ -108,6 +107,7 @@ public abstract class BaseActionItem implements ActionItem {
     private transient MenuItem menuItem = null;
     private transient MenuItem contextMenuItem = null;
     protected transient Linker linker;
+    private transient boolean enabled;
 
     public BaseActionItem() {
     }
@@ -242,6 +242,7 @@ public abstract class BaseActionItem implements ActionItem {
     }
 
     public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
         if (isTextToolItem()) {
             if (gwtToolbarItem.isHideWhenDisabled()) {
                 getTextToolItem().setVisible(enabled);
@@ -259,6 +260,10 @@ public abstract class BaseActionItem implements ActionItem {
         if (isContextMenuItem()) {
             getContextMenuItem().setVisible(enabled);
         }
+    }
+
+    public boolean isEnabled() {
+        return enabled;
     }
 
     public void setVisible(boolean visible) {

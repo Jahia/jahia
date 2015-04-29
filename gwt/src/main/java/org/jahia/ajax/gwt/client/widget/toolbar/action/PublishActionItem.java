@@ -248,7 +248,6 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
         setEnabled(false);
     }
 
-
     @Override
     public void onComponentSelection() {
         LinkerSelectionContext ctx = linker.getSelectionContext();
@@ -287,7 +286,6 @@ public class PublishActionItem extends NodeTypeAwareBaseActionItem {
             }
         }
     }
-
 
     protected void callback(final List<GWTJahiaPublicationInfo> result) {
         if (result.isEmpty()) {

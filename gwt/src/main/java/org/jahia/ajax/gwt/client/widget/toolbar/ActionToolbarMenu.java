@@ -71,6 +71,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar;
 
+import com.extjs.gxt.ui.client.event.BaseEvent;
+import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
@@ -80,6 +83,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarMenu;
 import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
+import org.jahia.ajax.gwt.client.widget.toolbar.action.BaseActionItem;
 
 import java.util.List;
 
@@ -104,7 +108,7 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
 
     public void addItem(GWTJahiaToolbarItem gwtToolbarItem) {
         if (gwtToolbarItem instanceof GWTJahiaToolbarMenu) {
-            MenuItem subMenu = new MenuItem();
+            final MenuItem subMenu = new MenuItem();
             if (gwtToolbarItem.getIcon() != null) {
                 subMenu.setIcon(ToolbarIconProvider.getInstance().getIcon(gwtToolbarItem.getIcon()));
             }
@@ -118,7 +122,25 @@ public class ActionToolbarMenu extends Menu implements ToolbarGroup {
                 menu.addItem(subItem);
             }
             subMenu.setSubMenu(menu);
-
+            subMenu.addListener(Events.Attach, new Listener<BaseEvent>() {
+                @Override
+                public void handleEvent(BaseEvent be) {
+                    boolean show = false;
+                    for (com.extjs.gxt.ui.client.widget.Component item : subMenu.getSubMenu().getItems()) {
+                        for (ActionItem baseItem : actionItems) {
+                            if (baseItem.getMenuItem().equals(item)) {
+                                if (baseItem instanceof  BaseActionItem && ((BaseActionItem) baseItem).isEnabled()) {
+                                    show = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (item.isVisible()) {
+                        }
+                    }
+                    subMenu.setVisible(show);
+                }
+            });
             add(subMenu);
         } else {
             final ActionItem actionItem = gwtToolbarItem.getActionItem();

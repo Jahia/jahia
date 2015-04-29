@@ -36,6 +36,7 @@
                 <value>org.jahia.test.services.content.MarkForDeletionTest</value>
                 <value>org.jahia.test.services.content.MultiLanguageTest</value>
                 <value>org.jahia.test.services.content.ReferencesTest</value>
+                <value>org.jahia.test.services.content.decorator.PasswordHistoryEntryDecoratorTest</value>
                 <value>org.jahia.test.services.content.interceptor.HtmlFilteringInterceptorTest</value>
                 <value>org.jahia.test.services.content.interceptor.URLInterceptorTest</value>
                 <value>org.jahia.test.services.content.nodetypes.NodePropertyDefaultValueTest</value>

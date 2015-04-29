@@ -119,42 +119,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
         return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName(), getRealm());
 
-<<<<<<< .working
-=======
-    @Override
-    public PropertyIterator getProperties() throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        return new LazyPropertyIterator(this, locale) {
-            @Override
-            protected PropertyIterator getPropertiesIterator() {
-                if (propertyIterator == null) {
-                    if (user == null) {
-                        user = lookupUser();
-                    }
-                    if (user == null || user instanceof JCRUser) {
-                        propertyIterator = new FilteredIterator(super.getPropertiesIterator());
-                    } else {
-                        try {
-                            propertyIterator = new UserPropertyIterator(node, new FilteredIterator(super.getPropertiesIterator()));
-                        } catch (RepositoryException e) {
-                            logger.error("Cannot get user properties");
-                            propertyIterator = new FilteredIterator(super.getPropertiesIterator());
-                        }
-                    }
-                    propertyIterator = new FilteredIterator(super.getPropertiesIterator());
-                }
-                return propertyIterator;
-            }
-
-            @Override
-            protected PropertyIterator getI18NPropertyIterator() {
-                if (i18nPropertyIterator == null) {
-                return new FilteredIterator(super.getI18NPropertyIterator());
-                }
-                return i18nPropertyIterator;
-            }
-        };
->>>>>>> .merge-right.r52535
     }
 
     @Override
@@ -261,7 +225,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         return false;
     }
 
-<<<<<<< .working
     public boolean verifyPassword(String userPassword) {
         try {
             return StringUtils.isNotEmpty(userPassword) && JahiaUserManagerService.encryptPassword(userPassword).equals(getProperty(J_PASSWORD).getString());
@@ -311,8 +274,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         return getPath().startsWith("/sites/") ? StringUtils.substringBetween(getPath(), "/sites/", "/") : null;
     }
 
-=======
->>>>>>> .merge-right.r52535
     /**
      * @deprecated for compatibility only, use getPath()
      */
@@ -320,31 +281,9 @@ public class JCRUserNode extends JCRNodeDecorator {
         return getPath();
     }
 
-<<<<<<< .working
     private class LazyUserPropertyIterator extends LazyPropertyIterator {
         public LazyUserPropertyIterator(Locale locale) {
             super(JCRUserNode.this, locale);
-=======
-    public class FilteredIterator extends FilteredPropertyIterator {
-
-        public FilteredIterator(PropertyIterator propertyIterator) {
-            super(propertyIterator);
-        }
-
-        @Override
-        boolean isFiltered(String s) throws RepositoryException {
-            return !canGetProperty(s);
-        }
-    }
-    
-    public class JCRUserProperty implements Property {
-        private final String key;
-        private final Object value;
-        private int type;
-
-        public JCRUserProperty(String key, Object value) {
-            this(key, value, PropertyType.STRING);
->>>>>>> .merge-right.r52535
         }
 
         public LazyUserPropertyIterator(JCRNodeWrapper node, Locale locale, String singlePattern) {

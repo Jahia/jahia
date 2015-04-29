@@ -76,6 +76,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Locale;
+
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
@@ -127,7 +129,7 @@ public class PasswordHistoryEntryDecoratorTest {
 
     @Test
     public void testUserSession() throws RepositoryException {
-        JCRTemplate.getInstance().doExecuteWithUserSession("root", "default", new JCRCallback<Boolean>() {
+        JCRTemplate.getInstance().doExecute("root", null, "default", Locale.ENGLISH, new JCRCallback<Boolean>() {
             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 for (NodeIterator iterator = session.getNode("/users/root/passwordHistory").getNodes(); iterator
                         .hasNext();) {

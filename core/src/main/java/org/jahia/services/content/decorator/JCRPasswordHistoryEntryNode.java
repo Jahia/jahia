@@ -71,7 +71,6 @@
  */
 package org.jahia.services.content.decorator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.jcr.PathNotFoundException;
@@ -84,6 +83,9 @@ import org.jahia.services.content.LazyPropertyIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Maps;
+
 /**
  * Decorator for the JCR nodes of type <code>jnt:passwordHistoryEntry</code>.
  * 
@@ -91,15 +93,36 @@ import org.slf4j.LoggerFactory;
  */
 public class JCRPasswordHistoryEntryNode extends JCRNodeDecorator {
 
-    class FilteredIterator extends FilteredPropertyIterator {
+    private class FilteredIterator extends LazyPropertyIterator {
+        public FilteredIterator() throws RepositoryException {
+            super(JCRPasswordHistoryEntryNode.this, JCRPasswordHistoryEntryNode.this.getSession().getLocale());
+        }
 
-        public FilteredIterator(PropertyIterator propertyIterator) {
-            super(propertyIterator);
+        public FilteredIterator(String singlePattern) throws RepositoryException {
+            super(JCRPasswordHistoryEntryNode.this, JCRPasswordHistoryEntryNode.this.getSession().getLocale(),
+                    singlePattern);
+        }
+
+        public FilteredIterator(String[] patternArray) throws RepositoryException {
+            super(JCRPasswordHistoryEntryNode.this, JCRPasswordHistoryEntryNode.this.getSession().getLocale(),
+                    patternArray);
         }
 
         @Override
-        boolean isFiltered(String s) throws RepositoryException {
-            return !canGetProperty(s);
+        public boolean hasNext() {
+            while (super.hasNext()) {
+                try {
+                    if (!canGetProperty(tempNext.getName())) {
+                        tempNext = null;
+                    } else {
+                        return true;
+                    }
+                } catch (RepositoryException e) {
+                    tempNext = null;
+                    logger.error("Cannot read property", e);
+                }
+            }
+            return false;
         }
     }
 
@@ -117,39 +140,33 @@ public class JCRPasswordHistoryEntryNode extends JCRNodeDecorator {
 
     @Override
     public PropertyIterator getProperties() throws RepositoryException {
-        if (getSession().isSystem()) {
-            // no filtering for system sessions
-            return super.getProperties();
-        }
-        return new LazyPropertyIterator(this, getSession().getLocale()) {
-            @Override
-            protected PropertyIterator getI18NPropertyIterator() {
-                if (i18nPropertyIterator == null) {
-                    return new FilteredIterator(super.getI18NPropertyIterator());
-                }
-                return i18nPropertyIterator;
-            }
+        // no filtering for system sessions
+        return getSession().isSystem() ? super.getProperties() : new FilteredIterator();
+    }
 
-            @Override
-            protected PropertyIterator getPropertiesIterator() {
-                if (propertyIterator == null) {
-                    propertyIterator = new FilteredIterator(super.getPropertiesIterator());
-                }
-                return propertyIterator;
-            }
-        };
+    @Override
+    public PropertyIterator getProperties(String s) throws RepositoryException {
+        return getSession().isSystem() ? super.getProperties(s) : new FilteredIterator(s);
+    }
+
+    @Override
+    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
+        return getSession().isSystem() ? super.getProperties(strings) : new FilteredIterator(strings);
     }
 
     @Override
     public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        Map<String, String> props = super.getPropertiesAsString();
-        if (getSession().isSystem() || !props.containsKey(PROTECTED_PROPERTY)) {
-            return props;
-        }
-        Map<String, String> filtered = new HashMap<String, String>(props);
-        filtered.remove(PROTECTED_PROPERTY);
-
-        return filtered;
+        return getSession().isSystem() ? super.getPropertiesAsString() : Maps.filterKeys(super.getPropertiesAsString(),
+                new Predicate<String>() {
+                    @Override
+                    public boolean apply(String input) {
+                        try {
+                            return canGetProperty(input);
+                        } catch (RepositoryException e) {
+                            return false;
+                        }
+                    }
+                });
     }
 
     @Override

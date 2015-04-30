@@ -81,7 +81,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -105,9 +104,6 @@ import org.slf4j.LoggerFactory;
  */
 public class JahiaTestCase {
 
-<<<<<<< .working
-    private final static String PORT = "9090";
-=======
     protected class PostResult {
         public int statusCode;
         public String statusLine;
@@ -121,8 +117,7 @@ public class JahiaTestCase {
         }
     }
 
-    private final static String PORT = "6060";
->>>>>>> .merge-right.r52540
+    private final static String PORT = "9090";
     
     private final static String BASE_URL = "http://localhost:" + PORT;
 
@@ -261,5 +256,4 @@ public class JahiaTestCase {
 
         return new PostResult(statusCode, statusLine, responseBody);
     }
-
 }

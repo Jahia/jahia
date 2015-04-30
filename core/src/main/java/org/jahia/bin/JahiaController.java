@@ -73,6 +73,7 @@ package org.jahia.bin;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -159,11 +160,15 @@ public abstract class JahiaController implements Controller {
     private String requiredPermission;
 
     protected void checkUserAuthorized() throws JahiaForbiddenAccessException {
-        JahiaControllerUtils.checkUserAuthorized(getCurrentUser(), getRequiredPermission());
+        if (getRequiredPermission() != null) {
+            JahiaControllerUtils.checkUserAuthorized(getCurrentUser(), getRequiredPermission());
+        }
     }
 
     protected void checkUserAuthorized(JCRNodeWrapper node) throws JahiaForbiddenAccessException {
-        JahiaControllerUtils.checkUserAuthorized(node, getCurrentUser(), getRequiredPermission());
+        if (getRequiredPermission() != null) {
+            JahiaControllerUtils.checkUserAuthorized(node, getCurrentUser(), getRequiredPermission());
+        }
     }
 
     protected void checkUserLoggedIn() throws JahiaForbiddenAccessException {
@@ -214,6 +219,6 @@ public abstract class JahiaController implements Controller {
      *            the permission, required to handle this action. <code>null</code> if no particular permission is required
      */
     public void setRequiredPermission(String requiredPermission) {
-        this.requiredPermission = requiredPermission;
+        this.requiredPermission = StringUtils.defaultIfBlank(requiredPermission, null);
     }
 }

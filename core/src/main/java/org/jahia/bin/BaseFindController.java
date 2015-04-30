@@ -72,6 +72,7 @@
 package org.jahia.bin;
 
 import static javax.servlet.http.HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
 
 import java.util.Set;
 
@@ -120,6 +121,8 @@ public abstract class BaseFindController extends JahiaController {
     private static final Logger logger = LoggerFactory.getLogger(BaseFindController.class);
 
     protected int defaultLimit = 20;
+    
+    protected boolean disabled;
 
     protected int hardLimit = 100;
 
@@ -145,6 +148,10 @@ public abstract class BaseFindController extends JahiaController {
     }
 
     public ModelAndView handleRequest(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        if (disabled) {
+            response.sendError(SC_NOT_FOUND);
+            return null;
+        }
         long startTime = System.currentTimeMillis();
         String sessionId = null;
         try {
@@ -180,6 +187,10 @@ public abstract class BaseFindController extends JahiaController {
     protected void handle(HttpServletRequest request, HttpServletResponse response)
             throws Exception {
         // implemented in subclasses
+    }
+
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
     }
 
 }

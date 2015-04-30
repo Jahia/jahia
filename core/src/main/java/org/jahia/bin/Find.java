@@ -91,6 +91,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -227,7 +228,11 @@ public class Find extends BaseFindController {
 
     @Override
     protected void handle(HttpServletRequest request, HttpServletResponse response) throws RenderException,
-            IOException, RepositoryException {
+            IOException, RepositoryException, JahiaForbiddenAccessException {
+        
+        checkUserLoggedIn();
+        checkUserAuthorized();
+        
         URLResolver urlResolver = urlResolverFactory.createURLResolver(request.getPathInfo(), request.getServerName(), request);
         try {
             Query query = getQuery(request, response, urlResolver.getWorkspace(), urlResolver.getLocale());

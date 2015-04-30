@@ -81,12 +81,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRPublicationService;
@@ -95,6 +95,8 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.bin.BaseTestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Super class for Jahia tests
@@ -103,11 +105,28 @@ import org.jahia.test.bin.BaseTestController;
  */
 public class JahiaTestCase {
 
+<<<<<<< .working
     private final static String PORT = "9090";
+=======
+    protected class PostResult {
+        public int statusCode;
+        public String statusLine;
+        public String responseBody;
+        
+        PostResult(int statusCode, String statusLine, String responseBody) {
+            super();
+            this.statusCode = statusCode;
+            this.statusLine = statusLine;
+            this.responseBody = responseBody;
+        }
+    }
+
+    private final static String PORT = "6060";
+>>>>>>> .merge-right.r52540
     
     private final static String BASE_URL = "http://localhost:" + PORT;
 
-    private static Logger logger = Logger.getLogger(JahiaTestCase.class);
+    private static Logger logger = LoggerFactory.getLogger(JahiaTestCase.class);
 
     /**
      * Returns the <code>HttpServletRequest</code> object for the current call.
@@ -183,23 +202,17 @@ public class JahiaTestCase {
     }
 
     protected void login(String username, String password) {
-        PostMethod loginMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/login");
-        loginMethod.addParameter("username", username);
-        loginMethod.addParameter("password", password);
-        loginMethod.addParameter("restMode", "true");
-        // Provide custom retry handler is necessary
-        loginMethod.getParams().setParameter(
-                HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
-
+        int statusCode = 0;
         try {
-            int statusCode = getHttpClient().executeMethod(loginMethod);
-            assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
+            statusCode = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/login",
+            new String[] {"username", username},
+            new String[] {"password", password},
+            new String[] {"restMode", "true"}).statusCode;
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            loginMethod.releaseConnection();
         }
+
+        assertEquals("Login failed for user", HttpStatus.SC_OK, statusCode);
     }
 
     protected void loginRoot() {
@@ -207,23 +220,46 @@ public class JahiaTestCase {
     }
 
     protected void logout() {
-        PostMethod logoutMethod = new PostMethod(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout");
-        logoutMethod.addParameter("redirectActive", "false");
-        // Provide custom retry handler is necessary
-        logoutMethod.getParams().setParameter(
-                HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
-
         try {
-            int statusCode = getHttpClient().executeMethod(logoutMethod);
-            if (statusCode != HttpStatus.SC_OK) {
-                System.err.println("Method failed: " + logoutMethod.getStatusLine());
+            PostResult post = post(getBaseServerURL() + Jahia.getContextPath() + "/cms/logout",
+                    new String[] {"redirectActive", "false"});
+
+            if (post.statusCode != HttpStatus.SC_OK) {
+                System.err.println("Method failed: " + post.statusLine);
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
-        } finally {
-            logoutMethod.releaseConnection();
         }
+    }
+
+    protected PostResult post(String url, String[]... params) throws IOException {
+        PostMethod method = new PostMethod(url);
+        for (String[] param : params) {
+            method.addParameter(param[0], param[1]);
+        }
+
+        // Provide custom retry handler is necessary
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+        int statusCode = 0;
+        String statusLine = null;
+        String responseBody = null;
+        try {
+            // Execute the method.
+            statusCode = getHttpClient().executeMethod(method);
+
+            statusLine = method.getStatusLine().toString();
+            if (statusCode != HttpStatus.SC_OK) {
+                logger.warn("Method failed: {}", statusLine);
+            }
+
+            // Read the response body.
+            responseBody = method.getResponseBodyAsString();
+        } finally {
+            method.releaseConnection();
+        }
+
+        return new PostResult(statusCode, statusLine, responseBody);
     }
 
 }

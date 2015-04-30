@@ -105,6 +105,9 @@
                 <entry key="/find/**">
                     <bean class="org.jahia.bin.Find">
                         <property name="urlResolverFactory" ref="urlResolverFactory"/>
+                        <property name="nodeTypesToSkip" value="${jahia.find.nodeTypesToSkip:jnt:passwordHistory,jnt:passwordHistoryEntry}"/>
+                        <property name="pathsToSkip" value="${jahia.find.pathsToSkip:/users/root}"/>
+                        <property name="propertiesToSkip" value="${jahia.find.propertiesToSkip:jnt:user.j:password,jnt:passwordHistoryEntry.j:password}"/>
                     </bean>
                 </entry>
                 <entry key="/findPrincipal">

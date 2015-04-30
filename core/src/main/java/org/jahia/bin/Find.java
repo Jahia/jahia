@@ -119,6 +119,19 @@ public class Find extends BaseFindController {
 
     private URLResolverFactory urlResolverFactory;
 
+    private Set<String> nodeTypesToSkip;
+    
+    private Set<String> pathsToSkip;
+    
+    private Set<String> propertiesToSkip;
+
+    private Map<String, Set<String>> propertiesToSkipByNodeType;
+
+    private static Set<String> toSet(String source) {
+        return source != null && source.length() > 0 ? new LinkedHashSet<String>(Arrays.asList(StringUtils.split(
+                source, ", "))) : null;
+    }
+    
     public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
         this.urlResolverFactory = urlResolverFactory;
     }
@@ -237,12 +250,18 @@ public class Find extends BaseFindController {
 
     private JSONObject serializeNode(Node currentNode, int depthLimit, boolean escapeColon, Pattern propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
+        if (skipNode(currentNode)) {
+            return null;
+        }
         final PropertyIterator stringMap = currentNode.getProperties();
         JSONObject jsonObject = new JSONObject();
         // Map<String,Object> map = new HashMap<String, Object>();
         Set<String> matchingProperties = new HashSet<String>();
         while (stringMap.hasNext()) {
             JCRPropertyWrapper propertyWrapper = (JCRPropertyWrapper) stringMap.next();
+            if (skipProperty(propertyWrapper)) {
+                continue;
+            }
             final int type = propertyWrapper.getType();
             final String name = escapeColon ? JCRContentUtils.replaceColon(propertyWrapper.getName()) : propertyWrapper.getName();
             if (type == PropertyType.BINARY) {
@@ -319,7 +338,9 @@ public class Find extends BaseFindController {
             while (childNodeIterator.hasNext()) {
                 Node currentChildNode = childNodeIterator.nextNode();
                 JSONObject childSerializedMap = serializeNode(currentChildNode, depthLimit - 1, escapeColon, propertyMatchRegexp, alreadyIncludedPropertyValues);
-                childMapList.put(childSerializedMap);
+                if (childSerializedMap != null) {
+                    childMapList.put(childSerializedMap);
+                }
             }
             jsonObject.put("childNodes", childMapList);
         }
@@ -328,10 +349,14 @@ public class Find extends BaseFindController {
 
     private JSONObject serializeRow(Row row, String[] columns, int depthLimit, boolean escapeColon, Set<String> alreadyIncludedIdentifiers, Pattern propertyMatchRegexp, Map<String, String> alreadyIncludedPropertyValues) throws RepositoryException,
             JSONException {
+        Node currentNode = row.getNode();
+
+        if (currentNode != null && skipNode(currentNode)) {
+            return null;
+        }
 
         JSONObject jsonObject = new JSONObject();
 
-        Node currentNode = row.getNode();
         if (currentNode != null) {
             if (currentNode.isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 try {
@@ -366,6 +391,9 @@ public class Find extends BaseFindController {
 
         for (String column : columns) {
             try {
+                if (skipRowColumn(column)) {
+                    continue;
+                }
                 Value value = row.getValue(column);
                 jsonObject.put(escapeColon ? JCRContentUtils.replaceColon(column) : column, value != null ? value.getString() : null);
             } catch (ItemNotFoundException infe) {
@@ -462,6 +490,81 @@ public class Find extends BaseFindController {
     public static String getFindServletPath() {
         // TODO move this into configuration
         return "/cms/find";
+    }
+
+    public void setNodeTypesToSkip(String nodeTypesToSkip) {
+        this.nodeTypesToSkip = toSet(nodeTypesToSkip);
+    }
+
+    public void setPathsToSkip(String pathsToSkip) {
+        this.pathsToSkip = toSet(pathsToSkip);
+    }
+
+    public void setPropertiesToSkip(String propertiesToSkipString) {
+        propertiesToSkip = toSet(propertiesToSkipString);
+        if (propertiesToSkip == null) {
+            propertiesToSkipByNodeType = null;
+        } else {
+            propertiesToSkipByNodeType = new HashMap<String, Set<String>>();
+            for (String p : propertiesToSkip) {
+                String ntName = "*";
+                String propName = p;
+                int pos = p.indexOf('.');
+                if (pos != -1) {
+                    ntName = p.substring(0, pos);
+                    propName = p.substring(pos + 1, p.length());
+                } else {
+                    propertiesToSkip.add("*." + p);
+                }
+                Set<String> ntProps = propertiesToSkipByNodeType.get(ntName);
+                if (ntProps == null) {
+                    ntProps = new HashSet<String>();
+                    propertiesToSkipByNodeType.put(ntName, ntProps);
+                }
+                ntProps.add(propName);
+            }
+        }
+    }
+
+    private boolean skipNode(Node currentNode) throws RepositoryException {
+        if (pathsToSkip != null) {
+            String path = currentNode.getPath();
+            if (pathsToSkip.contains(path)) {
+                return true;
+            }
+        }
+        if (nodeTypesToSkip != null) {
+            String primary = currentNode.getPrimaryNodeType().getName();
+            if (nodeTypesToSkip.contains(primary)) {
+                return true;
+            }
+            for (String nt : nodeTypesToSkip) {
+                if (currentNode.isNodeType(nt)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private boolean skipProperty(JCRPropertyWrapper property) throws RepositoryException {
+        if (propertiesToSkipByNodeType != null) {
+            String nt = property.getDefinition().getDeclaringNodeType().getName();
+            Set<String> props = propertiesToSkipByNodeType.get(nt);
+            String propName = property.getName();
+            boolean skip = props != null && props != null && props.contains(propName);
+            if (!skip) {
+                skip = props != null && props.contains(propName);
+            }
+            return skip;
+        }
+
+        return false;
+    }
+
+    private boolean skipRowColumn(String column) throws RepositoryException {
+        return propertiesToSkip != null && propertiesToSkip.contains(column);
     }
 
 }

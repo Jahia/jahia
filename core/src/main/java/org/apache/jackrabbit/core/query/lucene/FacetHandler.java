@@ -85,14 +85,18 @@ import org.apache.solr.client.solrj.util.ClientUtils;
 import org.apache.solr.common.params.FacetParams;
 import org.apache.solr.common.params.SolrParams;
 import org.apache.solr.common.util.NamedList;
+import org.apache.solr.schema.FieldType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.search.facets.JahiaQueryParser;
 import org.jahia.services.search.facets.SimpleJahiaJcrFacets;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.NamespaceException;
+import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.Selector;
 import java.io.IOException;
@@ -210,8 +214,9 @@ public class FacetHandler {
                 }
             }
 
-            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher, docIdSet, SolrParams.toSolrParams(parameters), index, session, nsMappings);
-            extractFacetInfo(facets.getFacetCounts());
+            SolrParams solrParams = SolrParams.toSolrParams(parameters);
+            SimpleJahiaJcrFacets facets = new SimpleJahiaJcrFacets(searcher, docIdSet, solrParams, index, session, nsMappings);
+            extractFacetInfo(facets.getFacetCounts(), solrParams);
         } catch (Exception ex) {
             log.warn("Problem creating facets: ", ex);
         } finally {
@@ -343,7 +348,7 @@ public class FacetHandler {
         return foundSelector.getNodeTypeName();
     }
 
-    private void extractFacetInfo(NamedList<Object> info) {
+    private void extractFacetInfo(NamedList<Object> info, SolrParams solrParams) {
         // Parse the queries
         _facetQuery = new LinkedHashMap<String, Long>();
         NamedList<Long> fq = (NamedList<Long>) info.get("facet_queries");
@@ -356,10 +361,10 @@ public class FacetHandler {
         // Parse the facet info into fields
         // TODO?? The list could be <int> or <long>? If always <long> then we can switch to <Long>
         NamedList<NamedList<Number>> ff = (NamedList<NamedList<Number>>) info.get("facet_fields");
+        Map<String,FieldType> fieldTypeMap = new HashMap<>();
         if (ff != null) {
             _facetFields = new ArrayList<FacetField>(ff.size());
             _limitingFacets = new ArrayList<FacetField>(ff.size());
-
             long minsize = totalSize;
             for (Map.Entry<String, NamedList<Number>> facet : ff) {
                 String key = StringUtils.substringBeforeLast(facet.getKey(),
@@ -367,9 +372,17 @@ public class FacetHandler {
                 String fieldInIndex = StringUtils.substringAfterLast(facet.getKey(),
                         SimpleJahiaJcrFacets.PROPNAME_INDEX_SEPARATOR);
                 FacetField f = new FacetField(key);
+                if(!fieldTypeMap.containsKey(key)) {
+                    try {
+                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(solrParams.get("f." + key + "#" + fieldTypeMap.size() + ".facet.nodetype")).getPropertyDefinition(key);
+                        fieldTypeMap.put(key, getType(epd));
+                    } catch (NoSuchNodeTypeException e) {
+                        log.error(e.getMessage(), e);
+                    }
+                }
                 for (Map.Entry<String, Number> entry : facet.getValue()) {
                     String facetValue = entry.getKey();
-                    String query = entry.getKey();
+                    String query = fieldTypeMap.get(key).toInternal(entry.getKey());
                     Matcher matcher = valueWithQuery.matcher(facetValue);
                     if (matcher.matches()) {
                         query = matcher.group(2);
@@ -508,5 +521,47 @@ public class FacetHandler {
         row.setRangeFacets(_facetRanges);
         row.setFacetQuery(_facetQuery);
         return row;
+    }
+
+    private FieldType getType(ExtendedPropertyDefinition epd) {
+        FieldType type = null;
+        switch (epd.getRequiredType()) {
+            case PropertyType.BINARY:
+                type = JahiaQueryParser.BINARY_TYPE;
+                break;
+            case PropertyType.BOOLEAN:
+                type = JahiaQueryParser.BOOLEAN_TYPE;
+                break;
+            case PropertyType.DATE:
+                type = JahiaQueryParser.DATE_TYPE;
+                break;
+            case PropertyType.DOUBLE:
+                type = JahiaQueryParser.SORTABLE_DOUBLE_TYPE;
+                break;
+            case PropertyType.LONG:
+                type = JahiaQueryParser.SORTABLE_LONG_TYPE;
+                break;
+            case PropertyType.NAME:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.PATH:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.REFERENCE:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.STRING:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.URI:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.WEAKREFERENCE:
+                type = JahiaQueryParser.STRING_TYPE;
+                break;
+            case PropertyType.DECIMAL:
+                throw new UnsupportedOperationException();
+        }
+        return type;
     }
 }

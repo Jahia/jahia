@@ -1706,10 +1706,10 @@ public class SimpleJahiaJcrFacets {
                 type = JahiaQueryParser.DATE_TYPE;
                 break;            
             case PropertyType.DOUBLE:
-                type = JahiaQueryParser.DOUBLE_TYPE;
+                type = JahiaQueryParser.SORTABLE_DOUBLE_TYPE;
                 break;              
             case PropertyType.LONG:
-                type = JahiaQueryParser.LONG_TYPE;
+                type = JahiaQueryParser.SORTABLE_LONG_TYPE;
                 break;            
             case PropertyType.NAME:
                 type = JahiaQueryParser.STRING_TYPE;                

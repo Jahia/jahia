@@ -90,6 +90,10 @@ import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeZone;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.ISODateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -418,5 +422,15 @@ public class Functions {
         }
 
         return null;
+    }
+
+    public static String formatISODate(java.lang.String dateToParse, String pattern){
+        try{
+            DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(dateToParse);
+            return DateTimeFormat.forPattern(pattern).print(!dateToParse.endsWith("Z")?dateTime:dateTime.toDateTime(DateTimeZone.forID("UTC")));
+        } catch (Exception e) {
+            logger.debug("Unable to parse date:"+dateToParse,e);
+            return null;
+        }
     }
 }

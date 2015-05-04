@@ -212,8 +212,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
 
     private Set<String> ieHeaderRecognitions = new HashSet<String>();
-    private String ieCompatibilityContent = "IE=8";
-    private Boolean forceLiveIEcompatiblity;
+    private boolean forceLiveIEcompatiblity;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -496,7 +495,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private boolean isEnforceIECompatibilityMode(RenderContext renderContext) {
 
-        if (forceLiveIEcompatiblity!=null && !forceLiveIEcompatiblity && !renderContext.isEditMode()) {
+        if (!forceLiveIEcompatiblity && !renderContext.isEditMode()) {
             return false;
         }
         String header = renderContext.getRequest().getHeader("user-agent");
@@ -866,14 +865,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.ieHeaderRecognitions = ieHeaderRecognitions;
     }
 
-    public String getIeCompatibilityContent() {
-        return ieCompatibilityContent;
-    }
-
-    public void setIeCompatibilityContent(String ieCompatibilityContent) {
-        this.ieCompatibilityContent = ieCompatibilityContent;
-    }
-
     public void setCkeditorJavaScript(String ckeditorJavaScript) {
         this.ckeditorJavaScript = ckeditorJavaScript;
     }
@@ -882,12 +873,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.addLastModifiedDate = addLastModifiedDate;
     }
 
-    public void setForceLiveIEcompatiblity(Boolean forceLiveIEcompatiblity) {
+    public void setForceLiveIEcompatiblity(boolean forceLiveIEcompatiblity) {
             this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
-    }
-
-    public Boolean getForceLiveIEcompatiblity() {
-        return forceLiveIEcompatiblity;
     }
 
 }

@@ -382,6 +382,7 @@ public class PropertiesHelper {
             objectNode.checkout();
         }
 
+        GWTJahiaNodeProperty wipProp = null;
         for (GWTJahiaNodeProperty prop : newProps) {
             try {
                 if (prop != null &&
@@ -490,19 +491,8 @@ public class PropertiesHelper {
                     }
 
                 } else if (StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
-                    Node n;
-                    boolean wip = prop.getValues().get(0).getBoolean();
-                    Locale locale = objectNode.getSession().getLocale();
-                    if (locale == null || !objectNode.hasI18N(locale)) {
-                        n = objectNode;
-                    } else {
-                        n = objectNode.getI18N(locale);
-                    }
-                    if (!wip && n.hasProperty(Constants.WORKINPROGRESS)) {
-                        n.getProperty(Constants.WORKINPROGRESS).remove();
-                    } else {
-                        n.setProperty(Constants.WORKINPROGRESS, wip);
-                    }
+                    // do not set wip property here, as we are in a loop if wip property is the first the i18n nodes are may be not created yet
+                    wipProp = prop;
                 }
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
@@ -514,6 +504,35 @@ public class PropertiesHelper {
                             + "' not found on the node "
                             + objectNode.getPath() + ". Skipping.");
                 }
+            }
+        }
+
+        // set wip property if necessary
+        try {
+            if(wipProp != null) {
+                Node n;
+                boolean wip = wipProp.getValues().get(0).getBoolean();
+                Locale locale = objectNode.getSession().getLocale();
+                if (locale == null || !objectNode.hasI18N(locale)) {
+                    n = objectNode;
+                } else {
+                    n = objectNode.getI18N(locale);
+                }
+                if (!wip && n.hasProperty(Constants.WORKINPROGRESS)) {
+                    n.getProperty(Constants.WORKINPROGRESS).remove();
+                } else {
+                    n.setProperty(Constants.WORKINPROGRESS, wip);
+                }
+            }
+        } catch (PathNotFoundException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Property with the name '"
+                        + wipProp.getName() + "' not found on the node "
+                        + objectNode.getPath() + ". Skipping.", e);
+            } else {
+                logger.info("Property with the name '" + wipProp.getName()
+                        + "' not found on the node "
+                        + objectNode.getPath() + ". Skipping.");
             }
         }
     }

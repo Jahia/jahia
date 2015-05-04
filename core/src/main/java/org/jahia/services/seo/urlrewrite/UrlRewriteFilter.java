@@ -106,7 +106,7 @@ public class UrlRewriteFilter implements Filter {
 
     private boolean statusEnabled = true;
 
-    private String statusPath = "/tools/rewrite-status";
+    private String statusPath = "/modules/tools/rewrite-status";
 
     private ServerNameMatcher statusServerNameMatcher;
 

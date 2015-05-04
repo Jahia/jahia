@@ -497,11 +497,6 @@
     </servlet>
 
     <servlet>
-        <servlet-name>JspPrecompileServlet</servlet-name>
-        <servlet-class>org.jahia.tools.precompile.JspPrecompileServlet</servlet-class>
-    </servlet>
-
-    <servlet>
         <description>
             Error pages servlet, which selects the most appropriate error page to display,
             depending on the error code, parameters, site-specific pages flag (jahia.properties)
@@ -666,12 +661,6 @@
         <servlet-name>StaticFiles</servlet-name>
         <url-pattern>/generated-resources/*</url-pattern>
     </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>JspPrecompileServlet</servlet-name>
-        <url-pattern>/tools/precompileServlet</url-pattern>
-    </servlet-mapping>
-
 
     <servlet-mapping>
         <servlet-name>JahiaContentPortlet</servlet-name>

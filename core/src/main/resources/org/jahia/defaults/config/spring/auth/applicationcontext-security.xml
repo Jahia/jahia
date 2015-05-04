@@ -17,6 +17,7 @@
                 /cms/text-extract = authcBasic, roles[toolManager]
                 /cms/text-extract/** = authcBasic, roles[toolManager]
                 /tools/** = authcBasic, roles[toolManager]
+                /modules/tools/** = authcBasic, roles[toolManager]
             </value>
         </property>
     </bean>

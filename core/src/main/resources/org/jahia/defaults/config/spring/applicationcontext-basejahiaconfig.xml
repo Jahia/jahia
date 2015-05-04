@@ -253,6 +253,7 @@
 				<value>^/engines/images/.*</value>
 				<value>^/icons/.*</value>
 				<value>^/tools/.*</value>
+				<value>^/modules/tools/.*</value>
 			</set>
 		</property>
 	</bean>

@@ -194,7 +194,7 @@
                         <property name="settingsBean" ref="settingsBean"/>
                         <property name="textExtractionService"
                                   ref="org.jahia.services.textextraction.TextExtractionService"/>
-                        <property name="view" value="/tools/textExtractor.jsp"/>
+                        <property name="view" value="/modules/tools/textExtractor.jsp"/>
                     </bean>
                 </entry>
             </map>

@@ -46,14 +46,6 @@
     </rule>
     <!-- end of GWT resources-->
 
-    <!-- Jahia tools -->
-    <rule enabled="true">
-        <name>Jahia tools</name>
-        <note>Redirects to Jahia Tools overview page</note>
-        <from>^/tools(/)?$</from>
-        <to type="redirect">%{context-path}/tools/index.jsp</to>
-    </rule>
-
     <outbound-rule>
         <name>reset outbound parameters</name>
         <note>reset outbound parameters</note>

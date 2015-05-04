@@ -250,7 +250,7 @@ public class CrawlingPageVisitorTest extends JahiaTestCase {
     }
 
     private String getPrecompileServletURL() {
-        return getBaseServerURL()+ Jahia.getContextPath() + "/tools/precompileServlet";
+        return getBaseServerURL()+ Jahia.getContextPath() + "/modules/tools/precompileServlet";
     }    
 
     @Test

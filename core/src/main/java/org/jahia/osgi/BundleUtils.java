@@ -138,6 +138,27 @@ public final class BundleUtils {
     }
 
     /**
+     * Finds the bundle by its symbolic name.
+     * 
+     * @param symbolicName
+     *            the bundle symbolic name 
+     * @param version
+     *            the bundle version; or <code>null</code> to get the first matching bundle, found 
+     * @return the bundle for the specified symbolic name and version or <code>null</code> if the corresponding bundle is not present
+     */
+    public static Bundle getBundleBySymbolicName(String symbolicName, String version) {
+        for (Bundle bundle : FrameworkService.getBundleContext().getBundles()) {
+            String n = bundle.getSymbolicName();
+            if (StringUtils.equals(n, symbolicName)) {
+                if (version == null || StringUtils.equals(bundle.getVersion().toString(), version)) {
+                    return bundle;
+                }
+            }
+        }
+        return null;
+    }
+    
+    /**
      * Find the bundle that is represented by the specified module and version.
      * 
      * @param moduleId

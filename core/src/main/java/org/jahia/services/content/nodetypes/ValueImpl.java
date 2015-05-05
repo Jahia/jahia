@@ -140,7 +140,11 @@ public class ValueImpl implements Value {
                 case PropertyType.DATE :
                 case PropertyType.BINARY :
                     if (value.indexOf(',') == -1) value = "["+value+","+value+"]";
-                    break;                    
+                    break;
+                case PropertyType.STRING:
+                    // check that we have a valid regular expression
+                    Pattern.compile(v);
+                    break;
             }
         }
 

@@ -824,8 +824,16 @@ public class JahiaCndReader {
         if (!currentTokenEquals(Lexer.CONSTRAINT)) {
             return;
         }
-        List<Value> constraints = doValuesList(pdi, true);
-        pdi.setValueConstraints(constraints.toArray(new Value[constraints.size()]));
+        try {
+            List<Value> constraints = doValuesList(pdi, true);
+            pdi.setValueConstraints(constraints.toArray(new Value[constraints.size()]));
+        } catch (Exception e) {
+            if(e instanceof ParseException) {
+                throw e;
+            } else {
+                lexer.fail(e);
+            }
+        }
     }
 
     private List<Value> doValuesList(ExtendedPropertyDefinition pdi, boolean isConstraint) throws ParseException {

@@ -73,6 +73,7 @@ package org.jahia.services.content.decorator;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -88,6 +89,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+
 import java.util.*;
 
 /**
@@ -110,6 +112,11 @@ public class JCRUserNode extends JCRNodeDecorator {
         super(node);
     }
 
+    @Override
+    public boolean hasProperty(String s) throws RepositoryException {
+        return super.hasProperty(s) && canGetProperty(s);
+    }
+    
     public JahiaUser getJahiaUser() {
         Properties properties = new Properties();
         try {

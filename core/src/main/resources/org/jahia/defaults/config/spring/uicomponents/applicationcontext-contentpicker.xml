@@ -210,6 +210,7 @@
                 <ref bean="repository.templateFiles"/>
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
                 <ref bean="repository.myfiles"/>
             </list>
         </property>
@@ -302,6 +303,7 @@
                 <ref bean="repository.templateFiles"/>
                 <ref bean="repository.websitefiles"/>
                 <ref bean="repository.sitesPicker"/>
+                <ref bean="repository.myexternalfilesPicker"/>
                 <ref bean="repository.myfiles"/>
             </list>
         </property>

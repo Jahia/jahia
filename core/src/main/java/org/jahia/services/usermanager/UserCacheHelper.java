@@ -80,6 +80,7 @@ import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.query.QueryWrapper;
@@ -186,7 +187,7 @@ public class UserCacheHelper {
         q.append("/users/')");
         final QueryWrapper query = JCRSessionFactory
                 .getInstance()
-                .getCurrentSystemSession(null, null, null)
+                .getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null)
                 .getWorkspace()
                 .getQueryManager()
                 .createQuery(q.toString(), Query.JCR_SQL2);

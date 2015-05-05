@@ -193,7 +193,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode lookupUserByPath(String path) {
         try {
-            return lookupUserByPath(path, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            return lookupUserByPath(path, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -239,7 +239,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers) {
         JCRUserNode userNode = null;
         try {
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
             if (checkSiteAndGlobalUsers && site != null) {
                 userNode = lookupUser(name, null, s);
             }
@@ -357,7 +357,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
 
     public List<String> getUserList(String siteKey) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
@@ -398,7 +398,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public List<String> getUsernameList(String siteKey) {
         try {
-            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
+            JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
             Set<String> users = new TreeSet<String>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
@@ -431,7 +431,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias) {
         try {
-            return searchUsers(searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            return searchUsers(searchCriterias, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
             return new HashSet<JCRUserNode>();
@@ -450,7 +450,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public Set<JCRUserNode> searchUsers(Properties searchCriterias, String[] providers) {
         try {
-            return searchUsers(searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+            return searchUsers(searchCriterias, providers, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
         } catch (RepositoryException e) {
             logger.error("Error while searching for users", e);
             return new HashSet<JCRUserNode>();

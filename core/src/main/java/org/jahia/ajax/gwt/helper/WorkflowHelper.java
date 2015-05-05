@@ -85,6 +85,8 @@ import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryTa
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.TaskEvent;
 import org.jahia.ajax.gwt.client.widget.workflow.CustomWorkflow;
+import org.jahia.ajax.gwt.commons.server.ChannelHolder;
+import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -702,27 +704,36 @@ public class WorkflowHelper {
                 }
                 for (JCRUserNode user : users) {
                     if (user != null) {
+                        TaskEvent taskEvent = new TaskEvent();
+                        try {
+                            JahiaUser jahiaUser = user.getJahiaUser();
+                            if (newTask) {
+                                Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
+                                if (preferredLocale == null) {
+                                    preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
+                                }
+                                task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
+                                taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
+                            }
+                            taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, newTask ? null : task.getId()));
+                            if (!newTask) {
+                                taskEvent.setEndedTask(task.getId());
+                            }
+                        } catch (GWTJahiaServiceException e) {
+                            logger.debug(e.getMessage(), e);
+                        }
                         Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
                         if (broadcaster != null) {
-                            TaskEvent taskEvent = new TaskEvent();
-                            try {
-                                JahiaUser jahiaUser = user.getJahiaUser();
-                                if (newTask) {
-                                    Locale preferredLocale = UserPreferencesHelper.getPreferredLocale(user);
-                                    if (preferredLocale == null) {
-                                        preferredLocale = LanguageCodeConverters.languageCodeToLocale(ServicesRegistry.getInstance().getJahiaSitesService().getDefaultSite().getDefaultLanguage());
-                                    }
-                                    task = service.getWorkflowTask(task.getId(), task.getProvider(), preferredLocale);
-                                    taskEvent.setNewTask(StringUtils.defaultString(task.getDisplayName(), task.getName()));
-                                }
-                                taskEvent.setNumberOfTasks(getNumberOfTasksForUser(jahiaUser, newTask ? null : task.getId()));
-                                if (!newTask) {
-                                    taskEvent.setEndedTask(task.getId());
-                                }
-                            } catch (GWTJahiaServiceException e) {
-                            }
-
                             broadcaster.broadcast(taskEvent);
+                        }
+                        else {
+                            try {
+                                ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
+                                JGroupsChannel jc = bean.getChannel();
+                                jc.send(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName(),taskEvent);
+                            } catch (Exception e) {
+                                logger.debug(e.getMessage(), e);
+                            }
                         }
                     }
                 }

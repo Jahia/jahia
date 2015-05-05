@@ -78,7 +78,10 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
+import org.jahia.ajax.gwt.commons.server.ChannelHolder;
+import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -316,17 +319,25 @@ public class SchedulerHelper {
                 }
                 final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
                 if (broadcasterFactory != null) {
+                    ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
+                    if (startedJob != null) {
+                        pollingEvent.setStartedJob(convertToGWTJobs(startedJob));
+                    }
+                    if (endedJob != null) {
+                        pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
+                    }
+                    pollingEvent.setTotalCount(totalCount);
                     Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID);
                     if (broadcaster != null) {
-                        ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
-                        if (startedJob != null) {
-                            pollingEvent.setStartedJob(convertToGWTJobs(startedJob));
-                        }
-                        if (endedJob != null) {
-                            pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
-                        }
-                        pollingEvent.setTotalCount(totalCount);
                         broadcaster.broadcast(pollingEvent);
+                    } else {
+                        try {
+                            ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
+                            JGroupsChannel jc = bean.getChannel();
+                            jc.send(ManagedGWTResource.GWT_BROADCASTER_ID, pollingEvent);
+                        } catch (Exception e) {
+                            logger.debug(e.getMessage(), e);
+                        }
                     }
                 }
             } catch (GWTJahiaServiceException e) {

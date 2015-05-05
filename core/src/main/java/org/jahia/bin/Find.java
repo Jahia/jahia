@@ -395,6 +395,11 @@ public class Find extends BaseFindController {
         }
 
         for (String column : columns) {
+            if (currentNode != null) {
+                if (!currentNode.hasProperty(column.contains(".") ? StringUtils.substringAfter(column,".") : column)) {
+                    continue;
+                }
+            }
             try {
                 if (skipRowColumn(column)) {
                     continue;

@@ -39,22 +39,17 @@
  */
 package org.jahia.utils;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Pattern;
-
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
 import org.junit.Test;
 
+import java.util.*;
+import java.util.regex.Pattern;
+
 import static junit.framework.Assert.*;
 
 /**
- * Based on GateIn Common class org.gatein.common.text.StringTestCase.
  *
  * @author Christophe Laprun
  */

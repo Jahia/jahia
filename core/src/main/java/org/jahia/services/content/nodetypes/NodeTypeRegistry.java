@@ -3,85 +3,73 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ======================================================================================
+ * 1/ GPL
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  *
  *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
  *
- *     For more information, please visit http://www.jahia.com
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.content.nodetypes;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.util.*;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
-import javax.jcr.nodetype.*;
 
 import com.google.common.collect.Sets;
 import org.apache.commons.collections.BidiMap;
@@ -99,17 +87,25 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.nodetype.*;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * Jahia implementation of the {@link NodeTypeManager}.
  * User: toto
  * Date: 4 janv. 2008
  * Time: 15:08:56
  */
-public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
+public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     private static final String SYSTEM = "system";
     private static final Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
-    private final Map<Name, ExtendedNodeType> nodetypes = new HashMap<>();
+    private final static Object lock = new Object();
+    private final Map<Name, ExtendedNodeType> nodetypes = new ConcurrentHashMap<>();
 
     private final BidiMap namespaces = new DualHashBidiMap();
 
@@ -129,6 +125,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     private static class Holder {
         static final NodeTypeRegistry INSTANCE = new NodeTypeRegistry();
     }
+
     public static NodeTypeRegistry getInstance() {
         return Holder.INSTANCE;
     }
@@ -164,7 +161,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                 }
 
             } catch (IOException e) {
-                logger.error(e.getMessage(),e);
+                logger.error(e.getMessage(), e);
             }
         }
 
@@ -181,14 +178,14 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     }
 
     public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
-        ProviderNodeTypeRegistryHolder.deployDefinitionsFileToProviderNodeTypeRegistry(reader,definitionName);
+        ProviderNodeTypeRegistryHolder.deployDefinitionsFileToProviderNodeTypeRegistry(reader, definitionName);
     }
 
     /**
      * Flush all labels for all node types and items
      */
     public void flushLabels() {
-        for (ExtendedNodeType nodeType : nodetypes.values()) {
+        for (ExtendedNodeType nodeType : getNodeTypes()) {
             nodeType.clearLabels();
         }
         for (Set<ExtendedItemDefinition> itemSet : typedItems.values()) {
@@ -203,19 +200,22 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
         try {
             File f = new File(cnddir);
-            SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(f.listFiles()));
-            for (File file : cndfiles) {
-                addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
+            final File[] files = f.listFiles();
+            if (files != null) {
+                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
+                for (File file : cndfiles) {
+                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
+                }
             }
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);
         }
     }
 
-    public void initPropertiesFile() throws IOException  {
+    public void initPropertiesFile() throws IOException {
         try {
             final String propertyFile = nodeTypesDBService.readDefinitionPropertyFile();
-            if(propertyFile!=null) {
+            if (propertyFile != null) {
                 deploymentProperties.load(new StringReader(propertyFile));
             }
         } catch (RepositoryException e) {
@@ -283,7 +283,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
             Reader resourceReader = null;
             try {
                 resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
-                JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(),systemId, this);
+                JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
             } finally {
                 IOUtils.closeQuietly(resourceReader);
@@ -304,7 +304,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
 
     /**
      * Reads the specified CND file resource and parses it to obtain a list of node type definitions.
-     * 
+     *
      * @param resource
      *            a resource, representing a CND file
      * @param systemId
@@ -348,7 +348,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
                     if (NodeTypeRegistry.getInstance().hasNodeType(nodeType.getName())) {
                         ExtendedNodeType existingNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
                         if (!existingNodeType.getSystemId().equals(nodeType.getSystemId())) {
-                            throw new NodeTypeExistsException("Node type already defined : "+nodeType.getName());
+                            throw new NodeTypeExistsException("Node type already defined : " + nodeType.getName());
                         }
                     }
                 }
@@ -366,16 +366,8 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         return files.get(systemId);
     }
 
-    public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {
-        ExtendedNodeType res = StringUtils.isNotEmpty(name) ? nodetypes.get(new Name(name, namespaces)) : null;
-        if (res == null) {
-            throw new NoSuchNodeTypeException("Unknown type : " + name);
-        }
-        return res;
-    }
-
     public JahiaNodeTypeIterator getAllNodeTypes() {
-        final Collection<ExtendedNodeType> values = nodetypes.values();
+        final Collection<ExtendedNodeType> values = getNodeTypes();
         return new JahiaNodeTypeIterator(values.iterator(), values.size());
     }
 
@@ -385,7 +377,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         } else {
             List<ExtendedNodeType> res = new ArrayList<>();
 
-            for (ExtendedNodeType nt : nodetypes.values()) {
+            for (ExtendedNodeType nt : getNodeTypes()) {
                 if (systemIds.contains(nt.getSystemId())) {
                     res.add(nt);
                 }
@@ -403,6 +395,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
     public Map<String, String> getNamespaces() {
         return namespaces;
     }
+
     public NodeTypeIterator getPrimaryNodeTypes() throws RepositoryException {
         return getPrimaryNodeTypes(null);
     }
@@ -411,7 +404,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         final boolean addAll = systemIds == null || systemIds.isEmpty();
 
         List<ExtendedNodeType> res = new ArrayList<>();
-        for (ExtendedNodeType nt : nodetypes.values()) {
+        for (ExtendedNodeType nt : getNodeTypes()) {
             if (!nt.isMixin() && (addAll || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
@@ -427,7 +420,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         final boolean addAll = systemIds == null || systemIds.isEmpty();
 
         List<ExtendedNodeType> res = new ArrayList<>();
-        for (ExtendedNodeType nt : nodetypes.values()) {
+        for (ExtendedNodeType nt : getNodeTypes()) {
             if (nt.isMixin() && (addAll || systemIds.contains(nt.getSystemId()))) {
                 res.add(nt);
             }
@@ -435,15 +428,44 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         return new JahiaNodeTypeIterator(res.iterator(), res.size());
     }
 
+    private Collection<ExtendedNodeType> getNodeTypes() {
+        synchronized (lock) {
+            return nodetypes.values();
+        }
+    }
+
+    private ExtendedNodeType getNodeType(Name name) {
+        synchronized (lock) {
+            return nodetypes.get(name);
+        }
+    }
+
+    public ExtendedNodeType getNodeType(String name) throws NoSuchNodeTypeException {
+        ExtendedNodeType nodeType = null;
+        if (StringUtils.isNotBlank(name)) {
+            nodeType = getNodeType(getName(name));
+        }
+
+        if (nodeType == null) {
+            throw new NoSuchNodeTypeException("Unknown type : " + name);
+        } else {
+            return nodeType;
+        }
+    }
+
     public void addNodeType(Name name, ExtendedNodeType nodeType) throws NodeTypeExistsException {
-        if (nodetypes.containsKey(name)) {
-            final String systemId = nodetypes.get(name).getSystemId();
+        final ExtendedNodeType type = getNodeType(name);
+        if (type != null) {
+            final String systemId = type.getSystemId();
             if (!systemId.equals(nodeType.getSystemId())) {
                 throw new NodeTypeExistsException("Node type '" + name + "' already defined with a different systemId (existing: '"
                         + systemId + "', provided: '" + nodeType.getSystemId() + "' with name: '" + nodeType.getName() + "')");
             }
         }
-        nodetypes.put(name, nodeType);
+
+        synchronized (lock) {
+            nodetypes.put(name, nodeType);
+        }
     }
 
     public void addMixinExtension(ExtendedNodeType mixin, ExtendedNodeType baseType) {
@@ -470,22 +492,21 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         return typedItems;
     }
 
-    public void unregisterNodeType(Name name) {
-        nodetypes.remove(name);
-    }
-
     public void unregisterNodeTypes(String systemId) {
-        for (Name n : new HashSet<>(nodetypes.keySet())) {
-            ExtendedNodeType nt = nodetypes.get(n);
-            if (systemId.equals(nt.getSystemId())) {
-                unregisterNodeType(n);
+        final List<ExtendedNodeType> nodeTypes = new ArrayList<>(getNodeTypes());
+        for (ExtendedNodeType type : nodeTypes) {
+            if (systemId.equals(type.getSystemId())) {
+                synchronized (lock) {
+                    nodetypes.remove(type.getNameObject());
+                }
             }
         }
+
         deploymentProperties.remove(systemId + ".version");
         try {
             saveProperties();
         } catch (IOException e) {
-            logger.error("Cannot save definitions properties",e);
+            logger.error("Cannot save definitions properties", e);
         }
     }
 
@@ -507,10 +528,10 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean{
         }
     }
 
-public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType>  {
+    public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType> {
         private long size;
-        private long pos=0;
-    private final Iterator<ExtendedNodeType> iterator;
+        private long pos = 0;
+        private final Iterator<ExtendedNodeType> iterator;
 
         JahiaNodeTypeIterator(Iterator<ExtendedNodeType> it, long size) {
             this.iterator = it;
@@ -518,41 +539,52 @@ public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<Extende
         }
 
         public NodeType nextNodeType() {
-            pos += 1;
-            return iterator.next();
+            synchronized (lock) {
+                pos += 1;
+                return iterator.next();
+            }
         }
 
         public void skip(long l) {
-            if ((pos + l + 1) > size) {
-                throw new NoSuchElementException("Tried to skip past " + l +
-                        " elements, which with current pos (" + pos +
-                        ") brings us past total size=" + size);
+            synchronized (lock) {
+                if ((pos + l + 1) > size) {
+                    throw new NoSuchElementException("Tried to skip past " + l +
+                            " elements, which with current pos (" + pos +
+                            ") brings us past total size=" + size);
+                }
             }
-            for (int i=0; i < l; i++) {
+            for (int i = 0; i < l; i++) {
                 next();
             }
         }
 
         public long getSize() {
-            return size;
+            synchronized (lock) {
+                return size;
+            }
         }
 
         public long getPosition() {
-            return pos;
+            synchronized (lock) {
+                return pos;
+            }
         }
 
         public boolean hasNext() {
-            return iterator.hasNext();
+            synchronized (lock) {
+                return iterator.hasNext();
+            }
         }
 
         public Object next() {
-            pos += 1;
-            return iterator.next();
+            return nextNodeType();
         }
 
         public void remove() {
-            iterator.remove();
-            size -= 1;
+            synchronized (lock) {
+                iterator.remove();
+                size -= 1;
+            }
         }
 
         /**
@@ -567,7 +599,13 @@ public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<Extende
     }
 
     public boolean hasNodeType(String name) {
-        return nodetypes.get(new Name(name, namespaces)) != null;
+        if (StringUtils.isNotBlank(name)) {
+            final Name key = getName(name);
+            synchronized (lock) {
+                return nodetypes.containsKey(key);
+            }
+        }
+        return false;
     }
 
     public NodeTypeTemplate createNodeTypeTemplate() throws UnsupportedRepositoryOperationException, RepositoryException {
@@ -595,29 +633,43 @@ public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<Extende
     }
 
     public void unregisterNodeType(String name) throws ConstraintViolationException {
-        Name n = new Name(name, namespaces);
-        if (nodetypes.containsKey(n)) {
-            for (ExtendedNodeType type : nodetypes.values()) {
-                if (!type.getName().equals(name)) {
-                    for (ExtendedNodeType nt : type.getSupertypes()) {
-                        if (nt.getName().equals(name)) {
-                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
+        if (StringUtils.isNotBlank(name)) {
+            Name n = getName(name);
+            boolean knowsNode;
+            synchronized (lock) {
+                knowsNode = nodetypes.containsKey(n);
+            }
+
+            if (knowsNode) {
+                for (ExtendedNodeType type : getNodeTypes()) {
+                    if (!type.getName().equals(name)) {
+                        for (ExtendedNodeType nt : type.getSupertypes()) {
+                            if (nt.getName().equals(name)) {
+                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
+                            }
                         }
-                    }
-                    for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
-                        if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                        for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
+                            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                            }
                         }
-                    }
-                    for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
-                        if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                            throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                        for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
+                            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+                            }
                         }
                     }
                 }
+
+                synchronized (lock) {
+                    nodetypes.remove(n);
+                }
             }
-            nodetypes.remove(n);
         }
+    }
+
+    private Name getName(String name) {
+        return new Name(name, namespaces);
     }
 
     public void unregisterNodeTypes(String[] names) throws ConstraintViolationException {

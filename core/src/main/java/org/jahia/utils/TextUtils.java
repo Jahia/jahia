@@ -39,13 +39,7 @@
  */
 package org.jahia.utils;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -106,103 +100,6 @@ public class TextUtils {
         return visitBoundedString(initial, prefix, suffix, new Replacer(prefix, suffix, visitor));
     }
 
-
-    private static class SortedMapMatches implements Matches {
-        protected SortedMap<Integer, Integer> matchedPairs = new TreeMap<>();
-
-
-        public void matchingComplete() {
-            // nothing to do
-        }
-
-        public void add(int start, int end) {
-            matchedPairs.put(start, end);
-        }
-
-        @Override
-        public String toString() {
-            return matchedPairs.toString();
-        }
-
-        public boolean matchExists(int start) {
-            return matchedPairs.get(start) != null;
-        }
-
-        public void remove(int start) {
-            matchedPairs.remove(start);
-        }
-
-        public int get(int start) {
-            return matchedPairs.get(start);
-        }
-
-        public boolean isEmpty() {
-            return matchedPairs.isEmpty();
-        }
-
-        public Match firstMatch() {
-            final Integer start = matchedPairs.firstKey();
-            return new Match(start, matchedPairs.get(start));
-        }
-
-        public Matches after(int position) {
-            matchedPairs = matchedPairs.tailMap(position);
-            return this;
-        }
-
-    }
-
-    private static class ListMatches implements Matches {
-        private List<Match> matches = new LinkedList<>();
-        private int lastMatchIndex = 0;
-
-
-        public void matchingComplete() {
-            Collections.sort(matches);
-        }
-
-        public void add(int start, int end) {
-            matches.add(new Match(start, end));
-        }
-
-        @Override
-        public String toString() {
-            return matches.toString();
-        }
-
-        public boolean matchExists(int start) {
-            return matches.contains(new Match(start, -1));
-        }
-
-        public void remove(int start) {
-            lastMatchIndex++;
-        }
-
-        public int get(int start) {
-            final int i = matches.indexOf(new Match(start, -1));
-            return matches.get(i).end;
-        }
-
-        public boolean isEmpty() {
-            return lastMatchIndex == matches.size() || matches.isEmpty();
-        }
-
-        public Match firstMatch() {
-            return matches.get(lastMatchIndex);
-        }
-
-        public Matches after(int position) {
-            while (lastMatchIndex < matches.size()) {
-                final Match match = matches.get(lastMatchIndex);
-                if (match.start >= position) {
-                    break;
-                }
-                lastMatchIndex++;
-            }
-            return this;
-        }
-
-    }
 
     private static class ArrayMatches implements Matches {
         private Match[] matches = new Match[25];
@@ -332,7 +229,7 @@ public class TextUtils {
 
             // if we don't have a suffix, the whole String is a match, so visit it and return
             if (suffixIndex < 0) {
-                return visitor.visit(prefix, suffix, prefixLength, length, accessStringInternalArray(initialString));
+                return visitor.visit(prefix, suffix, prefixLength, length, initialString.toCharArray());
             }
 
             // as long as we can find new prefixes to match
@@ -361,22 +258,7 @@ public class TextUtils {
             // prepare matches for visits if needed
             matches.matchingComplete();
 
-            // retrieve the String's internal array to avoid creating lots of object with substrings
-            final char[] internalStringArray = accessStringInternalArray(initialString);
-
-            return visitMatches(matches, visitor.initialValue(initialString), internalStringArray);
-        }
-
-        private char[] accessStringInternalArray(String initialString) {
-            char[] internalStringArray;
-            try {
-                Field field = String.class.getDeclaredField("value");
-                field.setAccessible(true);
-                internalStringArray = (char[]) field.get(initialString);
-            } catch (Exception e) {
-                throw new RuntimeException("TextUtils couldn't access the String's internal array.", e);
-            }
-            return internalStringArray;
+            return visitMatches(matches, visitor.initialValue(initialString), initialString.toCharArray());
         }
 
         public T match(String preMatches, String betweenMatches, String postMatches) {

@@ -396,7 +396,11 @@ public class Find extends BaseFindController {
 
         for (String column : columns) {
             if (currentNode != null) {
-                if (!currentNode.hasProperty(column.contains(".") ? StringUtils.substringAfter(column,".") : column)) {
+                if (!"jcr:score".equals(column)
+                        && !"jcr:path".equals(column)
+                        && !column.startsWith("rep:")
+                        && !currentNode.hasProperty(column.contains(".") ? StringUtils.substringAfter(column, ".")
+                                : column)) {
                     continue;
                 }
             }

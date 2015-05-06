@@ -232,6 +232,6 @@
             value="${jahia.find.nodeTypesToSkip:jnt:passwordHistory,jnt:passwordHistoryEntry}" />
         <property name="pathsToSkip" value="${jahia.find.pathsToSkip:/users/root}" />
         <property name="propertiesToSkip"
-            value="${jahia.find.propertiesToSkip:jnt:user.j:password,jnt:passwordHistoryEntry.j:password}" />
+            value="${jahia.find.propertiesToSkip:jnt:user.j:password,jnt:user.j:email,jnt:passwordHistoryEntry.j:password}" />
     </bean>
 </beans>

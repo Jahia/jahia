@@ -100,7 +100,10 @@ import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.contentengine.*;
+import org.jahia.ajax.gwt.client.widget.contentengine.ContentTabItem;
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
+import org.jahia.ajax.gwt.client.widget.contentengine.EngineValidation;
+import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
 
 import java.util.*;
@@ -290,7 +293,7 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                                 }
                                 if (config.isShowWorkInProgress()) {
                                     wip.setEnabled(true);
-                                    wip.setValue(getNode() != null && getNode().get("j:workInProgress") != null && (Boolean) getNode().get("j:workInProgress"));
+                                    wip.setValue(result.getNode() != null && result.getNode().get("j:workInProgress") != null && (Boolean) result.getNode().get("j:workInProgress"));
                                 }
 
                                 fillCurrentTab();
@@ -437,11 +440,6 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                         return;
                     }
                 }
-                if (workInProgress) {
-                    changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
-                } else {
-                    changedProperties.add(new GWTJahiaNodeProperty("j:workInProgress", null, GWTJahiaNodePropertyType.BOOLEAN));
-                }
             }
 
             final Set<String> addedTypes = new HashSet<String>();
@@ -461,6 +459,9 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 }
 
                 item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, null, acl);
+            }
+            if (config.isShowWorkInProgress()) {
+                changedI18NProperties.put(language.getLanguage(), Arrays.asList(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN)));
             }
 
             getNode().getNodeTypes().removeAll(removedTypes);

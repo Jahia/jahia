@@ -185,9 +185,17 @@ public class UserCacheHelper {
             q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(path);
         }
         q.append("/users/')");
+        String p = queryUserPathInWorkspace(q, Constants.LIVE_WORKSPACE);
+        if(p == null) {
+            p = queryUserPathInWorkspace(q, null);
+        }
+        return p;
+    }
+
+    private String queryUserPathInWorkspace(StringBuilder q, String workspace) throws RepositoryException {
         final QueryWrapper query = JCRSessionFactory
                 .getInstance()
-                .getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null)
+                .getCurrentSystemSession(workspace, null, null)
                 .getWorkspace()
                 .getQueryManager()
                 .createQuery(q.toString(), Query.JCR_SQL2);

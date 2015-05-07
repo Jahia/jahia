@@ -192,8 +192,16 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return Return a reference on a new created JCRUserNode object.
      */
     public JCRUserNode lookupUserByPath(String path) {
+        JCRUserNode userNode = lookupUserByPath(path, Constants.LIVE_WORKSPACE);
+        if(userNode == null) {
+            userNode = lookupUserByPath(path, Constants.EDIT_WORKSPACE);
+        }
+        return userNode;
+    }
+
+    private JCRUserNode lookupUserByPath(String path, String workspace) {
         try {
-            return lookupUserByPath(path, JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null));
+            return lookupUserByPath(path, JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null));
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return null;
@@ -239,15 +247,24 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers) {
         JCRUserNode userNode = null;
         try {
-            JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
-            if (checkSiteAndGlobalUsers && site != null) {
-                userNode = lookupUser(name, null, s);
-            }
-            if (userNode == null) {
-                userNode = lookupUser(name, site, s);
+            userNode = lookupUser(name, site, checkSiteAndGlobalUsers, Constants.LIVE_WORKSPACE);
+            if(userNode == null) {
+                userNode = lookupUser(name, site, checkSiteAndGlobalUsers, Constants.EDIT_WORKSPACE);
             }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
+        }
+        return userNode;
+    }
+
+    private JCRUserNode lookupUser(String name, String site, boolean checkSiteAndGlobalUsers, String workspace) throws RepositoryException {
+        JCRSessionWrapper s = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null);
+        JCRUserNode userNode = null;
+        if (checkSiteAndGlobalUsers && site != null) {
+            userNode = lookupUser(name, null, s);
+        }
+        if (userNode == null) {
+            userNode = lookupUser(name, site, s);
         }
         return userNode;
     }

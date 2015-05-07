@@ -197,6 +197,8 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     private Map<String, JCRSessionWrapper> observerSessions;
 
+    private String mountStatusMessage;
+
     public String getKey() {
         return key;
     }
@@ -407,6 +409,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     /**
      * Same as <code>isAvailable(false)</code>
+     *
      * @return whether this provider is available to serve content
      */
     public boolean isAvailable() {
@@ -415,25 +418,35 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     /**
      * Checks whether this provider is available to serve content.
+     *
      * @param silent <code>true</code> if the check should be done silently (i.e. without outputting information on the console), <code>false</code> otherwise
      * @return <code>true</code> if this provider can serve content, <code>false</code> otherwise.
      */
     public boolean isAvailable(boolean silent) {
-        JCRSessionWrapper systemSession = null;
         try {
-            systemSession = sessionFactory.getSystemSession();
-            final Session providerSession = systemSession.getProviderSession(this);
-            providerSession.getRootNode();
+            checkAvailability();
+            mountStatusMessage = null;
             return true;
         } catch (RepositoryException e) {
             if (!silent) {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
                 } else {
-                    logger.warn("Provider '" + key + "' is not accessible and will not be available. Cause: {}", e.getMessage());
+                    final String message = e.getMessage() + (e.getCause() != null ? ": " + e.getCause().getMessage() : "");
+                    logger.warn("Provider '{}' is not accessible and will not be available. Cause: {}", key, message);
+                    mountStatusMessage = message;
                 }
             }
             return false;
+        }
+    }
+
+    public void checkAvailability() throws RepositoryException {
+        JCRSessionWrapper systemSession = null;
+        try {
+            systemSession = sessionFactory.getSystemSession();
+            final Session providerSession = systemSession.getProviderSession(this);
+            providerSession.getRootNode();
         } finally {
             if (systemSession != null) {
                 systemSession.logout();
@@ -447,6 +460,19 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @param status the new status of this provider
      */
     public void setMountStatus(final JCRMountPointNode.MountStatus status) {
+        setMountStatus(status, null);
+    }
+
+    /**
+     * Sets the mount status of this provider to the specified one.
+     *
+     * @param status the new status of this provider
+     */
+    public void setMountStatus(final JCRMountPointNode.MountStatus status, String message) {
+        if (message != null) {
+            mountStatusMessage = message;
+        }
+
         if (status != null) {
             if (isDynamicallyMounted()) {
                 try {
@@ -483,6 +509,14 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             }
 
         }
+    }
+
+    public String getMountStatusMessage() {
+        return mountStatusMessage;
+    }
+
+    public void setMountStatusMessage(String mountStatusMessage) {
+        this.mountStatusMessage = mountStatusMessage;
     }
 
     protected void initNodeTypes() throws RepositoryException, IOException {
@@ -1035,11 +1069,10 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     /**
+     * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
+     * they are skipped
      * @deprecated now canExportNode and canExportProperty are used
      * Indicates if the nodes, backed by this provider, are considered during export operation.
-     *
-     * @return <code>true</code> if the nodes, backed by this provider, are also included during the export operation; <code>false</code> if
-     *         they are skipped
      */
     @Deprecated
     public boolean isExportable() {
@@ -1062,7 +1095,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * Indicates if the specified node, backed by this provider, is considered during export operation
      *
      * @return <code>true</code> if the specified node, backed by this provider, is included during the export operation
-     *         <code>false</code> if it isn't
+     * <code>false</code> if it isn't
      */
     public boolean canExportNode(Node node) {
         return true;
@@ -1072,7 +1105,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * Indicates if the specified property, backed by this provider, is considered during export operation
      *
      * @return <code>true</code> if the specified property, backed by this provider, is included during the export operation
-     *         <code>false</code> if it isn't
+     * <code>false</code> if it isn't
      */
     public boolean canExportProperty(Property property) {
         return true;

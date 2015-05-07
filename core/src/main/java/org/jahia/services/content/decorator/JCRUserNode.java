@@ -236,6 +236,7 @@ public class JCRUserNode extends JCRNodeDecorator {
         try {
             return StringUtils.isNotEmpty(userPassword) && JahiaUserManagerService.encryptPassword(userPassword).equals(getProperty(J_PASSWORD).getString());
         } catch (RepositoryException e) {
+            logger.debug("Password verification failed for user " + getName(), e);
             return false;
         }
     }

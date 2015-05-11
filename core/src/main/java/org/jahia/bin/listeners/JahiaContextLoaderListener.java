@@ -393,6 +393,10 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
         contextInitialized = false;
         running = false;
+
+        logger.info("Shutting down scheduler, wait for running jobs");
+        ServicesRegistry.getInstance().getSchedulerService().stop();
+
         if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(
                     new ServletContextDestroyedEvent(event.getServletContext()));

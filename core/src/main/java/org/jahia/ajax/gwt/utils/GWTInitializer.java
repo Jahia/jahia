@@ -227,8 +227,7 @@ public class GWTInitializer {
         }
         params.put(JahiaGWTParameters.TOOLBAR_MESSAGES, ToolbarWarningsService.getInstance().getMessagesValueAsString(uilocale));
 
-        Properties factoryBean = (Properties) SpringContextSingleton.getBean("jahiaProperties");
-        params.put(JahiaGWTParameters.USE_WEBSOCKETS, Boolean.toString(!"jboss".equals(factoryBean.getProperty("server"))));
+        params.put(JahiaGWTParameters.USE_WEBSOCKETS, Boolean.toString(SettingsBean.getInstance().isUseWebsockets()));
 
         String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
         if (customCkeditorConfig != null) {

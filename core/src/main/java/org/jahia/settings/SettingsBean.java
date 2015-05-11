@@ -386,6 +386,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean isMavenExecutableSet;
 
     private String[] authorizedRedirectHosts;
+    
+    private boolean useWebsockets = true;
 
     /**
      * Default constructor.
@@ -521,6 +523,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             readOnlyMode = getBoolean("readOnlyMode", false);
             
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
+            
+            useWebsockets = getBoolean("atmosphere.useWebsockets", true) && !getServer().equals("jboss");
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -1438,5 +1442,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String[] getAuthorizedRedirectHosts() {
         return authorizedRedirectHosts;
+    }
+
+    public boolean isUseWebsockets() {
+        return useWebsockets;
+    }
+
+    public void setUseWebsockets(boolean useWebsockets) {
+        this.useWebsockets = useWebsockets;
     }
 }

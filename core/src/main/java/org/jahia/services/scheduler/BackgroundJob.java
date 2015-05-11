@@ -156,6 +156,7 @@ public abstract class BackgroundJob implements StatefulJob {
 	            	logger.debug("Executing job as user {}", userKey);
 	            } else {
 	            	logger.warn("Unable to lookup job user for key {}", userKey);
+                    throw new JobExecutionException("Unable to lookup job user for key " + userKey);
 	            }
         	} else {
                 logger.debug("Executing job as system user");

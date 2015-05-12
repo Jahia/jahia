@@ -95,36 +95,7 @@ public class Functions {
             String property) {
         JCRNodeWrapper boundComponentNode = null;
         try {
-            JCRNodeWrapper mainResource = renderContext.getMainResource().getNode();
-            if (renderContext.getAjaxResource() != null) {
-                mainResource = renderContext.getAjaxResource().getNode();
-            }
-            if (currentNode.hasProperty(property)) {
-                JCRPropertyWrapper boundComponentProp = currentNode.getProperty(property);
-                if (boundComponentProp != null) {
-                    boundComponentNode = (JCRNodeWrapper) boundComponentProp.getNode();
-                }
-                if (boundComponentNode != null) {
-                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
-                        boundComponentNode.isNodeType("jnt:template")) {
-                        boundComponentNode = mainResource;
-                    } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
-                        String areaName = boundComponentNode.getName();
-                        boundComponentNode = mainResource;
-                        if (boundComponentNode.hasNode(areaName)) {
-                            boundComponentNode = boundComponentNode.getNode(areaName);
-                        } else {
-                            boundComponentNode = null;
-                        }
-                    }
-                }
-            } else {
-                boundComponentNode = mainResource;
-            }
-            if (boundComponentNode != null && !boundComponentNode.getPath().equals(
-                    mainResource.getPath())) {
-                renderContext.getResourcesStack().peek().getDependencies().add(boundComponentNode.getCanonicalPath());
-            }
+            boundComponentNode = getBoundJcrNodeWrapper(currentNode, renderContext, property, boundComponentNode);
         } catch (ItemNotFoundException e) {
             logger.debug(e.getMessage(), e);
         } catch (RepositoryException e) {
@@ -134,24 +105,9 @@ public class Functions {
     }
     
     public static String getBoundComponentPath(JCRNodeWrapper currentNode, RenderContext renderContext, String property) {
-        Node boundComponentNode = null;
+        JCRNodeWrapper boundComponentNode = null;
         try {
-            if (currentNode.hasProperty(property)) {
-                Property boundComponentProp = currentNode.getProperty(property);
-                if (boundComponentProp != null) {
-                    boundComponentNode = boundComponentProp.getNode();
-                }
-                if (boundComponentNode != null) {
-                    if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY)
-                            || boundComponentNode.isNodeType("jnt:template")) {
-                        boundComponentNode = renderContext.getMainResource().getNode();
-                    } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
-                        String areaName = boundComponentNode.getName();
-                        boundComponentNode = renderContext.getMainResource().getNode();
-                        return boundComponentNode.getPath() + "/" + areaName;
-                    }
-                }
-            }
+            boundComponentNode = getBoundJcrNodeWrapper(currentNode, renderContext, property, boundComponentNode);
             if (boundComponentNode != null) {
                 return boundComponentNode.getPath();
             }
@@ -159,8 +115,42 @@ public class Functions {
             logger.error(e.getMessage(), e);
         }
         return null;
-    }    
-    
+    }
+
+    private static JCRNodeWrapper getBoundJcrNodeWrapper(JCRNodeWrapper currentNode, RenderContext renderContext, String property, JCRNodeWrapper boundComponentNode) throws RepositoryException {
+        JCRNodeWrapper mainResource = renderContext.getMainResource().getNode();
+        if (renderContext.getAjaxResource() != null) {
+            mainResource = renderContext.getAjaxResource().getNode();
+        }
+        if (currentNode.hasProperty(property)) {
+            JCRPropertyWrapper boundComponentProp = currentNode.getProperty(property);
+            if (boundComponentProp != null) {
+                boundComponentNode = (JCRNodeWrapper) boundComponentProp.getNode();
+            }
+            if (boundComponentNode != null) {
+                if (boundComponentNode.isNodeType(Constants.JAHIANT_MAINRESOURCE_DISPLAY) ||
+                        boundComponentNode.isNodeType("jnt:template")) {
+                    boundComponentNode = mainResource;
+                } else if (boundComponentNode.isNodeType(Constants.JAHIANT_AREA)) {
+                    String areaName = boundComponentNode.getName();
+                    boundComponentNode = mainResource;
+                    if (boundComponentNode.hasNode(areaName)) {
+                        boundComponentNode = boundComponentNode.getNode(areaName);
+                    } else {
+                        boundComponentNode = null;
+                    }
+                }
+            }
+        } else {
+            boundComponentNode = mainResource;
+        }
+        if (boundComponentNode != null && !boundComponentNode.getPath().equals(
+                mainResource.getPath())) {
+            renderContext.getResourcesStack().peek().getDependencies().add(boundComponentNode.getCanonicalPath());
+        }
+        return boundComponentNode;
+    }
+
     /**
      * @deprecated use {@link #getBoundComponent(JCRNodeWrapper, RenderContext, String)} instead
      */

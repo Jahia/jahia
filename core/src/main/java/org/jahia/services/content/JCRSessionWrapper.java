@@ -472,8 +472,12 @@ public class JCRSessionWrapper implements Session {
                 if (source.length() < n.getPath().length()) {
                     newPath +=  n.getPath().substring(source.length());
                 }
-                ((JCRNodeWrapperImpl)n).localPath = newPath;
-                ((JCRNodeWrapperImpl)n).localPathInProvider = newPath;
+                String localPath = newPath;
+                if (n.getProvider().getMountPoint().length() > 1) {
+                    localPath = newPath.substring(n.getProvider().getMountPoint().length());
+                }
+                ((JCRNodeWrapperImpl)n).localPath = localPath;
+                ((JCRNodeWrapperImpl)n).localPathInProvider = localPath;
                 cacheByPath.put(newPath, n);
             }
         }

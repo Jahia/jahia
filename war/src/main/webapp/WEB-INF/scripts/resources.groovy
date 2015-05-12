@@ -62,7 +62,12 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
               type.value.eachWithIndex { javascript, i ->
                   condition = javascript.value != null ? javascript.value.get("condition") : null;
                   if (condition != null) println("<!--["+condition+"]>");
+<<<<<<< .working
                   println "jASAJ.push('${javascript.key}');";
+=======
+                  url = renderContext.response.encodeURL(javascript.key);
+                  println "jAggregatedStaticAssetsJavascript.push('${url}');";
+>>>>>>> .merge-right.r52626
                   if (condition != null) println("<![endif]-->");
               }
           }

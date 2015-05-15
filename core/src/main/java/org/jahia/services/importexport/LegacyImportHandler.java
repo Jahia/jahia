@@ -89,6 +89,7 @@ import org.jahia.services.importexport.DefinitionsMapping.Action;
 import org.jahia.services.importexport.DefinitionsMapping.AddMixin;
 import org.jahia.services.importexport.DefinitionsMapping.AddNode;
 import org.jahia.services.importexport.DefinitionsMapping.SetProperties;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.i18n.ResourceBundleMarker;
 import org.json.JSONObject;
@@ -146,6 +147,10 @@ public class LegacyImportHandler extends DefaultHandler {
     private JCRSessionWrapper session;
     private final LegacyPidMappingTool legacyPidMappingTool;
 
+    private final String externalLinkType;
+    private final String externalLinkUrlPropertyName;
+    private final boolean externalLinkInternationalized;
+
     private static final String HTTP_WWW_JAHIA_ORG = "http://www.jahia.org/";
     private static final String PAGE = "page";
     private static final String LINK = "link";
@@ -180,6 +185,12 @@ public class LegacyImportHandler extends DefaultHandler {
         this.locale = locale;
         this.originatingJahiaRelease = originatingJahiaRelease;
         this.legacyPidMappingTool = legacyPidMappingTool;
+
+        String s = SettingsBean.getInstance().lookupString("legacy.import.externalLink.nodeType");
+        externalLinkType = StringUtils.isNotBlank(s) ? s.trim() : Constants.JAHIANT_EXTERNAL_PAGE_LINK;
+        s = SettingsBean.getInstance().lookupString("legacy.import.externalLink.urlPropertyName");
+        externalLinkUrlPropertyName = StringUtils.isNotBlank(s) ? s.trim() : Constants.URL;
+        externalLinkInternationalized = SettingsBean.getInstance().lookupBoolean("legacy.import.externalLink.internationalized");
     }
 
     public void setReferences(Map<String, List<String>> references) {
@@ -371,7 +382,7 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
                         createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink", getMetadataForNodeCreation(attributes));
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), "jnt:externalLink", getMetadataForNodeCreation(attributes));
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), externalLinkType, externalLinkUrlPropertyName, externalLinkInternationalized, getMetadataForNodeCreation(attributes));
                     }
 
                     break;
@@ -565,16 +576,25 @@ public class LegacyImportHandler extends DefaultHandler {
     private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
                                     final String nodeType, Map<String, String> creationMetadata)
             throws RepositoryException {
+        createExternalLink(page, title, uuid, url, nodeType, Constants.URL, false, creationMetadata);
+    }
+
+    private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
+                                    final String nodeType, final String urlPropertyName, boolean urlIsLocalized, Map<String, String> creationMetadata)
+            throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
             sub = session.getNodeByIdentifier(uuidMapping.get(uuid));
         } else {
             sub = addOrCheckoutNode(page, "link_" + (ctnId++), nodeType, null, creationMetadata);
-            sub.setProperty("j:url", url);
             uuidMapping.put(uuid, sub.getIdentifier());
         }
 
         Node translation = sub.getOrCreateI18N(locale);
+
+        if (urlIsLocalized) translation.setProperty(urlPropertyName, url);
+        else sub.setProperty(urlPropertyName, url);
+
         if (title != null && title.length() > 0) {
             translation.setProperty("jcr:title", title);
         }

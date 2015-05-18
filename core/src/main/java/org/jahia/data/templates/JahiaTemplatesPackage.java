@@ -1013,6 +1013,61 @@ public class JahiaTemplatesPackage {
             }
 
             @Override
+            public Enumeration<URL> getResources(String name) throws IOException {
+
+                final List<Enumeration<URL>> urlsEnums = new ArrayList<Enumeration<URL>>();
+                for (ClassLoader loader : classLoaders) {
+                    Enumeration<URL> urls = loader.getResources(name);
+                    if (urls != null && urls.hasMoreElements()) {
+                        // we only add enumerations that have elements, make things simpler
+                        urlsEnums.add(urls);
+                    }
+                }
+
+                if (urlsEnums.size() == 0) {
+                    return java.util.Collections.emptyEnumeration();
+                }
+
+                return new Enumeration<URL>() {
+
+                    int i=0;
+                    Enumeration<URL> currentEnum = urlsEnums.get(i);
+
+                    @Override
+                    public boolean hasMoreElements() {
+                        if (currentEnum.hasMoreElements()) {
+                            return true;
+                        }
+                        int j=i;
+                        do {
+                            j++;
+                        } while (j < (urlsEnums.size()-1) && !urlsEnums.get(j).hasMoreElements());
+                        if (j <= (urlsEnums.size()-1)) {
+                            return urlsEnums.get(j).hasMoreElements();
+                        } else {
+                            return false;
+                        }
+                    }
+
+                    @Override
+                    public URL nextElement() {
+                        if (currentEnum.hasMoreElements()) {
+                            return currentEnum.nextElement();
+                        }
+                        do {
+                            i++;
+                            currentEnum = urlsEnums.get(i);
+                        } while (!currentEnum.hasMoreElements() && i < (urlsEnums.size()-1));
+                        if (currentEnum.hasMoreElements()) {
+                            return currentEnum.nextElement();
+                        } else {
+                            throw new NoSuchElementException();
+                        }
+                    }
+                };
+            }
+
+            @Override
             protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 for (ClassLoader loader : classLoaders) {
                     try {

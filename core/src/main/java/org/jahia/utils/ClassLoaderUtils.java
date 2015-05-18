@@ -71,11 +71,16 @@
  */
 package org.jahia.utils;
 
+import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 /**
  * Class loading related utilities.
@@ -116,7 +121,62 @@ public final class ClassLoaderUtils {
                     return myGetResource(name);
             }
         }
-        
+
+        @Override
+        public Enumeration<URL> getResources(String name) throws IOException {
+
+            final List<Enumeration<URL>> urlsEnums = new ArrayList<Enumeration<URL>>();
+            for (ClassLoader loader : loaders) {
+                Enumeration<URL> urls = loader.getResources(name);
+                if (urls != null && urls.hasMoreElements()) {
+                    // we only add enumerations that have elements, make things simpler
+                    urlsEnums.add(urls);
+                }
+            }
+
+            if (urlsEnums.size() == 0) {
+                return java.util.Collections.emptyEnumeration();
+            }
+
+            return new Enumeration<URL>() {
+
+                int i=0;
+                Enumeration<URL> currentEnum = urlsEnums.get(i);
+
+                @Override
+                public boolean hasMoreElements() {
+                    if (currentEnum.hasMoreElements()) {
+                        return true;
+                    }
+                    int j=i;
+                    do {
+                        j++;
+                    } while (j < (urlsEnums.size()-1) && !urlsEnums.get(j).hasMoreElements());
+                    if (j <= (urlsEnums.size()-1)) {
+                        return urlsEnums.get(j).hasMoreElements();
+                    } else {
+                        return false;
+                    }
+                }
+
+                @Override
+                public URL nextElement() {
+                    if (currentEnum.hasMoreElements()) {
+                        return currentEnum.nextElement();
+                    }
+                    do {
+                        i++;
+                        currentEnum = urlsEnums.get(i);
+                    } while (!currentEnum.hasMoreElements() && i < (urlsEnums.size()-1));
+                    if (currentEnum.hasMoreElements()) {
+                        return currentEnum.nextElement();
+                    } else {
+                        throw new NoSuchElementException();
+                    }
+                }
+            };
+        }
+
         @Override
         public Class<?> loadClass(final String className) throws ClassNotFoundException {
 

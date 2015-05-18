@@ -82,6 +82,7 @@ import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
@@ -100,6 +101,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
+
 import java.util.*;
 
 /**
@@ -317,7 +319,7 @@ public class SchedulerHelper {
                     //In case job is ended only and there is no active nor started job
                     totalCount = 0;
                 }
-                final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+                final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
                 if (broadcasterFactory != null) {
                     ProcessPollingEvent pollingEvent = new ProcessPollingEvent();
                     if (startedJob != null) {

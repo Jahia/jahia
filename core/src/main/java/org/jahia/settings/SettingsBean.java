@@ -387,7 +387,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private String[] authorizedRedirectHosts;
     
-    private boolean useWebsockets = true;
+    private boolean useWebsockets = false;
+
+    private String atmosphereAsyncSupport;
 
     /**
      * Default constructor.
@@ -524,8 +526,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
             
-            useWebsockets = getBoolean("atmosphere.useWebsockets", true) && !getServer().equals("jboss") && !getServer().equals("was");
+            atmosphereAsyncSupport = getString("atmosphere.asyncSupport", null);
 
+            useWebsockets = getBoolean("atmosphere.useWebsockets", false);
+            
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
 
@@ -1450,5 +1454,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setUseWebsockets(boolean useWebsockets) {
         this.useWebsockets = useWebsockets;
+    }
+
+    public String getAtmosphereAsyncSupport() {
+        return atmosphereAsyncSupport;
+    }
+
+    public void setAtmosphereAsyncSupport(String atmosphereAsyncSupport) {
+        this.atmosphereAsyncSupport = atmosphereAsyncSupport;
     }
 }

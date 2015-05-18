@@ -74,8 +74,8 @@ package org.jahia.services.atmosphere.service;
 import org.apache.jackrabbit.util.Text;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.bin.Jahia;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -86,6 +86,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -187,7 +188,7 @@ public class PublisherSubscriberService {
     }
 
     private void broadcast(String broadcasterID, String message, boolean createIfNull) {
-        final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+        final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
         if (broadcasterFactory != null) {
             Broadcaster broadcaster = broadcasterFactory.lookup(broadcasterID, createIfNull);
             if (broadcaster != null) {

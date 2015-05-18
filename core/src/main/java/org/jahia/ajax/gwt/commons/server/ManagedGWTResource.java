@@ -87,6 +87,7 @@ import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
 import org.atmosphere.interceptor.IdleResourceInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,10 +133,11 @@ public class ManagedGWTResource {
     @Ready
     public void onReady(final AtmosphereResource r) {
         r.suspend();
-        BroadcasterFactory.getDefault().lookup(GWT_BROADCASTER_ID, true).addAtmosphereResource(r);
+        BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
+        broadcasterFactory.lookup(GWT_BROADCASTER_ID, true).addAtmosphereResource(r);
         JahiaUser user = (JahiaUser) r.getRequest().getSession(true).getAttribute(Constants.SESSION_USER);
         if (user != null) {
-            BroadcasterFactory.getDefault().lookup(GWT_BROADCASTER_ID + user.getName(),true).addAtmosphereResource(r);
+            broadcasterFactory.lookup(GWT_BROADCASTER_ID + user.getName(),true).addAtmosphereResource(r);
         }
 
         logger.debug("Received RPC GET");

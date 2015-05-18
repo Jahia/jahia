@@ -74,7 +74,6 @@ package org.jahia.ajax.gwt.helper;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.Broadcaster;
 import org.atmosphere.cpr.BroadcasterFactory;
-import org.atmosphere.cpr.DefaultBroadcasterFactory;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -90,6 +89,7 @@ import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
@@ -105,6 +105,7 @@ import org.slf4j.Logger;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
+
 import java.util.*;
 
 /**
@@ -658,7 +659,7 @@ public class WorkflowHelper {
         @Override
         public void workflowEnded(HistoryWorkflow workflow) {
             JCRUserNode user = userManagerService.lookupUserByPath(workflow.getUser());
-            final BroadcasterFactory broadcasterFactory = DefaultBroadcasterFactory.getDefault();
+            final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
             Broadcaster broadcaster = broadcasterFactory.lookup(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName());
             if (broadcaster != null) {
                 TaskEvent taskEvent = new TaskEvent();
@@ -684,7 +685,7 @@ public class WorkflowHelper {
         }
 
         private void update(WorkflowTask task, boolean newTask) {
-            final BroadcasterFactory broadcasterFactory = BroadcasterFactory.getDefault();
+            final BroadcasterFactory broadcasterFactory = AtmosphereServlet.getBroadcasterFactory();
             if (broadcasterFactory != null) {
 
                 Set<JCRUserNode> users = new HashSet<JCRUserNode>();

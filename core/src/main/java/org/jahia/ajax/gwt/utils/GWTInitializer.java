@@ -227,7 +227,9 @@ public class GWTInitializer {
         }
         params.put(JahiaGWTParameters.TOOLBAR_MESSAGES, ToolbarWarningsService.getInstance().getMessagesValueAsString(uilocale));
 
-        params.put(JahiaGWTParameters.USE_WEBSOCKETS, Boolean.toString(SettingsBean.getInstance().isUseWebsockets()));
+        if (SettingsBean.getInstance().isUseWebsockets()) {
+            params.put(JahiaGWTParameters.USE_WEBSOCKETS, "true");
+        }
 
         String customCkeditorConfig = getCustomCKEditorConfig(renderContext);
         if (customCkeditorConfig != null) {

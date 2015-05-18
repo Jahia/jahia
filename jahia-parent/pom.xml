@@ -120,8 +120,8 @@
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
-        <atmosphere.version>2.2.6</atmosphere.version>
-        <atmosphere.gwt.version>2.2.1</atmosphere.gwt.version>
+        <atmosphere.version>2.3.1</atmosphere.version>
+        <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.11</junit.version>
         <junit.addons.version>1.4</junit.addons.version>

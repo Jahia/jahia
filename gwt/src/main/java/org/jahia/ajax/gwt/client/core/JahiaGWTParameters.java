@@ -72,12 +72,15 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
+
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.MissingResourceException;
 
 /**
  * Created by Jahia.
@@ -162,7 +165,11 @@ public class JahiaGWTParameters {
     }
 
     public static Boolean isWebSockets() {
-        return Boolean.parseBoolean(jahiaParamDictionary.get(USE_WEBSOCKETS));
+        try {
+            return Boolean.parseBoolean(jahiaParamDictionary.get(USE_WEBSOCKETS));
+        } catch (MissingResourceException e) {
+            return false;
+        }
     }
 
     public static String getUILanguage() {

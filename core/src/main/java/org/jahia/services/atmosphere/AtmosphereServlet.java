@@ -82,32 +82,47 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.plexus.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
+import org.atmosphere.cpr.BroadcasterFactory;
+import org.atmosphere.util.ServletContextFactory;
 import org.jahia.settings.SettingsBean;
 
 import com.google.common.collect.Lists;
 
 /**
- * Digital Factory specific servlet for Atmosphere framework that handles JBoss server in a special way, forcing BlockingIOCometSupport as
- * asynchronous support implementation.
+ * Digital Factory specific servlet for Atmosphere framework that allows to configure asynchronous support implementation using
+ * <code>jahia.properties</code>.
  * 
  * @author Sergiy Shyrkov
  */
 public class AtmosphereServlet extends org.atmosphere.cpr.AtmosphereServlet {
 
+    private static final String DEFAULT_ASYNC_SUPPORT = "org.atmosphere.container.Servlet30CometSupport";
+
     private static final long serialVersionUID = 7618272237237696835L;
+
+    /**
+     * Looks up an instance of the {@link BroadcasterFactory}.
+     * 
+     * @return an instance of the {@link BroadcasterFactory}
+     */
+    public static BroadcasterFactory getBroadcasterFactory() {
+        return (BroadcasterFactory) ServletContextFactory.getDefault().getServletContext()
+                .getAttribute(BroadcasterFactory.class.getName());
+    }
 
     @Override
     public void init(final ServletConfig sc) throws ServletException {
         ServletConfig scFacade;
 
-        if (StringUtils.equals("jboss", SettingsBean.getInstance().getServer())
-                && sc.getInitParameter(PROPERTY_COMET_SUPPORT) == null) {
+        String asyncSupport = SettingsBean.getInstance().getAtmosphereAsyncSupport();
+        // override asyncSupport only if explicitly set via jahia.properties or not set at all
+        if (StringUtils.isNotEmpty(asyncSupport) || sc.getInitParameter(PROPERTY_COMET_SUPPORT) == null) {
+            final String implName = StringUtils.defaultIfBlank(asyncSupport, DEFAULT_ASYNC_SUPPORT);
             scFacade = new ServletConfig() {
                 @Override
                 public String getInitParameter(String name) {
-                    return PROPERTY_COMET_SUPPORT.equals(name) ? "org.atmosphere.container.BlockingIOCometSupport" : sc
-                            .getInitParameter(name);
+                    return PROPERTY_COMET_SUPPORT.equals(name) ? implName : sc.getInitParameter(name);
                 }
 
                 @Override

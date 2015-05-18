@@ -524,7 +524,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
             
-            useWebsockets = getBoolean("atmosphere.useWebsockets", true) && !getServer().equals("jboss");
+            useWebsockets = getBoolean("atmosphere.useWebsockets", true) && !getServer().equals("jboss") && !getServer().equals("was");
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");

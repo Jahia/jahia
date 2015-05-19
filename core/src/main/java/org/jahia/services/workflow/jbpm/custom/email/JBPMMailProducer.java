@@ -405,7 +405,7 @@ public class JBPMMailProducer {
         String subject = template.getSubject();
         if (subject != null) {
             String evaluatedSubject = evaluateExpression(workItem, subject, session).replaceAll("[\r\n]", "");
-            email.setSubject(WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
+            email.setHeader("Subject", WordUtils.abbreviate(evaluatedSubject, 60, 74, "..."));
         }
     }
 

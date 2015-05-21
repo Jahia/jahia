@@ -550,8 +550,8 @@
             <param-name>publishEvents</param-name>
             <param-value>false</param-value>
         </init-param>
-        <async-supported>true</async-supported>
         <load-on-startup>99</load-on-startup>
+        <async-supported>true</async-supported>
     </servlet>
     
     <!-- OSGi Proxy Servlet -->

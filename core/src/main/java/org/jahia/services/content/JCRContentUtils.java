@@ -1441,17 +1441,31 @@ public final class JCRContentUtils implements ServletContextAware {
      * Convert a string to a JCR search expression literal, suitable for use in
      * jcr:contains() (inside XPath) or contains (SQL2). The characters - and " have
      * special meaning, and may be escaped with a backslash to obtain their
-     * literal value. See JSR-283 spec v2.0, Sec. 4.6.6.19.
+     * literal value. See JSR-283 spec v2.0, Sec. 6.7.19.
      *
      * @param str Any string.
      * @return A valid string literal suitable for use in
-     *         JCR contains clauses, including enclosing quotes.
+     * JCR contains clauses, including enclosing quotes.
      */
     public static String stringToJCRSearchExp(String str) {
-        // Escape ' and \ everywhere, preceding them with \ except when \
-        // appears
-        // in one of the combinations \" or \-
-        return stringToQueryLiteral(Text.escapeIllegalXpathSearchChars(str));
+        // Escape ", - and \ everywhere, preceding them with \ except when \
+        // appears in one of the combinations \" or \-
+
+        final int length = str.length();
+        StringBuilder stringBuilder = new StringBuilder(length + 10);
+        char previousChar = 0;
+        for (int i = 0; i < length; i++) {
+            char c = str.charAt(i);
+            if (c == '-' || c == '"' || c == '\\') {
+                // only escape if we don't have a preceding \
+                if (previousChar != '\\') {
+                    stringBuilder.append('\\');
+                }
+            }
+            stringBuilder.append(c);
+            previousChar = c;
+        }
+        return stringToQueryLiteral(stringBuilder.toString());
     }
 
     /**

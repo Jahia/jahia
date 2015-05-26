@@ -387,7 +387,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean isMavenExecutableSet;
 
     private String[] authorizedRedirectHosts;
-    
+
     private boolean useWebsockets = false;
 
     private String atmosphereAsyncSupport;
@@ -526,11 +526,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             readOnlyMode = getBoolean("readOnlyMode", false);
 
             internetExplorerCompatibility = getString("internetExplorerCompatibility", "IE=10");
-            
+
             atmosphereAsyncSupport = getString("atmosphere.asyncSupport", null);
 
             useWebsockets = getBoolean("atmosphere.useWebsockets", false);
-            
+
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
 
@@ -608,12 +608,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty("jahia.jackrabbit.searchIndex.enableConsistencyCheck", getString("jahia.jackrabbit.searchIndex.enableConsistencyCheck", "false"));
         setSystemProperty("jahia.jackrabbit.searchIndex.forceConsistencyCheck", getString("jahia.jackrabbit.searchIndex.forceConsistencyCheck", "false"));
         setSystemProperty("jahia.jackrabbit.searchIndex.autoRepair", getString("jahia.jackrabbit.searchIndex.autoRepair", "false"));
-<<<<<<< .working
         setSystemProperty(JahiaSearchIndex.SKIP_VERSION_INDEX_SYSTEM_PROPERTY, getString(JahiaSearchIndex.SKIP_VERSION_INDEX_SYSTEM_PROPERTY, "true"));
-        
-=======
 
->>>>>>> .merge-right.r52643
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));

@@ -71,12 +71,7 @@
  */
 package org.jahia.services.usermanager;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.decorator.JCRUserNode;
-
-import javax.jcr.RepositoryException;
 import java.io.Serializable;
-import java.util.Map;
 import java.util.Properties;
 
 /**
@@ -84,6 +79,8 @@ import java.util.Properties;
  */
 public class JahiaUserImpl implements JahiaUser, Serializable {
 
+    private static final long serialVersionUID = -133494787519812151L;
+    
     private final String name;
     private final String path;
     private final String realm;

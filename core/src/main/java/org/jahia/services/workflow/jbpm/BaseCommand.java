@@ -82,6 +82,8 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -118,12 +120,15 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.persistence.EntityManager;
+
 import java.util.*;
 
 /**
 * Created by toto on 16/12/13.
 */
 public abstract class BaseCommand<T> implements GenericCommand<T> {
+    private static final long serialVersionUID = -2742789169791810141L;
+
     private transient static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
 
     private KnowledgeCommandContext context;
@@ -365,15 +370,25 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
             for (OrganizationalEntity organizationalEntity : peopleAssignements.getPotentialOwners()) {
                 if (organizationalEntity instanceof Group) {
                     Group group = (Group) organizationalEntity;
-                    participations
-                            .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
-                                    groupManager.lookupGroupByPath(group.getId()).getJahiaGroup()));
+                    JCRGroupNode jcrGroup = groupManager.lookupGroupByPath(group.getId());
+                    if (jcrGroup != null) {
+                        participations.add(new WorkflowParticipation(WorkflowService.CANDIDATE, jcrGroup
+                                .getJahiaGroup()));
+                    } else {
+                        logger.warn("Unable to find group {} as a task assignment candidate for task. Skipping it.",
+                                group.getId());
+                    }
                 } else {
                     if (organizationalEntity instanceof User) {
                         User user = (User) organizationalEntity;
-                        participations
-                                .add(new WorkflowParticipation(WorkflowService.CANDIDATE,
-                                        userManager.lookupUserByPath(user.getId()).getJahiaUser()));
+                        JCRUserNode jcrUser = userManager.lookupUserByPath(user.getId());
+                        if (jcrUser != null) {
+                            participations.add(new WorkflowParticipation(WorkflowService.CANDIDATE, jcrUser
+                                    .getJahiaUser()));
+                        } else {
+                            logger.warn("Unable to find user {} as a task assignment candidate for task. Skipping it.",
+                                    user.getId());
+                        }
                     }
                 }
             }

@@ -701,14 +701,26 @@ class QueryModifierAndOptimizerVisitor extends DefaultQOMTreeVisitor {
                             getNewLanguagesPerSelector().put(selector.getSelectorName(),
                                     newLanguageCodes);
                         } 
-                        if (newLanguageCodes.contains(NO_LOCALE)) {
-                            ExtendedNodeType nodeType = NodeTypeRegistry.getInstance()
-                                    .getNodeType(selector.getNodeTypeName());
-                            ExtendedPropertyDefinition propDef = propertyName != null ? getPropertyDefinition(
-                                    nodeType, selector, propertyName) : null;
-                            if (!Constants.JAHIANT_FILE.equals(selector.getNodeTypeName())
-                                    && propDef != null && propDef.isInternationalized()) {
-                                newLanguageCodes.remove(NO_LOCALE);
+                        if (newLanguageCodes.contains(NO_LOCALE)
+                                && !Constants.JAHIANT_FILE.equals(selector
+                                        .getNodeTypeName())) {
+                            ExtendedNodeType nodeType = NodeTypeRegistry
+                                    .getInstance().getNodeType(
+                                            selector.getNodeTypeName());
+                            if (propertyName != null) {
+                                ExtendedPropertyDefinition propDef = getPropertyDefinition(
+                                        nodeType, selector, propertyName);
+                                if (propDef != null
+                                        && propDef.isInternationalized()) {
+                                    newLanguageCodes.remove(NO_LOCALE);
+                                }
+                            } else {
+                                for (ExtendedPropertyDefinition def : nodeType.getPropertyDefinitionsAsMap().values()) {
+                                    if (def.isInternationalized() && def.isMandatory()) {
+                                        newLanguageCodes.remove(NO_LOCALE);
+                                        break;
+                                    }
+                                }
                             }
                         }
 

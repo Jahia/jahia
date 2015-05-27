@@ -280,9 +280,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
                     .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
             
-            // start schedulers
-            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
-            
             jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
             if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
                 SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));

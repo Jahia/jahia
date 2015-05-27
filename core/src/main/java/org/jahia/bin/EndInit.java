@@ -74,15 +74,19 @@ package org.jahia.bin;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.data.templates.ModuleState.State;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -106,6 +110,9 @@ public class EndInit extends HttpServlet {
     @Override
     public void init() throws ServletException {
         super.init();
+        
+        finishInit();
+        
         long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
         StringBuilder out = new StringBuilder(256);
         if (SettingsBean.getInstance().isDevelopmentMode()) {
@@ -130,6 +137,16 @@ public class EndInit extends HttpServlet {
         out.append("\n--------------------------------------------------------------------------------------------------");
         logger.info(out.toString());
         initialized = true;
+    }
+
+    private void finishInit() {
+        try {
+            // start schedulers
+            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
+        } catch (JahiaInitializationException e) {
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        }
     }
 
     private void appendModulesInfo(StringBuilder out) {

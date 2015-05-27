@@ -104,7 +104,6 @@ import org.jahia.services.render.filter.cache.CacheClusterEvent;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -118,7 +117,6 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.security.auth.Subject;
-import java.io.Serializable;
 import java.security.Principal;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -161,7 +159,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private boolean initialized;
     protected String workspaceName;
 
-    private JahiaUserManagerService userService;
     private JahiaGroupManagerService groupService;
 
     protected JahiaPrincipal jahiaPrincipal;
@@ -181,7 +178,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
 
     private boolean isAliased = false;
-    private boolean globalGroupMembershipCheckActivated = false;
     private DefaultNamePathResolver pr;
     private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
     private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2}(_[A-Z]{2})?)([/].*)?$");
@@ -284,7 +280,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         }
 
         pathPermissionCache = Collections.synchronizedMap(new LRUMap(SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize()));
-        globalGroupMembershipCheckActivated = SettingsBean.getInstance().isGlobalGroupMembershipCheckActivated();
         subject = context.getSubject();
         resolver = context.getNamePathResolver();
         hierMgr = context.getHierarchyManager();
@@ -298,7 +293,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             jahiaPrincipal = principals.iterator().next();
         }
 
-        userService = ServicesRegistry.getInstance().getJahiaUserManagerService();
         groupService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
 
         NamespaceResolver nr = new SessionNamespaceResolver(getSecuritySession());
@@ -1118,39 +1112,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     public static void flushMatchingPermissions() {
         if (matchingPermissions != null) {
             matchingPermissions.flush();
-        }
-    }
-
-
-    private static class CacheKey implements Serializable {
-        transient JahiaAccessManager accessManager;
-        String roleName;
-
-        private CacheKey(JahiaAccessManager accessManager, String roleName) {
-            this.accessManager = accessManager;
-            this.roleName = roleName;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            CacheKey cacheKey = (CacheKey) o;
-
-            if (roleName != null ? !roleName.equals(cacheKey.roleName) : cacheKey.roleName != null) return false;
-
-            return true;
-        }
-
-        @Override
-        public int hashCode() {
-            return roleName != null ? roleName.hashCode() : 0;
-        }
-
-        @Override
-        public String toString() {
-            return roleName;
         }
     }
 }

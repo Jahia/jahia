@@ -75,7 +75,7 @@ import java.io.Serializable;
 import java.util.Properties;
 
 /**
- * Created by toto on 22/08/14.
+ * Represents a user with properties in the Digital Factory.
  */
 public class JahiaUserImpl implements JahiaUser, Serializable {
 
@@ -88,10 +88,74 @@ public class JahiaUserImpl implements JahiaUser, Serializable {
     private final boolean isRoot;
     private final String providerName;
 
+    /**
+     * Initializes a global non-root user.
+     * 
+     * @param name
+     *            the user name
+     * @param path
+     *            the JCR path of the user
+     * @param properties
+     *            user properties
+     * @param providerName
+     *            the name of the provider
+     */
+    public JahiaUserImpl(String name, String path, Properties properties, String providerName) {
+        this(name, path, properties, false, providerName, null);
+    }
+
+    /**
+     * Initializes a global user.
+     * 
+     * @param name
+     *            the user name
+     * @param path
+     *            the JCR path of the user
+     * @param properties
+     *            user properties
+     * @param isRoot
+     *            <code>true</code> for root user and <code>false</code> for everyone else
+     * @param providerName
+     *            the name of the provider
+     */
     public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName) {
         this(name, path, properties, isRoot, providerName, null);
     }
 
+    /**
+     * Initializes a realm-specific (site-specific) non-root user.
+     * 
+     * @param name
+     *            the user name
+     * @param path
+     *            the JCR path of the user
+     * @param properties
+     *            user properties
+     * @param providerName
+     *            the name of the provider
+     * @param realm
+     *            the key of the corresponding user realm (site)
+     */
+    public JahiaUserImpl(String name, String path, Properties properties, String providerName, String realm) {
+        this(name, path, properties, false, providerName, realm);
+    }
+
+    /**
+     * Initializes a realm-specific (site-specific) user.
+     * 
+     * @param name
+     *            the user name
+     * @param path
+     *            the JCR path of the user
+     * @param properties
+     *            user properties
+     * @param isRoot
+     *            <code>true</code> for root user and <code>false</code> for everyone else
+     * @param providerName
+     *            the name of the provider
+     * @param realm
+     *            the key of the corresponding user realm (site)
+     */
     public JahiaUserImpl(String name, String path, Properties properties, boolean isRoot, String providerName, String realm) {
         this.name = name;
         this.path = path;

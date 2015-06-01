@@ -70,23 +70,23 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>        
-        <version>7.1.0.0-SNAPSHOT</version>
+        <version>7.1.0.1-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>test-framework</artifactId>
     <name>Jahia Test Framework</name>
-    <version>7.1.0.0-SNAPSHOT</version>    
+    <version>7.1.0.1-SNAPSHOT</version>    
     <packaging>jar</packaging>
     <description>This is the custom module (Jahia Test Framework) for running on a Digital Factory server.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC</developerConnection>
+        <connection>scm:dummy:uri</connection>
+        <developerConnection>scm:dummy:uri</developerConnection>
     </scm>
 
     <repositories>

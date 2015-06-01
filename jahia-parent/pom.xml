@@ -222,9 +222,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/trunk/jahia-parent</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC/jahia-parent</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC/jahia-parent</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC/jahia-parent</url>
     </scm>
     <developers>
         <developer>
@@ -630,30 +630,30 @@
                                     <module name="TreeWalker">
                                         <module name="JavadocType" />
                                         <module name="JavadocMethod">
-                                            <property name="scope" value="public"/>
-                                            <property name="allowMissingPropertyJavadoc" value="true"/>
+                                            <property name="scope" value="public" />
+                                            <property name="allowMissingPropertyJavadoc" value="true" />
                                         </module>
-                                        <module name="UnusedImports"/>
+                                        <module name="UnusedImports" />
                                         <module name="ConstantName">
-                                            <property name="applyToProtected" value="false"/>
-                                            <property name="applyToPackage" value="false"/>
-                                            <property name="applyToPrivate" value="false"/>
+                                            <property name="applyToProtected" value="false" />
+                                            <property name="applyToPackage" value="false" />
+                                            <property name="applyToPrivate" value="false" />
                                         </module>
                                         <module name="EmptyBlock">
-                                            <property name="option" value="text"/>
+                                            <property name="option" value="text" />
                                         </module>
-                                        <module name="NeedBraces"/>
-                                        <module name="EqualsHashCode"/>
+                                        <module name="NeedBraces" />
+                                        <module name="EqualsHashCode" />
                                         <module name="MagicNumber">
-                                            <property name="ignoreNumbers" value=" 	-1, 0, 1, 2, 17, 31, 37"/>
+                                            <property name="ignoreNumbers" value=" -1, 0, 1, 2, 17, 31, 37" />
                                         </module>
-                                        <module name="SimplifyBooleanReturn"/>
+                                        <module name="SimplifyBooleanReturn" />
                                         <module name="IllegalCatch">
-                                            <property name="illegalClassNames" value=" java.lang.Throwable"/>
+                                            <property name="illegalClassNames" value=" java.lang.Throwable" />
                                         </module>
-                                        <module name="MultipleVariableDeclarations"/>
-                                        <module name="OneStatementPerLine"/>
-                                        <module name="RedundantModifier"/>
+                                        <module name="MultipleVariableDeclarations" />
+                                        <module name="OneStatementPerLine" />
+                                        <module name="RedundantModifier" />
                                     </module>
                                 </module>
                             </checkstyleRules>

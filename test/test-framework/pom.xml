@@ -75,18 +75,18 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>        
-        <version>7.1.0.0-RC</version>
+        <version>7.1.0.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.modules</groupId>
     <artifactId>test-framework</artifactId>
     <name>Jahia Test Framework</name>
-    <version>7.1.0.0-RC</version>    
+    <version>7.1.0.0-SNAPSHOT</version>    
     <packaging>jar</packaging>
     <description>This is the custom module (Jahia Test Framework) for running on a Digital Factory server.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_0_0_RC/branches/JAHIA_7_1_0_0_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_0_0_RC/branches/JAHIA_7_1_0_0_RC</developerConnection>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_0_RC</developerConnection>
     </scm>
 
     <repositories>

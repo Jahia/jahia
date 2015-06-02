@@ -76,11 +76,7 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-<<<<<<< .working
 import org.jahia.services.templates.JahiaTemplateManagerService;
-=======
-import org.jahia.utils.i18n.JahiaResourceBundle;
->>>>>>> .merge-right.r52673
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
@@ -102,15 +98,13 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
         Set<ChoiceListValue> set = new  TreeSet<ChoiceListValue>();
         String nodetype = "jmix:navMenuComponent";
         try {
-            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
-            QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession(currentUserSession.getWorkspace().getName(),locale).getWorkspace().getQueryManager();
+            QueryManager qm = JCRSessionFactory.getInstance().getCurrentUserSession().getWorkspace().getQueryManager();
             JCRNodeWrapper node = (JCRNodeWrapper) context.get("contextNode");
             if (node == null) {
                 node = (JCRNodeWrapper) context.get("contextParent");
             }
             JCRSiteNode site = node.getResolveSite();
 
-<<<<<<< .working
             final JahiaTemplateManagerService service = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
 
             for (String s : site.getAllInstalledModules()) {
@@ -125,16 +119,6 @@ public class MenusChoiceListInitializerImpl implements ChoiceListInitializer{
                         set.add(new ChoiceListValue(displayName, nodeWrapper.getName()));
                     }
                 }
-=======
-            QueryResult result = qm.createQuery(
-                    "select * from [" + nodetype + "] as n where isdescendantnode(n,['" +site.getPath()+"'])", Query.JCR_SQL2).execute();
-            final NodeIterator ni = result.getNodes();
-            while (ni.hasNext()) {
-                JCRNodeWrapperImpl nodeWrapper = (JCRNodeWrapperImpl) ni.nextNode();
-                JCRNodeWrapper parentOfType = JCRContentUtils.getParentOfType(nodeWrapper, "jnt:page");
-                String displayName = nodeWrapper.getDisplayableName()+" ("+ (parentOfType!=null?parentOfType.getDisplayableName(): JahiaResourceBundle.getJahiaInternalResource("moduleType.templatesSet.label",locale))+")";
-                set.add(new ChoiceListValue(displayName, nodeWrapper.getIdentifier()));
->>>>>>> .merge-right.r52673
             }
 
         } catch (Exception e) {

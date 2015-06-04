@@ -380,9 +380,11 @@ public class LegacyImportHandler extends DefaultHandler {
                         setAcl(acl);
                         // todo : add a link here ??
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && LINK.equals(localName)) {
-                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink", getMetadataForNodeCreation(attributes));
+                        createInternalLink(page, title, uuid, attributes.getValue("jahia:reference"), "jnt:nodeLink", getMetadataForNodeCreation(attributes),
+                                attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                     } else if (HTTP_WWW_JAHIA_ORG.equals(uri) && localName.equals("url")) {
-                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), externalLinkType, externalLinkUrlPropertyName, externalLinkInternationalized, getMetadataForNodeCreation(attributes));
+                        createExternalLink(page, title, uuid, attributes.getValue("jahia:value"), externalLinkType, externalLinkUrlPropertyName, externalLinkInternationalized, getMetadataForNodeCreation(attributes),
+                                attributes.getValue("jcr:mixinTypes"), getAdditionalProperties(attributes.getValue("jcr:additionalProperties")));
                     }
 
                     break;
@@ -501,7 +503,12 @@ public class LegacyImportHandler extends DefaultHandler {
             }
 
             if (pageKey == null) {
-                pageKey = JCRContentUtils.generateNodeName(title);
+                try {
+                    pageKey = JCRContentUtils.generateNodeName(title);
+                } catch (NullPointerException npe) {
+                    pageKey = "untitled";
+                    logger.error(MessageFormat.format("Impossible to generate a system name from page title =[{0}] , uuid={1}", title, uuid), npe);
+                }
             }
 
             // remove all unsupported characters
@@ -534,39 +541,7 @@ public class LegacyImportHandler extends DefaultHandler {
             translation.setProperty("jcr:title", title);
         }
 
-        if (StringUtils.isNotBlank(mixinsToAdd)) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(MessageFormat.format("Adding mixins [{0}] to the page {1} in language {2}",
-                        mixinsToAdd, subPage.getPath(), this.locale.toString()));
-            }
-            for (String mixin : Arrays.asList(StringUtils.split(mixinsToAdd, " "))) {
-                try {
-                    if (StringUtils.isNotBlank(mixin) && !subPage.isNodeType(mixin)) subPage.addMixin(mixin);
-                } catch (RepositoryException re) {
-                    logger.error("Imposible to apply mixin " + mixin + " to page " + subPage.getPath(), re);
-                }
-            }
-        }
-
-        if (propertiesToSet != null) {
-            @SuppressWarnings("unchecked")
-            final Iterator<String> properties = propertiesToSet.keys();
-            while (properties.hasNext()) {
-                final String propName = properties.next();
-                try {
-                    final String propValue = String.valueOf(propertiesToSet.get(propName));
-                    if (logger.isDebugEnabled()) {
-                        logger.debug(MessageFormat.format("Setting the property {0} with value [{1}] on the page {2} in language {3}",
-                                propName, propValue, subPage.getPath(), this.locale.toString()));
-                    }
-                    setPropertyField(null, null, subPage, propName, propValue);
-                } catch (Exception e) {
-                    logger.error(MessageFormat.format("Error while setting additional property {0} on page {1} for locale {2}",
-                            propName, subPage.getPath(), this.locale.toString()), e);
-
-                }
-            }
-        }
+        handleAdditionalMixinsAndProperties(subPage, mixinsToAdd, propertiesToSet);
 
         if (legacyPidMappingTool != null) {
             legacyPidMappingTool.defineLegacyMapping(Integer.valueOf(pageId), subPage, locale);
@@ -576,11 +551,12 @@ public class LegacyImportHandler extends DefaultHandler {
     private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
                                     final String nodeType, Map<String, String> creationMetadata)
             throws RepositoryException {
-        createExternalLink(page, title, uuid, url, nodeType, Constants.URL, false, creationMetadata);
+        createExternalLink(page, title, uuid, url, nodeType, Constants.URL, false, creationMetadata, null, null);
     }
 
     private void createExternalLink(JCRNodeWrapper page, String title, String uuid, final String url,
-                                    final String nodeType, final String urlPropertyName, boolean urlIsLocalized, Map<String, String> creationMetadata)
+                                    final String nodeType, final String urlPropertyName, boolean urlIsLocalized, Map<String, String> creationMetadata,
+                                    String mixinsToAdd, JSONObject propertiesToSet)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
@@ -598,10 +574,12 @@ public class LegacyImportHandler extends DefaultHandler {
         if (title != null && title.length() > 0) {
             translation.setProperty("jcr:title", title);
         }
+        handleAdditionalMixinsAndProperties(sub, mixinsToAdd, propertiesToSet);
     }
 
     private void createInternalLink(JCRNodeWrapper page, String title, String uuid, final String reference,
-                                    final String nodeType, Map<String, String> creationMetadata)
+                                    final String nodeType, Map<String, String> creationMetadata,
+                                    String mixinsToAdd, JSONObject propertiesToSet)
             throws RepositoryException {
         JCRNodeWrapper sub;
         if (uuidMapping.containsKey(uuid)) {
@@ -626,6 +604,7 @@ public class LegacyImportHandler extends DefaultHandler {
             session.checkout(sub);
         }
         sub.setProperty(Constants.JCR_TITLE, title);
+        handleAdditionalMixinsAndProperties(sub, mixinsToAdd, propertiesToSet);
     }
 
 
@@ -828,39 +807,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
             }
 
-            assert node != null;
-            if (StringUtils.isNotBlank(mixinsToAdd)) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug(MessageFormat.format("Adding mixins [{0}] to the node {1} in language {2}",
-                            mixinsToAdd, node.getPath(), this.locale.toString()));
-                }
-                for (final String mixin : Arrays.asList(StringUtils.split(mixinsToAdd))) {
-                    try {
-                        if (StringUtils.isNotBlank(mixin) && !node.isNodeType(mixin)) node.addMixin(mixin);
-                    } catch (RepositoryException re) {
-                        logger.error(MessageFormat.format("Imposible to apply mixin {0} to the node {1}", mixin, node.getPath()), re);
-                    }
-                }
-            }
-
-            if (propertiesToSet != null) {
-                final Iterator<String> properties = propertiesToSet.keys();
-                while (properties.hasNext()) {
-                    final String propName = properties.next();
-                    try {
-                        final String propValue = String.valueOf(propertiesToSet.get(propName));
-                        if (logger.isDebugEnabled()) {
-                            logger.debug(MessageFormat.format("Setting the property {0} with value [{1}] on the node {2} in language {3}",
-                                    propName, propValue, node.getPath(), this.locale.toString()));
-                        }
-                        setPropertyField(null, null, node, propName, propValue);
-                    } catch (Exception e) {
-                        logger.error(MessageFormat.format("Error while setting additional property {0} on the node {1} for locale {2}",
-                                propName, node.getPath(), this.locale.toString()), e);
-
-                    }
-                }
-            }
+            handleAdditionalMixinsAndProperties(node, mixinsToAdd, propertiesToSet);
 
             if (currentCtx.peek().properties.peek() != null) {
                 for (Map.Entry<String, String> entry : currentCtx.peek().properties.peek().entrySet()) {
@@ -941,6 +888,10 @@ public class LegacyImportHandler extends DefaultHandler {
                     } else {
                         int colonIndex = ace.lastIndexOf(":");
                         String perm = ace.substring(colonIndex + 1);
+                        if (perm.length() != 3) {
+                            logger.error("Skipping inconsistent acl entry: " + ace);
+                            continue;
+                        }
                         Set<String> grantedRoles = new HashSet<String>();
                         Set<String> removedRoles = new HashSet<String>();
                         if (perm.charAt(0) == 'r') {
@@ -1337,6 +1288,43 @@ public class LegacyImportHandler extends DefaultHandler {
         textExtractor.setConvertNonBreakingSpaces(false);
         textExtractor.setIncludeAttributes(false);
         return textExtractor.toString();
+    }
+
+    private void handleAdditionalMixinsAndProperties(JCRNodeWrapper node, String mixinsToAdd, JSONObject propertiesToSet) {
+        if (node == null) return;
+
+        if (StringUtils.isNotBlank(mixinsToAdd)) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(MessageFormat.format("Adding mixins [{0}] to the node {1} in language {2}",
+                        mixinsToAdd, node.getPath(), this.locale.toString()));
+            }
+            for (final String mixin : Arrays.asList(StringUtils.split(mixinsToAdd))) {
+                try {
+                    if (StringUtils.isNotBlank(mixin) && !node.isNodeType(mixin)) node.addMixin(mixin);
+                } catch (RepositoryException re) {
+                    logger.error(MessageFormat.format("Imposible to apply mixin {0} to the node {1}", mixin, node.getPath()), re);
+                }
+            }
+        }
+
+        if (propertiesToSet != null) {
+            final Iterator<String> properties = propertiesToSet.keys();
+            while (properties.hasNext()) {
+                final String propName = properties.next();
+                try {
+                    final String propValue = String.valueOf(propertiesToSet.get(propName));
+                    if (logger.isDebugEnabled()) {
+                        logger.debug(MessageFormat.format("Setting the property {0} with value [{1}] on the node {2} in language {3}",
+                                propName, propValue, node.getPath(), this.locale.toString()));
+                    }
+                    setPropertyField(null, null, node, propName, propValue);
+                } catch (Exception e) {
+                    logger.error(MessageFormat.format("Error while setting additional property {0} on the node {1} for locale {2}",
+                            propName, node.getPath(), this.locale.toString()), e);
+
+                }
+            }
+        }
     }
 
     private JCRNodeWrapper getCurrentPageNode() {

@@ -103,7 +103,8 @@
         <!--
 		<module>dummy-modules</module>
 		-->
-		<module>test-framework</module>
+		<module>core-test-framework</module>
+        <module>module-test-framework</module>
         <module>jahia-test-module</module>
     </modules>
 </project>

@@ -1,0 +1,79 @@
+/* Extensions types */
+
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix = 'http://www.jcp.org/jcr/mix/1.0'>
+<jcr = 'http://www.jcp.org/jcr/1.0'>
+<j = 'http://www.jahia.org/jahia/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+
+[jmix:document] mixin
+ - j:subject (string)
+ - j:pageCount (long) protected
+ - j:wordCount (long) protected
+ - j:charCount (long) protected
+ - j:appName (string) protected nofulltext
+ - j:codePage (string) protected nofulltext
+
+[jmix:exif] mixin
+ - j:colorSpace (string) nofulltext
+ - j:componentsConfiguration (string) nofulltext
+ - j:compression (string) nofulltext
+ - j:compressedBitsPerPixel (string) nofulltext
+ - j:dateTime (string) nofulltext
+ - j:dateTimeDigitized (string) nofulltext
+ - j:dateTimeOriginal (string) nofulltext
+ - j:exifVersion (string) nofulltext
+ - j:exposureBiasValue (string) nofulltext
+ - j:exposureProgram (string) nofulltext
+ - j:exposureTime (string) nofulltext
+ - j:fileSource (string) nofulltext
+ - j:flash (string) nofulltext
+ - j:flashPixVersion (string) nofulltext
+ - j:fNumber (string) nofulltext
+ - j:focalLength (string) nofulltext
+ - j:interoperabilityIndex (string) nofulltext
+ - j:interoperabilityVersion (string) nofulltext
+ - j:make (string) nofulltext
+ - j:maxApertureValue (string) nofulltext
+ - j:meteringMode (string) nofulltext
+ - j:model (string) nofulltext
+ - j:orientation (string) nofulltext
+ - j:resolutionUnit (string) nofulltext
+ - j:sceneType (string) nofulltext
+ - j:software (string) nofulltext
+ - j:xresolution (string) nofulltext
+ - j:ycbcrPositioning (string) nofulltext
+ - j:yresolution (string) nofulltext
+
+                          
+[jmix:test] mixin
+ - j:long (long)
+ - j:text (string)
+ - j:protectedText (string) protected
+ - j:bigtext (string,richtext)
+ - j:protectedBigText (string,richtext) protected
+ - j:cat (string,category)
+ - j:multiplecat (string,category) multiple
+ - j:protectedCat (string,category) protected
+ - j:menu (string,choicelist) < 'item1','item2'
+ - j:date (date)
+ - j:protectedDate (date) protected
+ - j:boolean (boolean) = false
+
+ [jmix:SysDocProto] mixin
+ - j:SysDocProto_DateCreation (date, datetimepicker)
+ - j:SysDocProto_CodeProjet (string,category[root=Projets])
+ - j:SysDocProto_CodeService (string,category[root=Services])
+ - j:SysDocProto_CodeGroupeConfidentialite (string)
+ - j:SysDocProto_CodeGroupeDiffusion (string)
+ - j:SysDocProto_NoDossier (string)
+ - j:SysDocProto_CodeStatutDocument (string,choicelist) < 'Ouvert','Ferme'
+ - j:SysDocProto_CoteClassement (string,category[root='plan de classement'])
+ - j:SysDocProto_CodeServiceCopieA (string,category[Services])
+ - j:SysDocProto_CodeTypeProcessus (string)
+ 
+[jmix:doc] mixin
+ - j:dateCreation (date, datetimepicker)
+ - j:codeProjet (string,category[root=Projets]) nofulltext
+ - j:codeStatutDocument (string,choicelist) nofulltext < 'Ouvert','Ferme'

@@ -75,14 +75,24 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.test.WebAppConfig;
 import org.jahia.test.utils.JahiaAdminUser;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.web.ServletTestExecutionListener;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.testng.annotations.BeforeClass;
+
 @ContextConfiguration(
         classes = WebAppConfig.class,
         initializers = JahiaWebInitializer.class
 )
 @WebAppConfiguration("./target/test-repo")
+@TestExecutionListeners(
+        inheritListeners = false,
+        listeners = { ServletTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
+    DirtiesContextTestExecutionListener.class, DeployResourcesTestExecutionListener.class })
+
 public abstract class AbstractJahiaTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass

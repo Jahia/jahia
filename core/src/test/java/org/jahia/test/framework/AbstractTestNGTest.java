@@ -90,10 +90,10 @@ import org.testng.annotations.BeforeClass;
 @WebAppConfiguration("./target/test-repo")
 @TestExecutionListeners(
         inheritListeners = false,
-        listeners = { ServletTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
+        listeners = { SetDefaultsTestExecutionListener.class, ServletTestExecutionListener.class, DependencyInjectionTestExecutionListener.class,
     DirtiesContextTestExecutionListener.class, DeployResourcesTestExecutionListener.class })
 
-public abstract class AbstractJahiaTest extends AbstractTestNGSpringContextTests {
+public abstract class AbstractTestNGTest extends AbstractTestNGSpringContextTests {
 
     @BeforeClass
     public void basicOneTimeSetUp() throws Exception {

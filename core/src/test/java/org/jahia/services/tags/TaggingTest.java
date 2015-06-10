@@ -77,10 +77,9 @@ import javax.jcr.*;
 
 import org.jahia.services.content.*;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.test.framework.AbstractJahiaTest;
+import org.jahia.test.framework.AbstractTestNGTest;
 import org.jahia.test.utils.TestHelper;
 import org.slf4j.Logger;
-
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -90,7 +89,7 @@ import org.testng.annotations.*;
  * @author Sergiy Shyrkov
  */
 
-public class TaggingTest extends AbstractJahiaTest {
+public class TaggingTest extends AbstractTestNGTest {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingTest.class);
 
     private final static String TESTSITE_NAME = "taggingTest";

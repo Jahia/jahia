@@ -385,12 +385,18 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             bindings.put("contextJsParameters", getContextJsParameters(assets, renderContext));
 
             if (aggregateAndCompress && resource.getWorkspace().equals("live")) {
-                assets.put("css", aggregate(assets.get("css"), "css"));
-                Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(assets.get("javascript"));
-                Map<String, Map<String, String>> newScripts = aggregate(assets.get("javascript"), "js");
-                assets.put("javascript", newScripts);
-                scripts.keySet().removeAll(newScripts.keySet());
-                assets.put("aggregatedjavascript", scripts);
+                Map<String, Map<String, String>> cssAssets = assets.get("css");
+                if (cssAssets != null) {
+                    assets.put("css", aggregate(cssAssets, "css"));
+                }
+                Map<String, Map<String, String>> javascriptAssets = assets.get("javascript");
+                if (javascriptAssets != null) {
+                    Map<String, Map<String, String>> scripts = new LinkedHashMap<String, Map<String, String>>(javascriptAssets);
+                    Map<String, Map<String, String>> newScripts = aggregate(javascriptAssets, "js");
+                    assets.put("javascript", newScripts);
+                    scripts.keySet().removeAll(newScripts.keySet());
+                    assets.put("aggregatedjavascript", scripts);
+                }
             } else if (addLastModifiedDate) {
                 addLastModified(assets);
             }

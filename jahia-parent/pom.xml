@@ -691,20 +691,6 @@
                         <configuration>
                             <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>
                             <skipTests>false</skipTests>
-                            <systemProperties>
-                              <property>
-                                <name>jahia.license</name>
-                                <value>jahia.license</value>
-                              </property>
-                              <property>
-                                <name>jahia.config</name>
-                                <value>jahiaunittest.properties</value>
-                              </property>
-                              <property>
-                                <name>jahiaWebAppRoot</name>
-                                <value>./target/test-repo</value>
-                              </property>                              
-                            </systemProperties>
                         </configuration>
                         <executions>
                             <execution>

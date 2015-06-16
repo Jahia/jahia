@@ -93,7 +93,6 @@ import com.extjs.gxt.ui.client.widget.grid.*;
 import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
-
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
@@ -524,8 +523,8 @@ public class ChildItemsTabItem extends EditEngineTabItem {
         box.getTextBox().setValidator(new Validator() {
             @Override
             public String validate(Field<?> field, String value) {
-                if (!value.equals("*") && !value.matches("[^0-9*+\\-\\[\\]\\/\\|].[^*+\\-\\[\\]\\/\\|]*")) {
-                    return Messages.get("label.childName.error","the name cannot contain one of these characters * [ ] | - / + : or start with a number");
+                if (!value.equals("*") && !value.matches("[A-Za-z]+[A-Za-z0-9:_]*")) {
+                    return Messages.get("label.childName.error","the name+ contains only letters or numbers (: and _ are also allowed) and must start by a letter");
                 }
                 for (GWTJahiaNode n : store.getModels()) {
                     if (n.getName().equals(value)) {

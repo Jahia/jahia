@@ -88,31 +88,38 @@ import org.jahia.services.sites.JahiaSitesService;
 
 /**
  * User path by user name cache helper.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class UserCacheHelper {
 
-    class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+    private EhCacheProvider ehCacheProvider;
+    private SelfPopulatingCache userPathByUserNameCache;
+    private int timeToLiveForNonExistingUsers = 600;
+
+    private class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
+
         @Override
         public Object createEntry(final Object key) throws Exception {
-            UserPathCacheKey skey = (UserPathCacheKey) key;
-            String path = internalGetUserPath(skey.user, skey.site);
+            UserPathCacheKey k = (UserPathCacheKey) key;
+            String path = internalGetUserPath(k.user, k.site);
             if (path != null) {
                 return new Element(key, path);
             } else {
-                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForEmptyPath);
+                return new Element(key, StringUtils.EMPTY, 0, timeToLiveForNonExistingUsers);
             }
         }
     }
 
-    static final class UserPathCacheKey implements Serializable {
-        private static final long serialVersionUID = -727853070149556455L;
-        final int hash;
-        final String site;
-        final String user;
+    private static class UserPathCacheKey implements Serializable {
 
-        UserPathCacheKey(String user, String site) {
+        private static final long serialVersionUID = -727853070149556455L;
+
+        private final int hash;
+        private final String site;
+        private final String user;
+
+        private UserPathCacheKey(String user, String site) {
             super();
             this.user = user;
             this.site = site;
@@ -148,16 +155,6 @@ public class UserCacheHelper {
         }
     }
 
-    private EhCacheProvider ehCacheProvider;
-
-    private int timeToLiveForEmptyPath = 600;
-
-    private SelfPopulatingCache userPathByUserNameCache;
-
-    public int getTimeToLiveForEmptyPath() {
-        return timeToLiveForEmptyPath;
-    }
-
     public String getUserPath(String name, String site) {
         final String value = (String) getUserPathByUserNameCache().get(
                 new UserPathCacheKey(name, StringUtils.isEmpty(site) ? null : site))
@@ -169,24 +166,28 @@ public class UserCacheHelper {
     }
 
     private SelfPopulatingCache getUserPathByUserNameCache() {
+    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
         if (userPathByUserNameCache == null) {
-            userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache(
-                    "org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache",
-                    new UserPathByUserNameCacheEntryFactory());
+        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+        	synchronized (this) {
+                if (userPathByUserNameCache == null) {
+                    userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
+                }
+        	}
         }
         return userPathByUserNameCache;
     }
 
-    private String internalGetUserPath(String name, String path) throws RepositoryException {
-        StringBuilder q = new StringBuilder(128);
+    private String internalGetUserPath(String name, String siteName) throws RepositoryException {
+        StringBuilder q = new StringBuilder();
         q.append("SELECT [j:nodename] from [jnt:user] where localname()='").append(name)
                 .append("' and isdescendantnode('");
-        if (path != null) {
-            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(path);
+        if (siteName != null) {
+            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(siteName);
         }
         q.append("/users/')");
         String p = queryUserPathInWorkspace(q, Constants.LIVE_WORKSPACE);
-        if(p == null) {
+        if (p == null) {
             p = queryUserPathInWorkspace(q, null);
         }
         return p;
@@ -211,8 +212,8 @@ public class UserCacheHelper {
         this.ehCacheProvider = ehCacheProvider;
     }
 
-    public void setTimeToLiveForEmptyPath(int timeToLiveForEmptyPath) {
-        this.timeToLiveForEmptyPath = timeToLiveForEmptyPath;
+    public void setTimeToLiveForNonExistingUsers(int timeToLiveForNonExistingUsers) {
+        this.timeToLiveForNonExistingUsers = timeToLiveForNonExistingUsers;
     }
 
     public void updateAdded(String userPath) {

@@ -109,7 +109,7 @@ import java.util.regex.Pattern;
  * services throughout the product (administration, login, ACL popups, etc..)
  */
 public class JahiaUserManagerService extends JahiaService implements JahiaAfterInitializationService, ServletContextAware {
-    
+
     private static Logger logger = LoggerFactory.getLogger(JahiaUserManagerService.class);
     private static final String ROOT_PWD_RESET_FILE = "root.pwd";
     private static final String ROOT_PWD_RESET_FILE_PATH = "/WEB-INF/etc/config/" + ROOT_PWD_RESET_FILE;
@@ -139,7 +139,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private String rootUserName;
 
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
-    
+
     private UserCacheHelper cacheHelper;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -159,6 +159,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         this.userSplittingRule = userSplittingRule;
     }
 
+    @Override
     public void setServletContext(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
@@ -193,7 +194,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public JCRUserNode lookupUserByPath(String path) {
         JCRUserNode userNode = lookupUserByPath(path, Constants.LIVE_WORKSPACE);
-        if(userNode == null) {
+        if (userNode == null) {
             userNode = lookupUserByPath(path, Constants.EDIT_WORKSPACE);
         }
         return userNode;
@@ -329,8 +330,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return the system root user name (cached)
      */
     public String getRootUserName() {
+    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
         if (rootUserName == null) {
-            rootUserName = lookupRootUser().getName();
+        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+        	synchronized (this) {
+                if (rootUserName == null) {
+                    rootUserName = lookupRootUser().getName();
+                }
+        	}
         }
         return rootUserName;
     }
@@ -383,9 +390,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
-                    Row usersFolderNode = rows.nextRow();
-                    if (usersFolderNode.getNode() != null) {
-                        String userPath = usersFolderNode.getPath();
+                    Row row = rows.nextRow();
+                    if (row.getNode() != null) {
+                        String userPath = row.getPath();
                         if (!users.contains(userPath)) {
                             users.add(userPath);
                         }
@@ -424,8 +431,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
                 while (rows.hasNext()) {
-                    Row usersFolderNode = rows.nextRow();
-                    String userName = usersFolderNode.getValue("j:nodename").getString();
+                    Row row = rows.nextRow();
+                    String userName = row.getValue("j:nodename").getString();
                     users.add(userName);
                 }
             }
@@ -501,7 +508,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             int limit = 0;
             Set<JCRUserNode> users = new HashSet<JCRUserNode>();
             if (session.getWorkspace().getQueryManager() != null) {
-                StringBuilder query = new StringBuilder(128);
+                StringBuilder query = new StringBuilder();
 
                 // Add provider to query
                 if(providerKeys != null) {
@@ -523,30 +530,30 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 }
 
                 // Add criteria
-                if (searchCriterias != null && searchCriterias.size() > 0) {
+                if (searchCriterias != null && !searchCriterias.isEmpty()) {
                     Properties filters = (Properties) searchCriterias.clone();
                     String operation = " OR ";
-                    if (filters.containsKey(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)) {
-                        if (((String) filters.get(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION)).trim().toLowerCase().equals(
+                    if (filters.containsKey(MULTI_CRITERIA_SEARCH_OPERATION)) {
+                        if (((String) filters.get(MULTI_CRITERIA_SEARCH_OPERATION)).trim().toLowerCase().equals(
                                 "and")) {
                             operation = " AND ";
                         }
-                        filters.remove(JahiaUserManagerService.MULTI_CRITERIA_SEARCH_OPERATION);
+                        filters.remove(MULTI_CRITERIA_SEARCH_OPERATION);
                     }
-                    if (filters.containsKey(JahiaUserManagerService.COUNT_LIMIT)) {
-                        limit = Integer.parseInt((String) filters.get(JahiaUserManagerService.COUNT_LIMIT));
+                    if (filters.containsKey(COUNT_LIMIT)) {
+                        limit = Integer.parseInt((String) filters.get(COUNT_LIMIT));
                         logger.debug("Limit of results has be set to " + limit);
-                        filters.remove(JahiaUserManagerService.COUNT_LIMIT);
+                        filters.remove(COUNT_LIMIT);
                     }
                     // Avoid wildcard attribute
                     if (!(filters.containsKey(
                             "*") && filters.size() == 1 && filters.getProperty("*").equals(
                             "*"))) {
-                        Iterator<Map.Entry<Object, Object>> objectIterator = filters.entrySet().iterator();
-                        if (objectIterator.hasNext()) {
+                        Iterator<Map.Entry<Object, Object>> criteriaIterator = filters.entrySet().iterator();
+                        if (criteriaIterator.hasNext()) {
                             query.append(query.length() > 0 ? " AND " : "").append(" (");
-                            while (objectIterator.hasNext()) {
-                                Map.Entry<Object, Object> entry = objectIterator.next();
+                            while (criteriaIterator.hasNext()) {
+                                Map.Entry<Object, Object> entry = criteriaIterator.next();
                                 String propertyKey = (String) entry.getKey();
                                 if ("username".equals(propertyKey)) {
                                     propertyKey = "j:nodename";
@@ -570,7 +577,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                                     query.append("LOWER(u.[" + Patterns.DOT.matcher(propertyKey).replaceAll("\\\\.") + "])").append(
                                             " LIKE '").append(propertyValue.toLowerCase()).append("'");
                                 }
-                                if (objectIterator.hasNext()) {
+                                if (criteriaIterator.hasNext()) {
                                     query.append(operation);
                                 }
                             }
@@ -598,8 +605,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                 QueryResult qr = q.execute();
                 NodeIterator ni = qr.getNodes();
                 while (ni.hasNext()) {
-                    Node usersFolderNode = ni.nextNode();
-                    users.add((JCRUserNode) usersFolderNode);
+                    Node userNode = ni.nextNode();
+                    users.add((JCRUserNode) userNode);
                 }
             }
 

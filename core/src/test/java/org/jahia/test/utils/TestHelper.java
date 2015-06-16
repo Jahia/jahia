@@ -130,7 +130,7 @@ public class TestHelper {
     public static final String BOOTSTRAP_ACME_SPACE_TEMPLATES = "bootstrap-acme-space-templates";
 
     public static JahiaSite createSite(String name) throws Exception {
-        return createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        return createSite(name, "localhost" + System.currentTimeMillis(), getDefaultTemplateSet(), null, null, null);
     }
 
     public static JahiaSite createSite(String name, String templateSet) throws Exception {
@@ -138,7 +138,7 @@ public class TestHelper {
     }
 
     public static JahiaSite createSite(String name, Set<String> languages, Set<String> mandatoryLanguages, boolean mixLanguagesActive) throws Exception {
-        createSite(name, "localhost" + System.currentTimeMillis(), WEB_TEMPLATES, null, null, null);
+        createSite(name, "localhost" + System.currentTimeMillis(), getDefaultTemplateSet(), null, null, null);
         final JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession();
         JCRSiteNode site = (JCRSiteNode) session.getNode("/sites/" + name);
         if (!CollectionUtils.isEmpty(languages) && !languages.equals(site.getLanguages())) {
@@ -253,6 +253,14 @@ public class TestHelper {
     public static JahiaSite createSite(String name, String serverName, String templateSet,
                                        String prepackedZIPFile, String siteZIPName) throws Exception {
             return createSite(name, serverName, templateSet, prepackedZIPFile, siteZIPName, null);
+    }
+    
+    private static String getDefaultTemplateSet() {
+        String defaultTemplatesSet = WEB_TEMPLATES;
+        if (ServicesRegistry.getInstance().getJahiaTemplateManagerService().getAnyDeployedTemplatePackage(WEB_TEMPLATES) == null) {
+            defaultTemplatesSet = null;
+        }
+        return defaultTemplatesSet;
     }
     
     private static JahiaSite addSiteWithoutTemplates(

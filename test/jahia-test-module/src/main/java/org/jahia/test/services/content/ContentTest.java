@@ -426,6 +426,11 @@ public class ContentTest {
         String name = "test" + System.currentTimeMillis() + ".txt";
         JCRNodeWrapper testFile = rootNode.uploadFile(name, is, mimeType);
         session.save();
+        
+        // now let's sleep a little to give time for Jackrabbit to index the file's content
+        // otherwise setting extracted text in parallel thread will conflict with renaming in the next lines
+        Thread.sleep(5000);
+        
         String initialTestFileIdentifier = testFile.getIdentifier();
 
         final String newname = "renamed" + name;

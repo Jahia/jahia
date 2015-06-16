@@ -45,6 +45,10 @@ limitations under the License.
     xmlns:mockito="http://www.mockito.org/spring/mockito"
     xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean id="JahiaPortletPreferencesService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.apache.pluto.container.PortletPreferencesService" />
+    </bean>
+
     <bean id="PlutoServices" class="org.mockito.Mockito" factory-method="mock"> 
         <constructor-arg value="org.apache.pluto.container.driver.PlutoServices" />
     </bean> 

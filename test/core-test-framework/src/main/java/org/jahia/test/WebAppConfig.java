@@ -23,6 +23,8 @@ import org.springframework.context.annotation.ImportResource;
         "classpath:/org/jahia/defaults/config/spring/auth/applicationcontext-cookie.xml",
         "classpath:/org/jahia/defaults/config/spring/auth/applicationcontext-auth-pipeline.xml",
         "classpath:/org/jahia/defaults/config/spring/applicationcontext-services.xml",
+        "classpath:/org/jahia/defaults/config/spring/applicationcontext-test-renderer.xml",        
+        "classpath:/org/jahia/defaults/config/spring/applicationcontext-test-services.xml",        
         "classpath:/org/jahia/defaults/config/spring/applicationcontext-test-datasource.xml",
         "classpath:/org/jahia/defaults/config/spring/applicationcontext-test-scheduler.xml",
         "classpath:/org/jahia/defaults/config/spring/jcr/applicationcontext-test-jcr.xml",

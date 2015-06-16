@@ -424,10 +424,10 @@ public class Functions {
         return null;
     }
 
-    public static String formatISODate(java.lang.String dateToParse, String pattern){
+    public static String formatISODate(java.lang.String dateToParse, String pattern, Locale locale){
         try{
             DateTime dateTime = ISODateTimeFormat.dateOptionalTimeParser().parseDateTime(dateToParse);
-            return DateTimeFormat.forPattern(pattern).print(!dateToParse.endsWith("Z")?dateTime:dateTime.toDateTime(DateTimeZone.forID("UTC")));
+            return DateTimeFormat.forPattern(pattern).withLocale(locale != null ? locale : Locale.ENGLISH).print(!dateToParse.endsWith("Z") ? dateTime : dateTime.toDateTime(DateTimeZone.forID("UTC")));
         } catch (Exception e) {
             logger.debug("Unable to parse date:"+dateToParse,e);
             return null;

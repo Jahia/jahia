@@ -174,7 +174,7 @@
     </c:choose>
 </c:if>
 <c:if test="${empty mappedLabel and not empty facetValueFormat}">
-    <c:set var="facetIsADate" value="${functions:formatISODate(facetValueName, facetValueFormat)}"/>
+    <c:set var="facetIsADate" value="${functions:formatISODate(facetValueName, facetValueFormat, currentLocale)}"/>
     <c:choose>
         <c:when test="${not empty facetIsADate}">
             <c:set var="mappedLabel" value="${facetIsADate}"/>

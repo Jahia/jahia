@@ -596,6 +596,6 @@
     <function>
         <name>formatISODate</name>
         <function-class>org.jahia.taglibs.functions.Functions</function-class>
-        <function-signature>java.lang.String formatISODate(java.lang.String,java.lang.String)</function-signature>
+        <function-signature>java.lang.String formatISODate(java.lang.String,java.lang.String,java.util.Locale)</function-signature>
     </function>
 </taglib>

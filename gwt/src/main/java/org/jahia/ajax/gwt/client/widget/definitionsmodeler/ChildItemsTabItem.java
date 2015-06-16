@@ -524,7 +524,7 @@ public class ChildItemsTabItem extends EditEngineTabItem {
             @Override
             public String validate(Field<?> field, String value) {
                 if (!value.equals("*") && !value.matches("[A-Za-z]+[A-Za-z0-9:_]*")) {
-                    return Messages.get("label.childName.error","the name+ contains only letters or numbers (: and _ are also allowed) and must start by a letter");
+                    return Messages.get("label.childName.error","the name contains only letters or numbers (: and _ are also allowed) and must start by a letter");
                 }
                 for (GWTJahiaNode n : store.getModels()) {
                     if (n.getName().equals(value)) {

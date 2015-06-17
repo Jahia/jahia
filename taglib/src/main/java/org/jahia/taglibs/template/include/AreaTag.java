@@ -277,7 +277,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                     if (node == null) {
                         return;
                     }
-                    if ((limitedAbsoluteAreaEdit && !mainResource.getNode().getPath().equals(node.getPath())) || mainResource.getNode().getPath().startsWith("/modules")) {
+                    if ((limitedAbsoluteAreaEdit && !mainResource.getNode().getPath().equals(node.getPath())) || (mainResource.getNode().getPath().startsWith("/modules") && mainResource.getNode().isNodeType("jnt:template"))) {
                         parameters.put("readOnly", "true");
                         editable = false;
                         renderContext.getRequest().setAttribute("inArea", Boolean.TRUE);

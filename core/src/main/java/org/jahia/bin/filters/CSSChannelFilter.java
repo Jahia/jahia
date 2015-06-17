@@ -76,12 +76,8 @@ import com.phloc.css.ECSSVersion;
 import com.phloc.css.decl.*;
 import com.phloc.css.reader.CSSReader;
 import com.phloc.css.writer.CSSWriter;
-<<<<<<< .working
-
 import org.apache.commons.io.Charsets;
-=======
 
->>>>>>> .merge-right.r52715
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;

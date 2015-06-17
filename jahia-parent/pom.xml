@@ -696,6 +696,11 @@
                             <artifactId>surefire-testng</artifactId>
                             <version>${surefire.plugin.version}</version>
                           </dependency>
+                          <dependency>
+                            <groupId>org.jmockit</groupId>
+                            <artifactId>jmockit</artifactId>
+                            <version>${jmockit.version}</version>
+                          </dependency>                            
                         </dependencies>                        
                         <configuration>
                             <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>

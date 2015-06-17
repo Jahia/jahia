@@ -76,16 +76,23 @@ import com.phloc.css.ECSSVersion;
 import com.phloc.css.decl.*;
 import com.phloc.css.reader.CSSReader;
 import com.phloc.css.writer.CSSWriter;
+<<<<<<< .working
 
 import org.apache.commons.io.Charsets;
+=======
+
+>>>>>>> .merge-right.r52715
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 
@@ -115,7 +122,21 @@ public class CSSChannelFilter implements Filter {
             Channel channel = service.getChannel(channelId);
 
             String uri = ((HttpServletRequest) request).getRequestURI();
-            final InputStream stream = servletContext.getResourceAsStream(uri.replace(Jahia.getContextPath(), ""));
+            InputStream readStream = servletContext.getResourceAsStream(uri.replace(Jahia.getContextPath(), ""));
+            if(readStream == null) {
+            	//Check if it is a JCR resource (because it cannot read as resource from servletContext)
+            	try {
+            		if(uri.contains("/sites/")) {
+            			JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uri.substring(uri.indexOf("/sites/")));
+            			if(node.hasNode("jcr:content")) {
+            				readStream = node.getNode("jcr:content").getProperty("jcr:data").getBinary().getStream();
+            			}
+            		}
+            	} catch(RepositoryException ex) {
+            		logger.warn("cannot parse css file in JCR: " + uri, ex);
+            	}
+            }
+            final InputStream stream = readStream;
 
             CascadingStyleSheet css = CSSReader.readFromStream(new IInputStreamProvider() {
                 public InputStream getInputStream() {

@@ -132,7 +132,19 @@
             <artifactId>mockito-core</artifactId>
             <version>${mockito.version}</version>
         </dependency>    
-               
+		
+        <dependency>
+            <groupId>org.jmockit</groupId>
+            <artifactId>jmockit</artifactId>
+            <version>${jmockit.version}</version>
+        </dependency>		
+		
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>${assertj.version}</version>
+        </dependency>
+		
         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>

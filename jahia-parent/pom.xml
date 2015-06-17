@@ -123,10 +123,12 @@
         <atmosphere.version>2.3.1</atmosphere.version>
         <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
-        <junit.version>4.11</junit.version>
+        <junit.version>4.12</junit.version>
         <junit.addons.version>1.4</junit.addons.version>
-        <testng.version>6.8.5</testng.version>
+        <testng.version>6.9.4</testng.version>
         <mockito.version>1.9.5</mockito.version>
+        <jmockit.version>1.17</jmockit.version>
+        <assertj.version>1.6.0</assertj.version>		
         <izpack.version>4.3.5-jahia10</izpack.version>
         <launch4j.version>3.4</launch4j.version>
         <jahia.tomcat.version>8.0.23</jahia.tomcat.version>

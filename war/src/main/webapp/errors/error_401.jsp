@@ -11,53 +11,58 @@
 <head>
     <meta charset="utf-8">
     <meta name="robots" content="noindex, nofollow"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
     <title><fmt:message key="label.login"/></title>
-    <script type="text/javascript">
-        var clickcounter = 0;
-        document.onkeydown = function (e) {
-            if ((e || window.event).keyCode == 13) clickcounter++;
-            doSubmit();
-        };
-    </script>
+
 </head>
-<body onload="document.loginForm.username.focus()" class="login">
-<div class="row-fluid login-wrapper">
-    <div class="span4 box">
-        <div class="content-wrap">
-            <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
-            <ui:loginArea>
-                <script type="text/javascript">
-                    function doSubmit() {
-                        if (clickcounter == 1) {
-                            document.forms.loginForm.submit();
-                        }
-                    }
-                </script>
-                <h1><fmt:message key="label.login"/></h1>
-                <ui:isLoginError var="loginResult">
-                    <div class="alert alert-error"><fmt:message
-                            key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
-                </ui:isLoginError>
-                <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
-                       maxlength="250" name="username"/>
-                <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
-                       maxlength="250" name="password" autocomplete="off"/>
-                <c:if test="${not fn:contains(param.redirect, '/administration')}">
-                    <div class="remember">
-                        <ui:loginRememberMe id="rememberme" tabindex="3"/>
-                        <label for="rememberme"><fmt:message key="label.rememberme"/></label>
-                    </div>
-                </c:if>
-                <a class="btn  btn-large btn-large btn-block btn-primary" href="#login"
-                   onClick="document.forms.loginForm.submit(); return false;" tabindex="5"
-                   title="<fmt:message key='label.login'/>">
-                    <i class="icon-ok icon-white"></i>
-                    &nbsp;<fmt:message key="label.login"/>
-                </a>
+
+<body>
+
+<div class="bgImgLeft"></div>
+
+<div class="logobg">
+    <img src="${pageContext.request.contextPath}/css/logo.png" alt="Jahia Solutions">
+</div>
+
+<div id="textbox">
+    <div id="ic">
+
+        <h2>Digital Factory 7.1</h2>
+        <p>To continue, please enter your credentials below.</p>
+
+            <ui:loginArea id="girisyap">
+
+            <div class="group">
+                <input type="text" name="username" required>
+                <span class="highlight"></span>
+                <label><fmt:message key="label.username"/></label>
+            </div>
+
+            <div class="group">
+                <input type="password" name="password" autofocus required>
+                <span class="highlight"></span>
+                <label><fmt:message key="label.password"/></label>
+            </div>
+
+            <input type="submit" value="<fmt:message key='label.login'/>" class="girisbtn" tabindex="100" />
+
             </ui:loginArea>
-        </div>
+
     </div>
 </div>
+
+<%-- <ui:isLoginError var="loginResult">
+     <div class="alert alert-error"><fmt:message
+             key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
+ </ui:isLoginError>
+
+ <c:if test="${not fn:contains(param.redirect, '/administration')}">
+     <div class="remember">
+         <ui:loginRememberMe id="rememberme" tabindex="3"/>
+         <label for="rememberme"><fmt:message key="label.rememberme"/></label>
+     </div>
+ </c:if>--%>
+
 </body>
 </html>

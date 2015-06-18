@@ -71,10 +71,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.poller;
 
+import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 
 import org.atmosphere.gwt20.client.*;
+import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -89,8 +91,14 @@ import java.util.Map;
  */
 public class Poller {
 
+    private static final boolean isIE;
 
     private static Poller instance;
+    
+    static {
+        String ua = GXT.getUserAgent();
+        isIE = GXT.isIE || ua != null && ua.indexOf("trident/7") != -1; 
+    }
 
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
 
@@ -109,8 +117,10 @@ public class Poller {
 
                 AtmosphereRequestConfig rpcRequestConfig = AtmosphereRequestConfig.create(rpc_serializer);
                 rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc");
-                rpcRequestConfig.setTransport(useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET
-                        : AtmosphereRequestConfig.Transport.STREAMING);
+                Transport transport = useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET
+                        : (!isIE ? AtmosphereRequestConfig.Transport.SSE
+                                : AtmosphereRequestConfig.Transport.STREAMING);
+                rpcRequestConfig.setTransport(transport);
                 rpcRequestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
                 rpcRequestConfig.setOpenHandler(new AtmosphereOpenHandler() {
                     @Override

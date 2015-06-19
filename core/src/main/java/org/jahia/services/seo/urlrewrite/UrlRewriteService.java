@@ -159,7 +159,7 @@ public class UrlRewriteService implements InitializingBean, DisposableBean, Serv
 
 //        mergeConfigurationResources();
 
-        if (!hasConfigurationResources() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
+        if (hasConfigurationResources() && settingsBean.isDevelopmentMode() && (confReloadCheckIntervalSeconds < 0 || confReloadCheckIntervalSeconds > 5)) {
             confReloadCheckIntervalSeconds = 5;
             logger.info("Development mode is activated. Setting URL rewriter configuration check interval to 5 seconds.");
         }

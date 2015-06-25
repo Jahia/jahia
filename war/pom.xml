@@ -92,6 +92,12 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.osgi</groupId>
+                <artifactId>org.osgi.compendium</artifactId>
+                <version>${osgi.version}</version>
+                <scope>runtime</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -134,7 +140,6 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>7.1.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>

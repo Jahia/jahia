@@ -140,6 +140,7 @@
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
             <version>7.1.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>org.jahia.server</groupId>

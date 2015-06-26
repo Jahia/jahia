@@ -30,6 +30,7 @@
                 <!--<value>org.jahia.test.services.applications.ApplicationsManagerServiceTest</value>-->
                 <!--<value>org.jahia.test.services.atmosphere.AtmosphereTest</value>-->
                 <value>org.jahia.test.services.categories.CategoryTest</value>
+                <value>org.jahia.test.services.channels.ChannelsTest</value>
                 <value>org.jahia.test.services.content.AutoSplittingTest</value>
                 <value>org.jahia.test.services.content.ContentTest</value>
                 <value>org.jahia.test.services.content.CrawlingPageVisitorTest</value>

@@ -136,6 +136,7 @@ public class ChannelService {
             channelProviders.remove(provider);
         }
         channelProviders.add(provider);
+        channelMap.clear();
         Collections.sort(channelProviders, new Comparator<ChannelProvider>() {
             public int compare(ChannelProvider o1, ChannelProvider o2) {
                 int i = o1.getPriority() - o2.getPriority();

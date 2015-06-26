@@ -166,5 +166,6 @@ public class ChannelService {
      */
     public void removeProvider(ChannelProvider provider) {
         channelProviders.remove(provider);
+        channelMap.clear();
     }
 }

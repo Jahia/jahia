@@ -104,7 +104,9 @@ public class ChannelService {
             if (provider.getFallBack(identifier) != null) {
                 result.setFallBack(provider.getFallBack(identifier));
             }
-            result.setVisible(provider.isVisible(identifier));
+            if (provider.getAllChannels().contains(identifier)) {
+                result.setVisible(provider.isVisible(identifier));
+            }
         }
         channelMap.put(identifier, result);
         return result;
@@ -122,11 +124,11 @@ public class ChannelService {
     }
 
     public List<String> getAllChannels() {
-        List<String> result = new ArrayList<String>();
+        LinkedHashSet<String> result = new LinkedHashSet<String>();
         for (ChannelProvider provider : channelProviders) {
             result.addAll(provider.getAllChannels());
         }
-        return result;
+        return new ArrayList<String>(result);
     }
 
     public void addProvider(ChannelProvider provider) {

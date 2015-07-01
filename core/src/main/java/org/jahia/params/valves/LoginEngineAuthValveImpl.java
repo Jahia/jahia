@@ -113,24 +113,11 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
         this.fireLoginEvent = fireLoginEvent;
     }
 
-    public class LoginEvent extends ApplicationEvent {
+    public class LoginEvent extends BaseLoginEvent {
         private static final long serialVersionUID = -7356560804745397662L;
         
-        private JahiaUser jahiaUser;
-        private AuthValveContext authValveContext;
-
         public LoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
-            super(source);
-            this.jahiaUser = jahiaUser;
-            this.authValveContext = authValveContext;
-        }
-
-        public JahiaUser getJahiaUser() {
-            return jahiaUser;
-        }
-
-        public AuthValveContext getAuthValveContext() {
-            return authValveContext;
+            super(source, jahiaUser, authValveContext);
         }
     }
 

@@ -99,6 +99,7 @@ public class ModuleHelper {
     public final static String JAHIA_TYPE = "jahiatype";
 
     private static List<Module> modules;
+    private static String mainPath;
     private static Map<String, List<Module>> modulesByPath;
     private static Map<String, Module> modulesById;
 
@@ -141,7 +142,7 @@ public class ModuleHelper {
         linkedContentInfo = new HashMap<String, List<String>>();
         linkedContentInfoType = new HashMap<String, String>();
 
-        String mainPath = null;
+        mainPath = null;
         String mainTemplate = null;
 
         Set<String> allNodetypes = new HashSet<String>();
@@ -237,9 +238,11 @@ public class ModuleHelper {
                 .getNodesAndTypes(params, new ArrayList<String>(allNodetypes),
                         new BaseAsyncCallback<Map<String, List<? extends ModelData>>>() {
                             public void onSuccess(Map<String, List<? extends ModelData>> result) {
-                                nodesAndTypes = result;
-                                if (parsed) {
-                                    handleNodesAndTypesResult(result, mainModule, fmainPath, fmainTemplate);
+                                if (mainPath.equals(fmainPath)) {
+                                    nodesAndTypes = result;
+                                    if (parsed) {
+                                        handleNodesAndTypesResult(result, mainModule, fmainPath, fmainTemplate);
+                                    }
                                 }
                             }
                             public void onApplicationFailure(Throwable caught) {

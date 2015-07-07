@@ -589,7 +589,7 @@
         </init-param>
         <init-param>
             <param-name>org.atmosphere.interceptor.HeartbeatInterceptor.heartbeatFrequencyInSeconds</param-name>
-            <param-value>0</param-value>
+            <param-value>60</param-value>
         </init-param>
 
         <load-on-startup>1</load-on-startup>

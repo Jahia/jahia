@@ -156,6 +156,10 @@ public final class ServletContextImpl
         return this.httpContext.getResource(normalizePath(path));
     }
 
+    public Bundle getBundle() {
+        return bundle;
+    }
+
     public InputStream getResourceAsStream(String path)
     {
         URL res = getResource(path);

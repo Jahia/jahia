@@ -90,6 +90,8 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * HttpContext that can look up resources in files as well as the default OSGi HttpContext
@@ -100,8 +102,20 @@ public class FileHttpContext implements HttpContext {
 
     private static Logger logger = LoggerFactory.getLogger(FileHttpContext.class);
 
+    private static URL NULL_URL;
+
+    static {
+        try {
+            NULL_URL = new URL("http://");
+        } catch (MalformedURLException e) {
+            //
+        }
+    }
+
     HttpContext parentHttpContext;
     URL[] sourceURLs;
+
+    private Map<String, URL> resourcesCache = new ConcurrentHashMap<String, URL>();
 
     public FileHttpContext(URL[] sourceURLs, HttpContext parentHttpContext) {
         this.sourceURLs = sourceURLs != null && sourceURLs.length == 0 ? null : sourceURLs;
@@ -170,13 +184,21 @@ public class FileHttpContext implements HttpContext {
                     if (urlExists(resourceURL)) {
                         // @todo we could add dynamic registration here if the resource has not yet been registered in the activator
                         return resourceURL;
-                    }                    
+                    }
                 } catch (MalformedURLException e) {
                     logger.error("Error in resource URL " + name, e);
                 }
             }
         }
-        return parentHttpContext.getResource(name);
+        URL url = resourcesCache.get(name);
+        if (url == null) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Getting resource: " + name);
+            }
+            url = parentHttpContext.getResource(name);
+            resourcesCache.put(name, url != null ? url : NULL_URL);
+        }
+        return url != NULL_URL ? url : null;
     }
 
     private boolean urlExists(URL url) {

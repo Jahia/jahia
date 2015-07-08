@@ -101,11 +101,12 @@ public class ReferencesHelper {
     }
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper, boolean keepReferencesForLive) throws RepositoryException {
+        JCRSessionWrapper referencesKeeperSession = session;
         if (useReferencesKeeper) {
-            resolveReferencesKeeper(session);
+            referencesKeeperSession = resolveReferencesKeeper(session);
         }
         Map<String, String> uuidMapping = session.getUuidMapping();
-        JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
+        JCRNodeWrapper refRoot = referencesKeeperSession.getNode("/referencesKeeper");
         boolean resolved;
         List<String> resolvedUUIDStringList = new LinkedList<String>();
         for (String uuid : references.keySet()) {
@@ -173,15 +174,21 @@ public class ReferencesHelper {
         for (String uuid : resolvedUUIDStringList) {
             references.remove(uuid);
         }
+        
+        if (useReferencesKeeper && session != referencesKeeperSession) {
+            referencesKeeperSession.save();
+        }
     }
 
-    public static void resolveReferencesKeeper(JCRSessionWrapper session) throws RepositoryException {
+    public static JCRSessionWrapper resolveReferencesKeeper(JCRSessionWrapper session) throws RepositoryException {
         NodeIterator ni = null;
+        JCRSessionWrapper referencesKeeperSession = null;
         try {
-            ni = session.getNode("/referencesKeeper").getNodes();
+            referencesKeeperSession = getReferencesKeeperSession(session);
+            ni = referencesKeeperSession.getNode("/referencesKeeper").getNodes();
         } catch (RepositoryException e) {
             logger.error("Impossible to load the references keeper", e);
-            return;
+            return session;
         }
         if (ni.getSize() > 5000) {
             logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to clean them. Parsing them may take a while.");
@@ -194,7 +201,7 @@ public class ReferencesHelper {
             batchCount++;
 
             if (batchCount > maxBatch) {
-                session.save();
+                referencesKeeperSession.save();
                 batchCount = 0;
             }
 
@@ -217,7 +224,20 @@ public class ReferencesHelper {
                 refNode.remove();
             }
         }
+        
+        if (session != referencesKeeperSession) {
+            referencesKeeperSession.save();
+        }
+        
+        return referencesKeeperSession;
+    }
 
+    private static JCRSessionWrapper getReferencesKeeperSession(JCRSessionWrapper session) throws RepositoryException {
+        if (session.isSystem()) {
+            return session;
+        }
+        return JCRSessionFactory.getInstance().getCurrentSystemSession(session.getWorkspace().getName(),
+                session.getLocale(), session.getFallbackLocale());
     }
 
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {

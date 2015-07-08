@@ -80,7 +80,6 @@ import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
-
 import java.util.*;
 
 /**
@@ -102,12 +101,11 @@ public class ReferencesHelper {
     }
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references, boolean useReferencesKeeper, boolean keepReferencesForLive) throws RepositoryException {
-        JCRSessionWrapper referencesKeeperSession = session;
         if (useReferencesKeeper) {
-            referencesKeeperSession = resolveReferencesKeeper(session);
+            resolveReferencesKeeper(session);
         }
         Map<String, String> uuidMapping = session.getUuidMapping();
-        JCRNodeWrapper refRoot = referencesKeeperSession.getNode("/referencesKeeper");
+        JCRNodeWrapper refRoot = session.getNode("/referencesKeeper");
         boolean resolved;
         List<String> resolvedUUIDStringList = new LinkedList<String>();
         for (String uuid : references.keySet()) {
@@ -175,50 +173,15 @@ public class ReferencesHelper {
         for (String uuid : resolvedUUIDStringList) {
             references.remove(uuid);
         }
-        
-        if (useReferencesKeeper && session != referencesKeeperSession) {
-            referencesKeeperSession.save();
-        }
     }
 
-=======
-<<<<<<< .working
-    private static boolean handleExternalUserNode(JCRSessionWrapper session, String uuid, List<String> paths) throws RepositoryException {
-        if (uuid.startsWith("/users/")) {
-            String name = StringUtils.substringAfterLast(uuid, "/");
-            JahiaUserManagerService userManagerService = ServicesRegistry.getInstance().getJahiaUserManagerService();
-            String splitPath = userManagerService.getUserSplittingRule().getPathForUsername(name);
-            if (splitPath.equals(uuid)) {
-                // this node is a user node, check if user exists in service
-                JahiaUser user = userManagerService.lookupUser(name);
-                if (user != null && user instanceof JahiaExternalUser) {
-                    ServicesRegistry.getInstance().getJCRStoreService().deployExternalUser(user);
-                    String id = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uuid).getIdentifier();
-                    JCRPublicationService.getInstance().publishByMainId(id);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-<<<<<<< .working
->>>>>>> .merge-right.r52772
     public static void resolveReferencesKeeper(JCRSessionWrapper session) throws RepositoryException {
-=======
-    private static void resolveReferencesKeeper(JCRSessionWrapper session, JCRSessionWrapper refKeeperSession) throws RepositoryException {
->>>>>>> .merge-right.r52771
-=======
-    public static JCRSessionWrapper resolveReferencesKeeper(JCRSessionWrapper session) throws RepositoryException {
->>>>>>> .merge-right.r52774
         NodeIterator ni = null;
-        JCRSessionWrapper referencesKeeperSession = null;
         try {
-            referencesKeeperSession = getReferencesKeeperSession(session);
-            ni = referencesKeeperSession.getNode("/referencesKeeper").getNodes();
+            ni = session.getNode("/referencesKeeper").getNodes();
         } catch (RepositoryException e) {
             logger.error("Impossible to load the references keeper", e);
-            return session;
+            return;
         }
         if (ni.getSize() > 5000) {
             logger.warn("You have "+ ni.getSize() +" nodes under /referencesKeeper, please consider checking the fine-tuning guide to clean them. Parsing them may take a while.");
@@ -231,7 +194,7 @@ public class ReferencesHelper {
             batchCount++;
 
             if (batchCount > maxBatch) {
-                referencesKeeperSession.save();
+                session.save();
                 batchCount = 0;
             }
 
@@ -254,20 +217,7 @@ public class ReferencesHelper {
                 refNode.remove();
             }
         }
-        
-        if (session != referencesKeeperSession) {
-            referencesKeeperSession.save();
-        }
-        
-        return referencesKeeperSession;
-    }
 
-    private static JCRSessionWrapper getReferencesKeeperSession(JCRSessionWrapper session) throws RepositoryException {
-        if (session.isSystem()) {
-            return session;
-        }
-        return JCRSessionFactory.getInstance().getCurrentSystemSession(session.getWorkspace().getName(),
-                session.getLocale(), session.getFallbackLocale());
     }
 
     private static void update(List<String> paths, JCRSessionWrapper session, String value) throws RepositoryException {

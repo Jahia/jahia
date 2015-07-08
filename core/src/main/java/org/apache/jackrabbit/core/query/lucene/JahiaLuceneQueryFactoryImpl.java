@@ -528,10 +528,11 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         BooleanQuery or = null;
         try {
             if (field.equals(FieldNames.PARENT)) {
+                String identifier = session.getNode(path).getIdentifier();
                 Query q1 = new JackrabbitTermQuery(
-                        new Term(FieldNames.PARENT, session.getNode(path).getIdentifier()));
+                        new Term(FieldNames.PARENT, identifier));
                 Query q2 = new JackrabbitTermQuery(
-                        new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, session.getNode(path).getIdentifier()));
+                        new Term(JahiaNodeIndexer.TRANSLATED_NODE_PARENT, identifier));
                 or = new BooleanQuery();
                 or.add(q1, BooleanClause.Occur.SHOULD);
                 or.add(q2, BooleanClause.Occur.SHOULD);
@@ -546,6 +547,28 @@ public class JahiaLuceneQueryFactoryImpl extends LuceneQueryFactory {
         return or;
     }
 
+    @Override
+    protected Query create(Constraint constraint, Map<String, NodeType> selectorMap, JackrabbitIndexSearcher searcher) throws RepositoryException, IOException {
+        if(constraint instanceof SameNode) {
+            SameNode sn = (SameNode) constraint;
+            if(locale !=null) {
+                String identifier = session.getNode(sn.getPath()).getIdentifier();
+                Query q1 = new JackrabbitTermQuery(new Term(FieldNames.UUID, identifier));
+                Query q2 = new JackrabbitTermQuery(new Term(FieldNames.PARENT, identifier));
+                Query q3 = new JackrabbitTermQuery(new Term(JahiaNodeIndexer.TRANSLATION_LANGUAGE, locale.toString()));
+                BooleanQuery and = new BooleanQuery();
+                and.add(q2, BooleanClause.Occur.MUST);
+                and.add(q3, BooleanClause.Occur.MUST);
+                BooleanQuery or = new BooleanQuery();
+                or.add(q1, BooleanClause.Occur.SHOULD);
+                or.add(and, BooleanClause.Occur.SHOULD);
+                return or;
+            } else {
+                return getNodeIdQuery(UUID, sn.getPath());
+            }
+        }
+        return super.create(constraint, selectorMap, searcher);
+    }
 //    protected Query getDescendantNodeQuery(
 //            DescendantNode dn, JackrabbitIndexSearcher searcher)
 //            throws RepositoryException, IOException {

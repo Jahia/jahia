@@ -66,8 +66,9 @@ renderContext.request.getAttribute("staticAssets").each { resource ->
                   println "jASAJ.push('${url}');";
                   if (condition != null) println("<![endif]-->");
               }
+              println "</script>";
           }
-          println "</script>";
+          
         break;
       case "html" :
           type.value.eachWithIndex { html, i ->

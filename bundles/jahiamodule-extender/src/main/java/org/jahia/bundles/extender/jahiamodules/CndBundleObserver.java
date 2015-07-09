@@ -123,6 +123,8 @@ public class CndBundleObserver implements BundleObserver<URL> {
                         module.getVersion());
                 if (SettingsBean.getInstance().isProcessingServer()) {
                     jcrStoreService.deployDefinitions(bundle.getSymbolicName());
+                } else {
+                    jcrStoreService.registerNamespaces();
                 }
                 logger.info("Registered definitions from file {} for bundle {}", url, bundleName);
             } catch (IOException | ParseException | RepositoryException e) {

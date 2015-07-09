@@ -444,7 +444,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
-    private void registerNamespaces() {
+    public void registerNamespaces() {
         try {
             NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();

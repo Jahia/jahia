@@ -330,14 +330,14 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @return the system root user name (cached)
      */
     public String getRootUserName() {
-    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
+        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
         if (rootUserName == null) {
-        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
-        	synchronized (this) {
+            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+            synchronized (this) {
                 if (rootUserName == null) {
                     rootUserName = lookupRootUser().getName();
                 }
-        	}
+            }
         }
         return rootUserName;
     }

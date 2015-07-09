@@ -186,28 +186,28 @@ public class GroupCacheHelper {
     }
 
     private SelfPopulatingCache getGroupPathByGroupNameCache() {
-    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
+        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
         if (groupPathByGroupNameCache == null) {
-        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
-	    	synchronized (this) {
-	            if (groupPathByGroupNameCache == null) {
-	                groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new GroupPathByGroupNameCacheEntryFactory());
-	            }
-	    	}
+            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+            synchronized (this) {
+                if (groupPathByGroupNameCache == null) {
+                    groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new GroupPathByGroupNameCacheEntryFactory());
+                }
+            }
         }
         return groupPathByGroupNameCache;
     }
 
     SelfPopulatingCache getMembershipCache() {
-    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-    	if (membershipCache == null) {
-        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
-        	synchronized (this) {
-            	if (membershipCache == null) {
+        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
+        if (membershipCache == null) {
+            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+            synchronized (this) {
+                if (membershipCache == null) {
                     membershipCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.membershipCache", new MembershipCacheEntryFactory());
                 }
-        	}
-    	}
+            }
+        }
         return membershipCache;
     }
 
@@ -267,7 +267,7 @@ public class GroupCacheHelper {
     }
 
     @SuppressWarnings("unchecked")
-	private void populateSpecialGroups(Set<String> groups, String groupPath) {
+    private void populateSpecialGroups(Set<String> groups, String groupPath) {
         groups.add(groupPath);
         groups.addAll((List<String>) getMembershipCache().get(groupPath).getObjectValue());
     }

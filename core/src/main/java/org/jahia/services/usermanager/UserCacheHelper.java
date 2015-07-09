@@ -166,14 +166,14 @@ public class UserCacheHelper {
     }
 
     private SelfPopulatingCache getUserPathByUserNameCache() {
-    	// First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
+        // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
         if (userPathByUserNameCache == null) {
-        	// Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
-        	synchronized (this) {
+            // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
+            synchronized (this) {
                 if (userPathByUserNameCache == null) {
                     userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
                 }
-        	}
+            }
         }
         return userPathByUserNameCache;
     }

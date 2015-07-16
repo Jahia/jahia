@@ -86,6 +86,9 @@ import java.io.OutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
+/**
+ * Forked version of org.apache.felix.http.base
+ */
 public final class ResourceServlet
         extends HttpServlet
 {

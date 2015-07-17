@@ -72,6 +72,7 @@
 package org.jahia.services.channels.filters;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
 import org.jahia.services.render.*;
@@ -117,7 +118,8 @@ public class ChannelResolutionFilter extends AbstractFilter {
             }
         }
 
-        if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))) {
+        if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))
+                && !Constants.LIVE_WORKSPACE.equals(context.getWorkspace().toString())) {
             String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
             Channel resolvedChannel = channelService.getChannel(activeChannel);
             if (resolvedChannel != null) {

@@ -951,7 +951,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                           Map<String, List<String>> parameters) throws Exception {
         final String requestWith = req.getHeader("x-requested-with");
         boolean isAjaxRequest =
-                req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
+                req.getHeader("accept").contains("application/json") && requestWith != null &&
                         requestWith.equals("XMLHttpRequest");
 
         final Action originalAction = action;

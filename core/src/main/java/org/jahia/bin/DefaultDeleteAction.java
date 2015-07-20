@@ -119,7 +119,7 @@ public class DefaultDeleteAction extends Action {
         
         final String requestWith = req.getHeader("x-requested-with");
 
-        if (req.getHeader("accept") != null && req.getHeader("accept").contains("application/json") && requestWith != null &&
+        if (req.getHeader("accept").contains("application/json") && requestWith != null &&
                 requestWith.equals("XMLHttpRequest")) {
             return ActionResult.OK_JSON;
         } else {

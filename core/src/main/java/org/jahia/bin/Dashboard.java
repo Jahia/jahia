@@ -119,8 +119,13 @@ public class Dashboard extends Render {
         }
         try {
             final String nodePath = node.getPath();
+<<<<<<< .working
             if (!nodePath.startsWith("/modules") && !nodePath.startsWith(node.getSession().getUserNode().getPath())) {
                 logger.error("User : "+node.getSession().getUser().getName()+"tried to access the dashboard "+ nodePath);
+=======
+            if (!nodePath.startsWith("/modules") && !nodePath.startsWith(node.getSession().getUser().getLocalPath())) {
+                logger.error("User : "+node.getSession().getUser().getUsername()+ " tried to access the dashboard "+ nodePath);
+>>>>>>> .merge-right.r52801
                 return false;
             }
             // the site cannot be resolved

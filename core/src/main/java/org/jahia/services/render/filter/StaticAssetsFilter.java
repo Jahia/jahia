@@ -82,6 +82,7 @@ import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.functors.NOPTransformer;
 import org.apache.commons.collections.map.LazySortedMap;
 import org.apache.commons.collections.map.TransformedSortedMap;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.utils.GWTInitializer;
@@ -111,6 +112,9 @@ import java.io.*;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.MessageDigest;
 import java.util.*;
 import java.util.regex.Pattern;
@@ -150,6 +154,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String jahiaContext = null;
 
     private boolean addLastModifiedDate = false;
+    
+    private File generatedResourcesFolder;
 
     static {
         RANK = new FastHashMap();
@@ -193,6 +199,23 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
+
+    private static void atomicMove(File src, File dest) throws IOException {
+        if (src.exists()) {
+            // perform the file move
+            try {
+                Files.move(Paths.get(src.toURI()), Paths.get(dest.toURI()),
+                        StandardCopyOption.ATOMIC_MOVE);
+            } catch (Exception e) {
+                logger.warn("Unable to move the file {} into {}. Copying it instead.", src, dest);
+                try {
+                    FileUtils.copyFile(src, dest);
+                } finally {
+                    FileUtils.deleteQuietly(src);
+                }
+            }
+        }
+    }
 
     private String ajaxResolvedTemplate;
 
@@ -563,20 +586,24 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
                 if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
-                    new File(getFileSystemPath("/generated-resources")).mkdirs();
+                    generatedResourcesFolder.mkdirs();
+                    
+                    // aggregate minified resources
 
                     LinkedHashMap<String,String> minifiedPaths = new LinkedHashMap<String, String>();
                     for (Map.Entry<String, org.springframework.core.io.Resource> entry : pathsToAggregate.entrySet()) {
                         final String path = entry.getKey();
                         String minifiedPath = "/generated-resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
-                        File minifiedFile = new File(getFileSystemPath(minifiedPath));
+                        final File minifiedFile = new File(getFileSystemPath(minifiedPath));
                         final org.springframework.core.io.Resource f = entry.getValue();
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
+                            // minify the file
                             Reader reader = null;
                             Writer writer = null;
+                            File tmpMinifiedFile = new File(minifiedFile.getParentFile(), minifiedFile.getName() + "." + System.nanoTime());
                             try {
                                 reader = new InputStreamReader(f.getInputStream(), "UTF-8");
-                                writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
+                                writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
                                 boolean compress = true;
                                 if (compress && type.equals("css")) {
                                     String s = IOUtils.toString(reader);
@@ -630,7 +657,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                         IOUtils.closeQuietly(reader);
                                         IOUtils.closeQuietly(writer);
                                         reader = new InputStreamReader(f.getInputStream(), "UTF-8");
-                                        writer = new OutputStreamWriter(new FileOutputStream(getFileSystemPath(minifiedPath)), "UTF-8");
+                                        writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
                                         IOUtils.copy(reader, writer);
                                     }
                                 } else {
@@ -647,13 +674,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                             } finally {
                                 IOUtils.closeQuietly(reader);
                                 IOUtils.closeQuietly(writer);
+                                atomicMove(tmpMinifiedFile, minifiedFile);
                             }
                         }
                         minifiedPaths.put(path, minifiedPath);
                     }
 
                     try {
-                        OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(minifiedAggregatedRealPath));
+                        File tmpMinifiedAggregatedFile = new File(minifiedAggregatedFile.getParentFile(), minifiedAggregatedFile.getName() + "." + System.nanoTime());
+                        OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(tmpMinifiedAggregatedFile));
                         InputStream is = null;
                         try {
                             for (Map.Entry<String, String> entry : minifiedPaths.entrySet()) {
@@ -672,6 +701,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         } finally {
                             IOUtils.closeQuietly(outMerged);
                             IOUtils.closeQuietly(is);
+                            atomicMove(tmpMinifiedAggregatedFile, minifiedAggregatedFile);
                         }
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
@@ -861,6 +891,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
+        generatedResourcesFolder = new File(getFileSystemPath("/generated-resources"));
     }
 
     public Set<String> getIeHeaderRecognitions() {

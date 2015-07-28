@@ -9,6 +9,11 @@
         <property name="defaultLocation" value="$defaultSiteHome.html"/>
         <property name="defaultUrlMapping" value="/cms/contribute"/>
         <property name="sitesLocation" value="/sites/*"/>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="topToolbar">
             <bean id="contributeModeToolbar" class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="layout" value="button-label"/>

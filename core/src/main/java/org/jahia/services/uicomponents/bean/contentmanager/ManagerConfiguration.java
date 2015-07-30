@@ -108,6 +108,7 @@ public class ManagerConfiguration implements Serializable {
     private boolean allowsMultipleSelection = true;
     private List<String> allowedNodeTypesForDragAndDrop;
     private List<String> forbiddenNodeTypesForDragAndDrop;
+    private Set<String> excludedNodeTypes;
 
     private Map<String, EngineConfiguration> engineConfigurations;
     private List<EngineTab> engineTabs;
@@ -238,6 +239,14 @@ public class ManagerConfiguration implements Serializable {
 
     public void setAllowedNodeTypesForDragAndDrop(List<String> allowedNodeTypesForDragAndDrop) {
         this.allowedNodeTypesForDragAndDrop = allowedNodeTypesForDragAndDrop;
+    }
+
+    public Set<String> getExcludedNodeTypes() {
+        return excludedNodeTypes;
+    }
+
+    public void setExcludedNodeTypes(Set<String> excludedNodeTypes) {
+        this.excludedNodeTypes = excludedNodeTypes;
     }
 
     public List<String> getForbiddenNodeTypesForDragAndDrop() {

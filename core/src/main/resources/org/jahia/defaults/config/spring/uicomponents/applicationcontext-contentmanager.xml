@@ -82,6 +82,11 @@
                 <value>jnt:mounts</value>
             </list>
         </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -253,6 +258,11 @@
                 <value>jnt:portletFolder</value>
             </list>
         </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -377,6 +387,11 @@
             <list>
                 <value>/modules/*</value>
             </list>
+        </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
         </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
@@ -511,7 +526,11 @@
                 </property>
             </bean>
         </property>
-
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="contextMenu">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">
@@ -586,6 +605,11 @@
                 <value>jnt:passwordHistory</value>
                 <value>jnt:mountPoint</value>
             </list>
+        </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
         </property>
         <property name="componentsPaths">
             <list>
@@ -772,6 +796,11 @@
                 <value>jnt:content</value>
             </list>
         </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
 
         <property name="folderTypes">
             <list>
@@ -935,6 +964,11 @@
                 <value>jnt:content</value>
             </list>
         </property>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="folderTypes">
             <list>
                 <value>jnt:virtualsitesFolder</value>
@@ -1067,6 +1101,11 @@
     <bean id="batchmanager" parent="abstractmanager">
         <property name="nodeTypes" value="jnt:content"/>
         <property name="folderTypes" value="jnt:contentList"/>
+        <property name="excludedNodeTypes">
+            <set>
+                <value>jmix:hiddenType</value>
+            </set>
+        </property>
         <property name="toolbars">
             <bean class="org.jahia.services.uicomponents.bean.toolbar.Toolbar">
                 <property name="items">

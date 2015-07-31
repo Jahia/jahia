@@ -1189,7 +1189,7 @@ public class JCRPublicationService extends JahiaService {
                             PublicationInfoNode child = getPublicationInfo(n, languages, includesReferences, includesSubnodes, allsubtree,
                                     sourceSession, destinationSession, infosMap, infos);
                             info.addChild(child);
-                        } else {
+                        } else if (includesReferences) {
                             getReferences(n, languages, includesReferences, includesSubnodes, sourceSession, destinationSession, infosMap,
                                     infos, info);
                         }

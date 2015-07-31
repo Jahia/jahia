@@ -118,10 +118,13 @@ import static org.junit.Assert.*;
 public class CacheFilterTest extends JahiaTestCase {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CacheFilterTest.class);
     private final static String TESTSITE_NAME = "test";    
+    private static boolean isJsessionIdActive;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
         try {
+            isJsessionIdActive = SettingsBean.getInstance().isDisableJsessionIdParameter();
+            
             SettingsBean.getInstance().setDisableJsessionIdParameter(true);
 
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME);
@@ -162,6 +165,7 @@ public class CacheFilterTest extends JahiaTestCase {
             logger.warn("Exception during test tearDown", e);
         }
         JCRSessionFactory.getInstance().closeAllSessions();
+        SettingsBean.getInstance().setDisableJsessionIdParameter(isJsessionIdActive);
     }
     
     @Test

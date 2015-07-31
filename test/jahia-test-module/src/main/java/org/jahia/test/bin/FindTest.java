@@ -82,8 +82,10 @@ import org.apache.commons.httpclient.HttpStatus;
 import org.jahia.api.Constants;
 import org.jahia.bin.Find;
 import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
@@ -91,6 +93,7 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
@@ -103,6 +106,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 /**
  * Test case for find servlet.
@@ -113,14 +117,17 @@ import org.slf4j.Logger;
  */
 public class FindTest extends JahiaTestCase {
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(FindTest.class);
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(FindTest.class);
     
-    private final static String TESTSITE_NAME = "findTestSite";
-    private final static String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    private static final String TESTSITE_NAME = "findTestSite";
+    private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     private static JahiaSite site;
-    private final static String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
+    private static final String INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE = "English text";
     private static final String COMPLEX_QUERY_VALUE = "b:+-*\"&()[]{}$/\\%\'";
+    
+    private static final String FIND_DISABLED = "jahia.find.disabled";
+    private static String isFindDisabled;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -159,7 +166,9 @@ public class FindTest extends JahiaTestCase {
             TestHelper.createList(englishEditSiteHomeNode, "contentList4", 5, INITIAL_ENGLISH_TEXT_NODE_PROPERTY_VALUE);
 
             englishEditSession.save();
-
+            
+            isFindDisabled = SettingsBean.getInstance().getPropertiesFile().getProperty(FIND_DISABLED);
+            setFindServletDisabled("false");
         } catch (Exception ex) {
             logger.warn("Exception during test setUp", ex);
         }
@@ -176,8 +185,16 @@ public class FindTest extends JahiaTestCase {
         } catch (Exception ex) {
             logger.warn("Exception during test tearDown", ex);
         }
+        setFindServletDisabled(isFindDisabled);
     }
 
+    
+    private static void setFindServletDisabled(String disabled) {
+        SettingsBean.getInstance().getPropertiesFile().setProperty(FIND_DISABLED, disabled);
+        ApplicationContext ctx = (ApplicationContext) JahiaContextLoaderListener.getServletContext().getAttribute("org.springframework.web.servlet.FrameworkServlet.CONTEXT.RendererDispatcherServlet");
+        Find findServlet = (Find)ctx.getBean("org.jahia.bin.Find");
+        findServlet.setDisabled(Boolean.parseBoolean(disabled));
+    }
 
     @Before
     public void setUp() throws Exception {

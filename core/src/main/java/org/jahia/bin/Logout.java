@@ -191,7 +191,12 @@ public class Logout implements Controller {
         } else if (!Login.isAuthorizedRedirect(request, redirect, false)) {
             redirect = null;
         }
+<<<<<<< .working
         if (StringUtils.isNotBlank(redirect)) {
+=======
+        if (StringUtils.isNotBlank(redirect)) {
+            UrlRewriteService rewriteService = (UrlRewriteService) SpringContextSingleton.getBean("UrlRewriteService");
+>>>>>>> .merge-right.r52827
             try {
                 final String r = redirect;
                 HttpServletRequestWrapper wrapper = new HttpServletRequestWrapper(request) {

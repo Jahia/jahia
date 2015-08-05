@@ -374,6 +374,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int queryApproxCountLimit;
 
+<<<<<<< .working
+=======
+    private boolean globalGroupMembershipCheckActivated = false;
+<<<<<<< .working
+=======
+    
+    private String internetExplorerCompatibility;
+>>>>>>> .merge-right.r52827
+
+>>>>>>> .merge-right.r52828
+<<<<<<< .working
     private boolean readOnlyMode;
 
     private DataSource dataSource;
@@ -386,10 +397,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private String[] authorizedRedirectHosts;
 
+<<<<<<< .working
     private boolean useWebsockets = false;
 
     private String atmosphereAsyncSupport;
 
+=======
+=======
+    private String[] authorizedRedirectHosts;
+
+>>>>>>> .merge-right.r52827
+>>>>>>> .merge-right.r52828
     /**
      * Default constructor.
      *
@@ -461,13 +479,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
             useRelativeSiteURLs = getBoolean ("useRelativeSiteURLs", false);
 
-            jahiaJCRUserCountLimit = getLong ("jahiaJCRUserCountLimit", -1);
+            jahiaJCRUserCountLimit = getLong("jahiaJCRUserCountLimit", -1);
 
             // base URL (schema, host, port) to call the web apps deployer service.
-            jahiaWebAppsDeployerBaseURL = getString ("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");
+            jahiaWebAppsDeployerBaseURL = getString("jahiaWebAppsDeployerBaseURL", "http://127.0.0.1:8080/manager");
 
             // multi language default language code property.
-            defaultLanguageCode = getString ("org.jahia.multilang.default_language_code", "en");
+            defaultLanguageCode = getString("org.jahia.multilang.default_language_code", "en");
             defaultLocale = LanguageCodeConverters.languageCodeToLocale(defaultLanguageCode);
 
             considerDefaultJVMLocale = getBoolean("considerDefaultJVMLocale", false);
@@ -481,7 +499,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             siteURLPortOverride = getInt("siteURLPortOverride", 0);
 
-            isSiteErrorEnabled = getBoolean("site.error.enabled",false);
+            isSiteErrorEnabled = getBoolean("site.error.enabled", false);
 
             operatingMode = getString("operatingMode", "development");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
@@ -512,8 +530,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
             maxNameSize = getInt("jahia.jcr.maxNameSize", 32);
 
-            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk",false);
-            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath","/tmp");
+            expandImportedFilesOnDisk = getBoolean("expandImportedFilesOnDisk", false);
+            expandImportedFilesOnDiskPath = getString("expandImportedFilesOnDiskPath", "/tmp");
 
             accessManagerPathPermissionCacheMaxSize = getInt("accessManagerPathPermissionCacheMaxSize", 100);
 
@@ -538,10 +556,18 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             settings.put("default_templates_set",
                     getString("default_templates_set"));
 
+<<<<<<< .working
             settings.put("legacy.import.externalLink.internationalized", getBoolean("legacy.import.externalLink.internationalized", false));
             settings.put("legacy.import.externalLink.nodeType", getString("legacy.import.externalLink.nodeType", Constants.JAHIANT_EXTERNAL_PAGE_LINK));
             settings.put("legacy.import.externalLink.urlPropertyName", getString("legacy.import.externalLink.urlPropertyName", Constants.URL));
 
+=======
+            settings.put("templates.modules.onError", getString("templates.modules.onError", "compact"));
+
+            String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
+            authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
+
+>>>>>>> .merge-right.r52827
             settings.setFast(true);
             clusterActivated = getBoolean("cluster.activated", false);
             setSystemProperty("cluster.activated", Boolean.toString(clusterActivated));
@@ -1428,6 +1454,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String getInternetExplorerCompatibility() {
         return internetExplorerCompatibility;
+<<<<<<< .working
     }
 
     /**
@@ -1444,6 +1471,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String[] getAuthorizedRedirectHosts() {
         return authorizedRedirectHosts;
     }
+<<<<<<< .working
 
     public boolean isUseWebsockets() {
         return useWebsockets;
@@ -1460,4 +1488,13 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setAtmosphereAsyncSupport(String atmosphereAsyncSupport) {
         this.atmosphereAsyncSupport = atmosphereAsyncSupport;
     }
+=======
+=======
+    }
+
+    public String[] getAuthorizedRedirectHosts() {
+        return authorizedRedirectHosts;
+    }
+>>>>>>> .merge-right.r52827
+>>>>>>> .merge-right.r52828
 }

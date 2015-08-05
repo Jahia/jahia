@@ -100,6 +100,8 @@ import java.util.List;
 
 public class CSSChannelFilter implements Filter {
     private static Logger logger = LoggerFactory.getLogger(CSSChannelFilter.class);
+    private static String FILES_SERVLET_PATH = "/files/";
+    
     private ServletContext servletContext;
 
     private enum Modifier {EQUALS, MIN, MAX}
@@ -119,12 +121,13 @@ public class CSSChannelFilter implements Filter {
 
             String uri = ((HttpServletRequest) request).getRequestURI();
             InputStream readStream = servletContext.getResourceAsStream(uri.replace(Jahia.getContextPath(), ""));
-            if(readStream == null) {
+            if (readStream == null) {
             	//Check if it is a JCR resource (because it cannot read as resource from servletContext)
             	try {
-            		if(uri.contains("/sites/")) {
-            			JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uri.substring(uri.indexOf("/sites/")));
-            			if(node.hasNode("jcr:content")) {
+            		String workspace = (String)((HttpServletRequest) request).getSession().getAttribute("workspace");
+            		if (uri.startsWith(FILES_SERVLET_PATH + workspace)) {
+            			JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uri.substring(FILES_SERVLET_PATH.length() + workspace.length()));
+            			if (node.hasNode("jcr:content")) {
             				readStream = node.getNode("jcr:content").getProperty("jcr:data").getBinary().getStream();
             			}
             		}

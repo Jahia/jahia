@@ -2,31 +2,31 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- * <p>
+ *
  *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
- * <p>
+ *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
- * <p>
+ *
  *     1/ GPL
  *     ======================================================================================
- * <p>
+ *
  *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- * <p>
+ *
  *     "This program is free software; you can redistribute it and/or
  *     modify it under the terms of the GNU General Public License
  *     as published by the Free Software Foundation; either version 2
  *     of the License, or (at your option) any later version.
- * <p>
+ *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *     GNU General Public License for more details.
- * <p>
+ *
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * <p>
+ *
  *     As a special exception to the terms and conditions of version 2.0 of
  *     the GPL (or any later version), you may redistribute this Program in connection
  *     with Free/Libre and Open Source Software ("FLOSS") applications as described
@@ -71,15 +71,15 @@
  */
 package org.jahia.bin;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.settings.SettingsBean;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.Controller;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Login action controller.
@@ -88,19 +88,19 @@ import javax.servlet.http.HttpServletResponse;
  * Time: 1:47:38 PM
  */
 public class Login implements Controller {
-
+    
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
-
+    
     public static String getMapping() {
         return CONTROLLER_MAPPING;
     }
-
+    
     public static String getServletPath() {
         // TODO move this into configuration
         return "/cms" + CONTROLLER_MAPPING;
     }
-
+    
     protected String getRedirectUrl(HttpServletRequest request, HttpServletResponse response) {
         return response.encodeRedirectURL(StringUtils.defaultIfEmpty(request.getParameter("redirect"),
                 request.getContextPath() + "/welcome"));
@@ -124,7 +124,7 @@ public class Login implements Controller {
         if (redirectActive) {
             String redirectActiveStr = request.getParameter("redirectActive");
             if (redirectActiveStr != null) {
-                redirectActive = Boolean.parseBoolean(redirectActiveStr);
+                redirectActive = Boolean.parseBoolean(redirectActiveStr);    
             }
         }
 
@@ -144,7 +144,7 @@ public class Login implements Controller {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
-                    response.sendRedirect(request.getParameter("failureRedirect") + "?loginError=" + result);
+                    response.sendRedirect(request.getParameter("failureRedirect")+"?loginError="+result);
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
@@ -157,7 +157,6 @@ public class Login implements Controller {
         }
         return null;
     }
-<<<<<<< .working
 
     protected static boolean isAuthorizedRedirect(HttpServletRequest request, String redirectUrl, boolean authorizeNullRedirect) {
         if (redirectUrl == null) {
@@ -190,37 +189,4 @@ public class Login implements Controller {
         return true;
     }
 
-=======
-
-    protected static boolean isAuthorizedRedirect(HttpServletRequest request, String redirectUrl, boolean authorizeNullRedirect) {
-        if (redirectUrl == null) {
-            return authorizeNullRedirect;
-        }
-        if (redirectUrl.contains("://")) {
-            if (redirectUrl.startsWith("http://") || redirectUrl.startsWith("https://")) {
-                String redirectUrlAfterProtocol = StringUtils.substringAfter(redirectUrl, "://");
-                String urlBase = StringUtils.substringAfter(StringUtils.removeEnd(request.getRequestURL().toString(), request.getRequestURI().toString()), "://");
-                if (redirectUrlAfterProtocol.startsWith(urlBase)) {
-                    return true;
-                }
-                for (String authorizedRedirectHost : SettingsBean.getInstance().getAuthorizedRedirectHosts()) {
-                    if (redirectUrlAfterProtocol.startsWith(authorizedRedirectHost)) {
-                        return true;
-                    }
-                }
-            }
-            // Block non-HTTP URls, like ftp://...
-            return false;
-        }
-        // Block any other absolute URLs, like mailto:some@mail.com or even http:\\www.somedomain.com, which works on Google Chrome
-        // Second part of the test is to allow relative URLs that contain a colon in the end
-        int indexOfColon = redirectUrl.indexOf(":");
-        int indexOfSlash = redirectUrl.indexOf("/");
-        if (indexOfColon >= 0 && (indexOfSlash < 0 || indexOfColon < indexOfSlash)) {
-            return false;
-        }
-        // relative URL
-        return true;
-    }
->>>>>>> .merge-right.r52827
 }

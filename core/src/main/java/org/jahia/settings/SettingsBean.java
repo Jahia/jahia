@@ -374,15 +374,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private int queryApproxCountLimit;
 
-<<<<<<< .working
-=======
-    private boolean globalGroupMembershipCheckActivated = false;
-
-<<<<<<< .working
->>>>>>> .merge-right.r52828
-<<<<<<< .working
-=======
->>>>>>> .merge-right.r52830
     private boolean readOnlyMode;
 
     private DataSource dataSource;
@@ -395,20 +386,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     private String[] authorizedRedirectHosts;
 
-<<<<<<< .working
-<<<<<<< .working
     private boolean useWebsockets = false;
 
     private String atmosphereAsyncSupport;
 
-=======
-=======
-    private String[] authorizedRedirectHosts;
-
->>>>>>> .merge-right.r52827
-=======
->>>>>>> .merge-right.r52830
->>>>>>> .merge-right.r52828
     /**
      * Default constructor.
      *
@@ -1463,8 +1444,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public String[] getAuthorizedRedirectHosts() {
         return authorizedRedirectHosts;
     }
-<<<<<<< .working
-<<<<<<< .working
 
     public boolean isUseWebsockets() {
         return useWebsockets;
@@ -1481,15 +1460,4 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     public void setAtmosphereAsyncSupport(String atmosphereAsyncSupport) {
         this.atmosphereAsyncSupport = atmosphereAsyncSupport;
     }
-=======
-=======
-    }
-
-    public String[] getAuthorizedRedirectHosts() {
-        return authorizedRedirectHosts;
-    }
->>>>>>> .merge-right.r52827
-=======
->>>>>>> .merge-right.r52830
->>>>>>> .merge-right.r52828
 }

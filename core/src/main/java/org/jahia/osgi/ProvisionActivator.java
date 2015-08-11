@@ -96,12 +96,12 @@ import java.util.List;
  */
 public final class ProvisionActivator implements BundleActivator {
 
-    private static Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
-
     private final ServletContext servletContext;
     private BundleContext bundleContext;
-    static private ProvisionActivator instance = null;
     private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
+
+    static private ProvisionActivator instance = null;
+    private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
 
     public ProvisionActivator(ServletContext servletContext) {
         this.servletContext = servletContext;
@@ -112,8 +112,8 @@ public final class ProvisionActivator implements BundleActivator {
         return instance;
     }
 
-    public void start(BundleContext context)
-            throws Exception {
+    public void start(BundleContext context) throws Exception {
+
         bundleContext = context;
         servletContext.setAttribute(BundleContext.class.getName(), context);
 
@@ -185,8 +185,7 @@ public final class ProvisionActivator implements BundleActivator {
         return true;
     }
 
-    public void stop(BundleContext context)
-            throws Exception {
+    public void stop(BundleContext context) throws Exception {
         bundleContext = null;
         for (ServiceRegistration serviceRegistration : serviceRegistrations) {
             serviceRegistration.unregister();
@@ -199,8 +198,7 @@ public final class ProvisionActivator implements BundleActivator {
         return bundleContext;
     }
 
-    private List<URL> findBundles()
-            throws Exception {
+    private List<URL> findBundles() throws Exception {
         ArrayList<URL> list = new ArrayList<URL>();
         for (Object o : this.servletContext.getResourcePaths("/WEB-INF/bundles/")) {
             String name = (String) o;
@@ -211,7 +209,6 @@ public final class ProvisionActivator implements BundleActivator {
                 }
             }
         }
-
         return list;
     }
 }

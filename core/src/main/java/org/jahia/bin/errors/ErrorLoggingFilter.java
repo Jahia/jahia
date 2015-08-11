@@ -101,18 +101,13 @@ import static javax.servlet.http.HttpServletResponse.*;
  */
 public class ErrorLoggingFilter implements Filter {
 
-    private static Logger logger = LoggerFactory.getLogger(ErrorLoggingFilter.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorLoggingFilter.class);
 
     private static Throwable lastMailedException = null;
-    private static int lastMailedExceptionOccurences = 0;
+    private static int lastMailedExceptionOccurrences = 0;
 
-    /*
-     * (non-Javadoc)
-     * @see javax.servlet.Filter#destroy()
-     */
-
+    @Override
     public void destroy() {
-        // nothing to do
         ErrorFileDumper.shutdown();
     }
 
@@ -121,91 +116,76 @@ public class ErrorLoggingFilter implements Filter {
      * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest,
      * javax.servlet.ServletResponse, javax.servlet.FilterChain)
      */
-
-    public void doFilter(ServletRequest request, ServletResponse response,
-                         FilterChain filterChain) throws IOException, ServletException {
-
-        Boolean alreadyForwarded = (Boolean) request
-                .getAttribute("org.jahia.exception.forwarded");
+    @Override
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
+        Boolean alreadyForwarded = (Boolean) request.getAttribute("org.jahia.exception.forwarded");
         if (alreadyForwarded == null || !alreadyForwarded.booleanValue()) {
             handle((HttpServletRequest) request, (HttpServletResponse) response);
         }
-
         filterChain.doFilter(request, response);
     }
 
 
-    protected void dumpToFile(HttpServletRequest request) {
+    protected static void dumpToFile(HttpServletRequest request) {
         try {
             Throwable t = getException(request);
-
-            int code = (Integer) request
-                    .getAttribute("javax.servlet.error.status_code");
-
+            int code = (Integer) request.getAttribute("javax.servlet.error.status_code");
             code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
-
             if (code < 500) {
                 logger.debug("Status code below 500, will not dump error to file");
                 return;
             }
-
             if (!ErrorFileDumper.isShutdown()) {
                 ErrorFileDumper.dumpToFile(t, request);
             }
         } catch (Exception throwable) {
             logger.warn("Error creating error file", throwable);
         }
-
     }
 
-    protected void emailAlert(HttpServletRequest request,
-                              HttpServletResponse response) {
+    protected static void emailAlert(HttpServletRequest request, HttpServletResponse response) {
 
         Throwable t = getException(request);
         try {
-            if (lastMailedException != null && t != null
-                    && t.toString().equals(lastMailedException.toString())) {
-                lastMailedExceptionOccurences++;
-                if (lastMailedExceptionOccurences < SettingsBean.getInstance().getMail_maxRegroupingOfPreviousException()) {
-                    return;
+
+            Throwable lastMailed;
+            int lastMailedOccurrences;
+
+            synchronized (ErrorLoggingFilter.class) {
+                if (lastMailedException != null && t != null && t.toString().equals(lastMailedException.toString())) {
+                    lastMailedExceptionOccurrences++;
+                    if (lastMailedExceptionOccurrences < SettingsBean.getInstance().getMail_maxRegroupingOfPreviousException()) {
+                        return;
+                    }
                 }
+                lastMailed = lastMailedException;
+                lastMailedOccurrences = lastMailedExceptionOccurrences;
+                lastMailedException = t;
+                lastMailedExceptionOccurrences = 1;
             }
 
-            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), t, lastMailedExceptionOccurences, lastMailedException);
+            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), t, lastMailedOccurrences, lastMailed);
 
-            ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null,
-                    "Server Error: " + (t != null ? t.getMessage() : ""), msgBodyWriter
-                            .toString());
+            ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null, "Server Error: " + (t != null ? t.getMessage() : ""), msgBodyWriter.toString());
 
             logger.debug("Mail was sent successfully.");
-
-            lastMailedException = t;
-            lastMailedExceptionOccurences = 1;
-
         } catch (Exception ex) {
             logger.warn("Error sending an e-mail alert: " + ex.getMessage(), ex);
         }
     }
 
 
-    protected Throwable getException(HttpServletRequest request) {
-        Throwable ex = (Throwable) request
-                .getAttribute("javax.servlet.error.exception");
-        ex = ex != null ? ex : (Throwable) request
-                .getAttribute("org.jahia.exception");
-
+    protected static Throwable getException(HttpServletRequest request) {
+        Throwable ex = (Throwable) request.getAttribute("javax.servlet.error.exception");
+        ex = ex != null ? ex : (Throwable) request.getAttribute("org.jahia.exception");
         return ex;
     }
 
-    protected String getLogMessage(HttpServletRequest request) {
+    protected static String getLogMessage(HttpServletRequest request) {
 
         Throwable ex = getException(request);
-
-        String message = (String) request
-                .getAttribute("javax.servlet.error.message");
-
-        Integer code = (Integer) request
-                .getAttribute("javax.servlet.error.status_code");
+        String message = (String) request.getAttribute("javax.servlet.error.message");
+        Integer code = (Integer) request.getAttribute("javax.servlet.error.status_code");
 
         switch (code.intValue()) {
             case SC_NOT_FOUND:
@@ -253,12 +233,10 @@ public class ErrorLoggingFilter implements Filter {
         return message;
     }
 
-    protected void handle(HttpServletRequest request,
-                          HttpServletResponse response) {
+    protected static void handle(HttpServletRequest request, HttpServletResponse response) {
 
         // add request information
-        request.setAttribute("org.jahia.exception.requestInfo",
-                getRequestInfo(request));
+        request.setAttribute("org.jahia.exception.requestInfo", getRequestInfo(request));
 
         logDebugInfo(request, response);
 
@@ -286,16 +264,12 @@ public class ErrorLoggingFilter implements Filter {
      * (non-Javadoc)
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
      */
-
+    @Override
     public void init(FilterConfig cfg) throws ServletException {
         // do nothing
-        if (ErrorFileDumper.isShutdown()) {
-            ErrorFileDumper.start();
-        }
     }
 
-    protected boolean isEmailAlertRequired(HttpServletRequest request,
-                                           HttpServletResponse response) {
+    protected static boolean isEmailAlertRequired(HttpServletRequest request, HttpServletResponse response) {
 
         Throwable error = getException(request);
 
@@ -308,12 +282,11 @@ public class ErrorLoggingFilter implements Filter {
                 .getSeverity();
     }
 
-    private boolean isMailServiceEnabled() {
+    private static boolean isMailServiceEnabled() {
         return ServicesRegistry.getInstance().getMailService().isEnabled();
     }
 
-    protected void logDebugInfo(HttpServletRequest request,
-                                HttpServletResponse response) {
+    protected static void logDebugInfo(HttpServletRequest request, HttpServletResponse response) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("Handling exception for request ["
@@ -336,11 +309,10 @@ public class ErrorLoggingFilter implements Filter {
         }
     }
 
-    protected void logException(HttpServletRequest request,
-                                HttpServletResponse response) {
+    protected static void logException(HttpServletRequest request, HttpServletResponse response) {
 
         Throwable ex = getException(request);
-        
+
         int code = (Integer) request
                 .getAttribute("javax.servlet.error.status_code");
         code = code != 0 ? code : SC_INTERNAL_SERVER_ERROR;
@@ -406,6 +378,7 @@ public class ErrorLoggingFilter implements Filter {
     }
 
     protected static String getUserInfo(HttpServletRequest request) {
+
         JahiaUser user = JCRSessionFactory.getInstance().getCurrentUser();
         if (user == null) {
             try {
@@ -424,6 +397,4 @@ public class ErrorLoggingFilter implements Filter {
 
         return info;
     }
-
-
 }

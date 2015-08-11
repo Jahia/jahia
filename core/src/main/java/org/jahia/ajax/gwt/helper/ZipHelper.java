@@ -104,9 +104,12 @@ import java.util.zip.ZipOutputStream;
  * Time: 09:33:04
  */
 public class ZipHelper {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ZipHelper.class);
 
     private static ZipHelper instance;
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ZipHelper.class);
+
+    private ZipHelper() {
+    }
 
     /**
      * @param parentDirectory the directory to create the archive into
@@ -276,7 +279,7 @@ public class ZipHelper {
             logger.error("Error when unzipping file, " + err.getMessage(), err);
             result = false;
         }
-        
+
         return result;
     }
 
@@ -420,9 +423,14 @@ public class ZipHelper {
             throw new GWTJahiaServiceException(errors.toString());
         }
     }
+
     public static ZipHelper getInstance() {
         if (instance == null) {
-            instance = new ZipHelper();
+            synchronized (ZipHelper.class) {
+                if (instance == null) {
+                    instance = new ZipHelper();
+                }
+            }
         }
         return instance;
     }

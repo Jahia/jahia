@@ -103,8 +103,9 @@ import java.util.*;
  * @version 10 mars 2008 - 10:46:13
  */
 public class GWTInitializer {
-    private final static Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
+
     private static GWTResourceConfig config;
+    private static final Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
 
     public static String generateInitializerStructureForFrame(RenderContext ctx) {
         StringBuilder buf = new StringBuilder();
@@ -240,12 +241,12 @@ public class GWTInitializer {
         buf.append("<script type=\"text/javascript\">\n");
         buf.append(getJahiaGWTConfig(params));
         buf.append("\n</script>\n");
-        
+
         addJavaScript(buf, request, renderContext);
-        
+
         return buf.toString();
     }
-    
+
     public static String getCustomCKEditorConfig(RenderContext ctx) {
         return ctx == null ? null : getCustomCKEditorConfig(ctx.getRequest(), ctx);
     }
@@ -303,7 +304,11 @@ public class GWTInitializer {
 
     private static GWTResourceConfig getConfig() {
         if (config == null) {
-            config = (GWTResourceConfig) SpringContextSingleton.getBean("GWTResourceConfig");
+            synchronized (GWTInitializer.class) {
+                if (config == null) {
+                    config = (GWTResourceConfig) SpringContextSingleton.getBean("GWTResourceConfig");
+                }
+            }
         }
         return config;
     }
@@ -370,5 +375,5 @@ public class GWTInitializer {
     private static String buildServiceBaseEntrypointUrl(HttpServletRequest request) {
         return new StringBuilder(request.getContextPath()).append("/gwt/").toString();
     }
-    
+
 }

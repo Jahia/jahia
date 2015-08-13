@@ -96,30 +96,31 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Jahia implementation of the ResourceBundle {@link Control} class for looking up resources in modules.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 final class JahiaResourceBundleControl extends Control {
 
-    private TemplatePackageRegistry templatePackageRegistry;
-
     private static JahiaResourceBundleControl defaultControl;
-
     private static final Logger logger = LoggerFactory.getLogger(JahiaResourceBundleControl.class);
 
-    public static JahiaResourceBundleControl getInstance() {
-        if (defaultControl == null) {
-            defaultControl = new JahiaResourceBundleControl(SettingsBean.getInstance().isConsiderDefaultJVMLocale());
-        }
-        return defaultControl;
-    }
-
+    private TemplatePackageRegistry templatePackageRegistry;
     private boolean considerDefaultJVMLocale;
 
     private JahiaResourceBundleControl(boolean considerDefaultJVMLocale) {
-        super();
         this.considerDefaultJVMLocale = considerDefaultJVMLocale;
         this.templatePackageRegistry = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageRegistry();
+    }
+
+    public static JahiaResourceBundleControl getInstance() {
+        if (defaultControl == null) {
+            synchronized (JahiaResourceBundleControl.class) {
+                if (defaultControl == null) {
+                    defaultControl = new JahiaResourceBundleControl(SettingsBean.getInstance().isConsiderDefaultJVMLocale());
+                }
+            }
+        }
+        return defaultControl;
     }
 
     private InputStream getClasspathStream(final ClassLoader classLoader, final boolean reloadFlag,
@@ -225,7 +226,7 @@ final class JahiaResourceBundleControl extends Control {
         }
         return super.getTimeToLive(baseName, locale);
     }
-    
+
     @Override
     public boolean needsReload(String baseName, Locale locale, String format, ClassLoader loader,
             ResourceBundle bundle, long loadTime) {

@@ -89,6 +89,7 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.RequestLoadAverage;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.management.*;
 import javax.servlet.http.HttpServletRequest;
@@ -104,7 +105,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * System information utility.
@@ -114,24 +114,24 @@ import java.util.concurrent.atomic.AtomicInteger;
  * IMPORTANT NOTE : As this code gets called by log4j appenders, please do not use Log4J loggers in this code !
  */
 public class ErrorFileDumper {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ErrorFileDumper.class);
 
     public static final FastDateFormat DATE_FORMAT_DIRECTORY = FastDateFormat.getInstance("yyyy_MM_dd");
-
     public static final FastDateFormat DATE_FORMAT_FILE = FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS");
 
-    private static Throwable lastFileDumpedException = null;
-    private static int lastFileDumpedExceptionOccurences = 0;
-    private static long exceptionCount = 0L;
-
-    private static ExecutorService executorService;
-    private static int maximumTasksAllowed = 100;
-    private static AtomicInteger tasksSubmitted = new AtomicInteger(0);
-    private static long lastCallToDump = 0;
+    private static final int MAXIMUM_TASKS_ALLOWED = 100;
     private static final long MIN_INTERVAL_BETWEEN_QUEUE_WARNING = 1000L;
-    private static double highLoadBoundary = 10.0;
-    private static long lastHighLoadMessageTime = 0;
     private static final long MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING = 1000L;
+    private static final double HIGH_LOAD_BOUNDARY = 10.0;
+    private static final Logger logger = LoggerFactory.getLogger(ErrorFileDumper.class);
+
+    private static Throwable previousException = null;
+    private static int previousExceptionOccurrences = 0;
+    private static long totalExceptionCount = 0L;
+
+    private static volatile ExecutorService executorService;
+    private static volatile int tasksSubmitted = 0;
+    private static volatile long lastCallToDump = 0;
+    private static volatile long lastHighLoadMessageTime = 0;
 
     /**
      * A low priority thread factory
@@ -153,12 +153,12 @@ public class ErrorFileDumper {
      */
     public static class HttpRequestData {
 
-        String requestURL;
-        String queryString;
-        String method;
-        Map<String, String> headers = new HashMap<String, String>();
-        String remoteHost;
-        String remoteAddr;
+        private String requestURL;
+        private String queryString;
+        private String method;
+        private Map<String, String> headers = new HashMap<String, String>();
+        private String remoteHost;
+        private String remoteAddr;
 
         public HttpRequestData(HttpServletRequest request) {
             this.requestURL = request.getRequestURI();
@@ -166,13 +166,12 @@ public class ErrorFileDumper {
             this.method = request.getMethod();
             this.remoteHost = request.getRemoteHost();
             this.remoteAddr = request.getRemoteAddr();
-            Iterator headerNames = new EnumerationIterator(request.getHeaderNames());
+            Iterator<?> headerNames = new EnumerationIterator(request.getHeaderNames());
             while (headerNames.hasNext()) {
                 String headerName = (String) headerNames.next();
                 String headerValue = request.getHeader(headerName);
                 headers.put(headerName, headerValue);
             }
-
         }
 
         public String getRequestURL() {
@@ -213,14 +212,14 @@ public class ErrorFileDumper {
         public void run() {
             try {
                 performDumpToFile(t, requestData);
-                tasksSubmitted.decrementAndGet();
+                tasksSubmitted--;
             } catch (IOException e) {
                 logger.error(e.getMessage(), e);
             }
         }
     }
 
-    public static void start() {
+    public static synchronized void start() {
         if (isShutdown()) {
             executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
             System.out.println("Started error file dumper executor service");
@@ -231,7 +230,7 @@ public class ErrorFileDumper {
         shutdown(100L);
     }
 
-    public static void shutdown(long millisecondsToWait) {
+    public static synchronized void shutdown(long millisecondsToWait) {
         if (!isShutdown()) {
             System.out.println("Shutting down error file dumper executor service...");
             executorService.shutdown();
@@ -264,6 +263,7 @@ public class ErrorFileDumper {
     }
 
     public static void dumpToFile(Throwable t, HttpServletRequest request) throws IOException {
+
         if (isShutdown()) {
             return;
         }
@@ -272,78 +272,63 @@ public class ErrorFileDumper {
             return;
         }
 
-        if (tasksSubmitted.get() < maximumTasksAllowed) {
+        if (tasksSubmitted < MAXIMUM_TASKS_ALLOWED) {
             HttpRequestData requestData = null;
             if (request != null) {
                 requestData = new HttpRequestData(request);
             }
             executorService.submit(new FileDumperRunnable(t, requestData));
-            tasksSubmitted.incrementAndGet();
+            tasksSubmitted++;
             lastCallToDump = System.currentTimeMillis();
         } else {
             long now = System.currentTimeMillis();
             if ((now - lastCallToDump) > MIN_INTERVAL_BETWEEN_QUEUE_WARNING) {
-                System.out.println(maximumTasksAllowed + " error dumps already submitted, not allowing any more.");
+                System.out.println(MAXIMUM_TASKS_ALLOWED + " error dumps already submitted, not allowing any more.");
                 lastCallToDump = now;
             }
         }
     }
 
-    public static int getMaximumTasksAllowed() {
-        return maximumTasksAllowed;
-    }
+    private static void performDumpToFile(Throwable exception, HttpRequestData httpRequestData) throws IOException {
 
-    /**
-     * Sets the maximum number of parallel dumping tasks allowed to be queued. Default value is 10.
-     *
-     * @param maximumTasksAllowed
-     */
-    public static void setMaximumTasksAllowed(int maximumTasksAllowed) {
-        ErrorFileDumper.maximumTasksAllowed = maximumTasksAllowed;
-    }
-
-    /**
-     * Retrieves the number of queued tasks for generating error dumps.
-     *
-     * @return
-     */
-    public static int getTasksSubmitted() {
-        return tasksSubmitted.get();
-    }
-
-    public static ExecutorService getExecutorService() {
-        return executorService;
-    }
-
-    private static void performDumpToFile(Throwable t, HttpRequestData httpRequestData) throws IOException {
         long dumpStartTime = System.currentTimeMillis();
-        if (lastFileDumpedException != null && t != null && t.toString().equals(lastFileDumpedException.toString())) {
-            lastFileDumpedExceptionOccurences++;
-            if ((SettingsBean.getInstance() != null) && (lastFileDumpedExceptionOccurences <
-                    SettingsBean.getInstance().getFileDumpMaxRegroupingOfPreviousException())) {
-                return;
+
+        Throwable previousExceptionToDump;
+        int previousExceptionOccurencesToDump;
+        long momentaryTotalExceptionCount;
+
+        synchronized (ErrorFileDumper.class) {
+
+            if (previousException != null && exception != null && exception.toString().equals(previousException.toString())) {
+                previousExceptionOccurrences++;
+                SettingsBean settings = SettingsBean.getInstance();
+                if (settings != null && previousExceptionOccurrences < settings.getFileDumpMaxRegroupingOfPreviousException()) {
+                    return;
+                }
             }
+
+            previousExceptionToDump = previousException;
+            previousExceptionOccurencesToDump = previousExceptionOccurrences;
+            previousException = exception;
+            previousExceptionOccurrences = 1;
+
+            totalExceptionCount++;
+            momentaryTotalExceptionCount = totalExceptionCount;
         }
 
-        exceptionCount++;
-
-        StringWriter errorWriter =
-                generateErrorReport(httpRequestData, t, lastFileDumpedExceptionOccurences, lastFileDumpedException);
-        File errorFile = getNextErrorFile();
+        StringWriter errorWriter = generateErrorReport(httpRequestData, exception, previousExceptionOccurencesToDump, previousExceptionToDump);
+        File errorFile = getNextErrorFile(momentaryTotalExceptionCount);
         FileUtils.writeStringToFile(errorFile, errorWriter.toString(), "UTF-8");
-        errorWriter = null;
-        lastFileDumpedException = t;
-        lastFileDumpedExceptionOccurences = 1;
+
         long dumpTotalTime = System.currentTimeMillis() - dumpStartTime;
         System.err.println("Error dumped to file " + errorFile.getAbsolutePath() + " in " + dumpTotalTime + "ms");
     }
 
-    private static File getNextErrorFile() {
+    private static File getNextErrorFile(long exceptionCount) {
         Date now = new Date();
         File todaysDirectory = new File(SettingsBean.getErrorDir(), DATE_FORMAT_DIRECTORY.format(now));
         todaysDirectory.mkdirs();
-        return new File(todaysDirectory,
-                "error-" + DATE_FORMAT_FILE.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
+        return new File(todaysDirectory, "error-" + DATE_FORMAT_FILE.format(now) + "-" + Long.toString(exceptionCount) + ".txt");
     }
 
     private static File getNextHeapDumpFile() {
@@ -353,26 +338,24 @@ public class ErrorFileDumper {
         return new File(todaysDirectory, "heap-" + ErrorFileDumper.DATE_FORMAT_FILE.format(now) + ".hprof");
     }
 
-    public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable t, int lastExceptionOccurences,
-                                                   Throwable lastException) {
+    public static StringWriter generateErrorReport(HttpRequestData requestData, Throwable exception, int previousExceptionOccurences, Throwable previousException) {
 
         StringWriter msgBodyWriter = new StringWriter();
         if (isHighLoad()) {
             return msgBodyWriter;
         }
         PrintWriter strOut = new PrintWriter(msgBodyWriter);
-        if (lastExceptionOccurences > 1) {
+        if (previousExceptionOccurences > 1) {
             strOut.println("");
-            strOut.println("The previous error: " + lastException.getMessage() + " occured " +
-                    Integer.toString(lastExceptionOccurences) + " times.");
+            strOut.println("The previous error: " + previousException.getMessage() + " occured " +
+                    Integer.toString(previousExceptionOccurences) + " times.");
             strOut.println("");
         }
         strOut.println("");
-        strOut.println(
-                "Your Server has generated an error. Please review the details below for additional information: ");
+        strOut.println("Your Server has generated an error. Please review the details below for additional information: ");
         strOut.println("");
-        if (t instanceof JahiaException) {
-            JahiaException nje = (JahiaException) t;
+        if (exception instanceof JahiaException) {
+            JahiaException nje = (JahiaException) exception;
             String severityMsg = "Undefined";
             switch (nje.getSeverity()) {
                 case JahiaException.WARNING_SEVERITY:
@@ -391,8 +374,8 @@ public class ErrorFileDumper {
             strOut.println("Severity: " + severityMsg);
         }
         strOut.println("");
-        if (t != null) {
-            strOut.println("Error: " + t.getMessage());
+        if (exception != null) {
+            strOut.println("Error: " + exception.getMessage());
         }
         strOut.println("");
         if (requestData != null) {
@@ -417,14 +400,13 @@ public class ErrorFileDumper {
         strOut.println("");
         strOut.println("Stack trace:");
         strOut.println("-------------");
-        String stackTraceStr = stackTraceToString(t);
+        String stackTraceStr = stackTraceToString(exception);
         strOut.println(stackTraceStr);
 
         outputSystemInfo(strOut);
 
         strOut.println("");
-        strOut.println(
-                "Depending on the severity of this error, server may still be operational or not. Please check your");
+        strOut.println("Depending on the severity of this error, server may still be operational or not. Please check your");
         strOut.println("installation as soon as possible.");
         strOut.println("");
         strOut.println("Yours Faithfully, ");
@@ -436,19 +418,6 @@ public class ErrorFileDumper {
         outputSystemInfoConsiderLoad(strOut);
     }
 
-    public static double getHighLoadBoundary() {
-        return highLoadBoundary;
-    }
-
-    /**
-     * Sets the boundary load value above which all reporting will automatically deactivate. The default value is 10.0
-     *
-     * @param highLoadBoundary
-     */
-    public static void setHighLoadBoundary(double highLoadBoundary) {
-        ErrorFileDumper.highLoadBoundary = highLoadBoundary;
-    }
-
     private static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
         boolean highLoad = isHighLoad();
         outputSystemInfo(strOut, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, true);
@@ -457,7 +426,7 @@ public class ErrorFileDumper {
     private static boolean isHighLoad() {
         boolean highLoad = false;
         RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
-        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > highLoadBoundary;
+        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > HIGH_LOAD_BOUNDARY;
         if (highLoad) {
             long now = System.currentTimeMillis();
             if ((now - lastHighLoadMessageTime) > MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING) {
@@ -473,15 +442,16 @@ public class ErrorFileDumper {
     }
 
     public static void outputSystemInfo(PrintWriter strOut, boolean systemProperties, boolean environmentVariables, boolean jahiaSettings, boolean memory, boolean caches, boolean threads, boolean deadlocks, boolean loadAverage) {
+
         if (systemProperties) {
             // now let's output the system properties.
             strOut.println();
             strOut.println("System properties:");
             strOut.println("-------------------");
-            Map orderedProperties = new TreeMap(System.getProperties());
-            Iterator entrySetIter = orderedProperties.entrySet().iterator();
+            Map<Object, Object> orderedProperties = new TreeMap<Object, Object>(System.getProperties());
+            Iterator<Map.Entry<Object, Object>> entrySetIter = orderedProperties.entrySet().iterator();
             while (entrySetIter.hasNext()) {
-                Map.Entry curEntry = (Map.Entry) entrySetIter.next();
+                Map.Entry<Object, Object> curEntry = entrySetIter.next();
                 String curPropertyName = (String) curEntry.getKey();
                 String curPropertyValue = (String) curEntry.getValue();
                 strOut.println("   " + curPropertyName + " : " + curPropertyValue);
@@ -493,12 +463,12 @@ public class ErrorFileDumper {
             strOut.println();
             strOut.println("Environment variables:");
             strOut.println("-------------------");
-            Map orderedProperties = new TreeMap(System.getenv());
-            Iterator entrySetIter = orderedProperties.entrySet().iterator();
+            Map<String, String> orderedProperties = new TreeMap<String, String>(System.getenv());
+            Iterator<Map.Entry<String, String>> entrySetIter = orderedProperties.entrySet().iterator();
             while (entrySetIter.hasNext()) {
-                Map.Entry curEntry = (Map.Entry) entrySetIter.next();
-                String curPropertyName = (String) curEntry.getKey();
-                String curPropertyValue = (String) curEntry.getValue();
+                Map.Entry<String, String> curEntry = entrySetIter.next();
+                String curPropertyName = curEntry.getKey();
+                String curPropertyValue = curEntry.getValue();
                 strOut.println("   " + curPropertyName + " : " + curPropertyValue);
             }
         }
@@ -511,10 +481,10 @@ public class ErrorFileDumper {
                 strOut.println();
                 strOut.println("---------------------");
                 SettingsBean settings = SettingsBean.getInstance();
-                Map jahiaOrderedProperties = new TreeMap(settings.getPropertiesFile());
-                Iterator jahiaEntrySetIter = jahiaOrderedProperties.entrySet().iterator();
+                Map<Object, Object> jahiaOrderedProperties = new TreeMap<Object, Object>(settings.getPropertiesFile());
+                Iterator<Map.Entry<Object, Object>> jahiaEntrySetIter = jahiaOrderedProperties.entrySet().iterator();
                 while (jahiaEntrySetIter.hasNext()) {
-                    Map.Entry curEntry = (Map.Entry) jahiaEntrySetIter.next();
+                    Map.Entry<Object, Object> curEntry = jahiaEntrySetIter.next();
                     String curPropertyName = (String) curEntry.getKey();
                     String curPropertyValue = null;
                     if (curEntry.getValue() == null) {
@@ -562,7 +532,7 @@ public class ErrorFileDumper {
                 SortedSet<String> sortedCacheNames = new TreeSet<>(ServicesRegistry.getInstance().getCacheService().getNames());
                 for (String sortedCacheName : sortedCacheNames) {
                     final Cache<Object, Object> objectCache = ServicesRegistry.getInstance().getCacheService().getCache(sortedCacheName);
-                    if (objectCache != null && !(((Cache) objectCache).getCacheImplementation() instanceof EhCacheImpl)) {
+                    if (objectCache != null && !(((Cache<?, ?>) objectCache).getCacheImplementation() instanceof EhCacheImpl)) {
                         String efficiencyStr = "0";
                         if (!Double.isNaN(objectCache.getCacheEfficiency())) {
                             efficiencyStr = percentFormat.format(objectCache.getCacheEfficiency());
@@ -703,7 +673,7 @@ public class ErrorFileDumper {
         ObjectName hotSpotDiagnostic = new ObjectName("com.sun.management:type=HotSpotDiagnostic");
         return mBeanServer.isRegistered(hotSpotDiagnostic);
     }
-    
+
     public static File performHeapDump() throws MalformedObjectNameException, InstanceNotFoundException,
             ReflectionException, MBeanException {
         MBeanServer mBeanServer = ManagementFactory.getPlatformMBeanServer();
@@ -717,5 +687,4 @@ public class ErrorFileDumper {
                 new String[] { String.class.getName(), boolean.class.getName() });
         return hprofFilePath;
     }
-
 }

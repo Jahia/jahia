@@ -133,8 +133,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     /**
      * This event is fired when the root application context is initialized.
-     *
-     * @author Sergiy Shyrkov
      */
     public static class RootContextInitializedEvent extends ApplicationEvent {
 
@@ -156,11 +154,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     private static long startupTime;
     private static String pid = "";
     private static String webAppRoot;
+    private static Map<String, Object> jahiaContextListenersConfiguration;
 
-    private static volatile Map<String, Object> jahiaContextListenersConfiguration;
     private static volatile long sessionCount = 0;
     private static volatile boolean contextInitialized = false;
-    private static volatile boolean running;
+    private static volatile boolean running = false;
 
     @SuppressWarnings("unchecked")
     private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
@@ -172,134 +170,132 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         Object interceptorActivatedObject = jahiaContextListenersConfiguration.get(interceptorName);
         if (interceptorActivatedObject instanceof Boolean) {
             return (Boolean) interceptorActivatedObject;
-        } else
+        } else {
             return interceptorActivatedObject instanceof String && Boolean.parseBoolean((String) interceptorActivatedObject);
+        }
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public void contextInitialized(ServletContextEvent event) {
 
-        synchronized (JahiaContextLoaderListener.class) {
+        startupTime = System.currentTimeMillis();
+        startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
 
-            startupTime = System.currentTimeMillis();
-            startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
+        logger.info("Starting up Digital Factory, please wait...");
 
-            logger.info("Starting up Digital Factory, please wait...");
+        servletContext = event.getServletContext();
 
-            servletContext = event.getServletContext();
+        Jahia.setContextPath(servletContext.getContextPath());
 
-            Jahia.setContextPath(servletContext.getContextPath());
+        initWebAppRoot();
 
-            initWebAppRoot();
+        if (System.getProperty("jahia.config") == null) {
+            setSystemProperty("jahia.config", "");
+        }
+        if (System.getProperty("jahia.license") == null) {
+            setSystemProperty("jahia.license", "");
+        }
 
-            if (System.getProperty("jahia.config") == null) {
-                setSystemProperty("jahia.config", "");
+        try {
+            // verify supported Java version
+            Jahia.verifyJavaVersion(servletContext.getInitParameter("supported_jdk_versions"));
+        } catch (JahiaInitializationException e) {
+            throw new JahiaRuntimeException(e);
+        }
+
+        detectPID(servletContext);
+
+        GroovyPatcher.executeScripts(servletContext, "beforeContextInitializing");
+
+        // initialize VFS file system (solves classloader issue: https://issues.apache.org/jira/browse/VFS-228 )
+        try {
+            VFS.getManager();
+        } catch (FileSystemException e) {
+            throw new JahiaRuntimeException(e);
+        }
+
+        try {
+            long timer = System.currentTimeMillis();
+            logger.info("Start initializing Spring root application context");
+
+            running = true;
+
+            super.contextInitialized(event);
+
+            logger.info("Spring Root application context initialized in {} ms", (System.currentTimeMillis() - timer));
+
+            // initialize services registry
+            ServicesRegistry.getInstance().init();
+
+            // fire Spring event that the root context is initialized
+            WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
+            rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
+
+            if (Jahia.isEnterpriseEdition()) {
+                requireLicense();
             }
-            if (System.getProperty("jahia.license") == null) {
-                setSystemProperty("jahia.license", "");
+
+            boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
+
+            // execute patches after root context initialization
+            if (isProcessingServer) {
+                GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
             }
 
-            try {
-                // verify supported Java version
-                Jahia.verifyJavaVersion(servletContext.getInitParameter("supported_jdk_versions"));
-            } catch (JahiaInitializationException e) {
-                throw new JahiaRuntimeException(e);
-            }
+            // start OSGi container
+            timer = System.currentTimeMillis();
+            logger.info("Starting OSGi platform service");
 
-            detectPID(servletContext);
-
-            GroovyPatcher.executeScripts(servletContext, "beforeContextInitializing");
-
-            // initialize VFS file system (solves classloader issue: https://issues.apache.org/jira/browse/VFS-228 )
-            try {
-                VFS.getManager();
-            } catch (FileSystemException e) {
-                throw new JahiaRuntimeException(e);
-            }
-
-            try {
-                long timer = System.currentTimeMillis();
-                logger.info("Start initializing Spring root application context");
-
-                running = true;
-
-                super.contextInitialized(event);
-
-                logger.info("Spring Root application context initialized in {} ms", (System.currentTimeMillis() - timer));
-
-                // initialize services registry
-                ServicesRegistry.getInstance().init();
-
-                // fire Spring event that the root context is initialized
-                WebApplicationContext rootCtx = ContextLoader.getCurrentWebApplicationContext();
-                rootCtx.publishEvent(new RootContextInitializedEvent(rootCtx));
-
-                if (Jahia.isEnterpriseEdition()) {
-                    requireLicense();
-                }
-
-                boolean isProcessingServer = SettingsBean.getInstance().isProcessingServer();
-
-                // execute patches after root context initialization
-                if (isProcessingServer) {
-                    GroovyPatcher.executeScripts(servletContext, "rootContextInitialized");
-                }
-
-                // start OSGi container
-                timer = System.currentTimeMillis();
-                logger.info("Starting OSGi platform service");
-
-                final FrameworkService instance = FrameworkService.getInstance();
-                instance.start();
-                boolean stopWaiting = false;
-                synchronized (instance) {
-                    while (!stopWaiting && !instance.isStarted()) {
-                        try {
-                            instance.wait(10 * 60 * 1000L);
-                            stopWaiting = true;
-                            logger.info("Stopped waiting for OSGi framework startup");
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
+            final FrameworkService instance = FrameworkService.getInstance();
+            instance.start();
+            boolean stopWaiting = false;
+            synchronized (instance) {
+                while (!stopWaiting && !instance.isStarted()) {
+                    try {
+                        instance.wait(10 * 60 * 1000L);
+                        stopWaiting = true;
+                        logger.info("Stopped waiting for OSGi framework startup");
+                    } catch (InterruptedException e) {
+                        // ignore
                     }
                 }
-
-                logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - timer));
-
-                // do initialization of all services, implementing JahiaAfterInitializationService
-                initJahiaAfterInitializationServices();
-
-                // register listeners after the portal is started
-                ApplicationsManagerServiceImpl.getInstance().registerListeners();
-
-                // set fallback locale
-                Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
-                        .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
-
-                jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
-                if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
-                    SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
-                }
-                contextInitialized = true;
-
-                // execute patches after the complete initialization
-                if (isProcessingServer) {
-                    GroovyPatcher.executeScripts(servletContext, "contextInitialized");
-                } else {
-                    // we leave the possibility to provide Groovy scripts for non-processing servers
-                    GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
-                }
-            } catch (JahiaException | BundleException e) {
-                running = false;
-                logger.error(e.getMessage(), e);
-                throw new JahiaRuntimeException(e);
-            } catch (RuntimeException e) {
-                running = false;
-                throw e;
-            } finally {
-                JCRSessionFactory.getInstance().closeAllSessions();
             }
+
+            logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - timer));
+
+            // do initialization of all services, implementing JahiaAfterInitializationService
+            initJahiaAfterInitializationServices();
+
+            // register listeners after the portal is started
+            ApplicationsManagerServiceImpl.getInstance().registerListeners();
+
+            // set fallback locale
+            Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
+                    .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
+
+            jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
+            if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
+            }
+            contextInitialized = true;
+
+            // execute patches after the complete initialization
+            if (isProcessingServer) {
+                GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+            } else {
+                // we leave the possibility to provide Groovy scripts for non-processing servers
+                GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
+            }
+        } catch (JahiaException | BundleException e) {
+            running = false;
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        } catch (RuntimeException e) {
+            running = false;
+            throw e;
+        } finally {
+            JCRSessionFactory.getInstance().closeAllSessions();
         }
     }
 
@@ -383,9 +379,11 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     public void contextDestroyed(ServletContextEvent event) {
+
         if (!running) {
             return;
         }
+
         contextInitialized = false;
         running = false;
 
@@ -516,10 +514,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     /**
      * Sets the system property keeping track of properties, we added (there was no value present before we set it).
      *
-     * @param key
-     *            the property key
-     * @param value
-     *            the value to be set
+     * @param key the property key
+     * @param value the value to be set
      */
     public static void setSystemProperty(String key, String value) {
         if (System.setProperty(key, value) == null) {

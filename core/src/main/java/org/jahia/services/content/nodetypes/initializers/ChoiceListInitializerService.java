@@ -83,7 +83,11 @@ import java.util.Map;
 public class ChoiceListInitializerService {
 
     private Map<String, ChoiceListInitializer> initializers;
+
     private static ChoiceListInitializerService instance;
+
+    private ChoiceListInitializerService() {
+    }
 
     public Map<String, ChoiceListInitializer> getInitializers() {
         return initializers;
@@ -95,7 +99,11 @@ public class ChoiceListInitializerService {
 
     public static ChoiceListInitializerService getInstance() {
         if (instance == null) {
-            instance = new ChoiceListInitializerService();
+            synchronized (ChoiceListInitializerService.class) {
+                if (instance == null) {
+                    instance = new ChoiceListInitializerService();
+                }
+            }
         }
         return instance;
     }

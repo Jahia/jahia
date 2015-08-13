@@ -96,7 +96,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Database related utility tool.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class DatabaseUtils {
@@ -106,7 +106,6 @@ public final class DatabaseUtils {
     }
 
     private static DatabaseType dbType;
-
     private static DataSource ds;
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
@@ -203,18 +202,25 @@ public final class DatabaseUtils {
 
     public static DatabaseType getDatabaseType() {
         if (dbType == null) {
-            dbType = DatabaseType.valueOf(StringUtils.substringBefore(
-                    StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile().getProperty("db_script")
-                            .trim(), "."), "_"));
+            synchronized (DatabaseUtils.class) {
+                if (dbType == null) {
+                    dbType = DatabaseType.valueOf(StringUtils.substringBefore(
+                            StringUtils.substringBefore(SettingsBean.getInstance().getPropertiesFile().getProperty("db_script")
+                                    .trim(), "."), "_"));
+                }
+            }
         }
         return dbType;
     }
 
     public static DataSource getDatasource() {
         if (ds == null) {
-            ds = (DataSource) SpringContextSingleton.getBean("dataSource");
+            synchronized (DatabaseUtils.class) {
+                if (ds == null) {
+                    ds = (DataSource) SpringContextSingleton.getBean("dataSource");
+                }
+            }
         }
-
         return ds;
     }
 

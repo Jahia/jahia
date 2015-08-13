@@ -111,6 +111,17 @@ public class ZipHelper {
     private ZipHelper() {
     }
 
+    public static ZipHelper getInstance() {
+        if (instance == null) {
+            synchronized (ZipHelper.class) {
+                if (instance == null) {
+                    instance = new ZipHelper();
+                }
+            }
+        }
+        return instance;
+    }
+
     /**
      * @param parentDirectory the directory to create the archive into
      * @param zipname         the archive name
@@ -260,12 +271,7 @@ public class ZipHelper {
                         target.uploadFile(filename, zis, JCRContentUtils.getMimeType(filename));
                     }
                     result = true;
-                } /*catch (IOException e) {
-                    logger.error("Error when unzipping file", e);
-                    if (filename != null) {
-                        errorFiles.add(filename);
-                    }
-                } */ catch (InternalError err) {
+                } catch (InternalError err) {
                     logger.error("Error when unzipping file", err);
                     if (filename != null) {
                         errorFiles.add(filename);
@@ -422,16 +428,5 @@ public class ZipHelper {
             }
             throw new GWTJahiaServiceException(errors.toString());
         }
-    }
-
-    public static ZipHelper getInstance() {
-        if (instance == null) {
-            synchronized (ZipHelper.class) {
-                if (instance == null) {
-                    instance = new ZipHelper();
-                }
-            }
-        }
-        return instance;
     }
 }

@@ -127,16 +127,48 @@ public final class JCRContentUtils implements ServletContextAware {
     public static final Pattern COLON_PATTERN = Patterns.COLON;
 
     public static final Comparator<NodeType> NODE_TYPE_NAME_COMPARATOR = new Comparator<NodeType>() {
+
+        @Override
         public int compare(NodeType o1, NodeType o2) {
             return o1 == o2 ? 0 : o1.getName().compareTo(o2.getName());
         }
     };
 
-    private static final Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512, 0.8f, 32);
-    private static JCRContentUtils instance;
-
+    private static final String PREFIX = Jahia.getContextPath() + "/modules/";
     private static final Logger logger = LoggerFactory.getLogger(JCRContentUtils.class);
-    private static String prefix = Jahia.getContextPath() + "/modules/";
+
+    private static Map<String, Boolean> iconsPresence = new ConcurrentHashMap<String, Boolean>(512, 0.8f, 32);
+    private static volatile JCRContentUtils instance;
+
+    private final Map<String, String> fileExtensionIcons;
+    private final Map<String, List<String>> mimeTypes;
+    private final Map<String, String> defaultUserFolderTypes;
+
+    private NameGenerationHelper nameGenerationHelper;
+    private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
+    private Pattern handleFallbackLocaleForPath;
+    private ServletContext servletContext;
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param mimeTypes a map with mime type mappings
+     * @param fileExtensionIcons mapping between file extensions and corresponding icons
+     */
+    @SuppressWarnings("unchecked")
+    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons, Map<String, String> defaultUserFolderTypes) {
+        instance = this;
+        this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
+        this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
+        this.defaultUserFolderTypes = UnmodifiableMap.decorate(defaultUserFolderTypes);
+    }
+
+    public static JCRContentUtils getInstance() {
+        if (instance == null) {
+            throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");
+        }
+        return instance;
+    }
 
     /**
      * Calls the datastore garbage collector and returns the number of data entries deleted.
@@ -683,7 +715,7 @@ public final class JCRContentUtils implements ServletContextAware {
         if (icon == null) {
             icon = getIcon(NodeTypeRegistry.getInstance().getNodeType("jmix:droppableContent"));
         }
-        return prefix + icon;
+        return PREFIX + icon;
     }
 
     /**
@@ -727,9 +759,9 @@ public final class JCRContentUtils implements ServletContextAware {
         }
 
         if (f.isFile()) {
-            return (useContext ? prefix : "") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
+            return (useContext ? PREFIX : "") + folder + "jnt_file_" + FileUtils.getFileIcon(f.getName());
         } else if (f.isPortlet()) {
-            return (useContext ? prefix : "") + folder + "jnt_portlet";
+            return (useContext ? PREFIX : "") + folder + "jnt_portlet";
         } else if (f instanceof JCRComponentNode) {
             String type = f.getName();
             ExtendedNodeType nt = primaryNodeType;
@@ -740,11 +772,11 @@ public final class JCRContentUtils implements ServletContextAware {
 
                 }
             }
-            return (useContext ? prefix : "") + getIcon(nt, getSubType(nt, f));
+            return (useContext ? PREFIX : "") + getIcon(nt, getSubType(nt, f));
         } else if (!f.getProvider().isDefault() && f.isNodeType("jnt:folder")) {
-            return (useContext ? prefix : "") + folder + "remoteFolder";
+            return (useContext ? PREFIX : "") + folder + "remoteFolder";
         } else {
-            return (useContext ? prefix : "") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
+            return (useContext ? PREFIX : "") + getIcon(primaryNodeType, getSubType(primaryNodeType, f));
         }
     }
 
@@ -772,13 +804,6 @@ public final class JCRContentUtils implements ServletContextAware {
                 .getInstance().getJahiaTemplateManagerService().getTemplatePackageById(systemId) : null;
 
         return aPackage != null ? aPackage.getId() + "/icons/" : "assets/icons/";
-    }
-
-    public static JCRContentUtils getInstance() {
-        if (instance == null) {
-            throw new UnsupportedOperationException("JCRContentUtils is not initialized yet");
-        }
-        return instance;
     }
 
     /**
@@ -1312,7 +1337,7 @@ public final class JCRContentUtils implements ServletContextAware {
      * @param uuid the UUID string to check
      * @return code>true</code> if the provided UUID string does not seem like a valid Jackrabbit node UUID. In such a case it comes from a
      *         different provide, like VFS
-     * @deprecated without any replacement 
+     * @deprecated without any replacement
      */
     @Deprecated
     public static boolean isNotJcrUuid(String uuid) {
@@ -1524,35 +1549,6 @@ public final class JCRContentUtils implements ServletContextAware {
     public static String unescapeLocalNodeName(final String encodedLocalName) {
         return encodedLocalName != null && encodedLocalName.indexOf('%') != -1 ? Text
                 .unescapeIllegalJcrChars(encodedLocalName) : encodedLocalName;
-    }
-
-    private final Map<String, String> fileExtensionIcons;
-
-    private final Map<String, List<String>> mimeTypes;
-
-    private final Map<String, String> defaultUserFolderTypes;
-
-    private NameGenerationHelper nameGenerationHelper;
-
-    private Set<String> unsupportedMarkForDeletionNodeTypes = Collections.emptySet();
-
-    private Pattern handleFallbackLocaleForPath;
-
-    private ServletContext servletContext;
-
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param mimeTypes          a map with mime type mappings
-     * @param fileExtensionIcons mapping between file extensions and corresponding icons
-     */
-    @SuppressWarnings("unchecked")
-    public JCRContentUtils(Map<String, List<String>> mimeTypes, Map<String, String> fileExtensionIcons, Map<String, String> defaultUserFolderTypes) {
-        super();
-        instance = this;
-        this.mimeTypes = UnmodifiableMap.decorate(mimeTypes);
-        this.fileExtensionIcons = UnmodifiableMap.decorate(fileExtensionIcons);
-        this.defaultUserFolderTypes = UnmodifiableMap.decorate(defaultUserFolderTypes);
     }
 
     /**
@@ -1772,8 +1768,7 @@ public final class JCRContentUtils implements ServletContextAware {
      *         descriptor)
      */
     public static String getMimeType(String fileName) {
-        return fileName != null ? getInstance().servletContext.getMimeType(fileName.toLowerCase())
-                : null;
+        return fileName != null ? getInstance().servletContext.getMimeType(fileName.toLowerCase()) : null;
     }
 
     /**

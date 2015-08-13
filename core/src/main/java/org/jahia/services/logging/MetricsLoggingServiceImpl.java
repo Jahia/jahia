@@ -89,21 +89,40 @@ import java.util.*;
  *        Created : 24 nov. 2009
  */
 public class MetricsLoggingServiceImpl implements MetricsLoggingService {
-    private transient static Logger metricsLogger = LoggerFactory.getLogger("loggingService");
-    private transient static Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
+
+    private static final String HEADER_TEMPLATE = "user {} ip {} session {} identifier {} path {} nodetype {} ";
+    private static final Logger metricsLogger = LoggerFactory.getLogger("loggingService");
+    private static final Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
+
+    private static MetricsLoggingServiceImpl instance;
+
     private Map<String, String> logTemplatesMap;
     private Set<String> ignoreUsers = new HashSet<String>();
-    private static MetricsLoggingServiceImpl instance;
-    private final static String headerTemplate = "user {} ip {} session {} identifier {} path {} nodetype {} ";
     private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
 
-    public MetricsLoggingServiceImpl() {
+    private MetricsLoggingServiceImpl() {
+    }
+
+    /**
+     * Returns the singleton instance, and creates it if not existing yet
+     *
+     * @return the singleton instance, either existing or newly created.
+     */
+    public static MetricsLoggingServiceImpl getInstance() {
+        if (instance == null) {
+            synchronized (MetricsLoggingServiceImpl.class) {
+                if (instance == null) {
+                    instance = new MetricsLoggingServiceImpl();
+                }
+            }
+        }
+        return instance;
     }
 
     public void setLogTemplatesMap(Map<String, String> logTemplatesMap) {
         this.logTemplatesMap = new LinkedHashMap<String, String>(logTemplatesMap.size());
         for (Map.Entry<String, String> entry : logTemplatesMap.entrySet()) {
-            this.logTemplatesMap.put(entry.getKey(), headerTemplate + entry.getValue());
+            this.logTemplatesMap.put(entry.getKey(), HEADER_TEMPLATE + entry.getValue());
         }
     }
 
@@ -247,22 +266,10 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
         return profiler;
     }
 
-    /**
-     * Returns the singleton instance, and creates it if not existing yet
-     *
-     * @return the singleton instance, either existing or newly created.
-     */
-    public static MetricsLoggingServiceImpl getInstance() {
-        if (instance == null) {
-            instance = new MetricsLoggingServiceImpl();
-        }
-        return instance;
-    }
-
     public boolean isEnabled() {
         return metricsLogger.isTraceEnabled();
     }
-    
+
     public boolean isProfilingEnabled() {
         return profilerMetricsLogger.isDebugEnabled();
     }

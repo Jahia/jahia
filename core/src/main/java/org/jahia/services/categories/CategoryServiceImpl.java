@@ -97,37 +97,41 @@ import java.util.*;
  * <p>
  * Company: Jahia Ltd
  * </p>
- * 
+ *
  * @author Serge Huber
  * @version 1.0
  */
 
 public class CategoryServiceImpl extends CategoryService {
 
-    private static CategoryServiceImpl singletonInstance;
-
-    private JCRCategoryProvider categoryProvider;
-
     private static final String CATEGORY_LINKTYPE = "category";
     private static final String CATEGORY_CHILD_PREFIX = "Category_%";
 
-    public void setCategoryProvider(JCRCategoryProvider categoryProvider) {
-        this.categoryProvider = categoryProvider;
-    }
+    private static CategoryServiceImpl singletonInstance;
+
+    private JCRCategoryProvider categoryProvider;
 
     protected CategoryServiceImpl() {
     }
 
     /**
      * Return the unique service instance. If the instance does not exist, a new instance is created.
-     * 
+     *
      * @return The unique service instance.
      */
     public static CategoryServiceImpl getInstance() {
         if (singletonInstance == null) {
-            singletonInstance = new CategoryServiceImpl();
+            synchronized (CategoryServiceImpl.class) {
+                if (singletonInstance == null) {
+                    singletonInstance = new CategoryServiceImpl();
+                }
+            }
         }
         return singletonInstance;
+    }
+
+    public void setCategoryProvider(JCRCategoryProvider categoryProvider) {
+        this.categoryProvider = categoryProvider;
     }
 
     public void start() throws JahiaInitializationException {
@@ -135,13 +139,13 @@ public class CategoryServiceImpl extends CategoryService {
     }
 
     public void stop() {
-    	// do nothing
+        // do nothing
     }
 
     public Node getCategoriesRoot() throws JahiaException {
         return categoryProvider.getCategoriesRoot();
     }
-    
+
     public List<Category> getRootCategories(JahiaUser user) throws JahiaException {
         return categoryProvider.getRootCategories(user);
     }
@@ -149,7 +153,7 @@ public class CategoryServiceImpl extends CategoryService {
     public List<Category> getCategory(String key) throws JahiaException {
         return categoryProvider.findCategoryByKey(key);
     }
-    
+
     public Category getCategory(String key, Category parentCategory) throws JahiaException {
         return categoryProvider.getCategoryByKey(key, parentCategory);
     }
@@ -272,7 +276,7 @@ public class CategoryServiceImpl extends CategoryService {
 
     public String getTitleForCategory(Category category, Locale locale)
             throws JahiaException {
-        return categoryProvider.getTitleForCategory(category, locale);        
+        return categoryProvider.getTitleForCategory(category, locale);
     }
 
     public void setTitleForCategory(Category category, Locale locale,
@@ -299,7 +303,7 @@ public class CategoryServiceImpl extends CategoryService {
     public List<Category> getCategoriesContainingStringInTitle(
             final String string, final String languageCode)
             throws JahiaException {
-        return categoryProvider.findCategoriesContainingTitleString(string, languageCode);        
+        return categoryProvider.findCategoriesContainingTitleString(string, languageCode);
     }
 
     public List<Category> findCategoriesByPropNameAndValue(String propName, String propValue, JahiaUser user) {

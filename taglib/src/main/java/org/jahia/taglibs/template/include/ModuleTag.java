@@ -107,39 +107,24 @@ import java.util.*;
 public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private static final long serialVersionUID = -8968618483176483281L;
-
-    private static Logger logger = LoggerFactory.getLogger(ModuleTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(ModuleTag.class);
 
     private static AbstractFilter exclusionFilter = null;
-
     private static boolean exclusionFilterChecked;
 
     protected String path;
-
     protected JCRNodeWrapper node;
-
     protected JCRSiteNode contextSite;
-
     protected String nodeName;
-
     protected String view;
-
     protected String templateType = null;
-
     protected boolean editable = true;
-
     protected String nodeTypes = null;
-
     protected int listLimit = -1;
-
     protected String constraints = null;
-
     protected String var = null;
-
     protected StringBuilder builder = new StringBuilder();
-
     protected Map<String, String> parameters = new HashMap<String, String>();
-
     protected boolean checkConstraints = true;
 
     public String getPath() {
@@ -415,11 +400,15 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     private AbstractFilter getExclusionFilter() {
         if (!exclusionFilterChecked) {
-            try {
-                exclusionFilter = (AbstractFilter) SpringContextSingleton.getBeanInModulesContext("ChannelExclusionFilter");
-            } catch (Exception e) {
+            synchronized (ModuleTag.class) {
+                if (!exclusionFilterChecked) {
+                    try {
+                        exclusionFilter = (AbstractFilter) SpringContextSingleton.getBeanInModulesContext("ChannelExclusionFilter");
+                    } catch (Exception e) {
+                    }
+                    exclusionFilterChecked = true;
+                }
             }
-            exclusionFilterChecked = true;
         }
         return exclusionFilter;
     }

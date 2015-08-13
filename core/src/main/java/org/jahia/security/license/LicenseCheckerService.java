@@ -77,12 +77,13 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 /**
  * License checker interface.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface LicenseCheckerService {
 
     class Stub {
+
         private static boolean initialized = false;
         private static LicenseCheckerService instance;
 
@@ -95,30 +96,30 @@ public interface LicenseCheckerService {
         }
 
         private static LicenseCheckerService getInstance() {
-            if (instance == null && !initialized) {
-                if (Jahia.isEnterpriseEdition()) {
-                    if (SpringContextSingleton.getInstance().isInitialized()) {
-                        try {
-                            instance = (LicenseCheckerService) SpringContextSingleton.getInstance().getContext()
-                                    .getBean("licenseChecker");
-                        } catch (NoSuchBeanDefinitionException e) {
-                            // no bean defined
+            if (!initialized) {
+                synchronized (Stub.class) {
+                    if (!initialized) {
+                        if (Jahia.isEnterpriseEdition()) {
+                            if (SpringContextSingleton.getInstance().isInitialized()) {
+                                try {
+                                    instance = (LicenseCheckerService) SpringContextSingleton.getInstance().getContext().getBean("licenseChecker");
+                                } catch (NoSuchBeanDefinitionException e) {
+                                    // no bean defined
+                                }
+                            }
                         }
+                        initialized = true;
                     }
                 }
-                initialized = true;
             }
-
             return instance;
         }
-
     }
 
     /**
      * Checks if the corresponding product feature is allowed by the current license.
-     * 
-     * @param featureId
-     *            the feature ID to be checked
+     *
+     * @param featureId the feature ID to be checked
      * @return <code>true</code> if the specified product feature is allowed by the license; <code>false</code> otherwise.
      */
     boolean checkFeature(String featureId);

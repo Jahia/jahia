@@ -90,10 +90,28 @@ import java.util.Locale;
  * @author Cedric Mailleux
  */
 public class JCRTemplate {
+
     private JCRSessionFactory sessionFactory;
+
     private static JCRTemplate instance;
 
     private JCRTemplate() {
+    }
+
+    /**
+     * Obtain the JCRTemplate singleton
+     *
+     * @return the JCRTemplate singleton instance
+     */
+    public static JCRTemplate getInstance() {
+        if (instance == null) {
+            synchronized (JCRTemplate.class) {
+                if (instance == null) {
+                    instance = new JCRTemplate();
+                }
+            }
+        }
+        return instance;
     }
 
     /**
@@ -322,19 +340,6 @@ public class JCRTemplate {
         } else {
             return doExecuteWithUserSession(username, workspace, callback);
         }
-    }
-
-
-    /**
-     * Obtain the JCRTemplate singleton
-     *
-     * @return the JCRTemplate singleton instance
-     */
-    public static JCRTemplate getInstance() {
-        if (instance == null) {
-            instance = new JCRTemplate();
-        }
-        return instance;
     }
 
     public JCRStoreProvider getProvider(String path) {

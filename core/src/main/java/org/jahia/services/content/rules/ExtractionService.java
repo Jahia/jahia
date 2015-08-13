@@ -105,21 +105,25 @@ import java.util.Map;
 public class ExtractionService {
 
     private static ExtractionService instance;
+    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ExtractionService.class);
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(ExtractionService.class);
+    private JCRTemplate jcrTemplate;
+    private TextExtractionService textExtractionService;
+    private Map<String, String[]> mapping = new HashMap<String, String[]>();
+
+    private ExtractionService() {
+    }
 
     public static ExtractionService getInstance() {
         if (instance == null) {
-            instance = new ExtractionService();
+            synchronized (ExtractionService.class) {
+                if (instance == null) {
+                    instance = new ExtractionService();
+                }
+            }
         }
         return instance;
     }
-
-    private JCRTemplate jcrTemplate;
-
-    private TextExtractionService textExtractionService;
-
-    private Map<String, String[]> mapping = new HashMap<String, String[]>();
 
     /**
      * Performs a check if the provided node can be handled by currently
@@ -240,7 +244,7 @@ public class ExtractionService {
     public void extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath) throws IOException {
         extractText(provider, sourcePath, extractionNodePath, Constants.EDIT_WORKSPACE);
     }
-    
+
     /**
      * Synchronously extract text from document and store it as a property of either the file
      * node itself or the node referred to by the extractionNodePath parameter.
@@ -251,7 +255,7 @@ public class ExtractionService {
      * @param provider           the JCR store provider
      * @param sourcePath         the path to the file node
      * @param extractionNodePath the optional path to the node receiving the extracted text
-     * @param workspace          the workspace, where document was saved (default or live) 
+     * @param workspace          the workspace, where document was saved (default or live)
      * @throws IOException
      */
     public boolean extractText(final JCRStoreProvider provider, final String sourcePath, final String extractionNodePath, final String workspace) throws IOException {

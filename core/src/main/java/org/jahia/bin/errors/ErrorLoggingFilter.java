@@ -103,8 +103,8 @@ public class ErrorLoggingFilter implements Filter {
 
     private static final Logger logger = LoggerFactory.getLogger(ErrorLoggingFilter.class);
 
-    private static Throwable lastMailedException = null;
-    private static int lastMailedExceptionOccurrences = 0;
+    private static Throwable previousException = null;
+    private static int previousExceptionOccurrences = 0;
 
     @Override
     public void destroy() {
@@ -145,28 +145,27 @@ public class ErrorLoggingFilter implements Filter {
 
     protected static void emailAlert(HttpServletRequest request, HttpServletResponse response) {
 
-        Throwable t = getException(request);
+        Throwable exception = getException(request);
         try {
 
-            Throwable lastMailed;
-            int lastMailedOccurrences;
+            Throwable previousExceptionToMail;
+            int previousExceptionOccurrencesToMail;
 
             synchronized (ErrorLoggingFilter.class) {
-                if (lastMailedException != null && t != null && t.toString().equals(lastMailedException.toString())) {
-                    lastMailedExceptionOccurrences++;
-                    if (lastMailedExceptionOccurrences < SettingsBean.getInstance().getMail_maxRegroupingOfPreviousException()) {
+                if (previousException != null && exception != null && exception.toString().equals(previousException.toString())) {
+                    previousExceptionOccurrences++;
+                    if (previousExceptionOccurrences < SettingsBean.getInstance().getMail_maxRegroupingOfPreviousException()) {
                         return;
                     }
                 }
-                lastMailed = lastMailedException;
-                lastMailedOccurrences = lastMailedExceptionOccurrences;
-                lastMailedException = t;
-                lastMailedExceptionOccurrences = 1;
+                previousExceptionToMail = previousException;
+                previousExceptionOccurrencesToMail = previousExceptionOccurrences;
+                previousException = exception;
+                previousExceptionOccurrences = 1;
             }
 
-            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), t, lastMailedOccurrences, lastMailed);
-
-            ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null, "Server Error: " + (t != null ? t.getMessage() : ""), msgBodyWriter.toString());
+            StringWriter msgBodyWriter = ErrorFileDumper.generateErrorReport(new ErrorFileDumper.HttpRequestData(request), exception, previousExceptionOccurrencesToMail, previousExceptionToMail);
+            ServicesRegistry.getInstance().getMailService().sendMessage(null, null, null, null, "Server Error: " + (exception != null ? exception.getMessage() : ""), msgBodyWriter.toString());
 
             logger.debug("Mail was sent successfully.");
         } catch (Exception ex) {
@@ -275,11 +274,8 @@ public class ErrorLoggingFilter implements Filter {
 
         return error != null
                 && (error instanceof JahiaException)
-                && ServicesRegistry.getInstance().getMailService()
-                .getSettings().getNotificationSeverity() != 0
-                && ServicesRegistry.getInstance().getMailService()
-                .getSettings().getNotificationSeverity() <= ((JahiaException) error)
-                .getSeverity();
+                && ServicesRegistry.getInstance().getMailService().getSettings().getNotificationSeverity() != 0
+                && ServicesRegistry.getInstance().getMailService().getSettings().getNotificationSeverity() <= ((JahiaException) error).getSeverity();
     }
 
     private static boolean isMailServiceEnabled() {

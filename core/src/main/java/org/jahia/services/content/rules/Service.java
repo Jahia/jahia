@@ -127,7 +127,8 @@ import java.util.zip.ZipInputStream;
  *         Time: 12:04:29
  */
 public class Service extends JahiaService {
-    private static Logger logger = LoggerFactory.getLogger(Service.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(Service.class);
     private static Service instance;
 
     private TaggingService taggingService;
@@ -138,9 +139,16 @@ public class Service extends JahiaService {
     private JahiaGroupManagerService groupManagerService;
     private JahiaPasswordPolicyService passwordPolicyService;
 
+    private Service() {
+    }
+
     public static Service getInstance() {
         if (instance == null) {
-            instance = new Service();
+            synchronized (Service.class) {
+                if (instance == null) {
+                    instance = new Service();
+                }
+            }
         }
         return instance;
     }
@@ -510,7 +518,7 @@ public class Service extends JahiaService {
         map.put(RuleJob.JOB_USER_REALM, ((User) drools.getWorkingMemory().getGlobal("user")).getRealm());
         map.put(RuleJob.JOB_WORKSPACE, ((String) drools.getWorkingMemory().getGlobal("workspace")));
 
-        // cancel the scheduled job if exists 
+        // cancel the scheduled job if exists
         schedulerService.getScheduler().deleteJob(jobDetail.getName(), jobDetail.getGroup());
         try {
             final Property property = node.getNode().getProperty(propertyName);

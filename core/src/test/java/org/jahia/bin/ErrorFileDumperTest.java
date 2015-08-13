@@ -118,7 +118,7 @@ public class ErrorFileDumperTest {
         FileUtils.deleteDirectory(todaysDirectory);
         RequestLoadAverage.getInstance().stop();
     }
-    
+
     @After
     public void tearDown() throws Exception {
         FileUtils.deleteDirectory(todaysDirectory);
@@ -192,7 +192,6 @@ public class ErrorFileDumperTest {
             fileCountBeforeTest = (files == null ? 0 : files.length);
         }
 
-        ErrorFileDumper.setHighLoadBoundary(10.0);
         ErrorFileDumper.start();
 
         generateExceptions();
@@ -214,8 +213,8 @@ public class ErrorFileDumperTest {
         }
 
         Assert.assertEquals("File count should stay the same because high load deactivates file dumping !", fileCountBeforeTest, fileCountAfterTest);
-        
-        requestLoadAverage = new RequestLoadAverage("requestLoadAverage");        
+
+        requestLoadAverage = new RequestLoadAverage("requestLoadAverage");
     }
 
     @Test

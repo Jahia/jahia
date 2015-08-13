@@ -92,16 +92,15 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Charset detector for the ZIP file entries.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class ZipEntryCharsetDetector {
 
     private static List<Charset> charsetTryChain;
 
-    private static Logger logger = LoggerFactory.getLogger(ZipEntryCharsetDetector.class);
-
     public static final String ZIP_ENTRY_ALTERNATIVE_ENCODING = "jahia.zipEntry.alternativeEncoding";
+    private static Logger logger = LoggerFactory.getLogger(ZipEntryCharsetDetector.class);
 
     private static boolean canRead(File file, Charset charset) throws IOException {
         boolean canRead = true;
@@ -163,7 +162,7 @@ public final class ZipEntryCharsetDetector {
      * Returns the detected character set, which is suitable to read the entries of the provided ZIP file properly. The set of charsets to
      * try can be specified by the system property {@link #ZIP_ENTRY_ALTERNATIVE_ENCODING} and also by the corresponding jahia.properties
      * entry. If the method fails to detect the charset it returns <code>null</code>.
-     * 
+     *
      * @param zipFile
      *            the ZIP file to read entries from
      * @return the detected character set, which is suitable to read the entries of the provided ZIP file properly or <code>null</code> if
@@ -189,7 +188,7 @@ public final class ZipEntryCharsetDetector {
      * Returns the detected character set, which is suitable to read the entries of the provided ZIP file properly. The set of charsets to
      * try can be specified by the system property {@link #ZIP_ENTRY_ALTERNATIVE_ENCODING} and also by the corresponding jahia.properties
      * entry. If the method fails to detect the charset it returns <code>null</code>.
-     * 
+     *
      * @param zipFileResettableInputStream
      *            a ZIP file stream that has proper support for {@link InputStream#reset()} method, e.g. is a {@link ByteArrayInputStream}
      * @return the detected character set, which is suitable to read the entries of the provided ZIP file properly or <code>null</code> if
@@ -219,7 +218,7 @@ public final class ZipEntryCharsetDetector {
      * Returns the detected character set, which is suitable to read the entries of the provided ZIP file properly. The set of charsets to
      * try can be specified by the system property {@link #ZIP_ENTRY_ALTERNATIVE_ENCODING} and also by the corresponding jahia.properties
      * entry. If the method fails to detect the charset it returns <code>null</code>.
-     * 
+     *
      * @param zipFile
      *            the ZIP file to read entries from
      * @return the detected character set, which is suitable to read the entries of the provided ZIP file properly or <code>null</code> if
@@ -249,7 +248,7 @@ public final class ZipEntryCharsetDetector {
      * Returns the detected character set, which is suitable to read the entries of the provided ZIP resource properly. The set of charsets
      * to try can be specified by the system property {@link #ZIP_ENTRY_ALTERNATIVE_ENCODING} and also by the corresponding jahia.properties
      * entry. If the method fails to detect the charset it returns <code>null</code>.
-     * 
+     *
      * @param resourceUrl
      *            the URL of the resource to open a stream from
      * @return the detected character set, which is suitable to read the entries of the provided ZIP resource properly or <code>null</code>
@@ -280,23 +279,25 @@ public final class ZipEntryCharsetDetector {
 
     private static List<Charset> getCharsetTryChain() {
         if (charsetTryChain == null) {
-            String encoding = System.getProperty(ZIP_ENTRY_ALTERNATIVE_ENCODING, "Cp437");
-            List<Charset> charsets = new LinkedList<>();
-            for (String c : StringUtils.split(encoding, " ,")) {
-                try {
-                    charsets.add(Charset.forName(c));
-                } catch (UnsupportedCharsetException e) {
-                    logger.warn(e.getMessage(), e);
+            synchronized (ZipEntryCharsetDetector.class) {
+                if (charsetTryChain == null) {
+                    String encoding = System.getProperty(ZIP_ENTRY_ALTERNATIVE_ENCODING, "Cp437");
+                    List<Charset> charsets = new LinkedList<>();
+                    for (String c : StringUtils.split(encoding, " ,")) {
+                        try {
+                            charsets.add(Charset.forName(c));
+                        } catch (UnsupportedCharsetException e) {
+                            logger.warn(e.getMessage(), e);
+                        }
+                    }
+                    if (!charsets.contains(StandardCharsets.UTF_8)) {
+                        // first we try with UTF-8
+                        charsets.add(0, StandardCharsets.UTF_8);
+                    }
+                    charsetTryChain = charsets;
                 }
             }
-            if (!charsets.contains(StandardCharsets.UTF_8)) {
-                // first we try with UTF-8
-                charsets.add(0, StandardCharsets.UTF_8);
-            }
-            charsetTryChain = charsets;
         }
-
         return charsetTryChain;
     }
-
 }

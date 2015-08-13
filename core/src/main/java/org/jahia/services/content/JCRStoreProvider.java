@@ -137,9 +137,7 @@ import static org.apache.jackrabbit.core.security.JahiaLoginModule.SYSTEM;
 public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
-    private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
-
-    private static String httpPath;
+    private static final Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private boolean defaultProvider;
     private String key;
@@ -240,11 +238,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public String getHttpPath() {
-        if (httpPath == null) {
-            httpPath = Jahia.getContextPath() + "/files";
-        }
-
-        return httpPath;
+        return Jahia.getContextPath() + "/files";
     }
 
     public String getRepositoryName() {

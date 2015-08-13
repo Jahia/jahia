@@ -125,19 +125,7 @@ public final class Jahia {
     static public final String COPYRIGHT = "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
     static public final String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
 
-    static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS = "supported_jdk_versions";
     static private final Version JAHIA_VERSION;
-    static private final Logger logger = LoggerFactory.getLogger(Jahia.class);
-
-    static private String jahiaServletPath;
-    static private String jahiaContextPath;
-    static private int BUILD_NUMBER = -1;
-    static private int EE_BUILD_NUMBER = -1;
-    static private String EDITION;
-    static private String FULL_PRODUCT_VERSION;
-    static private String BUILD_DATE;
-    static private boolean maintenance = false;
-
     static {
         Version v = null;
         try {
@@ -147,111 +135,87 @@ public final class Jahia {
         JAHIA_VERSION = v != null ? v : new Version("7.0.0.0");
     }
 
-    /** Jahia server release number */
-    private static double RELEASE_NUMBER = -1.0;
-
-    public final static String VERSION = JAHIA_VERSION.getMajorVersion() + "." +
+    static public final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +
             JAHIA_VERSION.getMinorVersion() + "." +
             JAHIA_VERSION.getServicePackVersion() + "." +
             JAHIA_VERSION.getPatchVersion();
 
-    private static final int SERVICEPACK_NUMBER = JAHIA_VERSION.getServicePackVersion();
+    static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS = "supported_jdk_versions";
+    static private final Logger logger = LoggerFactory.getLogger(Jahia.class);
 
-    /** Jahia server patch number */
-    private static final int PATCH_NUMBER = JAHIA_VERSION.getPatchVersion();
+    static private String jahiaServletPath;
+    static private String jahiaContextPath;
+    static private boolean maintenance = false;
+    static private int buildNumber = -1;
+    static private int eeBuildNumber = -1;
+    static private String edition;
+    static private String buildDate;
 
     public static int getBuildNumber() {
-        if (BUILD_NUMBER == -1) {
+        if (buildNumber == -1) {
             synchronized (Jahia.class) {
-                if (BUILD_NUMBER == -1) {
-                    try {
-                        URL urlToVersionMarker = Jahia.class.getResource("/META-INF/jahia-impl-marker.txt");
-                        if (urlToVersionMarker != null) {
-                            InputStream in = Jahia.class.getResourceAsStream("/META-INF/jahia-impl-marker.txt");
-                            try {
-                                String buildNumber = IOUtils.toString(in);
-                                BUILD_NUMBER = Integer.parseInt(buildNumber);
-                            } finally {
-                                IOUtils.closeQuietly(in);
-                            }
-                        } else {
-                            BUILD_NUMBER = 0;
-                        }
-                    } catch (IOException ioe) {
-                        logger.error(ioe.getMessage(), ioe);
-                        BUILD_NUMBER = 0;
-                    } catch (NumberFormatException nfe) {
-                        logger.warn(nfe.getMessage());
-                        BUILD_NUMBER = 0;
-                    }
+                if (buildNumber == -1) {
+                    buildNumber = getBuildNumber("/META-INF/jahia-impl-marker.txt");
                 }
             }
         }
-        return BUILD_NUMBER;
+        return buildNumber;
     }
 
     public static String getBuildDate() {
-        if (BUILD_DATE == null) {
+        if (buildDate == null) {
             synchronized (Jahia.class) {
-                if (BUILD_DATE == null) {
+                if (buildDate == null) {
                     try {
                         URL urlToVersionMarker = Jahia.class.getResource("/META-INF/jahia-impl-marker.txt");
                         if (urlToVersionMarker != null) {
                             URLConnection conn = urlToVersionMarker.openConnection();
                             long lastModified = (conn instanceof JarURLConnection) ? ((JarURLConnection) conn).getJarEntry().getTime() : conn.getLastModified();
-                            BUILD_DATE = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH).format(new Date(lastModified));
+                            buildDate = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.ENGLISH).format(new Date(lastModified));
                         } else {
-                            BUILD_DATE = "";
+                            buildDate = "";
                         }
                     } catch (IOException ioe) {
                         logger.error(ioe.getMessage(), ioe);
-                        BUILD_DATE = "";
+                        buildDate = "";
                     }
                 }
             }
         }
-        return BUILD_DATE;
+        return buildDate;
     }
 
     public static int getEEBuildNumber() {
-        if (EE_BUILD_NUMBER == -1) {
+        if (eeBuildNumber == -1) {
             synchronized (Jahia.class) {
-                if (EE_BUILD_NUMBER == -1) {
-                    try {
-                        InputStream in = Jahia.class.getResourceAsStream("/META-INF/jahia-ee-impl-marker.txt");
-                        if (in != null) {
-                            try {
-                                String buildNumber = IOUtils.toString(in);
-                                EE_BUILD_NUMBER = Integer.parseInt(buildNumber);
-                            } finally {
-                                IOUtils.closeQuietly(in);
-                            }
-                        } else {
-                            EE_BUILD_NUMBER = 0;
-                        }
-                    } catch (IOException ioe) {
-                        logger.error(ioe.getMessage(), ioe);
-                        EE_BUILD_NUMBER = 0;
-                    } catch (NumberFormatException nfe) {
-                        logger.error(nfe.getMessage(), nfe);
-                        EE_BUILD_NUMBER = 0;
-                    }
+                if (eeBuildNumber == -1) {
+                    eeBuildNumber = getBuildNumber("/META-INF/jahia-ee-impl-marker.txt");
                 }
             }
         }
-        return EE_BUILD_NUMBER;
+        return eeBuildNumber;
     }
 
-    public static double getReleaseNumber() {
-        if (RELEASE_NUMBER == -1.0) {
-            String releaseNumberStr = JAHIA_VERSION.getMajorVersion() + "." + JAHIA_VERSION.getMinorVersion();
-            try {
-                RELEASE_NUMBER = Double.parseDouble(releaseNumberStr);
-            } catch (NumberFormatException nfe) {
-                RELEASE_NUMBER = 0.0;
+    public static int getBuildNumber(String markerFilePathName) {
+        int buildNumber = 0;
+        try {
+            InputStream in = Jahia.class.getResourceAsStream(markerFilePathName);
+            if (in != null) {
+                try {
+                    String number = IOUtils.toString(in);
+                    buildNumber = Integer.parseInt(number);
+                } finally {
+                    IOUtils.closeQuietly(in);
+                }
             }
+        } catch (IOException | NumberFormatException e) {
+            logger.error(e.getMessage(), e);
         }
-        return RELEASE_NUMBER;
+        return buildNumber;
+    }
+
+    public static String getReleaseNumber() {
+        return (JAHIA_VERSION.getMajorVersion() + "." + JAHIA_VERSION.getMinorVersion());
     }
 
     public static String getLicenseText() {
@@ -270,11 +234,11 @@ public final class Jahia {
     }
 
     public static int getPatchNumber() {
-        return PATCH_NUMBER;
+        return JAHIA_VERSION.getPatchVersion();
     }
 
     public static int getServicePackNumber() {
-        return SERVICEPACK_NUMBER;
+        return JAHIA_VERSION.getServicePackVersion();
     }
 
     public static void verifyJavaVersion(String supportedJDKVersions) throws JahiaInitializationException {
@@ -452,14 +416,14 @@ public final class Jahia {
     }
 
     public static String getEdition() {
-        if (EDITION == null) {
+        if (edition == null) {
             synchronized (Jahia.class) {
-                if (EDITION == null) {
-                    EDITION = Jahia.class.getResource("/META-INF/jahia-ee-impl-marker.txt") != null ? "EE" : "CE";
+                if (edition == null) {
+                    edition = (Jahia.class.getResource("/META-INF/jahia-ee-impl-marker.txt") != null ? "EE" : "CE");
                 }
             }
         }
-        return EDITION;
+        return edition;
     }
 
     public static boolean isEnterpriseEdition() {
@@ -472,20 +436,13 @@ public final class Jahia {
      * @return full product version string
      */
     public static String getFullProductVersion() {
-        if (FULL_PRODUCT_VERSION == null) {
-            synchronized (Jahia.class) {
-                if (FULL_PRODUCT_VERSION == null) {
-                    StringBuilder version = new StringBuilder(32);
-                    version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
-                            .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ")
-                            .append(Jahia.getBuildNumber());
-                    if (isEnterpriseEdition()) {
-                        version.append(".").append(Jahia.getEEBuildNumber());
-                    }
-                    FULL_PRODUCT_VERSION = version.toString();
-                }
-            }
+        StringBuilder version = new StringBuilder();
+        version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
+                .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ")
+                .append(Jahia.getBuildNumber());
+        if (isEnterpriseEdition()) {
+            version.append(".").append(Jahia.getEEBuildNumber());
         }
-        return FULL_PRODUCT_VERSION;
+        return version.toString();
     }
 }

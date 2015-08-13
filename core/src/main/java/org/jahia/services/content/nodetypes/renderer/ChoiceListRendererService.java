@@ -81,8 +81,13 @@ import java.util.Map;
  *        Created : 17 nov. 2009
  */
 public class ChoiceListRendererService {
+
     private Map<String, ChoiceListRenderer> renderers;
+
     private static ChoiceListRendererService instance;
+
+    private ChoiceListRendererService() {
+    }
 
     public Map<String, ChoiceListRenderer> getRenderers() {
         return renderers;
@@ -94,7 +99,11 @@ public class ChoiceListRendererService {
 
     public static ChoiceListRendererService getInstance() {
         if (instance == null) {
-            instance = new ChoiceListRendererService();
+            synchronized (ChoiceListRendererService.class) {
+                if (instance == null) {
+                    instance = new ChoiceListRendererService();
+                }
+            }
         }
         return instance;
     }

@@ -136,15 +136,111 @@ import java.util.*;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
-    private static final transient Logger logger = LoggerFactory.getLogger (SettingsBean.class);
-
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
+    private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
+    private static SettingsBean instance = null;
     private static File errorDir;
-
     private static File threadDir;
-
     private static File heapDir;
+
+    final private FastHashMap settings = new FastHashMap(); // The map holding all the settings.
+    private PathResolver pathResolver = null;
+    private String licenseFilename;
+    private String propertiesFileName;
+    private int buildNumber; // this is the famous build number...
+    private Properties properties;
+    private String classDiskPath;
+    private long jahiaFileUploadMaxSize; // this is the list of jahia.properties files values...
+    private boolean useRelativeSiteURLs; // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
+    private String defaultLanguageCode; // Default language code for multi-language system
+    private long jahiaJCRUserCountLimit = -1; // limit for reading JCR users (in administration)
+    private int mail_maxRegroupingOfPreviousException = 500;
+    private String characterEncoding;
+    private String tmpContentDiskPath;
+    private boolean isProcessingServer;
+    private int siteURLPortOverride = -1;
+    private boolean isSiteErrorEnabled;
+    private String operatingMode = "development";
+    private boolean productionMode = false;
+    private boolean distantPublicationServerMode = true;
+    private boolean considerPreferredLanguageAfterLogin;
+    private boolean considerDefaultJVMLocale;
+    private boolean permanentMoveForVanityURL = true;
+    private boolean dumpErrorsToFiles = true;
+    private int fileDumpMaxRegroupingOfPreviousException = 500;
+    private boolean useJstackForThreadDumps;
+    private boolean urlRewriteRemoveCmsPrefix;
+    private boolean urlRewriteSeoRulesEnabled;
+    private boolean urlRewriteUseAbsoluteUrls;
+    private ServerDeploymentInterface serverDeployer = null;
+    private boolean maintenanceMode;
+    private int sessionExpiryTime;
+    private ServletContext servletContext;
+    private Resource licenseFile;
+    private ApplicationContext applicationContext;
+    private List<String> licenseFileLocations;
+    private boolean disableJsessionIdParameter = true;
+    private String jsessionIdParameterName = "jsessionid";
+    private String guestUserResourceModuleName;
+    private String guestUserResourceKey;
+    private String guestGroupResourceModuleName;
+    private String guestGroupResourceKey;
+    private boolean fileServletStatisticsEnabled;
+    private Locale defaultLocale;
+    private int importMaxBatch;
+    private int maxNameSize;
+    private boolean expandImportedFilesOnDisk;
+    private String expandImportedFilesOnDiskPath;
+    private int accessManagerPathPermissionCacheMaxSize = 100;
+    private int queryApproxCountLimit;
+    private boolean readOnlyMode;
+    private DataSource dataSource;
+    private String internetExplorerCompatibility;
+    private boolean clusterActivated;
+    private boolean isMavenExecutableSet;
+    private String[] authorizedRedirectHosts;
+    private boolean useWebsockets = false;
+    private String atmosphereAsyncSupport;
+
+    // this is the list of jahia.properties server disk path and context path values...
+    private String server;
+    private String serverVersion;
+    private String serverHome;
+    private String jahiaEtcDiskPath;
+    private String jahiaVarDiskPath;
+    private String jahiaWebAppsDeployerBaseURL;
+    private String jahiaImportsDiskPath;
+    private String jahiaModulesDiskPath;
+    private String modulesSourcesDiskPath;
+    private String jahiaDatabaseScriptsPath;
+
+    /**
+     * @param   pathResolver a path resolver used to locate files on the disk.
+     * @param   propertiesFilename  The jahia.properties file complete path.
+     * @param   licenseFilename the name of the license file.
+     * @param   buildNumber The Jahia build number.
+     */
+    public SettingsBean(PathResolver pathResolver, String propertiesFilename, String licenseFilename, int buildNumber) {
+        this.pathResolver = pathResolver;
+        this.propertiesFileName = propertiesFilename;
+        this.buildNumber = buildNumber;
+        this.licenseFilename = licenseFilename;
+        instance = this;
+
+    }
+
+    public SettingsBean(PathResolver pathResolver, Properties props, List<String> licenseFileLocations) {
+        this.pathResolver = pathResolver;
+        this.properties = new Properties();
+        properties.putAll(props);
+        this.licenseFileLocations = licenseFileLocations;
+        instance = this;
+    }
+
+    public static SettingsBean getInstance() {
+        return instance;
+    }
 
     private static String ensureEndSlash(String path, boolean needsEndSlash) {
         char lastChar = path.charAt(path.length() - 1);
@@ -166,15 +262,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public static File getErrorDir() {
         if (errorDir == null) {
-            String dir = System.getProperty("jahia.error.dir");
-            if (dir != null) {
-                errorDir = new File(dir);
-            } else {
-                errorDir = new File(StringUtils.defaultIfEmpty(System.getProperty("jahia.log.dir"),
-                        System.getProperty("java.io.tmpdir")), "jahia-errors");
+            synchronized (SettingsBean.class) {
+                if (errorDir == null) {
+                    errorDir = getDirectory(new String[] {"jahia.error.dir", "jahia.log.dir", "java.io.tmpdir"}, "jahia-errors");
+                }
             }
         }
-
         return errorDir;
     }
 
@@ -220,15 +313,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public static File getThreadDir() {
         if (threadDir == null) {
-            String dir = System.getProperty("jahia.thread.dir");
-            if (dir != null) {
-                threadDir = new File(dir);
-            } else {
-                threadDir = new File(StringUtils.defaultIfEmpty(System.getProperty("jahia.log.dir"),
-                        System.getProperty("java.io.tmpdir")), "jahia-threads");
+            synchronized (SettingsBean.class) {
+                if (threadDir == null) {
+                    threadDir = getDirectory(new String[] {"jahia.thread.dir", "jahia.log.dir", "java.io.tmpdir"}, "jahia-threads");
+                }
             }
         }
-
         return threadDir;
     }
 
@@ -239,16 +329,24 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      */
     public static File getHeapDir() {
         if (heapDir == null) {
-            String dir = System.getProperty("jahia.heap.dir");
-            if (dir != null) {
-                heapDir = new File(dir);
-            } else {
-                heapDir = new File(StringUtils.defaultIfEmpty(System.getProperty("jahia.log.dir"),
-                        System.getProperty("java.io.tmpdir")), "jahia-heaps");
+            synchronized (SettingsBean.class) {
+                if (heapDir == null) {
+                    heapDir = getDirectory(new String[] {"jahia.heap.dir", "jahia.log.dir", "java.io.tmpdir"}, "jahia-heaps");
+                }
             }
         }
 
         return heapDir;
+    }
+
+    private static File getDirectory(String[] parentDirectorySystemProperties, String childDirectoryName) {
+        for (String parentDirectorySystemProperty : parentDirectorySystemProperties) {
+            String parentDirectoryName = System.getProperty(parentDirectorySystemProperty);
+            if (StringUtils.isNotEmpty(parentDirectoryName)) {
+                return new File(parentDirectoryName, childDirectoryName);
+            }
+        }
+        return new File(childDirectoryName);
     }
 
     private String interpolate(String source) {
@@ -257,47 +355,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 .resolvePlaceholders(source, true) : source;
     }
 
-    /** The map holding all the settings. */
-    final private FastHashMap settings = new FastHashMap ();
-
-    private PathResolver pathResolver = null;
-    private String licenseFilename;
-    private String propertiesFileName;
-    // this is the famous build number...
-    private int buildNumber;
-
-    private Properties properties;
-
-
-    // this is the list of jahia.properties server disk path and context path values...
-    private String server;
-    private String serverVersion;
-    private String serverHome;
-    private String jahiaEtcDiskPath;
-    private String jahiaVarDiskPath;
-    private String jahiaWebAppsDeployerBaseURL;
-    private String jahiaImportsDiskPath;
-    private String jahiaModulesDiskPath;
-    private String modulesSourcesDiskPath;
-    private String jahiaDatabaseScriptsPath;
-
     public String getJahiaDatabaseScriptsPath() {
         return jahiaDatabaseScriptsPath;
     }
-
-    private String classDiskPath;
-
-    // this is the list of jahia.properties files values...
-    private long jahiaFileUploadMaxSize;
-
-    // Activation / deactivation of relative URLs, instead of absolute URLs, when generating URL to exit the Admin Menu for example
-    private boolean useRelativeSiteURLs;
-
-    // Default language code for multi-language system
-    private String defaultLanguageCode;
-
-    //limit for reading JCR users (in administration)
-    private long jahiaJCRUserCountLimit = -1;
 
     public long getJahiaJCRUserCountLimit() {
         return jahiaJCRUserCountLimit;
@@ -305,125 +365,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setJahiaJCRUserCountLimit(long jahiaJCRUserCountLimit) {
         this.jahiaJCRUserCountLimit = jahiaJCRUserCountLimit;
-    }
-
-    // this is the list of jahia.properties mail settings values...
-    private int mail_maxRegroupingOfPreviousException = 500;
-
-    private String characterEncoding;
-
-    private String tmpContentDiskPath;
-    private boolean isProcessingServer;
-
-    private int siteURLPortOverride = -1;
-
-    private boolean isSiteErrorEnabled;
-
-    private String operatingMode = "development";
-    private boolean productionMode = false;
-    private boolean distantPublicationServerMode = true;
-
-    private static SettingsBean instance = null;
-    private boolean considerPreferredLanguageAfterLogin;
-
-    private boolean considerDefaultJVMLocale;
-
-    private boolean permanentMoveForVanityURL = true;
-
-    private boolean dumpErrorsToFiles = true;
-    private int fileDumpMaxRegroupingOfPreviousException = 500;
-    private boolean useJstackForThreadDumps;
-    private boolean urlRewriteRemoveCmsPrefix;
-    private boolean urlRewriteSeoRulesEnabled;
-    private boolean urlRewriteUseAbsoluteUrls;
-
-    private ServerDeploymentInterface serverDeployer = null;
-
-    private boolean maintenanceMode;
-
-    private int sessionExpiryTime;
-
-    private ServletContext servletContext;
-
-    private Resource licenseFile;
-
-    private ApplicationContext applicationContext;
-
-    private List<String> licenseFileLocations;
-
-    private boolean disableJsessionIdParameter = true;
-    private String jsessionIdParameterName = "jsessionid";
-
-    private String guestUserResourceModuleName;
-    private String guestUserResourceKey;
-
-    private String guestGroupResourceModuleName;
-    private String guestGroupResourceKey;
-
-    private boolean fileServletStatisticsEnabled;
-
-    private Locale defaultLocale;
-
-    private int importMaxBatch;
-    private int maxNameSize;
-
-    private boolean expandImportedFilesOnDisk;
-    private String expandImportedFilesOnDiskPath;
-
-    private int accessManagerPathPermissionCacheMaxSize = 100;
-
-    private int queryApproxCountLimit;
-
-    private boolean readOnlyMode;
-
-    private DataSource dataSource;
-
-    private String internetExplorerCompatibility;
-
-    private boolean clusterActivated;
-
-    private boolean isMavenExecutableSet;
-
-    private String[] authorizedRedirectHosts;
-
-    private boolean useWebsockets = false;
-
-    private String atmosphereAsyncSupport;
-
-    /**
-     * Default constructor.
-     *
-     * @param   pathResolver a path resolver used to locate files on the disk.
-     * @param   propertiesFilename  The jahia.properties file complete path.
-     * @param   licenseFilename the name of the license file.
-     * @param   buildNumber         The Jahia build number.
-     */
-    public SettingsBean (PathResolver pathResolver,
-                         String propertiesFilename,
-                         String licenseFilename,
-                         int buildNumber) {
-        //this.config = config;
-        //this.context = config.getServletContext ();
-        this.pathResolver = pathResolver;
-        this.propertiesFileName = propertiesFilename;
-        this.buildNumber = buildNumber;
-        this.licenseFilename = licenseFilename;
-        instance = this;
-
-    } // end constructor
-
-    public SettingsBean(PathResolver pathResolver,
-                        Properties props,
-                        List<String> licenseFileLocations) throws IOException {
-        this.pathResolver = pathResolver;
-        this.properties = new Properties();
-        properties.putAll(props);
-        this.licenseFileLocations = licenseFileLocations;
-        instance = this;
-    }
-
-    public static SettingsBean getInstance() {
-        return instance;
     }
 
     /**

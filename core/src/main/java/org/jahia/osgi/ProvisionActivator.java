@@ -71,11 +71,9 @@
  */
 package org.jahia.osgi;
 
-import org.jahia.services.SpringContextSingleton;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.startlevel.StartLevel;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
@@ -84,7 +82,6 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.ServletContext;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -98,7 +95,6 @@ public final class ProvisionActivator implements BundleActivator {
 
     private final ServletContext servletContext;
     private BundleContext bundleContext;
-    private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
 
     static private ProvisionActivator instance = null;
     private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
@@ -112,6 +108,7 @@ public final class ProvisionActivator implements BundleActivator {
         return instance;
     }
 
+    @Override
     public void start(BundleContext context) throws Exception {
 
         bundleContext = context;
@@ -139,57 +136,11 @@ public final class ProvisionActivator implements BundleActivator {
                 bundle.start();
             }
         }
-
-        //exposeBeansAsServices(context);
     }
 
-    private void exposeBeansAsServices(BundleContext context) {
-        long timer = System.currentTimeMillis();
-        int registered = 0;
-        String[] beanNames = SpringContextSingleton.getInstance().getContext().getBeanNamesForType(null, false, false);
-        for (String beanName : beanNames) {
-            try {
-                Object bean = SpringContextSingleton.getInstance().getContext().getBean(beanName);
-                List<String> classNames = new ArrayList<String>();
-                if (classNameAccessible(bean.getClass().getName())) {
-                    classNames.add(bean.getClass().getName());
-                    for (Class<?> classInterface : bean.getClass().getInterfaces()) {
-                        if (classNameAccessible(classInterface.getName())) {
-                            classNames.add(classInterface.getName());
-                        }
-                    }
-                    Hashtable<String, String> serviceProperties = new Hashtable<String, String>(1);
-                    serviceProperties.put("org.jahia.spring.bean.name", beanName);
-                    serviceRegistrations.add(context.registerService(classNames.toArray(new String[classNames.size()]), bean, serviceProperties));
-                    registered++;
-                    logger.debug("Registered bean {} as OSGi service under names: {}", beanName, classNames);
-                }
-            } catch (Exception t) {
-                logger.warn("Couldn't register bean " + beanName + " since it couldn't be retrieved: " + t.getMessage());
-            }
-        }
-        logger.info("Registered {} Spring beans as OSGi services in {} ms", registered,
-                (System.currentTimeMillis() - timer));
-    }
-
-    private boolean classNameAccessible(String classOrInterfaceName) {
-        if (classOrInterfaceName.startsWith("java.")) {
-            // we ignore all Java classes for the moment.
-            return false;
-        }
-        if (classOrInterfaceName.startsWith("org.apache.felix.framework.")) {
-            // we ignore all Felix framework classes for the moment.
-            return false;
-        }
-        // @todo implement import/export checks for accessibility here.
-        return true;
-    }
-
+    @Override
     public void stop(BundleContext context) throws Exception {
         bundleContext = null;
-        for (ServiceRegistration serviceRegistration : serviceRegistrations) {
-            serviceRegistration.unregister();
-        }
         servletContext.removeAttribute(BundleContext.class.getName());
         instance = null;
     }

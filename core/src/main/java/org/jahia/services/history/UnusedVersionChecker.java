@@ -98,37 +98,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for performing unused version check and cleanup.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class UnusedVersionChecker {
 
-    private static int loadVersionBundleBatchSize;
-
     private static final Logger logger = LoggerFactory.getLogger(UnusedVersionChecker.class);
 
-    private static Integer purgeVersionsBatchSize;
-
-    private int checkUnusedBatchSize;
-
-    private final boolean deleteUnused;
-
-    private boolean forceStop;
-
-    private final long maxUnused;
-
-    private final List<NodeId> nodesToCheck = new LinkedList<NodeId>();
-
-    private final OutWrapper out;
-
-    private BundleDbPersistenceManager persistenceManager;
-
     private final UnusedVersionCheckStatus status;
-
+    private final long maxUnused;
+    private final boolean deleteUnused;
+    private final OutWrapper out;
+    private final List<NodeId> nodesToCheck = new LinkedList<NodeId>();
     private final List<NodeId> unused = new LinkedList<NodeId>();
 
+    private boolean forceStop;
+    private BundleDbPersistenceManager persistenceManager;
+
     UnusedVersionChecker(UnusedVersionCheckStatus status, long maxUnused, boolean deleteUnused, OutWrapper out) {
-        super();
         this.status = status;
         this.maxUnused = maxUnused;
         this.deleteUnused = deleteUnused;
@@ -144,6 +131,7 @@ class UnusedVersionChecker {
                         (System.currentTimeMillis() - timer));
             }
             status.checked += nodesToCheck.size();
+            int purgeVersionsBatchSize = Integer.getInteger("org.jahia.services.history.purgeVersionsBatchSize", 100);
             for (Map.Entry<NodeId, Boolean> ref : existsReferencesToNodes.entrySet()) {
                 if (!ref.getValue()) {
                     status.orphaned++;
@@ -190,6 +178,7 @@ class UnusedVersionChecker {
     }
 
     private Map<NodeId, NodeInfo> getAllNodeInfos(NodeId bigger) {
+        int loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
         Map<NodeId, NodeInfo> batch = Collections.emptyMap();
         try {
             batch = persistenceManager.getAllNodeInfos(bigger, loadVersionBundleBatchSize);
@@ -199,21 +188,18 @@ class UnusedVersionChecker {
         return batch;
     }
 
-    private void initBatchSizeLimits() {
-        checkUnusedBatchSize = Integer.getInteger("org.jahia.services.history.checkUnusedBatchSize", 0);
-        if (checkUnusedBatchSize == 0) {
-            if (persistenceManager instanceof DerbyPersistenceManager) {
-                checkUnusedBatchSize = 100;
-            } else if (persistenceManager.getStorageModel() == BundleDbPersistenceManager.SM_LONGLONG_KEYS) {
-                checkUnusedBatchSize = 500;
-            } else {
-                checkUnusedBatchSize = 1000;
-            }
+    private int getCheckUnusedBatchSize() {
+        int checkUnusedBatchSize = Integer.getInteger("org.jahia.services.history.checkUnusedBatchSize", 0);
+        if (checkUnusedBatchSize != 0) {
+            return checkUnusedBatchSize;
         }
-
-        loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
-
-        purgeVersionsBatchSize = Integer.getInteger("org.jahia.services.history.purgeVersionsBatchSize", 100);
+        if (persistenceManager instanceof DerbyPersistenceManager) {
+            return 100;
+        } else if (persistenceManager.getStorageModel() == BundleDbPersistenceManager.SM_LONGLONG_KEYS) {
+            return 500;
+        } else {
+            return 1000;
+        }
     }
 
     private boolean isOlder(NodeInfo info, long purgeOlderThanTimestamp) {
@@ -242,6 +228,7 @@ class UnusedVersionChecker {
     }
 
     void perform(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+
         SessionImpl providerSession = (SessionImpl) session.getProviderSession(session.getNode("/").getProvider());
         InternalVersionManager vm = providerSession.getInternalVersionManager();
 
@@ -261,8 +248,6 @@ class UnusedVersionChecker {
 
         persistenceManager = (BundleDbPersistenceManager) pm;
 
-        initBatchSizeLimits();
-
         traverse(session, purgeOlderThanTimestamp);
 
         if (forceStop) {
@@ -277,6 +262,7 @@ class UnusedVersionChecker {
     }
 
     private void traverse(JCRSessionWrapper session, long purgeOlderThanTimestamp) throws RepositoryException {
+        int checkUnusedBatchSize = getCheckUnusedBatchSize();
         Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
         while (!batch.isEmpty()) {
             NodeId lastId = null;

@@ -95,10 +95,14 @@ import java.util.*;
  *
  */
 public class JCRCategoryProvider {
-    private transient static Logger logger = LoggerFactory
-            .getLogger(JCRCategoryProvider.class);
-    private transient JCRSessionFactory sessionFactory;
+
     private static JCRCategoryProvider mCategoryProvider;
+    private static final Logger logger = LoggerFactory.getLogger(JCRCategoryProvider.class);
+
+    private transient JCRSessionFactory sessionFactory;
+
+    private JCRCategoryProvider() {
+    }
 
     /**
      * Create an new instance of the Category provider if the instance do not exist, or return the existing instance.
@@ -107,7 +111,11 @@ public class JCRCategoryProvider {
      */
     public static JCRCategoryProvider getInstance() {
         if (mCategoryProvider == null) {
-            mCategoryProvider = new JCRCategoryProvider();
+            synchronized (JCRCategoryProvider.class) {
+                if (mCategoryProvider == null) {
+                    mCategoryProvider = new JCRCategoryProvider();
+                }
+            }
         }
         return mCategoryProvider;
     }
@@ -185,7 +193,7 @@ public class JCRCategoryProvider {
             if (!Constants.EDIT_WORKSPACE.equals(parentNodeWrapper.getSession().getWorkspace().getName())) {
                 parentNodeWrapper = jcrSessionWrapper.getNodeByIdentifier(parentNodeWrapper.getIdentifier());
             }
-            
+
             jcrSessionWrapper.checkout(parentNodeWrapper);
             final JCRNodeWrapper wrapper = parentNodeWrapper.addNode(key,
                     Constants.JAHIANT_CATEGORY);
@@ -284,8 +292,8 @@ public class JCRCategoryProvider {
         try {
             Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
             if (session.getWorkspace().getQueryManager() != null) {
-				StringBuilder query = new StringBuilder("SELECT * FROM ["
-				        + Constants.JAHIANT_CATEGORY + "] as cat WHERE localname(cat) = '");
+                StringBuilder query = new StringBuilder("SELECT * FROM ["
+                        + Constants.JAHIANT_CATEGORY + "] as cat WHERE localname(cat) = '");
                 query.append(JCRContentUtils.sqlEncode(categoryKey));
                 query.append("' ");
                 if (logger.isDebugEnabled()) {
@@ -317,7 +325,7 @@ public class JCRCategoryProvider {
         try {
             Session session = sessionFactory.getCurrentUserSession(Constants.LIVE_WORKSPACE);
             if (session.getWorkspace().getQueryManager() != null) {
-            	StringBuilder query = new StringBuilder("SELECT * FROM ["
+                StringBuilder query = new StringBuilder("SELECT * FROM ["
                         + Constants.JAHIANT_CATEGORY
                         + "] as cat WHERE localname(cat) LIKE '");
                 query.append(JCRContentUtils.sqlEncode(categoryKey));

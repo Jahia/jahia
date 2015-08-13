@@ -77,19 +77,22 @@ import java.net.URLEncoder;
 import org.apache.commons.lang.StringUtils;
 
 public class SearchURLService {
+
     private static SearchURLService instance;
 
     private SearchURLService() {
-        super();
     }
 
     public static SearchURLService getInstance() {
         if (instance == null) {
-            instance = new SearchURLService();
+            synchronized (SearchURLService.class) {
+                if (instance == null) {
+                    instance = new SearchURLService();
+                }
+            }
         }
         return instance;
     }
-
 
     public void addURLQueryParameter(AbstractHit<?> searchHit, String parameterName,
             String parameterValue) {

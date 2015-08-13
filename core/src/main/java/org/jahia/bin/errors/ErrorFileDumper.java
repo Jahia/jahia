@@ -219,7 +219,7 @@ public class ErrorFileDumper {
         }
     }
 
-    public static synchronized void start() {
+    public static void start() {
         if (isShutdown()) {
             executorService = Executors.newSingleThreadExecutor(new LowPriorityThreadFactory());
             System.out.println("Started error file dumper executor service");
@@ -230,7 +230,7 @@ public class ErrorFileDumper {
         shutdown(100L);
     }
 
-    public static synchronized void shutdown(long millisecondsToWait) {
+    public static void shutdown(long millisecondsToWait) {
         if (!isShutdown()) {
             System.out.println("Shutting down error file dumper executor service...");
             executorService.shutdown();
@@ -299,7 +299,11 @@ public class ErrorFileDumper {
 
         synchronized (ErrorFileDumper.class) {
 
-            if (previousException != null && exception != null && exception.toString().equals(previousException.toString())) {
+            if (previousException != null
+                    && exception != null
+                    && exception.getClass().equals(previousException.getClass()) // For performance reasons, to avoid unnecessary toString() invocations.
+                    && exception.toString().equals(previousException.toString())) {
+
                 previousExceptionOccurrences++;
                 SettingsBean settings = SettingsBean.getInstance();
                 if (settings != null && previousExceptionOccurrences < settings.getFileDumpMaxRegroupingOfPreviousException()) {

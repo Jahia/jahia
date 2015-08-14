@@ -398,7 +398,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return false;
     }
 
-    private AbstractFilter getExclusionFilter() {
+    private static AbstractFilter getExclusionFilter() {
         if (!exclusionFilterChecked) {
             synchronized (ModuleTag.class) {
                 if (!exclusionFilterChecked) {

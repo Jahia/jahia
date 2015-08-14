@@ -96,36 +96,24 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for performing orphaned version history check and cleanup.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 class OrphanedVersionHistoryChecker {
 
-    private static int loadVersionBundleBatchSize;
-
     private static final Logger logger = LoggerFactory.getLogger(OrphanedVersionHistoryChecker.class);
 
-    private int checkOrphanedBatchSize;
-
     private final boolean deleteOrphans;
-
-    private boolean forceStop;
-
     private final long maxOrphans;
-
     private final List<NodeId> nodesToCheck = new LinkedList<NodeId>();
-
     private final List<NodeId> orphans = new LinkedList<NodeId>();
-
     private final OutWrapper out;
-
-    private BundleDbPersistenceManager persistenceManager;
-
     private final OrphanedVersionHistoryCheckStatus status;
 
-    OrphanedVersionHistoryChecker(OrphanedVersionHistoryCheckStatus status, long maxOrphans, boolean deleteOrphans,
-            OutWrapper out) {
-        super();
+    private boolean forceStop;
+    private BundleDbPersistenceManager persistenceManager;
+
+    OrphanedVersionHistoryChecker(OrphanedVersionHistoryCheckStatus status, long maxOrphans, boolean deleteOrphans, OutWrapper out) {
         this.status = status;
         this.maxOrphans = maxOrphans;
         this.deleteOrphans = deleteOrphans;
@@ -186,6 +174,7 @@ class OrphanedVersionHistoryChecker {
     }
 
     private Map<NodeId, NodeInfo> getAllNodeInfos(NodeId bigger) {
+        int loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
         Map<NodeId, NodeInfo> batch = Collections.emptyMap();
         try {
             batch = persistenceManager.getAllNodeInfos(bigger, loadVersionBundleBatchSize);
@@ -195,19 +184,18 @@ class OrphanedVersionHistoryChecker {
         return batch;
     }
 
-    private void initBatchSizeLimits() {
-        checkOrphanedBatchSize = Integer.getInteger("org.jahia.services.history.checkOrphanedBatchSize", 0);
-        if (checkOrphanedBatchSize == 0) {
-            if (persistenceManager instanceof DerbyPersistenceManager) {
-                checkOrphanedBatchSize = 100;
-            } else if (persistenceManager.getStorageModel() == BundleDbPersistenceManager.SM_LONGLONG_KEYS) {
-                checkOrphanedBatchSize = 500;
-            } else {
-                checkOrphanedBatchSize = 1000;
-            }
+    private int getCheckOrphanedBatchSize() {
+        int checkOrphanedBatchSize = Integer.getInteger("org.jahia.services.history.checkOrphanedBatchSize", 0);
+        if (checkOrphanedBatchSize != 0) {
+            return checkOrphanedBatchSize;
         }
-
-        loadVersionBundleBatchSize = Integer.getInteger("org.jahia.services.history.loadVersionBundleBatchSize", 8000);
+        if (persistenceManager instanceof DerbyPersistenceManager) {
+            return 100;
+        } else if (persistenceManager.getStorageModel() == BundleDbPersistenceManager.SM_LONGLONG_KEYS) {
+            return 500;
+        } else {
+            return 1000;
+        }
     }
 
     void perform(JCRSessionWrapper session) throws RepositoryException {
@@ -230,8 +218,6 @@ class OrphanedVersionHistoryChecker {
 
         persistenceManager = (BundleDbPersistenceManager) pm;
 
-        initBatchSizeLimits();
-
         traverse(session);
 
         if (forceStop) {
@@ -246,6 +232,7 @@ class OrphanedVersionHistoryChecker {
     }
 
     private void traverse(JCRSessionWrapper session) throws RepositoryException {
+        int checkOrphanedBatchSize = getCheckOrphanedBatchSize();
         Map<NodeId, NodeInfo> batch = getAllNodeInfos(null);
         while (!batch.isEmpty()) {
             NodeId lastId = null;

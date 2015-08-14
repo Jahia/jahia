@@ -216,7 +216,7 @@ public abstract class Action {
         Set<Map.Entry<String, List<String>>> set = parameters.entrySet();
         for (Map.Entry<String, List<String>> entry : set) {
             String key = entry.getKey();
-            if (!Render.reservedParameters.contains(key)) {
+            if (!Render.RESERVED_PARAMETERS.contains(key)) {
                 List<String> values = entry.getValue();
                 ExtendedPropertyDefinition propertyDefinition = null;
                 propertyDefinition = newNode.getApplicablePropertyDefinition(key);

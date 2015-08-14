@@ -131,10 +131,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     protected static final String HEADER_IFMODSINCE = "If-Modified-Since";
     protected static final String HEADER_LASTMOD = "Last-Modified";
 
-    protected static final Set<String> reservedParameters;
-
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
-
     // Here we define the constants for the reserved keywords for post methods
     public static final String NODE_TYPE = "jcrNodeType";
     public static final String NODE_NAME = "jcrNodeName";
@@ -186,6 +182,38 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     public static final String PLUTO_ACTION = "ac";
     public static final String PLUTO_RESOURCE = "rs";
 
+    protected static final Set<String> RESERVED_PARAMETERS;
+    static {
+        RESERVED_PARAMETERS = new HashSet<String>();
+        RESERVED_PARAMETERS.add(NODE_TYPE);
+        RESERVED_PARAMETERS.add(NODE_NAME);
+        RESERVED_PARAMETERS.add(NODE_NAME_PROPERTY);
+        RESERVED_PARAMETERS.add(NEW_NODE_OUTPUT_FORMAT);
+        RESERVED_PARAMETERS.add(REDIRECT_TO);
+        RESERVED_PARAMETERS.add(METHOD_TO_CALL);
+        RESERVED_PARAMETERS.add(AUTO_CHECKIN);
+        RESERVED_PARAMETERS.add(CAPTCHA);
+        RESERVED_PARAMETERS.add(TARGETDIRECTORY);
+        RESERVED_PARAMETERS.add(TARGETNAME);
+        RESERVED_PARAMETERS.add(Constants.JCR_MIXINTYPES);
+        RESERVED_PARAMETERS.add(NORMALIZE_NODE_NAME);
+        RESERVED_PARAMETERS.add(VERSION);
+        RESERVED_PARAMETERS.add(SUBMIT);
+        RESERVED_PARAMETERS.add(AUTO_ASSIGN_ROLE);
+        RESERVED_PARAMETERS.add(PARENT_TYPE);
+        RESERVED_PARAMETERS.add(RETURN_CONTENTTYPE);
+        RESERVED_PARAMETERS.add(RETURN_CONTENTTYPE_OVERRIDE);
+        RESERVED_PARAMETERS.add(COOKIE_NAME);
+        RESERVED_PARAMETERS.add(COOKIE_VALUE);
+        RESERVED_PARAMETERS.add(COOKIE_PATH);
+        RESERVED_PARAMETERS.add(CONTRIBUTE_POST);
+        RESERVED_PARAMETERS.add(MARK_FOR_DELETION);
+        RESERVED_PARAMETERS.add(DISABLE_XSS_FILTERING);
+        RESERVED_PARAMETERS.add(ALLOWS_MULTIPLE_SUBMITS);
+    }
+
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Render.class);
+
     private transient String workspace;
     private transient MetricsLoggingService loggingService;
     private transient JahiaTemplateManagerService templateService;
@@ -200,41 +228,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient URLResolverFactory urlResolverFactory;
 
     private transient Integer sessionExpiryTime = null;
-    private static Integer cookieExpirationInDays = 1;
+    private Integer cookieExpirationInDays = 1;
 
     private Set<String> allowedMethods = new HashSet<String>();
 
-    static {
-        reservedParameters = new HashSet<String>();
-        reservedParameters.add(NODE_TYPE);
-        reservedParameters.add(NODE_NAME);
-        reservedParameters.add(NODE_NAME_PROPERTY);
-        reservedParameters.add(NEW_NODE_OUTPUT_FORMAT);
-        reservedParameters.add(REDIRECT_TO);
-        reservedParameters.add(METHOD_TO_CALL);
-        reservedParameters.add(AUTO_CHECKIN);
-        reservedParameters.add(CAPTCHA);
-        reservedParameters.add(TARGETDIRECTORY);
-        reservedParameters.add(TARGETNAME);
-        reservedParameters.add(Constants.JCR_MIXINTYPES);
-        reservedParameters.add(NORMALIZE_NODE_NAME);
-        reservedParameters.add(VERSION);
-        reservedParameters.add(SUBMIT);
-        reservedParameters.add(AUTO_ASSIGN_ROLE);
-        reservedParameters.add(PARENT_TYPE);
-        reservedParameters.add(RETURN_CONTENTTYPE);
-        reservedParameters.add(RETURN_CONTENTTYPE_OVERRIDE);
-        reservedParameters.add(COOKIE_NAME);
-        reservedParameters.add(COOKIE_VALUE);
-        reservedParameters.add(COOKIE_PATH);
-        reservedParameters.add(CONTRIBUTE_POST);
-        reservedParameters.add(MARK_FOR_DELETION);
-        reservedParameters.add(DISABLE_XSS_FILTERING);
-        reservedParameters.add(ALLOWS_MULTIPLE_SUBMITS);
-    }
-
     private transient ServletConfig servletConfig;
-
 
     /**
      * Returns the time the <code>HttpServletRequest</code> object was last modified, in milliseconds since midnight January 1, 1970 GMT. If
@@ -305,7 +303,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         doAction(req, resp, urlResolver, renderContext, null, defaultPutAction, toParameterMapOfListOfString(req));
     }
 
-    public static void addCookie(HttpServletRequest req, HttpServletResponse resp) {
+    public void addCookie(HttpServletRequest req, HttpServletResponse resp) {
         if (req.getParameter(COOKIE_NAME) != null && req.getParameter(COOKIE_VALUE) != null) {
             Cookie cookie = new Cookie(req.getParameter(COOKIE_NAME), req.getParameter(COOKIE_VALUE));
             cookie.setMaxAge(60 * 60 * 24 * cookieExpirationInDays);
@@ -432,7 +430,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             if (key != null) {
                 String[] parameterValues = (String[]) parameterMap.get(key);
                 List<String> stringList;
-                if (doXSSFilter && !reservedParameters.contains(key)) {
+                if (doXSSFilter && !RESERVED_PARAMETERS.contains(key)) {
                     stringList =  new ArrayList<String>();
                     for (String s : parameterValues) {
                         stringList.add(xssFilter(s));
@@ -1114,7 +1112,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public static Set<String> getReservedParameters() {
-        return reservedParameters;
+        return RESERVED_PARAMETERS;
     }
 
     /**
@@ -1139,7 +1137,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public void setCookieExpirationInDays(Integer cookieExpirationInDays) {
-        Render.cookieExpirationInDays = cookieExpirationInDays;
+        this.cookieExpirationInDays = cookieExpirationInDays;
     }
 
     public void setUrlResolverFactory(URLResolverFactory urlResolverFactory) {
@@ -1159,15 +1157,15 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     }
 
     public String getDefaultContentType(String templateType) {
-    	if(templateType != null && defaultContentType.get(templateType) != null) {
-		    return defaultContentType.get(templateType);
-    	}
-    	return "text/html; charset=UTF-8";
-	}
+        if(templateType != null && defaultContentType.get(templateType) != null) {
+            return defaultContentType.get(templateType);
+        }
+        return "text/html; charset=UTF-8";
+    }
 
-	public void setDefaultContentType(Map<String, String> defaultContentType) {
-		this.defaultContentType = defaultContentType;
-	}
+    public void setDefaultContentType(Map<String, String> defaultContentType) {
+        this.defaultContentType = defaultContentType;
+    }
 
     public SettingsBean getSettingsBean() {
         return settingsBean;

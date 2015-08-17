@@ -72,7 +72,6 @@
 package org.jahia.test.framework;
 
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.test.WebAppConfig;
 import org.jahia.test.utils.JahiaAdminUser;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
@@ -84,7 +83,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringInstanceTestClassRunner.class)
 @ContextConfiguration(
-        classes = WebAppConfig.class,
+        locations = { "classpath:/spring-test.xml" },
         initializers = JahiaWebInitializer.class
 )
 @WebAppConfiguration("./target/test-repo")

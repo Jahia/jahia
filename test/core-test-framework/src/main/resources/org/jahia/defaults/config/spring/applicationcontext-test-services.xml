@@ -11,4 +11,18 @@
         <constructor-arg value="org.jahia.services.applications.ApplicationsManagerService"/>        
     </bean>
 
+    <bean id="JahiaPreferencesService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.preferences.JahiaPreferencesService" />
+    </bean>
+    
+    <bean id="PortletDispatchingProvider" class="java.lang.Object" />
+    
+    <bean id="DispatchingService" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.applications.DispatchingServiceImpl" />
+    </bean>
+    
+    <bean id="ModuleBuildHelper" class="org.mockito.Mockito" factory-method="mock">
+        <constructor-arg value="org.jahia.services.templates.ModuleBuildHelper" />
+    </bean>    
+
 </beans>

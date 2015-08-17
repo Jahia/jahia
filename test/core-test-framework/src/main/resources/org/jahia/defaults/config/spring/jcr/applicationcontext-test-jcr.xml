@@ -18,4 +18,6 @@
     <bean name="nodeTypesDBService" class="org.mockito.Mockito" factory-method="mock">
         <constructor-arg value="org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl" />
     </bean>
+    
+    <bean id="org.jahia.services.content.rules.ImageService" class="java.lang.Object" />    
 </beans>

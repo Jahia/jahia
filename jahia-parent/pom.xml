@@ -170,6 +170,7 @@
         <jxr.plugin.version>2.3</jxr.plugin.version>
         <antrun.plugin.version>1.7</antrun.plugin.version>
         <surefire.plugin.version>2.18.1</surefire.plugin.version>
+        <failsafe.plugin.version>2.18.1</failsafe.plugin.version>
         <eclipse.plugin.version>2.9</eclipse.plugin.version>
         <nexus.maven.plugin.version>1.5.1</nexus.maven.plugin.version>
         <dependency.plugin.version>2.8</dependency.plugin.version>
@@ -711,6 +712,53 @@
                 </plugins>
             </build>
         </profile>        
+        <profile>
+            <id>integration-tests</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${failsafe.plugin.version}</version>
+                        <dependencies>
+                          <dependency>
+                            <groupId>org.apache.maven.surefire</groupId>
+                            <artifactId>surefire-testng</artifactId>
+                            <version>${surefire.plugin.version}</version>
+                          </dependency>
+                          <dependency>
+                            <groupId>org.jmockit</groupId>
+                            <artifactId>jmockit</artifactId>
+                            <version>${jmockit.version}</version>
+                          </dependency>                            
+                        </dependencies>                        
+                        <configuration>
+                            <argLine>-Xmx2048m -XX:MaxPermSize=320m</argLine>
+                            <skipTests>false</skipTests>
+                            <threadCount>1</threadCount>
+                            <includes>
+                                <include>**/*IT.java</include>
+                            </includes>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <goals>
+                                    <goal>integration-test</goal>
+                                </goals>
+                            </execution>
+                            <execution>
+                                <id>verify</id>
+                                <goals>
+                                    <goal>verify</goal>
+                                </goals>
+                            </execution>
+                        </executions>                        
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>        
+        
     </profiles>
 
     <distributionManagement>

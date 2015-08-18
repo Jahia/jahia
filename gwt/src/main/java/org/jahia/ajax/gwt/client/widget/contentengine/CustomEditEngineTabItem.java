@@ -1,5 +1,6 @@
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
+import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
 import com.google.gwt.core.client.JavaScriptObject;
@@ -87,12 +88,33 @@ public class CustomEditEngineTabItem extends EditEngineTabItem {
     @Override
     public void doSave(GWTJahiaNode node, List<GWTJahiaNodeProperty> changedProperties, Map<String, List<GWTJahiaNodeProperty>> changedI18NProperties, Set<String> addedTypes, Set<String> removedTypes, List<GWTJahiaNode> children, GWTJahiaNodeACL acl) {
         if (doSaveMethodName != null) {
-            Map<String,GWTJahiaNode> childrenMap = new HashMap<String, GWTJahiaNode>();
+            Map<String,GWTJahiaNode> childrenMap = new LinkedHashMap<String, GWTJahiaNode>();
             doCall(doSaveMethodName, getWriteOperations(node, changedProperties, changedI18NProperties, addedTypes, removedTypes, childrenMap));
             if (!childrenMap.isEmpty()) {
                 if (node != null) {
-                    for (GWTJahiaNode child : childrenMap.values()) {
-                        node.add(child);
+                    if(node.getChildren() != null && node.getChildren().size() > 0) {
+                        List<GWTJahiaNode> newChildren = new LinkedList<GWTJahiaNode>();
+                        for (ModelData child : node.getChildren()) {
+                            GWTJahiaNode alreadyExistChild = (GWTJahiaNode) child;
+                            if(childrenMap.get(alreadyExistChild.getUUID()) != null) {
+                                newChildren.add(childrenMap.get(alreadyExistChild.getUUID()));
+                                childrenMap.remove(alreadyExistChild.getUUID());
+                            } else {
+                                newChildren.add(alreadyExistChild);
+                            }
+                        }
+                        if (childrenMap.size() > 0) {
+                            for (GWTJahiaNode child : childrenMap.values()) {
+                                newChildren.add(child);
+                            }
+                        }
+                        for (GWTJahiaNode child : newChildren) {
+                            node.add(child);
+                        }
+                    } else {
+                        for (GWTJahiaNode child : childrenMap.values()) {
+                            node.add(child);
+                        }
                     }
                     node.set(GWTJahiaNode.INCLUDE_CHILDREN, Boolean.TRUE);
                 } else {

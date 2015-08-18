@@ -89,8 +89,8 @@ import org.testng.annotations.*;
  * @author Sergiy Shyrkov
  */
 
-public class TaggingTest extends AbstractTestNGTest {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingTest.class);
+public class TaggingIT extends AbstractTestNGTest {
+    private static Logger logger = org.slf4j.LoggerFactory.getLogger(TaggingIT.class);
 
     private final static String TESTSITE_NAME = "taggingTest";
 

@@ -1,0 +1,202 @@
+<test = 'http://www.apache.org/jackrabbit/test'>
+<nt = 'http://www.jcp.org/jcr/nt/1.0'>
+<mix='http://www.jcp.org/jcr/mix/1.0'>
+<jmix = 'http://www.jahia.org/jahia/mix/1.0'>
+<jnt = 'http://www.jahia.org/jahia/nt/1.0'>
+
+[test:emptyNodeType] > nt:base 
+
+[test:mixinNodeType]
+  mixin
+
+[test:orderedNodeType] > nt:base
+  orderable
+
+[test:itemNodeType] > nt:base
+- * (string) queryops '=,<>,<,<=,>,>='
+- test:emptyItem (string) queryops '=,<>,<,<=,>,>='
+- test:autoCreatedItem (string) = 'defvalue' autocreated queryops '=,<>,LIKE'
+- test:mandatoryItem (string) mandatory
+- test:copyItem (string) copy
+- test:versionItem (string) version
+- test:initializeItem (string) initialize 
+- test:computeItem (string) compute
+- test:abortItem (string) abort
+- test:protectedItem (string) protected
+
+[test:propertyNodeType] > nt:base
+- test:emptyProperty (string)
+- test:binaryProperty (binary) < '[0,)'
+- test:booleanProperty (boolean) = true < true, false 
+- test:dateProperty (date) = '2005-01-01T00:00:00.000Z' < '[2005-01-01T00:00:00.000Z,2006-01-01T00:00:00.000Z)'
+- test:doubleProperty (double) = '1.5' nofulltext queryops '=,<>,>,>=,<,<=' < '[,0.0)', '(1.0,2.0)', '(3.0,]'
+- test:longProperty (long) = 25 nofulltext < '(-10,0]', '[1,2]', '[10,100)'
+- test:nameProperty (name) = 'test:testName' nofulltext < 'test:testName'
+- test:pathProperty (path) nofulltext < '/test:testPath'
+- test:pathProperty1 (path) nofulltext < '/test:testPath/*'
+- test:pathProperty2 (path) nofulltext < 'test:testPath/*'
+- test:referenceProperty (reference) nofulltext < 'nt:base'
+- test:stringProperty (string) = 'banana','bananas' multiple nofulltext < 'bananas?'
+- test:multipleProperty (string) multiple nofulltext
+
+[test:childNodeType] > nt:base
++ test:emptyNode (nt:base)
++ test:siblingNode (nt:base) multiple
++ test:defaultTypeNode (nt:base) = nt:base
++ test:requiredTypeNode (nt:base, nt:unstructured)
+
+[test:versionable] > nt:base, mix:versionable
+- * (undefined) copy
+- test:copyOnParentVersionProp (string) copy
+- test:versionOnParentVersionProp (string) version
+- test:initializeOnParentVersionProp (string) initialize
+- test:computeOnParentVersionProp (string) compute
+- test:ignoreOnParentVersionProp (string) ignore
+- test:abortOnParentVersionProp (string) abort
++ * (nt:base) = test:versionable copy
++ test:copyOnParentVersion (nt:base) = nt:unstructured copy
++ test:versionOnParentVersion (nt:base) = nt:unstructured version
++ test:initializeOnParentVersion (nt:base) = nt:unstructured initialize
++ test:computeOnParentVersion (nt:base) = nt:unstructured compute
++ test:ignoreOnParentVersion (nt:base) = nt:unstructured ignore
++ test:abortOnParentVersion (nt:base) = nt:unstructured abort
+
+[test:refTargetNode] > nt:base, mix:versionable
+- * (undefined) copy
+
+[test:canSetProperty] > nt:base
+- String (string) copy
+- StringMultiple (string) copy multiple
+- StringConstraints (string) copy < 'abc', 'def', 'ghi'
+- StringMultipleConstraints (string) copy multiple < 'abc', 'def', 'ghi'
+- Binary (binary) copy
+- BinaryMultiple (binary) copy multiple
+- BinaryConstraints (binary) copy < '(,100)'
+- BinaryMultipleConstraints (binary) copy < '(,100)'
+- Date (date) copy
+- DateMultiple (date) copy multiple
+- DateConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- DateMultipleConstraints (date) copy < '(1974-02-15T00:00:00.000Z,)'
+- Double (double) copy
+- DoubleMultiple (double) copy multiple
+- DoubleConstraints (double) copy < '(100,)'
+- DoubleMultipleConstraints (double) copy < '(,100)'
+- Long (long) copy
+- LongMultiple (long) copy multiple
+- LongConstraints (long) copy < '(100,)'
+- LongMultipleConstraints (long) copy < '(,100)'
+- Boolean (boolean) copy
+- BooleanMultiple (boolean) copy multiple
+- BooleanConstraints (boolean) copy < true
+- BooleanMultipleConstraints (boolean) copy < true
+- Name (name) copy
+- NameMultiple (name) copy multiple
+- NameConstraints (name) copy < 'abc'
+- NameMultipleConstraints (name) copy < 'abc'
+- Path (path) copy
+- PathMultiple (path) copy multiple
+- PathConstraints (path) copy < '/abc'
+- PathMultipleConstraints (path) copy < '/abc'
+- ReferenceConstraints (reference) copy < test:canSetProperty
+- ReferenceMultipleConstraints (reference) copy < test:canSetProperty
+
+[test:canAddChildNode] > nt:base
++ testChildWithDefaultType (nt:base) = nt:base copy
++ testChildWithoutDefaultType (nt:base) copy
+
+[test:setProperty] > nt:base, mix:referenceable
+- * (undefined) copy
+- test:multiProperty (undefined) copy multiple
++ * (nt:base) = test:setProperty copy 
+
+[test:setPropertyAssumingType] > nt:base
+- test:singleProperty (undefined) copy
+- test:multipleProperty (undefined) copy multiple
++ * (nt:base) = test:setPropertyAssumingType copy
+
+[test:sameNameSibsFalseChildNodeDefinition] > nt:base
+- * (undefined) copy
++ * (nt:base) = test:sameNameSibsFalseChildNodeDefinition compute
+
+[test:externalReference] > nt:base, jmix:droppableContent
+- test:simpleNode (reference)     
+- test:multipleI18NNode (reference) multiple i18n
+
+[test:externalWeakReference] > nt:base, jmix:droppableContent
+- test:simpleNode (weakreference)
+- test:multipleNode (weakreference) multiple
+- test:multipleI18NNode (weakreference) multiple i18n
+
+[test:validatedNode] > nt:base, jmix:droppableContent
+- test:notNull (string)
+- test:sizeBetween6And20 (string)
+- test:email (string)
+- test:confirmEmail (string)
+- test:futureDate (date)
+- test:greaterThan2 (long)
+
+//---------------------------------------------------------
+// Dynamic value tests (default value initializers with autocreated)
+//---------------------------------------------------------
+[test:emptyContent] > jnt:content, jmix:droppableContent
+
+[test:dynamicValuesTest] > jnt:content, jmix:droppableContent
+ - propertyText (string) = 'Text plain' autocreated
+ - propertyTextI18n (string) = 'Text i18n' autocreated i18n
+ - propertyLong (long) = 12 autocreated
+ - propertyDouble (double) = 12.28 autocreated
+ - propertyDate (date) = '1979-05-09T06:30:00.000Z' autocreated
+ - propertyNow (date) = now() autocreated
+ - propertyTomorrow (date) = now('1000*60*60*24') autocreated
+ - propertyCurrentUser (string) = currentUser() autocreated
+ - propertyResourceBundleShared (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
+ - propertyResourceBundleI18n (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
+ 
+
+[test:dynamicValuesTestMixin] mixin
+ - propertyTextMixin (string) = 'Text plain' autocreated
+ - propertyTextI18nMixin (string) = 'Text i18n' autocreated i18n
+ - propertyLongMixin (long) = 12 autocreated
+ - propertyDoubleMixin (double) = 12.28 autocreated
+ - propertyDateMixin (date) = '1979-05-09T06:30:00.000Z' autocreated
+ - propertyNowMixin (date) = now() autocreated
+ - propertyTomorrowMixin (date) = now('1000*60*60*24') autocreated
+ - propertyCurrentUserMixin (string) = currentUser() autocreated
+ - propertyResourceBundleSharedMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.1') autocreated
+ - propertyResourceBundleI18nMixin (string) = resourceBundle('test_dynamicValuesTest.rb.i18n.2') autocreated i18n
+//---------------------------------------------------------
+
+[test:fieldsWithIndexOptions] > jnt:content, jmix:droppableContent
+- untokenizedDate (date) indexed='untokenized' scoreboost=1 analyzer='keyword'
+- scoreboostedDate (date) indexed='untokenized' scoreboost=6 analyzer='keyword'
+- untokenizedLong (long) indexed='untokenized' analyzer='keyword'
+- simpleSmallText (string) analyzer='simple'
+- nonIndexedSmallText (string) indexed='no'
+- nofulltextSmallText (string) nofulltext
+- scoreboostedSmallText (string) scoreboost=5
+- sortableFloat (double) sortable
+
+[jnt:event] > jnt:content, jmix:editorialContent, mix:title, jmix:structuredContent
+ - startDate (date) facetable
+ - endDate (date) facetable
+ - location (string) i18n facetable
+ - eventsType (string, choicelist[resourceBundle]) facetable  < meeting,consumerShow,roadShow,conference,show,pressConference
+ - body (string, richtext) i18n
+
+[jnt:news] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
+ - jcr:title (string) mandatory internationalized
+ - desc (string, richtext) internationalized
+ - image (weakreference, picker[type='image'])
+ - date (date) = now()
+ 
+ [jmix:sitemap] mixin
+ extends = jnt:content, jnt:page
+ itemtype = options
+ - changefreq (string,choicelist[resourceBundle]) = 'monthly' autocreated nofulltext < 'always','hourly','daily','monthly','yearly','never'
+ - priority (string,choicelist) = '0.5' autocreated nofulltext < '0.0','0.1','0.2','0.3','0.4','0.5','0.6','0.7','0.8','0.9','1.0'
+ 
+ [jnt:press] > jnt:content, mix:title, jmix:editorialContent, jmix:structuredContent
+ - body (string, richtext) i18n
+ - date (date)
+ - pdfVersion (weakreference, picker[type='file']) i18n
+ 

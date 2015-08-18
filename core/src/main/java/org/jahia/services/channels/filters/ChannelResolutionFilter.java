@@ -119,7 +119,7 @@ public class ChannelResolutionFilter extends AbstractFilter {
         }
 
         if (!StringUtils.isEmpty(context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER))
-                && !Constants.LIVE_WORKSPACE.equals(context.getWorkspace().toString())) {
+                && !Constants.LIVE_WORKSPACE.equals(context.getWorkspace())) {
             String activeChannel = context.getRequest().getParameter(ACTIVE_CHANNEL_QUERY_PARAMETER);
             Channel resolvedChannel = channelService.getChannel(activeChannel);
             if (resolvedChannel != null) {

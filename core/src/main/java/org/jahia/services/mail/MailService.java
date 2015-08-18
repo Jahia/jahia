@@ -188,7 +188,7 @@ public abstract class MailService extends JahiaService {
      *         are valid
      */
     public boolean isEnabled() {
-        return getSettings().isServiceActivated()
+        return getSettings() != null && getSettings().isServiceActivated()
                 && getSettings().isConfigurationValid();
     }
 

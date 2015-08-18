@@ -550,7 +550,7 @@ public class AclListener extends DefaultEventListener {
         }
 
         JCRNodeWrapper p = getPrincipal(ace.getResolveSite().getSiteKey(), principal);
-        if (p == null || (!p.getResolveSite().getSiteKey().equals("systemsite") && !p.getResolveSite().getSiteKey().equals(refNode.getResolveSite().getSiteKey()))) {
+        if (p == null || p.getResolveSite() == null || (!p.getResolveSite().getSiteKey().equals("systemsite") && !p.getResolveSite().getSiteKey().equals(refNode.getResolveSite().getSiteKey()))) {
             return;
         }
 

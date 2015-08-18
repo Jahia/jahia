@@ -208,8 +208,10 @@ public final class Jahia {
                     IOUtils.closeQuietly(in);
                 }
             }
-        } catch (IOException | NumberFormatException e) {
+        } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        } catch (NumberFormatException nfe) {
+            logger.warn(nfe.getMessage());
         }
         return buildNumber;
     }

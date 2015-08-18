@@ -135,7 +135,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     public static final String CHECK_VISIBILITY = "_:CHECK_VISIBILITY".intern();
 
-    private static final Name J_EXTACTED_TEXT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "extractedText");
+    private static final Name J_EXTRACTED_TEXT = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "extractedText");
 
     public static final Name J_VISIBILITY = NameFactoryImpl.getInstance().create(Constants.JAHIA_NS, "conditionalVisibility");
 
@@ -618,8 +618,8 @@ public class JahiaNodeIndexer extends NodeIndexer {
             }
             long timer = System.currentTimeMillis();
             String value = internalValue.getString();
-            addStringValue(doc, fieldName, value, true, isIncludedInNodeIndex(J_EXTACTED_TEXT),
-                    getPropertyBoost(J_EXTACTED_TEXT), useInExcerpt(J_EXTACTED_TEXT));
+            addStringValue(doc, fieldName, value, true, isIncludedInNodeIndex(J_EXTRACTED_TEXT),
+                    getPropertyBoost(J_EXTRACTED_TEXT), useInExcerpt(J_EXTRACTED_TEXT));
             if (logger.isDebugEnabled()) {
                 logger.debug("Indexed j:extractedText of length {} in {} ms", value.length(), System.currentTimeMillis()
                         - timer);

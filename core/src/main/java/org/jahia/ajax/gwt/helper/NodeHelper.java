@@ -851,10 +851,12 @@ class NodeHelper {
     private void populateSiteInfo(GWTJahiaNode n, JCRNodeWrapper node) {
         try {
             JCRSiteNode site = node.getResolveSite();
-            n.setSiteUUID(site.getUUID());
-            n.setSiteKey(site.getSiteKey());
-            if (site.getTemplatePackage() != null) {
-                n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
+            if (site != null) {
+                n.setSiteUUID(site.getUUID());
+                n.setSiteKey(site.getSiteKey());
+                if (site.getTemplatePackage() != null) {
+                    n.set(GWTJahiaNode.EDIT_MODE_BLOCKED, site.getTemplatePackage().isEditModeBlocked());
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Error when getting sitekey", e);
@@ -1020,11 +1022,11 @@ class NodeHelper {
     private void populateWCAG(GWTJahiaNode n, JCRNodeWrapper node) {
         // WCAG checks
         try {
-            n.setWCAGComplianceCheckEnabled(node.getResolveSite().hasProperty(
-                    SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
-                    && node.getResolveSite()
-                    .getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
-                    .getBoolean());
+            JCRSiteNode site = node.getResolveSite();
+            if (site != null) {
+                n.setWCAGComplianceCheckEnabled(site.hasProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED)
+                        && site.getProperty(SitesSettings.WCAG_COMPLIANCE_CHECKING_ENABLED).getBoolean());
+            }
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }

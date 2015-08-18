@@ -73,6 +73,7 @@ package org.jahia.test.framework;
 
 import java.io.OutputStream;
 
+import org.jahia.bin.Jahia;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
 
@@ -96,5 +97,7 @@ public class SetDefaultsTestExecutionListener extends
         if (System.getProperty("derby.stream.error.field") == null) {
             System.setProperty("derby.stream.error.field", this.getClass().getCanonicalName() + ".DEV_NULL");
         }
+        
+        Jahia.setContextPath("");
     }
 }

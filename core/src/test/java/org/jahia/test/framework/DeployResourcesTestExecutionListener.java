@@ -87,6 +87,9 @@ import javax.jcr.RepositoryException;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -124,8 +127,20 @@ public class DeployResourcesTestExecutionListener extends
 
         importXmlFiles(MAIN_META_INF);
         importXmlFiles(TEST_META_INF);
+        
+        startSchedulers();
     }
-
+    
+    private void startSchedulers() {
+        try {
+            // start schedulers
+            ServicesRegistry.getInstance().getSchedulerService().startSchedulers();
+        } catch (JahiaInitializationException e) {
+            LOGGER.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        }
+    }
+    
     private void addCndFiles(String resourcePath, String systemId)
             throws Exception {
         for (File cndFile : listFiles(resourcePath, "*.cnd")) {

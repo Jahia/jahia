@@ -125,7 +125,7 @@ public class CSSChannelFilter implements Filter {
             	//Check if it is a JCR resource (because it cannot read as resource from servletContext)
             	try {
             		String workspace = (String)((HttpServletRequest) request).getSession().getAttribute("workspace");
-            		if (uri.contains(FILES_SERVLET_PATH + workspace)) {
+            		if (uri.startsWith(Jahia.getContextPath() + FILES_SERVLET_PATH + workspace)) {
             			JCRNodeWrapper node = JCRSessionFactory.getInstance().getCurrentUserSession().getNode(uri.substring(uri.indexOf(FILES_SERVLET_PATH + workspace) + FILES_SERVLET_PATH.length() + workspace.length()));
             			if (node.hasNode("jcr:content")) {
             				readStream = node.getNode("jcr:content").getProperty("jcr:data").getBinary().getStream();

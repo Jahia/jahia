@@ -374,7 +374,18 @@ public class FacetHandler {
                 FacetField f = new FacetField(key);
                 if(!fieldTypeMap.containsKey(key)) {
                     try {
-                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(solrParams.get("f." + key + "#" + fieldTypeMap.size() + ".facet.nodetype")).getPropertyDefinition(key);
+                        //Find a key like f.field_name#unknownumber.facet.nodetype
+                        Pattern facetNodetype = Pattern.compile("f\\." + key + "#[0-9]+\\.facet\\.nodetype");
+                        String nodetypeName = null;
+                        Iterator<String> parameterNamesIterator = solrParams.getParameterNamesIterator();
+                        while (parameterNamesIterator.hasNext()) {
+                            String next = parameterNamesIterator.next();
+                            if (facetNodetype.matcher(next).matches()) {
+                                nodetypeName = solrParams.get(next);
+                                break;
+                            }
+                        }
+                        ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(nodetypeName).getPropertyDefinition(key);
                         fieldTypeMap.put(key, getType(epd));
                     } catch (NoSuchNodeTypeException e) {
                         log.error(e.getMessage(), e);

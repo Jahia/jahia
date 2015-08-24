@@ -160,10 +160,17 @@ public class ContentTest {
         for (String providerRoot : mountPoints.keySet()) {
             if (providerRoot.equals("/")) {
                 providerRoot = "/sites/systemsite";
+<<<<<<< .working
             } else if (providerRoot.startsWith("/modules/")
                     || providerRoot.startsWith("/external-")
                     || providerRoot.startsWith("/users")
                     || providerRoot.startsWith("/groups")) {
+=======
+            } else if (providerRoot.startsWith("/modules/") 
+                    || "/external-writeable-database-mapped".equals(providerRoot)
+                    || "/external-database-mapped".equals(providerRoot)
+                    || "/external-database-generic".equals(providerRoot)) {
+>>>>>>> .merge-right.r52859
                 continue;
             }
             Object[] parameter = new Object[1];
@@ -365,7 +372,7 @@ public class ContentTest {
 
         try {
             testCollection.setProperty("jcr:description", value);
-            testCollection.save();
+            testCollection.getSession().save();
         } catch (ConstraintViolationException e) {
             return;
         }
@@ -546,7 +553,7 @@ public class ContentTest {
 
         if (testFile.isNodeType("jmix:lockable")) {
             boolean result = testFile.lockAndStoreToken("user");
-            testFile.save();
+            testFile.getSession().save();
 
             assertTrue(providerRoot + " : lockAndStoreToken returned false",
                     result);

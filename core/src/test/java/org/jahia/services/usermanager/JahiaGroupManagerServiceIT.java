@@ -97,7 +97,7 @@ public class JahiaGroupManagerServiceIT extends AbstractJUnitTest {
 
     private static JCRUserNode user1;
     private static JCRUserNode user2;
-
+    
     @Override
     public void beforeClassSetup() throws Exception {
         super.beforeClassSetup();
@@ -112,6 +112,7 @@ public class JahiaGroupManagerServiceIT extends AbstractJUnitTest {
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null);
         user1 = userManager.createUser("test-user1", "password", new Properties(), session);
         user2 = userManager.createUser("test-user2", "password", new Properties(), session);
+        groupManager.createGroup(null, "test-group-escaping", null, false, session);
         session.save();
     }
 
@@ -135,6 +136,12 @@ public class JahiaGroupManagerServiceIT extends AbstractJUnitTest {
         if (group != null) {
             groupManager.deleteGroup(group.getPath(), session);
         }
+        
+        group = groupManager.lookupGroup(null, "test-group-escaping");
+        if (group != null) {
+            groupManager.deleteGroup(group.getPath(), session);
+        }
+        
         session.save();
         JCRSessionFactory.getInstance().closeAllSessions();
     }
@@ -216,5 +223,21 @@ public class JahiaGroupManagerServiceIT extends AbstractJUnitTest {
         groupManager.deleteGroup(group1.getPath(), session);
 
         session.save();
+    }
+
+    @Test
+    public void testLookupEscaping() {
+        assertNull("Lookup for user by name with SQL injection is possible",
+                userManager.lookupUser("qqq' OR localname()='" + user1.getName()));
+
+        // this should not produce the IllegalQueryException
+        userManager.lookupUser("qzutuzt", "a'b");
+
+        
+        assertNull("Lookup for group by name with SQL injection is possible",
+                groupManager.lookupGroup(null, "qqq' OR localname()='test-group-escaping"));
+
+        // this should not produce the IllegalQueryException
+        groupManager.lookupGroup("a'b", "test-group-escaping");
     }
 }

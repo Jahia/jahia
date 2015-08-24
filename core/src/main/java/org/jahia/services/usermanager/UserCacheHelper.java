@@ -82,6 +82,7 @@ import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.sites.JahiaSitesService;
@@ -180,10 +181,10 @@ public class UserCacheHelper {
 
     private String internalGetUserPath(String name, String siteName) throws RepositoryException {
         StringBuilder q = new StringBuilder();
-        q.append("SELECT [j:nodename] from [jnt:user] where localname()='").append(name)
+        q.append("SELECT [j:nodename] from [jnt:user] where localname()='").append(JCRContentUtils.sqlEncode(name))
                 .append("' and isdescendantnode('");
         if (siteName != null) {
-            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(siteName);
+            q.append(JahiaSitesService.SITES_JCR_PATH + "/").append(JCRContentUtils.sqlEncode(siteName));
         }
         q.append("/users/')");
         String p = queryUserPathInWorkspace(q, Constants.LIVE_WORKSPACE);

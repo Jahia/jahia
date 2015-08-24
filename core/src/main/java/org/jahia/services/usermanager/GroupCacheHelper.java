@@ -87,6 +87,7 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
+import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -219,9 +220,9 @@ public class GroupCacheHelper {
     private String internalGetGroupPath(String siteKey, String name) throws RepositoryException {
         StringBuilder buff = new StringBuilder();
         buff.append("SELECT [j:nodename] FROM [" + Constants.JAHIANT_GROUP + "] as group where localname()='")
-                .append(name).append("' ");
+                .append(JCRContentUtils.sqlEncode(name)).append("' ");
         if (siteKey != null) {
-            buff.append("and isdescendantnode(group,'/sites/").append(siteKey).append("/groups')");
+            buff.append("and isdescendantnode(group,'/sites/").append(JCRContentUtils.sqlEncode(siteKey)).append("/groups')");
         } else {
             buff.append("and isdescendantnode(group,'/groups')");
         }

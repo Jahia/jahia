@@ -90,7 +90,7 @@ public class WorkInProgressButtonItem implements ButtonItem {
     public BoxComponent create(final AbstractContentEngine engine) {
 
         final CheckboxWorkInProgress checkbox = new CheckboxWorkInProgress();
-
+        engine.setWorkInProgressCheckedByDefault(checkedByDefault);
         checkbox.addListener(Events.Change, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent event) {
                 engine.setWorkInProgress(checkbox.getValue());

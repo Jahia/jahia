@@ -109,7 +109,6 @@ public class CreateContentEngine extends AbstractContentEngine {
     protected GWTJahiaNodeType type = null;
     protected String targetName = null;
     protected boolean createInParentAndMoveBefore = false;
-    private List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
 
     private int childCount;
     private int listLimit;
@@ -196,6 +195,10 @@ public class CreateContentEngine extends AbstractContentEngine {
      * @param previous
      */
     protected void onLanguageChange(GWTJahiaLanguage previous) {
+
+        if (!changedI18NProperties.containsKey(language.getLanguage())) {
+            setWorkInProgress(workInProgressCheckedByDefault);
+        }
         if (previous != null) {
             final String lang = previous.getLanguage();
             for (TabItem item : tabs.getItems()) {
@@ -209,6 +212,7 @@ public class CreateContentEngine extends AbstractContentEngine {
             }
         }
         fillCurrentTab();
+        refreshButtons();
     }
 
 
@@ -238,7 +242,10 @@ public class CreateContentEngine extends AbstractContentEngine {
 
                 nodeName = result.getDefaultName();
 
+                setWorkInProgress(workInProgressCheckedByDefault);
+
                 fillCurrentTab();
+                refreshButtons();
 
                 loaded();
             }

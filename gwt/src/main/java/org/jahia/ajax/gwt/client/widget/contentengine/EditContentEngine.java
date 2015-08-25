@@ -112,8 +112,6 @@ public class EditContentEngine extends AbstractContentEngine {
     private String contentPath;
     private HandlerRegistration handlerRegistration;
 
-    private List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
-
     private Map<String, GWTJahiaGetPropertiesResult> langCodeGWTJahiaGetPropertiesResultMap =
             new HashMap<String, GWTJahiaGetPropertiesResult>();
     private boolean hasOrderableChildNodes;
@@ -192,14 +190,6 @@ public class EditContentEngine extends AbstractContentEngine {
         setButtonsEnabled(false);
     }
 
-    private void refreshButtons() {
-        for (BoxComponent button : saveButtons) {
-            if (button instanceof CheckboxWorkInProgress) {
-                ((CheckboxWorkInProgress) button).refresh(this, language);
-            }
-        }
-    }
-
     /**
      * load node
      */
@@ -220,7 +210,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     langCodeGWTJahiaGetPropertiesResultMap.put(getSelectedLanguage(), result);
                 }
 
-                setWorkInProgress(node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
+                setWorkInProgress(workInProgressCheckedByDefault || (node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress")));
 
                 fillCurrentTab();
                 refreshButtons();
@@ -281,7 +271,7 @@ public class EditContentEngine extends AbstractContentEngine {
                     heading = heading + "&nbsp;" + Messages.get("label.edit.engine.heading.locked.by.you", "[ locked by you ]");
                     container.getPanel().setHeadingHtml(heading);
                 }
-                setWorkInProgress(node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress"));
+                setWorkInProgress(workInProgressCheckedByDefault || (node.get("j:workInProgress") != null && (Boolean) node.get("j:workInProgress")));
 
                 setAvailableLanguages(result.getAvailabledLanguages());
 

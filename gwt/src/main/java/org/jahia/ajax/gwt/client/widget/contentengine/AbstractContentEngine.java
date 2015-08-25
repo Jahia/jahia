@@ -77,6 +77,7 @@ import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.store.StoreEvent;
 import com.extjs.gxt.ui.client.store.StoreListener;
+import com.extjs.gxt.ui.client.widget.BoxComponent;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.TabPanel;
@@ -120,6 +121,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Linker linker = null;
     protected List<GWTJahiaNodeType> nodeTypes;
     protected List<GWTJahiaNodeType> mixin;
+    protected List<BoxComponent> saveButtons = new ArrayList<BoxComponent>();
     protected Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
     protected Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     protected Map<String, GWTJahiaNodeProperty> properties = new HashMap<String, GWTJahiaNodeProperty>();
@@ -139,6 +141,8 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected Map<String, Set<String>> referencesWarnings;
     protected GWTJahiaLanguage language;
     private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
+    protected boolean workInProgressCheckedByDefault = false;
+
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -560,6 +564,18 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
     public Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> getDefaultValues() {
         return defaultValues;
+    }
+
+    protected void refreshButtons() {
+        for (BoxComponent button : saveButtons) {
+            if (button instanceof CheckboxWorkInProgress) {
+                ((CheckboxWorkInProgress) button).refresh(this, language);
+            }
+        }
+    }
+
+    public void setWorkInProgressCheckedByDefault(boolean workInProgressCheckedByDefault) {
+        this.workInProgressCheckedByDefault = workInProgressCheckedByDefault;
     }
 
     public void setWorkInProgress(boolean workInProgress) {

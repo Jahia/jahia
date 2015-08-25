@@ -520,7 +520,7 @@ public class PropertiesHelper {
                 }
                 if (!wip && n.hasProperty(Constants.WORKINPROGRESS)) {
                     n.getProperty(Constants.WORKINPROGRESS).remove();
-                } else {
+                } else if (wip) {
                     n.setProperty(Constants.WORKINPROGRESS, wip);
                 }
             }

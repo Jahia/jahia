@@ -73,6 +73,10 @@ package org.jahia.bin.filters;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +88,8 @@ import java.util.List;
  * @author kevan
  */
 public class CompositeFilter implements Filter {
+    private static Logger logger = LoggerFactory.getLogger(CompositeFilter.class);
+    
     private List<AbstractServletFilter> filters = new ArrayList<AbstractServletFilter>();
     private FilterConfig filterConfig;
 
@@ -107,12 +113,17 @@ public class CompositeFilter implements Filter {
         if(filterConfig != null){
             filter.init(filterConfig);
         }
+        logger.info("Registering servlet filter {}", filter);
         this.filters.add(filter);
     }
 
     public void unregisterFilter(AbstractServletFilter filter) {
-        filter.destroy();
-        filters.remove(filter);
+        logger.info("Unregistering servlet filter {}", filter);
+        try {
+            filter.destroy();
+        } finally {
+            filters.remove(filter);
+        }
     }
 
     @Override

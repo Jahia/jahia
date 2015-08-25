@@ -72,6 +72,9 @@
 package org.jahia.bin.filters;
 
 import javax.servlet.*;
+
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 import java.io.IOException;
 
 /**
@@ -79,7 +82,7 @@ import java.io.IOException;
  *
  * @author kevan
  */
-public abstract class AbstractServletFilter implements javax.servlet.Filter{
+public abstract class AbstractServletFilter implements javax.servlet.Filter {
 
     private String[] urlPatterns;
     private boolean matchAllUrls = false;
@@ -107,5 +110,10 @@ public abstract class AbstractServletFilter implements javax.servlet.Filter{
 
     public void setMatchAllUrls(boolean matchAllUrls) {
         this.matchAllUrls = matchAllUrls;
+    }
+    
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }

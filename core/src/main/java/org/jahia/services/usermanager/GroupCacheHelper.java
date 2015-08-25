@@ -279,7 +279,7 @@ public class GroupCacheHelper {
             while (weakReferences.hasNext()) {
                 try {
                     Property property = weakReferences.nextProperty();
-                    if (property.getPath().contains("/j:members/")) {
+                    if (property != null && property.getPath() != null && property.getPath().contains("/j:members/")) {
                         JCRNodeWrapper group = (JCRNodeWrapper) property.getSession().getNode(StringUtils.substringBefore(property.getPath(), "/j:members/"));
                         if (group.isNodeType(Constants.JAHIANT_GROUP)) {
                             if (groups.add(group.getPath())) {

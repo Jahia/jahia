@@ -21,7 +21,7 @@
         };
     </script>
 </head>
-<body onload="document.loginForm.username.focus()" class="login">
+<body class="login">
 <div class="row-fluid login-wrapper">
     <div class="span4 box">
         <div class="content-wrap">
@@ -38,11 +38,17 @@
                 <ui:isLoginError var="loginResult">
                     <div class="alert alert-error"><fmt:message
                             key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
+                    <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
+                           maxlength="250" name="username" value="${param['username']}"/>
+                    <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
+                           maxlength="250" name="password" autocomplete="off" autofocus="autofocus"/>
                 </ui:isLoginError>
-                <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
-                       maxlength="250" name="username"/>
-                <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
-                       maxlength="250" name="password" autocomplete="off"/>
+                <c:if test="${empty loginResult}">
+                    <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
+                           maxlength="250" name="username" autofocus="autofocus"/>
+                    <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
+                           maxlength="250" name="password" autocomplete="off"/>
+                </c:if>
                 <c:if test="${not fn:contains(param.redirect, '/administration')}">
                     <div class="remember">
                         <ui:loginRememberMe id="rememberme" tabindex="3"/>

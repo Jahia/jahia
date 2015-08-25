@@ -1406,6 +1406,11 @@
                 </property>
             </bean>
         </property>
+        <property name="visibility">
+            <bean class="org.jahia.services.uicomponents.bean.contentmanager.WebDavAvailableVisibility">
+                <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
+            </bean>
+        </property>
         <property name="titleKey" value="label.webdav.url.get"/>
         <property name="icon" value="copy"/>
     </bean>

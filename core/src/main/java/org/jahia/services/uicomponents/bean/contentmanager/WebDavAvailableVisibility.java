@@ -1,7 +1,28 @@
 /**
  * ==========================================================================================
- * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
+ * =                        DIGITAL FACTORY v7.0 - Community Distribution                   =
  * ==========================================================================================
+ *
+ *     Rooted in Open Source CMS, Jahia's Digital Industrialization paradigm is about
+ *     streamlining Enterprise digital projects across channels to truly control
+ *     time-to-market and TCO, project after project.
+ *     Putting an end to "the Tunnel effect", the Jahia Studio enables IT and
+ *     marketing teams to collaboratively and iteratively build cutting-edge
+ *     online business solutions.
+ *     These, in turn, are securely and easily deployed as modules and apps,
+ *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ *     Each solution provided by Jahia stems from this overarching vision:
+ *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ *     Founded in 2002 and headquartered in Geneva, Switzerland,
+ *     Jahia Solutions Group has its North American headquarters in Washington DC,
+ *     with offices in Chicago, Toronto and throughout Europe.
+ *     Jahia counts hundreds of global brands and governmental organizations
+ *     among its loyal customers, in more than 20 countries across the globe.
+ *
+ *     For more information, please visit http://www.jahia.com
+ *
+ * JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION
+ * ============================================
  *
  *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
@@ -9,7 +30,7 @@
  *     1/GPL OR 2/JSEL
  *
  *     1/ GPL
- *     ======================================================================================
+ *     ==========================================================
  *
  *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
@@ -31,11 +52,11 @@
  *     the GPL (or any later version), you may redistribute this Program in connection
  *     with Free/Libre and Open Source Software ("FLOSS") applications as described
  *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
+ *     describing the FLOSS exception, and it is also available here:
  *     http://www.jahia.com/license"
  *
  *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ *     ==========================================================
  *
  *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
@@ -45,29 +66,6 @@
  *
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
- *
- *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.uicomponents.bean.contentmanager;
 
@@ -76,22 +74,37 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.templates.TemplatePackageRegistry;
+import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.settings.SettingsBean;
 
 /**
- * Checks if the "Open in a Web folder" toolbar item can be shown (if the WebDAV directory listing is not disabled).
+ * Checks for the availability of the WebDAV module.
  * 
  * @author Sergiy Shyrkov
- * 
  */
-public class WebFolderVisibility extends WebDavAvailableVisibility {
+public class WebDavAvailableVisibility extends Visibility {
+    
+    private TemplatePackageRegistry templatePackageRegistry;
+    
+    private String webDavBundleId = "jcr-webdav";
 
     @Override
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale,
             HttpServletRequest request) {
-        return !Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile()
-                .getProperty("repositoryDirectoryListingDisabled", "false"))
-                && super.getRealValue(contextNode, jahiaUser, locale, request);
+        return isWebDavAvailable() && super.getRealValue(contextNode, jahiaUser, locale, request);
     }
+
+    private boolean isWebDavAvailable() {
+        return templatePackageRegistry.lookupById(webDavBundleId) != null;
+    }
+
+    public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
+        this.templatePackageRegistry = templatePackageRegistry;
+    }
+
+    public void setWebDavBundleId(String webDavBundleId) {
+        this.webDavBundleId = webDavBundleId;
+    }
+
 }

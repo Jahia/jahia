@@ -333,49 +333,6 @@
 
 
     <!-- ====================================================================== -->
-    <!-- W E B D A V  S E R V L E T                                              -->
-    <!-- ====================================================================== -->
-    <servlet>
-        <description>
-            The webdav servlet that connects HTTP request to the repository.
-        </description>
-        <servlet-name>Webdav</servlet-name>
-        <servlet-class>org.apache.jackrabbit.j2ee.JahiaWebdavServlet</servlet-class>
-        <init-param>
-            <description>
-                defines the prefix for spooling resources out of the repository.
-            </description>
-            <param-name>resource-path-prefix</param-name>
-            <param-value>/repository</param-value>
-        </init-param>
-        <!--
-            Optional parameter to define the value of the 'WWW-Authenticate' header
-        -->
-        <init-param>
-            <description>
-                Defines the value of the 'WWW-Authenticate' header.
-            </description>
-            <param-name>authenticate-header</param-name>
-            <param-value>Basic realm="Digital Factory WebDAV Server"</param-value>
-        </init-param>
-        <!--
-        -->
-        <!--
-            Parameter used to configure behaviour of webdav resources such as:
-            - destinction between collections and non-collections
-            - resource filtering
-        -->
-        <init-param>
-            <description>
-                Defines various dav-resource configuration parameters.
-            </description>
-            <param-name>resource-config</param-name>
-            <param-value>/WEB-INF/etc/repository/jackrabbit/webdav-config.xml</param-value>
-        </init-param>
-        <load-on-startup>4</load-on-startup>
-    </servlet>
-
-    <!-- ====================================================================== -->
     <!-- R M I   B I N D I N G   S E R V L E T                                  -->
     <!-- ====================================================================== -->
     <servlet>
@@ -555,10 +512,6 @@
         <url-pattern>/gwt/fileupload/*</url-pattern>
     </servlet-mapping>
 
-    <servlet-mapping>
-        <servlet-name>Webdav</servlet-name>
-        <url-pattern>/repository/*</url-pattern>
-    </servlet-mapping>
     <servlet-mapping>
         <servlet-name>RMI</servlet-name>
         <url-pattern>/rmi</url-pattern>

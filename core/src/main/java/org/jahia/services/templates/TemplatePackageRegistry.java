@@ -131,7 +131,6 @@ import javax.jcr.Workspace;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
-import javax.servlet.Filter;
 import java.util.*;
 
 /**
@@ -166,7 +165,6 @@ public class TemplatePackageRegistry {
     private Map<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>> packagesWithVersionById = new TreeMap<String, SortedMap<ModuleVersion, JahiaTemplatesPackage>>();
     private Map<String, Set<JahiaTemplatesPackage>> modulesWithViewsPerComponents = new HashMap<String, Set<JahiaTemplatesPackage>>();
     private List<RenderFilter> filters = new LinkedList<RenderFilter>();
-    private List<Filter> servletFilters = new LinkedList<Filter>();
     private List<ErrorHandler> errorHandlers = new LinkedList<ErrorHandler>();
     private Map<String, Action> actions;
     private Map<String, BackgroundAction> backgroundActions;

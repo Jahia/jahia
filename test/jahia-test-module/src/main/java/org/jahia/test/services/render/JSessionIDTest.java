@@ -189,7 +189,7 @@ public class JSessionIDTest extends JahiaTestCase {
 
             assertEquals("jsession ID is not "
                     + (removeJsessionId ? "removed" : "present")
-                    + " in administration login url.", removeJsessionId,
+                    + " in administration login url:" + url, removeJsessionId,
                     !url.contains("jsessionid"));
         } finally {
             displayLoginMethod.releaseConnection();

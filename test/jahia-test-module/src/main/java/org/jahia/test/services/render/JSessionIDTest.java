@@ -78,6 +78,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
@@ -190,7 +191,7 @@ public class JSessionIDTest extends JahiaTestCase {
             assertEquals("jsession ID is not "
                     + (removeJsessionId ? "removed" : "present")
                     + " in administration login url:" + url, removeJsessionId,
-                    !url.contains("jsessionid"));
+                    !StringUtils.containsIgnoreCase(url, jsessionid));
         } finally {
             displayLoginMethod.releaseConnection();
         }

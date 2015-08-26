@@ -2,72 +2,72 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ======================================================================================
- *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
- *
- *
+ * <p/>
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ * <p/>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p/>
+ * 1/ GPL
+ * ======================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * <p/>
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
+ * <p/>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p/>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
+ * <p/>
+ * <p/>
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
+ * <p/>
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
+ * <p/>
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.render.filter.cache;
 
@@ -101,12 +101,13 @@ import java.util.regex.Pattern;
 public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, InitializingBean {
     public static final String PER_USER = "_perUser_";
     public static final String MR_ACL = "_mraclmr_";
+    public static final String PER_USER_MR_ACL = PER_USER + "," + MR_ACL;
     public static final String LOGGED_USER = "_logged_";
     public static final Pattern P_PATTERN = Pattern.compile("_p_");
     public static final Pattern DEP_ACLS_PATTERN = Pattern.compile("_depacl_");
     public static final Pattern ACLS_PATH_PATTERN = Pattern.compile("_p_");
-    private static final String[] SUBSTITUTION_STR = new String[]{"%0","%1","%2"};
-    private static final String[] SPECIFIC_STR = new String[]{"@@",",","%"};
+    private static final String[] SUBSTITUTION_STR = new String[]{"%0", "%1", "%2"};
+    private static final String[] SPECIFIC_STR = new String[]{"@@", ",", "%"};
 
     private static final Logger logger = LoggerFactory.getLogger(AclCacheKeyPartGenerator.class);
 
@@ -168,13 +169,14 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String getValue(Resource resource, final RenderContext renderContext, Properties properties) {
         try {
+            final Set<String> aclsKeys = new TreeSet<String>();
+
             if ("true".equals(properties.get("cache.perUser"))) {
-                return PER_USER;
+                aclsKeys.add(PER_USER);
             }
 
             JCRNodeWrapper node = resource.getNode();
             final String nodePath = node.getPath();
-            final Set<String> aclsKeys = new TreeSet<String>();
 
             aclsKeys.add(encodeSpecificChars(nodePath));
 
@@ -195,7 +197,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 String[] refProperties = ref.split(",");
                 for (int i = 0; i < refProperties.length; i++) {
                     String refPropertyName = refProperties[i];
-                    if(node.hasProperty(refPropertyName)) {
+                    if (node.hasProperty(refPropertyName)) {
                         JCRPropertyWrapper refProperty = node.getProperty(refPropertyName);
                         JCRSessionWrapper systemSession = JCRSessionFactory.getInstance().getCurrentSystemSession(node.getSession().getWorkspace().getName(), node.getSession().getLocale(), null);
                         if (refProperty != null) {
@@ -228,7 +230,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
             Element element = permissionCache.get(node.getPath());
             Boolean[] values;
-            if (element != null &&  element.getObjectValue() != null) {
+            if (element != null && element.getObjectValue() != null) {
                 values = (Boolean[]) element.getObjectValue();
             } else {
                 values = new Boolean[3];
@@ -263,23 +265,29 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
-        if (keyPart.equals(PER_USER)) {
-            keyPart = renderContext.getUser().getUserKey();
-        } else {
-            String[] paths = keyPart.split(",");
-            Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
-            StringBuilder r = new StringBuilder();
-            try {
-                Map<String, Set<String>> principalAcl = getUserAcl(renderContext.getUser());
+        String[] paths = keyPart.split(",");
+        Map<String, Set<String>> rolesForKey = new TreeMap<String, Set<String>>();
+        StringBuilder r = new StringBuilder();
+        try {
+            List<Map<String, Set<String>>> principalAcl = null;
 
-                for (String s : paths) {
+            for (String s : paths) {
+                if (s.equals(PER_USER)) {
+                    if (r.length() > 0) {
+                        r.append("|");
+                    }
+                    r.append(renderContext.getUser().getUserKey());
+                } else if (s.equals(LOGGED_USER)) {
+                    if (r.length() > 0) {
+                        r.append("|");
+                    }
+                    r.append(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
+                } else {
+                    if (principalAcl == null) {
+                        principalAcl = getUserAcl(renderContext.getUser());
+                    }
                     if (s.equals(MR_ACL)) {
                         populateRolesForKey(renderContext.getMainResource().getNode().getPath(), principalAcl, rolesForKey, null);
-                    } else if (s.equals(LOGGED_USER)) {
-                        if(r.length() > 0){
-                            r.append("|");
-                        }
-                        r.append(Boolean.toString(renderContext.getUser().getName().equals(JahiaUserManagerService.GUEST_USERNAME)));
                     } else if (s.startsWith("*")) {
                         String decodedNodePath = decodeSpecificChars(s.substring(1));
                         populateRolesForKey(decodedNodePath, principalAcl, rolesForKey, Pattern.compile(decodedNodePath));
@@ -287,65 +295,62 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                         populateRolesForKey(decodeSpecificChars(s), principalAcl, rolesForKey, null);
                     }
                 }
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(),e);  //To change body of catch statement use File | Settings | File Templates.
             }
-
-            for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
-                if(r.length() > 0){
-                    r.append("|");
-                }
-                r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey());
-            }
-
-            keyPart = StringUtils.replace(r.toString(), "@@", "%0");
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);  //To change body of catch statement use File | Settings | File Templates.
         }
-//        try {
-//            byte[] b = DigestUtils.getSha256Digest().digest(keyPart.getBytes("UTF-8"));
-//            StringWriter sw = new StringWriter();
-//            Base64.encode(b, 0, b.length, sw);
-//            return sw.toString();
-//        } catch (Exception e) {
-//            logger.warn("Issue while digesting key", e);
-//        }
-//
+
+        for (Map.Entry<String, Set<String>> entry : rolesForKey.entrySet()) {
+            if (r.length() > 0) {
+                r.append("|");
+            }
+            r.append((StringUtils.join(entry.getValue(), ","))).append(":").append(entry.getKey());
+        }
+
+        keyPart = StringUtils.replace(r.toString(), "@@", "%0");
+
         return keyPart;
     }
 
-    private void populateRolesForKey(String nodePath, Map<String, Set<String>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern p) {
-        if (p == null) {
+    private void populateRolesForKey(String nodePath, List<Map<String, Set<String>>> principalAcl, Map<String, Set<String>> rolesForKey, Pattern pattern) {
+        if (pattern == null) {
             nodePath += "/";
-            for (Map.Entry<String, Set<String>> entry : principalAcl.entrySet()) {
-                String grantPath = entry.getKey() + "/";
-                if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath))) {
-                    Set<String> roles = entry.getValue();
-                    if (!rolesForKey.containsKey(entry.getKey())) {
-                        rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
-                    } else {
-                        rolesForKey.get(entry.getKey()).addAll(roles);
+            for (Map<String, Set<String>> map : principalAcl) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                    String grantPath = entry.getKey() + "/";
+                    if ((nodePath.startsWith(grantPath) || grantPath.startsWith(nodePath))) {
+                        Set<String> roles = entry.getValue();
+                        if (!rolesForKey.containsKey(entry.getKey())) {
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                        } else {
+                            rolesForKey.get(entry.getKey()).addAll(roles);
+                        }
                     }
                 }
             }
         } else {
-            for (Map.Entry<String, Set<String>> entry : principalAcl.entrySet()) {
-                if (p.matcher(entry.getKey()).matches()) {
-                    Set<String> roles = entry.getValue();
-                    if (!rolesForKey.containsKey(entry.getKey())) {
-                        rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
-                    } else {
-                        rolesForKey.get(entry.getKey()).addAll(roles);
+            for (Map<String, Set<String>> map : principalAcl) {
+                for (Map.Entry<String, Set<String>> entry : map.entrySet()) {
+                    if (pattern.matcher(entry.getKey()).matches()) {
+                        Set<String> roles = entry.getValue();
+                        if (!rolesForKey.containsKey(entry.getKey())) {
+                            rolesForKey.put(entry.getKey(), new TreeSet<String>(roles));
+                        } else {
+                            rolesForKey.get(entry.getKey()).addAll(roles);
+                        }
                     }
                 }
             }
         }
     }
 
-    private Map<String, Set<String>> getUserAcl(JahiaUser principal) throws RepositoryException {
-        Map<String, Set<String>> principalAcl = new HashMap<>(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
+    private List<Map<String, Set<String>>> getUserAcl(JahiaUser principal) throws RepositoryException {
+        List<Map<String, Set<String>>> principalAcl = new ArrayList<>();
+        principalAcl.add(getPrincipalAcl("u:" + principal.getName(), principal.getRealm()));
 
         List<String> groups = groupManagerService.getMembershipByPath(principal.getLocalPath());
         for (String group : groups) {
-            principalAcl.putAll(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"), JCRContentUtils.getSiteKey(group)));
+            principalAcl.add(getPrincipalAcl("g:" + StringUtils.substringAfterLast(group, "/"), JCRContentUtils.getSiteKey(group)));
         }
 
         return principalAcl;
@@ -358,7 +363,7 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
         Element element = cache.get(cacheKey);
         if (element == null) {
             Semaphore semaphore = processings.get(cacheKey);
-            if(semaphore==null) {
+            if (semaphore == null) {
                 semaphore = new Semaphore(1);
                 processings.putIfAbsent(cacheKey, semaphore);
             }

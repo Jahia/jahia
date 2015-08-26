@@ -971,7 +971,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
+<<<<<<< .working
             if (StringUtils.isBlank(content)) {
+=======
+            if ((content == null || "".equals(content.trim())) && renderContext.getRedirect() == null) {
+>>>>>>> .merge-right.r52888
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                         " areaIdentifier " + areaIdentifier);
             }

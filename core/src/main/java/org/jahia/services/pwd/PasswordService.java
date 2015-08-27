@@ -136,7 +136,8 @@ public class PasswordService {
             return EncryptionUtils.sha1DigestLegacy(password);
         }
 
-        return digester.getId() + ":" + digester.digest(password);
+        return digester.getId().length() > 0 ? (digester.getId() + ":" + digester.digest(password))
+                : digester.digest(password);
     }
 
     protected PasswordDigester getDefaultDigester() {

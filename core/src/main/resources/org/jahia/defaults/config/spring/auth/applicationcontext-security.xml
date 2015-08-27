@@ -55,6 +55,18 @@
         </property>
     </bean>
     
+    <bean id="pwdDigesterSHA1Legacy" class="org.jahia.services.pwd.JasyptPasswordDigester">
+        <constructor-arg index="0" value=""/>
+        <constructor-arg index="1">
+            <bean class="org.jahia.services.pwd.ProccessorAwarePooledStringDigester">
+                <property name="algorithm" value="SHA-1"/>
+                <property name="saltSizeBytes" value="0"/>
+                <property name="iterations" value="1"/>
+                <property name="unicodeNormalizationIgnored" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
     <bean id="pwdDigesterSHA1RandomSalt32x4096" class="org.jahia.services.pwd.JasyptPasswordDigester">
         <constructor-arg index="0" value="s1"/>
         <constructor-arg index="1">

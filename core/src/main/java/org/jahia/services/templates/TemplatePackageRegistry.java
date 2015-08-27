@@ -97,6 +97,8 @@ import org.jahia.services.content.nodetypes.renderer.ModuleChoiceListRenderer;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.content.rules.ModuleGlobalObject;
 import org.jahia.services.content.rules.RulesListener;
+import org.jahia.services.pwd.PasswordDigester;
+import org.jahia.services.pwd.PasswordService;
 import org.jahia.services.render.RenderService;
 import org.jahia.services.render.StaticAssetMapping;
 import org.jahia.services.render.filter.RenderFilter;
@@ -733,6 +735,8 @@ public class TemplatePackageRegistry {
         private GWTResourceConfig gwtResourceConfig;
 
         private boolean flushCaches;
+        
+        private PasswordService passwordService;
 
         @Override
         public void onApplicationEvent(ApplicationContextEvent event) {
@@ -904,6 +908,10 @@ public class TemplatePackageRegistry {
                 } catch (Exception e) {
                     logger.error("Cannot unregistered search provider", e);
                 }
+            }
+            
+            if (bean instanceof PasswordDigester) {
+                passwordService.unregisterDigester(((PasswordDigester) bean).getId());
             }
 
         }
@@ -1118,6 +1126,10 @@ public class TemplatePackageRegistry {
                     logger.error("Cannot register module GWT resources", e);
                 }
             }
+            
+            if (bean instanceof PasswordDigester) {
+                passwordService.registerDigester((PasswordDigester) bean);
+            }
 
 
             return bean;
@@ -1175,6 +1187,10 @@ public class TemplatePackageRegistry {
 
         public void setGwtResourceConfig(GWTResourceConfig gwtResourceConfig) {
             this.gwtResourceConfig = gwtResourceConfig;
+        }
+
+        public void setPasswordService(PasswordService passwordService) {
+            this.passwordService = passwordService;
         }
     }
 }

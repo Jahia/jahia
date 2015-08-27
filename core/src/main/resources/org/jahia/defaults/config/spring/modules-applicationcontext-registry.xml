@@ -21,6 +21,7 @@
         <property name="compositeFilter" ref="CompositeFilter"/>
         <property name="searchService" ref="SearchService"/>
         <property name="gwtResourceConfig" ref="GWTResourceConfig"/>
+        <property name="passwordService" ref="PasswordService"/>
     </bean>
 
     <bean id="modulePlaceholderConfig"

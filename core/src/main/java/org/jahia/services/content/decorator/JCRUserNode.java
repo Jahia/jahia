@@ -79,6 +79,7 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.LazyPropertyIterator;
+import org.jahia.services.pwd.PasswordService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
@@ -234,7 +235,7 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public boolean verifyPassword(String userPassword) {
         try {
-            return StringUtils.isNotEmpty(userPassword) && JahiaUserManagerService.encryptPassword(userPassword).equals(getProperty(J_PASSWORD).getString());
+            return StringUtils.isNotEmpty(userPassword) && PasswordService.getInstance().matches(userPassword, getProperty(J_PASSWORD).getString());
         } catch (RepositoryException e) {
             logger.debug("Password verification failed for user " + getName(), e);
             return false;
@@ -243,7 +244,7 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public boolean setPassword(String pwd) {
         try {
-            setProperty(J_PASSWORD, JahiaUserManagerService.encryptPassword(pwd));
+            setProperty(J_PASSWORD, PasswordService.getInstance().digest(pwd, isRoot()));
             return true;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

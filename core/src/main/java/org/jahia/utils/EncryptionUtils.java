@@ -71,17 +71,7 @@
  */
 package org.jahia.utils;
 
-import org.apache.commons.codec.binary.Base64;
-import org.jasypt.digest.ByteDigester;
-import org.jasypt.digest.PooledByteDigester;
-import org.jasypt.encryption.StringEncryptor;
-import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.slf4j.Logger;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Miscellaneous encryption utilities.
@@ -89,8 +79,6 @@ import java.io.InputStreamReader;
  * @author Sergiy Shyrkov
  */
 public final class EncryptionUtils {
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(EncryptionUtils.class);
-
     public static class EncryptedPasswordFactoryBean extends AbstractFactoryBean<String> {
 
         private String password;
@@ -115,35 +103,6 @@ public final class EncryptionUtils {
 
     }
 
-    // Initialization on demand holder idiom: thread-safe singleton initialization
-    private static class SHA1DigesterHolder {
-        static final PooledByteDigester INSTANCE = new PooledByteDigester();
-
-        static {
-            INSTANCE.setAlgorithm("SHA-1");
-            INSTANCE.setSaltSizeBytes(0);
-            INSTANCE.setIterations(1);
-            INSTANCE.setPoolSize(4);
-        }
-    }
-
-    private static ByteDigester getSHA1DigesterLegacy() {
-        return SHA1DigesterHolder.INSTANCE;
-    }
-
-    private static class StringEncryptorHolder {
-        static final StandardPBEStringEncryptor INSTANCE = new StandardPBEStringEncryptor();
-
-        static {
-            INSTANCE.setPassword(new String(new byte[]{74, 97, 104, 105, 97, 32, 120, 67, 77, 32, 54, 46, 53}));
-            // INSTANCE.setAlgorithm("PBEWithMD5AndTripleDES");
-        }
-    }
-
-    private static StringEncryptor getStringEncryptor() {
-        return StringEncryptorHolder.INSTANCE;
-    }
-
     /**
      * Bi-directional password base decryption of the provided text.
      * 
@@ -152,7 +111,7 @@ public final class EncryptionUtils {
      * @return password base decrypted text
      */
     public static String passwordBaseDecrypt(String encrypted) {
-        return getStringEncryptor().decrypt(encrypted);
+        return org.jahia.commons.encryption.EncryptionUtils.passwordBaseDecrypt(encrypted);
     }
 
     /**
@@ -163,7 +122,7 @@ public final class EncryptionUtils {
      * @return password base encrypted text
      */
     public static String passwordBaseEncrypt(String source) {
-        return getStringEncryptor().encrypt(source);
+        return org.jahia.commons.encryption.EncryptionUtils.passwordBaseEncrypt(source);
     }
 
     /**
@@ -175,7 +134,7 @@ public final class EncryptionUtils {
      * @return the Base64 encoded SHA-1 digest of the provided text
      */
     public static String sha1DigestLegacy(String source) {
-        return new String(Base64.encodeBase64(getSHA1DigesterLegacy().digest(source.getBytes())));
+        return org.jahia.commons.encryption.EncryptionUtils.sha1DigestLegacy(source);
     }
 
     /**
@@ -183,30 +142,5 @@ public final class EncryptionUtils {
      */
     private EncryptionUtils() {
         super();
-    }
-
-    public static void main(String[] args) {
-        System.out.println("\nJahia 7.1 Password Encryption Tool");
-        System.out
-                .println("Copyright 2002-2015 - Jahia Solutions Group SA http://www.jahia.com - All Rights Reserved\n");
-        String password = null;
-        if (args.length > 0) {
-            password = args[0];
-        } else {
-            while (password == null || password.length() == 0) {
-                System.out
-                        .print("Provide a password you would like to encrypt (SHA-1 + Base64): ");
-                BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-                try {
-                    password = br.readLine();
-                } catch (IOException e) {
-                    logger.error(e.getMessage(),e);
-                }
-            }
-        }
-        if (password != null && password.length() > 0) {
-            System.out.println("Encrypted password for \"" + password + "\" is: "
-                    + sha1DigestLegacy(password));
-        }
     }
 }

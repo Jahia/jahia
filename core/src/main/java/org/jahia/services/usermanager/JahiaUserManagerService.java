@@ -83,6 +83,7 @@ import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRUserNode;
+import org.jahia.services.pwd.PasswordService;
 import org.jahia.utils.EncryptionUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -141,6 +142,8 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
 
     private UserCacheHelper cacheHelper;
+    
+    private PasswordService passwordService;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -731,7 +734,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
                             String l_password;
                             if (!password.startsWith("SHA-1:")) {
                                 // Encrypt the password
-                                l_password = JahiaUserManagerService.encryptPassword(password);
+                                l_password = passwordService.digest(password);
                             } else {
                                 l_password = password.substring(6);
                             }
@@ -830,7 +833,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      * @param password String representation of a password.
      * @return Return a String representation of the password encryption. Return
      * null on any failure.
+     * @deprecated since 7.1.0.1 use {@link PasswordService#digest(String)} instead
      */
+    @Deprecated
     public static String encryptPassword(String password) {
         if (StringUtils.isEmpty(password)) {
             return null;
@@ -987,5 +992,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             user = lookupUser(lookupKey);
         }
         return user;
+    }
+    
+    public void setPasswordService(PasswordService passwordService) {
+        this.passwordService = passwordService;
     }
 }

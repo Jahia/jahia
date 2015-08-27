@@ -76,8 +76,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.jahia.services.pwd.PasswordService;
 
 import javax.jcr.RepositoryException;
 
@@ -273,21 +272,18 @@ public final class RuleConditions {
 
             boolean success = true;
 
-            // we can only deal with the JCRUser
-                int checkedPasswordCount = getParameterIntValue(parameters, 0);
+            int checkedPasswordCount = getParameterIntValue(parameters, 0);
 
-                List<PasswordHistoryEntry> history = ctx.getUser().getPasswordHistory();
-                if (!history.isEmpty()) {
-	                String encryptedPassword = JahiaUserManagerService.encryptPassword(ctx.getPassword());
-	                if (encryptedPassword != null) {
-	                    for (int i = 0; i < checkedPasswordCount && i < history.size(); i++) {
-	                        if (encryptedPassword.equals(history.get(i).getPassword())) {
-	                            success = false;
-	                            break;
-	                        }
-	                    }
-	                }
+            List<PasswordHistoryEntry> history = ctx.getUser().getPasswordHistory();
+            if (!history.isEmpty()) {
+                PasswordService pwdService = PasswordService.getInstance();
+                for (int i = 0; i < checkedPasswordCount && i < history.size(); i++) {
+                    if (pwdService.matches(ctx.getPassword(), history.get(i).getPassword())) {
+                        success = false;
+                        break;
+                    }
                 }
+            }
 
             return success;
         }

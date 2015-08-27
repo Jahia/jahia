@@ -29,10 +29,7 @@
             </value>
         </property>
         <property name="credentialsMatcher">
-            <bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">
-                <property name="hashAlgorithmName" value="SHA-1"/>
-                <property name="storedCredentialsHexEncoded" value="false"/>
-            </bean>
+            <bean class="org.jahia.services.security.shiro.HashedCredentialsMatcher"/>
         </property>
     </bean>
     
@@ -44,4 +41,64 @@
     
     <bean id="jahiaLoginConfig" class="org.jahia.params.valves.LoginConfig" factory-method="getInstance"/>
     <bean id="jahiaLogoutConfig" class="org.jahia.params.valves.LogoutConfig" factory-method="getInstance"/>
+
+    <bean id="PasswordService" class="org.jahia.services.pwd.PasswordService" factory-method="getInstance">
+        <property name="defaultDigester" ref="${jahia.passwordService.defaultDigester:pwdDigesterSHA256RandomSalt32x4096}"/>
+        <property name="strongDigester" ref="${jahia.passwordService.strongDigester:pwdDigesterPBKDF2RandomSalt64Key32x8192}"/>
+        <property name="digesters">
+            <list>
+                <ref bean="pwdDigesterSHA1RandomSalt32x4096"/>
+                <ref bean="pwdDigesterSHA256RandomSalt32x4096"/>
+                <ref bean="pwdDigesterSHA512RandomSalt32x4096"/>
+                <ref bean="pwdDigesterPBKDF2RandomSalt64Key32x8192"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="pwdDigesterSHA1RandomSalt32x4096" class="org.jahia.services.pwd.JasyptPasswordDigester">
+        <constructor-arg index="0" value="s1"/>
+        <constructor-arg index="1">
+            <bean class="org.jahia.services.pwd.ProccessorAwarePooledStringDigester">
+                <property name="algorithm" value="SHA-1"/>
+                <property name="saltSizeBytes" value="32"/>
+                <property name="iterations" value="4096"/>
+                <property name="unicodeNormalizationIgnored" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="pwdDigesterSHA256RandomSalt32x4096" class="org.jahia.services.pwd.JasyptPasswordDigester">
+        <constructor-arg index="0" value="s2"/>
+        <constructor-arg index="1">
+            <bean class="org.jahia.services.pwd.ProccessorAwarePooledStringDigester">
+                <property name="algorithm" value="SHA-256"/>
+                <property name="saltSizeBytes" value="32"/>
+                <property name="iterations" value="4096"/>
+                <property name="unicodeNormalizationIgnored" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="pwdDigesterSHA512RandomSalt32x4096" class="org.jahia.services.pwd.JasyptPasswordDigester">
+        <constructor-arg index="0" value="s5"/>
+        <constructor-arg index="1">
+            <bean class="org.jahia.services.pwd.ProccessorAwarePooledStringDigester">
+                <property name="algorithm" value="SHA-512"/>
+                <property name="saltSizeBytes" value="32"/>
+                <property name="iterations" value="4096"/>
+                <property name="unicodeNormalizationIgnored" value="true"/>
+            </bean>
+        </constructor-arg>
+    </bean>
+
+    <bean id="pwdDigesterPBKDF2RandomSalt64Key32x8192" class="org.jahia.services.pwd.JasyptPasswordDigester">
+        <constructor-arg index="0" value="p"/>
+        <constructor-arg index="1">
+            <bean class="org.jahia.commons.encryption.PBKDF2Digester">
+                <property name="saltSizeBytes" value="64"/>
+                <property name="hashSizeBytes" value="32"/>
+                <property name="iterations" value="8192"/>
+            </bean>
+        </constructor-arg>
+    </bean>
 </beans>

@@ -22,6 +22,7 @@
                 <property name="ehCacheProvider" ref="ehCacheProvider"/>
             </bean>
         </property>
+        <property name="passwordService" ref="PasswordService"/>
     </bean>
 
     <bean id="JahiaUserManagerProvider" class="org.jahia.services.usermanager.JahiaUserManagerProvider" parent="jahiaServiceTemplate" abstract="true">

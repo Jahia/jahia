@@ -234,17 +234,6 @@ public class TemplateHelper {
             String res = renderService.render(r, renderContext);
             Map<String, Map<String, Map<String, String>>> map = (Map<String, Map<String, Map<String, String>>>) renderContext.getRequest().getAttribute("staticAssets");
 
-            if (channelIdentifier != null && !channelIdentifier.equals("generic")) {
-                Map<String, Map<String, String>> css = map.get(CSS);
-                SortedMap<String, Map<String, String>> cssWithParam = new TreeMap<String, Map<String, String>>();
-                for (Map.Entry<String, Map<String, String>> entry : css.entrySet()) {
-                    String k = entry.getKey() + "?channel=" + channelIdentifier + (channelVariant != null ? "&variant=" + channelVariant : "");
-                    cssWithParam.put(k, entry.getValue());
-                }
-                map.put(CSS, cssWithParam);
-            }
-
-
             String constraints = ConstraintsHelper.getConstraints(node);
             if (constraints == null) {
                 constraints = "";

@@ -230,6 +230,39 @@
         <filter-name>ContentManagerAccessCheckFilter</filter-name>
         <url-pattern>/engines/manager.jsp</url-pattern>
     </filter-mapping>
+<<<<<<< .working
+=======
+<!-- Shindig filter mappings -->
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/social/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/gadgets/ifr</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/gadgets/makeRequest</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/gadgets/api/rpc/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/gadgets/api/rest/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/rpc/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+      <filter-name>ShindigAuthFilter</filter-name>
+      <url-pattern>/rest/*</url-pattern>
+    </filter-mapping>
+<!-- End of Shindig filter mappings -->
+>>>>>>> .merge-right.r52916
 
     <listener>
         <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>

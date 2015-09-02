@@ -1274,6 +1274,7 @@ public class ContentManagerHelper {
             }
             session.save();
         } catch (RepositoryException e) {
+            logger.error(e.toString(), e);
             throw new GWTJahiaServiceException(e);
         }
     }

@@ -827,6 +827,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         }
                     }
                 }
+<<<<<<< .working
+=======
+            } catch (RepositoryException e) {
+                logger.error(e.toString(),e);
+                throw new GWTJahiaServiceException(e);
+>>>>>>> .merge-right.r52931
             }
             // save acl
             if (acl != null) {
@@ -850,6 +856,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 } catch (RepositoryException e) {
                     throw new GWTJahiaServiceException(e);
                 }
+<<<<<<< .working
+=======
+                if (Boolean.TRUE.equals(node.get("conditions-published"))) {
+                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath() + "/" + VisibilityService.NODE_NAME).getIdentifier()));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Error while saving visibility conditions for node "+node.getPath(),e);
+                throw new GWTJahiaServiceException(e);
+>>>>>>> .merge-right.r52931
             }
             if (node.get("activeWorkflows") != null) {
                 workflow.updateWorkflowRules(node,

@@ -734,7 +734,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                            Map<String, List<GWTJahiaNodeProperty>> langCodeProperties,
                            List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
         RpcMap result = new RpcMap();
-        closeEditEngine(node.getPath());
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
 
         try {
@@ -893,6 +892,30 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.node.creation.failed.cause", getUILocale(), e.getLocalizedMessage()));
         }
 
+<<<<<<< .working
+=======
+        if (rb != null) {
+            try {
+                result.put(GWTJahiaNode.SITE_LANGUAGES,
+                        languages.getLanguages((JCRSiteNode) jcrSessionWrapper.getNodeByIdentifier(node.getSiteUUID()),
+                                getUser(), getLocale())
+                );
+                if (needPermissionReload) {
+                    // need to load the permissions
+                    Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
+                    List<String> permissions = new ArrayList<String>();
+                    for (Privilege privilege : p) {
+                        permissions.add(((PrivilegeImpl) privilege).getPrefixedName());
+                    }
+                    result.put(GWTJahiaNode.PERMISSIONS, permissions);
+                }
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        closeEditEngine(node.getPath());
+
+>>>>>>> .merge-right.r52938
         return result;
     }
 

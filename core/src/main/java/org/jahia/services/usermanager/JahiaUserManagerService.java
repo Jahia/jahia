@@ -78,6 +78,7 @@ import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
@@ -869,6 +870,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     @Override
     public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
         checkRootUserPwd();
+        for (String key : legacyUserProviders.keySet()) {
+            BridgeEvents.sendEvent(key, BridgeEvents.USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
+        }
     }
 
     private void checkRootUserPwd() {
@@ -952,7 +956,9 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     @Deprecated
     public void registerProvider(JahiaUserManagerProvider jahiaUserManagerProvider) {
         legacyUserProviders.put(jahiaUserManagerProvider.getKey(), jahiaUserManagerProvider);
-        BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
+        if (FrameworkService.getInstance().isStarted()) {
+            BridgeEvents.sendEvent(jahiaUserManagerProvider.getKey(), BridgeEvents.USER_PROVIDER_REGISTER_BRIDGE_EVENT_KEY);
+        }
     }
 
     /**

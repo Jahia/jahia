@@ -562,6 +562,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         } finally {
             readLock.unlock();
         }
+        files.remove(systemId);
         deploymentProperties.remove(systemId + ".version");
         try {
             saveProperties();

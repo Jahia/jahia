@@ -114,6 +114,7 @@ public class CndBundleObserver implements BundleObserver<URL> {
             return;
         }
         String bundleName = BundleUtils.getDisplayName(bundle);
+        NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {

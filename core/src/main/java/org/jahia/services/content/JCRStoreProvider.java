@@ -757,13 +757,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                         logger.error(e.getMessage(), e);
                     }
                     needUpdate = true;
-                    NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
                 } catch (IOException e) {
                     logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
                     needUpdate = true;
                 }
             }
         }
+        NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
         return needUpdate;
     }
 

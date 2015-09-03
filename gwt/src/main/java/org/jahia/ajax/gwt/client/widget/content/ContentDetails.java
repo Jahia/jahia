@@ -461,7 +461,11 @@ public class ContentDetails extends BottomRightComponent implements NodeHolder {
                 item.doSave(getNode(), changedProperties, changedI18NProperties, addedTypes, removedTypes, null, acl);
             }
             if (config.isShowWorkInProgress()) {
-                changedI18NProperties.put(language.getLanguage(), Arrays.asList(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN)));
+                if (changedI18NProperties.containsKey(language.getLanguage())) {
+                    changedI18NProperties.get(language.getLanguage()).add(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN));
+                } else {
+                    changedI18NProperties.put(language.getLanguage(), Arrays.asList(new GWTJahiaNodeProperty("j:workInProgress", Boolean.toString(workInProgress), GWTJahiaNodePropertyType.BOOLEAN)));
+                }
             }
 
             getNode().getNodeTypes().removeAll(removedTypes);

@@ -2266,9 +2266,17 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!isNodeType("jmix:lockable")) {
             return false;
         }
+<<<<<<< .working
         String token = null;
+=======
+
+        Node locked = null;
+        Node i18nLocked = null;
+
+>>>>>>> .merge-right.r52942
         if (!objectNode.isLocked()) {
             lockNode(objectNode);
+            locked = objectNode;
         } else {
             Property property = objectNode.getProperty("j:locktoken");
             token = property.getString();
@@ -2313,12 +2321,36 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     objectNode.getSession().getWorkspace().getLockManager().removeLockToken(token);
                 } else {
                     unlock(type, userID);
+                    i18nLocked = objectNode;
                 }
             } catch (Exception unlockEx) {
                 logger.warn("Error when unlocking unsuccessful lock on node: " + getPath(), unlockEx);
             }
             throw e;
         }
+<<<<<<< .working
+=======
+        try {
+            objectNode.getSession().save();
+        } catch (RepositoryException e) {
+            // Clean locks before leaving
+            try {
+                if (locked != null) {
+                    locked.getSession().getWorkspace().getLockManager().unlock(locked.getPath());
+                }
+            } catch (RepositoryException e1) {
+                // Ignore
+            }
+            try {
+                if (i18nLocked != null) {
+                    i18nLocked.getSession().getWorkspace().getLockManager().unlock(i18nLocked.getPath());
+                }
+            } catch (RepositoryException e1) {
+                // Ignore
+            }
+            throw e;
+        }
+>>>>>>> .merge-right.r52942
         return true;
     }
 

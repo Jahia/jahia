@@ -682,6 +682,8 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
 
     void clearAllLocks() throws RepositoryException;
 
+    void checkLock() throws RepositoryException;
+
     /**
      * Adds the mix:versionable mixin type to a file node
      */

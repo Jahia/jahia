@@ -700,6 +700,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         node.clearAllLocks();
     }
 
+    @Override
+    public void checkLock() throws RepositoryException {
+        node.checkLock();
+    }
+
     public boolean holdsLock() throws RepositoryException {
         return node.holdsLock();
     }

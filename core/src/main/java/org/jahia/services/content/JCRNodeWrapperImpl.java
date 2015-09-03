@@ -2579,7 +2579,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         }
     }
 
-    protected void checkLock() throws RepositoryException {
+    public void checkLock() throws RepositoryException {
         if (!session.isSystem() && isLocked()) {
             List<String> owners = getLockOwners(objectNode);
             if (owners.size() == 1 && owners.contains(session.getUserID())) {

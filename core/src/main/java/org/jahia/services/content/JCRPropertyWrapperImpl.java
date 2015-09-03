@@ -133,11 +133,13 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void setValue(Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        node.checkLock();
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(node, name, def, value);
         property.setValue(value);
     }
 
     public void setValue(Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
+        node.checkLock();
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(node, name, def, values);
         property.setValue(values);
     }
@@ -437,6 +439,7 @@ public class JCRPropertyWrapperImpl extends JCRItemWrapperImpl implements JCRPro
     }
 
     public void remove() throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+        node.checkLock();
         JCRStoreService.getInstance().getInterceptorChain().beforeRemove(node, name, def);
         property.remove();
         if (node instanceof JCRNodeWrapperImpl)

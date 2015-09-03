@@ -2267,8 +2267,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return false;
         }
 <<<<<<< .working
+<<<<<<< .working
         String token = null;
 =======
+=======
+        String token = null;
+>>>>>>> .merge-right.r52946
 
         Node locked = null;
         Node i18nLocked = null;
@@ -2321,7 +2325,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     objectNode.getSession().getWorkspace().getLockManager().removeLockToken(token);
                 } else {
                     unlock(type, userID);
-                    i18nLocked = objectNode;
+                    i18nLocked = trans;
                 }
             } catch (Exception unlockEx) {
                 logger.warn("Error when unlocking unsuccessful lock on node: " + getPath(), unlockEx);
@@ -2338,15 +2342,18 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 if (locked != null) {
                     locked.getSession().getWorkspace().getLockManager().unlock(locked.getPath());
                 }
-            } catch (RepositoryException e1) {
-                // Ignore
+            } catch (RepositoryException unlockEx) {
+                logger.warn("Error when unlocking unsuccessful lock on node: " + getPath(), unlockEx);
             }
             try {
                 if (i18nLocked != null) {
                     i18nLocked.getSession().getWorkspace().getLockManager().unlock(i18nLocked.getPath());
                 }
-            } catch (RepositoryException e1) {
-                // Ignore
+            } catch (RepositoryException unlockEx) {
+                logger.warn("Error when unlocking unsuccessful lock on node: " + getPath(), unlockEx);
+            }
+            if (token != null) {
+                objectNode.getSession().getWorkspace().getLockManager().removeLockToken(token);
             }
             throw e;
         }

@@ -2266,18 +2266,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         if (!isNodeType("jmix:lockable")) {
             return false;
         }
-<<<<<<< .working
-<<<<<<< .working
         String token = null;
-=======
-=======
-        String token = null;
->>>>>>> .merge-right.r52946
 
         Node locked = null;
         Node i18nLocked = null;
 
->>>>>>> .merge-right.r52942
         if (!objectNode.isLocked()) {
             lockNode(objectNode);
             locked = objectNode;
@@ -2297,6 +2290,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     trans = getI18N(session.getLocale());
                     if (!trans.isLocked()) {
                         lockNode(trans);
+                        i18nLocked = trans;
                     } else {
                         Property property = trans.getProperty("j:locktoken");
                         i18nToken = property.getString();
@@ -2319,23 +2313,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                 }
             }
             objectNode.getSession().save();
-        } catch (Exception e) {
-            try {
-                if (token != null) {
-                    objectNode.getSession().getWorkspace().getLockManager().removeLockToken(token);
-                } else {
-                    unlock(type, userID);
-                    i18nLocked = trans;
-                }
-            } catch (Exception unlockEx) {
-                logger.warn("Error when unlocking unsuccessful lock on node: " + getPath(), unlockEx);
-            }
-            throw e;
-        }
-<<<<<<< .working
-=======
-        try {
-            objectNode.getSession().save();
         } catch (RepositoryException e) {
             // Clean locks before leaving
             try {
@@ -2357,7 +2334,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             throw e;
         }
->>>>>>> .merge-right.r52942
         return true;
     }
 

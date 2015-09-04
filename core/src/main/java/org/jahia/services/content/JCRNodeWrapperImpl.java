@@ -2273,28 +2273,20 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         Node locked = null;
         Node i18nLocked = null;
 
-        try {
-            if (!objectNode.isLocked()) {
-                lockNode(objectNode);
-                locked = objectNode;
-            } else {
-                Property property = objectNode.getProperty("j:locktoken");
-                token = property.getString();
+        if (!objectNode.isLocked()) {
+            lockNode(objectNode);
+            locked = objectNode;
+        } else {
+            Property property = objectNode.getProperty("j:locktoken");
+            token = property.getString();
 
-<<<<<<< .working
             objectNode.getSession().getWorkspace().getLockManager().addLockToken(token);
         }
-=======
-                objectNode.getSession().addLockToken(token);
-            }
->>>>>>> .merge-right.r52953
         try {
             addLockTypeValue(objectNode, userID + ":" + type);
 
-<<<<<<< .working
             if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 Node trans = null;
-                String i18nToken = null;
                 try {
                     trans = getI18N(session.getLocale());
                     if (!trans.isLocked()) {
@@ -2303,48 +2295,13 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     } else {
                         Property property = trans.getProperty("j:locktoken");
                         i18nToken = property.getString();
-=======
-            addLockTypeValue(objectNode, userID + ":" + type);
->>>>>>> .merge-right.r52953
 
-<<<<<<< .working
                         trans.getSession().getWorkspace().getLockManager().addLockToken(i18nToken);
                     }
                     addLockTypeValue(trans, userID + ":" + type);
                 } catch (ItemNotFoundException e) {
-                } catch (Exception e) {
-                    try {
-                        if (i18nToken != null) {
-                            objectNode.getSession().getWorkspace().getLockManager().removeLockToken(i18nToken);
-                        } else if (token != null) {
-                            unlock(trans, type, userID);
-                        }
-                    } catch (Exception unlockEx) {
-                        logger.warn("Error when unlocking unsuccessful lock on node: " + trans.getPath(), unlockEx);
-                    }
-                    throw e;
-=======
-            if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
-                Node trans = null;
-                try {
-                    trans = getI18N(session.getLocale());
-                    if (!trans.isLocked()) {
-                        lockNode(trans);
-                        i18nLocked = trans;
-                    } else {
-                        Property property = trans.getProperty("j:locktoken");
-                        i18nToken = property.getString();
-                        objectNode.getSession().addLockToken(i18nToken);
-                    }
-                    addLockTypeValue(trans, userID + ":" + type);
-                } catch (ItemNotFoundException e) {
->>>>>>> .merge-right.r52953
                 }
             }
-<<<<<<< .working
-=======
-
->>>>>>> .merge-right.r52953
             objectNode.getSession().save();
         } catch (RepositoryException e) {
             // Clean locks before leaving

@@ -310,6 +310,7 @@ public class PropertiesHelper {
     }
 
     public void saveWorkInProgress(JCRNodeWrapper node, Map<String, List<GWTJahiaNodeProperty>> langProperties) throws RepositoryException {
+        node.checkLock();
         if (node.hasTranslations()) {
             for (String language : langProperties.keySet()) {
                 boolean isWipLanguage = false;
@@ -511,6 +512,7 @@ public class PropertiesHelper {
         try {
             if(wipProp != null) {
                 Node n;
+                objectNode.checkLock();
                 boolean wip = wipProp.getValues().get(0).getBoolean();
                 Locale locale = objectNode.getSession().getLocale();
                 if (locale == null || !objectNode.hasI18N(locale)) {

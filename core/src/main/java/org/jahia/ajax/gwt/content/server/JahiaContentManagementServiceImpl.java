@@ -1816,8 +1816,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
             try {
-                if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && !nodeWrapper.isLocked() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                    nodeWrapper.checkout();
+                if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     nodeWrapper.lockAndStoreToken("engine");
                     GWTResourceBundleUtils.lock(nodeWrapper);
                 }
@@ -1973,7 +1972,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
                 nodeWrapper = sessionWrapper.getNode(path);
-                if (tryToLockNode) {
+                if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                     nodeWrapper.lockAndStoreToken("engine");
                     GWTResourceBundleUtils.lock(nodeWrapper);
                 }

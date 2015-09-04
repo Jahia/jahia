@@ -1624,7 +1624,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value value) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        checkLock();
         hasPropertyCache.remove(name);
 
         name = ensurePrefixedName(name);
@@ -1651,10 +1650,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd.isInternationalized()) {
+                checkLock();
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, epd, name);
             }
         }
 
+        checkLock();
         if (value == null) {
             objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -2267,22 +2268,30 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             return false;
         }
         String token = null;
+        String i18nToken = null;
 
         Node locked = null;
         Node i18nLocked = null;
 
-        if (!objectNode.isLocked()) {
-            lockNode(objectNode);
-            locked = objectNode;
-        } else {
-            Property property = objectNode.getProperty("j:locktoken");
-            token = property.getString();
+        try {
+            if (!objectNode.isLocked()) {
+                lockNode(objectNode);
+                locked = objectNode;
+            } else {
+                Property property = objectNode.getProperty("j:locktoken");
+                token = property.getString();
 
+<<<<<<< .working
             objectNode.getSession().getWorkspace().getLockManager().addLockToken(token);
         }
+=======
+                objectNode.getSession().addLockToken(token);
+            }
+>>>>>>> .merge-right.r52953
         try {
             addLockTypeValue(objectNode, userID + ":" + type);
 
+<<<<<<< .working
             if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
                 Node trans = null;
                 String i18nToken = null;
@@ -2294,7 +2303,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     } else {
                         Property property = trans.getProperty("j:locktoken");
                         i18nToken = property.getString();
+=======
+            addLockTypeValue(objectNode, userID + ":" + type);
+>>>>>>> .merge-right.r52953
 
+<<<<<<< .working
                         trans.getSession().getWorkspace().getLockManager().addLockToken(i18nToken);
                     }
                     addLockTypeValue(trans, userID + ":" + type);
@@ -2310,8 +2323,28 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                         logger.warn("Error when unlocking unsuccessful lock on node: " + trans.getPath(), unlockEx);
                     }
                     throw e;
+=======
+            if (session.getLocale() != null && !isNodeType(Constants.JAHIANT_TRANSLATION)) {
+                Node trans = null;
+                try {
+                    trans = getI18N(session.getLocale());
+                    if (!trans.isLocked()) {
+                        lockNode(trans);
+                        i18nLocked = trans;
+                    } else {
+                        Property property = trans.getProperty("j:locktoken");
+                        i18nToken = property.getString();
+                        objectNode.getSession().addLockToken(i18nToken);
+                    }
+                    addLockTypeValue(trans, userID + ":" + type);
+                } catch (ItemNotFoundException e) {
+>>>>>>> .merge-right.r52953
                 }
             }
+<<<<<<< .working
+=======
+
+>>>>>>> .merge-right.r52953
             objectNode.getSession().save();
         } catch (RepositoryException e) {
             // Clean locks before leaving
@@ -2331,6 +2364,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
             if (token != null) {
                 objectNode.getSession().getWorkspace().getLockManager().removeLockToken(token);
+            }
+            if (i18nToken != null) {
+                objectNode.getSession().getWorkspace().getLockManager().removeLockToken(i18nToken);
             }
             throw e;
         }

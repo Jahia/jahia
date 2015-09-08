@@ -103,7 +103,7 @@ public class HttpBasicAuthValveImpl extends BaseAuthValve {
         AuthValveContext authContext = (AuthValveContext) context;
         HttpServletRequest request = authContext.getRequest();
         String auth = request.getHeader("Authorization");
-        if (auth != null) {
+        if (auth != null && auth.startsWith("Basic ")) {
             try {
                 if (logger.isDebugEnabled()) {
                     logger.debug("Header found : "+auth);

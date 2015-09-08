@@ -85,7 +85,7 @@ import org.jahia.settings.SettingsBean;
  * @author Sergiy Shyrkov
  * 
  */
-public class WebFolderVisibility extends WebDavAvailableVisibility {
+public class WebFolderVisibility extends ModuleAvailableVisibility {
 
     @Override
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale,

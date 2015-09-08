@@ -73,38 +73,32 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
 
 /**
- * Checks for the availability of the WebDAV module.
+ * Checks for the availability of the specified module (using bundle symbolic name).
  * 
  * @author Sergiy Shyrkov
  */
-public class WebDavAvailableVisibility extends Visibility {
+public class ModuleAvailableVisibility extends Visibility {
     
-    private TemplatePackageRegistry templatePackageRegistry;
+    private String moduleId;
     
-    private String webDavBundleId = "jcr-webdav";
-
     @Override
     public boolean getRealValue(JCRNodeWrapper contextNode, JahiaUser jahiaUser, Locale locale,
             HttpServletRequest request) {
-        return isWebDavAvailable() && super.getRealValue(contextNode, jahiaUser, locale, request);
+        return isModuleAvailable() && super.getRealValue(contextNode, jahiaUser, locale, request);
     }
 
-    private boolean isWebDavAvailable() {
-        return templatePackageRegistry.lookupById(webDavBundleId) != null;
+    private boolean isModuleAvailable() {
+        return ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(moduleId) != null;
     }
 
-    public void setTemplatePackageRegistry(TemplatePackageRegistry templatePackageRegistry) {
-        this.templatePackageRegistry = templatePackageRegistry;
-    }
-
-    public void setWebDavBundleId(String webDavBundleId) {
-        this.webDavBundleId = webDavBundleId;
+    public void setModuleId(String webDavBundleId) {
+        this.moduleId = webDavBundleId;
     }
 
 }

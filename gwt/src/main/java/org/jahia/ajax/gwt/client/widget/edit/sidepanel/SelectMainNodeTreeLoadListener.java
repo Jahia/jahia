@@ -139,4 +139,7 @@ class SelectMainNodeTreeLoadListener extends LoadListener {
         }
     }
 
+    public String getSelectedPath() {
+        return selectedPath;
+    }
 }

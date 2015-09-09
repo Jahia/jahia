@@ -56,6 +56,7 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="equal">^$</condition>
+        <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?mounts/.*</condition>
         <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
         <condition type="request-uri" operator="notequal">^/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>
@@ -68,6 +69,7 @@
         <condition type="attribute" name="jahiaSiteKeyForCurrentServerName" operator="notequal">^$</condition>
         <condition type="attribute" name="vanityUrlTargetPath" operator="equal">^$</condition>
         <condition type="attribute" name="contextPath" operator="notequal">^$</condition>
+        <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?mounts/.*</condition>
         <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?users/.*</condition>
         <condition type="request-uri" operator="notequal">^(/[\p{Alnum}\-_]*)?/(cms/)?([a-z]{2}(_[A-Z]{2})?/)?sites/.*</condition>
         <from>^/cms/([a-z]{2}(_[A-Z]{2})?/)?(.*)$</from>

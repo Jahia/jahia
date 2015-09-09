@@ -71,10 +71,9 @@
  */
 package org.jahia.services.uicomponents.bean;
 
-import org.drools.core.util.StringUtils;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.templates.ModuleBuildHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
@@ -242,7 +241,9 @@ public class Visibility {
                 if ("$currentsite".equals(contextNodePath)) {
                     node = node.getResolveSite();
                 } else if ("$anysite".equals(contextNodePath)) {
-                    List<JCRNodeWrapper> l = JCRContentUtils.getChildrenOfType(node.getResolveSite().getParent(), "jnt:virtualsite");
+                    // Read sites list for edit mode access permission instead of modules list
+                    JCRNodeWrapper sitesPath = StringUtils.equals("editModeAccess", permission) ? node.getSession().getNode("/sites") : node.getResolveSite().getParent();
+                    List<JCRNodeWrapper> l = JCRContentUtils.getChildrenOfType(sitesPath, "jnt:virtualsite");
                     for (JCRNodeWrapper nodeWrapper : l) {
                         if (nodeWrapper.hasPermission(permission)) {
                             return true;

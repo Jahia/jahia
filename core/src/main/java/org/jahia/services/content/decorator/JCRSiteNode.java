@@ -134,7 +134,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
      * @return list of inactive live languages
      */
     public Set<String> getInactiveLiveLanguages() {
-        return getInactiveLanguages(inactiveLiveLanguages,SitesSettings.INACTIVE_LIVE_LANGUAGES);
+        return getInactiveLanguages(inactiveLiveLanguages, SitesSettings.INACTIVE_LIVE_LANGUAGES);
     }
 
     /**
@@ -354,31 +354,25 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     public String getTemplateFolder() {
         if (templateFolder == null) {
-<<<<<<< .working
             if (getPath().startsWith("/modules")) {
                 templateFolder = getName();
             } else {
                 try {
-                    if (hasProperty("j:installedModules")) {
-                        templateFolder = getProperty("j:installedModules").getValues()[0].getString();
-                    }
-                } catch (RepositoryException e) {
-                    logger.error("Cannot get site property",e);
-=======
-            try {
-                if (hasProperty("j:templatesSet")) {
-                    templateFolder = getProperty("j:templatesSet").getValue().getString();
-                } else if (hasProperty("j:installedModules")) {
-                    for (Value value : getProperty("j:installedModules").getValues()) {
-                        JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(value.getString());
-                        if (templatePackage != null) {
-                            if (StringUtils.equals(templatePackage.getModuleType(), "templatesSet")) {
-                                templateFolder = value.getString();
-                                break;
+                    if (hasProperty("j:templatesSet")) {
+                        templateFolder = getProperty("j:templatesSet").getValue().getString();
+                    } else if (hasProperty("j:installedModules")) {
+                        for (Value value : getProperty("j:installedModules").getValues()) {
+                            JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(value.getString());
+                            if (templatePackage != null) {
+                                if (StringUtils.equals(templatePackage.getModuleType(), "templatesSet")) {
+                                    templateFolder = value.getString();
+                                    break;
+                                }
                             }
                         }
                     }
->>>>>>> .merge-right.r52968
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get site property",e);
                 }
             }
         }

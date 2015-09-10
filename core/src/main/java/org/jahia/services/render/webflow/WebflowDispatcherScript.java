@@ -135,6 +135,12 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
 
+        String s = (String) request.getSession().getAttribute("webflowResponse"+request.getQueryString());
+        if (s != null ) {
+            request.getSession().removeAttribute("webflowResponse"+request.getQueryString());
+            return s;
+        }
+
         flowPath = MODULE_PREFIX_PATTERN.matcher(view.getPath()).replaceFirst("");
 
         String identifier;
@@ -173,59 +179,79 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
 
             rd.include(request, responseWrapper);
 
-            while (responseWrapper.getRedirect() != null && !responseWrapper.getRedirect().startsWith("http://") && !responseWrapper.getRedirect().startsWith("https://")) {
-                final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
-                final Map<String,String[]> params = new HashMap<String,String[]>();
-                if (!StringUtils.isEmpty(qs)) {
-                    String identifierNoDashes = StringUtils.remove(identifier, '-');
-                    params.put("webflowexecution"+ identifierNoDashes,new String[] {StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes+"=")});
-                }
-                HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
-                    @Override
-                    public String getMethod() {
-                        return "GET";
-                    }
-
-                    @SuppressWarnings("rawtypes")
-                    @Override
-                    public Map getParameterMap() {
-                        return params;
-                    }
-
-                    @Override
-                    public String getParameter(String name) {
-                        return params.containsKey(name) ? params.get(name) [0] : null;
-                    }
-
-                    @Override
-                    public Enumeration getParameterNames() {
-                        return new Vector(params.keySet()).elements();
-                    }
-
-                    @Override
-                    public String[] getParameterValues(String name) {
-                        return params.get(name);
-                    }
-
-                    @Override
-                    public Object getAttribute(String name) {
-                        if (WebUtils.FORWARD_QUERY_STRING_ATTRIBUTE.equals(name)) {
-                            return qs;
+            String redirect = responseWrapper.getRedirect();
+            if(redirect != null) {
+                // if we have an absolute redirect, set it and move on
+                if(redirect.startsWith("http:/") || redirect.startsWith("https://")) {
+                    context.setRedirect(responseWrapper.getRedirect());
+                } else {
+                    while (redirect != null) {
+                        final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
+                        final Map<String, String[]> params = new HashMap<String, String[]>();
+                        if (!StringUtils.isEmpty(qs)) {
+                            String identifierNoDashes = StringUtils.remove(identifier, '-');
+                            params.put("webflowexecution" + identifierNoDashes, new String[]{StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes + "=")});
                         }
-                        return super.getAttribute(name);
-                    }
+                        HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
+                            @Override
+                            public String getMethod() {
+                                return "GET";
+                            }
 
-                    @Override
-                    public String getQueryString() {
-                        return qs;
+                            @SuppressWarnings("rawtypes")
+                            @Override
+                            public Map getParameterMap() {
+                                return params;
+                            }
+
+                            @Override
+                            public String getParameter(String name) {
+                                return params.containsKey(name) ? params.get(name)[0] : null;
+                            }
+
+                            @Override
+                            public Enumeration getParameterNames() {
+                                return new Vector(params.keySet()).elements();
+                            }
+
+                            @Override
+                            public String[] getParameterValues(String name) {
+                                return params.get(name);
+                            }
+
+                            @Override
+                            public Object getAttribute(String name) {
+                                if (WebUtils.FORWARD_QUERY_STRING_ATTRIBUTE.equals(name)) {
+                                    return qs;
+                                }
+                                return super.getAttribute(name);
+                            }
+
+                            @Override
+                            public String getQueryString() {
+                                return qs;
+                            }
+                        };
+                        rd = requestWrapper.getRequestDispatcher("/flow/" + flowPath + "?" + qs);
+                        responseWrapper = new StringResponseWrapper(response);
+                        rd.include(requestWrapper, responseWrapper);
+
+                        String oldRedirect = redirect;
+                        redirect = responseWrapper.getRedirect();
+                        if(redirect != null) {
+                            // if we have an absolute redirect, exit the loop
+                            if(redirect.startsWith("http://") || redirect.startsWith("https://")) {
+                                context.setRedirect(redirect);
+                                break;
+                            }
+                        }
+                        else {
+                            // set the redirect to the last non-null one
+                            request.getSession().setAttribute("webflowResponse"+qs, responseWrapper.getString());
+                            context.setRedirect(oldRedirect);
+                        }
                     }
-                };
-                rd = requestWrapper.getRequestDispatcher("/flow/"+flowPath + "?" + qs);
-                responseWrapper = new StringResponseWrapper(response);
-                rd.include(requestWrapper, responseWrapper);
-            }
-            if(responseWrapper.getRedirect() != null && (responseWrapper.getRedirect().startsWith("http://") || responseWrapper.getRedirect().startsWith("https://"))) {
-                context.setRedirect(responseWrapper.getRedirect());
+                }
             }
         } catch (ServletException e) {
             throw new RenderException(e.getRootCause() != null ? e.getRootCause() : e);

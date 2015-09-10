@@ -82,6 +82,7 @@ import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.VBoxLayout;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGrid;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -149,17 +150,14 @@ public class PagesTabItem extends SidePanelTabItem {
 
         pageTree = factory.getTreeGrid(new ColumnModel(columns));
 
-        selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
-
         pageTree.setAutoExpandColumn(columns.getAutoExpand());
         pageTree.getTreeView().setRowHeight(25);
         pageTree.getTreeView().setForceFit(true);
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
         pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
-            @Override
-            public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
-                               String property) {
+            @Override public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
+                                         String property) {
                 if (!m1.getInheritedNodeTypes().contains("jmix:navMenuItem") && m2.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     return 1;
                 } else if (!m2.getInheritedNodeTypes().contains("jmix:navMenuItem") && m1.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
@@ -171,20 +169,20 @@ public class PagesTabItem extends SidePanelTabItem {
         });
         pageTree.setSelectionModel(new TreeGridClickSelectionModel());
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
                 if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                        !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
+                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")
                         ) {
-                    MainModule.staticGoTo(selectMainNodeTreeLoadListener.getSelectedPath() != null ? selectMainNodeTreeLoadListener.getSelectedPath() : node.getPath(), null);
+                    MainModule.staticGoTo(node.getPath(), null);
                 }
             }
         });
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
         
         pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
+        selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
         tab.add(pageTree);
     }
 

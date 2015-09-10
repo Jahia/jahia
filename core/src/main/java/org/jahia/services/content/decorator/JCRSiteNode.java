@@ -354,6 +354,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
 
     public String getTemplateFolder() {
         if (templateFolder == null) {
+<<<<<<< .working
             if (getPath().startsWith("/modules")) {
                 templateFolder = getName();
             } else {
@@ -363,6 +364,21 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                     }
                 } catch (RepositoryException e) {
                     logger.error("Cannot get site property",e);
+=======
+            try {
+                if (hasProperty("j:templatesSet")) {
+                    templateFolder = getProperty("j:templatesSet").getValue().getString();
+                } else if (hasProperty("j:installedModules")) {
+                    for (Value value : getProperty("j:installedModules").getValues()) {
+                        JahiaTemplatesPackage templatePackage = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(value.getString());
+                        if (templatePackage != null) {
+                            if (StringUtils.equals(templatePackage.getModuleType(), "templatesSet")) {
+                                templateFolder = value.getString();
+                                break;
+                            }
+                        }
+                    }
+>>>>>>> .merge-right.r52968
                 }
             }
         }

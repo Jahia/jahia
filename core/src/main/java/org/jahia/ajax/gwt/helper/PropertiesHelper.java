@@ -273,7 +273,7 @@ public class PropertiesHelper {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode = currentUserSession.getNode(aNode.getPath());
             List<String> types = aNode.getNodeTypes();
-            if (removedTypes != null) {
+            if (removedTypes != null && !removedTypes.isEmpty()) {
                 for (ExtendedNodeType mixin : objectNode.getMixinNodeTypes()) {
                     if (removedTypes.contains(mixin.getName())) {
                         List<ExtendedItemDefinition> items = mixin.getItems();

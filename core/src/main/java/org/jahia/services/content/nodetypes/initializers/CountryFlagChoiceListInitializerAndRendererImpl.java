@@ -102,8 +102,20 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                     String flagPath = "/css/images/flags/shadow/flag_" + Patterns.SPACE.matcher(new Locale("en",
                                                                                     value.getValue().getString()).getDisplayCountry(
                             Locale.ENGLISH).toLowerCase()).replaceAll("_") + ".png";
+<<<<<<< .working
                     String flagRealPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
                     if (flagRealPath == null || !new File(flagRealPath).exists()) {
+=======
+                    String realFlagPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
+                    boolean hasFlag;
+                    try {
+                        File f = new File(realFlagPath);
+                        hasFlag = f.exists();
+                    } catch (Exception e) {
+                        hasFlag = false;
+                    }
+                    if (!hasFlag) {
+>>>>>>> .merge-right.r52987
                         flagPath = "/css/blank.gif";
                     }
                     value.addProperty("image", Jahia.getContextPath() + flagPath);

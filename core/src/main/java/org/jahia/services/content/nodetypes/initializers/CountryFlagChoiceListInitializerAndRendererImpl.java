@@ -71,7 +71,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -79,6 +78,7 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
@@ -100,12 +100,8 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
             for (ChoiceListValue value : values) {
                 try {
                     String flagPath = "/css/images/flags/shadow/flag_" + Patterns.SPACE.matcher(new Locale("en",
-                                                                                    value.getValue().getString()).getDisplayCountry(
+                            value.getValue().getString()).getDisplayCountry(
                             Locale.ENGLISH).toLowerCase()).replaceAll("_") + ".png";
-<<<<<<< .working
-                    String flagRealPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
-                    if (flagRealPath == null || !new File(flagRealPath).exists()) {
-=======
                     String realFlagPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
                     boolean hasFlag;
                     try {
@@ -115,7 +111,6 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                         hasFlag = false;
                     }
                     if (!hasFlag) {
->>>>>>> .merge-right.r52987
                         flagPath = "/css/blank.gif";
                     }
                     value.addProperty("image", Jahia.getContextPath() + flagPath);
@@ -129,12 +124,12 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
     }
 
     public Map<String, Object> getObjectRendering(RenderContext context,
-            JCRPropertyWrapper propertyWrapper) throws RepositoryException {
+                                                  JCRPropertyWrapper propertyWrapper) throws RepositoryException {
         return getObjectRendering(context, null, propertyWrapper.getValue().getString());
     }
 
     public Map<String, Object> getObjectRendering(RenderContext context,
-            ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
+                                                  ExtendedPropertyDefinition propDef, Object propertyValue) throws RepositoryException {
         Map<String, Object> map = new HashMap<String, Object>(2);
         final String displayName = new Locale("en", propertyValue.toString())
                 .getDisplayCountry(context.getMainResource().getLocale());
@@ -163,7 +158,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
     }
 
     public String getStringRendering(RenderContext context, ExtendedPropertyDefinition propDef,
-            Object propertyValue) throws RepositoryException {
+                                     Object propertyValue) throws RepositoryException {
         String value = propertyValue.toString();
         final String displayName = new Locale("en", value).getDisplayCountry(context
                 .getMainResource().getLocale());
@@ -179,13 +174,13 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
     }
 
     public Map<String, Object> getObjectRendering(Locale locale,
-            ExtendedPropertyDefinition propDef, Object propertyValue)
+                                                  ExtendedPropertyDefinition propDef, Object propertyValue)
             throws RepositoryException {
         throw new UnsupportedOperationException("This renderer does not work without RenderContext");
     }
 
     public String getStringRendering(Locale locale,
-            ExtendedPropertyDefinition propDef, Object propertyValue)
+                                     ExtendedPropertyDefinition propDef, Object propertyValue)
             throws RepositoryException {
         throw new UnsupportedOperationException("This renderer does not work without RenderContext");
     }

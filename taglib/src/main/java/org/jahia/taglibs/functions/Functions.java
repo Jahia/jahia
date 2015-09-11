@@ -331,6 +331,7 @@ public class Functions {
             return value;
         }
         Source source = new Source(value);
+        source.setLogger(null);
         TextExtractor textExtractor = source.getTextExtractor();
         textExtractor.setExcludeNonHTMLElements(true);
         textExtractor.setConvertNonBreakingSpaces(false);

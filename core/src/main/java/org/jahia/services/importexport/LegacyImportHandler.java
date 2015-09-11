@@ -1283,6 +1283,7 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private String removeHtmlTags(String value) {
         Source source = new Source(value);
+        source.setLogger(null);
         TextExtractor textExtractor = source.getTextExtractor();
         textExtractor.setExcludeNonHTMLElements(true);
         textExtractor.setConvertNonBreakingSpaces(false);

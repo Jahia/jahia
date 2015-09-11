@@ -131,6 +131,7 @@ public class RegexpFilter extends AbstractFilter {
         } else {
             StringBuilder buffer = new StringBuilder(previousOut);
             Source source = new Source(previousOut);
+            source.setLogger(null);
             List<Tag> tags = source.getAllTags();
             int offset = 0;
             for (Tag tag : tags) {

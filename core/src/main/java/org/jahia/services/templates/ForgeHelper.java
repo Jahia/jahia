@@ -121,6 +121,7 @@ class ForgeHelper {
         try {
             client.executeMethod(getMethod);
             Source source = new Source(getMethod.getResponseBodyAsString());
+            source.setLogger(null);
             if (source.getFirstElementByClass("file_upload") != null) {
                 List<net.htmlparser.jericho.Element> els = source
                         .getFirstElementByClass("file_upload").getAllElements(

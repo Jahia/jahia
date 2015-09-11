@@ -110,6 +110,7 @@ public class EditModeFilter extends AbstractFilter {
         String out = super.execute(previousOut, renderContext, resource, chain);
         if (renderContext.getServletPath().endsWith("frame")) {
             Source source = new Source(out);
+            source.setLogger(null);
             OutputDocument document = new OutputDocument(source);
             List<StartTag> tags = source.getAllStartTags("a");
             for (StartTag tag : tags) {

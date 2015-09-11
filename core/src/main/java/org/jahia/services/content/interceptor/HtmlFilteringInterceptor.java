@@ -144,6 +144,7 @@ public class HtmlFilteringInterceptor extends BaseInterceptor {
         boolean modified = false;
 
         Source src = new Source(content);
+        src.setLogger(null);
         OutputDocument out = new OutputDocument(src);
         for (String filteredTagName : filteredTags) {
             for (StartTag startTag : src.getAllStartTags(filteredTagName)) {

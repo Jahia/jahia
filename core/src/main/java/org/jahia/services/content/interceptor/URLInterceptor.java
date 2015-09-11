@@ -92,10 +92,14 @@ import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,8 +108,8 @@ import static org.jahia.api.Constants.JAHIA_REFERENCE_IN_FIELD_PREFIX;
 
 /**
  * URL Interceptor catches internal URLs inside richtext, and transform them to store references to the pointed nodes
- * instead of pathes. It also replaces the servlet context and servlet name by a placeholder so that the stored link
- * is not dependant of the deployement.
+ * instead of paths. It also replaces the servlet context and servlet name by a placeholder so that the stored link
+ * is not dependant of the deployment.
  * <p/>
  * Two types of links are detected : CMS links (like /cms/render/default/en/sites/ACME/home.html ) and files
  * links ( /files/sites/ACME/files/Pictures/BannerTeaser/img-home-fr.jpg ).
@@ -241,6 +245,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             }
         }
 
+        Set<String> refsToRemove = new HashSet<>(refs.size());
         if (!newRefs.equals(refs)) {
             if (!newRefs.isEmpty() && !nodeWithReferences.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
                 nodeWithReferences.addMixin(JAHIAMIX_REFERENCES_IN_FIELD);
@@ -248,11 +253,12 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : " + newRefs);
             }
+
             NodeIterator ni = nodeWithReferences.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             while (ni.hasNext()) {
                 JCRNodeWrapper ref = (JCRNodeWrapper) ni.next();
                 if (name.equals(ref.getProperty("j:fieldName").getString()) && (!ref.hasProperty("j:reference") || !newRefs.containsKey(ref.getProperty("j:reference").getString()))) {
-                    ref.remove();
+                    refsToRemove.add(ref.getName());
                 }
             }
 
@@ -265,6 +271,9 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
             }
         }
 
+        for (String refToRemove : refsToRemove) {
+            nodeWithReferences.getNode(refToRemove).remove();
+        }
 
         if (!result.equals(content)) {
             return node.getSession().getValueFactory().createValue(result);

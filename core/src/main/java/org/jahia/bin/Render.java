@@ -467,9 +467,12 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                     outputDocument.remove(element.getEndTag());
                 }
             }
-            for (Attribute attribute : element.getAttributes()) {
-                if (EVENT_ATTRIBUTE_NAMES.contains(attribute.getName())) {
-                    outputDocument.remove(attribute);
+            final Attributes attributes = element.getAttributes();
+            if (attributes != null) {
+                for (Attribute attribute : attributes) {
+                    if (EVENT_ATTRIBUTE_NAMES.contains(attribute.getName())) {
+                        outputDocument.remove(attribute);
+                    }
                 }
             }
         }

@@ -244,8 +244,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                                 context.setRedirect(redirect);
                                 break;
                             }
-                        }
-                        else {
+                        } else if (request.getMethod().equals("POST")) {
                             // set the redirect to the last non-null one
                             request.getSession().setAttribute("webflowResponse"+qs, responseWrapper.getString());
                             context.setRedirect(oldRedirect);

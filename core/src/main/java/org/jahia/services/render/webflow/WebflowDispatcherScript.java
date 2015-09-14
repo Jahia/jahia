@@ -135,20 +135,25 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
 
-        String s = (String) request.getSession().getAttribute("webflowResponse"+request.getQueryString());
-        if (s != null ) {
-            request.getSession().removeAttribute("webflowResponse"+request.getQueryString());
-            return s;
-        }
-
-        flowPath = MODULE_PREFIX_PATTERN.matcher(view.getPath()).replaceFirst("");
-
         String identifier;
         try {
             identifier = resource.getNode().getIdentifier();
         } catch (RepositoryException e) {
             throw new RenderException(e);
         }
+        String identifierNoDashes = StringUtils.replace(identifier, "-", "_");
+
+        if (resource.getTemplate() != null && !resource.getTemplate().equals("default")) {
+            identifierNoDashes += "." + resource.getTemplate();
+        }
+
+        String s = (String) request.getSession().getAttribute("webflowResponse"+identifierNoDashes);
+        if (s != null ) {
+            request.getSession().removeAttribute("webflowResponse"+identifierNoDashes);
+            return s;
+        }
+
+        flowPath = MODULE_PREFIX_PATTERN.matcher(view.getPath()).replaceFirst("");
 
         RequestDispatcher rd = request.getRequestDispatcher("/flow/"+flowPath);
 
@@ -189,7 +194,6 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                         final String qs = StringUtils.substringAfter(responseWrapper.getRedirect(), "?");
                         final Map<String, String[]> params = new HashMap<String, String[]>();
                         if (!StringUtils.isEmpty(qs)) {
-                            String identifierNoDashes = StringUtils.remove(identifier, '-');
                             params.put("webflowexecution" + identifierNoDashes, new String[]{StringUtils.substringAfterLast(qs, "webflowexecution" + identifierNoDashes + "=")});
                         }
                         HttpServletRequestWrapper requestWrapper = new HttpServletRequestWrapper(request) {
@@ -246,7 +250,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
                             }
                         } else if (request.getMethod().equals("POST")) {
                             // set the redirect to the last non-null one
-                            request.getSession().setAttribute("webflowResponse"+qs, responseWrapper.getString());
+                            request.getSession().setAttribute("webflowResponse"+identifierNoDashes, responseWrapper.getString());
                             context.setRedirect(oldRedirect);
                         }
                     }

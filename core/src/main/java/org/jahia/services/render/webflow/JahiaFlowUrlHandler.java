@@ -73,6 +73,7 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.webflow.context.servlet.DefaultFlowUrlHandler;
@@ -93,7 +94,12 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
         if (n != null) {
             try {
-                return request.getParameter( "webflowexecution" + StringUtils.remove(n.getIdentifier(), '-'));
+                String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
+                Resource r = (Resource) request.getAttribute("currentResource");
+                if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
+                    name += "." + r.getTemplate();
+                }
+                return request.getParameter(name);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 return super.getFlowExecutionKey(request);
@@ -122,7 +128,13 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
             path.append('?');
             Map<String,String> params = new HashMap<String, String>();
             try {
-                params.put("webflowexecution" + StringUtils.remove(n.getIdentifier(), '-'), flowExecutionKey);
+                String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
+                Resource r = (Resource) request.getAttribute("currentResource");
+                if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
+                    name += "." + r.getTemplate();
+                }
+                params.put(name, flowExecutionKey);
+
                 appendQueryParameters(path, params, getEncodingScheme(request));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);

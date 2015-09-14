@@ -404,6 +404,12 @@
                 <property name="loggingService" ref="loggingService"/>
             </bean>
         </property>
+        <property name="webflowAction">
+            <bean class="org.jahia.services.render.webflow.WebflowAction">
+                <property name="renderService" ref="RenderService"/>
+                <property name="requireAuthenticatedUser" value="false"/>
+            </bean>
+        </property>
         <property name="settingsBean" ref="settingsBean"/>
         <property name="renderService" ref="RenderService"/>
         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>

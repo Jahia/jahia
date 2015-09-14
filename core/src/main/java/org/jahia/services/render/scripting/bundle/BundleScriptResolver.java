@@ -258,7 +258,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
             List<String> templateTypeMappings = null;
             Channel channel = renderContext.getChannel();
-            if (!channel.getFallBack().equals("root")) {
+            if (channel != null && !channel.getFallBack().equals("root")) {
                 templateTypeMappings = new LinkedList<String>();
                 while (!channel.getFallBack().equals("root")) {
                     if (channel.getCapability("template-type-mapping") != null) {

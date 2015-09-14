@@ -219,8 +219,14 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient JahiaTemplateManagerService templateService;
     private transient Action defaultPostAction;
     private transient Action defaultPutAction;
+<<<<<<< .working
     private final transient Action defaultDeleteAction = new DefaultDeleteAction();
     private transient Map<String, String> defaultContentType = new HashMap<>();
+=======
+    private transient Action defaultDeleteAction = new DefaultDeleteAction();
+    private transient Action webflowAction;
+    private transient Map<String, String> defaultContentType = new HashMap<String, String>();
+>>>>>>> .merge-right.r52998
 
     private transient SettingsBean settingsBean;
     private transient RenderService renderService;
@@ -365,16 +371,21 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         Action action;
         Resource resource = null;
-        if (urlResolver.getPath().endsWith(".do")) {
+        if (urlResolver.getPath().endsWith(".do") || isWebflowRequest(req)) {
             resource = urlResolver.getResource();
             renderContext.setMainResource(resource);
             try {
                 JCRSiteNode site = resource.getNode().getResolveSite();
                 renderContext.setSite(site);
             } catch (RepositoryException e) {
+                logger.warn("Cannot get site for action context",e);
             }
 
-            action = templateService.getActions().get(resource.getResolvedTemplate());
+            if (isWebflowRequest(req)) {
+                action = webflowAction;
+            } else {
+                action = templateService.getActions().get(resource.getResolvedTemplate());
+            }
         } else {
             final String path = urlResolver.getPath();
 
@@ -792,7 +803,7 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
                 previewDate.setTime(new Date(new Long(req.getParameter(PREVIEW_DATE))));
                 jcrSessionFactory.setCurrentPreviewDate(previewDate);
             }
-            if (method.equals(METHOD_GET) || isWebflowRequest(req)) {
+            if (method.equals(METHOD_GET)) {
                 Resource resource;
                 resource = urlResolver.getResource();
                 if (!StringUtils.isEmpty(urlResolver.getRedirectUrl()) && (StringUtils.isEmpty(resource.getTemplate()) || StringUtils.equals(resource.getTemplate(),"default"))) {
@@ -958,7 +969,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         final Action originalAction = action;
 
-        int tokenResult = TokenChecker.checkToken(req, resp, parameters);
+        int tokenResult = TokenChecker.NO_TOKEN;
+        if (!isWebflowRequest(req)) {
+            tokenResult = TokenChecker.checkToken(req, resp, parameters);
+        }
+
 
         switch (tokenResult) {
             case TokenChecker.NO_TOKEN:
@@ -1113,6 +1128,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     public void setDefaultPutAction(Action defaultPutActionResult) {
         this.defaultPutAction = defaultPutActionResult;
+    }
+
+    public void setWebflowAction(Action webflowAction) {
+        this.webflowAction = webflowAction;
     }
 
     public static Set<String> getReservedParameters() {

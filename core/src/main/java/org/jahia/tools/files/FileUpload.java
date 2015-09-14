@@ -113,6 +113,7 @@ public class FileUpload {
     private static final String UTF_8 = "UTF-8";
 
     private Map<String, List<String>> params;
+    private Map<String, String> paramsContentType;
     private Map<String, DiskFileItem> files;
     private Map<String, DiskFileItem> filesByFieldName;
 
@@ -172,6 +173,7 @@ public class FileUpload {
         throws IOException {
 
         params = new HashMap<String, List<String>>();
+        paramsContentType = new HashMap<String, String>();
         files = new HashMap<String, DiskFileItem>();
         filesByFieldName = new HashMap<String, DiskFileItem>();
 
@@ -195,6 +197,7 @@ public class FileUpload {
                             params.put(name, v);
                         }
                         v.add(Streams.asString(stream, encoding));
+                        paramsContentType.put(name, item.getContentType());
                     } else {
                         if (factory == null) {
                             factory = new DiskFileItemFactory();
@@ -262,6 +265,16 @@ public class FileUpload {
         String[] res = new String[list.size()];
         list.toArray(res);
         return res;
+    }
+
+    /**
+     * Return the content type of a parameter
+     *
+     * @param paramName the name of the parameter
+     * @return the values of a parameter as a String Array
+     */
+    public String getParameterContentType (final String paramName) {
+        return paramsContentType.get(paramName);
     }
 
     /**

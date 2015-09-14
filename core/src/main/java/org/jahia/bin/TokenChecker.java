@@ -110,9 +110,13 @@ public class TokenChecker {
                 List<String> stringList1 = values.remove("form-action");
                 String formAction = stringList1.isEmpty()?null:stringList1.get(0);
                 String characterEncoding = SettingsBean.getInstance().getCharacterEncoding();
+                String requestURI = req.getRequestURI();
+                if (req.getQueryString() != null) {
+                    requestURI += "?" + req.getQueryString();
+                }
                 if (formAction == null ||
-                        (!URLDecoder.decode(req.getRequestURI(), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
-                        !URLDecoder.decode(resp.encodeURL(req.getRequestURI()), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)))
+                        (!URLDecoder.decode(requestURI, characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)) &&
+                        !URLDecoder.decode(resp.encodeURL(requestURI), characterEncoding).equals(URLDecoder.decode(formAction, characterEncoding)))
                         ) {
                     return INVALID_HIDDEN_FIELDS;
                 }

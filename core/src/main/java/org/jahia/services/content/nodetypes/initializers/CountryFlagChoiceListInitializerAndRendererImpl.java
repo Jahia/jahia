@@ -102,17 +102,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                     String flagPath = "/css/images/flags/shadow/flag_" + Patterns.SPACE.matcher(new Locale("en",
                             value.getValue().getString()).getDisplayCountry(
                             Locale.ENGLISH).toLowerCase()).replaceAll("_") + ".png";
-                    String realFlagPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
-                    boolean hasFlag;
-                    try {
-                        File f = new File(realFlagPath);
-                        hasFlag = f.exists();
-                    } catch (Exception e) {
-                        hasFlag = false;
-                    }
-                    if (!hasFlag) {
-                        flagPath = "/css/blank.gif";
-                    }
+                    flagPath = checkFlagPath(flagPath);
                     value.addProperty("image", Jahia.getContextPath() + flagPath);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
@@ -137,10 +127,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
                 .getDisplayCountry(Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_"
                 + Patterns.SPACE.matcher(enDisplayName.toLowerCase()).replaceAll("_") + ".png";
-        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
-        if (!f.exists()) {
-            flagPath = "/css/blank.gif";
-        }
+        flagPath = checkFlagPath(flagPath);
         map.put("displayName", displayName);
         map.put("flag", context.getRequest().getContextPath() + flagPath);
         return map;
@@ -165,10 +152,7 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
         final String enDisplayName = new Locale("en", value).getDisplayCountry(Locale.ENGLISH);
         String flagPath = "/css/images/flags/shadow/flag_"
                 + Patterns.SPACE.matcher(enDisplayName.toLowerCase()).replaceAll("_") + ".png";
-        File f = new File(JahiaContextLoaderListener.getServletContext().getRealPath(flagPath));
-        if (!f.exists()) {
-            flagPath = "/css/blank.gif";
-        }
+        flagPath = checkFlagPath(flagPath);
         return "<img src=\"" + context.getRequest().getContextPath() + flagPath + "\">&nbsp;<span>"
                 + displayName + "</span>";
     }
@@ -184,4 +168,20 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
             throws RepositoryException {
         throw new UnsupportedOperationException("This renderer does not work without RenderContext");
     }
+
+    private String checkFlagPath(String flagPath) {
+        String realFlagPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
+        boolean hasFlag;
+        try {
+            File f = new File(realFlagPath);
+            hasFlag = f.exists();
+        } catch (Exception e) {
+            hasFlag = false;
+        }
+        if (!hasFlag) {
+            flagPath = "/css/blank.gif";
+        }
+        return flagPath;
+    }
+
 }

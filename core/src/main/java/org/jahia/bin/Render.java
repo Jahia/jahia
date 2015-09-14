@@ -219,14 +219,10 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
     private transient JahiaTemplateManagerService templateService;
     private transient Action defaultPostAction;
     private transient Action defaultPutAction;
-<<<<<<< .working
+
     private final transient Action defaultDeleteAction = new DefaultDeleteAction();
-    private transient Map<String, String> defaultContentType = new HashMap<>();
-=======
-    private transient Action defaultDeleteAction = new DefaultDeleteAction();
     private transient Action webflowAction;
-    private transient Map<String, String> defaultContentType = new HashMap<String, String>();
->>>>>>> .merge-right.r52998
+    private transient Map<String, String> defaultContentType = new HashMap<>();
 
     private transient SettingsBean settingsBean;
     private transient RenderService renderService;

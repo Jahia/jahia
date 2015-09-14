@@ -2,31 +2,31 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
+ * <p/>
  *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
- *
+ * <p/>
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
- *
+ * <p/>
  *     1/ GPL
  *     ======================================================================================
- *
+ * <p/>
  *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
+ * <p/>
  *     "This program is free software; you can redistribute it and/or
  *     modify it under the terms of the GNU General Public License
  *     as published by the Free Software Foundation; either version 2
  *     of the License, or (at your option) any later version.
- *
+ * <p/>
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
  *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
  *     GNU General Public License for more details.
- *
+ * <p/>
  *     You should have received a copy of the GNU General Public License
  *     along with this program; if not, write to the Free Software
  *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
+ * <p/>
  *     As a special exception to the terms and conditions of version 2.0 of
  *     the GPL (or any later version), you may redistribute this Program in connection
  *     with Free/Libre and Open Source Software ("FLOSS") applications as described
@@ -89,7 +89,7 @@ import java.util.*;
  *
  * @author : rincevent
  * @since JAHIA 6.5
- *        Created : 18 nov. 2009
+ * Created : 18 nov. 2009
  */
 public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceListInitializer, ChoiceListRenderer {
     private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(CountryFlagChoiceListInitializerAndRendererImpl.class);
@@ -171,12 +171,14 @@ public class CountryFlagChoiceListInitializerAndRendererImpl implements ChoiceLi
 
     private String checkFlagPath(String flagPath) {
         String realFlagPath = JahiaContextLoaderListener.getServletContext().getRealPath(flagPath);
-        boolean hasFlag;
-        try {
-            File f = new File(realFlagPath);
-            hasFlag = f.exists();
-        } catch (Exception e) {
-            hasFlag = false;
+        boolean hasFlag = realFlagPath != null;
+        if (hasFlag) {
+            try {
+                File f = new File(realFlagPath);
+                hasFlag = f.exists();
+            } catch (Exception e) {
+                hasFlag = false;
+            }
         }
         if (!hasFlag) {
             flagPath = "/css/blank.gif";

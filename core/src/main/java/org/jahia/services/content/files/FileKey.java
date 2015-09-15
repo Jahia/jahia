@@ -113,7 +113,7 @@ class FileKey {
         this.path = path;
         this.versionDate = versionDate;
         this.versionLabel = versionLabel;
-        this.thumbnail = thumbnail;
+        this.thumbnail = thumbnail != null ? thumbnail.replaceAll("[^A-Za-z0-9]+", "") : null;
     }
 
     public String getCacheKey() {

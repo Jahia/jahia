@@ -88,6 +88,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.registries.ServicesRegistry;
@@ -597,7 +598,7 @@ public class URLResolver {
                     + "' locale '" + locale + "' and path '" + path + "'");
         }
         if (locale == null) {
-            throw new PathNotFoundException("Unknown locale");
+            throw new JahiaBadRequestException("Unknown locale");
         }
         final URLResolver urlResolver = this;
         return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null,
@@ -795,10 +796,10 @@ public class URLResolver {
             }
         } else {
             if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace == null) {
-                throw new JahiaNotFoundException("Unknown workspace '" + workspace + "'");
+                throw new JahiaBadRequestException("Unknown workspace '" + workspace + "'");
             }
             if (JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null && !workspace.equals(this.workspace)) {
-                throw new JahiaNotFoundException("Invalid workspace '" + workspace + "'");
+                throw new JahiaBadRequestException("Invalid workspace '" + workspace + "'");
             }
             if (!JCRContentUtils.isValidWorkspace(workspace) && this.workspace != null) {
                 workspace = this.workspace;

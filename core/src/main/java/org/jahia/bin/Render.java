@@ -80,6 +80,7 @@ import org.apache.tika.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.bin.errors.ErrorHandler;
+import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.exceptions.JahiaUnauthorizedException;
 import org.jahia.registries.ServicesRegistry;
@@ -271,7 +272,11 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
     protected RenderContext createRenderContext(HttpServletRequest req, HttpServletResponse resp, JahiaUser user) {
         RenderContext context = new RenderContext(req, resp, user);
-        context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, req.getPathInfo().indexOf("/", 1)));
+        int index = req.getPathInfo().indexOf("/", 1);
+        if (index == -1 || index == req.getPathInfo().length()-1) {
+            throw new JahiaBadRequestException("Invalid path");
+        }
+        context.setServletPath(req.getServletPath() + req.getPathInfo().substring(0, index));
         return context;
     }
 

@@ -660,21 +660,29 @@ public class Service extends JahiaService {
     }
 
     public void flushCache(String cacheId, KnowledgeHelper drools) {
-        Cache<?, ?> cache = cacheService.getCache(cacheId);
-        if (cache != null) {
-            cache.flush();
-            logger.info("Cache '" + cacheId + "' flushed.");
-        } else {
-            logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
+        try {
+            Cache<?, ?> cache = cacheService.getCache(cacheId, true);
+            if (cache != null) {
+                cache.flush();
+                logger.info("Cache '" + cacheId + "' flushed.");
+            } else {
+                logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
+            }
+        } catch (JahiaInitializationException e) {
+            logger.debug("Cannot get cache",e);
         }
     }
 
     public void flushCacheEntry(String cacheId, String cacheEntryKey, KnowledgeHelper drools) {
-        Cache<Object, Object> cache = cacheService.getCache(cacheId);
-        if (cache != null) {
-            cache.remove(cacheEntryKey);
-        } else {
-            logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
+        try {
+            Cache<Object, Object> cache = cacheService.getCache(cacheId, true);
+            if (cache != null) {
+                cache.remove(cacheEntryKey);
+            } else {
+                logger.debug("No cache found for name '" + cacheId + "'. Skip flushing.");
+            }
+        } catch (JahiaInitializationException e) {
+            logger.debug("Cannot get cache",e);
         }
     }
 

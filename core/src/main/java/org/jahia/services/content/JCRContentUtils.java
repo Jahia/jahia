@@ -366,7 +366,7 @@ public final class JCRContentUtils implements ServletContextAware {
         StringBuilder buffer = new StringBuilder(name.length() * 2);
         for (int i = 0; i < name.length(); i++) {
             char ch = name.charAt(i);
-            if (ch == '[' || ch == ']' || ch == '*' || ch == '|') {
+            if (ch == '[' || ch == ']' || ch == '*' || ch == '|' || ch == '"' || ch == '%') {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
@@ -385,7 +385,7 @@ public final class JCRContentUtils implements ServletContextAware {
         StringBuilder buffer = new StringBuilder(path.length() * 2);
         for (int i = 0; i < path.length(); i++) {
             char ch = path.charAt(i);
-            if (ch == '[' || ch == ']' || ch == '*' || ch == '|') {
+            if (ch == '[' || ch == ']' || ch == '*' || ch == '|' || ch == '"' || ch == '%') {
                 buffer.append('%');
                 buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
                 buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));

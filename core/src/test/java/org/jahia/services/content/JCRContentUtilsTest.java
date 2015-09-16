@@ -74,12 +74,32 @@ package org.jahia.services.content;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.jahia.services.content.JCRContentUtils.escapeLocalNodeName;
+import static org.jahia.services.content.JCRContentUtils.escapeNodePath;
+import static org.jahia.services.content.JCRContentUtils.unescapeLocalNodeName;
 
 /**
  * @author Christophe Laprun
  */
 public class JCRContentUtilsTest {
 
+    @Test
+    public void testEscapeLocalName() {
+        assertEquals("öäüß", escapeLocalNodeName("öäüß"));
+        
+        assertEquals("a%7Cb'c{1}%2A%5B2%5D%22d", escapeLocalNodeName("a|b'c{1}*[2]\"d"));
+        assertEquals("a|b'c{1}*[2]\"d", unescapeLocalNodeName(escapeLocalNodeName("a|b'c{1}*[2]\"d")));
+        
+        assertEquals("a    w   q", escapeLocalNodeName("a / \\w\n\r\tq"));
+        assertEquals("w   q", escapeLocalNodeName(" / \\w\n\r\tq"));
+        assertEquals("q", escapeLocalNodeName(" / \\\n\r\tq"));
+
+        assertEquals("/my/öäüß", escapeNodePath("/my/öäüß"));
+        
+        assertEquals("/my/a%7Cb'c{1}%2A%5B2%5D%22d", escapeNodePath("/my/a|b'c{1}*[2]\"d"));
+        assertEquals("/my/a|b'c{1}*[2]\"d", unescapeLocalNodeName(escapeNodePath("/my/a|b'c{1}*[2]\"d")));
+    }
+    
     @Test
     public void testStringToJCRSearchExp() {
         String term = "foo bar";

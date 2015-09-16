@@ -220,7 +220,7 @@ public class JCRGroupNode extends JCRNodeDecorator {
         try {
             Query q = getSession().getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'"+ JCRContentUtils.sqlEncode(getPath()) + "') and [j:member]='" + principal.getIdentifier() + "'", Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
-            if (ni.hasNext()) {
+            while (ni.hasNext()) {
                 ni.nextNode().remove();
             }
         } catch (RepositoryException e) {

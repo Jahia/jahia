@@ -665,7 +665,7 @@ public class JahiaGroupManagerService extends JahiaService {
             // Update membership cache
             Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:member] as m where isdescendantnode(m,'" + JCRContentUtils.sqlEncode(node.getPath()) + "')", Query.JCR_SQL2);
             NodeIterator ni = q.execute().getNodes();
-            if (ni.hasNext()) {
+            while (ni.hasNext()) {
                 cacheHelper.getMembershipCache().remove("/" + StringUtils.substringAfter(ni.nextNode().getPath(), "/j:members/"));
             }
 

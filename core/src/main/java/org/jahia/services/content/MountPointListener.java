@@ -201,7 +201,7 @@ public class MountPointListener extends DefaultEventListener implements External
                 String uuid = change.getKey();
                 Integer status = change.getValue();
                 JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
-                unmount(p);
+                unmount(uuid, p);
                 if (status != Event.NODE_REMOVED) {
                     mount(uuid, p);
                 }
@@ -223,7 +223,8 @@ public class MountPointListener extends DefaultEventListener implements External
         }
     }
 
-    private void unmount(JCRStoreProvider p) {
+    private void unmount(String uuid, JCRStoreProvider p) {
+        providerChecker.remove(uuid);
         if (p != null) {
             logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), p.getKey());
             p.stop();

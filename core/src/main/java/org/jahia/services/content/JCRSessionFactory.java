@@ -491,15 +491,22 @@ public class JCRSessionFactory implements Repository, ServletContextAware {
     private void closeAllSessions(ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> mapThreadLocal) {
         Map<String, Map<String, JCRSessionWrapper>> smap = mapThreadLocal.get();
         if (smap != null) {
-            for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
-                for (JCRSessionWrapper s : wsMap.values()) {
-                    if (s.isLive()) {
-                        s.logout();
+            try {
+                for (Map<String, JCRSessionWrapper> wsMap : smap.values()) {
+                    for (JCRSessionWrapper s : wsMap.values()) {
+                        if (s.isLive()) {
+                            try {
+                                s.logout();
+                            } catch (Exception e) {
+                                logger.warn("Error performing JCR session logout for sesison " + s, e);
+                            }
+                        }
                     }
                 }
+            } finally {
+                mapThreadLocal.set(null);
+                smap.clear();
             }
-            smap.clear();
-            mapThreadLocal.set(null);
         }
     }
 

@@ -521,7 +521,7 @@ public class FileServlet extends HttpServlet {
             }
         }
 
-        return path != null && workspace != null ? new FileKey(workspace, JCRContentUtils.escapeNodePath(path),
+        return path != null && workspace != null ? new FileKey(workspace, path,
                 req.getParameter("v"), req.getParameter("l"), StringUtils.defaultIfEmpty(
                         req.getParameter("t"), StringUtils.EMPTY)) : null;
     }

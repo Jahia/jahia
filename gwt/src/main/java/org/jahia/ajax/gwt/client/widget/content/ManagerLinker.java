@@ -422,7 +422,9 @@ public class ManagerLinker implements Linker {
 
             // Store the last path used for this config to be able to reopen it
             Storage storage = Storage.getLocalStorageIfSupported();
-            storage.setItem("lastSavedPath_" + getConfig().getName() + "_" + JahiaGWTParameters.getSiteKey(), ((GWTJahiaNode) getTreeSelection()).getPath());
+            if (storage != null) {
+                storage.setItem("lastSavedPath_" + getConfig().getName() + "_" + JahiaGWTParameters.getSiteKey(), ((GWTJahiaNode) getTreeSelection()).getPath());
+            }
         }
         List<GWTJahiaNode> list = null;
         if ( getTableSelection() != null) {

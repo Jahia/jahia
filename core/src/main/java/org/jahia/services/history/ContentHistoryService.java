@@ -362,12 +362,14 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             } else {
                 criteria.add(Restrictions.eq("uuid", node.getIdentifier()));
             }
+            Transaction tx = session.beginTransaction();
             List<HistoryEntry> result = (List<HistoryEntry>) criteria.list();
             if (withLanguageNodes) {
                 for (HistoryEntry entry : result) {
                     entry.setLocale(i18ns.get(entry.getUuid()));
                 }
             }
+            tx.commit();
             return result;
         } catch (Exception e) {
             return Collections.emptyList();

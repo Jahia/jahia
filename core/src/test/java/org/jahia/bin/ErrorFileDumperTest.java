@@ -192,6 +192,7 @@ public class ErrorFileDumperTest {
             fileCountBeforeTest = (files == null ? 0 : files.length);
         }
 
+        ErrorFileDumper.setHighLoadBoundary(10.0);
         ErrorFileDumper.start();
 
         generateExceptions();

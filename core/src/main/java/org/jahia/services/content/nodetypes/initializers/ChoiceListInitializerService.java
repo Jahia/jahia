@@ -84,10 +84,7 @@ public class ChoiceListInitializerService {
 
     private Map<String, ChoiceListInitializer> initializers;
 
-    private static ChoiceListInitializerService instance;
-
-    private ChoiceListInitializerService() {
-    }
+    private static volatile ChoiceListInitializerService instance;
 
     public Map<String, ChoiceListInitializer> getInitializers() {
         return initializers;

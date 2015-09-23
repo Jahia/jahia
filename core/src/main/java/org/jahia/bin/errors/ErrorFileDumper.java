@@ -118,10 +118,8 @@ public class ErrorFileDumper {
     public static final FastDateFormat DATE_FORMAT_DIRECTORY = FastDateFormat.getInstance("yyyy_MM_dd");
     public static final FastDateFormat DATE_FORMAT_FILE = FastDateFormat.getInstance("yyyy_MM_dd-HH_mm_ss_SSS");
 
-    private static final int MAXIMUM_TASKS_ALLOWED = 100;
     private static final long MIN_INTERVAL_BETWEEN_QUEUE_WARNING = 1000L;
     private static final long MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING = 1000L;
-    private static final double HIGH_LOAD_BOUNDARY = 10.0;
     private static final Logger logger = LoggerFactory.getLogger(ErrorFileDumper.class);
 
     private static Throwable previousException = null;
@@ -129,6 +127,8 @@ public class ErrorFileDumper {
     private static long totalExceptionCount = 0L;
 
     private static volatile ExecutorService executorService;
+    private static volatile int maximumTasksAllowed = 100;
+    private static volatile double highLoadBoundary = 10.0;
     private static volatile int tasksSubmitted = 0;
     private static volatile long lastCallToDump = 0;
     private static volatile long lastHighLoadMessageTime = 0;
@@ -272,7 +272,8 @@ public class ErrorFileDumper {
             return;
         }
 
-        if (tasksSubmitted < MAXIMUM_TASKS_ALLOWED) {
+        int maxTasks = maximumTasksAllowed;
+        if (tasksSubmitted < maxTasks) {
             HttpRequestData requestData = null;
             if (request != null) {
                 requestData = new HttpRequestData(request);
@@ -283,10 +284,21 @@ public class ErrorFileDumper {
         } else {
             long now = System.currentTimeMillis();
             if ((now - lastCallToDump) > MIN_INTERVAL_BETWEEN_QUEUE_WARNING) {
-                System.out.println(MAXIMUM_TASKS_ALLOWED + " error dumps already submitted, not allowing any more.");
+                System.out.println(maxTasks + " error dumps already submitted, not allowing any more.");
                 lastCallToDump = now;
             }
         }
+    }
+
+    public static int getMaximumTasksAllowed() {
+        return maximumTasksAllowed;
+    }
+
+    /**
+     * Sets the maximum number of parallel dumping tasks allowed to be queued. Default value is 100.
+     */
+    public static void setMaximumTasksAllowed(int maximumTasksAllowed) {
+        ErrorFileDumper.maximumTasksAllowed = maximumTasksAllowed;
     }
 
     private static void performDumpToFile(Throwable exception, HttpRequestData httpRequestData) throws IOException {
@@ -422,6 +434,19 @@ public class ErrorFileDumper {
         outputSystemInfoConsiderLoad(strOut);
     }
 
+    public static double getHighLoadBoundary() {
+        return highLoadBoundary;
+    }
+
+    /**
+     * Sets the boundary load value above which all reporting will automatically deactivate. The default value is 10.0
+     *
+     * @param highLoadBoundary
+     */
+    public static void setHighLoadBoundary(double highLoadBoundary) {
+        ErrorFileDumper.highLoadBoundary = highLoadBoundary;
+    }
+
     private static void outputSystemInfoConsiderLoad(PrintWriter strOut) {
         boolean highLoad = isHighLoad();
         outputSystemInfo(strOut, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, !highLoad, true);
@@ -430,7 +455,7 @@ public class ErrorFileDumper {
     private static boolean isHighLoad() {
         boolean highLoad = false;
         RequestLoadAverage loadAverage = RequestLoadAverage.getInstance();
-        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > HIGH_LOAD_BOUNDARY;
+        highLoad = loadAverage != null && loadAverage.getOneMinuteLoad() > highLoadBoundary;
         if (highLoad) {
             long now = System.currentTimeMillis();
             if ((now - lastHighLoadMessageTime) > MIN_INTERVAL_BETWEEN_HIGHLOAD_WARNING) {

@@ -94,14 +94,11 @@ public class MetricsLoggingServiceImpl implements MetricsLoggingService {
     private static final Logger metricsLogger = LoggerFactory.getLogger("loggingService");
     private static final Logger profilerMetricsLogger = LoggerFactory.getLogger("profilerLoggingService");
 
-    private static MetricsLoggingServiceImpl instance;
+    private static volatile MetricsLoggingServiceImpl instance;
 
     private Map<String, String> logTemplatesMap;
     private Set<String> ignoreUsers = new HashSet<String>();
     private ThreadLocal<Stack<Profiler>> threadLocal = new ThreadLocal<Stack<Profiler>>();
-
-    private MetricsLoggingServiceImpl() {
-    }
 
     /**
      * Returns the singleton instance, and creates it if not existing yet

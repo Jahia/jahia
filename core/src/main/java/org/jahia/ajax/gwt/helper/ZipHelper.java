@@ -105,11 +105,8 @@ import java.util.zip.ZipOutputStream;
  */
 public class ZipHelper {
 
-    private static ZipHelper instance;
+    private static volatile ZipHelper instance;
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ZipHelper.class);
-
-    private ZipHelper() {
-    }
 
     public static ZipHelper getInstance() {
         if (instance == null) {

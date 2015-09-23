@@ -121,11 +121,11 @@ import com.ibm.icu.text.DateFormat;
  */
 public final class Jahia {
 
-    static public final String CODE_NAME = "Firestar";
-    static public final String COPYRIGHT = "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
-    static public final String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
+    public static final String CODE_NAME = "Firestar";
+    public static final String COPYRIGHT = "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
+    public static final String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
 
-    static private final Version JAHIA_VERSION;
+    private static final Version JAHIA_VERSION;
     static {
         Version v = null;
         try {
@@ -135,21 +135,21 @@ public final class Jahia {
         JAHIA_VERSION = v != null ? v : new Version("7.0.0.0");
     }
 
-    static public final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +
+    public static final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +
             JAHIA_VERSION.getMinorVersion() + "." +
             JAHIA_VERSION.getServicePackVersion() + "." +
             JAHIA_VERSION.getPatchVersion();
 
-    static private final String INIT_PARAM_SUPPORTED_JDK_VERSIONS = "supported_jdk_versions";
-    static private final Logger logger = LoggerFactory.getLogger(Jahia.class);
+    private static final String INIT_PARAM_SUPPORTED_JDK_VERSIONS = "supported_jdk_versions";
+    private static final Logger logger = LoggerFactory.getLogger(Jahia.class);
 
-    static private String jahiaServletPath;
-    static private String jahiaContextPath;
-    static private boolean maintenance = false;
-    static private int buildNumber = -1;
-    static private int eeBuildNumber = -1;
-    static private String edition;
-    static private String buildDate;
+    private static String jahiaServletPath;
+    private static String jahiaContextPath;
+    private static boolean maintenance = false;
+    private static volatile int buildNumber = -1;
+    private static volatile int eeBuildNumber = -1;
+    private static volatile String edition;
+    private static volatile String buildDate;
 
     public static int getBuildNumber() {
         if (buildNumber == -1) {

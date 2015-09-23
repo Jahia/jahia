@@ -93,7 +93,7 @@ public class JCRTemplate {
 
     private JCRSessionFactory sessionFactory;
 
-    private static JCRTemplate instance;
+    private static volatile JCRTemplate instance;
 
     private JCRTemplate() {
     }

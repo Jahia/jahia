@@ -97,7 +97,7 @@ import org.slf4j.LoggerFactory;
  */
 public final class ZipEntryCharsetDetector {
 
-    private static List<Charset> charsetTryChain;
+    private static volatile List<Charset> charsetTryChain;
 
     public static final String ZIP_ENTRY_ALTERNATIVE_ENCODING = "jahia.zipEntry.alternativeEncoding";
     private static Logger logger = LoggerFactory.getLogger(ZipEntryCharsetDetector.class);

@@ -140,11 +140,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
 
     private static SettingsBean instance = null;
-    private static File errorDir;
-    private static File threadDir;
-    private static File heapDir;
+    private static volatile File errorDir;
+    private static volatile File threadDir;
+    private static volatile File heapDir;
 
-    final private FastHashMap settings = new FastHashMap(); // The map holding all the settings.
+    private final FastHashMap settings = new FastHashMap(); // The map holding all the settings.
     private PathResolver pathResolver = null;
     private String licenseFilename;
     private String propertiesFileName;

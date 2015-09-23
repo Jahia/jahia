@@ -96,29 +96,9 @@ import java.util.*;
  */
 public class JCRCategoryProvider {
 
-    private static JCRCategoryProvider mCategoryProvider;
     private static final Logger logger = LoggerFactory.getLogger(JCRCategoryProvider.class);
 
     private transient JCRSessionFactory sessionFactory;
-
-    private JCRCategoryProvider() {
-    }
-
-    /**
-     * Create an new instance of the Category provider if the instance do not exist, or return the existing instance.
-     *
-     * @return Return the instance of the Category provider.
-     */
-    public static JCRCategoryProvider getInstance() {
-        if (mCategoryProvider == null) {
-            synchronized (JCRCategoryProvider.class) {
-                if (mCategoryProvider == null) {
-                    mCategoryProvider = new JCRCategoryProvider();
-                }
-            }
-        }
-        return mCategoryProvider;
-    }
 
     /**
      * Setting the JCR store service (done via Spring)

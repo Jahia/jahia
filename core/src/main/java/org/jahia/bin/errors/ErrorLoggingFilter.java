@@ -265,7 +265,9 @@ public class ErrorLoggingFilter implements Filter {
      */
     @Override
     public void init(FilterConfig cfg) throws ServletException {
-        // do nothing
+        if (ErrorFileDumper.isShutdown()) {
+            ErrorFileDumper.start();
+        }
     }
 
     protected static boolean isEmailAlertRequired(HttpServletRequest request, HttpServletResponse response) {

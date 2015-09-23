@@ -129,7 +129,7 @@ import java.util.zip.ZipInputStream;
 public class Service extends JahiaService {
 
     private static final Logger logger = LoggerFactory.getLogger(Service.class);
-    private static Service instance;
+    private static volatile Service instance;
 
     private TaggingService taggingService;
     private JahiaSitesService sitesService;
@@ -138,9 +138,6 @@ public class Service extends JahiaService {
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
     private JahiaPasswordPolicyService passwordPolicyService;
-
-    private Service() {
-    }
 
     public static Service getInstance() {
         if (instance == null) {

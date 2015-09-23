@@ -104,15 +104,12 @@ import java.util.Map;
  */
 public class ExtractionService {
 
-    private static ExtractionService instance;
+    private static volatile ExtractionService instance;
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ExtractionService.class);
 
     private JCRTemplate jcrTemplate;
     private TextExtractionService textExtractionService;
     private Map<String, String[]> mapping = new HashMap<String, String[]>();
-
-    private ExtractionService() {
-    }
 
     public static ExtractionService getInstance() {
         if (instance == null) {

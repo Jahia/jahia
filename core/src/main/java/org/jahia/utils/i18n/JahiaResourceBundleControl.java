@@ -101,7 +101,7 @@ import org.slf4j.LoggerFactory;
  */
 final class JahiaResourceBundleControl extends Control {
 
-    private static JahiaResourceBundleControl defaultControl;
+    private static volatile JahiaResourceBundleControl defaultControl;
     private static final Logger logger = LoggerFactory.getLogger(JahiaResourceBundleControl.class);
 
     private TemplatePackageRegistry templatePackageRegistry;

@@ -84,8 +84,8 @@ public interface LicenseCheckerService {
 
     class Stub {
 
-        private static boolean initialized = false;
-        private static LicenseCheckerService instance;
+        private static volatile boolean initialized = false;
+        private static volatile LicenseCheckerService instance;
 
         /**
          * @see LicenseCheckerService#checkFeature(String)

@@ -105,8 +105,8 @@ public final class DatabaseUtils {
         derby, mssql, mysql, oracle, postgresql;
     }
 
-    private static DatabaseType dbType;
-    private static DataSource ds;
+    private static volatile DatabaseType dbType;
+    private static volatile DataSource ds;
 
     private static final Logger logger = LoggerFactory.getLogger(DatabaseUtils.class);
 

@@ -104,7 +104,7 @@ import java.util.*;
  */
 public class GWTInitializer {
 
-    private static GWTResourceConfig config;
+    private static volatile GWTResourceConfig config;
     private static final Logger logger = LoggerFactory.getLogger(GWTInitializer.class);
 
     public static String generateInitializerStructureForFrame(RenderContext ctx) {

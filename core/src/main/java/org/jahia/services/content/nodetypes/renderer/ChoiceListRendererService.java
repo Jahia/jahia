@@ -84,10 +84,7 @@ public class ChoiceListRendererService {
 
     private Map<String, ChoiceListRenderer> renderers;
 
-    private static ChoiceListRendererService instance;
-
-    private ChoiceListRendererService() {
-    }
+    private static volatile ChoiceListRendererService instance;
 
     public Map<String, ChoiceListRenderer> getRenderers() {
         return renderers;

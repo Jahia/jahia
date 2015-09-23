@@ -96,7 +96,7 @@ public final class ProvisionActivator implements BundleActivator {
     private final ServletContext servletContext;
     private BundleContext bundleContext;
 
-    static private ProvisionActivator instance = null;
+    private static ProvisionActivator instance = null;
     private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
 
     public ProvisionActivator(ServletContext servletContext) {

@@ -109,8 +109,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     private static final long serialVersionUID = -8968618483176483281L;
     private static final Logger logger = LoggerFactory.getLogger(ModuleTag.class);
 
-    private static AbstractFilter exclusionFilter = null;
-    private static boolean exclusionFilterChecked;
+    private static volatile AbstractFilter exclusionFilter = null;
+    private static volatile boolean exclusionFilterChecked;
 
     protected String path;
     protected JCRNodeWrapper node;

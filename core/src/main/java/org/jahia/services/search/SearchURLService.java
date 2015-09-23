@@ -78,7 +78,7 @@ import org.apache.commons.lang.StringUtils;
 
 public class SearchURLService {
 
-    private static SearchURLService instance;
+    private static volatile SearchURLService instance;
 
     private SearchURLService() {
     }

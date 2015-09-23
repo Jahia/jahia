@@ -107,7 +107,7 @@ public class CategoryServiceImpl extends CategoryService {
     private static final String CATEGORY_LINKTYPE = "category";
     private static final String CATEGORY_CHILD_PREFIX = "Category_%";
 
-    private static CategoryServiceImpl singletonInstance;
+    private static volatile CategoryServiceImpl singletonInstance;
 
     private JCRCategoryProvider categoryProvider;
 

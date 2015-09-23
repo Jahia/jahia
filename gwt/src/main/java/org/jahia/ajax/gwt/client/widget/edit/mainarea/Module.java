@@ -93,7 +93,6 @@ public abstract class Module extends LayoutContainer {
     protected GWTJahiaNode node;
     protected HTML html;
     protected String path;
-    protected String template;
     protected String scriptInfo;
     protected String sourceInfo;
     protected String headerText;
@@ -125,9 +124,6 @@ public abstract class Module extends LayoutContainer {
 
         // we test for presence of attributes since the getAttribute method will never return null if the
         // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
-        if (divElement.hasAttribute("template")) {
-            template = divElement.getAttribute("template");
-        }
         if (divElement.hasAttribute("nodetypes")) {
             nodeTypes = divElement.getAttribute("nodetypes");
         }
@@ -157,9 +153,6 @@ public abstract class Module extends LayoutContainer {
 
         // we test for presence of attributes since the getAttribute method will never return null if the
         // attribute doesn't exist. See http://code.google.com/p/google-web-toolkit/issues/detail?id=1770
-        if (divElement.hasAttribute("template")) {
-            template = divElement.getAttribute("template");
-        }
         if (divElement.hasAttribute("nodetypes")) {
             nodeTypes = divElement.getAttribute("nodetypes");
         }
@@ -179,11 +172,10 @@ public abstract class Module extends LayoutContainer {
         this.mainModule = mainModule;
     }
 
-    protected Module(String id, String path, String template, String nodeTypes, Layout layout) {
+    protected Module(String id, String path, String nodeTypes, Layout layout) {
         super(layout);
         this.id = id;
         this.path = path;
-        this.template = template;
         this.nodeTypes = nodeTypes;
     }
 
@@ -302,10 +294,6 @@ public abstract class Module extends LayoutContainer {
 
     public String getReferenceTypes() {
         return referenceTypes;
-    }
-
-    public String getTemplate() {
-        return template;
     }
 
     public void setDraggable(boolean isDraggable) {

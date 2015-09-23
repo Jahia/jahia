@@ -604,7 +604,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             builder.append(" ").append(additionalParameters);
         }
 
-        builder.append((resolvedTemplate != null) ? " template=\"" + resolvedTemplate + "\"" : "").append(">");
+        builder.append(">");
 
         printAndClean();
     }

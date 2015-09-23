@@ -146,13 +146,14 @@ public class MainModule extends Module {
     private final LayoutContainer headContainer;
     private String newLocation = null;
     private boolean firstLoad = true;
+    protected String template;
 
     private GWTJahiaChannel activeChannel;
     private String activeChannelVariant;
     private static boolean globalSelectionDisabled = false;
 
     public MainModule(final String path, final String template, String nodeTypes, GWTEditConfiguration config) {
-        super("main", path, template, nodeTypes, new BorderLayout());
+        super("main", path, nodeTypes, new BorderLayout());
         setScrollMode(Style.Scroll.NONE);
 
         this.id = "main";
@@ -1289,6 +1290,12 @@ public class MainModule extends Module {
         }
         return url;
     }
+
+    public String getTemplate() {
+        return template;
+    }
+
+
 
     public final int getIE10FrameTop() {
         return getIE10FrameTop(IFrameElement.as(frame.getElement()));

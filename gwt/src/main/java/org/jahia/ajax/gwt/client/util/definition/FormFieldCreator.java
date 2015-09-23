@@ -501,11 +501,11 @@ public class FormFieldCreator {
                 }
             }
         }
-        if (values.size() == 0) {
-            return;
-        }
         if (!definition.isNode()) {
             GWTJahiaPropertyDefinition propDefinition = (GWTJahiaPropertyDefinition) definition;
+            if (values.size() == 0 && !propDefinition.isMultiple()) {
+                return;
+            }
             if (propDefinition.getSelector() == GWTJahiaNodeSelectorType.CHOICELIST) {
                 List<GWTJahiaValueDisplayBean> selection = new ArrayList<GWTJahiaValueDisplayBean>();
                 if (propDefinition.isMultiple()) {
@@ -600,6 +600,9 @@ public class FormFieldCreator {
                 }
             }
         } else {
+            if (values.size() == 0) {
+                return;
+            }
             GWTJahiaNodeDefinition nodeDefinition = (GWTJahiaNodeDefinition) definition;
             if (nodeDefinition.getName().equals("jcr:content") ||
                     nodeDefinition.getRequiredPrimaryTypes()[0].equals("nt:resource") ||

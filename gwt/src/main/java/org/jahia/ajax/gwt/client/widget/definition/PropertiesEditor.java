@@ -530,7 +530,7 @@ public class PropertiesEditor extends FormPanel {
                         if (!definition.isProtected()) {
                             PropertyAdapterField f = fields.get(definition.getName());
                             GWTJahiaNodeProperty prop = currentProperties.get(definition.getName());
-                            if (!doNotCheckFieldsValues && f != null &&
+                            if (!doNotCheckFieldsValues && f != null && (f.getValue() != null || !f.getField().getEmptyText().equals(f.getField().getOriginalValue())) &&
                                     (f.isDirty() || !modifiedOnly || f.getData("addedField") != null || f.getData("defaultedField") != null)) {
                                 Log.debug("Set value for " + prop.getName());
                                 prop.setValues(getPropertyValues(f, definition));

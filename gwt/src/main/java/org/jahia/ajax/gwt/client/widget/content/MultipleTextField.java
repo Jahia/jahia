@@ -123,6 +123,7 @@ public class MultipleTextField<T> extends MultiField<List<T>> {
                 lc.layout();
             }
         });
+        originalValue = value;
     }
 
     private void addField(T value) {

@@ -109,7 +109,8 @@ public class GWTJahiaWorkflowType  extends BaseModelData implements Serializable
 
     @Override
     public boolean equals(Object o) {
-        return o != null && (super.equals(o) || ((GWTJahiaWorkflowType) o).getName().equals(getName()));
+        return super.equals(o) || (o != null && this.getClass() == o.getClass()
+                && ((GWTJahiaWorkflowType) o).getName().equals(getName()));
     }
 
     @Override

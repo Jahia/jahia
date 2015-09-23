@@ -126,7 +126,8 @@ public class GWTJahiaWorkflowDefinition extends BaseModelData implements Seriali
 
     @Override
     public boolean equals(Object o) {
-        return o != null && (super.equals(o) || ((GWTJahiaWorkflowDefinition) o).getName().equals(getName()));
+        return super.equals(o) || (o != null && this.getClass() == o.getClass()
+                && ((GWTJahiaWorkflowDefinition) o).getName().equals(getName()));
     }
 
     @Override

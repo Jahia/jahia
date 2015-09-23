@@ -112,9 +112,9 @@ public class GWTJahiaValueDisplayBean extends BaseModelData implements Serializa
 
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj)
-                || (getValue() != null && obj != null && getValue().equals(
-                        ((GWTJahiaValueDisplayBean) obj).getValue()));
+        return super.equals(obj) || (obj != null && this.getClass() == obj.getClass()
+                && ((getValue() == null && ((GWTJahiaValueDisplayBean) obj).getValue() == null)
+                        || getValue() != null && getValue().equals(((GWTJahiaValueDisplayBean) obj).getValue())));
     }
 
     @Override

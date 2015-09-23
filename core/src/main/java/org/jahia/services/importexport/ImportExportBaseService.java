@@ -1356,7 +1356,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void importSiteProperties(JahiaSite site, Properties p, JCRSessionWrapper session) {
         Set<Object> keys = p.keySet();
-        boolean isMultiLang = true;
         final Set<String> languages = new HashSet<String>();
         final Set<String> inactiveLanguages = new HashSet<String>();
         final Set<String> inactiveLiveLanguages = new HashSet<String>();
@@ -1446,17 +1445,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         @SuppressWarnings("unchecked")
         Set<String> siteLangs = ListOrderedSet.decorate(new LinkedList<String>(languages));
         if (!siteLangs.isEmpty()) {
-            if (!isMultiLang) {
-                Set<String> singleLang = new HashSet<String>();
-                singleLang.add(siteLangs.iterator().next());
-                site.setLanguages(singleLang);
-                site.setMandatoryLanguages(singleLang);
-            } else {
-                site.setLanguages(siteLangs);
-                site.setInactiveLanguages(inactiveLanguages);
-                site.setInactiveLiveLanguages(inactiveLiveLanguages);
-                site.setMandatoryLanguages(mandatoryLanguages);
-            }
+            site.setLanguages(siteLangs);
+            site.setInactiveLanguages(inactiveLanguages);
+            site.setInactiveLiveLanguages(inactiveLiveLanguages);
+            site.setMandatoryLanguages(mandatoryLanguages);
             if (defaultLanguage == null) {
                 defaultLanguage = StringUtils.isEmpty(lowestRankLanguage) ? siteLangs.iterator().next() : lowestRankLanguage;
             }

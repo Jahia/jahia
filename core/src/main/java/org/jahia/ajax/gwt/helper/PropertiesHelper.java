@@ -491,7 +491,7 @@ public class PropertiesHelper {
                         }
                     }
 
-                } else if (StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
+                } else if (prop != null && StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
                     // do not set wip property here, as we are in a loop if wip property is the first the i18n nodes are may be not created yet
                     wipProp = prop;
                 }

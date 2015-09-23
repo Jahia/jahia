@@ -260,7 +260,7 @@ public class PropertiesEditor extends FormPanel {
      * @param optional
      * @param fieldSetGrouping
      */
-    private void addItems(GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
+    private void addItems(final GWTJahiaNodeType nodeType, List<GWTJahiaItemDefinition> items,
                           boolean optional, boolean fieldSetGrouping, Field remoteField) {
 
         FieldSet fieldSet = null;
@@ -357,8 +357,8 @@ public class PropertiesEditor extends FormPanel {
                             }
                             fieldSet.addListener(Events.Collapse, new Listener<FieldSetEvent>() {
                                 public void handleEvent(FieldSetEvent componentEvent) {
-                                    removedTypes.add(definition.getDeclaringNodeType());
-                                    addedTypes.remove(definition.getDeclaringNodeType());
+                                    removedTypes.add(nodeType.getName());
+                                    addedTypes.remove(nodeType.getName());
                                     final FieldSet  fs = (FieldSet) componentEvent.getBoxComponent();
                                     for (Component component : fs.getItems()) {
                                         if (component instanceof PropertyAdapterField) {
@@ -373,8 +373,8 @@ public class PropertiesEditor extends FormPanel {
                             });
                             fieldSet.addListener(Events.Expand, new Listener<FieldSetEvent>() {
                                 public void handleEvent(FieldSetEvent componentEvent) {
-                                    addedTypes.add(definition.getDeclaringNodeType());
-                                    removedTypes.remove(definition.getDeclaringNodeType());
+                                    addedTypes.add(nodeType.getName());
+                                    removedTypes.remove(nodeType.getName());
                                     final FieldSet fs = (FieldSet) componentEvent.getBoxComponent();
                                     final List<Component> w = new ArrayList<Component>();
                                     w.addAll(fs.getItems());

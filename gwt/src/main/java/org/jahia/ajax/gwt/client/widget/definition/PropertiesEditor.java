@@ -242,10 +242,11 @@ public class PropertiesEditor extends FormPanel {
                     continue;
                 }
 
-                addItems(mix, mix.getItems(), true, fieldSetGrouping, null);
+                List<GWTJahiaItemDefinition> list = new ArrayList<GWTJahiaItemDefinition>(mix.getItems());
                 if (viewInheritedItems) {
-                    addItems(mix, mix.getInheritedItems(), true, fieldSetGrouping, null);
+                    list.addAll(mix.getInheritedItems());
                 }
+                addItems(mix, list, true, fieldSetGrouping, null);
             }
         }
     }
@@ -307,13 +308,14 @@ public class PropertiesEditor extends FormPanel {
             Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, choiceListInitializer, displayHiddenProperties, permissions, propertyDefaultValues);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
+                String declaringNodeTypeLabel = optional ? nodeType.getName() : definition.getDeclaringNodeTypeLabel();
                 if (fieldSet == null || fieldSetGrouping &&
-                        (!fieldSet.getId().equals(definition.getDeclaringNodeTypeLabel()))) {
+                        (!fieldSet.getId().equals(declaringNodeTypeLabel))) {
                     fieldSet = new FieldSet();
-                    fieldSet.setId(definition.getDeclaringNodeTypeLabel());
-                    fieldSet.setHeadingHtml(definition.getDeclaringNodeTypeLabel());
+                    fieldSet.setId(declaringNodeTypeLabel);
+                    fieldSet.setHeadingHtml(declaringNodeTypeLabel);
                     fieldSet.setLayout(fl);
-                    fieldSets.put(definition.getDeclaringNodeType(), fieldSet);
+                    fieldSets.put(optional ? nodeType.getName() : definition.getDeclaringNodeType(), fieldSet);
                     add(fieldSet);
                 }
                 if (!isWriteable || (!isNonI18NWriteable && !definition.isNode() && !((GWTJahiaPropertyDefinition)definition).isInternationalized())) {

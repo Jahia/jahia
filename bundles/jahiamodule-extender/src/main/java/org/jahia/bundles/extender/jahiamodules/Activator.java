@@ -497,12 +497,19 @@ public class Activator implements BundleActivator {
         boolean newModuleDeployment = !templatePackageRegistry.areVersionsForModuleAvailable(bundle.getSymbolicName());
         templatePackageRegistry.registerPackageVersion(pkg);
 
-        boolean latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
-        if (latestDefinitions) {
-            List<URL> foundURLs = CND_SCANNER.scan(bundle);
-            if (!foundURLs.isEmpty()) {
-                cndBundleObserver.addingEntries(bundle, foundURLs);
+        boolean latestDefinitions;
+        try {
+            latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
+            if (latestDefinitions) {
+                List<URL> foundURLs = CND_SCANNER.scan(bundle);
+                if (!foundURLs.isEmpty()) {
+                    cndBundleObserver.addingEntries(bundle, foundURLs);
+                }
             }
+        } catch (Exception e) {
+            logger.info("--- Error parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+            setModuleState(bundle, ModuleState.State.ERROR_DURING_START, e);
+            return;
         }
 
         logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());

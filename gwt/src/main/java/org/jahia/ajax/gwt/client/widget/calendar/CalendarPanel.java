@@ -95,8 +95,9 @@ public class CalendarPanel extends LayoutContainer {
         setLayout(new FlowLayout());
         final DateTimeFormat dateTimeFormat = DateTimeFormat.getFormat("dd/MM/yyyy");
         final DateMenu menu = new DateMenu();
-        if(activeDate !=null && !"".equals(activeDate.trim()))
-        menu.getDatePicker().setValue(dateTimeFormat.parse(activeDate),true);
+        if (activeDate != null && !"".equals(activeDate.trim())) {
+            menu.getDatePicker().setValue(dateTimeFormat.parse(activeDate), true);
+        }
         menu.addListener(new EventType(Event.ONKEYDOWN+Event.ONKEYUP), new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent ce){
                 nativeCallback(callback, dateTimeFormat.format(menu.getDate()));

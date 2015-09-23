@@ -101,7 +101,7 @@ public class GWTJahiaPublicationInfo extends SerializableBaseModel {
     public static final int DELETED = 11;
     public static final int MARKED_FOR_DELETION = 12;
 
-    public static Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
+    public static final Map<Integer,String> statusToLabel = new HashMap<Integer, String>();
 
     static {
         statusToLabel.put(GWTJahiaPublicationInfo.PUBLISHED,"published");

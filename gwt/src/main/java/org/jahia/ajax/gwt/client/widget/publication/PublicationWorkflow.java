@@ -585,7 +585,7 @@ public class PublicationWorkflow implements CustomWorkflow {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof PublicationWorkflow)) {
+        if (this.getClass() != o.getClass()) {
             return false;
         }
 

@@ -102,7 +102,7 @@ public class GWTResourceBundleEntry extends BaseModelData implements
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof GWTResourceBundleEntry
+        return this.getClass() == obj.getClass()
                 && getKey().equals(((GWTResourceBundleEntry) obj).getKey());
     }
 

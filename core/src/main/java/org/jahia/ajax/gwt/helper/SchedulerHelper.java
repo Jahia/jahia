@@ -114,7 +114,7 @@ public class SchedulerHelper {
 
     private static final Comparator<GWTJahiaJobDetail> JOB_COMPARATOR = new Comparator<GWTJahiaJobDetail>() {
         public int compare(GWTJahiaJobDetail o1, GWTJahiaJobDetail o2) {
-            return -o1.compareTo(o2);
+            return o2.compareTo(o1);
         }
     };
 

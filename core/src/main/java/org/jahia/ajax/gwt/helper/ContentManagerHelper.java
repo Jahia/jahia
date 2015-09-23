@@ -1146,7 +1146,7 @@ public class ContentManagerHelper {
         }
         Collections.sort(result, new Comparator<GWTJahiaContentHistoryEntry>() {
             public int compare(GWTJahiaContentHistoryEntry o1, GWTJahiaContentHistoryEntry o2) {
-                return -o1.compareTo(o2);
+                return o2.compareTo(o1);
             }
         });
 

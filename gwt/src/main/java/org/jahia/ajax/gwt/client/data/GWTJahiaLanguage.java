@@ -186,7 +186,7 @@ public class GWTJahiaLanguage extends BaseModelData {
         if (obj==null) {
             return false;
         }
-        if (obj instanceof GWTJahiaLanguage) {
+        if (this.getClass() == obj.getClass()) {
             GWTJahiaLanguage langObj = (GWTJahiaLanguage)obj;
             return getLanguage().equals(langObj.getLanguage()) && getDisplayName().equals(langObj.getDisplayName());
         }

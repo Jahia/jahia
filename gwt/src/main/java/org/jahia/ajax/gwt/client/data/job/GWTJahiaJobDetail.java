@@ -283,7 +283,7 @@ public class GWTJahiaJobDetail extends BaseModelData implements Serializable, Co
         if (this == o) {
             return true;
         }
-        if (!(o instanceof GWTJahiaJobDetail)) {
+        if (this.getClass() != o.getClass()) {
             return false;
         }
 

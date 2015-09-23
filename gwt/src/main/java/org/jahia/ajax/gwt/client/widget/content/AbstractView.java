@@ -332,7 +332,7 @@ public abstract class AbstractView extends TopRightComponent {
     private static class TypeModelData extends BaseModelData {
         @Override
         public boolean equals(Object obj) {
-            if (!(obj instanceof  TypeModelData)) {
+            if (this.getClass() != obj.getClass()) {
                 return false;
             }
             Object o1 = get(GWTJahiaNode.PRIMARY_TYPE_LABEL);

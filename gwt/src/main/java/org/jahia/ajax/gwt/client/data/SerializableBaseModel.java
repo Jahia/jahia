@@ -201,7 +201,7 @@ public class SerializableBaseModel implements ModelData, Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof SerializableBaseModel)) {
+        if (this.getClass() != o.getClass()) {
             return false;
         }
 

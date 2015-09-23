@@ -296,10 +296,13 @@ public class TemplateHelper {
             if (pack.getSourcesFolder() != null && new File(pack.getSourcesFolder(), "src/main/resources").exists()) {
                 File f = new File(pack.getSourcesFolder(), "src/main/resources/" + type);
                 if (f.exists() && f.isDirectory()) {
-                    for (File r : f.listFiles()) {
-                        String resourceName = r.getName();
-                        if (resourceName.endsWith(ext)) {
-                            resources.add(resourceName);
+                    File[] files = f.listFiles();
+                    if (files != null) {
+                        for (File r : files) {
+                            String resourceName = r.getName();
+                            if (resourceName.endsWith(ext)) {
+                                resources.add(resourceName);
+                            }
                         }
                     }
                 }

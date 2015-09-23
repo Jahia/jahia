@@ -257,14 +257,14 @@ public class JahiaGroupManagerService extends JahiaService {
      * Get administrator or site administrator group
      */
     public JCRGroupNode getAdministratorGroup(String siteKey) throws RepositoryException {
-        return lookupGroupByPath(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME);
+        return getAdministratorGroup(siteKey, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
     }
 
     /**
      * Get administrator or site administrator group
      */
     public JCRGroupNode getAdministratorGroup(String siteKey, JCRSessionWrapper session) throws RepositoryException {
-        return lookupGroupByPath(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
+        return lookupGroupByPath(siteKey == null ? "/groups/" + JahiaGroupManagerService.ADMINISTRATORS_GROUPNAME : "/sites/" + siteKey + "/groups/" + JahiaGroupManagerService.SITE_ADMINISTRATORS_GROUPNAME, session);
     }
 
     /**

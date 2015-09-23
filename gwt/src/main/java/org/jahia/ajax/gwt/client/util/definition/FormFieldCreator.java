@@ -582,7 +582,7 @@ public class FormFieldCreator {
                             }
                             field.setValue(v);
                         } else {
-                            if (values.get(0).getString() != null) {
+                            if (values.size() > 0) {
                                 field.setValue(join(values));
                             }
                         }

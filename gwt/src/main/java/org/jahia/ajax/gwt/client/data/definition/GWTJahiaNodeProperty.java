@@ -124,7 +124,7 @@ public class GWTJahiaNodeProperty implements Serializable {
     }
 
     public boolean equals(Object obj) {
-        if (this.getClass() == obj.getClass()) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             GWTJahiaNodeProperty prop = (GWTJahiaNodeProperty) obj;
             return prop.getName().equals(getName()) &&
                     prop.getValues().containsAll(getValues()) &&

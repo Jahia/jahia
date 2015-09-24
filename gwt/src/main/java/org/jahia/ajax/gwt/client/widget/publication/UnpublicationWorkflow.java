@@ -143,7 +143,7 @@ public class UnpublicationWorkflow extends PublicationWorkflow {
         if (this == o) {
             return true;
         }
-        if (this.getClass() != o.getClass()) {
+        if (o == null || this.getClass() != o.getClass()) {
             return false;
         }
 

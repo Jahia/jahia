@@ -194,7 +194,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             }
 
             final String nodeIdentifier = matcher.group(5);
-            if ((nodeIdentifier != null) && (ignoreNodeTypes.size() > 0)) {
+            if ((nodeIdentifier != null) && !"null".equals(nodeIdentifier) && (ignoreNodeTypes.size() > 0)) {
                 final JCRTemplate tpl = JCRTemplate.getInstance();
                 String matchingNodeType = null;
                 try {

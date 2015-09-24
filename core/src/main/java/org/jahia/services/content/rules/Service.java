@@ -429,9 +429,9 @@ public class Service extends JahiaService {
 
         for (Map<Object, Object> infos : importsInfos) {
             File file = (File) infos.get("importFile");
-            if (infos.get("type").equals("files")) {
+            if (file != null && infos.get("type").equals("files")) {
                 try {
-                    ImportExportBaseService.getInstance().importSiteZip(file == null ? null : new FileSystemResource(file), null, infos);
+                    ImportExportBaseService.getInstance().importSiteZip(new FileSystemResource(file), null, infos);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }

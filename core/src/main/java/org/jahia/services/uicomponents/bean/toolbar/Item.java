@@ -350,7 +350,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
         if (super.equals(obj)) {
             return true;
         }
-        if (obj instanceof Item && obj != null) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             Item other = (Item) obj;
             return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other
                     .getId() == null;

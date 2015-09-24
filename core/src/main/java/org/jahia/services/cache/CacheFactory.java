@@ -158,8 +158,9 @@ public class CacheFactory extends CacheService {
     		return cache;
     	}
         String provider = cacheProviderForCache.get(name);
-        if(provider == null)
-        provider = DEFAULT_CACHE;
+        if (provider == null) {
+            provider = DEFAULT_CACHE;
+        }
         return createCacheInstance(name, provider);
     }
     

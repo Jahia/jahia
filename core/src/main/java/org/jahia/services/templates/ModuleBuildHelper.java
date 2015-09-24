@@ -690,13 +690,16 @@ public class ModuleBuildHelper implements InitializingBean {
             Pattern rbPattern = Pattern.compile("(" + srcModule.getId()
                     + "|" + StringUtils.replace(srcModule.getName(), " ", "")
                     + "|" + StringUtils.replace(srcModule.getName(), " ", "_") + ")(_[a-z]{2}(-[A-Z]{2})?)?.properties");
-            for (File f : rbFolder.listFiles()) {
-                Matcher m = rbPattern.matcher(f.getName());
-                if (m.matches()) {
-                    if (m.group(2) == null) {
-                        f.renameTo(new File(rbFolder, dstModuleId + ".properties"));
-                    } else {
-                        f.renameTo(new File(rbFolder, dstModuleId + m.group(2) + ".properties"));
+            File[] files = rbFolder.listFiles();
+            if (files != null) {
+                for (File f : files) {
+                    Matcher m = rbPattern.matcher(f.getName());
+                    if (m.matches()) {
+                        if (m.group(2) == null) {
+                            f.renameTo(new File(rbFolder, dstModuleId + ".properties"));
+                        } else {
+                            f.renameTo(new File(rbFolder, dstModuleId + m.group(2) + ".properties"));
+                        }
                     }
                 }
             }
@@ -919,7 +922,8 @@ public class ModuleBuildHelper implements InitializingBean {
         }
         FileUtils.forceDelete(file);
         File parentFile = file.getParentFile();
-        if (parentFile.listFiles((FileFilter) HiddenFileFilter.VISIBLE).length == 0) {
+        File[] files = parentFile.listFiles((FileFilter) HiddenFileFilter.VISIBLE);
+        if (files == null || files.length == 0) {
             deleteFileAndEmptyParents(parentFile, rootPath);
         }
     }

@@ -138,7 +138,7 @@ public class GroupCacheKey implements Serializable, Comparable<GroupCacheKey> {
     */
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof GroupCacheKey)) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         final GroupCacheKey groupCacheKey = (GroupCacheKey) o;
 

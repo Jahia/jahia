@@ -208,9 +208,12 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
         try {
             File f = new File(cnddir);
-            SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(f.listFiles()));
-            for (File file : cndfiles) {
-                addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
+            File[] files = f.listFiles();
+            if (files != null) {
+                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
+                for (File file : cndfiles) {
+                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
+                }
             }
         } catch (ParseException e) {
             logger.error(e.getMessage(), e);

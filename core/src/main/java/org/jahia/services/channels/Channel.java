@@ -141,7 +141,7 @@ public class Channel implements Serializable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Channel)) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         Channel channel = (Channel) o;
 

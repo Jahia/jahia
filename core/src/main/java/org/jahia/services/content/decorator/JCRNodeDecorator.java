@@ -894,7 +894,7 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
     }
     
     public boolean equals(final Object o) {
-        if (o instanceof JCRNodeDecorator) {
+        if (o != null && this.getClass() == o.getClass()) {
             return node.equals(((JCRNodeDecorator) o).node);
         }
         return false;

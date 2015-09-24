@@ -123,7 +123,7 @@ public class TemplatesChoiceListInitializerImpl implements ChoiceListInitializer
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof ViewWrapper && view.getKey().equals(((ViewWrapper) obj).view.getKey());
+            return obj != null && this.getClass() == obj.getClass() && view.getKey().equals(((ViewWrapper) obj).view.getKey());
         }
 
         @Override

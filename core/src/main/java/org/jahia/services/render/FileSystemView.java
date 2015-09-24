@@ -109,7 +109,7 @@ public class FileSystemView implements Comparable<View>, View {
     private String displayName;
     private Properties properties;
     private Properties defaultProperties;
-    public static String THUMBNAIL = "image";
+    public static final String THUMBNAIL = "image";
 
     private static Map<String,Properties> propCache = new ConcurrentHashMap<String, Properties>();
     

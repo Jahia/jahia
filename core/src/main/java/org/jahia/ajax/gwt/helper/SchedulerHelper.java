@@ -336,7 +336,9 @@ public class SchedulerHelper {
                         try {
                             ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
                             JGroupsChannel jc = bean.getChannel();
-                            jc.send(ManagedGWTResource.GWT_BROADCASTER_ID, pollingEvent);
+                            if (jc != null) {
+                                jc.send(ManagedGWTResource.GWT_BROADCASTER_ID, pollingEvent);
+                            }
                         } catch (Exception e) {
                             logger.debug(e.getMessage(), e);
                         }

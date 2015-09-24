@@ -250,7 +250,7 @@ public class AddedNodeFact extends AbstractNodeFact implements Updateable {
             logger.debug("Checking if " + this.toString() + " is equal to " + o.toString());
         }
         if (this == o) return true;
-        if (!(o instanceof AddedNodeFact)) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         AddedNodeFact that = (AddedNodeFact) o;
 

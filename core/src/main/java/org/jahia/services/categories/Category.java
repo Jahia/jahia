@@ -839,7 +839,7 @@ public class Category extends JahiaObject {
         if (this == category) {
             return true;
         }
-        if (category != null && category instanceof Category && getID() != null && getID().equals(((Category) category).getID())) {
+        if (category != null && this.getClass() == category.getClass() && getID() != null && getID().equals(((Category) category).getID())) {
             return true;
         }
         return false;

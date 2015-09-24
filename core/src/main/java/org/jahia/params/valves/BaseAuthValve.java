@@ -93,7 +93,7 @@ public abstract class BaseAuthValve implements Valve, BeanNameAware {
         if (super.equals(obj)) {
             return true;
         }
-        if (obj instanceof BaseAuthValve && obj != null) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             BaseAuthValve other = (BaseAuthValve) obj;
             return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other
                     .getId() == null;

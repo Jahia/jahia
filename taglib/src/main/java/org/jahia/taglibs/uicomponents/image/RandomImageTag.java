@@ -196,8 +196,8 @@ public class RandomImageTag extends AbstractJCRTag {
             JCRNodeWrapper acc = (JCRNodeWrapper) fileList.get(i);
 
             String filena = acc.getName();
-            if (filena != null && filena.indexOf(".") > 0) {
-                String ext = filena.substring(filena.indexOf(".") + 1, filena.length());
+            if (filena != null && filena.lastIndexOf(".") > 0) {
+                String ext = filena.substring(filena.lastIndexOf(".") + 1, filena.length());
                 if (fileTypes.toLowerCase().indexOf(ext.toLowerCase()) >= 0)
                     result.add(acc);
             }

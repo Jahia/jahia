@@ -469,7 +469,7 @@ public class ConflictResolver {
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
-            if (!(o instanceof ChildAddedDiff)) return false;
+            if (o == null || this.getClass() != o.getClass()) return false;
 
             ChildAddedDiff that = (ChildAddedDiff) o;
 

@@ -173,8 +173,9 @@ public class RenderChain {
         }
 
         String nodePath = "empty resource";
-        if(resource!=null)
-        nodePath = resource.getNode().getPath();
+        if (resource != null) {
+            nodePath = resource.getNode().getPath();
+        }
         try {
             for (; index<filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
                 RenderFilter filter = filters.get(index);

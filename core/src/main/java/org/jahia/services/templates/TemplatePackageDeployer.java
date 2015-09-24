@@ -410,10 +410,13 @@ public class TemplatePackageDeployer {
         if (session.itemExists("/modules/" + pack.getIdWithVersion() + "/j:moduleType")) {
             moduleType = session.getNode("/modules/" + pack.getIdWithVersion()).getProperty("j:moduleType").getValue().getString();
         } else {
-            List<String> files = new ArrayList<String>(Arrays.asList(new File(pack.getFilePath()).list()));
-            files.removeAll(Arrays.asList("META-INF", "WEB-INF", "resources"));
-            if (files.isEmpty()) {
-                moduleType = JahiaTemplateManagerService.MODULE_TYPE_SYSTEM;
+            String[] fileNames = new File(pack.getFilePath()).list();
+            if (fileNames != null) {
+                List<String> files = new ArrayList<String>(Arrays.asList(fileNames));
+                files.removeAll(Arrays.asList("META-INF", "WEB-INF", "resources"));
+                if (files.isEmpty()) {
+                    moduleType = JahiaTemplateManagerService.MODULE_TYPE_SYSTEM;
+                }
             }
         }
         return moduleType;

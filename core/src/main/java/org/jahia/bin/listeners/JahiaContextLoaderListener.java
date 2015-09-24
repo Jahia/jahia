@@ -306,14 +306,15 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
                 && webAppRoot.charAt(webAppRoot.length() - 1) == File.separatorChar) {
             webAppRoot = webAppRoot.substring(0, webAppRoot.length() - 1);
         }
-        try {
-            setSystemProperty("jahiaWebAppRoot", webAppRoot);
-        } catch (SecurityException se) {
-            logger.error(
-                    "System property jahiaWebAppRoot was NOT set to "
-                            + webAppRoot
-                            + " successfully ! Please check app server security manager policies to allow this.",
-                    se);
+        if (webAppRoot != null) {
+            try {
+                setSystemProperty("jahiaWebAppRoot", webAppRoot);
+            } catch (SecurityException se) {
+                logger.error(
+                        "System property jahiaWebAppRoot was NOT set to " + webAppRoot
+                                + " successfully ! Please check app server security manager policies to allow this.",
+                        se);
+            }
         }
         // let's try to read it to make sure it was set properly as this is
         // critical for Jahia startup and may fail on some application servers

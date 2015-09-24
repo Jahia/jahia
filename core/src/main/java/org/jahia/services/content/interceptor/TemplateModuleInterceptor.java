@@ -87,7 +87,7 @@ public class TemplateModuleInterceptor extends BaseInterceptor {
 
     private static final Logger logger = LoggerFactory.getLogger(TemplateModuleInterceptor.class);
 
-    static public ThreadLocal<RenderContext> renderContextThreadLocal = new ThreadLocal<RenderContext>();
+    public static final ThreadLocal<RenderContext> renderContextThreadLocal = new ThreadLocal<RenderContext>();
 
     private static final int TEMPLATES_TOKEN_POSITION = 3;
 

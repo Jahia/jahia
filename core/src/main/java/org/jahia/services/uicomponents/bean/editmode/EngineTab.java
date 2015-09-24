@@ -314,7 +314,7 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
         if (super.equals(obj)) {
             return true;
         }
-        if (obj instanceof EngineTab) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             EngineTab other = (EngineTab) obj;
             return getId() != null ? other.getId() != null && getId().equals(other.getId()) : other
                     .getId() == null;

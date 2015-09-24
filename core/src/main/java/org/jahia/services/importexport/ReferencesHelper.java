@@ -90,7 +90,7 @@ import java.util.*;
 public class ReferencesHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(ReferencesHelper.class);
 
-    public static int maxBatch = 1000;
+    public static final int MAX_BATCH = 1000;
 
     public static void resolveCrossReferences(JCRSessionWrapper session, Map<String, List<String>> references) throws RepositoryException {
         resolveCrossReferences(session, references, true);
@@ -200,7 +200,7 @@ public class ReferencesHelper {
 
             batchCount++;
 
-            if (batchCount > maxBatch) {
+            if (batchCount > MAX_BATCH) {
                 referencesKeeperSession.save();
                 batchCount = 0;
             }

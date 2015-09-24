@@ -201,7 +201,7 @@ public class JCRValueWrapperImpl implements JCRValueWrapper {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof JCRValueWrapperImpl) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             return value.equals(((JCRValueWrapperImpl) obj).value);
         }
         // allow equality test on subclasses of Value and invert equality test since value is usually a JCR-proper class which doesn't allow equality checks on subclasses

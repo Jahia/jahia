@@ -138,8 +138,10 @@ public class ImportJob extends BackgroundJob {
                 if (f != null) {
                     File file = JCRContentUtils.downloadFileContent(f, File.createTempFile("import", ".zip"));
                     try {
-                        ServicesRegistry.getInstance().getImportExportService().importSiteZip(
-                                file == null ? null : new FileSystemResource(file), site, jobDataMap);
+                        if (file != null) {
+                            ServicesRegistry.getInstance().getImportExportService()
+                                    .importSiteZip(new FileSystemResource(file), site, jobDataMap);
+                        }
                         f.remove();
                         session.save();
                     } finally {

@@ -258,7 +258,7 @@ public class VanityUrl implements Serializable {
     public boolean equals(Object obj) {
         return super.equals(obj)
                 || obj != null
-                && (obj instanceof VanityUrl)
+                && (this.getClass() == obj.getClass())
                 && new EqualsBuilder().append(getUrl(),
                         ((VanityUrl) obj).getUrl()).append(getPath(),
                         ((VanityUrl) obj).getPath()).append(getLanguage(),

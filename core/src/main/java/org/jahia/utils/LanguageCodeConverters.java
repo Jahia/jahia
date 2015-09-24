@@ -383,7 +383,7 @@ public class LanguageCodeConverters {
         }
 
         public boolean equals(Object obj) {
-            if (obj instanceof LocaleDisplayNameComparator) {
+            if (obj != null && this.getClass() == obj.getClass()) {
                 return true;
             } else {
                 return false;

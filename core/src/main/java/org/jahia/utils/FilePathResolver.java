@@ -91,8 +91,9 @@ public class FilePathResolver implements PathResolver {
         this.absolutePath = absolutePath;
     }
     public String resolvePath(String relativePath) {
-        if(absolutePath!= null)
-        return absolutePath+File.separator+relativePath;
+        if (absolutePath != null) {
+            return absolutePath + File.separator + relativePath;
+        }
         return relativePath;
     }
 

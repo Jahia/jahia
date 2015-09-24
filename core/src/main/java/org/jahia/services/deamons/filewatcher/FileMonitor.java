@@ -166,7 +166,7 @@ public class FileMonitor implements Serializable {
         private void checkForNewChildren(FileListener listener) {
             if (this.file.isDirectory()) {
                 File[] newChildren = this.file.listFiles();
-                if (this.children != null) {
+                if (newChildren != null && this.children != null) {
                     // See which new children are not listed in the current children map.
                     Map<File, Object> newChildrenMap = new HashMap<File, Object>();
                     Stack<File> missingChildren = new Stack<File>();
@@ -193,7 +193,7 @@ public class FileMonitor implements Serializable {
                         }
                     }
 
-                } else {
+                } else if (newChildren != null) {
                     // First set of children - Break out the cigars
                     if (newChildren.length > 0) {
                         this.children = new HashMap<File, Object>();
@@ -228,8 +228,10 @@ public class FileMonitor implements Serializable {
             if (this.fm.isRecursive()) {
                 if (child.isDirectory()) {
                     File[] newChildren = child.listFiles();
-                    for (int i = 0; i < newChildren.length; i++) {
-                        fireAllCreate(newChildren[i], listener);
+                    if (newChildren != null) {
+                        for (int i = 0; i < newChildren.length; i++) {
+                            fireAllCreate(newChildren[i], listener);
+                        }
                     }
                 }
             }
@@ -239,8 +241,10 @@ public class FileMonitor implements Serializable {
             if (this.file.isDirectory()) {
                 this.children = new HashMap<File, Object>();
                 File[] childrenList = this.file.listFiles();
-                for (int i = 0; i < childrenList.length; i++) {
-                    this.children.put(childrenList[i], new Object()); // null?
+                if (childrenList != null) {
+                    for (int i = 0; i < childrenList.length; i++) {
+                        this.children.put(childrenList[i], new Object()); // null?
+                    }
                 }
             }
         }
@@ -315,8 +319,10 @@ public class FileMonitor implements Serializable {
                 if (this.recursive && file.isDirectory()) {
                     // Traverse the children
                     final File[] children = file.listFiles();
-                    for (int i = 0; i < children.length; i++) {
-                        this.addFile(children[i]); // Add depth first
+                    if (children != null) {
+                        for (int i = 0; i < children.length; i++) {
+                            this.addFile(children[i]); // Add depth first
+                        }
                     }
                 }
             }

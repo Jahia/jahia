@@ -112,7 +112,7 @@ public class VersionInfo implements Comparable {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof VersionInfo)) return false;
+        if (o == null || this.getClass() != o.getClass()) return false;
 
         VersionInfo that = (VersionInfo) o;
         if(label !=null) {

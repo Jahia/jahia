@@ -87,10 +87,15 @@ import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
 import org.atmosphere.interceptor.IdleResourceInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
+<<<<<<< .working
 import org.jahia.services.atmosphere.AtmosphereServlet;
+=======
+import org.jahia.services.SpringContextSingleton;
+>>>>>>> .merge-right.r53042
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEvent;
 
 @ManagedService(path = "/atmosphere/rpc",
         interceptors = {
@@ -140,6 +145,7 @@ public class ManagedGWTResource {
             broadcasterFactory.lookup(GWT_BROADCASTER_ID + user.getName(),true).addAtmosphereResource(r);
         }
 
+        SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientReadyEvent(r));
         logger.debug("Received RPC GET");
     }
 
@@ -154,6 +160,7 @@ public class ManagedGWTResource {
                 logger.debug("User:" + event.getResource().uuid() + " closed the connection");
             }
         }
+        SpringContextSingleton.getInstance().publishEvent(new AtmosphereClientDisconnectedEvent(event.getResource()));
     }
 
     @Post
@@ -161,6 +168,28 @@ public class ManagedGWTResource {
         // Don't need to do anything, the interceptor took care of it for us.
         if (logger.isDebugEnabled()) {
             logger.info("POST received with transport {}", r.transport());
+        }
+    }
+
+    public class AtmosphereClientReadyEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1L;
+
+        public AtmosphereClientReadyEvent(AtmosphereResource resource) {
+            super(resource);
+        }
+        public AtmosphereResource getResource() {
+            return (AtmosphereResource) super.getSource();
+        }
+    }
+
+    public class AtmosphereClientDisconnectedEvent extends ApplicationEvent {
+        private static final long serialVersionUID = 1L;
+
+        public AtmosphereClientDisconnectedEvent(AtmosphereResource resource) {
+            super(resource);
+        }
+        public AtmosphereResource getResource() {
+            return (AtmosphereResource) super.getSource();
         }
     }
 }

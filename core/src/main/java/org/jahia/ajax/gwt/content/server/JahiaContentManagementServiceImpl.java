@@ -151,7 +151,6 @@ import java.util.regex.Pattern;
  * @author rfelden
  */
 public class JahiaContentManagementServiceImpl extends JahiaRemoteService implements JahiaContentManagementService {
-
     private static final transient Logger logger = LoggerFactory.getLogger(JahiaContentManagementServiceImpl.class);
 
     private static final Pattern VERSION_AT_PATTERN = Pattern.compile("_at_");
@@ -1817,8 +1816,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
             try {
                 if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                    nodeWrapper.lockAndStoreToken("engine");
-                    GWTResourceBundleUtils.lock(nodeWrapper);
+                    addEngineLock(nodeWrapper);
                 }
                 dumpLocks(nodeWrapper);
             } catch (UnsupportedRepositoryOperationException e) {
@@ -1914,6 +1912,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (n.getProvider().isLockingAvailable() && n.isLocked()) {
                 n.unlock("engine");
                 GWTResourceBundleUtils.unlock(n);
+                Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+                locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale()+"/"+n.getIdentifier());
             }
 
             dumpLocks(n);
@@ -1973,8 +1973,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             for (String path : paths) {
                 nodeWrapper = sessionWrapper.getNode(path);
                 if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                    nodeWrapper.lockAndStoreToken("engine");
-                    GWTResourceBundleUtils.lock(nodeWrapper);
+                    addEngineLock(nodeWrapper);
                 }
 
                 dumpLocks(nodeWrapper);
@@ -2035,6 +2034,22 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", getUILocale(), getLocalizedMessage(e)));
         }
 
+    }
+
+    private void addEngineLock(JCRNodeWrapper nodeWrapper) throws RepositoryException {
+        nodeWrapper.lockAndStoreToken("engine");
+        GWTResourceBundleUtils.lock(nodeWrapper);
+        Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+        if (locks == null) {
+            locks = new HashMap<String, List<String>>();
+        }
+        List<String> l = locks.get(getRequest().getParameter("windowId"));
+        if (l == null) {
+            l = new ArrayList<String>();
+            locks.put(getRequest().getParameter("windowId"), l);
+        }
+        l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
+        getRequest().getSession().setAttribute("engineLocks", locks);
     }
 
     private void dumpLocks(JCRNodeWrapper nodeWrapper) throws RepositoryException {
@@ -2618,5 +2633,4 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return Messages.getInternal("label.gwt.error."+e.getClass().getName(), getUILocale(), StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getClass().getName()), " "));
     }
-
 }

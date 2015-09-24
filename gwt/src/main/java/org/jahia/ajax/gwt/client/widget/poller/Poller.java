@@ -80,6 +80,7 @@ import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -116,7 +117,7 @@ public class Poller {
                 RPCSerializer rpc_serializer = GWT.create(RPCSerializer.class);
 
                 AtmosphereRequestConfig rpcRequestConfig = AtmosphereRequestConfig.create(rpc_serializer);
-                rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc");
+                rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc?windowId="+ JahiaContentManagementService.App.getWindowId());
                 Transport transport = useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET
                         : (!isIE ? AtmosphereRequestConfig.Transport.SSE
                                 : AtmosphereRequestConfig.Transport.STREAMING);

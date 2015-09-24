@@ -75,6 +75,7 @@ import com.extjs.gxt.ui.client.data.ModelData;
 import com.extjs.gxt.ui.client.data.PagingLoadResult;
 import com.extjs.gxt.ui.client.data.RpcMap;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.ServiceDefTarget;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
@@ -534,7 +535,7 @@ public interface JahiaContentManagementService extends RemoteService {
 
     public static class App {
         private static JahiaContentManagementServiceAsync app = null;
-
+        private static int windowId = Random.nextInt();
         public static synchronized JahiaContentManagementServiceAsync getInstance() {
             if (app == null) {
                 String relativeServiceEntryPoint = createEntryPointUrl();
@@ -553,8 +554,12 @@ public interface JahiaContentManagementService extends RemoteService {
             return app;
         }
 
+        public static int getWindowId() {
+            return windowId;
+        }
+
         private static String createEntryPointUrl() {
-            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" + JahiaGWTParameters.getWorkspace();
+            return JahiaGWTParameters.getServiceEntryPoint() + "contentManager.gwt?lang=" + JahiaGWTParameters.getLanguage() + "&site=" + JahiaGWTParameters.getSiteUUID() + "&workspace=" + JahiaGWTParameters.getWorkspace() + "&windowId=" + windowId;
         }
     }
 }

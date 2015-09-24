@@ -115,6 +115,8 @@
 
     <bean name="CacheHelper" class="org.jahia.ajax.gwt.helper.CacheHelper"/>
 
+    <bean name="LocksHelper" class="org.jahia.ajax.gwt.helper.LocksHelper"/>
+
     <bean name="SchedulerHelper" class="org.jahia.ajax.gwt.helper.SchedulerHelper" init-method="start">
         <property name="scheduler" ref="SchedulerService"/>
     </bean>

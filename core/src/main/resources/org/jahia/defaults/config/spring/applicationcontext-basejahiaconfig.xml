@@ -274,7 +274,7 @@
     <bean id="jahiaContextListenersConfiguration" class="org.springframework.beans.factory.config.MapFactoryBean">
     <property name="sourceMap">
       <map>
-        <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:false}"/>
+        <entry key="interceptHttpSessionListenerEvents" value="${interceptHttpSessionListenerEvents:true}"/>
         <entry key="interceptHttpSessionActivationEvents" value="${interceptHttpSessionActivationEvents:false}"/>
         <entry key="interceptHttpSessionAttributeListenerEvents" value="${interceptHttpSessionAttributeListenerEvents:false}"/>
         <entry key="interceptHttpSessionBindingListenerEvents" value="${interceptHttpSessionBindingListenerEvents:false}"/>

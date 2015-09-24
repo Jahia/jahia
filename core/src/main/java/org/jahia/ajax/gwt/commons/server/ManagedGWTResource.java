@@ -74,12 +74,16 @@ package org.jahia.ajax.gwt.commons.server;
 /**
  * simple GWT handler for atmosphere
  */
+
 import org.atmosphere.client.TrackMessageSizeInterceptor;
 import org.atmosphere.config.service.Disconnect;
 import org.atmosphere.config.service.ManagedService;
 import org.atmosphere.config.service.Post;
 import org.atmosphere.config.service.Ready;
-import org.atmosphere.cpr.*;
+import org.atmosphere.cpr.AtmosphereResource;
+import org.atmosphere.cpr.AtmosphereResourceEvent;
+import org.atmosphere.cpr.AtmosphereResourceEventListener;
+import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.gwt20.managed.AtmosphereMessageInterceptor;
 import org.atmosphere.gwt20.server.GwtRpcInterceptor;
 import org.atmosphere.interceptor.AtmosphereResourceLifecycleInterceptor;
@@ -87,11 +91,8 @@ import org.atmosphere.interceptor.BroadcastOnPostAtmosphereInterceptor;
 import org.atmosphere.interceptor.IdleResourceInterceptor;
 import org.atmosphere.interceptor.SuspendTrackerInterceptor;
 import org.jahia.api.Constants;
-<<<<<<< .working
-import org.jahia.services.atmosphere.AtmosphereServlet;
-=======
 import org.jahia.services.SpringContextSingleton;
->>>>>>> .merge-right.r53042
+import org.jahia.services.atmosphere.AtmosphereServlet;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

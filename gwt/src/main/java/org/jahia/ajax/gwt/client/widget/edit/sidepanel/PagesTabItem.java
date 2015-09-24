@@ -2,72 +2,72 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- * <p/>
- * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
- * <p/>
- * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- * 1/GPL OR 2/JSEL
- * <p/>
- * 1/ GPL
- * ======================================================================================
- * <p/>
- * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- * <p/>
- * "This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
- * <p/>
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * <p/>
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * <p/>
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, also available here:
- * http://www.jahia.com/license"
- * <p/>
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ======================================================================================
- * <p/>
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- * <p/>
- * Alternatively, commercial and supported versions of the program - also known as
- * Enterprise Distributions - must be used in accordance with the terms and conditions
- * contained in a separate written agreement between you and Jahia Solutions Group SA.
- * <p/>
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
- * <p/>
- * <p/>
+ *
+ *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
+ *
+ *     1/ GPL
+ *     ======================================================================================
+ *
+ *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     "This program is free software; you can redistribute it and/or
+ *     modify it under the terms of the GNU General Public License
+ *     as published by the Free Software Foundation; either version 2
+ *     of the License, or (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program; if not, write to the Free Software
+ *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *
+ *     As a special exception to the terms and conditions of version 2.0 of
+ *     the GPL (or any later version), you may redistribute this Program in connection
+ *     with Free/Libre and Open Source Software ("FLOSS") applications as described
+ *     in Jahia's FLOSS exception. You should have received a copy of the text
+ *     describing the FLOSS exception, also available here:
+ *     http://www.jahia.com/license"
+ *
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ======================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
+ *
+ *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
- * <p/>
- * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- * streamlining Enterprise digital projects across channels to truly control
- * time-to-market and TCO, project after project.
- * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- * marketing teams to collaboratively and iteratively build cutting-edge
- * online business solutions.
- * These, in turn, are securely and easily deployed as modules and apps,
- * reusable across any digital projects, thanks to the Jahia Private App Store Software.
- * Each solution provided by Jahia stems from this overarching vision:
- * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- * Founded in 2002 and headquartered in Geneva, Switzerland,
- * Jahia Solutions Group has its North American headquarters in Washington DC,
- * with offices in Chicago, Toronto and throughout Europe.
- * Jahia counts hundreds of global brands and governmental organizations
- * among its loyal customers, in more than 20 countries across the globe.
- * <p/>
- * For more information, please visit http://www.jahia.com
+ *
+ *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     streamlining Enterprise digital projects across channels to truly control
+ *     time-to-market and TCO, project after project.
+ *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     marketing teams to collaboratively and iteratively build cutting-edge
+ *     online business solutions.
+ *     These, in turn, are securely and easily deployed as modules and apps,
+ *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ *     Each solution provided by Jahia stems from this overarching vision:
+ *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ *     Founded in 2002 and headquartered in Geneva, Switzerland,
+ *     Jahia Solutions Group has its North American headquarters in Washington DC,
+ *     with offices in Chicago, Toronto and throughout Europe.
+ *     Jahia counts hundreds of global brands and governmental organizations
+ *     among its loyal customers, in more than 20 countries across the globe.
+ *
+ *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
@@ -116,8 +116,6 @@ public class PagesTabItem extends SidePanelTabItem {
     protected List<String> folderTypes = new ArrayList<String>();
     private List<String> paths = new ArrayList<String>();
 
-    private transient boolean refreshMain = true;
-
     protected transient TreeGrid<GWTJahiaNode> pageTree;
     protected transient GWTJahiaNodeTreeFactory pageFactory;
     protected transient String path;
@@ -157,9 +155,8 @@ public class PagesTabItem extends SidePanelTabItem {
         pageTree.setHeight("100%");
         pageTree.setIconProvider(ContentModelIconProvider.getInstance());
         pageTree.getTreeStore().setStoreSorter(new StoreSorter<GWTJahiaNode>() {
-            @Override
-            public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
-                               String property) {
+            @Override public int compare(Store<GWTJahiaNode> gwtJahiaNodeStore, GWTJahiaNode m1, GWTJahiaNode m2,
+                                         String property) {
                 if (!m1.getInheritedNodeTypes().contains("jmix:navMenuItem") && m2.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                     return 1;
                 } else if (!m2.getInheritedNodeTypes().contains("jmix:navMenuItem") && m1.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
@@ -171,20 +168,18 @@ public class PagesTabItem extends SidePanelTabItem {
         });
         pageTree.setSelectionModel(new TreeGridClickSelectionModel());
         this.pageTree.getSelectionModel().addSelectionChangedListener(new SelectionChangedListener<GWTJahiaNode>() {
-            @Override
-            public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
+            @Override public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> se) {
                 final GWTJahiaNode node = se.getSelectedItem();
-                if (refreshMain && node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
-                        !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
+                if (node != null && !node.getPath().equals(editLinker.getMainModule().getPath()) &&
+                    !node.getNodeTypes().contains("jnt:virtualsite") && !node.getNodeTypes().contains("jnt:navMenuText") &&
                         !node.getInheritedNodeTypes().contains("jmix:link")
                         ) {
                     MainModule.staticGoTo(node.getPath(), null);
                 }
-                refreshMain = true;
             }
         });
         this.pageTree.getSelectionModel().setSelectionMode(Style.SelectionMode.SINGLE);
-
+        
         pageTree.setContextMenu(createContextMenu(config.getTreeContextMenu(), pageTree.getSelectionModel()));
         selectMainNodeTreeLoadListener = new SelectMainNodeTreeLoadListener(pageTree);
         tab.add(pageTree);
@@ -216,7 +211,7 @@ public class PagesTabItem extends SidePanelTabItem {
         path = linker.getMainModule().getPath();
         initPageTree();
         if (linker.getConfig().isEnableDragAndDrop()) {
-            initDND();
+        initDND();
         }
     }
 
@@ -246,13 +241,6 @@ public class PagesTabItem extends SidePanelTabItem {
     public void doRefresh() {
         pageTree.getTreeStore().removeAll();
         pageTree.getTreeStore().getLoader().load();
-    }
-
-    @Override
-    public void refresh(Map<String, Object> data) {
-        refreshMain = !(data != null && data.containsKey("event") && data.get("event").equals("languageChanged"));
-        super.refresh(data);
-
     }
 
     public void addOpenPath(String path) {
@@ -302,8 +290,8 @@ public class PagesTabItem extends SidePanelTabItem {
                     if (activeNode.getInheritedNodeTypes().contains("jmix:navMenuItem")) {
                         e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.PAGETREE_TYPE);
                     } else if (activeNode.getNodeTypes().contains("jnt:templatesFolder") &&
-                            EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(
-                                    EditModeDNDListener.SOURCE_TYPE))) {
+                               EditModeDNDListener.PAGETREE_TYPE.equals(e.getStatus().getData(
+                                       EditModeDNDListener.SOURCE_TYPE))) {
                         e.getStatus().setData(EditModeDNDListener.TARGET_TYPE, EditModeDNDListener.TEMPLATETREE_TYPE);
                     } else {
                         e.getStatus().setStatus(false);
@@ -331,7 +319,7 @@ public class PagesTabItem extends SidePanelTabItem {
                 }
 
                 public void onApplicationFailure(Throwable throwable) {
-                    Window.alert("Failed : " + throwable);
+                    Window.alert("Failed : "+throwable);
                 }
             };
             return callback;

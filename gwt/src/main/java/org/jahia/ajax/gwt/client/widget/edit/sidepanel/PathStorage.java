@@ -153,6 +153,8 @@ public class PathStorage {
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
                         if (selectionChangedEvent.getSelectedItem() != null) {
                             selectedPath = (Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
+                        } else {
+                            selectedPath = new ArrayList<String>();
                         }
                     }
                 });
@@ -182,6 +184,8 @@ public class PathStorage {
                     public void selectionChanged(SelectionChangedEvent<GWTJahiaNode> selectionChangedEvent) {
                         if (selectionChangedEvent.getSelectedItem() != null) {
                             selectedPath = (Arrays.asList(selectionChangedEvent.getSelectedItem().getPath()));
+                        } else {
+                            selectedPath = new ArrayList<String>();
                         }
                     }
                 });

@@ -1667,7 +1667,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value value, int type) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        checkLock();
         hasPropertyCache.remove(name);
 
         final Locale locale = getSession().getLocale();
@@ -1685,10 +1684,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd.isInternationalized()) {
+                checkLock();
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value, type), session, provider, epd, name);
             }
         }
 
+        checkLock();
         if (value == null) {
             objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -1700,7 +1701,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      * {@inheritDoc}
      */
     public JCRPropertyWrapper setProperty(String name, Value[] values) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
-        checkLock();
         hasPropertyCache.remove(name);
         final Locale locale = getSession().getLocale();
         name = ensurePrefixedName(name);
@@ -1734,6 +1734,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
         if (locale != null) {
             if (epd.isInternationalized()) {
+                checkLock();
                 if (values == null) {
                     getOrCreateI18N(locale).setProperty(name, (Value[]) null);
                     return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -1742,6 +1743,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
+        checkLock();
         if (values == null) {
             objectNode.setProperty(name, (Value[]) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);

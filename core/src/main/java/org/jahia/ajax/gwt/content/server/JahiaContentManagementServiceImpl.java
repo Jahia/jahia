@@ -1814,14 +1814,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
-            try {
-                if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                    addEngineLock(nodeWrapper);
-                }
-                dumpLocks(nodeWrapper);
-            } catch (UnsupportedRepositoryOperationException e) {
-                // do nothing if lock is not supported
-            }
+            addEngineLock(tryToLockNode, nodeWrapper);
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
                     contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
@@ -1972,11 +1965,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
                 nodeWrapper = sessionWrapper.getNode(path);
-                if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
-                    addEngineLock(nodeWrapper);
-                }
-
-                dumpLocks(nodeWrapper);
+                addEngineLock(tryToLockNode, nodeWrapper);
 
                 // get node type
                 if (nodeTypes == null) {
@@ -2036,20 +2025,27 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     }
 
-    private void addEngineLock(JCRNodeWrapper nodeWrapper) throws RepositoryException {
-        nodeWrapper.lockAndStoreToken("engine");
-        GWTResourceBundleUtils.lock(nodeWrapper);
-        Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
-        if (locks == null) {
-            locks = new HashMap<String, List<String>>();
+    private void addEngineLock(boolean tryToLockNode, JCRNodeWrapper nodeWrapper) throws RepositoryException {
+        try {
+            if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
+                nodeWrapper.lockAndStoreToken("engine");
+                GWTResourceBundleUtils.lock(nodeWrapper);
+                Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+                if (locks == null) {
+                    locks = new HashMap<String, List<String>>();
+                }
+                List<String> l = locks.get(getRequest().getParameter("windowId"));
+                if (l == null) {
+                    l = new ArrayList<String>();
+                    locks.put(getRequest().getParameter("windowId"), l);
+                }
+                l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
+                getRequest().getSession().setAttribute("engineLocks", locks);
+            }
+            dumpLocks(nodeWrapper);
+        } catch (UnsupportedRepositoryOperationException e) {
+            // do nothing if lock is not supported
         }
-        List<String> l = locks.get(getRequest().getParameter("windowId"));
-        if (l == null) {
-            l = new ArrayList<String>();
-            locks.put(getRequest().getParameter("windowId"), l);
-        }
-        l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
-        getRequest().getSession().setAttribute("engineLocks", locks);
     }
 
     private void dumpLocks(JCRNodeWrapper nodeWrapper) throws RepositoryException {

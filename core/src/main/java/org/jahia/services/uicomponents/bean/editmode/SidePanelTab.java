@@ -239,7 +239,7 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
         if (super.equals(obj)) {
             return true;
         }
-        if (obj instanceof SidePanelTab && obj != null) {
+        if (obj != null && this.getClass() == obj.getClass()) {
             SidePanelTab other = (SidePanelTab) obj;
             return getKey() != null ? other.getKey() != null && getKey().equals(other.getKey())
                     : other.getKey() == null;

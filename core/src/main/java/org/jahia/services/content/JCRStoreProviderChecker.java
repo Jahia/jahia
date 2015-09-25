@@ -86,7 +86,7 @@ public class JCRStoreProviderChecker {
                 // so attempt to mount the associated provider
                 final JCRStoreProvider provider = entry.getValue();
                 if (provider.isAvailable(true)) {
-                    logger.info("Remote server at " + provider.getUrl() + " came back online. Attempting to re-mount provider.");
+                    logger.info("Remote server " + getProviderName(provider, key) + " came back online. Attempting to re-mount provider.");
 
                     provider.setMountStatus(JCRMountPointNode.MountStatus.mounted);
 
@@ -103,11 +103,19 @@ public class JCRStoreProviderChecker {
     }
 
     public void checkPeriodically(JCRStoreProvider provider) {
+        final String key = provider.getKey();
         synchronized (lock) {
-            toPeriodicallyCheck.put(provider.getKey(), provider);
+            toPeriodicallyCheck.put(key, provider);
         }
 
-        logger.info("Added provider at " + provider.getUrl() + " to list of servers to periodically check");
+        String providerName = getProviderName(provider, key);
+        logger.info("Added provider " + providerName + " to list of servers to periodically check");
+    }
+
+    private String getProviderName(JCRStoreProvider provider, String key) {
+        String providerName = provider.getUrl();
+        providerName = providerName != null ? providerName : key;
+        return providerName;
     }
 
 

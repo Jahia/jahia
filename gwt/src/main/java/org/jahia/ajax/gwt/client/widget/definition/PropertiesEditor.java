@@ -308,12 +308,12 @@ public class PropertiesEditor extends FormPanel {
             Field<?> field = FormFieldCreator.createField(definition, gwtJahiaNodeProperty, choiceListInitializer, displayHiddenProperties, permissions, propertyDefaultValues);
             propertyDefinitions.put(gwtJahiaNodeProperty.getName(), definition);
             if (field != null) {
-                String declaringNodeTypeLabel = optional ? nodeType.getName() : definition.getDeclaringNodeTypeLabel();
+                String declaringNodeTypeLabel = optional ? nodeType.getLabel() : definition.getDeclaringNodeTypeLabel();
                 if (fieldSet == null || fieldSetGrouping &&
                         (!fieldSet.getId().equals(declaringNodeTypeLabel))) {
                     fieldSet = new FieldSet();
                     fieldSet.setId(declaringNodeTypeLabel);
-                    fieldSet.setHeadingHtml(definition.getDeclaringNodeTypeLabel());
+                    fieldSet.setHeadingHtml(declaringNodeTypeLabel);
                     fieldSet.setLayout(fl);
                     fieldSets.put(optional ? nodeType.getName() : definition.getDeclaringNodeType(), fieldSet);
                     add(fieldSet);

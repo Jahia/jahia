@@ -313,7 +313,7 @@ public class PropertiesEditor extends FormPanel {
                         (!fieldSet.getId().equals(declaringNodeTypeLabel))) {
                     fieldSet = new FieldSet();
                     fieldSet.setId(declaringNodeTypeLabel);
-                    fieldSet.setHeadingHtml(declaringNodeTypeLabel);
+                    fieldSet.setHeadingHtml(definition.getDeclaringNodeTypeLabel());
                     fieldSet.setLayout(fl);
                     fieldSets.put(optional ? nodeType.getName() : definition.getDeclaringNodeType(), fieldSet);
                     add(fieldSet);

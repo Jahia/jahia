@@ -347,27 +347,29 @@ public class PropertiesHelper {
 
 
     private void removeItemFromNode(ExtendedItemDefinition item, JCRNodeWrapper objectNode, JCRSessionWrapper currentUserSession) throws RepositoryException {
-        if (item.isNode()) {
-            if (objectNode.hasNode(item.getName())) {
-                currentUserSession.checkout(objectNode);
-                objectNode.getNode(item.getName()).remove();
-            }
-        } else {
-            if (item instanceof ExtendedPropertyDefinition){
-                ExtendedPropertyDefinition itemProperty = (ExtendedPropertyDefinition) item;
-                if(itemProperty.isInternationalized()){
-                    NodeIterator nodeIterator = objectNode.getI18Ns();
-                    while (nodeIterator.hasNext()){
-                        Node i18nNode = nodeIterator.nextNode();
-                        if (i18nNode.hasProperty(item.getName())) {
-                            currentUserSession.checkout(i18nNode);
-                            i18nNode.getProperty(item.getName()).remove();
+        if (!item.isUnstructured()) {
+            if (item.isNode()) {
+                if (objectNode.hasNode(item.getName())) {
+                    currentUserSession.checkout(objectNode);
+                    objectNode.getNode(item.getName()).remove();
+                }
+            } else {
+                if (item instanceof ExtendedPropertyDefinition) {
+                    ExtendedPropertyDefinition itemProperty = (ExtendedPropertyDefinition) item;
+                    if (itemProperty.isInternationalized()) {
+                        NodeIterator nodeIterator = objectNode.getI18Ns();
+                        while (nodeIterator.hasNext()) {
+                            Node i18nNode = nodeIterator.nextNode();
+                            if (i18nNode.hasProperty(item.getName())) {
+                                currentUserSession.checkout(i18nNode);
+                                i18nNode.getProperty(item.getName()).remove();
+                            }
                         }
-                    }
-                } else {
-                    if (objectNode.hasProperty(item.getName())) {
-                        currentUserSession.checkout(objectNode);
-                        objectNode.getProperty(item.getName()).remove();
+                    } else {
+                        if (objectNode.hasProperty(item.getName())) {
+                            currentUserSession.checkout(objectNode);
+                            objectNode.getProperty(item.getName()).remove();
+                        }
                     }
                 }
             }

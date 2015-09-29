@@ -186,6 +186,8 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             // if there are any attributes to conserve between session, let's copy them into a map first
             Map<String, Object> savedSessionAttributes = preserveSessionAttributes(httpServletRequest);
 
+            JahiaUser jahiaUser = theUser.getJahiaUser();
+
             if (httpServletRequest.getSession(false) != null) {
                 httpServletRequest.getSession().invalidate();
             }
@@ -194,7 +196,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             restoreSessionAttributes(httpServletRequest, savedSessionAttributes);
 
             httpServletRequest.setAttribute(VALVE_RESULT, OK);
-            authContext.getSessionFactory().setCurrentUser(theUser.getJahiaUser());
+            authContext.getSessionFactory().setCurrentUser(jahiaUser);
 
             // do a switch to the user's preferred language
             if (SettingsBean.getInstance().isConsiderPreferredLanguageAfterLogin()) {
@@ -215,7 +217,7 @@ public class LoginEngineAuthValveImpl extends BaseAuthValve {
             //        String.valueOf(System.currentTimeMillis()));
 
             if (fireLoginEvent) {
-                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, theUser.getJahiaUser(), authContext));
+                SpringContextSingleton.getInstance().publishEvent(new LoginEvent(this, jahiaUser, authContext));
             }
 
         } else {

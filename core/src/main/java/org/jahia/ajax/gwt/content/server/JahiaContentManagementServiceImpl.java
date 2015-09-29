@@ -741,9 +741,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 String name = contentManager.findAvailableName(nodeWrapper.getParent(), JCRContentUtils.escapeLocalNodeName(node.getName()));
                 nodeWrapper.rename(name);
                 jcrSessionWrapper.save();
-                node.setName(name);
-                node.setPath(nodeWrapper.getPath());
             }
+            node.setName(nodeWrapper.getName());
+            node.setPath(nodeWrapper.getPath());
 
 //        setLock(Arrays.asList(node.getPath()), false);
             Iterator<String> langCode = langCodeProperties.keySet().iterator();
@@ -801,14 +801,14 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         // renaming sub-node first
                         nodeWrapper.getNode(renamedFrom).rename(subNode.getName());
                     }
+                    newNames.add(JCRContentUtils.escapeLocalNodeName(subNode.getName()));
                     if (subNode.get("nodeLangCodeProperties") != null && subNode.get("nodeProperties") != null) {
-                        if (nodeWrapper.hasNode(subNode.getName())) {
+                        if (nodeWrapper.hasNode(JCRContentUtils.escapeLocalNodeName(subNode.getName()))) {
                             saveNode(subNode, null, (Map<String, List<GWTJahiaNodeProperty>>) subNode.get("nodeLangCodeProperties"), (List<GWTJahiaNodeProperty>) subNode.get("nodeProperties"), new HashSet<String>());
                         } else {
                             createNode(node.getPath(), subNode);
                         }
                     }
-                    newNames.add(subNode.getName());
                 }
                 if (nodeWrapper.getPrimaryNodeType().hasOrderableChildNodes()) {
                     List<String> oldNames = new ArrayList<String>();

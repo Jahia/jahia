@@ -125,7 +125,7 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
             String baseURL = org.jahia.ajax.gwt.client.util.URL.getAbsoluteURL(JahiaGWTParameters.getContextPath() + "/cms/render");
             String localURL = baseURL + "/default/" + JahiaGWTParameters.getLanguage() + gwtJahiaNode.getPath();
             linker.loading(Messages.get("label.executing", "Executing action ..."));
-            RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL + "." + action + ".do");
+            RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL.replaceAll("#", "%23") + "." + action + ".do");
             try {
                 String requestData = getRequestData();
                 if (requestData != null) {

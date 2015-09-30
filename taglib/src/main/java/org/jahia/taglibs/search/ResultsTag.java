@@ -71,12 +71,6 @@
  */
 package org.jahia.taglibs.search;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.Hit;
@@ -84,6 +78,10 @@ import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteriaFactory;
 import org.jahia.services.search.SearchResponse;
 import org.jahia.taglibs.AbstractJahiaTag;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import java.util.List;
 
 /**
  * Performs the content search and exposes search results for being displayed.
@@ -138,7 +136,7 @@ public class ResultsTag extends AbstractJahiaTag {
 
         final int result = searchAndSetAttributes(criteria, renderContext);
 
-        return result == SKIP_BODY ? SKIP_BODY : EVAL_BODY_INCLUDE;
+        return result < 0 ? SKIP_BODY : EVAL_BODY_INCLUDE;
     }
     
     protected int searchAndSetAttributes(SearchCriteria criteria, RenderContext renderContext) {
@@ -151,7 +149,7 @@ public class ResultsTag extends AbstractJahiaTag {
         } else {
             // if we don't have criteria and no searches, no need to go further since we don't have any hits, no need to further process
             // and run into an NPE with a null SearchResponse after...
-            return SKIP_BODY;
+            return -1;
         }
 
         int count = hits.size();

@@ -133,14 +133,6 @@
         <level value="info"/>
     </logger>
 
-    <logger name="org.jahia.tools.groovyConsole">
-        <level value="debug"/>
-    </logger>
-    
-    <logger name="org.jahia.tools.patches.GroovyPatcher">
-        <level value="debug"/>
-    </logger>
-
     <logger name="org.jgroups.protocols.pbcast.GMS">
         <level value="debug"/>
     </logger>

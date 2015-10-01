@@ -606,7 +606,7 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
             if (userVariableInstanceLogs.size() > 0) {
                 user = userVariableInstanceLogs.get(0).getValue();
             }
-            final HistoryWorkflow historyWorkflow = new HistoryWorkflow(Long.toString(processInstanceLog.getId()),
+            final HistoryWorkflow historyWorkflow = new HistoryWorkflow(Long.toString(processInstanceLog.getProcessInstanceId()),
                     getWorkflowDefinitionById(processInstanceLog.getProcessId(), uiLocale, getKieSession().getKieBase()),
                     processInstanceLog.getProcessName(),
                     getKey(),

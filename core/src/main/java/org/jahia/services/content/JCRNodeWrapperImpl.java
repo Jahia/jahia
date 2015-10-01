@@ -2586,6 +2586,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     lockOwningSession = lock != null && lock.isLockOwningSession();
                 }
                 if (!lockOwningSession) {
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("Node " + objectNode.getPath() + " locked. Locks info:" + getLockInfos(objectNode));
+                    }
                     throw new LockException("Node locked.");
                 }
             }
@@ -2603,6 +2606,9 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                                 lockOwningSession = lock != null && lock.isLockOwningSession();
                             }
                             if (!lockOwningSession) {
+                                if (logger.isDebugEnabled()) {
+                                    logger.debug("Node i18n " + i18n.getPath() + " locked. Locks info:" + getLockInfos(i18n));
+                                }
                                 throw new LockException("Node locked.");
                             }
                         }

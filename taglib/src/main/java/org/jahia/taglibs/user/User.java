@@ -51,10 +51,10 @@
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     Rooted in Open Source CMS, Jahiaâ€™s Digital Industrialization paradigm is about
  *     streamlining Enterprise digital projects across channels to truly control
  *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     Putting an end to â€œthe Tunnel effectâ€�, the Jahia Studio enables IT and
  *     marketing teams to collaboratively and iteratively build cutting-edge
  *     online business solutions.
  *     These, in turn, are securely and easily deployed as modules and apps,
@@ -176,8 +176,8 @@ public class User {
         final JahiaGroupManagerService managerService = ServicesRegistry.getInstance().getJahiaGroupManagerService();
         final List<String> userMembership = managerService.getMembershipByPath(user.getPath());
         for (String groupPath : userMembership) {
-            if(!groupPath.equals(JahiaGroupManagerService.GUEST_GROUPNAME) &&
-                    !groupPath.equals(JahiaGroupManagerService.USERS_GROUPNAME) &&
+            if(!groupPath.endsWith("/" + JahiaGroupManagerService.GUEST_GROUPNAME) &&
+                    !groupPath.endsWith("/" + JahiaGroupManagerService.USERS_GROUPNAME) &&
                     !groupPath.endsWith("/" + JahiaGroupManagerService.SITE_USERS_GROUPNAME)) {
                 final JCRGroupNode group = managerService.lookupGroupByPath(groupPath);
                 map.put(groupPath,group);

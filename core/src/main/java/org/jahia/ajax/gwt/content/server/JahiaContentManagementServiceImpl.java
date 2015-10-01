@@ -661,43 +661,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     }
 
     /**
-<<<<<<< .working
-=======
-     * Save properties by langCode
-     *  @param nodes
-     * @param newProps
-     * @param removedTypes
-     * @param locale       @throws GWTJahiaServiceException
-     * @param b
-     */
-    private void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, String locale, boolean validate)
-            throws GWTJahiaServiceException {
-        JCRSessionWrapper session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(locale));
-        try {
-            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), session, getUILocale());
-            if(validate) {
-                session.validate();
-            }
-        } catch (javax.jcr.nodetype.ConstraintViolationException e) {
-            if (e instanceof CompositeConstraintViolationException) {
-                properties.convertException((CompositeConstraintViolationException) e);
-            }
-            if (e instanceof NodeConstraintViolationException) {
-                properties.convertException((NodeConstraintViolationException) e);
-            }
-            logger.debug(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-        } catch (LockException e) {
-            logger.debug(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-            throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-        }
-    }
-
-    /**
->>>>>>> .merge-right.r53072
      * Save properties and acl for the given nodes
      *
      * @param nodes
@@ -817,12 +780,8 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 }
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
             } catch (LockException e) {
-<<<<<<< .working
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
-=======
                 logger.debug(e.getMessage(), e);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("could.not.be.accessed", getUILocale(), node.getDisplayName(), getLocalizedMessage(e)));
->>>>>>> .merge-right.r53072
+                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
                 throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));

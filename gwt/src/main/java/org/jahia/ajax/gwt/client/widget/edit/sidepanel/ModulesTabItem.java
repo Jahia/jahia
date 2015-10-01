@@ -233,9 +233,11 @@ public class ModulesTabItem extends BrowseTabItem {
 
     @Override
     public void doRefresh() {
-        tree.getTreeStore().removeAll();
+        List<String> selectedPath = factory.getSelectedPath();
+        factory.getStore().removeAll();
+        factory.setSelectedPath(selectedPath);
         if (checkIfCurrentNodeIsModule()) {
-            tree.getTreeStore().getLoader().load();
+            factory.getStore().getLoader().load();
         }
     }
 

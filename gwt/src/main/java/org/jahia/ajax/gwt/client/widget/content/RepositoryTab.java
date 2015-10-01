@@ -315,7 +315,9 @@ public class RepositoryTab extends ContentPanel {
             refresh = isExpanded();
         }
         if (refresh) {
-            store.removeAll();
+            List<String> selectedPath = factory.getSelectedPath();
+            factory.getStore().removeAll();
+            factory.setSelectedPath(selectedPath);
             factory.setDisplayHiddenTypes(getLinker() != null && getLinker().isDisplayHiddenTypes());
             loader.load();
         }

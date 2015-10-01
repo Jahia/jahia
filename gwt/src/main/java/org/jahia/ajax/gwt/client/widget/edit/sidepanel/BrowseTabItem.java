@@ -225,7 +225,9 @@ abstract class BrowseTabItem extends SidePanelTabItem {
 
     @Override
     public void doRefresh() {
+        List<String> selectedPath = factory.getSelectedPath();
         factory.getStore().removeAll();
+        factory.setSelectedPath(selectedPath);
         factory.getLoader().load();
     }
 

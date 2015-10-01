@@ -712,6 +712,8 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             } finally {
                 writeLock.unlock();
             }
+        } else {
+            readLock.unlock();
         }
     }
 

@@ -106,6 +106,7 @@ import org.jahia.api.Constants;
 import org.jahia.bin.Export;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.Login;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.params.valves.LoginConfig;
 import org.jahia.registries.ServicesRegistry;
@@ -1829,7 +1830,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRSessionWrapper sessionWrapper = retrieveCurrentSession();
             JCRNodeWrapper nodeWrapper = sessionWrapper.getNode(nodepath);
             final GWTJahiaNode node = navigation.getGWTJahiaNode(nodeWrapper);
-            addEngineLock(tryToLockNode, nodeWrapper);
+            addEngineLock(tryToLockNode && !node.isLocked(), nodeWrapper);
             // get node type
             final List<GWTJahiaNodeType> nodeTypes =
                     contentDefinition.getNodeTypes(nodeWrapper.getNodeTypes(), getUILocale());
@@ -1917,7 +1918,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         final JCRSessionWrapper jcrSessionWrapper = retrieveCurrentSession();
         try {
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
-            if (n.getProvider().isLockingAvailable() && n.isLocked()) {
+            if (n.getProvider().isLockingAvailable() && n.isLocked() && n.getLockOwner().equals(JCRSessionFactory.getInstance().getCurrentUser().getUsername())) {
                 n.unlock("engine");
                 GWTResourceBundleUtils.unlock(n);
                 Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
@@ -1980,7 +1981,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper nodeWrapper = null;
             for (String path : paths) {
                 nodeWrapper = sessionWrapper.getNode(path);
-                addEngineLock(tryToLockNode, nodeWrapper);
+                addEngineLock(tryToLockNode && !JCRContentUtils.isLockedAndCannotBeEdited(nodeWrapper), nodeWrapper);
 
                 // get node type
                 if (nodeTypes == null) {

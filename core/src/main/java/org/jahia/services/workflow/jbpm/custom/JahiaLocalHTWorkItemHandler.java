@@ -231,7 +231,7 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
         Task task = runtime.getTaskService().getTaskByWorkItemId(workItem.getId());
         if (task != null) {
             try {
-                runtime.getTaskService().exit(task.getId(), "{jcr}root");
+                runtime.getTaskService().exit(task.getId(), "/users/root");
             } catch (PermissionDeniedException e) {
                 logger.info(e.getMessage());
             }

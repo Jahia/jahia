@@ -281,7 +281,10 @@ public class JBPM6WorkflowProvider implements WorkflowProvider, WorkflowObservat
     public void abortProcess(final String processId) {
         List<Long> taskIds = runtimeEngine.getTaskService().getTasksByProcessInstanceId(Long.parseLong(processId));
         for (Long taskId : taskIds) {
-            observationManager.notifyTaskEnded(key, Long.toString(taskId));
+            Status status = runtimeEngine.getTaskService().getTaskById(taskId).getTaskData().getStatus();
+            if (status == Status.Ready || status == Status.InProgress || status == Status.Reserved) {
+                observationManager.notifyTaskEnded(key, Long.toString(taskId));
+            }
         }
         executeCommand(new AbortProcessCommand(processId));
     }

@@ -73,8 +73,11 @@ package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowVariable;
+import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.model.I18NTextImpl;
 import org.jbpm.services.task.impl.model.TaskDataImpl;
 import org.jbpm.services.task.impl.model.TaskImpl;
@@ -83,11 +86,14 @@ import org.jbpm.services.task.wih.LocalHTWorkItemHandler;
 import org.jbpm.services.task.wih.util.HumanTaskHandlerHelper;
 import org.jbpm.services.task.wih.util.PeopleAssignmentHelper;
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
 import org.kie.api.runtime.process.WorkItem;
+import org.kie.api.runtime.process.WorkItemManager;
 import org.kie.api.task.model.I18NText;
 import org.kie.api.task.model.OrganizationalEntity;
 import org.kie.api.task.model.PeopleAssignments;
 import org.kie.api.task.model.Task;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
 import org.kie.internal.task.api.model.InternalTask;
 import org.kie.internal.task.api.model.InternalTaskData;
 import org.slf4j.Logger;
@@ -216,5 +222,19 @@ public class JahiaLocalHTWorkItemHandler extends LocalHTWorkItemHandler {
         }
 
         return task;
+    }
+
+
+    @Override
+    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
+        RuntimeEngine runtime = getRuntimeManager().getRuntimeEngine(ProcessInstanceIdContext.get(workItem.getProcessInstanceId()));
+        Task task = runtime.getTaskService().getTaskByWorkItemId(workItem.getId());
+        if (task != null) {
+            try {
+                runtime.getTaskService().exit(task.getId(), "{jcr}root");
+            } catch (PermissionDeniedException e) {
+                logger.info(e.getMessage());
+            }
+        }
     }
 }

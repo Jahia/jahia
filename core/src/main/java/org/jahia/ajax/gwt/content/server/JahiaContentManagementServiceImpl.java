@@ -1922,7 +1922,9 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 n.unlock("engine");
                 GWTResourceBundleUtils.unlock(n);
                 Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
-                locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale()+"/"+n.getIdentifier());
+                if (locks.get(getRequest().getParameter("windowId")) != null) {
+                    locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
+                }
             }
 
             dumpLocks(n, "closeEditEngine");

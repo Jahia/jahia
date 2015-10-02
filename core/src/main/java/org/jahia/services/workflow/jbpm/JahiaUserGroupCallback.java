@@ -93,34 +93,19 @@ public class JahiaUserGroupCallback implements UserGroupCallback {
 
     @Override
     public boolean existsUser(String userId) {
-<<<<<<< .working
         return !"Administrator".equals(userId) && userService.lookupUserByPath(userId) != null;
-=======
-        return !"Administrator".equals(userId) && userService.lookupUserByKey(userId) != null;
->>>>>>> .merge-right.r53078
     }
 
     @Override
     public boolean existsGroup(String groupId) {
-<<<<<<< .working
         return !"Administrators".equals(groupId) &&  groupService.lookupGroupByPath(groupId) != null;
-=======
-        return !"Administrators".equals(groupId) &&  groupService.lookupGroup(groupId) != null;
->>>>>>> .merge-right.r53078
     }
 
     @Override
     public List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds) {
-<<<<<<< .working
         if ("Administrator".equals(userId)) {
             return new ArrayList<String>();
         }
         return groupService.getMembershipByPath(userId);
-=======
-        if ("Administrator".equals(userId)) {
-            return new ArrayList<String>();
-        }
-        return groupService.getUserMembership(userService.lookupUserByKey(userId));
->>>>>>> .merge-right.r53078
     }
 }

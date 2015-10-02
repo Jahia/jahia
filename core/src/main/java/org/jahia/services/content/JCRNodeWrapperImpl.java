@@ -129,7 +129,7 @@ import static org.jahia.api.Constants.*;
  * @author toto
  */
 public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWrapper {
-    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapper.class);
+    protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRNodeWrapperImpl.class);
 
     private static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
     private static final String TRANSLATION_PREFIX = "j:translation_";
@@ -249,7 +249,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
         try {
             Map<String, List<String[]>> results = new LinkedHashMap<String, List<String[]>>();
 
-            Node n = this;
+            JCRNodeWrapper n = this;
             try {
                 while (true) {
                     if (n.hasNode("j:acl")) {
@@ -283,6 +283,10 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                             return results;
                         }
                     }
+                    if (n.getPath().equals("/")) {
+                        return results;
+                    }
+
                     n = n.getParent();
                 }
             } catch (ItemNotFoundException e) {

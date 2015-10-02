@@ -1924,7 +1924,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale()+"/"+n.getIdentifier());
             }
 
-            dumpLocks(n);
+            dumpLocks(n, "closeEditEngine");
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing if lock is not supported
         } catch (RepositoryException e) {
@@ -2057,15 +2057,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
                 getRequest().getSession().setAttribute("engineLocks", locks);
             }
-            dumpLocks(nodeWrapper);
+            dumpLocks(nodeWrapper, "initializeEditEngine");
         } catch (UnsupportedRepositoryOperationException e) {
             // do nothing if lock is not supported
         }
     }
 
-    private void dumpLocks(JCRNodeWrapper nodeWrapper) throws RepositoryException {
+    private void dumpLocks(JCRNodeWrapper nodeWrapper, String message) throws RepositoryException {
         if (logger.isDebugEnabled()) {
-            logger.debug("Locks for " + nodeWrapper.getName() + " - " + nodeWrapper.isLocked());
+            logger.debug(message + " - Locks for " + nodeWrapper.getPath() + " - " + nodeWrapper.isLocked());
             if (nodeWrapper.hasProperty("j:lockTypes")) {
                 for (Value value : nodeWrapper.getProperty("j:lockTypes").getValues()) {
                     logger.debug(value.getString());
@@ -2074,7 +2074,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             NodeIterator ni = nodeWrapper.getNodes("j:translation*");
             while (ni.hasNext()) {
                 JCRNodeWrapper jcrNodeWrapper = (JCRNodeWrapper) ni.next();
-                logger.debug("Locks for " + jcrNodeWrapper.getName() + " - " + jcrNodeWrapper.isLocked());
+                logger.debug(message + " Locks for " + jcrNodeWrapper.getPath() + " - " + jcrNodeWrapper.isLocked());
                 if (jcrNodeWrapper.hasProperty("j:lockTypes")) {
                     for (Value value : jcrNodeWrapper.getProperty("j:lockTypes").getValues()) {
                         logger.debug(value.getString());

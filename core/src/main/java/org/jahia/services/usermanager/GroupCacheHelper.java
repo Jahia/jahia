@@ -70,6 +70,7 @@
 package org.jahia.services.usermanager;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -264,7 +265,7 @@ public class GroupCacheHelper {
         } catch (RepositoryException e) {
             logger.error("Error retrieving membership for user " + principalPath + ", will return empty list", e);
         }
-        return null;
+        return Collections.emptyList();
     }
 
     @SuppressWarnings("unchecked")

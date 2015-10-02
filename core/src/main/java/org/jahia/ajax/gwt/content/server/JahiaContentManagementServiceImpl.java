@@ -1919,10 +1919,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
             if (n.getProvider().isLockingAvailable() && n.isLocked() && n.getLockOwner().equals(JCRSessionFactory.getInstance().getCurrentUser().getUsername())) {
-                n.unlock("engine");
-                GWTResourceBundleUtils.unlock(n);
                 Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
                 if (locks.get(getRequest().getParameter("windowId")) != null) {
+                    n.unlock("engine");
+                    GWTResourceBundleUtils.unlock(n);
                     locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
                 }
             }

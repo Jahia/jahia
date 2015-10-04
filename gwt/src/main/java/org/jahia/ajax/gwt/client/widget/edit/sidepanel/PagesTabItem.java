@@ -239,8 +239,10 @@ public class PagesTabItem extends SidePanelTabItem {
 
     @Override
     public void doRefresh() {
-        pageTree.getTreeStore().removeAll();
-        pageTree.getTreeStore().getLoader().load();
+        List<String> selectedPath = pageFactory.getSelectedPath();
+        pageFactory.getStore().removeAll();
+        pageFactory.setSelectedPath(selectedPath);
+        pageFactory.getLoader().load();
     }
 
     public void addOpenPath(String path) {

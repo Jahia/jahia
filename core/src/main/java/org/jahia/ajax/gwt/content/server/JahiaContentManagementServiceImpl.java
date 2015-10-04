@@ -1920,10 +1920,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
             if (n.getProvider().isLockingAvailable() && n.isLocked() && n.getLockOwner().equals(JCRSessionFactory.getInstance().getCurrentUser().getUsername())) {
                 Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
-                if (locks.get(getRequest().getParameter("windowId")) != null) {
-                    n.unlock("engine");
-                    GWTResourceBundleUtils.unlock(n);
-                    locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
+                if (getRequest().getParameter("windowId") != null && locks != null) {
+                    if (locks.get(getRequest().getParameter("windowId")) != null) {
+                        n.unlock("engine");
+                        GWTResourceBundleUtils.unlock(n);
+                        locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
+                    }
                 }
             }
 
@@ -2048,17 +2050,19 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                 nodeWrapper.lockAndStoreToken("engine");
                 GWTResourceBundleUtils.lock(nodeWrapper);
-                Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
-                if (locks == null) {
-                    locks = new HashMap<String, List<String>>();
+                if (getRequest().getParameter("windowId") != null) {
+                    Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+                    if (locks == null) {
+                        locks = new HashMap<String, List<String>>();
+                    }
+                    List<String> l = locks.get(getRequest().getParameter("windowId"));
+                    if (l == null) {
+                        l = new ArrayList<String>();
+                        locks.put(getRequest().getParameter("windowId"), l);
+                    }
+                    l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
+                    getRequest().getSession().setAttribute("engineLocks", locks);
                 }
-                List<String> l = locks.get(getRequest().getParameter("windowId"));
-                if (l == null) {
-                    l = new ArrayList<String>();
-                    locks.put(getRequest().getParameter("windowId"), l);
-                }
-                l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
-                getRequest().getSession().setAttribute("engineLocks", locks);
             }
             dumpLocks(nodeWrapper, "initializeEditEngine");
         } catch (UnsupportedRepositoryOperationException e) {

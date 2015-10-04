@@ -48,12 +48,14 @@ public class LocksHelper implements ApplicationListener {
             }
         } else if (applicationEvent instanceof ManagedGWTResource.AtmosphereClientReadyEvent) {
             AtmosphereResource resource = ((ManagedGWTResource.AtmosphereClientReadyEvent) applicationEvent).getResource();
-            Map<String,String> atmosphereResouces = (Map<String, String>) resource.getRequest().getSession().getAttribute("atmosphereResources");
-            if (atmosphereResouces == null) {
-                atmosphereResouces = new HashMap<String, String>();
+            if (resource.getRequest().getParameter("windowId") != null) {
+                Map<String, String> atmosphereResouces = (Map<String, String>) resource.getRequest().getSession().getAttribute("atmosphereResources");
+                if (atmosphereResouces == null) {
+                    atmosphereResouces = new HashMap<String, String>();
+                }
+                atmosphereResouces.put(resource.uuid(), resource.getRequest().getParameter("windowId"));
+                resource.getRequest().getSession().setAttribute("atmosphereResources", atmosphereResouces);
             }
-            atmosphereResouces.put(resource.uuid(), resource.getRequest().getParameter("windowId"));
-            resource.getRequest().getSession().setAttribute("atmosphereResources", atmosphereResouces);
         }
     }
 

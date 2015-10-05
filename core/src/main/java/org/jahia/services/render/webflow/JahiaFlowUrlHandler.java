@@ -94,11 +94,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         JCRNodeWrapper n = (JCRNodeWrapper) request.getAttribute("currentNode");
         if (n != null) {
             try {
-                String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
-                Resource r = (Resource) request.getAttribute("currentResource");
-                if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
-                    name += "." + r.getTemplate();
-                }
+                String name = getExecutionName(request, n);
                 return request.getParameter(name);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
@@ -128,11 +124,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
             path.append('?');
             Map<String,String> params = new HashMap<String, String>();
             try {
-                String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
-                Resource r = (Resource) request.getAttribute("currentResource");
-                if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
-                    name += "." + r.getTemplate();
-                }
+                String name = getExecutionName(request, n);
                 params.put(name, flowExecutionKey);
 
                 appendQueryParameters(path, params, getEncodingScheme(request));
@@ -144,6 +136,15 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         }
 
         return super.createFlowExecutionUrl(flowId, flowExecutionKey, request);
+    }
+
+    private String getExecutionName(HttpServletRequest request, JCRNodeWrapper n) throws RepositoryException {
+        String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
+        Resource r = (Resource) request.getAttribute("currentResource");
+        if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
+            name += "." + r.getTemplate();
+        }
+        return name;
     }
 
     @Override

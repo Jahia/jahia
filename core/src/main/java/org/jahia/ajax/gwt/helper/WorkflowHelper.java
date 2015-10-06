@@ -731,7 +731,9 @@ public class WorkflowHelper {
                             try {
                                 ChannelHolder bean = (ChannelHolder) SpringContextSingleton.getBean("org.jahia.ajax.gwt.commons.server.ChannelHolderImpl");
                                 JGroupsChannel jc = bean.getChannel();
-                                jc.send(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName(),taskEvent);
+                                if (jc != null) {
+                                   jc.send(ManagedGWTResource.GWT_BROADCASTER_ID + user.getName(),taskEvent);
+                                }
                             } catch (Exception e) {
                                 logger.debug(e.getMessage(), e);
                             }

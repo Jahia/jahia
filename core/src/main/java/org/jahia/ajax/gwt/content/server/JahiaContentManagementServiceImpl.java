@@ -2,72 +2,72 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ======================================================================================
- *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
- *
- *
+ * <p/>
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ * <p/>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p/>
+ * 1/ GPL
+ * ======================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * <p/>
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
+ * <p/>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p/>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
+ * <p/>
+ * <p/>
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
+ * <p/>
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
+ * <p/>
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.ajax.gwt.content.server;
 
@@ -674,6 +674,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                                      List<GWTJahiaNodeProperty> sharedProperties, Set<String> removedTypes) throws GWTJahiaServiceException {
 
         try {
+<<<<<<< .working
             List<JCRSessionWrapper> sessions = new ArrayList<>();
             JCRSessionWrapper session = retrieveCurrentSession(null);
             sessions.add(session);
@@ -689,6 +690,11 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 session = retrieveCurrentSession(locale);
                 sessions.add(session);
                 properties.saveProperties(nodes, props, removedTypes, session, getUILocale());
+=======
+            properties.saveProperties(nodes, newProps, removedTypes, getRemoteJahiaUser(), session, getUILocale());
+            if (validate) {
+                session.validate();
+>>>>>>> .merge-right.r53116
             }
             for (JCRSessionWrapper sessionWrapper : sessions) {
                 sessionWrapper.validate();
@@ -827,6 +833,12 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                         }
                     }
                 }
+<<<<<<< .working
+=======
+            } catch (RepositoryException e) {
+                logger.error(e.toString(), e);
+                throw new GWTJahiaServiceException(e);
+>>>>>>> .merge-right.r53116
             }
             // save acl
             if (acl != null) {
@@ -851,6 +863,15 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     logger.error("Error while saving visibility conditions for node "+node.getPath(),e);
                     throw new GWTJahiaServiceException(e);
                 }
+<<<<<<< .working
+=======
+                if (Boolean.TRUE.equals(node.get("conditions-published"))) {
+                    publication.publish(Arrays.asList(jcrSessionWrapper.getNode(node.getPath() + "/" + VisibilityService.NODE_NAME).getIdentifier()));
+                }
+            } catch (RepositoryException e) {
+                logger.error("Error while saving visibility conditions for node " + node.getPath(), e);
+                throw new GWTJahiaServiceException(e);
+>>>>>>> .merge-right.r53116
             }
             if (node.get("activeWorkflows") != null) {
                 workflow.updateWorkflowRules(node,
@@ -1337,18 +1358,18 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
             }
-            
-            if(SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled() 
-            		&& !Url.isLocalhost(getSite().getServerName()) && !Url.isLocalhost(getRequest().getServerName()) 
-            		&& !getSite().getServerName().equals(getRequest().getServerName())) {            	
-            	 if (!(getRequest().getServerPort() == 80 && "http".equals(getRequest().getScheme()) 
-            			 || getRequest().getServerPort() == 443 && "https".equals(getRequest().getScheme()))) {
-            		 nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-            				 .append(":").append(getRequest().getServerPort()).append(nodeURL).toString();
-                 } else {
-                	 nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-            				 .append(nodeURL).toString(); 
-                 }
+
+            if (SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()
+                    && !Url.isLocalhost(getSite().getServerName()) && !Url.isLocalhost(getRequest().getServerName())
+                    && !getSite().getServerName().equals(getRequest().getServerName())) {
+                if (!(getRequest().getServerPort() == 80 && "http".equals(getRequest().getScheme())
+                        || getRequest().getServerPort() == 443 && "https".equals(getRequest().getScheme()))) {
+                    nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
+                            .append(":").append(getRequest().getServerPort()).append(nodeURL).toString();
+                } else {
+                    nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
+                            .append(nodeURL).toString();
+                }
             }
 
             return getResponse().encodeURL(nodeURL);
@@ -1919,13 +1940,17 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         try {
             JCRNodeWrapper n = jcrSessionWrapper.getNode(nodepath);
             if (n.getProvider().isLockingAvailable() && n.isLocked() && n.getLockOwner().equals(JCRSessionFactory.getInstance().getCurrentUser().getUsername())) {
-                Map<String,List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
-                if (getRequest().getParameter("windowId") != null && locks != null) {
-                    if (locks.get(getRequest().getParameter("windowId")) != null) {
+                Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+                String windowId = getRequest().getParameter("windowId");
+                if (windowId != null && locks != null) {
+                    if (locks.get(windowId) != null) {
                         n.unlock("engine");
                         GWTResourceBundleUtils.unlock(n);
-                        locks.get(getRequest().getParameter("windowId")).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
+                        locks.get(windowId).remove(n.getSession().getLocale() + "/" + n.getIdentifier());
                     }
+                } else if (windowId == null) {
+                    logger.error("Missing windowId : " + getRequest().getRequestURI() + "?" + getRequest().getQueryString());
+                    throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.unlock.node", getUILocale()));
                 }
             }
 
@@ -2045,23 +2070,27 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     }
 
-    private void addEngineLock(boolean tryToLockNode, JCRNodeWrapper nodeWrapper) throws RepositoryException {
+    private void addEngineLock(boolean tryToLockNode, JCRNodeWrapper nodeWrapper) throws RepositoryException, GWTJahiaServiceException {
         try {
             if (tryToLockNode && nodeWrapper.getProvider().isLockingAvailable() && nodeWrapper.hasPermission(Privilege.JCR_LOCK_MANAGEMENT)) {
                 nodeWrapper.lockAndStoreToken("engine");
                 GWTResourceBundleUtils.lock(nodeWrapper);
-                if (getRequest().getParameter("windowId") != null) {
+                String windowId = getRequest().getParameter("windowId");
+                if (windowId != null) {
                     Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
                     if (locks == null) {
                         locks = new HashMap<String, List<String>>();
                     }
-                    List<String> l = locks.get(getRequest().getParameter("windowId"));
+                    List<String> l = locks.get(windowId);
                     if (l == null) {
                         l = new ArrayList<String>();
-                        locks.put(getRequest().getParameter("windowId"), l);
+                        locks.put(windowId, l);
                     }
                     l.add(nodeWrapper.getSession().getLocale() + "/" + nodeWrapper.getIdentifier());
                     getRequest().getSession().setAttribute("engineLocks", locks);
+                } else {
+                    logger.error("Missing windowId : " + getRequest().getRequestURI() + "?" + getRequest().getQueryString());
+                    throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.unlock.node", getUILocale()));
                 }
             }
             dumpLocks(nodeWrapper, "initializeEditEngine");

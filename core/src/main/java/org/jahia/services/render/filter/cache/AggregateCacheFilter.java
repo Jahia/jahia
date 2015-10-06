@@ -639,7 +639,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 Script s = service.resolveScript(listLoader, renderContext);
                 properties.putAll(s.getView().getProperties());
             } catch (TemplateNotFoundException e) {
-                logger.error("Cannot find loader script for list" + node.getPath(), e);
+                logger.error("Cannot find loader script for list " + node.getPath(), e);
             }
         }
 
@@ -676,19 +676,23 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             properties.put(CACHE_EXPIRATION, "-1");
         }
 
-        if (properties.containsKey("cache.propertiesScript")) {
-            Resource props = new Resource(node, resource.getTemplateType(), properties.getProperty("cache.propertiesScript"), Resource.CONFIGURATION_INCLUDE);
+        String propertiesScript = properties.getProperty("cache.propertiesScript");
+        if (propertiesScript != null) {
+            Resource props = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
             try {
                 Script s = service.resolveScript(props, renderContext);
                 try {
                     renderContext.getRequest().setAttribute("cacheProperties", properties);
                     s.execute(props, renderContext);
-                    renderContext.getRequest().removeAttribute("cacheProperties");
                 } catch (RenderException e) {
                     logger.error("Cannot execute script",e);
+                } finally {
+                    renderContext.getRequest().removeAttribute("cacheProperties");
                 }
             } catch (TemplateNotFoundException e) {
-                logger.error("Cannot find loader script for list" + node.getPath(), e);
+                logger.error(
+                        "Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(),
+                        e);
             }
         }
 

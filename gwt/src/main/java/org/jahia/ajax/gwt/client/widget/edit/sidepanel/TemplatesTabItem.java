@@ -72,8 +72,13 @@
 package org.jahia.ajax.gwt.client.widget.edit.sidepanel;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.data.BaseTreeLoader;
+import com.extjs.gxt.ui.client.data.PagingLoadResult;
+import com.extjs.gxt.ui.client.data.RpcProxy;
+import com.extjs.gxt.ui.client.data.TreeLoader;
+import com.extjs.gxt.ui.client.event.GridEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.TreeStore;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
@@ -85,7 +90,6 @@ import com.extjs.gxt.ui.client.widget.treegrid.TreeGridSelectionModel;
 import com.extjs.gxt.ui.client.widget.treegrid.TreeGridView;
 import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
@@ -97,7 +101,9 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Side panel tab item for browsing the pages tree.
@@ -285,8 +291,7 @@ public class TemplatesTabItem extends BrowseTabItem {
 
     @Override
     public void doRefresh() {
-        tree.getTreeStore().removeAll();
-        tree.getTreeStore().getLoader().load();
+        super.doRefresh();
         detailTree.getTreeStore().removeAll();
         detailTree.getTreeStore().getLoader().load();
         detailLoader.load();

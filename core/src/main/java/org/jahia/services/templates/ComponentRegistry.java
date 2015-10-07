@@ -71,26 +71,25 @@
  */
 package org.jahia.services.templates;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.jcr.*;
-import javax.jcr.nodetype.NodeTypeIterator;
-
+import com.google.common.base.Functions;
+import com.google.common.collect.Ordering;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ConstraintsHelper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Functions;
-import com.google.common.collect.Ordering;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NodeTypeIterator;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Components service.
@@ -160,15 +159,7 @@ public class ComponentRegistry {
         l.add("system-jahia");
 
         if (resolvedSite != null) {
-            for (String s : resolvedSite.getInstalledModules()) {
-                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
-
-                l.add(module.getId());
-
-                for (JahiaTemplatesPackage dep : module.getDependencies()) {
-                    l.add(dep.getId());
-                }
-            }
+            l.addAll(resolvedSite.getInstalledModulesWithAllDependencies());
         }
 
         for (String aPackage : l) {

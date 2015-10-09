@@ -70,23 +70,23 @@
         please contact the sales department at sales@jahia.com.
 
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0                       http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>        
-        <version>7.1.0.1-SNAPSHOT</version>
+        <version>7.1.0.1</version>
     </parent>
     <groupId>org.jahia.test</groupId>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>
-    <version>7.1.0.1-SNAPSHOT</version>    
+    <version>7.1.0.1</version>    
     <packaging>jar</packaging>
     <description>This is the Jahia Core Test Framework for running unit/integration tests of the core Digital Factory module.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_1_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_0_1_RC</developerConnection>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_0_1/branches/JAHIA_7_1_0_1_RC</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_0_1/branches/JAHIA_7_1_0_1_RC</developerConnection>
     </scm>
 
     <repositories>

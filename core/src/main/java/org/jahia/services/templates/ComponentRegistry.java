@@ -74,6 +74,7 @@ package org.jahia.services.templates;
 import com.google.common.base.Functions;
 import com.google.common.collect.Ordering;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
@@ -159,7 +160,15 @@ public class ComponentRegistry {
         l.add("system-jahia");
 
         if (resolvedSite != null) {
-            l.addAll(resolvedSite.getInstalledModulesWithAllDependencies());
+            for (String s : resolvedSite.getInstalledModules()) {
+                JahiaTemplatesPackage module = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackageById(s);
+
+                l.add(module.getId());
+
+                for (JahiaTemplatesPackage dep : module.getDependencies()) {
+                    l.add(dep.getId());
+                }
+            }
         }
 
         for (String aPackage : l) {

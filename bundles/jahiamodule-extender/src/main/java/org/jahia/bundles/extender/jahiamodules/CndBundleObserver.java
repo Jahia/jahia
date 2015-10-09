@@ -130,7 +130,6 @@ public class CndBundleObserver implements BundleObserver<URL> {
                 logger.info("Registered definitions from file {} for bundle {}", url, bundleName);
             } catch (IOException | ParseException | RepositoryException e) {
                 logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);
-                throw new RuntimeException("Error registering node type definition file " + url + " for bundle " + bundle, e);
             }
         }
     }

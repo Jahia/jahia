@@ -1149,7 +1149,6 @@
                         <value>jnt:mountPoint</value>
                     </list>
                 </property>
-                <property name="defaultUploadOption" value="${jahia.fileUpload.already.exist.option:auto}"/>
             </bean>
         </property>
         <property name="titleKey" value="label.upload"/>

@@ -82,9 +82,11 @@ import org.jahia.ajax.gwt.client.widget.content.FileUploader;
  */
 @SuppressWarnings("serial")
 public class UploadActionItem extends NodeTypeAwareBaseActionItem {
+    private String defaultUploadOption;
+
     public void onComponentSelection() {
         LinkerSelectionContext lh = linker.getSelectionContext();
-        new FileUploader(linker, lh.getSingleSelection());
+        new FileUploader(linker, lh.getSingleSelection(),getDefaultUploadOption());
     }
 
     public void handleNewLinkerSelection() {
@@ -95,5 +97,13 @@ public class UploadActionItem extends NodeTypeAwareBaseActionItem {
                 && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(lh.getSingleSelection())
                 && !lh.isLocked());
+    }
+
+    public void setDefaultUploadOption(String defaultUploadOption) {
+        this.defaultUploadOption = defaultUploadOption;
+    }
+
+    public String getDefaultUploadOption() {
+        return defaultUploadOption;
     }
 }

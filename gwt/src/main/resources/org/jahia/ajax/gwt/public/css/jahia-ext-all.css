@@ -1083,10 +1083,6 @@
         position: relative;
     }
 
-    .ext-strict .x-form-text {
-        height: 18px;
-    }
-
     .ext-safari.ext-mac textarea.x-form-field {
         margin-bottom: -2px;
     }
@@ -7484,7 +7480,7 @@
     }
 
     .ext-strict .x-form-text {
-        height:16px;
+        height:18px;
     }
 
     .ext-el-mask {

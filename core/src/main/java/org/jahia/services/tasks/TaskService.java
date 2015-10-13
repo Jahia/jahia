@@ -178,6 +178,8 @@ public class TaskService {
         taskNode.setProperty("state", task.getState().toString().toLowerCase());
         try {
             taskNode.setProperty("assignee", userNode);
+            // update assigneeUserKey. assignee is not used for defining the owner of the task
+            taskNode.setProperty("assigneeUserKey", userNode.getPath());
         } catch (Exception e) {
             logger.warn("Unable to find user '" + userNode.getPath() + "' to assign a task", e);
         }

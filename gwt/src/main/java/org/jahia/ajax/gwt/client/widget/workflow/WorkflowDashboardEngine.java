@@ -90,6 +90,7 @@ public class WorkflowDashboardEngine extends Window {
     public WorkflowDashboardEngine(Linker linker) {
         super();
         this.linker = linker;
+        setModal(true);
         setLayout(new FitLayout());
         init();
     }

@@ -108,7 +108,7 @@ public class DeleteItemWindow extends Window {
 	private final int windowHeight = 500;
 
 	private final int windowWidth = 650;
-	
+
 	final Grid<GWTJahiaNodeUsage> usagesGrid;
 	final FormPanel formPanel;
 
@@ -125,11 +125,11 @@ public class DeleteItemWindow extends Window {
 		formPanel.setHeaderVisible(false);
 		formPanel.setBorders(false);
 		formPanel.setId("JahiaGxtDeleteItem");
-	    formPanel.setLayout(new RowLayout(Orientation.VERTICAL));
-	    formPanel.setSize(windowWidth, windowHeight);
-	    
-	    final Html textMessage = new Html();
-	    formPanel.add(textMessage);	    
+		formPanel.setLayout(new RowLayout(Orientation.VERTICAL));
+		formPanel.setSize(windowWidth, windowHeight);
+
+		final Html textMessage = new Html();
+		formPanel.add(textMessage);
 	    
 		/* Usages grid */
 		final List<GWTJahiaNode> selectedNodeList = new ArrayList<GWTJahiaNode>();
@@ -138,7 +138,7 @@ public class DeleteItemWindow extends Window {
 			selectedNodeList.add(node);
 			selectedPathList.add(node.getPath());
 		}
-		
+
 		// use this content panel to get vertical scrollbar only on the grid
 		final ContentPanel cp = new ContentPanel();
 		cp.setLayout(new FitLayout());
@@ -146,22 +146,22 @@ public class DeleteItemWindow extends Window {
 		cp.setHeaderVisible(false);
 		usagesGrid = NodeUsagesGrid.createUsageGrid(selectedNodeList);
 		usagesGrid.setSize(windowWidth, 200);
-		cp.add(usagesGrid);		
+		cp.add(usagesGrid);
 		formPanel.add(cp);
 
         /* Comments textarea */
-        final TextArea textArea = new TextArea();
-        textArea.setSize(windowWidth - 30, 100);
-	    if (!permanentlyDelete) {
-	        formPanel.add(new Html("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));
-	    	formPanel.add(textArea);
-	    }
-	    
+		final TextArea textArea = new TextArea();
+		textArea.setSize(windowWidth - 30, 100);
+		if (!permanentlyDelete) {
+			formPanel.add(new Html("<br />" + Messages.get("label.comment", "Comment") + ": <br />"));
+			formPanel.add(textArea);
+		}
+
 		// listener on the grid because the message depends on the number of usages found, and we get this at the very end
 		final int nbSelectedNodes = selectedNodeList.size();
-	    usagesGrid.getStore().getLoader().addLoadListener(new LoadListener() {
+		usagesGrid.getStore().getLoader().addLoadListener(new LoadListener() {
 			@Override
-            public void loaderLoad(LoadEvent le) {
+			public void loaderLoad(LoadEvent le) {
 				List<GWTJahiaNode> data = le.getData();
 				int nbRows = data.size();
 				String strMessage = getConfirmationMessage(lh, nbSelectedNodes);
@@ -170,16 +170,16 @@ public class DeleteItemWindow extends Window {
 				} else {
 					// no empty grid if no usages
 					formPanel.remove(cp);
-                    textArea.setSize(""+(windowWidth - 30), "70%");
-                    
-                    if (permanentlyDelete) {
-                    	setHeight(130);
-                    	formPanel.setHeight(130);
-                    }
+					textArea.setSize(""+(windowWidth - 30), "70%");
+
+					if (permanentlyDelete) {
+						setHeight(130);
+						formPanel.setHeight(130);
+					}
 				}
 				textMessage.setHtml(strMessage);
 				formPanel.layout();
-            }
+			}
 		});
 
 		if (permanentlyDelete) {
@@ -192,33 +192,33 @@ public class DeleteItemWindow extends Window {
 		/* Buttons */
 		Button submit = new Button(Messages.get("label.yes"), new SelectionListener<ButtonEvent>() {
 			public void componentSelected(ButtonEvent event) {
-                hide();
-                linker.loading(Messages.get("label.executing"));
+				hide();
+				linker.loading(Messages.get("label.executing"));
 				final JahiaContentManagementServiceAsync async = JahiaContentManagementService.App.getInstance();
 
 				BaseAsyncCallback<Object> baseAsyncCallback = new BaseAsyncCallback<Object>() {
 					public void onApplicationFailure(Throwable throwable) {
-                        linker.loaded();
+						linker.loaded();
 						Log.error(throwable.getMessage(), throwable);
 						MessageBox.alert(Messages.get("label.error", "Error"), throwable.getMessage(), null);
 					}
 
 					public void onSuccess(Object o) {
-                        linker.loaded();
+						linker.loaded();
 						EditLinker el = null;
 						if (linker instanceof SidePanelTabItem.SidePanelLinker) {
 							el = ((SidePanelTabItem.SidePanelLinker) linker).getEditLinker();
 						} else if (linker instanceof EditLinker) {
 							el = (EditLinker) linker;
 						}
-                        Map<String, Object> data = new HashMap<String, Object>();
-                        if (el != null && selectedPathList.contains(el.getSelectionContext().getMainNode().getPath())) {
-                            data.put("node", el.getSelectionContext().getMainNode());
-                        } else {
-                            data.put(Linker.REFRESH_ALL, true);
-                        }
-                        linker.refresh(data);
-                        linker.select(null);
+						Map<String, Object> data = new HashMap<String, Object>();
+						if (el != null && selectedPathList.contains(el.getSelectionContext().getMainNode().getPath())) {
+							data.put("node", el.getSelectionContext().getMainNode());
+						} else {
+							data.put(Linker.REFRESH_ALL, true);
+						}
+						linker.refresh(data);
+						linker.select(null);
 					}
 				};
 				if (permanentlyDelete) {
@@ -234,15 +234,15 @@ public class DeleteItemWindow extends Window {
 				hide();
 			}
 		});
-	    		
-        ButtonBar buttons = new ButtonBar() ;
-        buttons.setAlignment(HorizontalAlignment.CENTER);
+
+		ButtonBar buttons = new ButtonBar() ;
+		buttons.setAlignment(HorizontalAlignment.CENTER);
 		buttons.add(submit);
 		buttons.add(cancel);
-		
-        formPanel.add(buttons);        
-        setBottomComponent(buttons);
-        
+
+		formPanel.add(buttons);
+		setBottomComponent(buttons);
+
 		add(formPanel);
 	}
 
@@ -253,14 +253,14 @@ public class DeleteItemWindow extends Window {
 			return false;
 		}
 	}
-	
+
 	private String getConfirmationMessage(LinkerSelectionContext lh, int nbSelectedNodes) {
 		String message = "";
 		if (nbSelectedNodes > 1) {
-			message = Messages.getWithArgs("aaaaaaa", "Do you really want to remove the {0} selected resources?", new String[] { String.valueOf(nbSelectedNodes) });
+			message = Messages.getWithArgs("message.remove.multiple.confirm", "Do you really want to remove the {0} selected resources?", new String[] { String.valueOf(nbSelectedNodes) });
 		} else {
 			if (isPageDeleted(lh)) {
-				message = Messages.getWithArgs("aaaaaa", "aaaaaaaa {0}?", new String[] { lh.getSingleSelection().getName() });
+				message = Messages.getWithArgs("message.remove.single.page.confirm", "Do you really want to remove the selected PAGE {0}?", new String[] { lh.getSingleSelection().getName() });
 				// icon = "ext-mb-delete-page";
 			} else {
 				message = Messages.getWithArgs("message.remove.single.confirm", "Do you really want to remove the selected resource {0}?", new String[] { lh.getSingleSelection().getName() });

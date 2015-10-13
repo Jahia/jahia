@@ -104,6 +104,22 @@ import java.util.*;
  * @author rfelden
  */
 public class FileUploader extends Window {
+    private enum UploadOption {
+        AUTO(1),
+        RENAME(0),
+        VERSION(2);
+        private final int value;
+
+        UploadOption(int value){
+
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+    private final UploadOption uploadOption;
     private int fieldCount = 0;
     private FormPanel form;
     private List<UploadPanel> uploads = new LinkedList<UploadPanel>();
@@ -173,8 +189,15 @@ public class FileUploader extends Window {
 
     }
 
-    public FileUploader(final Linker linker, final GWTJahiaNode location) {
+    public FileUploader(final Linker linker, final GWTJahiaNode location, String defaultUploadOption) {
         super();
+        if ("rename".equalsIgnoreCase(defaultUploadOption)) {
+            uploadOption = UploadOption.RENAME;
+        } else if ("version".equalsIgnoreCase(defaultUploadOption)) {
+            uploadOption = UploadOption.VERSION;
+        } else {
+            uploadOption = UploadOption.AUTO;
+        }
         setHeadingHtml(Messages.get("uploadFile.label"));
         setSize(500, 500);
         setResizable(false);
@@ -388,7 +411,7 @@ public class FileUploader extends Window {
         // 4 = add new version
         choose.add(Messages.get("confirm.addNewVersion.label","Add a new version"));
         choose.setHideLabel(true);
-        choose.setValue(choose.getStore().getAt(1));
+        choose.setValue(choose.getStore().getAt(uploadOption.getValue()));
         choose.addListener(Events.SelectionChange, new Listener<SelectionChangedEvent>() {
             public void handleEvent(SelectionChangedEvent event) {
                 if (choose.getValue().getValue().equals(Messages.get("label.rename", "Rename"))) {

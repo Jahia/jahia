@@ -123,7 +123,7 @@ public final class Jahia {
 
     public static final String CODE_NAME = "Firestar";
     public static final String COPYRIGHT = "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
-    public static final String COPYRIGHT_TXT = "2014 Jahia Solutions Group SA" ;
+    public static final String COPYRIGHT_TXT = "2015 Jahia Solutions Group SA" ;
 
     private static final Version JAHIA_VERSION;
     static {
@@ -132,7 +132,7 @@ public final class Jahia {
             v = new Version(Constants.JAHIA_PROJECT_VERSION);
         } catch (NumberFormatException e) {
         }
-        JAHIA_VERSION = v != null ? v : new Version("7.0.0.0");
+        JAHIA_VERSION = v != null ? v : new Version("7.2.0.0");
     }
 
     public static final String VERSION = JAHIA_VERSION.getMajorVersion() + "." +

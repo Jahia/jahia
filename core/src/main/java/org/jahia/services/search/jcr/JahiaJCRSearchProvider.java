@@ -107,6 +107,7 @@ import java.util.regex.Pattern;
 
 import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
 import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
+import static org.jahia.services.content.JCRContentUtils.normalizeStringExpression;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
@@ -133,7 +134,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private static final String AND = "and";
     private static final String OR = "or";
 
-    private static Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
 
@@ -160,8 +161,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             response.setLimit(limit);
             int count = 0;
             if (query != null) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Executing search query [{}]", query.getStatement());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Executing search query [{}]", query.getStatement());
                 }
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
@@ -232,15 +233,15 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             }
                         }
                     } catch (ItemNotFoundException e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (PathNotFoundException e) {
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
+                        if (LOGGER.isDebugEnabled()) {
+                            LOGGER.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (Exception e) {
-                        logger.warn("Error resolving search hit", e);
+                        LOGGER.warn("Error resolving search hit", e);
                     }
                 }
                 if (hitsToAdd.size() > 0) {
@@ -250,18 +251,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             }
         } catch (RepositoryException e) {
             if (e.getMessage() != null && e.getMessage().contains(ParseException.class.getName())) {
-                logger.warn(e.getMessage());
-                if (logger.isDebugEnabled()) {
-                    logger.debug(e.getMessage(), e);
+                LOGGER.warn(e.getMessage());
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(e.getMessage(), e);
                 }
             } else {
-                logger.error("Error while trying to perform a search", e);
+                LOGGER.error("Error while trying to perform a search", e);
             }
         } catch (Exception e) {
-            logger.error("Error while trying to perform a search", e);
+            LOGGER.error("Error while trying to perform a search", e);
         }
-        if (logger.isDebugEnabled()) {
-            logger.debug("Search query has {} results", results.size());
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Search query has {} results", results.size());
         }
         return response;
     }
@@ -308,14 +309,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             break;
                         }
                     } catch (Exception e) {
-                        logger.debug(
+                        LOGGER.debug(
                                 "Error while trying to check for node language",
                                 e);
                     }
                 }
             }
         } catch (RepositoryException e) {
-            logger.debug("Error while trying to check for node language", e);
+            LOGGER.debug("Error while trying to check for node language", e);
         }
 
         return skipNode;
@@ -335,7 +336,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
             searchHit.addRow(row);
         } catch (Exception e) {
-            logger.warn("Search details cannot be retrieved", e);
+            LOGGER.warn("Search details cannot be retrieved", e);
         }
         return searchHit;
     }
@@ -481,8 +482,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         query.append(" order by jcr:score() descending");
         xpathQuery = query.toString();
 
-        if (logger.isDebugEnabled()) {
-            logger.debug("XPath query built: " + xpathQuery);
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("XPath query built: " + xpathQuery);
         }
 
         return xpathQuery;
@@ -569,13 +570,12 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private void addDateAndAuthorConstraints(SearchCriteria params,
                                              StringBuilder constraints, boolean xpath) {
 
-        if (params.getCreatedBy() != null && params.getCreatedBy().length() > 0) {
-            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_CREATEDBY, stringToJCRSearchExp(params.getCreatedBy().trim()), xpath));
+        if(StringUtils.isNotBlank(params.getCreatedBy())) {
+          addConstraint(constraints, AND, getLikeExpression(Constants.JCR_CREATEDBY, normalizeStringExpression(params.getCreatedBy().trim()), xpath));
         }
-
-        if (params.getLastModifiedBy() != null
-                && params.getLastModifiedBy().length() > 0) {
-            addConstraint(constraints, AND, getContainsExpr(Constants.JCR_LASTMODIFIEDBY, stringToJCRSearchExp(params.getLastModifiedBy().trim()), xpath));
+        
+        if(StringUtils.isNotBlank(params.getLastModifiedBy())) {
+          addConstraint(constraints, AND, getLikeExpression(Constants.JCR_LASTMODIFIEDBY, normalizeStringExpression(params.getLastModifiedBy().trim()), xpath));
         }
 
         if (!params.getCreated().isEmpty()
@@ -631,7 +631,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         + " <= " + getDateLiteral(DateUtils.dayEnd(smallerThanDate), xpath));
             }
         } catch (IllegalStateException e) {
-            logger.warn(e.getMessage(), e);
+            LOGGER.warn(e.getMessage(), e);
         }
     }
 
@@ -655,7 +655,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             getMimeTypeConstraint(mimeTypes.get(0), xpath));
                 }
             } else {
-                logger.warn("Unsupported file type '" + params.getFileType()
+                LOGGER.warn("Unsupported file type '" + params.getFileType()
                         + "'. See applicationcontext-basejahiaconfig.xml file"
                         + " for configured file types.");
             }
@@ -668,7 +668,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         try {
             Category cat = Category.getCategoryByPath(value, JCRSessionFactory.getInstance().getCurrentUser());
             if (cat == null) {
-                logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
+                LOGGER.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
                 return;
             }
             addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
@@ -676,7 +676,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
         } catch (JahiaException e) {
-            logger.warn("Category: " + value + " could not be retrieved", e);
+            LOGGER.warn("Category: " + value + " could not be retrieved", e);
         }
     }
 
@@ -886,7 +886,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         if (xpath) {
             return "jcr:contains(" + getPropertyName(paramName, xpath) + "," + expr + ")";
         } else {
-            return "contains(" + getPropertyName(paramName,xpath) + "," + expr + ")";
+            return "contains(" + getPropertyName(paramName, xpath) + "," + expr + ")";
         }
     }
 
@@ -1133,6 +1133,16 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private String cleanMultipleWhiteSpaces(String term) {
         return MULTIPLE_SPACES_PATTERN.matcher(term).replaceAll(" ");
     }
+    
+    private String getLikeExpression(String paramName, String searchExpr, boolean isXpath){
+      String exprLowerValue = "'%" + searchExpr.toLowerCase() + "%'";
+      
+      if(isXpath){
+        return "jcr:like(fn:lower-case(" + getPropertyName(paramName, isXpath) + ")," + exprLowerValue + ")";
+      } else {
+        return "lower(" + getPropertyName(paramName, isXpath) + ") like " + exprLowerValue;
+      }
+    }
 
     /* (non-Javadoc)
     * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
@@ -1175,14 +1185,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     String[] suggestions = StringUtils.splitByWholeSeparator(v.getString(), CompositeSpellChecker.SEPARATOR_IN_SUGGESTION);
                     suggestion = new Suggestion(originalQuery, suggestions[0], Arrays.asList(suggestions));
                 }
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Making spell check suggestion for '" + originalQuery + "' site '"
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Making spell check suggestion for '" + originalQuery + "' site '"
                             + siteKey + "' and locale '" + locale + "' using XPath query ["
                             + xpath.toString() + "]. Result suggestion: " + suggestion);
                 }
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            LOGGER.error(e.getMessage(), e);
         }
 
         return suggestion;

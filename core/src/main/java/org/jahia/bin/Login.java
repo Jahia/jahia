@@ -51,10 +51,10 @@
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     Rooted in Open Source CMS, Jahia's Digital Industrialization paradigm is about
  *     streamlining Enterprise digital projects across channels to truly control
  *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     Putting an end to 'the Tunnel effect', the Jahia Studio enables IT and
  *     marketing teams to collaboratively and iteratively build cutting-edge
  *     online business solutions.
  *     These, in turn, are securely and easily deployed as modules and apps,
@@ -144,7 +144,7 @@ public class Login implements Controller {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
-                    response.sendRedirect(request.getParameter("failureRedirect")+"?loginError="+result);
+                    response.sendRedirect(request.getParameter("failureRedirect") + ((request.getParameter("failureRedirect").indexOf("?") > -1) ? "&loginError=" : "?loginError=")  + result);
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));

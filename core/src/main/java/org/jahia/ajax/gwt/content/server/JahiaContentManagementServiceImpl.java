@@ -1337,37 +1337,6 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if ("live".equals(workspace) && !SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()) {
                 nodeURL = Url.appendServerNameIfNeeded(node, nodeURL, getRequest());
             }
-<<<<<<< .working
-            
-            if(SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled() 
-            		&& !Url.isLocalhost(getSite().getServerName()) && !Url.isLocalhost(getRequest().getServerName()) 
-            		&& !getSite().getServerName().equals(getRequest().getServerName())) {            	
-            	 if (!(getRequest().getServerPort() == 80 && "http".equals(getRequest().getScheme()) 
-            			 || getRequest().getServerPort() == 443 && "https".equals(getRequest().getScheme()))) {
-            		 nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-            				 .append(":").append(getRequest().getServerPort()).append(nodeURL).toString();
-                 } else {
-                	 nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-            				 .append(nodeURL).toString(); 
-                 }
-=======
-<<<<<<< .working
-
-            if (SettingsBean.getInstance().isUrlRewriteSeoRulesEnabled()
-                    && !Url.isLocalhost(getSite().getServerName()) && !Url.isLocalhost(getRequest().getServerName())
-                    && !getSite().getServerName().equals(getRequest().getServerName())) {
-                if (!(getRequest().getServerPort() == 80 && "http".equals(getRequest().getScheme())
-                        || getRequest().getServerPort() == 443 && "https".equals(getRequest().getScheme()))) {
-                    nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-                            .append(":").append(getRequest().getServerPort()).append(nodeURL).toString();
-                } else {
-                    nodeURL = new StringBuilder().append(getRequest().getScheme()).append("://").append(getRequest().getServerName())
-                            .append(nodeURL).toString();
-                }
->>>>>>> .merge-right.r53174
-            }
-=======
->>>>>>> .merge-right.r53173
 
             return getResponse().encodeURL(nodeURL);
         } catch (MalformedURLException e) {

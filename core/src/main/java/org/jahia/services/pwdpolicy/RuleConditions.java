@@ -51,10 +51,10 @@
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ *     Rooted in Open Source CMS, Jahia's Digital Industrialization paradigm is about
  *     streamlining Enterprise digital projects across channels to truly control
  *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ *     Putting an end to "the Tunnel effect", the Jahia Studio enables IT and
  *     marketing teams to collaboratively and iteratively build cutting-edge
  *     online business solutions.
  *     These, in turn, are securely and easily deployed as modules and apps,
@@ -298,7 +298,7 @@ public final class RuleConditions {
     public static class PreventUserInitiatedPasswordChange implements
             PasswordPolicyRuleCondition {
         public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
-            if (ctx.getUser() == null) {
+            if (ctx.isUserInitiated() && ctx.getUser() == null) {
                 throw new IllegalArgumentException(
                         "The user object is null. Unable to evaluate the condition");
             }

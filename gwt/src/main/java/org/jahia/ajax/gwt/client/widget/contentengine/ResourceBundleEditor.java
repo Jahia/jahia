@@ -79,7 +79,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.extjs.gxt.ui.client.widget.layout.*;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
@@ -91,6 +90,7 @@ import org.jahia.ajax.gwt.client.util.icons.ToolbarIconProvider;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
 
+import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
 import com.extjs.gxt.ui.client.Style.Scroll;
@@ -112,7 +112,6 @@ import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
-import com.extjs.gxt.ui.client.util.Padding;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
 import com.extjs.gxt.ui.client.widget.Dialog;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
@@ -128,7 +127,14 @@ import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.FormPanel.LabelAlign;
 import com.extjs.gxt.ui.client.widget.form.TextArea;
 import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.layout.VBoxLayout.VBoxLayoutAlign;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
+import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
+import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import com.extjs.gxt.ui.client.widget.layout.FlowLayout;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.extjs.gxt.ui.client.widget.menu.Menu;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.google.gwt.user.client.Element;
@@ -434,13 +440,15 @@ public class ResourceBundleEditor extends LayoutContainer {
         tab.setLayout(new BorderLayout());
         tab.setItemId("jahia-rb-properties-tab");
 
+
         ContentPanel cpLeft = new ContentPanel();
         cpLeft.setScrollMode(Scroll.AUTO);
         cpLeft.setHeaderVisible(false);
         cpLeft.setBorders(true);
-        VBoxLayout westLayout = new VBoxLayout(VBoxLayoutAlign.STRETCH);
-        westLayout.setPadding(new Padding(5));
-        cpLeft.setLayout(westLayout);
+        //[QA-7856] Use the row layout intead of box layout
+        RowLayout rowLayout = new RowLayout(Style.Orientation.VERTICAL);
+        rowLayout.setAdjustForScroll(true);
+        cpLeft.setLayout(rowLayout);
 
         bundleView = createView();
         addButton = createAddButton();
@@ -449,10 +457,15 @@ public class ResourceBundleEditor extends LayoutContainer {
         // trigger loading of data
         loadData();
 
-        bundleView.setHeight("92%");
-        cpLeft.add(bundleView, new VBoxLayoutData(new Margins(0, 0, 5, 0)));
-        cpLeft.add(searchField, new VBoxLayoutData(new Margins(0)));
-        cpLeft.add(addButton, new VBoxLayoutData(new Margins(0)));
+        // FIXME: we may not need as the row layout will manage it
+        bundleView.setHeight("auto");
+
+        cpLeft.add(bundleView, new RowData(1,0.9, new Margins(0, 0, 4, 0)));
+
+        cpLeft.add(searchField, new RowData(1,0.05));
+
+        cpLeft.add(addButton, new RowData(1,0.05, new Margins(1,0,0,0)));
+
 
         // layout and add left panel
         BorderLayoutData ldLeft = new BorderLayoutData(LayoutRegion.WEST, 200, 100, 350);
@@ -650,6 +663,7 @@ public class ResourceBundleEditor extends LayoutContainer {
         tabPanel.setWidth("100%");
         tabPanel.setTabPosition(TabPosition.BOTTOM);
         tabPanel.setMinTabWidth(100);
+        tabPanel.setLayoutData(new FitLayout());
 
         tabPanel.add(createPropertiesTab());
         newLanguageTab = createNewLanguageTab();

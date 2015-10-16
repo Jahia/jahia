@@ -177,9 +177,9 @@ public class Login implements Controller {
                 }
               }
               if(StringUtils.isNotEmpty(paramSb.toString())) {
-                sanitizedUrlSb.append("?");
+                sanitizedUrlSb.append("?").append(paramSb.toString());
               }
-              sanitizedUrlSb.append(paramSb.toString());
+              
             }
             
             failureRedirectUrl = sanitizedUrlSb.toString();

@@ -168,15 +168,20 @@ public class Login implements Controller {
             // remove failure redirect param before we add it again
             String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
             StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
-            for (int i = 1; i < urlParts.length; i++) {
-                if (urlParts[i].indexOf(LOGIN_ERR_PARAM_NAM) == -1) {
-                    if (i == 1) {
-                        sanitizedUrlSb.append("?");
-                    }
-                    sanitizedUrlSb.append(urlParts[i]);
+            if(urlParts.length > 1) {
+              String[] urlParams = StringUtils.split(urlParts[1], "&");
+              StringBuilder paramSb = new StringBuilder();
+              for (int i = 0; i < urlParams.length; i++) {
+                if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAM) == -1) {
+                  paramSb.append(urlParams[i]);
                 }
-
+              }
+              if(StringUtils.isNotEmpty(paramSb.toString())) {
+                sanitizedUrlSb.append("?");
+              }
+              sanitizedUrlSb.append(paramSb.toString());
             }
+            
             failureRedirectUrl = sanitizedUrlSb.toString();
         }
         return failureRedirectUrl;

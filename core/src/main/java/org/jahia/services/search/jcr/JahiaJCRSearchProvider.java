@@ -134,7 +134,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     private static final String AND = "and";
     private static final String OR = "or";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
+    private static final Logger logger = LoggerFactory.getLogger(JahiaJCRSearchProvider.class);
 
     private TaggingService taggingService = null;
 
@@ -161,8 +161,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             response.setLimit(limit);
             int count = 0;
             if (query != null) {
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Executing search query [{}]", query.getStatement());
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Executing search query [{}]", query.getStatement());
                 }
                 QueryResult queryResult = query.execute();
                 RowIterator it = queryResult.getRows();
@@ -233,15 +233,15 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             }
                         }
                     } catch (ItemNotFoundException e) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Found node is not visible or published: " + row.getPath(), e);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (PathNotFoundException e) {
-                        if (LOGGER.isDebugEnabled()) {
-                            LOGGER.debug("Found node is not visible or published: " + row.getPath(), e);
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Found node is not visible or published: " + row.getPath(), e);
                         }
                     } catch (Exception e) {
-                        LOGGER.warn("Error resolving search hit", e);
+                        logger.warn("Error resolving search hit", e);
                     }
                 }
                 if (hitsToAdd.size() > 0) {
@@ -251,18 +251,18 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             }
         } catch (RepositoryException e) {
             if (e.getMessage() != null && e.getMessage().contains(ParseException.class.getName())) {
-                LOGGER.warn(e.getMessage());
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(e.getMessage(), e);
+                logger.warn(e.getMessage());
+                if (logger.isDebugEnabled()) {
+                    logger.debug(e.getMessage(), e);
                 }
             } else {
-                LOGGER.error("Error while trying to perform a search", e);
+                logger.error("Error while trying to perform a search", e);
             }
         } catch (Exception e) {
-            LOGGER.error("Error while trying to perform a search", e);
+            logger.error("Error while trying to perform a search", e);
         }
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Search query has {} results", results.size());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Search query has {} results", results.size());
         }
         return response;
     }
@@ -309,14 +309,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             break;
                         }
                     } catch (Exception e) {
-                        LOGGER.debug(
+                        logger.debug(
                                 "Error while trying to check for node language",
                                 e);
                     }
                 }
             }
         } catch (RepositoryException e) {
-            LOGGER.debug("Error while trying to check for node language", e);
+            logger.debug("Error while trying to check for node language", e);
         }
 
         return skipNode;
@@ -336,7 +336,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
             searchHit.addRow(row);
         } catch (Exception e) {
-            LOGGER.warn("Search details cannot be retrieved", e);
+            logger.warn("Search details cannot be retrieved", e);
         }
         return searchHit;
     }
@@ -482,8 +482,8 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         query.append(" order by jcr:score() descending");
         xpathQuery = query.toString();
 
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("XPath query built: " + xpathQuery);
+        if (logger.isDebugEnabled()) {
+            logger.debug("XPath query built: " + xpathQuery);
         }
 
         return xpathQuery;
@@ -631,7 +631,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                         + " <= " + getDateLiteral(DateUtils.dayEnd(smallerThanDate), xpath));
             }
         } catch (IllegalStateException e) {
-            LOGGER.warn(e.getMessage(), e);
+            logger.warn(e.getMessage(), e);
         }
     }
 
@@ -655,7 +655,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             getMimeTypeConstraint(mimeTypes.get(0), xpath));
                 }
             } else {
-                LOGGER.warn("Unsupported file type '" + params.getFileType()
+                logger.warn("Unsupported file type '" + params.getFileType()
                         + "'. See applicationcontext-basejahiaconfig.xml file"
                         + " for configured file types.");
             }
@@ -668,7 +668,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         try {
             Category cat = Category.getCategoryByPath(value, JCRSessionFactory.getInstance().getCurrentUser());
             if (cat == null) {
-                LOGGER.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
+                logger.warn("User " + JCRSessionFactory.getInstance().getCurrentUser().getUsername() + " has no right to read the category");
                 return;
             }
             addConstraint(categoryConstraints, OR, getPropertyName(name,xpath) + "=" + stringToJCRSearchExp(cat.getID()));
@@ -676,7 +676,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 addSubCategoriesConstraints(categoryConstraints, cat, name, xpath);
             }
         } catch (JahiaException e) {
-            LOGGER.warn("Category: " + value + " could not be retrieved", e);
+            logger.warn("Category: " + value + " could not be retrieved", e);
         }
     }
 
@@ -1185,14 +1185,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     String[] suggestions = StringUtils.splitByWholeSeparator(v.getString(), CompositeSpellChecker.SEPARATOR_IN_SUGGESTION);
                     suggestion = new Suggestion(originalQuery, suggestions[0], Arrays.asList(suggestions));
                 }
-                if (LOGGER.isDebugEnabled()) {
-                    LOGGER.debug("Making spell check suggestion for '" + originalQuery + "' site '"
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Making spell check suggestion for '" + originalQuery + "' site '"
                             + siteKey + "' and locale '" + locale + "' using XPath query ["
                             + xpath.toString() + "]. Result suggestion: " + suggestion);
                 }
             }
         } catch (RepositoryException e) {
-            LOGGER.error(e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
 
         return suggestion;

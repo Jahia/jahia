@@ -112,6 +112,7 @@ public class WebflowAction extends Action {
                     id = StringUtils.substringBefore(id,".");
                 }
                 JCRNodeWrapper n = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(renderContext.getWorkspace(), renderContext.getMainResourceLocale()).getNodeByUUID(id);
+                req.setAttribute("actionParameters",parameters);
                 renderService.render(new Resource(n, urlResolver.getResource().getTemplateType(), view , Resource.CONFIGURATION_MODULE), renderContext);
                 return new ActionResult(HttpServletResponse.SC_OK, renderContext.getRedirect(), true, null );
             }

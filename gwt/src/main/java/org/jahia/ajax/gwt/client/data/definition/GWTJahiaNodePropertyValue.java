@@ -72,6 +72,7 @@
 package org.jahia.ajax.gwt.client.data.definition;
 
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
+import com.google.gwt.i18n.client.DateTimeFormat;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.io.Serializable;
@@ -167,7 +168,7 @@ public class GWTJahiaNodePropertyValue extends BaseTreeModel implements Serializ
 
     public Date getDate() {
         if (type == GWTJahiaNodePropertyType.DATE && value != null) {
-            return new Date(Long.valueOf(value));
+            return DateTimeFormat.getFormat("yyyy-MM-dd'T'hh:mm").parse(value);
         } else {
             return null;
         }

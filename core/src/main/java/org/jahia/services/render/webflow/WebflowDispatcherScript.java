@@ -93,10 +93,7 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class WebflowDispatcherScript extends RequestDispatcherScript {
@@ -134,6 +131,20 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
 
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
+
+        final Map<String, List<String>> parameters = (Map<String, List<String>>) request.getAttribute("actionParameters");
+        if (parameters != null) {
+            request = new HttpServletRequestWrapper(request) {
+                @Override
+                public String[] getParameterValues(String name) {
+                    List<String> l = parameters.get(name);
+                    if (l != null) {
+                        return l.toArray(new String[l.size()]);
+                    }
+                    return null;
+                }
+            };
+        }
 
         String identifier;
         try {

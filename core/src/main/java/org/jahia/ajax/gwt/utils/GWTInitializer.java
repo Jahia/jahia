@@ -168,7 +168,9 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.CONTEXT_PATH, contextPath);
         params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
-        params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
+        String queryString = request.getQueryString();
+        queryString = queryString != null ? queryString.replace("\"","%22") : null;
+        params.put(JahiaGWTParameters.QUERY_STRING, queryString);
         boolean devMode = SettingsBean.getInstance().isDevelopmentMode();
         params.put(JahiaGWTParameters.DEVELOPMENT_MODE, devMode ? "true" : "false");
         if (devMode) {

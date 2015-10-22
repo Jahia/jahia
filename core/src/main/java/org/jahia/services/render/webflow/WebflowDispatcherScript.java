@@ -143,8 +143,8 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         }
         String identifierNoDashes = StringUtils.replace(identifier, "-", "_");
 
-        if (resource.getTemplate() != null && !resource.getTemplate().equals("default")) {
-            identifierNoDashes += "." + resource.getTemplate();
+        if (view.getKey() != null && !view.getKey().equals("default")) {
+            identifierNoDashes += "." + view.getKey();
         }
 
         String s = (String) request.getSession().getAttribute("webflowResponse"+identifierNoDashes);

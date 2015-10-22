@@ -69,97 +69,71 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.osgi;
+package org.jahia.bundles.url.df;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Hashtable;
+
+import javax.security.auth.login.Configuration;
+
+import org.apache.felix.fileinstall.ArtifactUrlTransformer;
+import org.ops4j.pax.url.commons.handler.ConnectionFactory;
+import org.ops4j.pax.url.commons.handler.HandlerActivator;
+import org.ops4j.util.property.PropertyResolver;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.startlevel.StartLevel;
-import org.osgi.util.tracker.ServiceTracker;
+import org.osgi.framework.ServiceRegistration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletContext;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Initial startup OSGi provision activator
- *
- * @author loom
- *         Date: Oct 11, 2010
- *         Time: 5:18:48 PM
+ * Activator for Jahia bundle URL transformer.
+ * 
+ * @author Sergiy Shyrkov
  */
-public final class ProvisionActivator implements BundleActivator {
+public class Activator extends HandlerActivator<Configuration> {
 
-    private final ServletContext servletContext;
-    private BundleContext bundleContext;
+    private static Logger logger = LoggerFactory.getLogger(Activator.class);
 
-    private static ProvisionActivator instance = null;
-    private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
+    private ServiceRegistration<?> serviceRegistration = null;
 
-    public ProvisionActivator(ServletContext servletContext) {
-        this.servletContext = servletContext;
-        instance = this;
-    }
+    /**
+     * Initializes an instance of this class.
+     */
+    public Activator() {
+        super(new String[] { "dfdata", "dfwar" }, Activator.class.getPackage().getName(),
+                new ConnectionFactory<Configuration>() {
 
-    public static ProvisionActivator getInstance() {
-        return instance;
-    }
+                    public URLConnection createConection(final BundleContext bundleContext, final URL url,
+                            final Configuration config) throws MalformedURLException {
+                        return UrlTransformer.getConnection(url);
+                    }
 
-    @Override
-    public void start(BundleContext context) throws Exception {
+                    public Configuration createConfiguration(final PropertyResolver propertyResolver) {
+                        return null;
+                    }
 
-        bundleContext = context;
-        servletContext.setAttribute(BundleContext.class.getName(), context);
-
-        ArrayList<Bundle> installed = new ArrayList<Bundle>();
-        for (String name : findBundles()) {
-            logger.info("Installing bundle [{}]", name);
-            Bundle bundle = context.installBundle("dfwar:" + name, servletContext.getResourceAsStream(name));
-            installed.add(bundle);
-        }
-
-        ServiceTracker st = new ServiceTracker(context, StartLevel.class.getName(), null);
-        st.open();
-        StartLevel sl = ((StartLevel)st.getService());
-
-        for (Bundle bundle : installed) {
-            if (bundle.getSymbolicName().equals("org.apache.felix.fileinstall")) {
-                // Start fileInstall only on level 2
-                sl.setBundleStartLevel(bundle,2);
-            }
-
-            // we first check if it is a fragment bundle, in which case we will not start it.
-            if (bundle.getHeaders().get("Fragment-Host") == null) {
-                bundle.start();
-            }
-        }
+                });
     }
 
     @Override
-    public void stop(BundleContext context) throws Exception {
-        bundleContext = null;
-        servletContext.removeAttribute(BundleContext.class.getName());
-        instance = null;
+    public void start(final BundleContext context) {
+        super.start(context);
+        logger.info("Registering Jahia bundle URL transformer for handling dfdata and dfwar protocols");
+        serviceRegistration = context.registerService(new String[] { ArtifactUrlTransformer.class.getName() },
+                new JahiaBundleUrlTransformer(), new Hashtable<String, Object>());
     }
 
-    public BundleContext getBundleContext() {
-        return bundleContext;
-    }
-
-    private List<String> findBundles() throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
-        for (Object o : this.servletContext.getResourcePaths("/WEB-INF/bundles/")) {
-            String name = (String) o;
-            if (name.endsWith(".jar")) {
-                URL url = this.servletContext.getResource(name);
-                if (url != null) {
-                    list.add(name);
-                }
-            }
+    @Override
+    public void stop(BundleContext context) {
+        logger.info("Unregistering Jahia bundle URL transformer");
+        try {
+            serviceRegistration.unregister();
+        } catch (IllegalStateException e) {
+            logger.warn(e.getMessage(), e);
         }
-        return list;
+        super.stop(context);
     }
+
 }

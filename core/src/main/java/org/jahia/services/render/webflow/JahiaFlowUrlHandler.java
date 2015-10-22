@@ -74,6 +74,7 @@ package org.jahia.services.render.webflow;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.webflow.context.servlet.DefaultFlowUrlHandler;
@@ -140,9 +141,9 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
 
     private String getExecutionName(HttpServletRequest request, JCRNodeWrapper n) throws RepositoryException {
         String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
-        Resource r = (Resource) request.getAttribute("currentResource");
-        if (r != null && r.getTemplate() != null && !r.getTemplate().equals("default")) {
-            name += "." + r.getTemplate();
+        Script r = (Script) request.getAttribute("script");
+        if (r != null && r.getView() != null && !r.getView().getKey().equals("default")) {
+            name += "." + r.getView().getKey();
         }
         return name;
     }

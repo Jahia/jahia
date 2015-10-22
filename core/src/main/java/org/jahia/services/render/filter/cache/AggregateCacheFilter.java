@@ -782,6 +782,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private int replaceInContent(StringBuilder sb, int start, int end, String replacement) {
+        if (replacement == null) {
+            replacement = "";
+        }
         sb.replace(start, end, replacement);
         return sb.indexOf(CACHE_ESI_TAG_START, start + replacement.length());
     }

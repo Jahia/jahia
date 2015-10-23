@@ -180,6 +180,14 @@ public class SpringContextSingleton implements ApplicationContextAware, Applicat
         return context;
     }
 
+    /**
+     * Publishes the specified event in the core Spring context and publishes to each module's context. When publishing the event to a
+     * module, the {@link ApplicationEventMulticaster#multicastEvent(ApplicationEvent)} method is used to skip publishing event to the
+     * module's parent context (which is our Spring core context).
+     * 
+     * @param event
+     *            the Spring event to be published
+     */
     public void publishEvent(ApplicationEvent event) {
         publishEvent(event, true);
     }

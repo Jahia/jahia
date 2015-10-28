@@ -71,6 +71,7 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
@@ -173,7 +174,7 @@ public class NewContentActionItem extends BaseActionItem  {
             }
             setEnabled(isValidParent && !"".equals(n.getChildConstraints().trim())
                     && !lh.isLocked()
-                    && hasPermission(lh.getSelectionPermissions())
+                    && hasPermission(JahiaGWTParameters.getSiteNode())
                     && PermissionsUtils.isPermitted("jcr:addChildNodes", lh.getSelectionPermissions()));
         } else {
             setEnabled(false);

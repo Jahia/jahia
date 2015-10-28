@@ -84,7 +84,7 @@ import java.util.regex.Pattern;
 public class SessionidRemovalResponseWrapper extends HttpServletResponseWrapper {
     private HttpServletRequest request;
 
-    private Pattern cleanPattern = Pattern.compile(";"+SettingsBean.getInstance().getJsessionIdParameterName()+"=[^\\?#]*");
+    private static Pattern cleanPattern = Pattern.compile(";"+SettingsBean.getInstance().getJsessionIdParameterName()+"=[^\\?#]*");
 
     public SessionidRemovalResponseWrapper(HttpServletRequest request, HttpServletResponse response) {
         super(response);
@@ -110,15 +110,20 @@ public class SessionidRemovalResponseWrapper extends HttpServletResponseWrapper 
     private String clean(String url) {
         if (SettingsBean.getInstance().isDisableJsessionIdParameter() || isInRender()) {
             // Remove the jsessionid= part
-            String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
-            if (url.contains(s)) {
-                url = cleanPattern.matcher(url).replaceFirst("");
-            }
+            url = removeJsessionId(url);
 
             // If we are in jahia page, and jsession ids are not disabled, replace by a macro
             if (isInRender() && !SettingsBean.getInstance().isDisableJsessionIdParameter() && !url.contains("##sessionid##")) {
                 url += "##sessionid##";
             }
+        }
+        return url;
+    }
+
+    public static String removeJsessionId(String url) {
+        String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
+        if (url.contains(s)) {
+            url = cleanPattern.matcher(url).replaceFirst("");
         }
         return url;
     }

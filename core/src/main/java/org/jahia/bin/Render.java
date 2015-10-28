@@ -90,6 +90,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.logging.MetricsLoggingService;
 import org.jahia.services.render.*;
+import org.jahia.services.seo.urlrewrite.SessionidRemovalResponseWrapper;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
@@ -726,13 +727,20 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             }
         }
         if (!StringUtils.isEmpty(renderedURL)) {
+            String redirect = resp.encodeRedirectURL(renderedURL);
+            if (SettingsBean.getInstance().isDisableJsessionIdParameter()) {
+                String s = ";" + SettingsBean.getInstance().getJsessionIdParameterName();
+                if (redirect.contains(s)) {
+                    redirect = SessionidRemovalResponseWrapper.removeJsessionId(redirect);
+                }
+            }
             if (StringUtils.isEmpty(stayOnPage)) {
-                resp.setHeader("Location", resp.encodeRedirectURL(renderedURL));
+                resp.setHeader("Location", redirect);
             } else if (responseCode == HttpServletResponse.SC_SEE_OTHER) {
-                resp.setHeader("Location", resp.encodeRedirectURL(renderedURL));
+                resp.setHeader("Location", redirect);
             }
             if (responseCode == HttpServletResponse.SC_FOUND) {
-                resp.sendRedirect(resp.encodeRedirectURL(renderedURL));
+                resp.sendRedirect(redirect);
             } else {
                 resp.setStatus(responseCode);
             }

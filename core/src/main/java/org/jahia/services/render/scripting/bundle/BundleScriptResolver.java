@@ -248,38 +248,28 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private View resolveView(Resource resource, List<ExtendedNodeType> nodeTypeList, RenderContext renderContext) {
         String template = resource.getResolvedTemplate();
-        try {
-            JCRSiteNode site = renderContext.getSite();
+        JCRSiteNode site = renderContext.getSite();
 
-            Template t = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-            if (t != null && t.getNode() != null) {
-                site = site.getSession().getNodeByIdentifier(t.getNode()).getResolveSite();
-            }
-
-            List<String> templateTypeMappings = null;
-            Channel channel = renderContext.getChannel();
-            if (channel != null && !channel.getFallBack().equals("root")) {
-                templateTypeMappings = new LinkedList<String>();
-                while (!channel.getFallBack().equals("root")) {
-                    if (channel.getCapability("template-type-mapping") != null) {
-                        templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
-                    }
-                    channel = ChannelService.getInstance().getChannel(channel.getFallBack());
+        List<String> templateTypeMappings = null;
+        Channel channel = renderContext.getChannel();
+        if (channel != null && !channel.getFallBack().equals("root")) {
+            templateTypeMappings = new LinkedList<String>();
+            while (!channel.getFallBack().equals("root")) {
+                if (channel.getCapability("template-type-mapping") != null) {
+                    templateTypeMappings.add(resource.getTemplateType() + "-" + channel.getCapability("template-type-mapping"));
                 }
-                templateTypeMappings.add(resource.getTemplateType());
+                channel = ChannelService.getInstance().getChannel(channel.getFallBack());
             }
-            Set<View> s = getViewsSet(nodeTypeList, site,
-                    templateTypeMappings != null ? templateTypeMappings : Arrays.asList(resource.getTemplateType()));
-            View selected;
-            selected = getView(template, s);
-            if(selected==null && !"default".equals(template)) {
-                selected = getView("default", s);
-            }
-            return selected;
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            templateTypeMappings.add(resource.getTemplateType());
         }
-        return null;
+        Set<View> s = getViewsSet(nodeTypeList, site,
+                templateTypeMappings != null ? templateTypeMappings : Arrays.asList(resource.getTemplateType()));
+        View selected;
+        selected = getView(template, s);
+        if (selected == null && !"default".equals(template)) {
+            selected = getView("default", s);
+        }
+        return selected;
     }
 
     private View getView(String template, Set<View> s) {

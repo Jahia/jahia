@@ -83,9 +83,7 @@ public class ProccessorAwarePooledStringDigester extends PooledStringDigester {
      */
     public ProccessorAwarePooledStringDigester() {
         super();
-        if (Runtime.getRuntime().availableProcessors() > 1) {
-            setPoolSize(Runtime.getRuntime().availableProcessors());
-        }
+        setPoolSize(Runtime.getRuntime().availableProcessors());
     }
 
 }

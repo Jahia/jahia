@@ -121,7 +121,7 @@ import com.ibm.icu.text.DateFormat;
  */
 public final class Jahia {
 
-    public static final String CODE_NAME = "Firestar";
+    public static final String CODE_NAME = "Gaia";
     public static final String COPYRIGHT = "&copy; Copyright 2002-2015  <a href=\"http://www.jahia.com\" target=\"newJahia\">Jahia Solutions Group SA</a> -";
     public static final String COPYRIGHT_TXT = "2015 Jahia Solutions Group SA" ;
 

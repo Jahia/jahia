@@ -132,8 +132,8 @@ public class Logout implements Controller {
     public class LogoutEvent extends ApplicationEvent {
 
         private static final long serialVersionUID = 7031797336948851970L;
-        private HttpServletRequest request;
-        private HttpServletResponse response;
+        private transient HttpServletRequest request;
+        private transient HttpServletResponse response;
 
         public LogoutEvent(Object source, HttpServletRequest request, HttpServletResponse response) {
             super(source);

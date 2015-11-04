@@ -88,7 +88,7 @@ import java.io.Serializable;
 public class GWTJahiaGetPropertiesResult implements Serializable {
 	private GWTJahiaNode node;
     private List<GWTJahiaNodeType> nodeTypes;
-    private Map<String, GWTJahiaNodeProperty> properties;
+    private transient Map<String, GWTJahiaNodeProperty> properties;
     private List<GWTJahiaLanguage> availabledLanguages;
     private GWTJahiaLanguage currentLocale;
 

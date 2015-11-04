@@ -145,32 +145,32 @@ public class PortletServlet extends HttpServlet {
     /**
      * The portlet instance wrapped by this servlet.
      */
-    private Map<String, Portlet> portlets = new HashMap<>();
+    private transient Map<String, Portlet> portlets = new HashMap<>();
 
     /**
      * The internal portlet context instance.
      */
-    private DriverPortletContext portletContext;
+    private transient DriverPortletContext portletContext;
 
     /**
      * The internal portlet config instance.
      */
-    private Map<String, DriverPortletConfig> portletConfigs = new HashMap<>();
+    private transient Map<String, DriverPortletConfig> portletConfigs = new HashMap<>();
 
     /**
      * The Event Portlet instance (the same object as portlet) wrapped by this servlet.
      */
-    private Map<String, EventPortlet> eventPortlets = new HashMap<>();
+    private transient Map<String, EventPortlet> eventPortlets = new HashMap<>();
 
     /**
      * The resource serving portlet instance wrapped by this servlet.
      */
-    private Map<String, ResourceServingPortlet> resourceServingPortlets = new HashMap<>();
+    private transient Map<String, ResourceServingPortlet> resourceServingPortlets = new HashMap<>();
 
-    private PortletContextService contextService;
+    private transient PortletContextService contextService;
 
     private boolean started = false;
-    private Timer startTimer;
+    private transient Timer startTimer;
 
     // HttpServlet Impl --------------------------------------------------------
 

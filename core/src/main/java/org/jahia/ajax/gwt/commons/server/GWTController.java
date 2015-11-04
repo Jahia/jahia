@@ -111,9 +111,9 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     private Integer sessionExpiryTime = null;
 
-    private ServletContext servletContext;
+    private transient ServletContext servletContext;
     
-    private ApplicationContext applicationContext;
+    private transient ApplicationContext applicationContext;
     
     private boolean allowPostMethodOnly = true;
 

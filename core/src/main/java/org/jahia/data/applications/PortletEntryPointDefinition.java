@@ -107,8 +107,8 @@ public class PortletEntryPointDefinition implements Serializable, EntryPointDefi
 
     private String applicationID;
     private String context;
-    private PortletDefinition portletDefinition;
-    private List<PortletMode> portletModes = null;
+    private transient PortletDefinition portletDefinition;
+    private transient List<PortletMode> portletModes = null;
 
     public PortletEntryPointDefinition(String applicationID, String context, PortletDefinition portletDefinition) {
         this.applicationID = applicationID;

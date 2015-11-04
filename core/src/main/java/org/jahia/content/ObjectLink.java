@@ -99,7 +99,7 @@ public class ObjectLink implements Serializable {
     private ObjectKey leftObjectKey;
     private ObjectKey rightObjectKey;
     private String type;
-    private Map<String, String> commonMetadata;
+    private transient Map<String, String> commonMetadata;
 
     public ObjectLink(int ID, ObjectKey leftObjectKey,
                       ObjectKey rightObjectKey,

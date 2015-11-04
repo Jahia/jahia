@@ -91,8 +91,8 @@ public class GWTJahiaCreateEngineInitBean implements Serializable {
     private static final long serialVersionUID = 2401975272536722966L;
     private List<GWTJahiaLanguage> languages;
     private List<GWTJahiaNodeType> mixin;
-    private Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
-    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
+    private transient Map<String, GWTChoiceListInitializer> choiceListInitializersValues;
+    private transient Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     private GWTJahiaLanguage currentLocale;
     private GWTJahiaNodeACL acl;
     private String defaultName;

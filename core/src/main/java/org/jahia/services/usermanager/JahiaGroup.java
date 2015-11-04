@@ -114,10 +114,10 @@ public abstract class JahiaGroup implements JahiaPrincipal, Group {
 
     protected boolean preloadedGroups;
 
-    protected Map<String, Boolean> membership = new ConcurrentHashMap<String, Boolean>();
+    protected transient Map<String, Boolean> membership = new ConcurrentHashMap<String, Boolean>();
 
     /** Map holding all the group members. */
-    protected Set<Principal> mMembers;
+    protected transient Set<Principal> mMembers;
 
     /**
      * Get grp's properties list.

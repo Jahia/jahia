@@ -93,7 +93,7 @@ public class GWTJahiaToolbarItem implements Serializable {
     private boolean selected;
     private int layout = 0;
     private List<String> processes;
-    private Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
+    private transient Map<String, GWTJahiaProperty> properties = new HashMap<String, GWTJahiaProperty>();
     private String requiredPermission;
     private String requiredModule;
     private boolean hideWhenDisabled = false;

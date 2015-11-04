@@ -8,7 +8,7 @@ import org.springframework.context.ApplicationEvent;
  */
 public class BaseLoginEvent extends ApplicationEvent {
     private JahiaUser jahiaUser;
-    private AuthValveContext authValveContext;
+    private transient AuthValveContext authValveContext;
 
     public BaseLoginEvent(Object source, JahiaUser jahiaUser, AuthValveContext authValveContext) {
         super(source);

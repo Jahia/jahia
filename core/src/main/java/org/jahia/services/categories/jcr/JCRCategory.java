@@ -103,7 +103,7 @@ public class JCRCategory implements CategoryBean, Serializable {
 
     private String path;
     
-    private Node categoryNode;
+    private transient Node categoryNode;
     
     /**
      * Initializes an instance of a JCR category.

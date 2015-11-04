@@ -89,13 +89,13 @@ public class MissingTemplatesValidationResult implements ValidationResult, Seria
 
     private static final long serialVersionUID = -6930213514434249772L;
 
-    private Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
+    private transient Map<String, Set<String>> missing = new TreeMap<String, Set<String>>();
 
     private String targetTemplateSet;
 
     private boolean targetTemplateSetPresent;
 
-    private Map<String, Integer> modulesMissingCounts = Collections.emptyMap();
+    private transient Map<String, Integer> modulesMissingCounts = Collections.emptyMap();
 
     /**
      * Initializes an instance of this class.

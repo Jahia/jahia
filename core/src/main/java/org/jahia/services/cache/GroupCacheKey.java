@@ -90,7 +90,7 @@ public class GroupCacheKey implements Serializable, Comparable<GroupCacheKey> {
     private static String groupSeparator = "#$#G_";
     private static String keyGroupSeparator = "$$$";
 
-    private final Object key;
+    private final transient Object key;
     private final Set<String> groups;
 
     /**

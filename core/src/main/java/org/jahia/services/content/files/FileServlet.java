@@ -550,7 +550,7 @@ public class FileServlet extends HttpServlet {
     public class FileDownloadEvent extends ApplicationEvent {
         private static final long serialVersionUID = -7003604984285879294L;
 
-        HttpServletRequest request;
+        transient HttpServletRequest request;
         String nodeId;
         String nodePath;
         List<String> nodeTypes;

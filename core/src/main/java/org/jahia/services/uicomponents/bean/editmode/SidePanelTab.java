@@ -102,7 +102,7 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     private String key;
     private Toolbar treeContextMenu;
     private Toolbar tableContextMenu;
-    private Map<String, String> params;
+    private transient Map<String, String> params;
     private Visibility visibility;
     private List<Column> treeColumns;
     private List<Column> tableColumns;
@@ -110,7 +110,7 @@ public class SidePanelTab implements Serializable, BeanNameAware, InitializingBe
     private SidePanelTabItem tabItem;
     private String requiredPermission;
 
-    private Object parent;
+    private transient Object parent;
     private int position = -1;
     private String positionAfter;
     private String positionBefore;

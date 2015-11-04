@@ -110,7 +110,7 @@ public class ManagerConfiguration implements Serializable {
     private List<String> forbiddenNodeTypesForDragAndDrop;
     private Set<String> excludedNodeTypes;
 
-    private Map<String, EngineConfiguration> engineConfigurations;
+    private transient Map<String, EngineConfiguration> engineConfigurations;
     private List<EngineTab> engineTabs;
 
     private List<Toolbar> toolbars;

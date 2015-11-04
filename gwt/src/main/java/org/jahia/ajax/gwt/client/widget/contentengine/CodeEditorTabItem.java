@@ -115,7 +115,7 @@ public class CodeEditorTabItem extends EditEngineTabItem {
     private String codePropertyName;
     private String stubType;
     private String codeMirrorMode = "jsp";
-    private Map<String, String> availableCodeMirrorModes;
+    private transient Map<String, String> availableCodeMirrorModes;
 
     private transient CodeMirrorField codeField;
     private transient GWTJahiaNodeProperty codeProperty;

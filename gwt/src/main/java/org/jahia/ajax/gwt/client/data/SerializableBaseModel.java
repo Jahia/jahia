@@ -83,9 +83,9 @@ import java.util.*;
 public class SerializableBaseModel implements ModelData, Serializable {
     private static final long serialVersionUID = 1L;
 
-    private Map<String, String> strings;
-    private Map<String, Integer> integers;
-    private Map<String, Boolean> booleans;
+    private transient Map<String, String> strings;
+    private transient Map<String, Integer> integers;
+    private transient Map<String, Boolean> booleans;
 
     private transient Map<String, Serializable> properties;
 

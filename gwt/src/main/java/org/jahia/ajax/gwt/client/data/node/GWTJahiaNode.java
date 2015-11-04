@@ -174,18 +174,18 @@ public class GWTJahiaNode extends BaseTreeModel implements Serializable, Compara
     private String languageCode;
     private boolean expandOnLoad = false;
     private boolean selectedOnLoad = false;
-    private Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
+    private transient Map<String, Boolean> languageLocked = new HashMap<String, Boolean>();
     private GWTJahiaNode referencedNode;
     private GWTJahiaWorkflowInfo workflowInfo;
     private GWTBitSet permissions;
 
     // in case of a folder, it allows to know if the node is selectable or not
     private boolean matchFilters = false;
-    private Map<String, GWTJahiaPublicationInfo> publicationInfos;
+    private transient Map<String, GWTJahiaPublicationInfo> publicationInfos;
     private GWTJahiaPublicationInfo quickPublicationInfo;
 
-    private Map<String, GWTJahiaWorkflowInfo> workflowInfos;
-    private Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
+    private transient Map<String, GWTJahiaWorkflowInfo> workflowInfos;
+    private transient Map<String, List<GWTJahiaPublicationInfo>> fullPublicationInfos;
     private boolean wcagCompliance;
     private List<String> invalidLanguages;
 

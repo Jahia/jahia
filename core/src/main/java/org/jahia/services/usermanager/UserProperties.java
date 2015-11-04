@@ -102,7 +102,7 @@ public class UserProperties implements Serializable {
         DEFAULT_PROPERTIES_NAME.add("preferredLanguage");
     }
 
-    private Map<String, UserProperty> properties = new HashMap<String, UserProperty>();
+    private transient Map<String, UserProperty> properties = new HashMap<String, UserProperty>();
 
     public UserProperties() {
         super();

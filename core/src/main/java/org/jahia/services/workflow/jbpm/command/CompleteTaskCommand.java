@@ -92,10 +92,10 @@ import java.util.Map;
 public class CompleteTaskCommand extends BaseCommand<Object> {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(CompleteTaskCommand.class);
 
-    private JBPM6WorkflowProvider jbpm6WorkflowProvider;
+    private transient JBPM6WorkflowProvider jbpm6WorkflowProvider;
     private final String taskId;
     private final String outcome;
-    private final Map<String, Object> args;
+    private final transient Map<String, Object> args;
     private final JahiaUser jahiaUser;
     private final WorkflowObservationManager observationManager;
 

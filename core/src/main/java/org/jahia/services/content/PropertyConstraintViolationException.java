@@ -82,7 +82,7 @@ import java.util.Locale;
  */
 public class PropertyConstraintViolationException extends NodeConstraintViolationException {
     private static final long serialVersionUID = 1105014619794292013L;
-    private ExtendedPropertyDefinition definition;
+    private transient ExtendedPropertyDefinition definition;
 
     public PropertyConstraintViolationException(JCRNodeWrapper node, String constraintMessage, Locale locale, ExtendedPropertyDefinition definition) throws RepositoryException {
         super(node.getPath() + " " + definition.getLabel(LocaleContextHolder.getLocale(), node.getPrimaryNodeType()) + ": "+ constraintMessage, node, constraintMessage, locale);

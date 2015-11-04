@@ -82,8 +82,8 @@ import java.util.Map;
  * 
  */
 public class GWTJahiaLanguageSwitcherBean implements Serializable{
-    private Map<String, GWTJahiaLanguage> availableLanguages;
-    private Map<String,String> workflowStates;
+    private transient Map<String, GWTJahiaLanguage> availableLanguages;
+    private transient Map<String,String> workflowStates;
 
     public GWTJahiaLanguageSwitcherBean() {
     }

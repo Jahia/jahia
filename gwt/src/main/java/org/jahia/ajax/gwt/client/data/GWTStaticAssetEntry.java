@@ -81,7 +81,7 @@ import java.util.Map;
 public class GWTStaticAssetEntry implements Serializable {
     private String id;
     private String key;
-    private Map<String,String> options;
+    private transient Map<String,String> options;
     private transient Node element;
 
     public GWTStaticAssetEntry() {

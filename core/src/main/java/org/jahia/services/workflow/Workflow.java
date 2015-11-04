@@ -90,7 +90,7 @@ public class Workflow extends WorkflowBase {
     private Set<WorkflowAction> availableActions;
     private Date duedate = null;
     private WorkflowDefinition workflowDefinition;
-    private Map<String, Object> variables;
+    private transient Map<String, Object> variables;
 
     public Workflow(String name, String id, String provider) {
         super(name, provider);

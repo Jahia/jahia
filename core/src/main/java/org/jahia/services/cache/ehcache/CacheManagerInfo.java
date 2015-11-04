@@ -85,9 +85,9 @@ public class CacheManagerInfo extends BaseCacheInfo {
 
     private static final long serialVersionUID = 322590359973949499L;
 
-    private Map<String, CacheInfo> caches = new TreeMap<String, CacheInfo>();
+    private transient Map<String, CacheInfo> caches = new TreeMap<String, CacheInfo>();
 
-    private CacheManager manager;
+    private transient CacheManager manager;
 
     /**
      * Initializes an instance of this class.

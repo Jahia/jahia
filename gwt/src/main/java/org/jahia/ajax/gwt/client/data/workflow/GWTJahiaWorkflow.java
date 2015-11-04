@@ -90,7 +90,7 @@ import java.util.Map;
  */
 public class GWTJahiaWorkflow extends BaseModelData implements Serializable {
     private List<GWTJahiaWorkflowTask> availableTasks;
-    private Map<String, GWTJahiaNodeProperty> variables;
+    private transient Map<String, GWTJahiaNodeProperty> variables;
     private CustomWorkflow customWorkflowInfo;
 
     public GWTJahiaWorkflow() {

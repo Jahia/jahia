@@ -87,7 +87,7 @@ import java.io.Serializable;
 public class InsertionSortedSet<E> extends AbstractSet<E> implements Serializable {
 
     private static final long serialVersionUID = 1289857734190978537L;
-    private List<E> internalSet;
+    private transient List<E> internalSet;
 
     public InsertionSortedSet() {
         internalSet = new ArrayList<E>();

@@ -81,7 +81,7 @@ import java.util.Map;
  */
 public class GWTRenderResult implements Serializable {
     private String result;
-    private Map<String,List<GWTStaticAssetEntry>> staticAssets;
+    private transient Map<String,List<GWTStaticAssetEntry>> staticAssets;
     private String nodeTypes;
     private String name;
 

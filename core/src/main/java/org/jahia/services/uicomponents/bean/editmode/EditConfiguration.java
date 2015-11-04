@@ -98,7 +98,7 @@ public class EditConfiguration implements Serializable, BeanNameAware {
 
     private List<SidePanelTab> tabs;
 
-    private Map<String, EngineConfiguration> engineConfigurations;
+    private transient Map<String, EngineConfiguration> engineConfigurations;
 
     private String defaultLocation;
 

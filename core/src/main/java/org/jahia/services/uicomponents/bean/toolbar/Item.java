@@ -106,7 +106,7 @@ public class Item implements Serializable, BeanNameAware, InitializingBean, Disp
     private boolean hideWhenDisabled;
     private List<Property> properties = new ArrayList<Property>();
     private ActionItem actionItem;
-    private Object parent;
+    private transient Object parent;
     private int position = -1;
     private String positionAfter;
     private String positionBefore;

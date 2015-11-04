@@ -82,8 +82,8 @@ import java.util.Map;
  * 
  */
 public class GWTJahiaWorkflowInfo implements Serializable {
-    private Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows;
-    private Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> activeWorkflows;
+    private transient Map<GWTJahiaWorkflowType, GWTJahiaWorkflowDefinition> possibleWorkflows;
+    private transient Map<GWTJahiaWorkflowType, GWTJahiaWorkflow> activeWorkflows;
     public GWTJahiaWorkflowInfo() {
     }
 

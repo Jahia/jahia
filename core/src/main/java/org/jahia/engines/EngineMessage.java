@@ -95,7 +95,7 @@ public class EngineMessage implements Serializable {
     /**
      * <p>The replacement values for this mesasge.</p>
      */
-    private Object[] values = null;
+    private transient Object[] values = null;
 
     /**
      * <p>Indicates whether the key is taken to be as a  bundle key [true] or

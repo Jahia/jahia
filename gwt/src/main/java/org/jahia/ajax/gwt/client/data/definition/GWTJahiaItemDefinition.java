@@ -97,7 +97,7 @@ public class GWTJahiaItemDefinition extends BaseModelData implements Serializabl
     private String dataType;
 
     private int selector = 0;
-    private Map<String,String> selectorOptions = new HashMap<String,String>();
+    private transient Map<String,String> selectorOptions = new HashMap<String,String>();
     public static final String CONTENT = "content";
     public static final String LAYOUT = "layout";
     private String tooltip;

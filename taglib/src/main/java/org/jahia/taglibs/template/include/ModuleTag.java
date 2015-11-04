@@ -124,7 +124,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected String constraints = null;
     protected String var = null;
     protected StringBuilder builder = new StringBuilder();
-    protected Map<String, String> parameters = new HashMap<String, String>();
+    protected transient Map<String, String> parameters = new HashMap<String, String>();
     protected boolean checkConstraints = true;
 
     public String getPath() {

@@ -124,6 +124,7 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -143,7 +144,10 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @author toto
  */
-public class JCRSessionWrapper implements Session {
+public class JCRSessionWrapper implements Session, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRSessionWrapper.class);
     public static final String DEREF_SEPARATOR = "@/";
 

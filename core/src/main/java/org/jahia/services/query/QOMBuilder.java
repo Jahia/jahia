@@ -71,6 +71,7 @@
  */
 package org.jahia.services.query;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,13 +91,16 @@ import javax.jcr.query.qom.Source;
  * 
  * @author Benjamin Papez
  */
-public class QOMBuilder {
+public class QOMBuilder implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private List<Column> columns;
-    private Constraint constraint;
-    private List<Ordering> orderings;
-    private QueryObjectModelFactory qomFactory;
-    private Source source;
-    private ValueFactory valueFactory;
+    private transient Constraint constraint;
+    private transient List<Ordering> orderings;
+    private transient QueryObjectModelFactory qomFactory;
+    private transient Source source;
+    private transient ValueFactory valueFactory;
 
     public QOMBuilder(QueryObjectModelFactory qomFactory, ValueFactory valueFactory) {
         this.qomFactory = qomFactory;

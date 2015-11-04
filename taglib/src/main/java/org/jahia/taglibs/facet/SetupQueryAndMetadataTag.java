@@ -98,8 +98,8 @@ import java.util.Map;
 public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
     private static final long serialVersionUID = 1L;
     private JCRNodeWrapper boundComponent;
-    private QueryObjectModel existing;
-    private Map<String, List<KeyValue>> activeFacets;
+    private transient QueryObjectModel existing;
+    private transient Map<String, List<KeyValue>> activeFacets;
     private String var;
 
     public void setBoundComponent(JCRNodeWrapper boundComponent) {

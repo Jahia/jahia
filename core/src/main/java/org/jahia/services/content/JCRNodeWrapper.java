@@ -91,6 +91,7 @@ import javax.jcr.version.VersionException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.*;
 
@@ -103,7 +104,7 @@ import java.util.*;
  *
  * @author toto
  */
-public interface JCRNodeWrapper extends Node, JCRItemWrapper {
+public interface JCRNodeWrapper extends Node, JCRItemWrapper, Serializable {
 
     Iterator<JCRNodeWrapper> EMPTY = new Iterator<JCRNodeWrapper>() {
         @Override

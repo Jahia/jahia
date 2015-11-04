@@ -95,7 +95,7 @@ public class JCRNodeIconTag extends AbstractJCRTag {
     private transient static Logger logger = LoggerFactory.getLogger(JCRNodeTypeTag.class);
 
     private JCRNodeWrapper node;
-    private Object type;
+    private transient Object type;
     private String var;
     private int scope = PageContext.PAGE_SCOPE;
 

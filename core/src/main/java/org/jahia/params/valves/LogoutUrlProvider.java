@@ -72,6 +72,7 @@
 package org.jahia.params.valves;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
 
 /**
  * Is implemented by an authentication provider that implies custom logout form URL.
@@ -79,7 +80,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since Jahia 6.6
  * @author Sergiy Shyrkov
  */
-public interface LogoutUrlProvider {
+public interface LogoutUrlProvider extends Serializable{
 
     /**
      * Returns the custom logout URL, used to redirect the user for invalidating session. If the provider is not activated, returns

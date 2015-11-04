@@ -103,7 +103,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
     private String nodetype;
     private JCRNodeWrapper node;
     private String view;
-    private Map<String, String> parameters = new HashMap<String, String>();
+    private transient Map<String, String> parameters = new HashMap<String, String>();
 
     /**
      * Default processing of the end tag returning EVAL_PAGE.

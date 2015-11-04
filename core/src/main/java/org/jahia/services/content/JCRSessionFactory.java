@@ -71,6 +71,7 @@
  */
 package org.jahia.services.content;
 
+import java.io.Serializable;
 import java.util.*;
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
@@ -105,7 +106,7 @@ import org.springframework.web.context.ServletContextAware;
  * @author toto
  * @see JCRTemplate
  */
-public class JCRSessionFactory implements Repository, ServletContextAware {
+public class JCRSessionFactory implements Repository, ServletContextAware, Serializable{
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
         public int compare(String s1, String s2) {

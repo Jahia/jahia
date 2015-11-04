@@ -84,7 +84,7 @@ public class ParamSupport extends BodyTagSupport {
     //*********************************************************************
     // Protected state
 
-    protected Object value;                          // 'value' attribute
+    protected transient Object value;                          // 'value' attribute
     protected boolean valueSpecified;                // status
 
 

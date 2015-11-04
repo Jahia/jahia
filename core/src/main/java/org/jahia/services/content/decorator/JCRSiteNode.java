@@ -88,6 +88,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+import java.io.Serializable;
 import java.util.*;
 
 import static org.jahia.services.sites.SitesSettings.*;
@@ -99,7 +100,10 @@ import static org.jahia.services.sites.SitesSettings.*;
  * Date: Mar 30, 2010
  * Time: 12:37:45 PM
  */
-public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
+public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite, Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private static final Logger logger = LoggerFactory.getLogger(JCRSiteNode.class);
 
     private Set<String> inactiveLiveLanguages;

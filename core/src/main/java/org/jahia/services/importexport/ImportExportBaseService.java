@@ -1328,7 +1328,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         File temp = null;
         try {
             Path tempPath = Files.createTempDirectory("migration");
-            File tempDir = tempPath.toFile();
+            temp = tempPath.toFile();
             ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;

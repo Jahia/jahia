@@ -139,6 +139,8 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -1325,9 +1327,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, File> filePath = new HashMap<String, File>();
         File temp = null;
         try {
-            temp = File.createTempFile("migration", "");
-            temp.delete();
-            temp.mkdir();
+            Path tempPath = Files.createTempDirectory("migration");
+            File tempDir = tempPath.toFile();
             ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;

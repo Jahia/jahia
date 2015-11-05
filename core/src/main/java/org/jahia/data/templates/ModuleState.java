@@ -71,10 +71,13 @@
  */
 package org.jahia.data.templates;
 
+import java.io.Serializable;
+
 /**
  * Represents the state of a module in its life cycle.
  */
-public class ModuleState {
+public class ModuleState implements Serializable{
+    private static final long serialVersionUID = 1L;
     public static enum State {
         ERROR_DURING_START, INSTALLED, PARSED, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_PARSED, WAITING_TO_BE_STARTED, WAITING_TO_BE_IMPORTED, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
 
@@ -120,7 +123,7 @@ public class ModuleState {
         }
     }
 
-    private Object details;
+    private transient Object details;
 
     private State state;
 

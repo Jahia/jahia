@@ -71,6 +71,7 @@
  */
 package org.jahia.services.templates;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -78,7 +79,9 @@ import java.util.regex.Pattern;
 /**
  * Represents version of a module.
  */
-public class ModuleVersion implements Comparable<ModuleVersion> {
+public class ModuleVersion implements Comparable<ModuleVersion>, Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private static final Pattern VERSION_PATTERN = Pattern.compile("[^0-9]+");
 

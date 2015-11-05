@@ -93,6 +93,7 @@ import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -106,7 +107,10 @@ import java.util.*;
  *
  * @author toto
  */
-public class JCRWorkspaceWrapper implements Workspace {
+public class JCRWorkspaceWrapper implements Workspace, Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(JCRWorkspaceWrapper.class);
     private JCRSessionFactory service;
     private String name;

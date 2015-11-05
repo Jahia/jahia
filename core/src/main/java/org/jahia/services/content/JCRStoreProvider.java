@@ -115,6 +115,7 @@ import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -134,7 +135,9 @@ import static org.apache.jackrabbit.core.security.JahiaLoginModule.SYSTEM;
  *
  * @author toto
  */
-public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
+public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
     private static final Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);

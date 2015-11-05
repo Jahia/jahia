@@ -123,12 +123,12 @@ public class JahiaTemplatesPackage implements Serializable{
         }
     }
 
-    private Bundle bundle = null;
+    private transient Bundle bundle = null;
 
     private ModuleState state;
 
-    private ClassLoader classLoader;
-    private ClassLoader chainedClassLoader;
+    private transient ClassLoader classLoader;
+    private transient ClassLoader chainedClassLoader;
 
     /**
      * the full path to the source file or directory
@@ -196,13 +196,13 @@ public class JahiaTemplatesPackage implements Serializable{
 
     private String autoDeployOnSite;
 
-    private AbstractApplicationContext context;
+    private transient AbstractApplicationContext context;
 
     private String scmURI;
 
     private String scmTag;
 
-    private File sourcesFolder;
+    private transient File sourcesFolder;
 
     private SourceControlManagement sourceControl;
 

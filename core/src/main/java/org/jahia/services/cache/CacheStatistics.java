@@ -71,12 +71,14 @@
  */
 package org.jahia.services.cache;
 
+import java.io.Serializable;
+
 /**
  * Implemented by a cache provider that supports access statistics.
  * 
  * @author Sergiy Shyrkov
  */
-public interface CacheStatistics {
+public interface CacheStatistics extends Serializable{
     /**
      * Retrieves the percentage of cache hit that could successfully be served. This efficiency is useful for tuning the maximum cache size.
      * Cache size should be changed increased for low efficiency percentages.

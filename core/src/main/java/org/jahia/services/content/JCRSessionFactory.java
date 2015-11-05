@@ -118,8 +118,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware, Seria
 
     private static transient Logger logger = LoggerFactory.getLogger(JCRSessionFactory.class);
 
-    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
-    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> systemSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
+    protected transient ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
+    protected transient ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> systemSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
     private JahiaUserManagerService userService;

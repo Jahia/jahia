@@ -71,6 +71,7 @@
  */
  package org.jahia.services.cache;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Set;
 
@@ -81,7 +82,7 @@ import java.util.Set;
  * Time: 3:31:00 PM
  * 
  */
-public interface CacheImplementation<K, V> {
+public interface CacheImplementation<K, V> extends Serializable {
     @Deprecated
     boolean containsKey(K key);
 

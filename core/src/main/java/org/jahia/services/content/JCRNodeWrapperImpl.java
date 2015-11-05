@@ -134,7 +134,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     private static final String[] TRANSLATION_NODES_PATTERN = new String[]{"j:translation_*"};
     private static final String TRANSLATION_PREFIX = "j:translation_";
 
-    protected Node objectNode = null;
+    protected transient Node objectNode = null;
     protected JCRFileContent fileContent = null;
     protected JCRSiteNode site = null;
     protected boolean parentAlreadyResolved = false;

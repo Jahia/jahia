@@ -95,7 +95,7 @@ public class QOMBuilder implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    private List<Column> columns;
+    private transient List<Column> columns;
     private transient Constraint constraint;
     private transient List<Ordering> orderings;
     private transient QueryObjectModelFactory qomFactory;

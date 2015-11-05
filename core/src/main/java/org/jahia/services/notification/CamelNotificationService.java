@@ -71,6 +71,7 @@
  */
 package org.jahia.services.notification;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -177,16 +178,17 @@ public class CamelNotificationService implements CamelContextAware, DisposableBe
     public void run() {
         try {
             while (queueProcessorRunning.get()) {
-
-                int size = queue.size();
-                for (int i=0; i < size; i++) {
-                    CamelMessage message = queue.poll();
+                //[QA-7646] - fetch messages with iterator
+                Iterator<CamelMessage> camelMessageIt  = queue.iterator();
+                while (camelMessageIt.hasNext()) {
+                    CamelMessage message = camelMessageIt.next();
                     if (message != null) {
                         sendMessagesWithBodyAndHeaders(message.getTarget(), message.getBody(), message.getHeaders());
                     } else {
                         break;
                     }
                 }
+
                 Thread.sleep(queueProcessorFrequency);
             }
         } catch (InterruptedException e) {

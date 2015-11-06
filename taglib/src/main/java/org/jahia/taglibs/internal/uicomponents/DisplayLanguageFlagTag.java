@@ -269,7 +269,8 @@ public class DisplayLanguageFlagTag extends AbstractJahiaTag {
                 flagOnPath = _resourceOn;
             }
             // Define a unique ID that identify the rollover
-            String flagImgID = "flagImg" + String.valueOf(imgID++);
+            //[QA-7943]: sonar fixes for class variable access
+            String flagImgID = "flagImg" + String.valueOf(DisplayLanguageFlagTag.imgID++);
             // Contruct image HTML tag
             if (flagOnPath != null && !"".equals(flagName)) {
                 String flagOffPath = flagOnPath;

@@ -106,10 +106,18 @@ public class GroupCacheHelper implements Serializable{
 
     private static Logger logger = LoggerFactory.getLogger(GroupCacheHelper.class);
 
-    private EhCacheProvider ehCacheProvider;
+    private final EhCacheProvider ehCacheProvider;
     private SelfPopulatingCache groupPathByGroupNameCache;
     private SelfPopulatingCache membershipCache;
     private int timeToLiveForNonExistingGroups = 600;
+
+    private volatile boolean isGroupPathRegistered;
+    private volatile boolean isMemberShipCacheRegistered;
+
+    public GroupCacheHelper(EhCacheProvider cacheProvider) {
+        // Would prefer to work this the interface but the self register method is not in the interface contract :(
+        this.ehCacheProvider = cacheProvider;
+    }
 
     private class GroupPathByGroupNameCacheEntryFactory implements CacheEntryFactory {
 
@@ -191,11 +199,13 @@ public class GroupCacheHelper implements Serializable{
 
     private SelfPopulatingCache getGroupPathByGroupNameCache() {
         // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        if (groupPathByGroupNameCache == null) {
+        // [QA-7944]: Sonar fix better to read work with volatile variable before requesting lock
+        if (!isGroupPathRegistered) {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
-                if (groupPathByGroupNameCache == null) {
+                if (groupPathByGroupNameCache == null && !isGroupPathRegistered) {
                     groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new GroupPathByGroupNameCacheEntryFactory());
+                    isGroupPathRegistered = true;
                 }
             }
         }
@@ -204,11 +214,13 @@ public class GroupCacheHelper implements Serializable{
 
     SelfPopulatingCache getMembershipCache() {
         // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        if (membershipCache == null) {
+        // [QA-7944]: Sonar fix better to read work with volatile variable before requesting lock
+        if (!isMemberShipCacheRegistered) {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
-                if (membershipCache == null) {
+                if (membershipCache == null && !isMemberShipCacheRegistered) {
                     membershipCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.membershipCache", new MembershipCacheEntryFactory());
+                    isMemberShipCacheRegistered = true;
                 }
             }
         }
@@ -300,9 +312,14 @@ public class GroupCacheHelper implements Serializable{
         }
     }
 
-
+    /**
+     * DEAD CODE this method is no longer setting the cache probider !!! use the constructor
+     * @param ehCacheProvider
+     * @deprecated use {@link GroupCacheHelper#GroupCacheHelper(EhCacheProvider)} instead
+     */
+    @Deprecated
     public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
-        this.ehCacheProvider = ehCacheProvider;
+        // [QA-7944] Sonar fix
     }
 
     public void setTimeToLiveForNonExistingGroups(int timeToLiveForNonExistingGroups) {

@@ -19,7 +19,8 @@
         </property>
         <property name="cacheHelper">
             <bean class="org.jahia.services.usermanager.UserCacheHelper">
-                <property name="ehCacheProvider" ref="ehCacheProvider"/>
+                <constructor-arg type="org.jahia.services.cache.ehcache.EhCacheProvider" ref="ehCacheProvider" />
+                <!--property name="ehCacheProvider" /-->
             </bean>
         </property>
         <property name="passwordService" ref="PasswordService"/>

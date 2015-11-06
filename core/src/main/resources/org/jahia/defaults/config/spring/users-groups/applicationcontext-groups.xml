@@ -8,7 +8,10 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
         <property name="cacheHelper">
             <bean class="org.jahia.services.usermanager.GroupCacheHelper">
+                <constructor-arg type="org.jahia.services.cache.ehcache.EhCacheProvider" ref="ehCacheProvider" />
+                <!-- [QA-7944]: Sonar fix lead to this review, using constructor instead of property
                 <property name="ehCacheProvider" ref="ehCacheProvider"/>
+                -->
             </bean>
         </property>
     </bean>

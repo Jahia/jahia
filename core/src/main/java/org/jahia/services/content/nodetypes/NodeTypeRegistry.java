@@ -118,7 +118,9 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     private boolean propertiesLoaded = false;
     private final Properties deploymentProperties = new Properties();
 
-    private static boolean hasEncounteredIssuesWithDefinitions = false;
+    // [QA-7943]: As the class is a singleton do not need to set it as static variable
+    // another reason to remove the static is that it is also a bean that spring will instantiate (singleton by default !)
+    private boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -493,10 +495,15 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         try {
             if (!mixinExtensions.containsKey(baseType)) {
                 readLock.unlock();
-                writeLock.lock();
-                mixinExtensions.put(baseType, new HashSet<ExtendedNodeType>());
-                writeLock.unlock();
-                readLock.lock();
+                try{
+                    writeLock.lock();
+                    //[QA-7944] a safe re-check ??
+                    if (!mixinExtensions.containsKey(baseType)) {
+                        mixinExtensions.put(baseType, new HashSet<ExtendedNodeType>());
+                    }
+                }finally {
+                    writeLock.unlock();
+                }
             }
         } finally {
             readLock.unlock();
@@ -516,20 +523,27 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     }
 
     public void addTypedItem(ExtendedItemDefinition itemDef) {
+        // [QA-7944]: Sonar fix - try to avoid overlapping locks leads to complete
+        // what about synchronized of here only
         final String type = itemDef.getItemType();
         readLock.lock();
         try {
             if (!typedItems.containsKey(type)) {
                 readLock.unlock();
                 writeLock.lock();
-                typedItems.put(type, new HashSet<ExtendedItemDefinition>());
-                writeLock.unlock();
+                try {
+                    // Be sure that it not is missing again as the lock is acquisition is non-fair
+                    if(!typedItems.containsKey(type)){
+                        typedItems.put(type, new HashSet<ExtendedItemDefinition>());
+                    }
+                } finally {
+                    writeLock.unlock();
+                }
                 readLock.lock();
             }
         } finally {
             readLock.unlock();
         }
-
         writeLock.lock();
         try {
             typedItems.get(type).add(itemDef);
@@ -543,8 +557,8 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     }
 
     public void unregisterNodeType(Name name) {
-        writeLock.lock();
         try {
+            writeLock.lock();
             nodetypes.remove(name);
         } finally {
             writeLock.unlock();
@@ -682,38 +696,52 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     public void unregisterNodeType(String name) throws ConstraintViolationException {
         Name n = new Name(name, namespaces);
         readLock.lock();
-        if (nodetypes.containsKey(n)) {
-            try {
+        //[QA-7944] Sonar Fix. try-finally to close lock
+        try {
+            if (nodetypes.containsKey(n)) {
                 for (ExtendedNodeType type : nodetypes.values()) {
                     if (!type.getName().equals(name)) {
-                        for (ExtendedNodeType nt : type.getSupertypes()) {
-                            if (nt.getName().equals(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
-                            }
-                        }
-                        for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
-                            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
-                            }
-                        }
-                        for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
-                            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
-                                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
-                            }
-                        }
+                        checkSupertypeConstraintViolation(name, type);
+                        checkExtendedNodeDefConstraintViolation(name, type);
+                        checkUnstructuredNodeDefConstaintViolation(name, type);
                     }
                 }
-            } finally {
                 readLock.unlock();
+                writeLock.lock();
+                try {
+                    nodetypes.remove(n);
+                } finally {
+                    writeLock.unlock();
+                }
+                readLock.lock();
             }
-            writeLock.lock();
-            try {
-                nodetypes.remove(n);
-            } finally {
-                writeLock.unlock();
-            }
-        } else {
+        }finally {
             readLock.unlock();
+        }
+
+    }
+
+    private void checkUnstructuredNodeDefConstaintViolation(String name, ExtendedNodeType type) throws ConstraintViolationException {
+        for (ExtendedNodeDefinition ntd : type.getUnstructuredChildNodeDefinitions().values()) {
+            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+            }
+        }
+    }
+
+    private void checkExtendedNodeDefConstraintViolation(String name, ExtendedNodeType type) throws ConstraintViolationException {
+        for (ExtendedNodeDefinition ntd : type.getChildNodeDefinitions()) {
+            if (Sets.newHashSet(ntd.getRequiredPrimaryTypeNames()).contains(name)) {
+                throw new ConstraintViolationException("Cannot unregister node type " + name + " because a child node definition of " + type.getName() + " requires it.");
+            }
+        }
+    }
+
+    private void checkSupertypeConstraintViolation(String name, ExtendedNodeType type) throws ConstraintViolationException {
+        for (ExtendedNodeType nt : type.getSupertypes()) {
+            if (nt.getName().equals(name)) {
+                throw new ConstraintViolationException("Cannot unregister node type " + name + " because " + type.getName() + " extends it.");
+            }
         }
     }
 

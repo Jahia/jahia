@@ -93,19 +93,36 @@ import java.util.List;
  */
 public final class ProvisionActivator implements BundleActivator {
 
-    private final ServletContext servletContext;
+    // [QA-7943]: Then remove final to break the cycle
+    private ServletContext servletContext;
     private BundleContext bundleContext;
 
     private static ProvisionActivator instance = null;
     private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
 
     public ProvisionActivator(ServletContext servletContext) {
+        this(); // [QA-7943]
         this.servletContext = servletContext;
-        instance = this;
     }
 
-    public static ProvisionActivator getInstance() {
-        return instance;
+    // [QA-7943]: dirty Sonar Fix but preferable to parsing all jahia projects for modification
+    private ProvisionActivator() {
+        //
+        synchronized (ProvisionActivator.class) {
+            if(instance == null) {
+                instance = this;
+            }
+            /*else {
+                // FIXME: Then throw violent error to block the caller
+                throw new IllegalStateException("The Class instance already exists and accessible through getInstance method.");
+            }*/
+        }
+    }
+
+
+    // [QA-7943]: perf issue
+    public static synchronized ProvisionActivator getInstance() {
+        return instance == null ? new ProvisionActivator() : instance;
     }
 
     @Override
@@ -142,7 +159,7 @@ public final class ProvisionActivator implements BundleActivator {
     public void stop(BundleContext context) throws Exception {
         bundleContext = null;
         servletContext.removeAttribute(BundleContext.class.getName());
-        instance = null;
+        ProvisionActivator.instance = null;
     }
 
     public BundleContext getBundleContext() {

@@ -225,24 +225,35 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
      * @param   buildNumber The Jahia build number.
      */
     public SettingsBean(PathResolver pathResolver, String propertiesFilename, String licenseFilename, int buildNumber) {
+        //[QA-7943] Sonar fix
+        this();
         this.pathResolver = pathResolver;
         this.propertiesFileName = propertiesFilename;
         this.buildNumber = buildNumber;
         this.licenseFilename = licenseFilename;
-        instance = this;
 
     }
 
+    private SettingsBean () {
+        // Perf. impact
+        synchronized (SettingsBean.class){
+            if(instance == null) {
+                instance = this;
+            }
+        }
+    }
+
     public SettingsBean(PathResolver pathResolver, Properties props, List<String> licenseFileLocations) {
+        this();
         this.pathResolver = pathResolver;
         this.properties = new Properties();
         properties.putAll(props);
         this.licenseFileLocations = licenseFileLocations;
-        instance = this;
     }
 
     public static SettingsBean getInstance() {
-        return instance;
+      // Not the best
+        return instance == null ? new SettingsBean() : instance;
     }
 
     private static String ensureEndSlash(String path, boolean needsEndSlash) {
@@ -553,6 +564,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
+        // [QA-7943] moved from JackrabbitStoreProvider.unregisterCustomNodeTypes to substitute
+        setSystemProperty("disableCheckForReferencesInContentException", "true");
 
         try {
             File repoHome = getRepositoryHome();

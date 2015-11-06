@@ -39,6 +39,7 @@
  */
 package org.jahia.services.content;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,14 +50,17 @@ import org.slf4j.LoggerFactory;
 /**
  * @author Christophe Laprun
  */
-public class JCRStoreProviderChecker {
+public class JCRStoreProviderChecker implements Serializable{
+
+    private static final long serialVersionUID = 1L;
+
     private static Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
 
     private final Map<String, JCRStoreProvider> toPeriodicallyCheck = new HashMap<String, JCRStoreProvider>();
 
-    private static final Object lock = new Object();
+    private static final transient Object lock = new Object();
 
-    private static final ThreadLocal<Boolean> isFromChecker = new ThreadLocal<Boolean>() {
+    private static final transient ThreadLocal<Boolean> isFromChecker = new ThreadLocal<Boolean>() {
         @Override
         protected Boolean initialValue() {
             return Boolean.FALSE;

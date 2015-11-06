@@ -73,13 +73,15 @@ package org.jahia.services.search;
 
 import org.jahia.services.render.RenderContext;
 
+import java.io.Serializable;
+
 /**
  * Interface for different provider implementations used by the SearchService.
  *
  * @author Benjamin Papez
  *
  */
-public interface SearchProvider {
+public interface SearchProvider extends Serializable {
     /**
      * Performs a search using the SearchCriteria object, which is created with using the
      * Jahia Search Tags or can also be created in Java classes by using the 

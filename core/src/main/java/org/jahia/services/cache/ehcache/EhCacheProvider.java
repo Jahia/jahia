@@ -106,7 +106,7 @@ public class EhCacheProvider implements CacheProvider {
 
     private CacheManager cacheManager = null;
     private int groupsSizeLimit = 100;
-    private Resource configurationResource;
+    private transient Resource configurationResource;
     private boolean statisticsEnabled;
     private boolean jmxActivated = true;
     private boolean initialized = false;

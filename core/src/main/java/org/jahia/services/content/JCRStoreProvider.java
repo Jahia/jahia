@@ -172,7 +172,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializa
     private JCRStoreService service;
 
     protected JCRSessionFactory sessionFactory;
-    protected volatile Repository repo = null;
+    protected volatile transient Repository repo = null;
 
     private boolean mainStorage = false;
     private boolean isDynamicallyMounted = false;
@@ -187,7 +187,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializa
     private Boolean updateMixinAvailable = null;
     private Boolean slowConnection = false;
 
-    private final Object syncRepoInit = new Object();
+    private final transient Object syncRepoInit = new Object();
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;

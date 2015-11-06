@@ -74,6 +74,7 @@ package org.jahia.services.tags;
 import org.jahia.services.content.JCRSessionWrapper;
 
 import javax.jcr.RepositoryException;
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -81,7 +82,7 @@ import java.util.Map;
  *
  * @author kevan
  */
-public interface TagsSuggester {
+public interface TagsSuggester extends Serializable{
     Map<String, Long> suggest(String input, String startPath, Long mincount, Long limit, Long offset,
                                      boolean sortByCount, JCRSessionWrapper sessionWrapper) throws RepositoryException;
 }

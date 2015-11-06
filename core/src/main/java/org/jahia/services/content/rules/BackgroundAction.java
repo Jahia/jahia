@@ -73,13 +73,15 @@ package org.jahia.services.content.rules;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import java.io.Serializable;
+
 /**
  * A action that is executed by a scheduler as a background task.
  *
  * @author rincevent
  * @since JAHIA 6.5
  */
-public interface BackgroundAction {
+public interface BackgroundAction extends Serializable{
 
     public abstract String getName();
 

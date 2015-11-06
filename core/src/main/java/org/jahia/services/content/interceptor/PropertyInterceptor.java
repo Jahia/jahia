@@ -81,6 +81,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+import java.io.Serializable;
 
 /**
  * Property interceptor catch get and set on properties. They can transform the value and veto a set operation, and
@@ -91,7 +92,7 @@ import javax.jcr.version.VersionException;
  * Interceptors are called only in localized sessions.
  *
  */
-public interface PropertyInterceptor {
+public interface PropertyInterceptor extends Serializable{
 
     /**
      * Checks if this interceptor need to be called on that property.

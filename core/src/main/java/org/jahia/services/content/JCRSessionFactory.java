@@ -108,6 +108,8 @@ import org.springframework.web.context.ServletContextAware;
  */
 public class JCRSessionFactory implements Repository, ServletContextAware, Serializable{
 
+    private static final long serialVersionUID = 1L;
+
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
         public int compare(String s1, String s2) {
             return s2.compareTo(s1);
@@ -128,13 +130,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware, Seria
     private SortedMap<String, JCRStoreProvider> mountPoints;
     private String servletContextAttributeName;
     private ServletContext servletContext;
-    private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
-    private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
-    private ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
-    private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
-    private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
-    private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
-    private LocalValidatorFactoryBean validatorFactoryBean;
+    private transient ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
+    private transient ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
+    private transient ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
+    private transient ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
+    private transient ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
+    private transient ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
+    private transient LocalValidatorFactoryBean validatorFactoryBean;
 
     private JCRSessionFactory() {
         super();

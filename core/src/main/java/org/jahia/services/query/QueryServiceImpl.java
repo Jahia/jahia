@@ -120,7 +120,7 @@ public class QueryServiceImpl extends QueryService {
      */
     static int MODIFY_MODE = 3;
 
-    private ValueFactory valueFactory = ValueFactoryImpl.getInstance();
+    private transient ValueFactory valueFactory = ValueFactoryImpl.getInstance();
 
     private QueryServiceImpl() {
     }

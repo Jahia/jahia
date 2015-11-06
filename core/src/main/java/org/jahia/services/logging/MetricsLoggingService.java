@@ -73,6 +73,8 @@ package org.jahia.services.logging;
 
 import org.slf4j.profiler.Profiler;
 
+import java.io.Serializable;
+
 /**
  * This Service offer you to log information for metrics usages (not for information or debugging purposes).
  * <p/>
@@ -82,7 +84,7 @@ import org.slf4j.profiler.Profiler;
  * @since JAHIA 6.5
  *        Created : 24 nov. 2009
  */
-public interface MetricsLoggingService {
+public interface MetricsLoggingService extends Serializable{
     
     /**
      * Returns <code>true</code> if the logging is generally enabled; <code>false</code> otherwise.

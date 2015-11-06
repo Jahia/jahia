@@ -136,7 +136,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     private JahiaUserSplittingRule userSplittingRule;
-    private ServletContext servletContext;
+    private transient ServletContext servletContext;
 
     private String rootUserName;
 

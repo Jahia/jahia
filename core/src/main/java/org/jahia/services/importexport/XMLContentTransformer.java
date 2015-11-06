@@ -72,6 +72,7 @@
 package org.jahia.services.importexport;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * A XMLContentTransformer performs some modifications in a Jahia exported content xml file.
@@ -101,7 +102,7 @@ import java.io.File;
  * the output of the last processed Object has to be a Jahia compliant content export file, as it will be processed
  * by the import feature, instead of the initial file.
  */
-public interface XMLContentTransformer {
+public interface XMLContentTransformer extends Serializable {
     /**
      * Performs some custom modifications in an Jahia exported content xml file, and returns the updated file.
      *

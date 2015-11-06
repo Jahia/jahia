@@ -86,6 +86,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -94,7 +95,9 @@ import java.util.*;
  * @author Benjamin Papez
  *
  */
-public class JCRCategoryProvider {
+public class JCRCategoryProvider implements Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(JCRCategoryProvider.class);
 

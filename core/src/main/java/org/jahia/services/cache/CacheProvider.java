@@ -74,12 +74,14 @@
 import org.jahia.settings.SettingsBean;
 import org.jahia.exceptions.JahiaInitializationException;
 
+import java.io.Serializable;
+
 /**
  * Jahia cache provider definition.
  * 
  * @author Serge Huber
  */
-public interface CacheProvider {
+public interface CacheProvider extends Serializable {
 
     void init(SettingsBean settingsBean, CacheService cacheService) throws JahiaInitializationException;
 

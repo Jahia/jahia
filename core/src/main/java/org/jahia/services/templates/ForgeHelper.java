@@ -75,6 +75,7 @@ import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.List;
 
 import net.htmlparser.jericho.Source;
@@ -102,7 +103,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
-class ForgeHelper {
+class ForgeHelper implements Serializable {
 
     private static Logger logger = LoggerFactory.getLogger(ForgeHelper.class);
 

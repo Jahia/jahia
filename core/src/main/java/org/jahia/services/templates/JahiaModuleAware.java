@@ -73,7 +73,9 @@ package org.jahia.services.templates;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 
-public interface JahiaModuleAware {
+import java.io.Serializable;
+
+public interface JahiaModuleAware extends Serializable {
 
     void setJahiaModule(JahiaTemplatesPackage module);
 }

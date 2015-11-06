@@ -71,12 +71,14 @@
  */
 package org.jahia.services.tags;
 
+import java.io.Serializable;
+
 /**
  * Tag handler transform a tag before store it
  *
  * @author kevan
  */
-public interface TagHandler {
+public interface TagHandler extends Serializable{
     /**
      *
      * @param tag the tag to transform

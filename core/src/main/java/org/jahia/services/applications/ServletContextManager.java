@@ -73,6 +73,7 @@ package org.jahia.services.applications;
 
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 
 import javax.servlet.ServletContext;
@@ -98,7 +99,9 @@ import org.springframework.web.context.ServletContextAware;
  * @author Khue Nguyen <a href="mailto:khue@jahia.com">khue@jahia.com</a>
  * @version 1.0
  */
-public class ServletContextManager implements ServletContextAware {
+public class ServletContextManager implements ServletContextAware,Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     /** logging */
     private static org.slf4j.Logger logger =

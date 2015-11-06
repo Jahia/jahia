@@ -133,7 +133,9 @@ import java.util.zip.ZipInputStream;
  *
  * @author Sergiy Shyrkov
  */
-public class ModuleBuildHelper implements InitializingBean {
+public class ModuleBuildHelper implements InitializingBean, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
     private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {

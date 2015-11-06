@@ -73,6 +73,7 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +91,9 @@ import org.slf4j.LoggerFactory;
  * Source control management central factory class responsible for checking out a remote SCM repository content and instantiating
  * {@link SourceControlManagement} helpers for SCM operations on module's sources.
  */
-public class SourceControlFactory {
+public class SourceControlFactory implements Serializable {
+
+    private static final long serialVersionUID = 1L;
     
     private static final Logger logger = LoggerFactory.getLogger(SourceControlFactory.class);
     

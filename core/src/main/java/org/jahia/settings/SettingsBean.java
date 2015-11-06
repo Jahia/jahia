@@ -128,13 +128,16 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
 
-public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
+public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     public static final String JAHIA_PROPERTIES_FILE_PATH = "/WEB-INF/etc/config/jahia.properties";
     private static final Logger logger = LoggerFactory.getLogger(SettingsBean.class);
@@ -144,7 +147,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private static volatile File threadDir;
     private static volatile File heapDir;
 
-    private final FastHashMap settings = new FastHashMap(); // The map holding all the settings.
+    private final transient FastHashMap settings = new FastHashMap(); // The map holding all the settings.
     private PathResolver pathResolver = null;
     private String licenseFilename;
     private String propertiesFileName;
@@ -173,12 +176,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private boolean urlRewriteRemoveCmsPrefix;
     private boolean urlRewriteSeoRulesEnabled;
     private boolean urlRewriteUseAbsoluteUrls;
-    private ServerDeploymentInterface serverDeployer = null;
+    private transient ServerDeploymentInterface serverDeployer = null;
     private boolean maintenanceMode;
     private int sessionExpiryTime;
-    private ServletContext servletContext;
-    private Resource licenseFile;
-    private ApplicationContext applicationContext;
+    private transient ServletContext servletContext;
+    private transient Resource licenseFile;
+    private transient ApplicationContext applicationContext;
     private List<String> licenseFileLocations;
     private boolean disableJsessionIdParameter = true;
     private String jsessionIdParameterName = "jsessionid";
@@ -195,7 +198,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int accessManagerPathPermissionCacheMaxSize = 100;
     private int queryApproxCountLimit;
     private boolean readOnlyMode;
-    private DataSource dataSource;
+    private transient DataSource dataSource;
     private String internetExplorerCompatibility;
     private boolean clusterActivated;
     private boolean isMavenExecutableSet;

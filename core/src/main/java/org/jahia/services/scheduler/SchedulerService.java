@@ -115,13 +115,13 @@ public class SchedulerService extends JahiaService {
 
     public static final String SYSTEM_JOB_GROUP = "system";
 
-    private Scheduler ramScheduler = null;
+    private transient Scheduler ramScheduler = null;
 
-    private Scheduler scheduler = null;
+    private transient Scheduler scheduler = null;
 
-    private ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+    private transient ThreadLocal<List<JobDetail>> scheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
-    private ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
+    private transient ThreadLocal<List<JobDetail>> ramScheduledAtEndOfRequest = new ThreadLocal<List<JobDetail>>();
 
     public Integer deleteAllCompletedJobs() throws SchedulerException {
         return deleteAllCompletedJobs(PURGE_ALL_STRATEGY, true);

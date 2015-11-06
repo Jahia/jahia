@@ -71,10 +71,7 @@
  */
 package org.jahia.tools.patches;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
+import java.io.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -114,7 +111,9 @@ import org.springframework.web.context.ServletContextAware;
  * 
  * @author Sergiy Shyrkov
  */
-public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean, ServletContextAware {
+public class GroovyPatcher implements JahiaAfterInitializationService, DisposableBean, ServletContextAware, Serializable {
+
+    private static final long serialVersionUID = 1L;
 
     private static final Logger logger = LoggerFactory.getLogger(GroovyPatcher.class);
 
@@ -258,9 +257,9 @@ public class GroovyPatcher implements JahiaAfterInitializationService, Disposabl
 
     private String patchesLookup;
 
-    private ServletContext servletContext;
+    private transient ServletContext servletContext;
 
-    private Timer watchdog;
+    private transient Timer watchdog;
 
     public void destroy() throws Exception {
         if (watchdog != null) {

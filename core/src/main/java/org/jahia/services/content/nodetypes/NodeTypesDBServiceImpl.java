@@ -77,12 +77,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * This class manage registration / load of cnd file in the DB
  */
-public class NodeTypesDBServiceImpl {
+public class NodeTypesDBServiceImpl implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
     private static Logger logger = LoggerFactory.getLogger(NodeTypesDBServiceImpl.class);
 
     private SessionFactory hibernateSessionFactory;

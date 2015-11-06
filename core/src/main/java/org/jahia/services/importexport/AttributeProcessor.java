@@ -75,11 +75,13 @@ import javax.jcr.RepositoryException;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
+import java.io.Serializable;
+
 /**
  * Instances implementing this interface are used during JCR import to process attributes of each element in the imported XML content, thus
  * providing special handling for particular attributes.
  */
-public interface AttributeProcessor {
+public interface AttributeProcessor extends Serializable{
     /**
      * Does a special processing of the specified attribute.
      * 

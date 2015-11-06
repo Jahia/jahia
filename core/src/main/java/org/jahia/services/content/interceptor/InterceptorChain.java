@@ -81,6 +81,7 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,7 +106,9 @@ import java.util.List;
  * ...
  * return v3
  */
-public class InterceptorChain {
+public class InterceptorChain implements Serializable{
+
+    private static final long serialVersionUID = 1L;
 
     private List<PropertyInterceptor> interceptors = new ArrayList<PropertyInterceptor>();
     private List<PropertyInterceptor> revInterceptors;

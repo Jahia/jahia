@@ -75,6 +75,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * 
@@ -83,7 +84,7 @@ import java.io.IOException;
  * Time: 4:05:52 PM
  * 
  */
-public interface ErrorHandler {
+public interface ErrorHandler extends Serializable {
 
     /**
      * Method handles all types of exceptions that can occur during processing

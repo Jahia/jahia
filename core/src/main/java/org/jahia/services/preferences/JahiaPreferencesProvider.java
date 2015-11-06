@@ -76,6 +76,7 @@ import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedAttribu
 import org.jahia.services.preferences.exception.JahiaPreferenceNotDefinedPropertyException;
 import org.jahia.services.preferences.exception.JahiaPreferencesNotValidException;
 
+import java.io.Serializable;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -85,7 +86,7 @@ import java.util.Map;
  * Date: 19 mars 2008
  * Time: 11:44:07
  */
-public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> {
+public interface JahiaPreferencesProvider<T extends JCRNodeWrapper> extends Serializable {
 
     /**
      * Get the type of the provider. Each provider has a unique type.

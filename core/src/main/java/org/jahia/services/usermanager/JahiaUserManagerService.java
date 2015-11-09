@@ -127,9 +127,6 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     public static final String MULTI_CRITERIA_SEARCH_OPERATION = "multi_criteria_search_op";
     public static final String COUNT_LIMIT = "countLimit";
 
-    //[QA-7944] Sonar fix: avoid reading the target variable to modify
-    private volatile boolean isUsernameSet;
-
     private static class PatternHolder {
         static final Pattern INSTANCE = Pattern.compile(org.jahia.settings.SettingsBean.getInstance().lookupString("userManagementUserNamePattern"));
     }
@@ -338,12 +335,11 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
      */
     public String getRootUserName() {
         // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        if (!isUsernameSet) {
+        if (rootUserName == null) {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
-                if (!isUsernameSet && rootUserName == null) {
+                if (rootUserName == null) {
                     rootUserName = lookupRootUser().getName();
-                    isUsernameSet = true;
                 }
             }
         }

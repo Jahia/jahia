@@ -178,12 +178,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @Override
     @SuppressWarnings("unchecked")
     public void contextInitialized(ServletContextEvent event) {
-        JahiaContextLoaderListener.startupTime = System.currentTimeMillis();
-        String build = String.valueOf(Jahia.getBuildNumber());
-        if(Jahia.isEnterpriseEdition()) {
-            build = String.valueOf(Jahia.getBuildNumber()) + "." + String.valueOf(Jahia.getEEBuildNumber());
-        }
-        startupWithTrust(build);
+
+        startupTime = System.currentTimeMillis();
+        startupWithTrust(Jahia.isEnterpriseEdition() ? (Jahia.getBuildNumber() + "." + Jahia.getEEBuildNumber()) : String.valueOf(Jahia.getBuildNumber()));
 
         logger.info("Starting up Digital Factory, please wait...");
 

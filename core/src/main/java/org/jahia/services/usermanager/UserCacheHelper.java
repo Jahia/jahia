@@ -96,15 +96,9 @@ public class UserCacheHelper implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
-    private final EhCacheProvider ehCacheProvider;
+    private EhCacheProvider ehCacheProvider;
     private transient SelfPopulatingCache userPathByUserNameCache;
     private int timeToLiveForNonExistingUsers = 600;
-    // [QA-7944] Sonar fix
-    private volatile boolean isUserPathCacheRegistered;
-
-    public UserCacheHelper(EhCacheProvider cacheProvider) {
-        this.ehCacheProvider = cacheProvider;
-    }
 
     private class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {
 
@@ -176,13 +170,11 @@ public class UserCacheHelper implements Serializable{
 
     private SelfPopulatingCache getUserPathByUserNameCache() {
         // First do non-synchronized check to avoid locking any threads that invoke the method simultaneously.
-        // [QA-7944] : Sonar fix
-        if (!isUserPathCacheRegistered) {
+        if (userPathByUserNameCache == null) {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
-                if (userPathByUserNameCache == null && !isUserPathCacheRegistered) {
+                if (userPathByUserNameCache == null) {
                     userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
-                    isUserPathCacheRegistered = true;
                 }
             }
         }
@@ -219,14 +211,8 @@ public class UserCacheHelper implements Serializable{
         return it.nextRow().getPath();
     }
 
-    /**
-     * DEAD CODE this method is no longer setting the cache probider !!! use the constructor
-     * @param ehCacheProvider
-     * @deprecated use {@link UserCacheHelper#UserCacheHelper(EhCacheProvider)} instead
-     */
-    @Deprecated
     public void setEhCacheProvider(EhCacheProvider ehCacheProvider) {
-       // [QA-7944] Sonar fix
+        this.ehCacheProvider = ehCacheProvider;
     }
 
     public void setTimeToLiveForNonExistingUsers(int timeToLiveForNonExistingUsers) {

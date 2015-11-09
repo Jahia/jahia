@@ -227,9 +227,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
     }
 
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
-        // [QA-7943]: Better to set this prop disableCheckForReferencesInContentException at startup of Jahia App
-        // System.setProperty("disableCheckForReferencesInContentException", true);
-        // Moved to SettingsBean.initJcrSystemProperties()
+        org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
         NodeTypeIterator nti = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeTypes(systemId);
         List<String> names = new ArrayList<String>();
 

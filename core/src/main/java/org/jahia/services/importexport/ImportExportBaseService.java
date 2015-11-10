@@ -139,8 +139,6 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -219,7 +217,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                 } else {
                     // no chance to detect it
                     logger.error("Unable to detect the content type for file {}."
-                            + " It is neither a ZIP file nor an XML. Skipping import.",
+                                    + " It is neither a ZIP file nor an XML. Skipping import.",
                             item.getOriginalFileName());
                 }
             }
@@ -796,8 +794,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
                                         JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
-                                                "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
-                                                "description"), finalLocale, finalTpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
+                                                        "siteservername"), infos.getProperty("sitekey"), infos.getProperty(
+                                                        "description"), finalLocale, finalTpl, null, fileImport != null ? "fileImport" : "importRepositoryFile", fileImport, uri, true,
                                                 false, infos.getProperty("originatingJahiaRelease"), null, null, session);
                                         importSiteProperties(site, infos, session);
                                     } catch (JahiaException e) {
@@ -1327,8 +1325,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, File> filePath = new HashMap<String, File>();
         File temp = null;
         try {
-            Path tempPath = Files.createTempDirectory("migration");
-            temp = tempPath.toFile();
+            temp = File.createTempFile("migration", "");
+            temp.delete();
+            temp.mkdir();
             ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;

@@ -92,12 +92,10 @@ import org.jahia.services.sites.JahiaSitesService;
  *
  * @author Sergiy Shyrkov
  */
-public class UserCacheHelper implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class UserCacheHelper {
 
     private EhCacheProvider ehCacheProvider;
-    private transient SelfPopulatingCache userPathByUserNameCache;
+    private SelfPopulatingCache userPathByUserNameCache;
     private int timeToLiveForNonExistingUsers = 600;
 
     private class UserPathByUserNameCacheEntryFactory implements CacheEntryFactory {

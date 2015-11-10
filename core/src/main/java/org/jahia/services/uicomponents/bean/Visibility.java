@@ -82,7 +82,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -92,9 +91,8 @@ import java.util.Locale;
  * Date: 7 avr. 2008
  * Time: 09:19:13
  */
-public class Visibility implements Serializable{
+public class Visibility {
     private static final Logger logger = LoggerFactory.getLogger(Visibility.class);
-    private static final long serialVersionUID = 1L;
 
     //visibility parameter
     private String permission;

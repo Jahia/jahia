@@ -71,10 +71,7 @@
  */
 package org.jahia.services.workflow;
 
-import java.io.Serializable;
-
-public class WorkflowListener implements Serializable{
-    private static final long serialVersionUID = 1L;
+public class WorkflowListener {
 
     public void workflowStarted(Workflow workflow) { }
 

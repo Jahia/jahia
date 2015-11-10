@@ -133,7 +133,6 @@ import javax.jcr.Workspace;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.EventListenerIterator;
 import javax.jcr.observation.ObservationManager;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -141,7 +140,7 @@ import java.util.*;
  *
  * @author Sergiy Shyrkov
  */
-public class TemplatePackageRegistry implements Serializable {
+public class TemplatePackageRegistry {
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;

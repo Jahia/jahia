@@ -93,9 +93,9 @@ public class ValidationResults implements Serializable {
 
     private static final long serialVersionUID = -7969446907569423334L;
 
-    private transient List<ValidationResult> results = new LinkedList<ValidationResult>();
+    private List<ValidationResult> results = new LinkedList<ValidationResult>();
 
-    private transient Map<String, ValidationResult> resultsByClassName;
+    private Map<String, ValidationResult> resultsByClassName;
 
     protected ValidationResult getResultByClassName(String clazz) {
         return getResultsByClassName().get(clazz);

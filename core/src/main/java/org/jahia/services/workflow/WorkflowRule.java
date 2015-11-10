@@ -86,7 +86,7 @@ public class WorkflowRule implements Serializable {
     private String providerKey;
     private String workflowDefinitionKey;
     private String workflowRootPath;
-    private transient Map<String,String> permissions;
+    private Map<String,String> permissions;
 
     public WorkflowRule(String definitionPath, String workflowRootPath, String providerKey, String workflowDefinitionKey, Map<String,String> permissions) {
         this.definitionPath = definitionPath;

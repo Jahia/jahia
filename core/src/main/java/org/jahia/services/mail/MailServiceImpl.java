@@ -128,11 +128,11 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
     
     private String charset;
     
-    private transient ProducerTemplate template;
+    private ProducerTemplate template;
     
     private String templateCharset;
     
-    private transient ScriptEngineUtils scriptEngineUtils;
+    private ScriptEngineUtils scriptEngineUtils;
     
     private JahiaTemplateManagerService templateManagerService;
 
@@ -168,7 +168,7 @@ public class MailServiceImpl extends MailService implements CamelContextAware, I
         return result;
     }
 
-    private transient CamelContext camelContext;
+    private CamelContext camelContext;
 
     private String mailEndpointUri;
     

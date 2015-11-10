@@ -89,7 +89,7 @@ public class Channel implements Serializable {
     private String fallBack = GENERIC_CHANNEL;
     private boolean visible = true;
 
-    transient Map<String,String> capabilities = new HashMap<String,String>();
+    Map<String,String> capabilities = new HashMap<String,String>();
 
     public Channel() {
     }

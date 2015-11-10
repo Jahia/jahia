@@ -71,7 +71,6 @@
  */
 package org.jahia.services.search;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 
@@ -81,10 +80,8 @@ import java.util.List;
  * @author Benjamin Papez
  *
  */
-public class SearchResponse implements Serializable{
-
-    private static final long serialVersionUID = 1L;
-    private transient List<Hit<?>> results = Collections.emptyList();
+public class SearchResponse {
+    private List<Hit<?>> results = Collections.emptyList();
 
     private long offset = 0;
     private long limit = -1;

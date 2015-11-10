@@ -92,11 +92,11 @@ import java.util.Set;
  */
 public class GWTConfiguration implements IsSerializable, Serializable {
     protected String name;
-    private transient Map<String, GWTEngineConfiguration> engineConfigurations;
+    private Map<String, GWTEngineConfiguration> engineConfigurations;
     private List<String> permissions;
     private GWTJahiaNode siteNode;
     private String sitesLocation;
-    private transient Map<String, GWTJahiaNode> sitesMap;
+    private Map<String, GWTJahiaNode> sitesMap;
     private List<GWTJahiaChannel> channels;
     private List<String> componentsPaths;
     private Set<String> editableTypes;

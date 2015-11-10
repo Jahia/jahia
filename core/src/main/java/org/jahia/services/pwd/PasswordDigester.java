@@ -69,14 +69,12 @@
  */
 package org.jahia.services.pwd;
 
-import java.io.Serializable;
-
 /**
  * Common interface for all password encryption (hashing) operations.
  * 
  * @author Sergiy Shyrkov
  */
-public interface PasswordDigester extends Serializable{
+public interface PasswordDigester {
 
     /**
      * Create a digest of the provided password.

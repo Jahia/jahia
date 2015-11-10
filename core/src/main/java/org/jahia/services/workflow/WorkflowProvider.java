@@ -73,7 +73,6 @@ package org.jahia.services.workflow;
 
 import org.jahia.services.usermanager.JahiaUser;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -85,7 +84,7 @@ import java.util.Set;
  * @author rincevent
  * @since JAHIA 6.5
  */
-public interface WorkflowProvider extends Serializable{
+public interface WorkflowProvider {
     String getKey();
 
     List<WorkflowDefinition> getAvailableWorkflows(Locale uiLocale);

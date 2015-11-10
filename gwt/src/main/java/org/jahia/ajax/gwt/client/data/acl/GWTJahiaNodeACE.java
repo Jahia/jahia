@@ -89,8 +89,8 @@ public class GWTJahiaNodeACE implements Serializable {
     private String principalKey;
     private boolean isInherited;
     private String inheritedFrom;
-    private transient Map<String, Boolean> roles;
-    private transient Map<String, Boolean> inheritedRoles;
+    private Map<String, Boolean> roles;
+    private Map<String, Boolean> inheritedRoles;
     private boolean hidden = false;
     private String principalDisplayName;
 

@@ -71,8 +71,6 @@
  */
 package org.jahia.utils;
 
-import java.io.Serializable;
-
 /**
  * <p>Title: Path resolver</p>
  * <p>Description: Use to resolve paths differently depending on whether we
@@ -83,7 +81,7 @@ import java.io.Serializable;
  * @author Serge Huber
  * @version 1.0
  */
-public interface PathResolver extends Serializable{
+public interface PathResolver {
 
     /**
      * Resolves a path

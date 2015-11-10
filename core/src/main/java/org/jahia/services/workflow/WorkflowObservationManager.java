@@ -73,12 +73,10 @@ package org.jahia.services.workflow;
 
 import org.slf4j.Logger;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkflowObservationManager implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class WorkflowObservationManager {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(WorkflowObservationManager.class);
 
     private WorkflowService service;

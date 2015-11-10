@@ -120,9 +120,9 @@ public class JahiaSitesService extends JahiaService {
     protected JahiaGroupManagerService groupService;
     protected JCRSessionFactory sessionFactory;
     protected EhCacheProvider ehCacheProvider;
-    private transient SelfPopulatingCache siteKeyByServerNameCache;
-    private transient SelfPopulatingCache siteDefaultLanguageBySiteKey;
-    private transient SelfPopulatingCache sitesListCache;
+    private SelfPopulatingCache siteKeyByServerNameCache;
+    private SelfPopulatingCache siteDefaultLanguageBySiteKey;
+    private SelfPopulatingCache sitesListCache;
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;

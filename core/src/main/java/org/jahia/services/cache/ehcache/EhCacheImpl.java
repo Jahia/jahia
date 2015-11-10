@@ -94,8 +94,8 @@ public class EhCacheImpl implements CacheImplementation, CacheStatistics {
     final private static Logger logger = LoggerFactory.getLogger(EhCacheImpl.class);
 
     private String name;
-    private transient Cache ehCache;
-    private transient Cache ehCacheGroups;
+    private Cache ehCache;
+    private Cache ehCacheGroups;
     private int groupsSizeLimit;
 
     protected EhCacheImpl(String name, CacheManager ehCacheManager, EhCacheProvider provider) {

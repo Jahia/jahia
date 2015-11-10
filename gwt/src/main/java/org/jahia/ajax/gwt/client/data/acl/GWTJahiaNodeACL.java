@@ -82,10 +82,10 @@ import java.util.Map;
  */
 public class GWTJahiaNodeACL implements Serializable {
     private List<GWTJahiaNodeACE> ace;
-    private transient Map<String,List<String>> availableRoles;
-    private transient Map<String,String> rolesLabels;
-    private transient Map<String,String> rolesTooltips;
-    private transient Map<String,List<String>> roleDependencies;
+    private Map<String,List<String>> availableRoles;
+    private Map<String,String> rolesLabels;
+    private Map<String,String> rolesTooltips;
+    private Map<String,List<String>> roleDependencies;
     private boolean breakAllInheritance = false;
     public GWTJahiaNodeACL() {
     }

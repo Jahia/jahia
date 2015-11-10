@@ -71,7 +71,6 @@
  */
 package org.jahia.services.content;
 
-import java.io.Serializable;
 import java.util.*;
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
@@ -106,9 +105,7 @@ import org.springframework.web.context.ServletContextAware;
  * @author toto
  * @see JCRTemplate
  */
-public class JCRSessionFactory implements Repository, ServletContextAware, Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class JCRSessionFactory implements Repository, ServletContextAware {
 
     private static final Comparator<String> invertedStringComparator = new Comparator<String>() {
         public int compare(String s1, String s2) {
@@ -120,8 +117,8 @@ public class JCRSessionFactory implements Repository, ServletContextAware, Seria
 
     private static transient Logger logger = LoggerFactory.getLogger(JCRSessionFactory.class);
 
-    protected transient ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
-    protected transient ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> systemSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
+    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> userSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
+    protected ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>> systemSession = new ThreadLocal<Map<String, Map<String, JCRSessionWrapper>>>();
     private NamespaceRegistryWrapper namespaceRegistry;
     private Map<String, String> descriptors = new HashMap<String, String>();
     private JahiaUserManagerService userService;
@@ -130,13 +127,13 @@ public class JCRSessionFactory implements Repository, ServletContextAware, Seria
     private SortedMap<String, JCRStoreProvider> mountPoints;
     private String servletContextAttributeName;
     private ServletContext servletContext;
-    private transient ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
-    private transient ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
-    private transient ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
-    private transient ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
-    private transient ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
-    private transient ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
-    private transient LocalValidatorFactoryBean validatorFactoryBean;
+    private ThreadLocal<JahiaUser> currentUser = new ThreadLocal<JahiaUser>();
+    private ThreadLocal<Locale> currentLocale = new ThreadLocal<Locale>();
+    private ThreadLocal<Locale> fallbackLocale = new ThreadLocal<Locale>();
+    private ThreadLocal<JahiaUser> currentAliasedUser = new ThreadLocal<JahiaUser>();
+    private ThreadLocal<String> currentServletPath = new ThreadLocal<String>();
+    private ThreadLocal<Calendar> currentPreviewDate = new ThreadLocal<Calendar>();
+    private LocalValidatorFactoryBean validatorFactoryBean;
 
     private JCRSessionFactory() {
         super();

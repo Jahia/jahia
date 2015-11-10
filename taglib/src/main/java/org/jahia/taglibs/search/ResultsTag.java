@@ -97,7 +97,7 @@ public class ResultsTag extends AbstractJahiaTag {
     private String approxCountVar;    
 
     private SearchResponse searchResponse;
-    private transient List<Hit<?>> hits;
+    private List<Hit<?>> hits;
 
     private String searchCriteriaBeanName;
 

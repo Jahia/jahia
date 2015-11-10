@@ -94,11 +94,11 @@ public class WorkflowTask extends WorkflowAction {
     private JahiaUser assignee;
     private String id;
     private Set<String> outcomes;
-    private transient List<WorkflowParticipation> participations;
+    private List<WorkflowParticipation> participations;
     private String formResourceName;
     private String processId;
     private List<String> displayOutcomes;
-    private transient Map<String, Object> variables;
+    private Map<String, Object> variables;
     private List<String> outcomeIcons;
 
     public WorkflowTask(String name, String provider) {

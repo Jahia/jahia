@@ -100,9 +100,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author Sergiy Shyrkov
  */
-public class GroupCacheHelper implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class GroupCacheHelper {
 
     private static Logger logger = LoggerFactory.getLogger(GroupCacheHelper.class);
 

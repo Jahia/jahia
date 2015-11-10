@@ -88,9 +88,7 @@ import com.google.common.collect.ImmutableList;
 /**
  * Base service class for SCM related operations.
  */
-public abstract class SourceControlManagement implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public abstract class SourceControlManagement {
 
     /**
      * Represents the result of an external command execution.
@@ -126,7 +124,7 @@ public abstract class SourceControlManagement implements Serializable{
 
     protected String executable;
 
-    protected transient File rootFolder;
+    protected File rootFolder;
 
     private volatile Map<String, Status> statusMap;
     

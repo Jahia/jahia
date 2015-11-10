@@ -159,7 +159,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private final Map<String, List<Bundle>> toBeParsed = new HashMap<>();
     private final Map<String, List<Bundle>> toBeStarted = new HashMap<>();
 
-    private final transient OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
+    private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
     private TemplatePackageDeployer templatePackageDeployer;
 
@@ -167,7 +167,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private JahiaSitesService siteService;
 
-    private transient ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private ModuleBuildHelper moduleBuildHelper;
 

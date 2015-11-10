@@ -98,7 +98,7 @@ public class ApplicationBean implements Serializable, Comparator<ApplicationBean
     private String description = "";
     private String type;
     private List<EntryPointInstance> entryPointInstances;
-    private transient List<UserAttribute> userAttributes;
+    private List<UserAttribute> userAttributes;
 
     /**
      * Basic constructor

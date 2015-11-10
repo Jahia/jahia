@@ -81,7 +81,7 @@ import java.util.Properties;
  */
 public class SitesValidatorResult implements ValidationResult, Serializable {
     private static final long serialVersionUID = -6775149135043628858L;
-    private transient Map<String, Properties> sitesProperties;
+    private Map<String, Properties> sitesProperties;
 
     public SitesValidatorResult(Map<String, Properties> sitesProperties) {
         this.sitesProperties = sitesProperties;

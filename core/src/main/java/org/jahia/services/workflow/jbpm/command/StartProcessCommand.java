@@ -82,7 +82,7 @@ import java.util.Map;
 */
 public class StartProcessCommand extends BaseCommand<String> {
     private final String processKey;
-    private final transient Map<String, Object> args;
+    private final Map<String, Object> args;
 
     public StartProcessCommand(String processKey, Map<String, Object> args) {
         this.processKey = processKey;

@@ -80,7 +80,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -88,9 +87,8 @@ import java.util.Map;
  *
  * @author Sergiy Shyrkov
  */
-public class LogoutConfig implements ApplicationListener<ApplicationEvent>, Serializable {
+public class LogoutConfig implements ApplicationListener<ApplicationEvent> {
     private static final Logger logger = LoggerFactory.getLogger(LogoutConfig.class);
-    private static final long serialVersionUID = 1L;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {

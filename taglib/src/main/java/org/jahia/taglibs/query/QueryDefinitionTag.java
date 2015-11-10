@@ -103,9 +103,9 @@ public class QueryDefinitionTag extends AbstractJCRTag {
 
     private String qomBeanName;
 
-    private transient Object qom;
+    private Object qom;
 
-    private transient QueryObjectModel queryObjectModel;
+    private QueryObjectModel queryObjectModel;
 
     private int scope = PageContext.PAGE_SCOPE;
 

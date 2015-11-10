@@ -81,7 +81,7 @@ import net.sf.ehcache.Ehcache;
 public class CacheInfo extends BaseCacheInfo {
     private static final long serialVersionUID = -2400940258119747703L;
 
-    private transient Ehcache cache;
+    private Ehcache cache;
 
     /**
      * Initializes an instance of this class.

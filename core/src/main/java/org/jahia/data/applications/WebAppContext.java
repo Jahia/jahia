@@ -124,7 +124,7 @@ public class WebAppContext implements Serializable
      * The hashMap of servlet mapping, keyed with the pattern used to map a servlet.
      * The value is the servlet name.
      **/
-    private transient Map<String, String> servletMappings = new HashMap<String, String>();
+    private Map<String, String> servletMappings = new HashMap<String, String>();
     private static final Object mappingsLock = new Object();
 
     /** List of security roles **/
@@ -136,7 +136,7 @@ public class WebAppContext implements Serializable
     private static final Object welcomesLock = new Object();
 
     // Entry points into servlet-based portlet web application.
-    private transient List<EntryPointDefinition> entryPoints = new ArrayList<EntryPointDefinition>();
+    private List<EntryPointDefinition> entryPoints = new ArrayList<EntryPointDefinition>();
 
 
 

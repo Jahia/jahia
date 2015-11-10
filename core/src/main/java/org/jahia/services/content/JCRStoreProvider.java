@@ -115,7 +115,6 @@ import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
@@ -135,9 +134,7 @@ import static org.apache.jackrabbit.core.security.JahiaLoginModule.SYSTEM;
  *
  * @author toto
  */
-public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     static final String SELECT_ALL_MOUNT_POINTS = "select * from [" + Constants.JAHIANT_MOUNTPOINT + "]";
     private static final Logger logger = LoggerFactory.getLogger(JCRStoreProvider.class);
@@ -172,7 +169,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializa
     private JCRStoreService service;
 
     protected JCRSessionFactory sessionFactory;
-    protected volatile transient Repository repo = null;
+    protected volatile Repository repo = null;
 
     private boolean mainStorage = false;
     private boolean isDynamicallyMounted = false;
@@ -187,7 +184,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider>, Serializa
     private Boolean updateMixinAvailable = null;
     private Boolean slowConnection = false;
 
-    private final transient Object syncRepoInit = new Object();
+    private final Object syncRepoInit = new Object();
 
     private GroovyPatcher groovyPatcher;
     private NodeTypesDBServiceImpl nodeTypesDBService;

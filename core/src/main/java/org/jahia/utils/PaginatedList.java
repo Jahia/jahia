@@ -96,7 +96,7 @@ public class PaginatedList<Data> implements Serializable {
         this.totalSize = totalSize;
     }
 
-    private transient List<Data> data;
+    private List<Data> data;
 
     private int totalSize;
 

@@ -71,7 +71,6 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import java.io.Serializable;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
@@ -100,9 +99,7 @@ import com.thoughtworks.xstream.io.xml.XppDriver;
  * 
  * @author Sergiy Shyrkov
  */
-class JahiaPasswordPolicyManager implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+class JahiaPasswordPolicyManager {
 
     private static final String HISTORY_NODENAME = "passwordHistory";
 

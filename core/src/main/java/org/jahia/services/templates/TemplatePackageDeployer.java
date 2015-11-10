@@ -91,7 +91,10 @@ import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 
 /**
@@ -100,9 +103,7 @@ import java.util.*;
  * @author Sergiy Shyrkov
  * @author Thomas Draier
  */
-public class TemplatePackageDeployer implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class TemplatePackageDeployer {
 
     private static Logger logger = LoggerFactory.getLogger(TemplatePackageDeployer.class);
 

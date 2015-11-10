@@ -89,7 +89,7 @@ public abstract class CompoundConstraintTag extends ConstraintTag {
 
     private static final long serialVersionUID = -2449018230515946004L;
 
-    private transient List<Constraint> constraints = new LinkedList<Constraint>();
+    private List<Constraint> constraints = new LinkedList<Constraint>();
 
     public final void addConstraint(Constraint constraint) {
         constraints.add(constraint);

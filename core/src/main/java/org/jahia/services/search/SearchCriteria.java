@@ -424,7 +424,7 @@ public class SearchCriteria implements Serializable {
 
         private String name;
 
-        private transient Map<String,String> selectorOptions;
+        private Map<String,String> selectorOptions;
 
         private NodeProperty.Type type = NodeProperty.Type.TEXT;
 
@@ -776,7 +776,7 @@ public class SearchCriteria implements Serializable {
     
     private HierarchicalValue pagePath = new HierarchicalValue();
 
-    private transient Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
+    private Map<String /* nodeType */, Map<String /* propertyName */, NodeProperty>> properties = LazyMap
             .decorate(new HashMap<String, Map<String, NodeProperty>>(),
                     new NodePropertyMapFactory());
 

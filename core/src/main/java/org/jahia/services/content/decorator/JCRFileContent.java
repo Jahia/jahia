@@ -83,7 +83,6 @@ import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 
 /**
  * Represents the content node.
@@ -91,13 +90,11 @@ import java.io.Serializable;
  * Date: 7 févr. 2008
  * Time: 11:53:30
  */
-public class JCRFileContent implements Serializable{
-    private static final long serialVersionUID = 1L;
-
+public class JCRFileContent {
     protected static final Logger logger = org.slf4j.LoggerFactory.getLogger(JCRFileContent.class);
     protected JCRNodeWrapper node;
-    protected transient Node objectNode;
-    protected transient Node contentNode;
+    protected Node objectNode;
+    protected Node contentNode;
 
     public JCRFileContent(JCRNodeWrapper node, Node objectNode) {
         this.node = node;

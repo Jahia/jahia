@@ -73,8 +73,6 @@ package org.jahia.services.render.filter;
 
 import org.jahia.services.render.RenderService;
 
-import java.io.Serializable;
-
 /**
  * Implemented by beans that require an instance of the rendering service.
  * 
@@ -82,7 +80,7 @@ import java.io.Serializable;
  * 
  * @author Sergiy Shyrkov
  */
-public interface RenderServiceAware extends Serializable{
+public interface RenderServiceAware {
 
     /**
      * Injects an instance of the {@link RenderService} into the current bean.

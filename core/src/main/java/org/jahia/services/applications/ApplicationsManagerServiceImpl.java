@@ -142,8 +142,8 @@ public class ApplicationsManagerServiceImpl extends ApplicationsManagerService i
      */
     private boolean isLoaded = false;
 
-    private transient List<PortletMode> supportedPortletModes = new ArrayList<PortletMode>();
-    private transient List<WindowState> supportedWindowStates = new ArrayList<WindowState>();
+    private List<PortletMode> supportedPortletModes = new ArrayList<PortletMode>();
+    private List<WindowState> supportedWindowStates = new ArrayList<WindowState>();
 
     /**
      * This map contains a mapping of application type names to application

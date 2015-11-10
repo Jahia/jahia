@@ -83,7 +83,6 @@ import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;
@@ -93,7 +92,7 @@ import java.util.regex.Pattern;
  * <p/>
  * Execute listener synchronously after session.save()
  */
-public class JCRObservationManager implements ObservationManager, Serializable {
+public class JCRObservationManager implements ObservationManager {
     public static final int SESSION_SAVE = 1;
     public static final int WORKSPACE_MOVE = 2;
     public static final int WORKSPACE_COPY = 3;

@@ -138,7 +138,7 @@ public class PrincipalViewHelper implements Serializable {
 
     private static Set<String> selectBoxFieldsHeading = new HashSet<String>();
     private List<Integer> selectBoxFieldsSize = new ArrayList<Integer>();
-    private transient List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
+    private List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
 
     static {
         selectBoxFieldsHeading.add(PRINCIPAL);

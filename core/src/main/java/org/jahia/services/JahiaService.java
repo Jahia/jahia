@@ -77,8 +77,6 @@ import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.settings.SettingsBean;
 
-import java.io.Serializable;
-
 
 /**
  * This class is the root class of all the Jahia services.
@@ -88,9 +86,7 @@ import java.io.Serializable;
  *
  * @version 1.2
  */
-public abstract class JahiaService implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public abstract class JahiaService {
 
     protected SettingsBean settingsBean;
     

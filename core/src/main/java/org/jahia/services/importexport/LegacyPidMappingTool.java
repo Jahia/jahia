@@ -73,13 +73,12 @@ package org.jahia.services.importexport;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
-import java.io.Serializable;
 import java.util.Locale;
 
 /**
  * User: rincevent
  */
-public interface LegacyPidMappingTool extends Serializable{
+public interface LegacyPidMappingTool {
     /**
      * Defines a new page IDs mapping
      *

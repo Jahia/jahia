@@ -13,8 +13,8 @@ import java.util.TreeMap;
  */
 public class ConstraintsValidatorResult implements ValidationResult, Serializable {
 
-    transient Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
-    transient Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
+    Map<String, Set<String>> missingMandatoryProperties = new TreeMap<String, Set<String>>();
+    Map<String, Set<String>> missingMandatoryI18NProperties = new TreeMap<String, Set<String>>();
 
     public ConstraintsValidatorResult(Map<String, Set<String>> missingMandatoryProperties, Map<String,Set<String>> missingMandatoryI18NProperties) {
         this.missingMandatoryProperties = missingMandatoryProperties;

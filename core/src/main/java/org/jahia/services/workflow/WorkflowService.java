@@ -102,7 +102,6 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -111,9 +110,7 @@ import java.util.*;
  * @author rincevent
  * @since JAHIA 6.5
  */
-public class WorkflowService implements BeanPostProcessor, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class WorkflowService implements BeanPostProcessor {
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";

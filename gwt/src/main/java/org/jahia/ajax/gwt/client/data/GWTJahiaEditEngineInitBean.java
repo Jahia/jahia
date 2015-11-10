@@ -92,10 +92,10 @@ public class GWTJahiaEditEngineInitBean extends GWTJahiaGetPropertiesResult {
     /** The serialVersionUID. */
     private static final long serialVersionUID = 8831509358274880097L;
     private List<GWTJahiaNodeType> mixin;
-    private transient Map<String, GWTChoiceListInitializer> initializersValues;
-    private transient Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
+    private Map<String, GWTChoiceListInitializer> initializersValues;
+    private Map<String, Map<String, List<GWTJahiaNodePropertyValue>>> defaultValues;
     private GWTJahiaNodeACL acl;
-    private transient Map<String, Set<String>> referencesWarnings;
+    private Map<String, Set<String>> referencesWarnings;
     private String defaultLanguageCode;
     private boolean translationEnabled;
     private boolean hasOrderableChildNodes;

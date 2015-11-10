@@ -94,7 +94,6 @@ import org.springframework.core.io.UrlResource;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -105,9 +104,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author Khue ng
  */
-public class JahiaTemplatesPackage implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class JahiaTemplatesPackage {
 
     private static final Resource[] NO_RESOURCES = new Resource[0];
 
@@ -123,12 +120,12 @@ public class JahiaTemplatesPackage implements Serializable{
         }
     }
 
-    private transient Bundle bundle = null;
+    private Bundle bundle = null;
 
     private ModuleState state;
 
-    private transient ClassLoader classLoader;
-    private transient ClassLoader chainedClassLoader;
+    private ClassLoader classLoader;
+    private ClassLoader chainedClassLoader;
 
     /**
      * the full path to the source file or directory
@@ -196,13 +193,13 @@ public class JahiaTemplatesPackage implements Serializable{
 
     private String autoDeployOnSite;
 
-    private transient AbstractApplicationContext context;
+    private AbstractApplicationContext context;
 
     private String scmURI;
 
     private String scmTag;
 
-    private transient File sourcesFolder;
+    private File sourcesFolder;
 
     private SourceControlManagement sourceControl;
 

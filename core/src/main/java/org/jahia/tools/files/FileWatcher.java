@@ -152,7 +152,7 @@ public class FileWatcher extends Observable implements Serializable {
 
     private List<String> ignoreFiles;
 
-    private transient IOFileFilter ignoreFilter;
+    private IOFileFilter ignoreFilter;
 
     /**
      * Constructor

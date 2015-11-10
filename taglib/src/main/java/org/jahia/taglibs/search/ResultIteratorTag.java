@@ -90,8 +90,8 @@ public class ResultIteratorTag extends LoopTagSupport {
 
     private static final String DEF_VAR = "hit";
 
-    private transient Iterator<Hit<?>> resultIterator;
-    private transient List<Hit<?>> hits;
+    private Iterator<Hit<?>> resultIterator;
+    private List<Hit<?>> hits;
 
     /**
      * Initializes an instance of this class.

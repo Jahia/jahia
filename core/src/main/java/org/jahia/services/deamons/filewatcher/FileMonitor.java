@@ -88,7 +88,7 @@ public class FileMonitor implements Serializable {
      */
     private static final class FileMonitorAgent implements Serializable {
         private static final long serialVersionUID = -4615339614778628865L;
-        private transient Map<File, Object> children;
+        private Map<File, Object> children;
         private boolean exists;
         private final File file;
 
@@ -262,7 +262,7 @@ public class FileMonitor implements Serializable {
      */
     private final Stack<File> addStack = new Stack<File>();
 
-    private final transient FileMonitorCallback callback;
+    private final FileMonitorCallback callback;
 
     /**
      * Set the number of files to check until a delay will be inserted
@@ -284,7 +284,7 @@ public class FileMonitor implements Serializable {
     /**
      * Map from FileName to FileObject being monitored.
      */
-    private final transient Map<File, FileMonitorAgent> monitorMap = new HashMap<File, FileMonitorAgent>();
+    private final Map<File, FileMonitorAgent> monitorMap = new HashMap<File, FileMonitorAgent>();
 
     private boolean onlyFiles;
 

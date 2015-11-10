@@ -71,14 +71,12 @@
  */
 package org.jahia.services.usermanager;
 
-import java.io.Serializable;
-
 /**
  * @author rincevent
  * @since JAHIA 6.5
  * Created : 4/13/11
  */
-public interface JahiaUserSplittingRule extends Serializable {
+public interface JahiaUserSplittingRule {
 
     public String getPathForUsername(String username);
 

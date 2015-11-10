@@ -71,7 +71,6 @@
  */
 package org.jahia.services.search;
 
-import java.io.Serializable;
 import java.util.List;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -83,9 +82,7 @@ import org.apache.commons.lang.builder.ToStringBuilder;
  * @author Sergiy Shyrkov
  * @since 6.5
  */
-public class Suggestion implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class Suggestion {
 
     private String originalQuery;
 

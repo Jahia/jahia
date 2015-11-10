@@ -101,9 +101,9 @@ public class EngineTab implements Serializable, Comparable<EngineTab>, Initializ
     private int order;
     private String requiredPermission;
 
-    private transient Object parent;
-    private transient Object parentEditConfiguration;
-    private transient Object parentManagerConfiguration;
+    private Object parent;
+    private Object parentEditConfiguration;
+    private Object parentManagerConfiguration;
     private int position = -1;
     private String positionAfter;
     private String positionBefore;

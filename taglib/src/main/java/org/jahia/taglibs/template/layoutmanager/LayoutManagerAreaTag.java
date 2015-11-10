@@ -89,7 +89,7 @@ import org.slf4j.LoggerFactory;
 public class LayoutManagerAreaTag extends AbstractJahiaTag {
     private static final Logger logger = LoggerFactory.getLogger(LayoutManagerAreaTag.class);
     private String width;
-    private transient Node node;
+    private Node node;
 
     public int doStartTag() {
         final JspWriter out = pageContext.getOut();

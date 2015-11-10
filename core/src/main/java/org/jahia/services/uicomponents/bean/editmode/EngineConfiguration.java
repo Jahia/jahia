@@ -100,7 +100,7 @@ public class EngineConfiguration implements Serializable , InitializingBean, Dis
     private List<ButtonItem> editionButtons = new ArrayList<ButtonItem>();
     private List<ButtonItem> commonButtons = new ArrayList<ButtonItem>();
 
-    private transient Object parent;
+    private Object parent;
 
     public String getKey() {
         return key;

@@ -93,10 +93,10 @@ public class CacheEntry<V> implements Serializable {
     private static final long serialVersionUID = -319255477144589731L;
 
     /** the entry object. */
-    private transient V object;
+    private V object;
 
     /** the properties table. */
-    private transient Map<String, Serializable> properties;
+    private Map<String, Serializable> properties;
 
 
     /** <p>Default constructor, creates a new <code>CacheEntry</code> instance.</p>

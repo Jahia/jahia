@@ -74,7 +74,6 @@ package org.jahia.services.content;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.RepositoryException;
-import java.io.Serializable;
 import java.util.Locale;
 
 /**
@@ -90,9 +89,7 @@ import java.util.Locale;
  *
  * @author Cedric Mailleux
  */
-public class JCRTemplate implements Serializable{
-
-    private static final long serialVersionUID = 1L;
+public class JCRTemplate {
 
     private JCRSessionFactory sessionFactory;
 

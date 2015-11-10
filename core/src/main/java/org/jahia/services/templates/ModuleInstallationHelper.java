@@ -71,7 +71,6 @@
  */
 package org.jahia.services.templates;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -116,13 +115,11 @@ import org.springframework.context.ApplicationEventPublisherAware;
  * 
  * @author Sergiy Shyrkov
  */
-public class ModuleInstallationHelper implements ApplicationEventPublisherAware, Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class ModuleInstallationHelper implements ApplicationEventPublisherAware {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleInstallationHelper.class);
 
-    private transient ApplicationEventPublisher applicationEventPublisher;
+    private ApplicationEventPublisher applicationEventPublisher;
 
     private JahiaSitesService siteService;
 

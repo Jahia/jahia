@@ -96,7 +96,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -107,11 +106,9 @@ import java.util.UUID;
  * 
  * @author Sergiy Shyrkov
  */
-public class SourceControlHelper implements Serializable{
+public class SourceControlHelper {
 
-    private static final long serialVersionUID = 1L;
-
-    private static class ModuleInfo implements Serializable{
+    private static class ModuleInfo {
         String id;
         String groupId;
         File path;

@@ -131,16 +131,16 @@ public abstract class BaseCommand<T> implements GenericCommand<T> {
 
     private transient static Logger logger = LoggerFactory.getLogger(BaseCommand.class);
 
-    private transient KnowledgeCommandContext context;
-    private transient KieSession ksession;
-    private transient TaskService taskService;
-    private transient AuditLogService auditLogService;
-    private transient EntityManager em;
-    private transient RuntimeEngine runtimeEngine;
-    private transient JbpmServicesPersistenceManager persistenceManager;
-    private transient WorkflowService workflowService;
-    private transient JahiaUserManagerService userManager;
-    private transient JahiaGroupManagerService groupManager;
+    private KnowledgeCommandContext context;
+    private KieSession ksession;
+    private TaskService taskService;
+    private AuditLogService auditLogService;
+    private EntityManager em;
+    private RuntimeEngine runtimeEngine;
+    private JbpmServicesPersistenceManager persistenceManager;
+    private WorkflowService workflowService;
+    private JahiaUserManagerService userManager;
+    private JahiaGroupManagerService groupManager;
     private String key;
     private boolean localTransactionOwner = false;
 

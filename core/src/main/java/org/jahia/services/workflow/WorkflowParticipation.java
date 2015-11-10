@@ -73,14 +73,11 @@ package org.jahia.services.workflow;
 
 import org.jahia.services.usermanager.JahiaPrincipal;
 
-import java.io.Serializable;
-
 /**
  * @author rincevent
  * @since JAHIA 6.5
  */
-public class WorkflowParticipation implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class WorkflowParticipation {
     private final String role;
     private final JahiaPrincipal principal;
 

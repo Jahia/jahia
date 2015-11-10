@@ -97,7 +97,7 @@ public class PortletRenderTag extends AbstractJahiaTag {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PortletRenderTag.class);
 
-    private transient Node portletNode;
+    private Node portletNode;
     private int windowId;
 
     public int doStartTag() {

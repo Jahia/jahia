@@ -77,7 +77,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.XMLChar;
 import org.jahia.api.Constants;
 
-import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.HashMap;
@@ -89,10 +88,7 @@ import java.util.HashMap;
  *
  * @author toto
  */
-public class NamespaceRegistryWrapper implements NamespaceRegistry,Serializable {
-
-    private static final long serialVersionUID = 1L;
-
+public class NamespaceRegistryWrapper implements NamespaceRegistry {
     private Map<String, String> nsToPrefix = new HashMap<String, String>();
     private Map<String, String> prefixToNs = new HashMap<String, String>();
     

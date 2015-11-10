@@ -73,12 +73,10 @@ package org.jahia.services.importexport;
 
 import org.jahia.services.sites.JahiaSite;
 
-import java.io.Serializable;
-
 /**
  * Wrapper on some patch(es) to be processed at the end of the import of a website exported in a legacy version.
  */
-public interface PostImportPatcher extends Serializable {
+public interface PostImportPatcher {
 
     /**
      * This method is called at the end of each site import, after the JCR session used for the import has been saved.

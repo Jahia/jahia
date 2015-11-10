@@ -69,7 +69,6 @@
  */
 package org.jahia.services.pwd;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -84,9 +83,7 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Sergiy Shyrkov
  */
-public class PasswordService implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public class PasswordService {
 
     private static final PasswordService instance = new PasswordService();
 

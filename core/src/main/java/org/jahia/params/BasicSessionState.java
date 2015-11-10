@@ -88,7 +88,7 @@ public class BasicSessionState implements SessionState, Serializable {
 
     private static final long serialVersionUID = 6088001336642210422L;
     private String id;
-    private transient Map attributes = new HashMap();
+    private Map attributes = new HashMap();
     private int maxInactiveInterval = 30 * 60;
 
     public BasicSessionState(String id) {

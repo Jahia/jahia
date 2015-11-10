@@ -71,7 +71,6 @@
  */
 package org.jahia.bin;
 
-import java.io.Serializable;
 import java.util.*;
 
 import org.apache.commons.collections.CollectionUtils;
@@ -101,9 +100,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Sergiy Shyrkov
  */
-public abstract class Action implements Serializable {
-
-    private static final long serialVersionUID = 1L;
+public abstract class Action {
 
     /**
      * Returns a single value for the specified parameter. If the parameter is not present throws the {@link JahiaBadRequestException}.

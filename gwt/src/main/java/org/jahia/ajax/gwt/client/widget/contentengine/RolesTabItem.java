@@ -127,11 +127,7 @@ public class RolesTabItem extends EditEngineTabItem {
             rolesEditor.setCanBreakInheritance(canBreakInheritance);
             rolesEditor.setAutoAddRole(autoAddRole);
 
-            if (!(node.getProviderKey().equals("default") || node.getProviderKey().equals("jahia"))) {
-                rolesEditor.setReadOnly(true);
-            } else {
-                rolesEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
-            }
+            rolesEditor.setReadOnly(!PermissionsUtils.isPermitted("jcr:modifyAccessControl", node) || node.isLocked());
 
             tab.setLayout(new FitLayout());
             rolesEditor.addNewAclPanel(tab);

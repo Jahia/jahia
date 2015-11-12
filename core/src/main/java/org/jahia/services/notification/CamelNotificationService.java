@@ -71,7 +71,6 @@
  */
 package org.jahia.services.notification;
 
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;

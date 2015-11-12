@@ -72,6 +72,7 @@
 package org.jahia.services.render.filter;
 
 
+import net.htmlparser.jericho.Attribute;
 import net.htmlparser.jericho.OutputDocument;
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.StartTag;
@@ -87,6 +88,7 @@ import javax.jcr.AccessDeniedException;
 import javax.jcr.PathNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -116,8 +118,20 @@ public class EditModeFilter extends AbstractFilter {
             for (StartTag tag : tags) {
                 String href = tag.getAttributeValue("href");
                 if (href != null && ((href.startsWith("/") && !href.startsWith(renderContext.getRequest().getContextPath() + renderContext.getServletPath())) || href.contains("://"))) {
-                    if (tag.getAttributeValue("target") == null) {
+                    String target = tag.getAttributeValue("target");
+                    if (target == null) {
                         document.insert(tag.getEnd()-1, " target=\"_parent\"");
+                    } else if (target.equals("_self")) {
+                        HashMap<String, String> replaceMap = new HashMap<>();
+                        for (Attribute attribute : tag.getAttributes()) {
+                            String key = attribute.getKey();
+                            if ("target".equals(key)) {
+                                replaceMap.put(key, "_parent");
+                            } else {
+                                replaceMap.put(key, attribute.getValue());
+                            }
+                        }
+                        document.replace(tag.getAttributes(), replaceMap);
                     }
                 }
             }

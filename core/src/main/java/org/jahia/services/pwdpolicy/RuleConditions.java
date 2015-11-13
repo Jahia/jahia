@@ -298,14 +298,10 @@ public final class RuleConditions {
     public static class PreventUserInitiatedPasswordChange implements
             PasswordPolicyRuleCondition {
         public boolean evaluate(List<JahiaPasswordPolicyRuleParam> parameters, EvaluationContext ctx) {
-<<<<<<< .working
-            if (ctx.isUserInitiated() && ctx.getUser() == null) {
-=======
             if (!ctx.isUserInitiated()) {
                 return true;
             }
             if (ctx.getUser() == null) {
->>>>>>> .merge-right.r53266
                 throw new IllegalArgumentException(
                         "The user object is null. Unable to evaluate the condition");
             }

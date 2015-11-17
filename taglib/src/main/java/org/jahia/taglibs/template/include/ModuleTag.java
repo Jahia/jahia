@@ -581,7 +581,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             builder.append(" sourceInfo=\"/modules/" + version + "/sources/src/main/resources" + StringUtils.substringAfter(script.getView().getPath(), "/modules/" + script.getView().getModule().getId()) + "\"");
         }
 
-        builder.append(" path=\"").append(path).append("\"");
+        builder.append(" path=\"").append(path.replace("\"", "&quot;")).append("\"");
 
         if (!StringUtils.isEmpty(nodeTypes)) {
             nodeTypes = StringUtils.join(Ordering.natural().sortedCopy(Arrays.asList(Patterns.SPACE.split(nodeTypes))),' ');

@@ -283,6 +283,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
                 r.parse();
                 if (r.hasEncounteredIssuesWithDefinitions()) {
                     hasEncounteredIssuesWithDefinitions = true;
+                    logger.warn("Errors parsing definitions of " + systemId + ": \n" + StringUtils.join(r.getParsingErrors(), "\n"));
                 }
             } finally {
                 IOUtils.closeQuietly(resourceReader);

@@ -196,7 +196,7 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             rd.include(request, responseWrapper);
 
             String redirect = responseWrapper.getRedirect();
-            if(redirect != null) {
+            if(redirect != null && context.getRedirect() == null) {
                 // if we have an absolute redirect, set it and move on
                 if(redirect.startsWith("http:/") || redirect.startsWith("https://")) {
                     context.setRedirect(responseWrapper.getRedirect());

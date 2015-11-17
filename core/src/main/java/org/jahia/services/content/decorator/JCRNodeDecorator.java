@@ -916,10 +916,11 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         ExtendedPropertyDefinition extendedPropertyDefinition = null;
         while (decoratedProperty instanceof JCRPropertyWrapper) {
             JCRPropertyWrapper jcrPropertyWrapper = (JCRPropertyWrapper) decoratedProperty;
-            if (extendedPropertyDefinition == null) {
-                extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
-            }
             decoratedProperty = jcrPropertyWrapper.getRealProperty();
+            if (decoratedProperty == null) {
+                return null;
+            }
+            extendedPropertyDefinition = (ExtendedPropertyDefinition) jcrPropertyWrapper.getDefinition();
         }
         if (extendedPropertyDefinition != null) {
             return new JCRPropertyWrapperImpl(this, decoratedProperty, getSession(), getProvider(), extendedPropertyDefinition);

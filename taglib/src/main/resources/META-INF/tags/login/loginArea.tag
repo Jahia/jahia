@@ -35,7 +35,9 @@
                 <c:url var="redirect" value="${redirectUrl}" context="/">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
-                            <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                            <c:if test="${paramValueEntry.key != 'password'}">
+                                <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                            </c:if>    
                         </c:forEach>
                     </c:forEach>
                 </c:url>
@@ -53,7 +55,9 @@
                 <c:url var="redirect" value="${url.base}${renderContext.mainResource.node.path}${urlEnd}">
                     <c:forEach items="${paramValues}" var="paramValueEntry">
                         <c:forEach items="${paramValueEntry.value}" var="paramValue">
-                            <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                            <c:if test="${paramValueEntry.key != 'password'}">
+                                <c:param name="${paramValueEntry.key}" value="${paramValue}"/>
+                            </c:if>   
                         </c:forEach>
                     </c:forEach>
                 </c:url>

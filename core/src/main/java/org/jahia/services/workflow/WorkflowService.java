@@ -88,7 +88,10 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaPrincipal;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.quartz.JobDataMap;
@@ -977,14 +980,15 @@ public class WorkflowService implements BeanPostProcessor {
 
             JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
             JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
-
-            for (List<String[]> list : objectNode.getAclEntries().values()) {
-                for (String[] strings : list) {
-                    for (Privilege privilege : accessControlManager.getPermissionsInRole(strings[2])) {
-                        if (!perms.containsKey(strings[0])) {
-                            perms.put(strings[0], new ArrayList<String>());
+            if (objectNode.getAclEntries() != null) {
+                for (List<String[]> list : objectNode.getAclEntries().values()) {
+                    for (String[] strings : list) {
+                        for (Privilege privilege : accessControlManager.getPermissionsInRole(strings[2])) {
+                            if (!perms.containsKey(strings[0])) {
+                                perms.put(strings[0], new ArrayList<String>());
+                            }
+                            perms.get(strings[0]).add(JCRContentUtils.getJCRName(privilege.getName(), objectNode.getRealNode().getSession().getWorkspace().getNamespaceRegistry()));
                         }
-                        perms.get(strings[0]).add(JCRContentUtils.getJCRName(privilege.getName(), objectNode.getRealNode().getSession().getWorkspace().getNamespaceRegistry()));
                     }
                 }
             }

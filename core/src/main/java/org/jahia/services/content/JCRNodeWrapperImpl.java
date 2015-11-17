@@ -73,7 +73,6 @@ package org.jahia.services.content;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
@@ -114,7 +113,6 @@ import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.*;
@@ -383,18 +381,8 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
             AccessControlManager accessControlManager = getAccessControlManager();
-            if (accessControlManager != null) {
-//                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
-
-                if (accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)})) {
-                    return true;
-                } else if (!getProvider().getMountPoint().equals("/")) {
-                    return session.getNode(getProvider().getMountPoint()).getParent().hasPermission(perm);
-                } else {
-                    return false;
-                }
-            }
-            return true;
+            //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
+            return accessControlManager == null || accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)});
         } catch (AccessControlException e) {
             if (!getProvider().getMountPoint().equals("/")) {
                 try {
@@ -475,11 +463,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
                     }
                     position++;
                 }
-            }
-            if (!"/".equals(getProvider().getMountPoint())) {
-                final JCRSiteNode resolveSite = getResolveSite();
-                final BitSet permissionsAsBitSet = resolveSite.getPermissionsAsBitSet();
-                b.or(permissionsAsBitSet);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot check perm ", e);

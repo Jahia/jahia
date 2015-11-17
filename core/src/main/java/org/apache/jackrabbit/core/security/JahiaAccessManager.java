@@ -456,11 +456,13 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
     public boolean isGranted(Path absPath, Set<String> permissions) throws RepositoryException {
+        return isGranted(pr.getJCRPath(absPath), permissions, getSecuritySession(), pr.getJCRName(absPath.getName()));
+    }
+
+    public boolean isGranted(String jcrPath, Set<String> permissions, Session securitySession, String childNodeName) throws RepositoryException {
         if (isSystemPrincipal() && deniedPathes.get() == null) {
             return true;
         }
-
-        String jcrPath = pr.getJCRPath(absPath);
 
         if (permissions.size() == 1 && jcrPath.equals("/") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
@@ -493,9 +495,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
-                itemExists = getSecuritySession().itemExists(jcrPath);
+                itemExists = securitySession.itemExists(jcrPath);
                 if (itemExists) {
-                    i = getSecuritySession().getItem(jcrPath);
+                    i = securitySession.getItem(jcrPath);
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                             pathPermissionCachePut(cacheKey, false);
@@ -513,9 +515,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 }
             }
 
-            int depth = 1;
             if (itemExists == null) {
-                itemExists = getSecuritySession().itemExists(jcrPath);
+                itemExists = securitySession.itemExists(jcrPath);
             }
 
             if (!itemExists) {
@@ -523,13 +524,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
 
-            while (!itemExists) {
-                jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
-                itemExists = getSecuritySession().itemExists(jcrPath);
-            }
-
             if (i == null) {
-                i = getSecuritySession().getItem(jcrPath);
+                i = securitySession.getItem(jcrPath);
             }
 
             if (i instanceof Version) {
@@ -575,7 +571,6 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             // Always allow to add child nodes when it's a translation node and the user have the translate permission
 
             if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
-                String childNodeName = pr.getJCRName(absPath.getName());
                 if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
                         hasPrivileges(jcrPath, new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
                     return true;
@@ -602,7 +597,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 //            }
 
 
-            res = recurseOnACPs(jcrPath, getSecuritySession(), permissions, site);
+            res = recurseOnACPs(jcrPath, securitySession, permissions, site);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -940,8 +935,12 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         if (isAdmin(null)) {
             return getSupportedPrivileges(absPath);
         }
+        return getPrivilegesWithSession(absPath, null);
+    }
 
-        Set<String> grantedRoles = getRoles(absPath);
+    public Privilege[] getPrivilegesWithSession(String absPath, Session session) throws PathNotFoundException, RepositoryException {
+
+        Set<String> grantedRoles = getRoles(absPath, session);
 
         Set<Privilege> results = new HashSet<Privilege>();
 
@@ -984,10 +983,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 (!jahiaPrincipal.isGuest() && (groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, site) || groupService.isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, null)));
     }
 
-    public Set<String> getRoles(String absPath) throws PathNotFoundException, RepositoryException {
+    public Set<String> getRoles(String absPath)  throws PathNotFoundException, RepositoryException {
+        return getRoles(absPath, null);
+    }
+
+    public Set<String> getRoles(String absPath, Session session) throws PathNotFoundException, RepositoryException {
+        if (session == null) {
+            session = getDefaultWorkspaceSecuritySession();
+        }
         Set<String> grantedRoles = new HashSet<String>();
         Set<String> foundRoles = new HashSet<String>();
-        Session s = getDefaultWorkspaceSecuritySession();
+        Session s = session;
         Node n = s.getNode(absPath);
 
         String site = resolveSite(n.getPath());

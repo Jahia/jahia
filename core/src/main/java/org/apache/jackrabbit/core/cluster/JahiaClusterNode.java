@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -72,12 +72,7 @@
 package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
-import org.apache.jackrabbit.core.journal.AbstractJournal;
-import org.apache.jackrabbit.core.journal.FileRevision;
-import org.apache.jackrabbit.core.journal.InstanceRevision;
-import org.apache.jackrabbit.core.journal.Journal;
-import org.apache.jackrabbit.core.journal.JournalException;
-import org.apache.jackrabbit.core.journal.RecordProducer;
+import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
@@ -92,7 +87,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created by toto on 06/12/13.
@@ -116,17 +110,12 @@ public class JahiaClusterNode extends ClusterNode {
     /**
      * Logger.
      */
-    private static Logger log = LoggerFactory.getLogger(JahiaClusterNode.class);
-
-    /**
-     * Our record producer.
-     */
-    private RecordProducer producer;
+    private static final Logger log = LoggerFactory.getLogger(JahiaClusterNode.class);
 
     /**
      * Status flag, one of {@link #NONE}, {@link #STARTED} or {@link #STOPPED}.
      */
-    private final AtomicInteger status = new AtomicInteger(NONE);
+    private volatile int status = NONE;
 
 
     /**
@@ -136,24 +125,9 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void start() throws ClusterException {
-        if (status.get() == NONE) {
+        if (status == NONE) {
             super.start();
-            status.set(STARTED);
-        }
-    }
-
-    /**
-     * Initialize this cluster node (overridable).
-     *
-     * @throws org.apache.jackrabbit.core.cluster.ClusterException if an error occurs
-     */
-    @Override
-    protected void init() throws ClusterException {
-        super.init();
-        try {
-            producer = getJournal().getProducer("JR");
-        } catch (JournalException e) {
-            throw new ClusterException("Journal initialization failed: " + this, e);
+            status = STARTED;
         }
     }
 
@@ -162,7 +136,7 @@ public class JahiaClusterNode extends ClusterNode {
      */
     @Override
     public synchronized void stop() {
-        status.set(STOPPED);
+        status = STOPPED;
         super.stop();
         Journal j = getJournal();
         if (j != null && (j instanceof AbstractJournal)) {
@@ -176,9 +150,9 @@ public class JahiaClusterNode extends ClusterNode {
                     log.info("Written local revision {} into revision file", rev);
                 } catch (JournalException e) {
                     if (log.isDebugEnabled()) {
-                        log.warn("Unable to write local revision into a file: " + e.getMessage(), e);
+                        log.error("Unable to write local revision into a file: " + e.getMessage(), e);
                     } else {
-                        log.warn("Unable to write local revision into a file: {}", e.getMessage());
+                        log.error("Unable to write local revision into a file: {}", e.getMessage());
                     }
                 } finally {
                     if (currentFileRevision != null) {
@@ -195,6 +169,7 @@ public class JahiaClusterNode extends ClusterNode {
      * @param workspace workspace name
      * @return lock event channel
      */
+    @Override
     public UpdateEventChannel createUpdateChannel(String workspace) {
         return new WorkspaceUpdateChannel(workspace);
     }
@@ -206,30 +181,20 @@ public class JahiaClusterNode extends ClusterNode {
     class WorkspaceUpdateChannel extends ClusterNode.WorkspaceUpdateChannel implements UpdateEventChannel {
 
         /**
-         * Attribute name used to store record.
-         */
-        private static final String ATTRIBUTE_RECORD = "record";
-
-        /**
-         * Workspace name.
-         */
-        private final String workspace;
-
-        /**
          * Create a new instance of this class.
          *
          * @param workspace workspace name
          */
         public WorkspaceUpdateChannel(String workspace) {
             super(workspace);
-            this.workspace = workspace;
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void updateCreated(Update update) throws ClusterException {
-            if (status.get() != STARTED) {
+            if (status != STARTED) {
                 log.info("not started: update create ignored.");
                 return;
             }
@@ -240,20 +205,18 @@ public class JahiaClusterNode extends ClusterNode {
                 storeNodeIds(update);
                 lockNodes(update);
             } catch (JournalException e) {
-                String msg = "Unable to create log entry: " + e.getMessage();
-                throw new ClusterException(msg, e);
+                throw new ClusterException("Unable to create log entry: " + e.getMessage(), e);
             } catch (Exception e) {
-                String msg = "Unexpected error while creating log entry: "
-                        + e.getMessage();
-                throw new ClusterException(msg, e);
+                throw new ClusterException("Unexpected error while creating log entry: " + e.getMessage(), e);
             }
         }
 
         /**
          * {@inheritDoc}
          */
+        @Override
         public void updateCommitted(Update update, String path) {
-            if (status.get() != STARTED) {
+            if (status != STARTED) {
                 log.info("not started: update commit ignored.");
                 return;
             }
@@ -263,7 +226,9 @@ public class JahiaClusterNode extends ClusterNode {
                 try {
                     unlockNodes(update);
                 } catch (JournalException e) {
-                    log.error("Unable to commit log entry.", e);
+                    log.error("Unable to commit log entry: " + e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error("Unexpected error while committing log entry: " + e.getMessage(), e);
                 }
             }
         }
@@ -271,8 +236,9 @@ public class JahiaClusterNode extends ClusterNode {
         /**
          * {@inheritDoc}
          */
+        @Override
         public void updateCancelled(Update update) {
-            if (status.get() != STARTED) {
+            if (status != STARTED) {
                 log.info("not started: update cancel ignored.");
                 return;
             }
@@ -282,7 +248,9 @@ public class JahiaClusterNode extends ClusterNode {
                 try {
                     unlockNodes(update);
                 } catch (JournalException e) {
-                    log.error("Unable to cancel log entry.", e);
+                    log.error("Unable to cancel log entry: " + e.getMessage(), e);
+                } catch (Exception e) {
+                    log.error("Unexpected error while cancelling log entry: " + e.getMessage(), e);
                 }
             }
         }
@@ -290,75 +258,54 @@ public class JahiaClusterNode extends ClusterNode {
     }
 
     private void unlockNodes(Update update) throws JournalException {
-        if (getJournal() instanceof NodeLevelLockableJournal) {
+        Journal journal = getJournal();
+        if (journal instanceof NodeLevelLockableJournal) {
             Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-            ((NodeLevelLockableJournal) getJournal()).unlockNodes(ids);
+            ((NodeLevelLockableJournal) journal).unlockNodes(ids);
         }
     }
 
     private void lockNodes(Update update) throws JournalException {
-        if (getJournal() instanceof NodeLevelLockableJournal) {
+        Journal journal = getJournal();
+        if (journal instanceof NodeLevelLockableJournal) {
             Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
-            ((NodeLevelLockableJournal) getJournal()).lockNodes(ids);
+            ((NodeLevelLockableJournal) journal).lockNodes(ids);
         }
     }
 
     private void storeNodeIds(Update update) {
-        Set<NodeId> nodeIdList = new HashSet<NodeId>();
-        for (ItemState state : update.getChanges().addedStates()) {
-            nodeIdList.add(state.getParentId());
-        }
-        for (ItemState state : update.getChanges().modifiedStates()) {
-            if (state.isNode()) {
-                nodeIdList.add((NodeId) state.getId());
-            } else {
-                nodeIdList.add(state.getParentId());
-            }
-        }
-        for (ItemState state : update.getChanges().deletedStates()) {
-            if (state.isNode()) {
-                nodeIdList.add((NodeId) state.getId());
-            } else {
-                nodeIdList.add(state.getParentId());
-            }
-        }
-        update.setAttribute("allIds", nodeIdList);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @param record
-     */
-    @Override
-    public void process(ChangeLogRecord record) {
-        if (log.isDebugEnabled()) {
+        if (getJournal() instanceof NodeLevelLockableJournal) {
             Set<NodeId> nodeIdList = new HashSet<NodeId>();
-            for (ItemState state : record.getChanges().addedStates()) {
+            for (ItemState state : update.getChanges().addedStates()) {
+                // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
+                // oes not need to be locked - only the parent will be modified
                 nodeIdList.add(state.getParentId());
             }
-            for (ItemState state : record.getChanges().modifiedStates()) {
+            for (ItemState state : update.getChanges().modifiedStates()) {
+                // Lock the modified node - take the parent node if state is a property
                 if (state.isNode()) {
                     nodeIdList.add((NodeId) state.getId());
                 } else {
                     nodeIdList.add(state.getParentId());
                 }
             }
-            for (ItemState state : record.getChanges().deletedStates()) {
+            for (ItemState state : update.getChanges().deletedStates()) {
+                // Lock the deleted node - take the parent node if state is a property, otherwise lock node and its
+                // parent
                 if (state.isNode()) {
+                    nodeIdList.add(state.getParentId());
                     nodeIdList.add((NodeId) state.getId());
                 } else {
                     nodeIdList.add(state.getParentId());
                 }
             }
-            log.debug("Getting change  " + record.getRevision() + " : " + nodeIdList);
+            update.setAttribute("allIds", nodeIdList);
         }
-        super.process(record);
     }
 
     @Override
     public void process(NamespaceRecord record) {
-        NodeTypeRegistry.getProviderNodeTypeRegistry().getNamespaces().put( record.getNewPrefix() , record.getUri());
+        NodeTypeRegistry.getProviderNodeTypeRegistry().getNamespaces().put(record.getNewPrefix(), record.getUri());
         super.process(record);
     }
 
@@ -379,7 +326,7 @@ public class JahiaClusterNode extends ClusterNode {
                             NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
                         }
                     } catch (IOException e) {
-                        log.error("Cannot read file",e);
+                        log.error("Cannot read file", e);
                     } catch (ParseException e) {
                         remfiles.add(file);
                     }
@@ -392,13 +339,17 @@ public class JahiaClusterNode extends ClusterNode {
         super.process(record);
     }
 
+    @Override
     public void setRevision(long revision) {
+        // Revision will be set by the NodeLevelLockableJournal earlier by calling reallySetRevision.
+        // Ignore all ClusterNode internal call to setRevision
         if (!(getJournal() instanceof NodeLevelLockableJournal)) {
             super.setRevision(revision);
         }
     }
 
     public void reallySetRevision(long revision) {
+        // Should be called by NodeLevelLockableJournal when syncing
         log.debug("Set revision : " + revision);
         super.setRevision(revision);
     }

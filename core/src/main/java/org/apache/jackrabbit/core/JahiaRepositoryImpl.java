@@ -71,9 +71,6 @@
  */
 package org.apache.jackrabbit.core;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
@@ -93,6 +90,8 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.AccessDeniedException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Jackrabbit repository extension
@@ -117,6 +116,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
          *         if no <code>SearchManager</code>
          * @throws RepositoryException if the search manager could not be created
          */
+        @Override
         protected SearchManager getSearchManager() throws RepositoryException {
             if (!isInitialized()) {
                 throw new IllegalStateException("workspace '" + getName()
@@ -175,6 +175,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
         return context;
     }
 
+    @Override
     protected ClusterNode createClusterNode() throws RepositoryException {
         try {
             ClusterNode clusterNode = new JahiaClusterNode();
@@ -243,6 +244,7 @@ public class JahiaRepositoryImpl extends RepositoryImpl {
      * @param wspConfig the workspace configuration.
      * @return a new <code>WorkspaceInfo</code> instance.
      */
+    @Override
     protected WorkspaceInfo createWorkspaceInfo(WorkspaceConfig wspConfig) {
         return new JahiaWorkspaceInfo(wspConfig);
     }

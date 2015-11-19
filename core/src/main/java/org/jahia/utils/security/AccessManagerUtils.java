@@ -69,11 +69,13 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.apache.jackrabbit.core.security;
+package org.jahia.utils.security;
 
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.jaas.JahiaPrincipal;
@@ -103,17 +105,10 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Current ACL policy :
- * <p/>
- * - If there is a grant ACE defined for the user matching the permission, grant access
- * - If there is a deny ACE defined for the user matching the permission, deny access
- * - Go to parent node, repeat
- * - Then, start again from the leaf
- * - If there are at least one grant ACEs defined for groups the user belongs to, grant access
- * - Go to the parent node, repeat
- * - Deny access
- * <p/>
- *
+ * AccessManagerUtils provide functions to work with acls/ace and roles
+ * - test if a jahiaPrincipal match permissions for a path
+ * - get roles necessary for a given path and a given jahiaPrincipal
+ * - get permissions for a given role
  * @author kevan
  */
 public class AccessManagerUtils {
@@ -128,6 +123,26 @@ public class AccessManagerUtils {
     private static final Pattern REFERENCE_FIELD_LANGUAGE_PATTERN = Pattern.compile("(.*)j:referenceInField_.*_([a-z]{2}(_[A-Z]{2})?)_[0-9]+([/].*)?$");
     private static final Pattern TRANSLATION_LANGUAGE_PATTERN = Pattern.compile("(.*)j:translation_([a-z]{2}(_[A-Z]{2})?)([/].*)?$");
 
+    /**
+     * Acl node representation to be store in cache
+     */
+    public static class CompiledAcl {
+        boolean broken = false;
+        Set<CompiledAce> aces = new HashSet<CompiledAce>();
+    }
+
+    /**
+     * Ace node representation to be store in cache
+     */
+    public static class CompiledAce {
+        String principal;
+        Set<String> roles = new HashSet<String>();
+        boolean granted;
+    }
+
+    /**
+     * Init privilegesInRole and matchingPermissions static cache
+     */
     public static void initCaches() {
         if(privilegesInRole == null) {
             privilegesInRole = initCache("org.jahia.security.privilegesInRolesCache");
@@ -137,19 +152,45 @@ public class AccessManagerUtils {
         }
     }
 
-    private static  <K,V> Cache<K, V> initCache(String name) {
-        CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
-        if (cacheService != null) {
-            // Jahia is initialized
-            try {
-                return cacheService.getCache(name, true);
-            } catch (JahiaInitializationException e) {
-                logger.error(e.getMessage(), e);
+    /**
+     * Flush privilegesInRole cache
+     */
+    public static void flushPrivilegesInRoles() {
+        if (privilegesInRole != null) {
+            privilegesInRole.flush();
+        }
+        if (matchingPermissions != null) {
+            matchingPermissions.flush();
+            if (SettingsBean.getInstance().isClusterActivated()) {
+                // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
+                // to flush it across the cluster
+                net.sf.ehcache.Cache htmlCacheEventSync = getHtmlCacheEventSync();
+                if (htmlCacheEventSync != null) {
+                    htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
+                            // Create an empty CacheClusterEvent to be executed after next Journal sync
+                            new CacheClusterEvent("", getClusterRevision())));
+                }
             }
         }
-        return null;
     }
 
+    /**
+     * Flush matchingPermissions cache
+     */
+    public static void flushMatchingPermissions() {
+        if (matchingPermissions != null) {
+            matchingPermissions.flush();
+        }
+    }
+
+    /**
+     * Get the full privilege name combine privilege name with workspace to generate the permission name used in jahia
+     * exemple: privilege: Privilege.JCR_REMOVE_NODE and workspace: Constants.EDIT_WORKSPACE
+     * result: "{http://www.jcp.org/jcr/1.0}removeNode_default"
+     * @param privilegeName privilege name, like Privilege.JCR_REMOVE_NODE
+     * @param workspace workspace name, like Constants.EDIT_WORKSPACE
+     * @return the privilege name
+     */
     public static String getPrivilegeName(String privilegeName, String workspace) {
         if (workspace == null) {
             return privilegeName;
@@ -169,14 +210,40 @@ public class AccessManagerUtils {
         return name;
     }
 
+    /**
+     * add pathes to list of always denied pathes
+     * @param denied list of path
+     */
     public static void setDeniedPaths(Collection<String> denied) {
         AccessManagerUtils.deniedPathes.set(denied);
     }
 
+    /**
+     * check if the principal is system
+     * @param jahiaPrincipal jahiaPrincipal to test
+     * @return true if system
+     */
     public static boolean isSystemPrincipal(JahiaPrincipal jahiaPrincipal) {
         return jahiaPrincipal != null && jahiaPrincipal.isSystem();
     }
 
+    /**
+     * Entry point to test if the given jahiaPrincipal match the given permissions on a node
+     * @param jcrPath the path to the node
+     * @param permissions the permissions ask for check
+     * @param securitySession the session used to read the j:acl nodes, it should be a system session to be sure that nodes are readable in any case,
+     *                        the workspace of the session is important because acls under nodes can be different depending on the workspace.
+     *                        Normally the workspace of this session should be the same ot the workspace where you want to do the check of permissions.
+     * @param childNodeName name of the node
+     * @param jahiaPrincipal the jahiaPrincipal to test
+     * @param workspaceName the workspace to check (used to construct the privilege names)
+     * @param isAliased if the current user is aliased
+     * @param pathPermissionCache Map used as a cache in memory to store the result of this function, to avoid recalculate everything if check is ask with similar parameters after
+     * @param compiledAcls Map used as a cache in memory to store the j:acl result for a given node, to avoid read jcr again to retrieve the acls in next calls
+     * @param privilegeRegistry Jahia Privilege registry, used to read Privilege or retrieve them using names.
+     * @return true if the jahiaPrincipal match the permissions for the given path, if not return false
+     * @throws RepositoryException
+     */
     public static boolean isGranted(String jcrPath, Set<String> permissions, Session securitySession,
                                     String childNodeName, JahiaPrincipal jahiaPrincipal, String workspaceName,
                                     boolean isAliased, Map<String, Boolean> pathPermissionCache,
@@ -329,6 +396,189 @@ public class AccessManagerUtils {
         return res;
     }
 
+    /**
+     * Retrieve permissions of a given role
+     * The privilegesInRole cache will be used to read the permissions, if not found we used a system session in default workspace to read the role node
+     * @param role Role name
+     * @param privilegeRegistry JahiaPrivilegeRegistry
+     * @return return Set of Privilege objects
+     * @throws RepositoryException
+     */
+    public static Set<Privilege> getPermissionsInRole(String role, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
+        Set<Privilege> permsInRole = null;
+        if(privilegesInRole == null) {
+            privilegesInRole = initCache("org.jahia.security.privilegesInRolesCache");
+        } else {
+            permsInRole = privilegesInRole.get(role);
+        }
+
+        if (permsInRole == null) {
+            permsInRole = internalGetPermissionsInRole(role, privilegeRegistry);
+            privilegesInRole.put(role, permsInRole);
+        }
+        return permsInRole;
+    }
+
+    /**
+     * Test if a given role contains the list of permissions
+     * @param permissions list of permissions to test
+     * @param role the role
+     * @param isAliased if the current user is aliased
+     * @param privilegeRegistry the JahiaPrivilegedRegistry
+     * @param workspaceName the workspace
+     * @return true if the role contain all the permissions
+     * @throws RepositoryException
+     */
+    public static boolean matchPermission(Set<String> permissions, String role, boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry,
+                                          String workspaceName) throws RepositoryException {
+        int permissionsSize = permissions.size();
+        StringBuilder stringBuilder = new StringBuilder(role);
+        for (String permission : permissions) {
+            stringBuilder.append(permission);
+        }
+        String entryKey = stringBuilder.toString();
+        Boolean cachedValue = matchingPermissionsGet(entryKey, isAliased);
+        if (cachedValue == null) {
+            Set<Privilege> permsInRole = getPermissionsInRole(role, privilegeRegistry);
+            if (logger.isDebugEnabled()) {
+                logger.debug("Checking role {}", role);
+            }
+
+            for (Privilege privilege : permsInRole) {
+                String privilegeName = privilege.getName();
+                if (checkPrivilege(permissions, privilegeName, entryKey, isAliased, workspaceName)) {
+                    return true;
+                }
+
+                for (Privilege sub : privilege.getAggregatePrivileges()) {
+                    if (checkPrivilege(permissions, sub.getName(), entryKey, isAliased, workspaceName)) {
+                        return true;
+                    }
+                }
+            }
+            if (permissionsSize == permissions.size()) {
+                // Do not cache if permissions set is modified
+                matchingPermissionsPut(entryKey, Boolean.FALSE, isAliased);
+            }
+            return false;
+        } else {
+            if (cachedValue) {
+                permissions.clear();
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Get the list Privilege from granted roles for a given principal on a node, recursive check on parents nodes
+     * when the acl node have the "inherit" flag, the getRoles(...) function is used to retrieve the roles.
+     * @param absPath the path to the node
+     * @param workspace the workspace
+     * @param jahiaPrincipal the principal
+     * @param privilegeRegistry the JahiaPrivilegeRegistry
+     * @return the list of privileges from the granted roles for the user on the node
+     * @throws PathNotFoundException
+     * @throws RepositoryException
+     */
+    public static Privilege[] getPrivileges(String absPath, String workspace, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
+        Set<String> grantedRoles = getRoles(absPath, workspace, jahiaPrincipal);
+
+        Set<Privilege> results = new HashSet<Privilege>();
+
+        for (String role : grantedRoles) {
+            Set<Privilege> permissionsInRole = getPermissionsInRole(role, privilegeRegistry);
+            if (!permissionsInRole.isEmpty()) {
+                results.addAll(permissionsInRole);
+            } else {
+                logger.debug("No permissions found for role '{}' on path '{}' (or parent)", role, absPath);
+            }
+        }
+
+        return results.toArray(new Privilege[results.size()]);
+    }
+
+    /**
+     * Test if the given JahiaPrincipal is administrator, store the result in the jahiaPrincipal so we don't query the groupService in next calls
+     * @param siteKey if set, the test will check if the user is site administrator
+     * @param jahiaPrincipal the principal
+     * @return true if the user is administrator
+     */
+    public static boolean isAdmin(String siteKey, JahiaPrincipal jahiaPrincipal) {
+        if(jahiaPrincipal.getAdmin() == null) {
+            // optimize away guest, we assume he can never be site administrator.
+            jahiaPrincipal.setAdmin(!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName()) &&
+                    ServicesRegistry.getInstance().getJahiaGroupManagerService().isAdminMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), siteKey));
+        }
+
+        return jahiaPrincipal.getAdmin();
+    }
+
+    /**
+     * Get the list of granted role for a given principal on a node, recursive check on parents when the acl node have the "inherit" flag
+     * @param absPath the path of the node
+     * @param workspace the workspace
+     * @param jahiaPrincipal the jahiaPrincipal
+     * @return the list of granted roles for the user on the node
+     * @throws PathNotFoundException
+     * @throws RepositoryException
+     */
+    public static Set<String> getRoles(String absPath, String workspace, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
+        Set<String> grantedRoles = new HashSet<String>();
+        Set<String> foundRoles = new HashSet<String>();
+        Node node = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null).getNode(absPath);
+
+        String site = resolveSite(node.getPath());
+
+        try {
+            while (true) {
+                if (node.hasNode("j:acl")) {
+                    Node acl = node.getNode("j:acl");
+                    NodeIterator aces = acl.getNodes();
+                    while (aces.hasNext()) {
+                        Node ace = aces.nextNode();
+                        if (ace.isNodeType("jnt:ace")) {
+                            String principal = ace.getProperty("j:principal").getString();
+
+                            if (matchUser(principal, site, jahiaPrincipal)) {
+                                boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
+
+                                String roleSuffix = "";
+                                if (ace.isNodeType("jnt:externalAce")) {
+                                    roleSuffix = "/" + ace.getProperty("j:externalPermissionsName").getString();
+                                }
+
+                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
+                                for (Value r : roles) {
+                                    String role = r.getString();
+                                    if (!foundRoles.contains(principal + ":" + role + roleSuffix)) {
+                                        if (granted) {
+                                            grantedRoles.add(role + roleSuffix);
+                                        }
+                                        foundRoles.add(principal + ":" + role + roleSuffix);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
+                        return grantedRoles;
+                    }
+                }
+                if (node.getPath().equals("/")) {
+                    break;
+                }
+                node = node.getParent();
+            }
+        } catch (ItemNotFoundException e) {
+            if (logger.isDebugEnabled()) {
+                logger.debug(e.getMessage(), e);
+            }
+        }
+        return grantedRoles;
+    }
+
     private static String resolveSite(String jcrPath) {
         String site;
         if (jcrPath.startsWith(JahiaSitesService.SITES_JCR_PATH + "/")) {
@@ -424,21 +674,6 @@ public class AccessManagerUtils {
         return false;
     }
 
-    public static Set<Privilege> getPermissionsInRole(String role, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
-        Set<Privilege> permsInRole = null;
-        if(privilegesInRole == null) {
-            privilegesInRole = initCache("org.jahia.security.privilegesInRolesCache");
-        } else {
-            permsInRole = privilegesInRole.get(role);
-        }
-
-        if (permsInRole == null) {
-            permsInRole = internalGetPermissionsInRole(role, privilegeRegistry);
-            privilegesInRole.put(role, permsInRole);
-        }
-        return permsInRole;
-    }
-
     private static Set<Privilege> internalGetPermissionsInRole(String role, JahiaPrivilegeRegistry privilegeRegistry) throws RepositoryException {
         Set<Privilege> privileges;
         String externalPermission = null;
@@ -528,48 +763,6 @@ public class AccessManagerUtils {
         return privileges;
     }
 
-    public static boolean matchPermission(Set<String> permissions, String role, boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry,
-                                          String workspaceName) throws RepositoryException {
-        int permissionsSize = permissions.size();
-        StringBuilder stringBuilder = new StringBuilder(role);
-        for (String permission : permissions) {
-            stringBuilder.append(permission);
-        }
-        String entryKey = stringBuilder.toString();
-        Boolean cachedValue = matchingPermissionsGet(entryKey, isAliased);
-        if (cachedValue == null) {
-            Set<Privilege> permsInRole = getPermissionsInRole(role, privilegeRegistry);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Checking role {}", role);
-            }
-
-            for (Privilege privilege : permsInRole) {
-                String privilegeName = privilege.getName();
-                if (checkPrivilege(permissions, privilegeName, entryKey, isAliased, workspaceName)) {
-                    return true;
-                }
-
-                for (Privilege sub : privilege.getAggregatePrivileges()) {
-                    if (checkPrivilege(permissions, sub.getName(), entryKey, isAliased, workspaceName)) {
-                        return true;
-                    }
-                }
-            }
-            if (permissionsSize == permissions.size()) {
-                // Do not cache if permissions set is modified
-                matchingPermissionsPut(entryKey, Boolean.FALSE, isAliased);
-            }
-            return false;
-        } else {
-            if (cachedValue) {
-                permissions.clear();
-                return true;
-            } else {
-                return false;
-            }
-        }
-    }
-
     private static boolean checkPrivilege(Set<String> permissions, String name, String cacheEntryKey, boolean isAliased, String workspaceName) {
         if (!isAliased || !name.contains("_" + Constants.EDIT_WORKSPACE)) {
             if (checkPrivilege(permissions, name)) {
@@ -614,92 +807,12 @@ public class AccessManagerUtils {
         return false;
     }
 
-    public static Privilege[] getPrivileges(String absPath, String workspace, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
-        Set<String> grantedRoles = getRoles(absPath, workspace, jahiaPrincipal);
-
-        Set<Privilege> results = new HashSet<Privilege>();
-
-        for (String role : grantedRoles) {
-            Set<Privilege> permissionsInRole = getPermissionsInRole(role, privilegeRegistry);
-            if (!permissionsInRole.isEmpty()) {
-                results.addAll(permissionsInRole);
-            } else {
-                logger.debug("No permissions found for role '{}' on path '{}' (or parent)", role, absPath);
-            }
-        }
-
-        return results.toArray(new Privilege[results.size()]);
-    }
-
-    public static boolean isAdmin(String siteKey, JahiaPrincipal jahiaPrincipal) {
-        jahiaPrincipal.setAdmin(!JahiaLoginModule.GUEST.equals(jahiaPrincipal.getName()) &&
-                ServicesRegistry.getInstance().getJahiaGroupManagerService().isAdminMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), siteKey));
-        return jahiaPrincipal.getAdmin();
-    }
-
-
     private static boolean isUserMemberOf(String groupname, String site, JahiaPrincipal jahiaPrincipal) {
         return  (JahiaGroupManagerService.GUEST_GROUPNAME.equals(groupname)) ||
                 (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.USERS_GROUPNAME.equals(groupname)) ||
                 (!jahiaPrincipal.isGuest() && JahiaGroupManagerService.SITE_USERS_GROUPNAME.equals(groupname) && (jahiaPrincipal.getRealm() == null || jahiaPrincipal.getRealm().equals(site))) ||
                 (!jahiaPrincipal.isGuest() && (ServicesRegistry.getInstance().getJahiaGroupManagerService().isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, site) || ServicesRegistry.getInstance().getJahiaGroupManagerService().isMember(jahiaPrincipal.getName(), jahiaPrincipal.getRealm(), groupname, null)));
     }
-
-    public static Set<String> getRoles(String absPath, String workspace, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
-        Set<String> grantedRoles = new HashSet<String>();
-        Set<String> foundRoles = new HashSet<String>();
-        Node node = JCRSessionFactory.getInstance().getCurrentSystemSession(workspace, null, null).getNode(absPath);
-
-        String site = resolveSite(node.getPath());
-
-        try {
-            while (true) {
-                if (node.hasNode("j:acl")) {
-                    Node acl = node.getNode("j:acl");
-                    NodeIterator aces = acl.getNodes();
-                    while (aces.hasNext()) {
-                        Node ace = aces.nextNode();
-                        if (ace.isNodeType("jnt:ace")) {
-                            String principal = ace.getProperty("j:principal").getString();
-
-                            if (matchUser(principal, site, jahiaPrincipal)) {
-                                boolean granted = ace.getProperty("j:aceType").getString().equals("GRANT");
-
-                                String roleSuffix = "";
-                                if (ace.isNodeType("jnt:externalAce")) {
-                                    roleSuffix = "/" + ace.getProperty("j:externalPermissionsName").getString();
-                                }
-
-                                Value[] roles = ace.getProperty(Constants.J_ROLES).getValues();
-                                for (Value r : roles) {
-                                    String role = r.getString();
-                                    if (!foundRoles.contains(principal + ":" + role + roleSuffix)) {
-                                        if (granted) {
-                                            grantedRoles.add(role + roleSuffix);
-                                        }
-                                        foundRoles.add(principal + ":" + role + roleSuffix);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    if (acl.hasProperty("j:inherit") && !acl.getProperty("j:inherit").getBoolean()) {
-                        return grantedRoles;
-                    }
-                }
-                if (node.getPath().equals("/")) {
-                    break;
-                }
-                node = node.getParent();
-            }
-        } catch (ItemNotFoundException e) {
-            if (logger.isDebugEnabled()) {
-                logger.debug(e.getMessage(), e);
-            }
-        }
-        return grantedRoles;
-    }
-
 
     private static Boolean matchingPermissionsGet(String key, boolean isAliased) {
         return isAliased ? null : matchingPermissions.get(key);
@@ -721,36 +834,6 @@ public class AccessManagerUtils {
         }
     }
 
-    public static class CompiledAcl {
-        boolean broken = false;
-        Set<CompiledAce> aces = new HashSet<CompiledAce>();
-    }
-
-    public static class CompiledAce {
-        String principal;
-        Set<String> roles = new HashSet<String>();
-        boolean granted;
-    }
-
-    public static void flushPrivilegesInRoles() {
-        if (privilegesInRole != null) {
-            privilegesInRole.flush();
-        }
-        if (matchingPermissions != null) {
-            matchingPermissions.flush();
-            if (SettingsBean.getInstance().isClusterActivated()) {
-                // Matching Permissions cache is not a selfPopulating Replicated cache so we need to send a command
-                // to flush it across the cluster
-                net.sf.ehcache.Cache htmlCacheEventSync = getHtmlCacheEventSync();
-                if (htmlCacheEventSync != null) {
-                    htmlCacheEventSync.put(new Element("FLUSH_MATCHINGPERMISSIONS-" + UUID.randomUUID(),
-                            // Create an empty CacheClusterEvent to be executed after next Journal sync
-                            new CacheClusterEvent("", getClusterRevision())));
-                }
-            }
-        }
-    }
-
     private static net.sf.ehcache.Cache getHtmlCacheEventSync() {
         net.sf.ehcache.Cache htmlCacheEventSync = null;
         try {
@@ -766,9 +849,16 @@ public class AccessManagerUtils {
         return ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) JCRSessionFactory.getInstance().getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode().getRevision();
     }
 
-    public static void flushMatchingPermissions() {
-        if (matchingPermissions != null) {
-            matchingPermissions.flush();
+    private static  <K,V> Cache<K, V> initCache(String name) {
+        CacheService cacheService = ServicesRegistry.getInstance().getCacheService();
+        if (cacheService != null) {
+            // Jahia is initialized
+            try {
+                return cacheService.getCache(name, true);
+            } catch (JahiaInitializationException e) {
+                logger.error(e.getMessage(), e);
+            }
         }
+        return null;
     }
 }

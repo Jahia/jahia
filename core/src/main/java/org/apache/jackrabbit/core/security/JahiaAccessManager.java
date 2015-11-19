@@ -90,6 +90,7 @@ import org.apache.jackrabbit.spi.commons.namespace.NamespaceResolver;
 import org.apache.jackrabbit.spi.commons.namespace.SessionNamespaceResolver;
 import org.jahia.jaas.JahiaPrincipal;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.security.AccessManagerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

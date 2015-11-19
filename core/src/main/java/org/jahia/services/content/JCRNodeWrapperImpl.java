@@ -381,19 +381,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
 
             AccessControlManager accessControlManager = getAccessControlManager();
-            //                        List<Privilege> privileges = convertPermToPrivileges(perm, accessControlManager);
             return accessControlManager == null || accessControlManager.hasPrivileges(localPathInProvider, new Privilege[]{accessControlManager.privilegeFromName(perm)});
-        } catch (AccessControlException e) {
-            if (!getProvider().getMountPoint().equals("/")) {
-                try {
-                    return session.getNode(getProvider().getMountPoint()).getParent().hasPermission(perm);
-                } catch (RepositoryException e1) {
-                    return false;
-                }
-            } else {
-                logger.error("Cannot check permission " + perm, e);
-                return false;
-            }
         } catch (RepositoryException re) {
             logger.error("Cannot check permission " + perm, re);
             return false;

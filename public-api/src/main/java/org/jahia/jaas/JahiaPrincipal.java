@@ -87,6 +87,7 @@ public class JahiaPrincipal implements Principal {
 
     private String name;
     private String realm;
+    private Boolean isAdmin;
 
     private Map<String, Map<String, Boolean>> roleCache = new HashMap<String, Map<String, Boolean>>();
 
@@ -124,5 +125,12 @@ public class JahiaPrincipal implements Principal {
     public Map<String /* siteKey */, Map<String /* role */, Boolean /* evaluation */>> getRoleCache() {
         return roleCache;
     }
-    
+
+    public Boolean getAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(Boolean admin) {
+        isAdmin = admin;
+    }
 }

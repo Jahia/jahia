@@ -390,7 +390,7 @@ public class FileUploader extends Window {
         textField.setFieldLabel("rename");
         textField.setName(key + "_name");
         textField.setValue(name);
-        textField.setEnabled(false);
+        textField.setEnabled(uploadOption==UploadOption.RENAME);
 
         final HiddenField<String> hiddenField = new HiddenField<String>();
         hiddenField.setName(key + "_tmp");

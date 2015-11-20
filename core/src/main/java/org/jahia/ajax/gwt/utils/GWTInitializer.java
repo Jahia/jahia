@@ -93,10 +93,7 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-<<<<<<< .working
-=======
 
->>>>>>> .merge-right.r53313
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

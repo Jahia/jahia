@@ -93,6 +93,10 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+<<<<<<< .working
+=======
+
+>>>>>>> .merge-right.r53313
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -168,9 +172,7 @@ public class GWTInitializer {
         params.put(JahiaGWTParameters.CONTEXT_PATH, contextPath);
         params.put(JahiaGWTParameters.SERVLET_PATH, (request.getAttribute("servletPath") == null) ? request.getServletPath() : (String) request.getAttribute("servletPath"));
         params.put(JahiaGWTParameters.PATH_INFO, request.getPathInfo());
-        String queryString = request.getQueryString();
-        queryString = queryString != null ? queryString.replace("\"","%22") : null;
-        params.put(JahiaGWTParameters.QUERY_STRING, queryString);
+        params.put(JahiaGWTParameters.QUERY_STRING, request.getQueryString());
         boolean devMode = SettingsBean.getInstance().isDevelopmentMode();
         params.put(JahiaGWTParameters.DEVELOPMENT_MODE, devMode ? "true" : "false");
         if (devMode) {
@@ -358,12 +360,8 @@ public class GWTInitializer {
                         b = true;
                     }
                     //s.append("\n");
-<<<<<<< .working
-                    s.append("\"").append(param.getKey()).append("\":\"").append(String.valueOf(param.getValue())).append("\"");
-=======
-                    s.append(StringEscapeUtils.escapeJavaScript(param.getKey())).append(":\"")
+                    s.append("\"").append(StringEscapeUtils.escapeJavaScript(param.getKey())).append("\":\"")
                             .append(StringEscapeUtils.escapeJavaScript(String.valueOf(param.getValue()))).append("\"");
->>>>>>> .merge-right.r53309
                 }
             }
         }

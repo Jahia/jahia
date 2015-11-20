@@ -154,7 +154,7 @@ public class GWTInitializer {
             }
         }
 
-        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(uilocale.toString()).append("\"/>");
+        buf.append("<meta name=\"gwt:property\" content=\"locale=").append(StringEscapeUtils.escapeXml(uilocale.toString())).append("\"/>");
         addCss(buf, request, false);
 
         // creat parameters map
@@ -358,7 +358,12 @@ public class GWTInitializer {
                         b = true;
                     }
                     //s.append("\n");
+<<<<<<< .working
                     s.append("\"").append(param.getKey()).append("\":\"").append(String.valueOf(param.getValue())).append("\"");
+=======
+                    s.append(StringEscapeUtils.escapeJavaScript(param.getKey())).append(":\"")
+                            .append(StringEscapeUtils.escapeJavaScript(String.valueOf(param.getValue()))).append("\"");
+>>>>>>> .merge-right.r53309
                 }
             }
         }

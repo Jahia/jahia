@@ -89,7 +89,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Created by toto on 06/12/13.
+ * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
  */
 public class JahiaClusterNode extends ClusterNode {
     /**

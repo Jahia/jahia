@@ -134,7 +134,9 @@ public final class JCRAutoSplitUtils {
             String splitConfig = parent.getProperty(Constants.SPLIT_CONFIG).getString();
             String splitType = parent.getProperty(Constants.SPLIT_NODETYPE).getString();
             if (node.isNodeType(splitType)) {
-                logger.debug("Aborting auto-splitting on node (UUID="+node.getIdentifier()+", path=" + node.getPath() + ") since it is applied on the split type.");
+                if (logger.isDebugEnabled()) {
+                    logger.debug("Aborting auto-splitting on node (UUID="+node.getIdentifier()+", path=" + node.getPath() + ") since it is applied on the split type.");
+                }
                 return null;
             }
             if (logger.isDebugEnabled()) {
@@ -212,7 +214,7 @@ public final class JCRAutoSplitUtils {
                 }
             }
             if (!parent.getPath().equals(node.getParent().getPath())) {
-                String newPath = parent.getPath() + "/" + findAvailableNodeName(parent, node.getName());
+                String newPath = parent.getPath() + "/" + findAvailableNodeName(parent, node.getName(), node.isFile());
                 node.getSession().move(node.getPath(), newPath);
                 return node.getSession().getNode(newPath);
             }
@@ -394,7 +396,9 @@ public final class JCRAutoSplitUtils {
             }
         }
         JCRNodeWrapper newNode = parentNode.addNode(findAvailableNodeName(parentNode, nodeName), nodeType);
-        logger.debug("Node added at " + newNode.getPath());
+        if (logger.isDebugEnabled()) {
+            logger.debug("Node added at " + newNode.getPath());
+        }
         return newNode;
     }
 

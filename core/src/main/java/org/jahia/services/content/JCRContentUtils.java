@@ -404,14 +404,34 @@ public final class JCRContentUtils implements ServletContextAware {
      * @return the next available name for a node, appending if needed numbers
      */
     public static String findAvailableNodeName(Node dest, String name) {
+        return findAvailableNodeName(dest, name, true);
+    }
+
+    /**
+     * Returns the next available name for a node, appending if needed numbers.
+     *
+     * @param dest the destination node, where the new one will be created
+     * @param name the name of the new node
+     * @param hasExtension <code>true</code> if the name has an extension (e.g. in case of file names)
+     * @return the next available name for a node, appending if needed numbers
+     */
+    public static String findAvailableNodeName(Node dest, String name, boolean hasExtension) {
+        try {
+            dest.getNode(name);
+        } catch (RepositoryException e) {
+            return name;
+        }
+        
         int i = 1;
 
         String basename = name;
-        int dot = basename.lastIndexOf('.');
         String ext = "";
-        if (dot > 0) {
-            ext = basename.substring(dot);
-            basename = basename.substring(0, dot);
+        if (hasExtension) {
+            int dot = basename.lastIndexOf('.');
+            if (dot > 0) {
+                ext = basename.substring(dot);
+                basename = basename.substring(0, dot);
+            }
         }
         int und = basename.lastIndexOf('-');
         if (und > -1 && Patterns.NUMBERS.matcher(basename.substring(und + 1)).matches()) {
@@ -420,14 +440,14 @@ public final class JCRContentUtils implements ServletContextAware {
 
         do {
             try {
-                dest.getNode(name);
-                String newSuffix = "-" + (i++) + ext;
+                String newSuffix = hasExtension ? ("-" + (i++) + ext) : ("-" + (i++));
                 name = basename + newSuffix;
                 //name has a sizelimit of 32 chars
                 int maxNameSize = SettingsBean.getInstance().getMaxNameSize();
                 if (name.length() > maxNameSize) {
                     name = basename.substring(0, (basename.length() <= maxNameSize ? basename.length() : maxNameSize) - newSuffix.length()) + newSuffix;
                 }
+                dest.getNode(name);
             } catch (RepositoryException e) {
                 break;
             }

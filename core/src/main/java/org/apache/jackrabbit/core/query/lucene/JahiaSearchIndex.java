@@ -567,7 +567,7 @@ public class JahiaSearchIndex extends SearchIndex {
      * @throws RepositoryException
      */
     private boolean canUseOptimizedACEIndexation(NodeState currentNode) throws RepositoryException {
-        final ExtendedNodeType nodeType = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));
+        final ExtendedNodeType nodeType = NodeTypeRegistry.getInstance().getNodeType(JahiaNodeIndexer.getTypeNameAsString(currentNode.getNodeTypeName(), getContext().getNamespaceRegistry()));
         for (String type : typesUsingOptimizedACEIndexation) {
             if (nodeType.isNodeType(type)) {
                 return true;

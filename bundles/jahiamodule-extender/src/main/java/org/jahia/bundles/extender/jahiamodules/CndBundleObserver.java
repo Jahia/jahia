@@ -79,6 +79,7 @@ import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.TemplatePackageRegistry;
 import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
@@ -90,6 +91,7 @@ import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * A bundle observer for Jahia Modules. Used by the BundleWatcher defined in the activator.
@@ -113,25 +115,66 @@ public class CndBundleObserver implements BundleObserver<URL> {
         if (urls.size() == 0) {
             return;
         }
-        String bundleName = BundleUtils.getDisplayName(bundle);
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
+
+        JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
+
+        long lastModified = 0;
         for (URL url : urls) {
             BundleResource bundleResource = new BundleResource(url, bundle);
             try {
-                JahiaTemplatesPackage module = templatePackageRegistry.lookupByBundle(bundle);
-                module.setDefinitionsFile(bundleResource.getURL().getPath().substring(1));
-                NodeTypeRegistry.getInstance().addDefinitionsFile(bundleResource, bundle.getSymbolicName(),
-                        module.getVersion());
-                if (SettingsBean.getInstance().isProcessingServer()) {
-                    jcrStoreService.deployDefinitions(bundle.getSymbolicName());
-                } else {
-                    jcrStoreService.registerNamespaces();
+                long l = bundleResource.lastModified();
+                if (l > lastModified) {
+                    lastModified = l;
                 }
-                logger.info("Registered definitions from file {} for bundle {}", url, bundleName);
-            } catch (IOException | ParseException | RepositoryException e) {
-                logger.error("Error registering node type definition file " + url + " for bundle " + bundle, e);
-                throw new RuntimeException("Error registering node type definition file " + url + " for bundle " + bundle, e);
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
             }
+        }
+
+        ModuleVersion moduleVersion = module.getVersion();
+        NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
+
+        String systemId = bundle.getSymbolicName();
+        boolean latestDefinitions = nodeTypeRegistry.isLatestDefinitions(systemId, moduleVersion, lastModified);
+
+        if (!SettingsBean.getInstance().isProcessingServer() || !latestDefinitions) {
+            return;
+        }
+
+        String bundleName = BundleUtils.getDisplayName(bundle);
+
+        nodeTypeRegistry.unregisterNodeTypes(systemId);
+
+        try {
+            for (URL url : urls) {
+                BundleResource bundleResource = new BundleResource(url, bundle);
+                module.setDefinitionsFile(bundleResource.getURL().getPath().substring(1));
+                if (!nodeTypeRegistry.addDefinitionsFile(bundleResource, systemId)) {
+                    throw new RuntimeException("Error registering node type definition for bundle " + bundle);
+                }
+            }
+        } catch (ParseException | IOException e) {
+            // Error when loading nodetypes. Restore previous types.
+            // todo restore types
+
+            throw new RuntimeException("Error registering node type definition for bundle " + bundle, e);
+        }
+
+        try {
+            Properties p = nodeTypeRegistry.getDeploymentProperties();
+            p.put(systemId + ".version", moduleVersion.toString());
+            p.put(systemId + ".lastModified", Long.toString(lastModified));
+            nodeTypeRegistry.saveProperties();
+
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                jcrStoreService.deployDefinitions(systemId);
+            } else {
+                jcrStoreService.registerNamespaces();
+            }
+            logger.info("Registered definitions for bundle {}", bundleName);
+        } catch (IOException | RepositoryException e) {
+            logger.error("Error registering node type definition " + bundle, e);
+            throw new RuntimeException("Error registering node type definition for bundle " + bundle, e);
         }
     }
 

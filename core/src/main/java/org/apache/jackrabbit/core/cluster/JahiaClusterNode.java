@@ -302,7 +302,11 @@ public class JahiaClusterNode extends ClusterNode {
 
     @Override
     public void process(NamespaceRecord record) {
+<<<<<<< .working
         NodeTypeRegistry.getProviderNodeTypeRegistry().getNamespaces().put(record.getNewPrefix(), record.getUri());
+=======
+        NodeTypeRegistry.getInstance().getNamespaces().put( record.getNewPrefix() , record.getUri());
+>>>>>>> .merge-right.r53343
         super.process(record);
     }
 
@@ -310,6 +314,7 @@ public class JahiaClusterNode extends ClusterNode {
     public void process(NodeTypeRecord record) {
         try {
             // In case of any change in the registered nodetypes, reread the provider nodetype registry
+<<<<<<< .working
             List<String> files = new ArrayList<String>();
             NodeTypeRegistry instance = NodeTypeRegistry.getInstance();
             List<String> remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
@@ -329,6 +334,9 @@ public class JahiaClusterNode extends ClusterNode {
                     }
                 }
             }
+=======
+            NodeTypeRegistry.getInstance().reloadNodeTypeRegistry();
+>>>>>>> .merge-right.r53343
         } catch (RepositoryException e) {
             String msg = "Unable to register nodetypes : " + e.getMessage();
             log.error(msg);

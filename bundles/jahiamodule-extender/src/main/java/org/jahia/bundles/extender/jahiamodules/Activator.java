@@ -413,7 +413,6 @@ public class Activator implements BundleActivator {
                         JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
                         jcrStoreService.undeployDefinitions(bundle.getSymbolicName());
                     }
-                    NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
                 }
             } catch (RepositoryException e) {
                 logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
@@ -499,12 +498,9 @@ public class Activator implements BundleActivator {
 
         boolean latestDefinitions;
         try {
-            latestDefinitions = NodeTypeRegistry.getInstance().isLatestDefinitions(bundle.getSymbolicName(), pkg.getVersion());
-            if (latestDefinitions) {
-                List<URL> foundURLs = CND_SCANNER.scan(bundle);
-                if (!foundURLs.isEmpty()) {
-                    cndBundleObserver.addingEntries(bundle, foundURLs);
-                }
+            List<URL> foundURLs = CND_SCANNER.scan(bundle);
+            if (!foundURLs.isEmpty()) {
+                cndBundleObserver.addingEntries(bundle, foundURLs);
             }
         } catch (Exception e) {
             logger.info("--- Error parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
@@ -546,10 +542,8 @@ public class Activator implements BundleActivator {
             }
         }
 
-        if (latestDefinitions) {
-            parseDependantBundles(pkg.getId(), shouldAutoStart);
-            parseDependantBundles(pkg.getName(), shouldAutoStart);
-        }
+        parseDependantBundles(pkg.getId(), shouldAutoStart);
+        parseDependantBundles(pkg.getName(), shouldAutoStart);
     }
 
     private void addToBeParsed(Bundle bundle, String missingDependency) {

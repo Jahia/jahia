@@ -75,15 +75,14 @@ import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.*;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
@@ -302,11 +301,7 @@ public class JahiaClusterNode extends ClusterNode {
 
     @Override
     public void process(NamespaceRecord record) {
-<<<<<<< .working
-        NodeTypeRegistry.getProviderNodeTypeRegistry().getNamespaces().put(record.getNewPrefix(), record.getUri());
-=======
         NodeTypeRegistry.getInstance().getNamespaces().put( record.getNewPrefix() , record.getUri());
->>>>>>> .merge-right.r53343
         super.process(record);
     }
 
@@ -314,29 +309,7 @@ public class JahiaClusterNode extends ClusterNode {
     public void process(NodeTypeRecord record) {
         try {
             // In case of any change in the registered nodetypes, reread the provider nodetype registry
-<<<<<<< .working
-            List<String> files = new ArrayList<String>();
-            NodeTypeRegistry instance = NodeTypeRegistry.getInstance();
-            List<String> remfiles = new ArrayList<String>(instance.getNodeTypesDBService().getFilesList());
-            while (!remfiles.isEmpty() && !remfiles.equals(files)) {
-                files = new ArrayList<String>(remfiles);
-                remfiles.clear();
-                for (String file : files) {
-                    try {
-                        if (file.endsWith(".cnd")) {
-                            final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
-                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
-                        }
-                    } catch (IOException e) {
-                        log.error("Cannot read file", e);
-                    } catch (ParseException e) {
-                        remfiles.add(file);
-                    }
-                }
-            }
-=======
             NodeTypeRegistry.getInstance().reloadNodeTypeRegistry();
->>>>>>> .merge-right.r53343
         } catch (RepositoryException e) {
             String msg = "Unable to register nodetypes : " + e.getMessage();
             log.error(msg);

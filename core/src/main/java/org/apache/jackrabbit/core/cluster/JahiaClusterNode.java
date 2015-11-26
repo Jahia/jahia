@@ -84,9 +84,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
@@ -275,7 +275,7 @@ public class JahiaClusterNode extends ClusterNode {
 
     private void storeNodeIds(Update update) {
         if (getJournal() instanceof NodeLevelLockableJournal) {
-            Set<NodeId> nodeIdList = new HashSet<NodeId>();
+            Set<NodeId> nodeIdList = new TreeSet<NodeId>();
             for (ItemState state : update.getChanges().addedStates()) {
                 // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
                 // oes not need to be locked - only the parent will be modified

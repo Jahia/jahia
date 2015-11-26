@@ -83,10 +83,7 @@ import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
@@ -260,7 +257,7 @@ public class JahiaClusterNode extends ClusterNode {
     private void unlockNodes(Update update) throws JournalException {
         Journal journal = getJournal();
         if (journal instanceof NodeLevelLockableJournal) {
-            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+            SortedSet<NodeId> ids = (SortedSet<NodeId>) update.getAttribute("allIds");
             ((NodeLevelLockableJournal) journal).unlockNodes(ids);
         }
     }
@@ -268,7 +265,7 @@ public class JahiaClusterNode extends ClusterNode {
     private void lockNodes(Update update) throws JournalException {
         Journal journal = getJournal();
         if (journal instanceof NodeLevelLockableJournal) {
-            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
+            SortedSet<NodeId> ids = (SortedSet<NodeId>) update.getAttribute("allIds");
             ((NodeLevelLockableJournal) journal).lockNodes(ids);
         }
     }

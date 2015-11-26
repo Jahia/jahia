@@ -418,7 +418,7 @@ public class JCRSiteNode extends JCRNodeDecorator implements JahiaSite {
                     }
                 }
             } else {
-                logger.warn("Couldn't find module '" + key
+                logger.debug("Couldn't find module '" + key
                         + "' which is a direct or transitive dependency of the site '" + getName() + "'");
             }
         }

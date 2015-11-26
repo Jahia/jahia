@@ -372,6 +372,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             tx.commit();
             return result;
         } catch (Exception e) {
+            session.getTransaction().rollback();
             return Collections.emptyList();
         } finally {
             session.close();
@@ -393,6 +394,7 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             }
             return deletedEntities;
         } catch (Exception e) {
+            session.getTransaction().rollback();
             logger.error("Error deleting history entries before date " + date, e);
             return -1;
         } finally {

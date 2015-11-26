@@ -102,12 +102,30 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
     private static final Logger logger = LoggerFactory.getLogger(WebflowDispatcherScript.class);
 
     private String flowPath;
+    
+    private boolean xssFilteringEnabled = true;
 
     /**
      * Builds the script object
+     * 
+     * @param view
+     *            the view
      */
     public WebflowDispatcherScript(View view) {
         super(view);
+    }
+
+    /**
+     * Builds the script object
+     * 
+     * @param view
+     *            the view
+     * @param xssFilteringEnabled
+     *            if the XSS filtering of request parameters should be enabled
+     */
+    public WebflowDispatcherScript(View view, boolean xssFilteringEnabled) {
+        this(view);
+        this.xssFilteringEnabled = xssFilteringEnabled;
     }
 
     /**
@@ -132,18 +150,21 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         HttpServletRequest request = context.getRequest();
         HttpServletResponse response = context.getResponse();
 
-        final Map<String, List<String>> parameters = (Map<String, List<String>>) request.getAttribute("actionParameters");
-        if (parameters != null) {
-            request = new HttpServletRequestWrapper(request) {
-                @Override
-                public String[] getParameterValues(String name) {
-                    List<String> l = parameters.get(name);
-                    if (l != null) {
-                        return l.toArray(new String[l.size()]);
+        if (xssFilteringEnabled) {
+            @SuppressWarnings("unchecked")
+            final Map<String, List<String>> parameters = (Map<String, List<String>>) request.getAttribute("actionParameters");
+            if (parameters != null) {
+                request = new HttpServletRequestWrapper(request) {
+                    @Override
+                    public String[] getParameterValues(String name) {
+                        List<String> l = parameters.get(name);
+                        if (l != null) {
+                            return l.toArray(new String[l.size()]);
+                        }
+                        return null;
                     }
-                    return null;
-                }
-            };
+                };
+            }
         }
 
         String identifier;

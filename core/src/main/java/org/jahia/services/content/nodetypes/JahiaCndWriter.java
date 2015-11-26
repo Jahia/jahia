@@ -158,9 +158,6 @@ public class JahiaCndWriter {
      * @throws java.io.IOException
      */
     public void write(ExtendedNodeType d) throws IOException {
-        if (d.getName().startsWith("nt:") || d.getName().startsWith("mix:")) {
-            return;
-        }
         writeName(d);
         writeSupertypes(d);
         writeOptions(d);

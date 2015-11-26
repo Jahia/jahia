@@ -91,6 +91,7 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -271,7 +272,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return w;
     }
 
-    public void deployDefinitions(String systemId) throws RepositoryException {
+    public void deployDefinitions(String systemId) throws IOException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
                 provider.deployDefinitions(systemId);

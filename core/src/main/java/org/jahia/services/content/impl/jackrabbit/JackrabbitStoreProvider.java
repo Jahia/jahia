@@ -228,7 +228,7 @@ public class JackrabbitStoreProvider extends JCRStoreProvider {
 
     protected void unregisterCustomNodeTypes(String systemId, Workspace ws) throws IOException, RepositoryException {
         org.apache.jackrabbit.core.nodetype.NodeTypeRegistry.disableCheckForReferencesInContentException = true;
-        NodeTypeIterator nti = NodeTypeRegistry.getProviderNodeTypeRegistry().getNodeTypes(systemId);
+        NodeTypeIterator nti = NodeTypeRegistry.getInstance().getNodeTypes(systemId);
         List<String> names = new ArrayList<String>();
 
         long timer = System.currentTimeMillis();

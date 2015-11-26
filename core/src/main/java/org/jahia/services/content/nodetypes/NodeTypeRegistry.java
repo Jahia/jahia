@@ -91,6 +91,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.nodetype.*;
 import java.io.*;
+
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -116,9 +117,13 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     private final Map<String, Set<ExtendedItemDefinition>> typedItems = new HashMap<>();
 
     private boolean propertiesLoaded = false;
-    private final Properties deploymentProperties = new Properties();
+    private final Properties deploymentProperties = new Properties() {
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            return new Vector(new TreeSet<>(keySet())).elements();
+        }
+    };
 
-    private static boolean hasEncounteredIssuesWithDefinitions = false;
     private NodeTypesDBServiceImpl nodeTypesDBService;
 
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
@@ -131,57 +136,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     }
     public static NodeTypeRegistry getInstance() {
         return Holder.INSTANCE;
-    }
-
-    private static class ProviderNodeTypeRegistryHolder {
-        static final NodeTypeRegistry PROVIDER_NODE_TYPE_INSTANCE = new NodeTypeRegistry();
-
-        static {
-            final NodeTypeRegistry instance = getInstance();
-            try {
-                PROVIDER_NODE_TYPE_INSTANCE.initSystemDefinitions();
-
-                List<String> files = new ArrayList<>();
-                List<String> remfiles;
-                try {
-                    remfiles = new ArrayList<>(instance.getNodeTypesDBService().getFilesList());
-                    while (!remfiles.isEmpty() && !remfiles.equals(files)) {
-                        files = new ArrayList<>(remfiles);
-                        remfiles.clear();
-                        for (String file : files) {
-                            try {
-                                if (file.endsWith(".cnd")) {
-                                    final String cndFile = instance.getNodeTypesDBService().readCndFile(file);
-                                    deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(cndFile), file);
-                                }
-                            } catch (ParseException e) {
-                                remfiles.add(file);
-                            }
-                        }
-                    }
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
-
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
-
-        public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
-            final String systemId = StringUtils.substringBefore(definitionName, ".cnd");
-            JahiaCndReader r = new JahiaCndReader(reader, definitionName, systemId, PROVIDER_NODE_TYPE_INSTANCE);
-            r.parse();
-        }
-
-    }
-
-    public static NodeTypeRegistry getProviderNodeTypeRegistry() {
-        return ProviderNodeTypeRegistryHolder.PROVIDER_NODE_TYPE_INSTANCE;
-    }
-
-    public static void deployDefinitionsFileToProviderNodeTypeRegistry(Reader reader, String definitionName) throws ParseException, IOException {
-        ProviderNodeTypeRegistryHolder.deployDefinitionsFileToProviderNodeTypeRegistry(reader, definitionName);
     }
 
     /**
@@ -212,7 +166,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             if (files != null) {
                 SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
                 for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1], null);
+                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1]);
                 }
             }
         } catch (ParseException e) {
@@ -251,40 +205,63 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     }
 
 
-    public boolean isLatestDefinitions(String systemId, ModuleVersion version) {
+    public boolean isLatestDefinitions(String systemId, ModuleVersion version, long lastModified) {
         if (version != null) {
             String key = systemId + ".version";
             if (deploymentProperties.containsKey(key)) {
+                logger.info("Previously deployed version was : "+deploymentProperties.getProperty(key));
                 ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
                 if (lastDeployed.compareTo(version) > 0) {
+                    logger.info("Ignoring version "+systemId + " / " + version + " / "+ lastModified);
                     return false;
                 }
             }
         }
+        String key2 = systemId + ".lastModified";
+        if (deploymentProperties.containsKey(key2)) {
+            logger.info("Previously deployed bundle was done at : " + deploymentProperties.getProperty(key2));
+            long lastDeployed = (long) Long.parseLong(deploymentProperties.getProperty(key2));
+            if (lastDeployed >= lastModified) {
+                logger.info("Ignoring version "+systemId + " / " + version + " / "+ lastModified);
+                return false;
+            }
+        }
+
         return true;
     }
 
+    @Deprecated
     public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException {
-        if (version != null) {
-            if (isLatestDefinitions(systemId, version)) {
-                deploymentProperties.put(systemId + ".version", version.toString());
-                saveProperties();
-            } else {
-                return;
-            }
-        }
+        addDefinitionsFile(resource, systemId);
+    }
+
+    public boolean addDefinitionsFile(Resource resource, String systemId) throws IOException, ParseException {
+        logger.info("Adding definitions file "+resource.getURL() + " for "+systemId);
+        boolean needUpdate = false;
 
         String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
         if (ext.equalsIgnoreCase(".cnd")) {
             Reader resourceReader = null;
             try {
+                logger.info("Parsing cnd " + resource.getFilename());
                 resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
                 if (r.hasEncounteredIssuesWithDefinitions()) {
-                    hasEncounteredIssuesWithDefinitions = true;
                     logger.warn("Errors parsing definitions of " + systemId + ": \n" + StringUtils.join(r.getParsingErrors(), "\n"));
+                    return false;
                 }
+
+                logger.info("Updating database cnd");
+
+                try {
+                    final StringWriter out = new StringWriter();
+                    new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
+                    nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                }
+                needUpdate = true;
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }
@@ -305,10 +282,16 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         if (!files.get(systemId).contains(resource)) {
             files.get(systemId).add(resource);
         }
+        return needUpdate;
     }
 
+    @Deprecated
     public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException {
-        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId, version);
+        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId);
+    }
+
+    public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException {
+        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId);
     }
 
     /**
@@ -567,12 +550,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             readLock.unlock();
         }
         files.remove(systemId);
-        deploymentProperties.remove(systemId + ".version");
-        try {
-            saveProperties();
-        } catch (IOException e) {
-            logger.error("Cannot save definitions properties", e);
-        }
     }
 
     public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
@@ -586,10 +563,61 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     @Override
     public void afterPropertiesSet() throws Exception {
         try {
+            logger.info("Initializing NodeTypeRegistry");
             initPropertiesFile();
-            initSystemDefinitions();
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                initSystemDefinitions();
+            }
+
+            try {
+                reloadNodeTypeRegistry();
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
         } catch (IOException e) {
             logger.error("Cannot load definition deployment properties");
+        }
+    }
+
+    public void reloadNodeTypeRegistry() throws RepositoryException {
+        List<String> filesList = new ArrayList<>();
+        List<String> remfiles;
+
+        logger.info("Loading all CNDs from DB ..");
+        remfiles = new ArrayList<>(getNodeTypesDBService().getFilesList());
+        while (!remfiles.isEmpty() && !remfiles.equals(filesList)) {
+            filesList = new ArrayList<>(remfiles);
+            remfiles.clear();
+            for (final String file : filesList) {
+                try {
+                    if (file.endsWith(".cnd")) {
+
+                        final String cndFile = getNodeTypesDBService().readCndFile(file);
+                        final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
+                        logger.debug("Loading CND : "+file);
+                        unregisterNodeTypes(systemId);
+                        Reader resourceReader = new StringReader(cndFile);
+                        JahiaCndReader r = new JahiaCndReader(resourceReader, file, systemId, this);
+                        r.parse();
+
+                        if (r.hasEncounteredIssuesWithDefinitions()) {
+                            logger.debug(file + " cannot be parsed, reorder later");
+                            remfiles.add(file);
+                        } else if (!files.containsKey(systemId)) {
+                            files.put(systemId, new ArrayList<Resource>());
+                        }
+                    }
+                } catch (ParseException e) {
+                    logger.debug(file + " cannot be parsed, reorder later");
+                    remfiles.add(file);
+                }
+            }
+        }
+        if (!remfiles.isEmpty()) {
+            logger.error("Cannot parse CND from : "+remfiles);
+        }
+        for (ExtendedNodeType nodeType : nodetypes.values()) {
+            nodeType.validate();
         }
     }
 
@@ -722,17 +750,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         for (String name : names) {
             unregisterNodeType(name);
         }
-    }
-
-    /**
-     * Indicates if any issue related to the definitions has been encountered since the last startup. When this method
-     * returns true, the only way to get back false as a return value is to restart Jahia.
-     *
-     * @return true if an issue with the def has been encountered, false otherwise.
-     * @since 6.6.2.0
-     */
-    public final boolean hasEncounteredIssuesWithDefinitions() {
-        return hasEncounteredIssuesWithDefinitions;
     }
 }
 

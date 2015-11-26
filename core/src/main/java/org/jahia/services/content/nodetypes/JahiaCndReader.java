@@ -331,7 +331,7 @@ public class JahiaCndReader {
                     break;
                 }
             } catch (ParseException e) {
-                this.hasEncounteredIssuesWithDefinitions = true;
+                hasEncounteredIssuesWithDefinitions = true;
                 parsingErrors.add(e.getMessage());
                 logger.error(e.getMessage(), e);
                 doRegister = false;
@@ -341,6 +341,7 @@ public class JahiaCndReader {
                 }
             }
         }
+        List<String> nodeTypeNames = new ArrayList<>();
         while (!currentTokenEquals(Lexer.EOF)) {
             ExtendedNodeType ntd = new ExtendedNodeType(registry, systemId);
             try {
@@ -350,8 +351,9 @@ public class JahiaCndReader {
                 doItemDefs(ntd);
 
                 nodeTypesList.add(ntd);
+                nodeTypeNames.add(ntd.getName());
             } catch (Exception e) {
-                this.hasEncounteredIssuesWithDefinitions = true;
+                hasEncounteredIssuesWithDefinitions = true;
                 parsingErrors.add(e.getMessage());
                 logger.error(e.getMessage(), e);
                 doRegister = false;
@@ -362,12 +364,29 @@ public class JahiaCndReader {
             }
         }
 
+        for (ExtendedNodeType type : nodeTypesList) {
+            for (String s : type.getDeclaredSupertypeNames()) {
+                if (!registry.hasNodeType(s) && !nodeTypeNames.contains(s)) {
+                    hasEncounteredIssuesWithDefinitions = true;
+                    parsingErrors.add("Unknow supertype "+ s + " for type "+type.getName());
+                    doRegister = false;
+                }
+            }
+            for (String s : type.getMixinExtendNames()) {
+                if (!registry.hasNodeType(s) && !nodeTypeNames.contains(s)) {
+                    hasEncounteredIssuesWithDefinitions = true;
+                    parsingErrors.add("Unknow mixin "+ s + " for type "+type.getName());
+                    doRegister = false;
+                }
+            }
+        }
+
         if (doRegister) {
             for (ExtendedNodeType nodeType : nodeTypesList) {
                 try {
                     registry.addNodeType(nodeType.getNameObject(),nodeType);
                 } catch (NodeTypeExistsException e) {
-                    this.hasEncounteredIssuesWithDefinitions = true;
+                    hasEncounteredIssuesWithDefinitions = true;
                     parsingErrors.add(e.getMessage());
                 }
             }
@@ -384,7 +403,7 @@ public class JahiaCndReader {
                         type.validate();
                     }
                 } catch (NoSuchNodeTypeException e) {
-                    this.hasEncounteredIssuesWithDefinitions = true;
+                    hasEncounteredIssuesWithDefinitions = true;
                     parsingErrors.add(e.getMessage());
                 }
             }

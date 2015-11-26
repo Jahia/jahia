@@ -85,10 +85,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.JahiaCndWriter;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -99,7 +96,6 @@ import org.jahia.utils.LuceneUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.PropertyDefinition;
@@ -114,9 +110,8 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
+import java.io.File;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.rmi.Naming;
 import java.util.*;
@@ -515,9 +510,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     protected void initNodeTypes() throws RepositoryException, IOException {
 //        JahiaUser root = getGroupManagerService().getAdminUser(0);
-        if (canRegisterCustomNodeTypes()) {
-            Properties p = NodeTypeRegistry.getInstance().getDeploymentProperties();
-
+        if (canRegisterCustomNodeTypes() && SettingsBean.getInstance().isProcessingServer()) {
             JCRSessionWrapper session = getSystemSession();
             try {
                 Workspace workspace = session.getProviderSession(this).getWorkspace();
@@ -528,14 +521,26 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
                 session.logout();
             }
 
-            boolean needUpdate = false;
-            List<String> systemIds = NodeTypeRegistry.getInstance().getSystemIds();
-            for (String systemId : systemIds) {
-                needUpdate |= deployDefinitions(systemId, p);
+            // Register system node types if required
+            boolean updated = false;
+            NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
+            Properties p = nodeTypeRegistry.getDeploymentProperties();
+            String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
+            File f = new File(cnddir);
+            File[] files = f.listFiles();
+            if (files != null) {
+                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
+                for (File file : cndfiles) {
+                    String systemId = "system-" + Patterns.DASH.split(file.getName())[1];
+                    if (nodeTypeRegistry.isLatestDefinitions(systemId, null, file.lastModified())) {
+                        deployDefinitions(systemId);
+                        p.put(systemId + ".lastModified", Long.toString(file.lastModified()));
+                        updated = true;
+                    }
+                }
             }
-
-            if (needUpdate) {
-                NodeTypeRegistry.getInstance().saveProperties();
+            if (updated) {
+                nodeTypeRegistry.saveProperties();
             }
         }
     }
@@ -655,64 +660,22 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return false;
     }
 
-    public void deployDefinitions(String systemId) throws RepositoryException {
+    public void deployDefinitions(String systemId) throws IOException, RepositoryException {
+        getRepository(); // create repository instance
+        JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
-            if (deployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
-                NodeTypeRegistry.getInstance().saveProperties();
-            }
-        } catch (IOException e) {
-            logger.error("Cannot save definitions timestamps", e);
-        }
-    }
+            Workspace workspace = session.getProviderSession(this).getWorkspace();
 
-    private boolean deployDefinitions(String systemId, Properties p) throws IOException, RepositoryException {
-        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
-        boolean needUpdate = false;
-        for (Resource file : files) {
             try {
-                String propKey = file.getURL().toString() + ".lastRegistered." + key;
-                if (file.exists() && (p.getProperty(propKey) == null || Long.parseLong(p.getProperty(propKey)) != file.lastModified())) {
-                    if (!systemId.startsWith("system-")) {
-                        try {
-                            final StringWriter out = new StringWriter();
-                            new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
-                            nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
-                            NodeTypeRegistry.deployDefinitionsFileToProviderNodeTypeRegistry(new StringReader(out.toString()), systemId + ".cnd");
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                        }
-                    }
-                    needUpdate = true;
-                    p.setProperty(propKey, Long.toString(file.lastModified()));
-                }
-            } catch (IOException e) {
-                logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
-                needUpdate = true;
-            }
-        }
-        if (needUpdate) {
-            try {
-                getRepository(); // create repository instance
-                JCRSessionWrapper session = sessionFactory.getSystemSession();
-                try {
-                    Workspace workspace = session.getProviderSession(this).getWorkspace();
-
-                    try {
-                        registerCustomNodeTypes(systemId, workspace);
-                    } catch (RepositoryException e) {
-                        logger.error("Cannot register nodetypes", e);
-                        throw e;
-                    }
-                    session.save();
-                } finally {
-                    session.logout();
-                }
-            } catch (Exception e) {
-                logger.error("Repository init error", e);
+                registerCustomNodeTypes(systemId, workspace);
+            } catch (RepositoryException e) {
+                logger.error("Cannot register nodetypes", e);
                 throw e;
             }
+            session.save();
+        } finally {
+            session.logout();
         }
-        return needUpdate;
     }
 
     public void undeployDefinitions(String systemId) {
@@ -726,7 +689,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     public boolean undeployDefinitions(String systemId, Properties p) {
-        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
+//        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
         boolean needUpdate = false;
         try {
             getRepository(); // create repository instance
@@ -746,24 +709,24 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         } catch (Exception e) {
             logger.error("Repository init error", e);
         }
-        if (files != null) {
-            for (Resource file : files) {
-                try {
-                    String propKey = file.getURL().toString() + ".lastRegistered." + key;
-                    p.remove(propKey);
-                    try {
-                        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
-                    } catch (Exception e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                    needUpdate = true;
-                } catch (IOException e) {
-                    logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
-                    needUpdate = true;
-                }
-            }
-        }
-        NodeTypeRegistry.getProviderNodeTypeRegistry().unregisterNodeTypes(systemId);
+//        if (files != null) {
+//            for (Resource file : files) {
+//                try {
+//                    String propKey = file.getURL().toString() + ".lastRegistered." + key;
+//                    p.remove(propKey);
+//                    try {
+//                        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
+//                    } catch (Exception e) {
+//                        logger.error(e.getMessage(), e);
+//                    }
+//                    needUpdate = true;
+//                } catch (IOException e) {
+//                    logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
+//                    needUpdate = true;
+//                }
+//            }
+//        }
+        NodeTypeRegistry.getInstance().unregisterNodeTypes(systemId);
         return needUpdate;
     }
 

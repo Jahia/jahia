@@ -853,6 +853,10 @@ public class ExtendedNodeType implements NodeType {
         this.mixinExtendNames = mixinExtendNames;
     }
 
+    public List<String> getMixinExtendNames() {
+        return mixinExtendNames;
+    }
+
     public List<ExtendedNodeType> getMixinExtends() {
         return mixinExtend;
     }

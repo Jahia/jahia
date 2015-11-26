@@ -254,7 +254,7 @@ public class PortletServlet extends HttpServlet {
                     String realPath = portletConfig.getPortletContext().getRealPath(rootPath + "/definitions.cnd");
                     if (new File(realPath).exists()) {
                         try {
-                            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName(), null);
+                            NodeTypeRegistry.getInstance().addDefinitionsFile(new File(realPath), portletConfig.getPortletName());
                             JCRStoreService.getInstance().deployDefinitions(portletConfig.getPortletName());
                         } catch (ParseException | IOException e) {
                             logger.error(e.getMessage(), e);

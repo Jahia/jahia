@@ -825,7 +825,7 @@ public class JahiaNodeIndexer extends NodeIndexer {
     public static JahiaNodeIndexer createNodeIndexer(NodeState node, ItemStateManager itemStateManager,
                                                      NamespaceMappings nsMappings, Executor executor,
                                                      Parser parser, QueryHandlerContext context) {
-        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getProviderNodeTypeRegistry();
+        final NodeTypeRegistry typeRegistry = NodeTypeRegistry.getInstance();
         final NamespaceRegistry namespaceRegistry = context.getNamespaceRegistry();
         try {
 

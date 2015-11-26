@@ -145,7 +145,7 @@ public class DeployResourcesTestExecutionListener extends
             throws Exception {
         for (File cndFile : listFiles(resourcePath, "*.cnd")) {
             NodeTypeRegistry.getInstance().addDefinitionsFile(cndFile,
-                    systemId, null);
+                    systemId);
         }
     }
 

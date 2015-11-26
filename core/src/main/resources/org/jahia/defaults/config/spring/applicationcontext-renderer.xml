@@ -16,7 +16,9 @@
     <bean id="BundleJSR223ScriptFactory" class="org.jahia.services.render.scripting.bundle.BundleJSR223ScriptFactory"/>
 
     <bean id="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"
-          class="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
+          class="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory">
+          <property name="xssFilteringEnabled" value="${jahia.webflow.xssFiltering.enabled:true}"/>
+    </bean>
 
     <bean id="RenderService" class="org.jahia.services.render.RenderService" factory-method="getInstance">
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>

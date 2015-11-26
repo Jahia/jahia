@@ -475,9 +475,13 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
 
         for (Element element : elements) {
             if (HTMLElementName.SCRIPT.equals(element.getName())) {
-                outputDocument.remove(element.getStartTag());
-                if (!element.getStartTag().isSyntacticalEmptyElementTag()) {
-                    outputDocument.remove(element.getEndTag());
+                StartTag startTag = element.getStartTag();
+                outputDocument.remove(startTag);
+                if (!startTag.isSyntacticalEmptyElementTag()) {
+                    EndTag endTag = element.getEndTag();
+                    if (endTag != null) {
+                        outputDocument.remove(endTag);
+                    }
                 }
             }
             final Attributes attributes = element.getAttributes();

@@ -76,11 +76,18 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptFactory;
 
 public class WebflowDispatcherScriptFactory implements ScriptFactory {
+    
+    private boolean xssFilteringEnabled = true;
+    
     public Script createScript(View view) {
-        return new WebflowDispatcherScript(view);
+        return new WebflowDispatcherScript(view, xssFilteringEnabled);
     }
 
     public void initView(View view) {
         view.getProperties().put("cache.expiration", "0");
+    }
+
+    public void setXssFilteringEnabled(boolean xssFilteringEnabled) {
+        this.xssFilteringEnabled = xssFilteringEnabled;
     }
 }

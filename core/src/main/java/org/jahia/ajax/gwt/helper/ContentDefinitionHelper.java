@@ -77,6 +77,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.*;
+import org.apache.jackrabbit.value.StringValue;
 import org.jahia.ajax.gwt.client.data.GWTChoiceListInitializer;
 import org.jahia.ajax.gwt.client.data.GWTJahiaValueDisplayBean;
 import org.jahia.ajax.gwt.client.data.definition.*;
@@ -90,8 +91,6 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerService;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.utils.i18n.Messages;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.slf4j.Logger;
 
 import javax.jcr.PropertyType;
@@ -112,7 +111,6 @@ import java.util.regex.Pattern;
  */
 public class ContentDefinitionHelper {
     private static final Logger logger = org.slf4j.LoggerFactory.getLogger(ContentDefinitionHelper.class);
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("yyyy-MM-dd'T'hh:mm");
 
     private NavigationHelper navigation;
     private ChoiceListInitializerService choiceListInitializerService;
@@ -603,7 +601,7 @@ public class ContentDefinitionHelper {
                 if (date == null) {
                     theValue = null;
                 } else {
-                    theValue = DATE_FORMAT.print(date.getTime().getTime());
+                    theValue = String.valueOf(date.getTimeInMillis());
                 }
                 break;
             case PropertyType.DOUBLE:
@@ -672,7 +670,7 @@ public class ContentDefinitionHelper {
                 break;
             case GWTJahiaNodePropertyType.DATE:
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(DATE_FORMAT.parseDateTime(val.getString()).toDate());
+                cal.setTime(val.getDate());
                 value = new DateValue(cal);
                 break;
             case GWTJahiaNodePropertyType.DOUBLE:

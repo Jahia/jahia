@@ -32,7 +32,7 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
-    <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver">
+    <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver" factory-method="getInstance">
         <property name="scriptExtensionsOrdering">
             <list>
                 <value>jsp</value>
@@ -56,6 +56,7 @@
             </map>
         </property>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
+        <property name="bundleScriptFactory" ref="BundleJSR223ScriptFactory"/>
     </bean>
 
 

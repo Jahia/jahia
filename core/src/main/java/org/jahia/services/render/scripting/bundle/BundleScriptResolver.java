@@ -3,71 +3,71 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ======================================================================================
+ * 1/ GPL
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ * "This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
+ * As a special exception to the terms and conditions of version 2.0 of
+ * the GPL (or any later version), you may redistribute this Program in connection
+ * with Free/Libre and Open Source Software ("FLOSS") applications as described
+ * in Jahia's FLOSS exception. You should have received a copy of the text
+ * describing the FLOSS exception, also available here:
+ * http://www.jahia.com/license"
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ======================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  *
  *
  * ==========================================================================================
  * =                                   ABOUT JAHIA                                          =
  * ==========================================================================================
  *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
+ * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
+ * streamlining Enterprise digital projects across channels to truly control
+ * time-to-market and TCO, project after project.
+ * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
+ * marketing teams to collaboratively and iteratively build cutting-edge
+ * online business solutions.
+ * These, in turn, are securely and easily deployed as modules and apps,
+ * reusable across any digital projects, thanks to the Jahia Private App Store Software.
+ * Each solution provided by Jahia stems from this overarching vision:
+ * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
+ * Founded in 2002 and headquartered in Geneva, Switzerland,
+ * Jahia Solutions Group has its North American headquarters in Washington DC,
+ * with offices in Chicago, Toronto and throughout Europe.
+ * Jahia counts hundreds of global brands and governmental organizations
+ * among its loyal customers, in more than 20 countries across the globe.
  *
- *     For more information, please visit http://www.jahia.com
+ * For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.render.scripting.bundle;
 
@@ -96,6 +96,7 @@ import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.script.ScriptEngineFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -107,11 +108,24 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
 
-    private Map<String, SortedMap<String, ViewResourceInfo>> availableScripts = new HashMap<String, SortedMap<String, ViewResourceInfo>>(64);
+    private Map<String, SortedMap<String, ViewResourceInfo>> availableScripts = new HashMap<>(64);
     private Map<String, ScriptFactory> scriptFactoryMap;
     private JahiaTemplateManagerService templateManagerService;
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
     private List<String> scriptExtensionsOrdering;
+    private BundleJSR223ScriptFactory bundleScriptFactory;
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final BundleScriptResolver INSTANCE = new BundleScriptResolver();
+
+        private Holder() {
+        }
+    }
+
+    public static BundleScriptResolver getInstance() {
+        return Holder.INSTANCE;
+    }
 
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
         this.scriptFactoryMap = scriptFactoryMap;
@@ -123,12 +137,85 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void setScriptExtensionsOrdering(final List<String> extensionsOrdering) {
         this.scriptExtensionsOrdering = extensionsOrdering;
+        resetComparator();
+    }
+
+    private void resetComparator() {
         scriptExtensionComparator = new Comparator<ViewResourceInfo>() {
             public int compare(ViewResourceInfo o1, ViewResourceInfo o2) {
                 int i = scriptExtensionsOrdering.indexOf(o1.extension) - scriptExtensionsOrdering.indexOf(o2.extension);
                 return i != 0 ? i : 1;
             }
         };
+    }
+
+    public void register(ScriptEngineFactory scriptEngineFactory, Bundle bundle) {
+        // todo: ordering of script engines is not well defined anymore since it depends on module deployment order, explicit ordering would be better
+        for (String extension : scriptEngineFactory.getExtensions()) {
+            if (!scriptExtensionsOrdering.contains(extension)) {
+                scriptExtensionsOrdering.add(extension);
+            }
+            scriptFactoryMap.put(extension, bundleScriptFactory);
+            logger.info("ScriptEngineFactory {} registered extension {}", scriptEngineFactory, extension);
+
+            // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
+            // register view script observers
+            final String extensionPattern = "*." + extension;
+            addBundleScripts(bundle, extensionPattern);
+
+            // as we are starting up we insert all the bundle scripts for all the deployed bundles.
+            for (Bundle otherBundle : bundle.getBundleContext().getBundles()) {
+                if (otherBundle.getState() == Bundle.ACTIVE) {
+                    addBundleScripts(otherBundle, extensionPattern);
+                }
+            }
+        }
+
+        resetComparator();
+    }
+
+    public void remove(ScriptEngineFactory factory,  Bundle bundle) {
+        for (String extension : factory.getExtensions()) {
+            // we need to remove the views associated with our bundle
+            availableScripts.remove(bundle.getSymbolicName());
+
+            // remove all the bundle scripts for all the deployed bundles.
+            final String extensionPattern = "*." + extension;
+            for (Bundle otherBundle : bundle.getBundleContext().getBundles()) {
+                if (otherBundle.getState() == Bundle.ACTIVE) {
+                    removeBundleScripts(otherBundle, extensionPattern);
+                }
+            }
+
+            scriptExtensionsOrdering.remove(extension);
+            scriptFactoryMap.remove(extension);
+        }
+
+        resetComparator();
+    }
+
+
+    private void addBundleScripts(Bundle bundle, String extensionPattern) {
+        final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
+        if (entries != null) {
+            final List<URL> scripts = new LinkedList<>();
+            while(entries.hasMoreElements()) {
+                scripts.add(entries.nextElement());
+            }
+            addBundleScripts(bundle, scripts);
+            logger.info("Bundle {} registered {} views", bundle, scripts);
+        }
+    }
+
+    private void removeBundleScripts(Bundle bundle, String extensionPattern) {
+        final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
+        if (entries != null) {
+            final List<URL> scripts = new LinkedList<>();
+            while(entries.hasMoreElements()) {
+                scripts.add(entries.nextElement());
+            }
+            removeBundleScripts(bundle, scripts);
+        }
     }
 
     /**
@@ -153,10 +240,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             return;
         }
         ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-        SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final String symbolicName = bundle.getSymbolicName();
+        SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(symbolicName);
         if (existingBundleScripts == null) {
-            existingBundleScripts = new TreeMap<String, ViewResourceInfo>();
-            availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
+            existingBundleScripts = new TreeMap<>();
+            availableScripts.put(symbolicName, existingBundleScripts);
             existingBundleScripts.put(scriptResource.path, scriptResource);
         } else if (!existingBundleScripts.containsKey(scriptResource.path)) {
             existingBundleScripts.put(scriptResource.path, scriptResource);
@@ -167,7 +255,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             scriptResource = existingBundleScripts.get(scriptResource.path);
         }
 
-        String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
+        String properties = StringUtils.substringBeforeLast(path, ".") + ".properties";
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
             Properties p = new Properties();
@@ -319,7 +407,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
-            List<String> templateTypes) {
+                                        List<String> templateTypes) {
 
         StringBuilder cacheKey = new StringBuilder();
         for (ExtendedNodeType type : nodeTypeList) {
@@ -442,8 +530,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
         for (ViewResourceInfo res : sortedScripts) {
             if (!views.containsKey(res.viewKey)) {
-                if(!scriptFactoryMap.containsKey(res.extension)){
-                    logger.error("Script extension "+res.extension+ " can not be handle by this system.");
+                if (!scriptFactoryMap.containsKey(res.extension)) {
+                    logger.error("Script extension " + res.extension + " can not be handle by this system.");
                     break;
                 }
                 BundleView view = new BundleView(res.path, res.viewKey, tplPackage, res.filename);
@@ -457,7 +545,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Returns view scripts for the specified module bundle which match the specified path.
-     * 
+     *
      * @param module
      *            the module bundle to perform lookup in
      * @param pathPrefix
@@ -474,19 +562,18 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         final SortedMap<String, ViewResourceInfo> viewInfosWithPathGTEThanPrefix = allBundleScripts.tailMap(pathPrefix);
 
         // if the tail map is empty, we won't find the path prefix in the available scripts so return an empty set
-        if(viewInfosWithPathGTEThanPrefix.isEmpty()) {
+        if (viewInfosWithPathGTEThanPrefix.isEmpty()) {
             return new TreeSet<ViewResourceInfo>();
         }
 
         // check if the first key contains the prefix. If not, the prefix will not match any entries so return an empty set
-        if(!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
+        if (!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
             return new TreeSet<ViewResourceInfo>();
-        }
-        else {
+        } else {
             SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
             for (String path : viewInfosWithPathGTEThanPrefix.keySet()) {
                 // we should have only few values to look at
-                if(path.startsWith(pathPrefix)) {
+                if (path.startsWith(pathPrefix)) {
                     sortedScripts.add(viewInfosWithPathGTEThanPrefix.get(path));
                 } else {
                     // as soon as the path doesn't start with the given prefix anymore, we won't have a match in the remaining so return
@@ -510,5 +597,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public static void clearCaches() {
         viewSetCache.clear();
+    }
+
+    public void setBundleScriptFactory(BundleJSR223ScriptFactory bundleScriptFactory) {
+        this.bundleScriptFactory = bundleScriptFactory;
     }
 }

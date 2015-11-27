@@ -71,6 +71,7 @@
  */
 package org.jahia.osgi;
 
+import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -114,6 +115,8 @@ public final class ProvisionActivator implements BundleActivator {
         bundleContext = context;
         servletContext.setAttribute(BundleContext.class.getName(), context);
 
+        context.addBundleListener(BundleScriptEngineManager.getInstance());
+
         ArrayList<Bundle> installed = new ArrayList<Bundle>();
         for (String name : findBundles()) {
             logger.info("Installing bundle [{}]", name);
@@ -140,6 +143,7 @@ public final class ProvisionActivator implements BundleActivator {
 
     @Override
     public void stop(BundleContext context) throws Exception {
+        context.removeBundleListener(BundleScriptEngineManager.getInstance());
         bundleContext = null;
         servletContext.removeAttribute(BundleContext.class.getName());
         instance = null;

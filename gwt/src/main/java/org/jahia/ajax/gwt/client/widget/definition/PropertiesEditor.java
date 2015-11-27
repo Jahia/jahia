@@ -82,7 +82,6 @@ import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
 import com.extjs.gxt.ui.client.widget.layout.*;
-import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.user.client.Command;
 import com.google.gwt.user.client.DeferredCommand;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
@@ -646,7 +645,7 @@ public class PropertiesEditor extends FormPanel {
         String propValueString = null;
         if (fieldValue != null) {
             if (fieldValue instanceof Date) {
-                propValueString = DateTimeFormat.getFormat("yyyy-MM-dd'T'hh:mm").format(((Date) fieldValue));
+                propValueString = String.valueOf(((Date) fieldValue).getTime());
             } else if (fieldValue instanceof GWTJahiaValueDisplayBean) {
                 propValueString = ((GWTJahiaValueDisplayBean) fieldValue).getValue();
             } else {

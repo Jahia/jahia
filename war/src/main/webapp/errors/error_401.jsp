@@ -39,7 +39,7 @@
                     <div class="alert alert-error"><fmt:message
                             key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
                     <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
-                           maxlength="250" name="username" value="${param['username']}"/>
+                           maxlength="250" name="username" value="${fn:escapeXml(param['username'])}"/>
                     <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
                            maxlength="250" name="password" autocomplete="off" autofocus="autofocus"/>
                 </ui:isLoginError>

@@ -74,15 +74,14 @@ package org.apache.jackrabbit.core.cluster;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.JournalException;
 
-import java.util.SortedSet;
+import java.util.Set;
 
 /**
  * Additional methods for journal to lock nodes individually
  */
 public interface NodeLevelLockableJournal {
 
-    public void lockNodes(SortedSet<NodeId> ids) throws JournalException;
+    public void lockNodes(Set<NodeId> ids) throws JournalException;
 
-    public void unlockNodes(SortedSet<NodeId> ids) throws JournalException;
-
+    public void unlockNodes(Set<NodeId> ids) throws JournalException;
 }

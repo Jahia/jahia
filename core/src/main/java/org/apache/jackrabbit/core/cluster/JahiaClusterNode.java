@@ -79,15 +79,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
 /**
  * Extends default clustered node implementation. Add support for NodeLevelLockableJournal
  */
 public class JahiaClusterNode extends ClusterNode {
+
     /**
      * Status constant.
      */
@@ -174,7 +175,7 @@ public class JahiaClusterNode extends ClusterNode {
     /**
      * Workspace update channel.
      */
-    class WorkspaceUpdateChannel extends ClusterNode.WorkspaceUpdateChannel implements UpdateEventChannel {
+    private class WorkspaceUpdateChannel extends ClusterNode.WorkspaceUpdateChannel implements UpdateEventChannel {
 
         /**
          * Create a new instance of this class.
@@ -250,28 +251,29 @@ public class JahiaClusterNode extends ClusterNode {
                 }
             }
         }
-
     }
 
+    @SuppressWarnings("unchecked")
     private void unlockNodes(Update update) throws JournalException {
         Journal journal = getJournal();
         if (journal instanceof NodeLevelLockableJournal) {
-            SortedSet<NodeId> ids = (SortedSet<NodeId>) update.getAttribute("allIds");
+            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
             ((NodeLevelLockableJournal) journal).unlockNodes(ids);
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void lockNodes(Update update) throws JournalException {
         Journal journal = getJournal();
         if (journal instanceof NodeLevelLockableJournal) {
-            SortedSet<NodeId> ids = (SortedSet<NodeId>) update.getAttribute("allIds");
+            Set<NodeId> ids = (Set<NodeId>) update.getAttribute("allIds");
             ((NodeLevelLockableJournal) journal).lockNodes(ids);
         }
     }
 
     private void storeNodeIds(Update update) {
         if (getJournal() instanceof NodeLevelLockableJournal) {
-            Set<NodeId> nodeIdList = new TreeSet<NodeId>();
+            Set<NodeId> nodeIdList = new HashSet<NodeId>();
             for (ItemState state : update.getChanges().addedStates()) {
                 // For added states we always lock the parent, whatever the type. The node itself does not exist yet,
                 // oes not need to be locked - only the parent will be modified
@@ -331,5 +333,4 @@ public class JahiaClusterNode extends ClusterNode {
         log.debug("Set revision : " + revision);
         super.setRevision(revision);
     }
-
 }

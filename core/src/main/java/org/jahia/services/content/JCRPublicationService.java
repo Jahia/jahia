@@ -460,7 +460,6 @@ public class JCRPublicationService extends JahiaService {
             for (JCRNodeWrapper nodeWrapper : toDeleteOnSource) {
                 try {
                     addRemovedLabel(nodeWrapper, nodeWrapper.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    logger.info("remove default node " + nodeWrapper.getPath());
                     nodeWrapper.remove();
                 } catch (InvalidItemStateException e) {
                     logger.warn("Already deleted : " + nodeWrapper.getPath());
@@ -470,7 +469,6 @@ public class JCRPublicationService extends JahiaService {
                 try {
                     JCRNodeWrapper node = destinationSession.getNodeByIdentifier(s);
                     addRemovedLabel(node, node.getSession().getWorkspace().getName() + "_removed_at_" + JCRVersionService.DATE_FORMAT.print(calendar.getTime().getTime()));
-                    logger.info("remove live node " + node.getPath());
                     node.remove();
                 } catch (ItemNotFoundException e) {
                     logger.warn("Already deleted : " + s);
@@ -479,9 +477,7 @@ public class JCRPublicationService extends JahiaService {
                 }
             }
             sourceSession.save();
-            logger.info("default session saved");
             destinationSession.save();
-            logger.info("live session saved");
 
 
             Set<String> allCloned = new HashSet<String>();

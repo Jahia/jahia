@@ -81,14 +81,8 @@ import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
-<<<<<<< .working
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.atmosphere.AtmosphereServlet;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-=======
->>>>>>> .merge-right.r53363
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -326,15 +320,6 @@ public class SchedulerHelper {
                         } catch (Exception e) {
                             logger.debug(e.getMessage(), e);
                         }
-<<<<<<< .working
-=======
-                        if (endedJob != null) {
-                            logger.info("sending end job event " + endedJob.size());
-                            pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
-                        }
-                        pollingEvent.setTotalCount(totalCount);
-                        broadcaster.broadcast(pollingEvent);
->>>>>>> .merge-right.r53363
                     }
                 }
             } catch (GWTJahiaServiceException e) {

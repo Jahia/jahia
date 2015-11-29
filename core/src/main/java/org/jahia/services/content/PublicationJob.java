@@ -88,6 +88,7 @@ import java.util.List;
  */
 public class PublicationJob extends BackgroundJob {
     public static final String PUBLICATION_UUIDS = "publicationInfos";
+    public static final String PUBLICATION_PATH= "publicationPath";
     public static final String PUBLICATION_PROPERTIES = "publicationProperties";
     public static final String PUBLICATION_COMMENTS = "publicationComments";
     public static final String SOURCE = "source";

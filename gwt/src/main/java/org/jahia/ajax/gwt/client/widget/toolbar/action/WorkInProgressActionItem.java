@@ -78,8 +78,8 @@ import org.jahia.ajax.gwt.client.data.job.GWTJahiaJobDetail;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.job.JobListWindow;
+import org.jahia.ajax.gwt.client.widget.poller.Poller;
 import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 
 import java.util.ArrayList;
@@ -171,6 +171,8 @@ public class WorkInProgressActionItem extends BaseActionItem implements Poller.P
                     }
                 }
             }
+            // Once jobs processed, remove them to avoid to be processed several times if the status is refreshed manually
+            lastEndedJobs.clear();
         }
         if (!refreshData.isEmpty()) {
             linker.refresh(refreshData);

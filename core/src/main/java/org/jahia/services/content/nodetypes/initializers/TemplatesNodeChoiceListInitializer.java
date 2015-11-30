@@ -178,7 +178,7 @@ public class TemplatesNodeChoiceListInitializer implements ChoiceListInitializer
                 ok = !templateNode.getProperty("j:hiddenTemplate").getBoolean();
             }
             if ("pageTemplate".equals(templateType)) {
-                ok &= node.hasPermission("template-" + templateNode.getName());
+                ok &= node.getResolveSite().hasPermission("template-" + templateNode.getName());
             }
 
             if (!ok) {

@@ -376,9 +376,9 @@ public class FormFieldCreator {
         }
         if (!toolbarDefined) {
             String toolbar = "Light";
-            if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor",permissions) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
+            if (PermissionsUtils.isPermitted("view-full-wysiwyg-editor", JahiaGWTParameters.getSiteNode()) || PermissionsUtils.isPermitted("studioModeAccess",permissions)) {
                 toolbar = "Full";
-            } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor" ,permissions)) {
+            } else if (PermissionsUtils.isPermitted("view-basic-wysiwyg-editor", JahiaGWTParameters.getSiteNode())) {
                 toolbar = "Basic";
             }
             config.setDefaultToolbar(toolbar);

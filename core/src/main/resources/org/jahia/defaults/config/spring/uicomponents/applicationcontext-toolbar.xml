@@ -204,6 +204,7 @@
                         <value>studiomode</value>
                     </set>
                 </property>
+                <property name="checkPermissionOnSite" value="true"/>
             </bean>
         </property>
         <property name="visibility">

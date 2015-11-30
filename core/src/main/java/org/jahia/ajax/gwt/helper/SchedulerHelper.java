@@ -81,8 +81,14 @@ import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
+<<<<<<< .working
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.atmosphere.AtmosphereServlet;
+=======
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+>>>>>>> .merge-right.r53380
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -96,7 +102,12 @@ import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+<<<<<<< .working
 
+=======
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
+>>>>>>> .merge-right.r53380
 import java.util.*;
 
 /**
@@ -176,7 +187,24 @@ public class SchedulerHelper {
                 if (publicationInfos != null && publicationInfos.size() > 0) {
                     description += " " + publicationInfos.get(0).getValues();
                 }
-                targetPaths.addAll((List<String>) jobDataMap.get(PublicationJob.PUBLICATION_PATH));
+                final List<String> uuids = (List<String>) jobDataMap.get("publicationInfos");
+                try {
+                    JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                        @Override
+                        public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                            for (String uuid : uuids) {
+                                try {
+                                    targetPaths.add(session.getNodeByIdentifier(uuid).getPath());
+                                } catch (ItemNotFoundException e) {
+                                    logger.debug("Cannot get item " + uuid, e);
+                                }
+                            }
+                            return null;
+                        }
+                    });
+                } catch (RepositoryException e) {
+                    logger.error("Cannot get publication details", e);
+                }
             } else if (BackgroundJob.getGroupName(ImportJob.class).equals(jobDetail.getGroup())) {
                 String uri = (String) jobDataMap.get(ImportJob.URI);
                 if (uri != null) {
@@ -320,6 +348,14 @@ public class SchedulerHelper {
                         } catch (Exception e) {
                             logger.debug(e.getMessage(), e);
                         }
+<<<<<<< .working
+=======
+                        if (endedJob != null) {
+                            pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
+                        }
+                        pollingEvent.setTotalCount(totalCount);
+                        broadcaster.broadcast(pollingEvent);
+>>>>>>> .merge-right.r53380
                     }
                 }
             } catch (GWTJahiaServiceException e) {

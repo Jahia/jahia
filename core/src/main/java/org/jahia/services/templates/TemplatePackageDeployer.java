@@ -422,12 +422,9 @@ public class TemplatePackageDeployer {
         return moduleType;
     }
 
-    public JahiaTemplatesPackage deployModule(File warFile, JCRSessionWrapper session) throws RepositoryException {
+    public JahiaTemplatesPackage deployModule(File jarFile, JCRSessionWrapper session) throws RepositoryException {
         try {
-            String location = warFile.toURI().toString();
-            if (warFile.getName().toLowerCase().endsWith(".war")) {
-                location = "jahiawar:" + location;
-            }
+            String location = jarFile.toURI().toString();
             Bundle bundle = ProvisionActivator.getInstance().getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();

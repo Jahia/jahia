@@ -531,11 +531,6 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.url.jahiawar</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
                                     <artifactId>org.jahia.bundles.webconsole.config</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>

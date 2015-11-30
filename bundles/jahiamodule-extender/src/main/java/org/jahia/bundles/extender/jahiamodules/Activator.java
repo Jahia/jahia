@@ -79,8 +79,6 @@ import java.util.*;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.fileinstall.ArtifactListener;
-import org.apache.felix.fileinstall.ArtifactTransformer;
 import org.apache.felix.service.command.CommandProcessor;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.filters.jcr.JcrSessionFilter;
@@ -99,7 +97,6 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JCRModuleListener;
@@ -221,13 +218,6 @@ public class Activator implements BundleActivator {
         // we won't register CND observer, but will rather call it manually
         cndBundleObserver = new CndBundleObserver();
         
-        // register Jahia legacy module transformer
-        serviceRegistrations.add(context.registerService(
-                new String[]{ArtifactTransformer.class.getName(), ArtifactListener.class.getName()},
-                new JahiaLegacyModuleTransformer(),
-                new Hashtable<String, Object>()
-        ));
-
         // add listener for other bundle life cycle events
         setupBundleListener(context);
 

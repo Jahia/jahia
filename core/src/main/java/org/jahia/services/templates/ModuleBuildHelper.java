@@ -224,10 +224,7 @@ public class ModuleBuildHelper implements InitializingBean {
                 logger.error("Maven out : " + out);
                 throw new IOException(out.toString());
             }
-            File file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".war");
-            if (!file.exists()) {
-                file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".jar");
-            }
+            File file = new File(sources.getPath() + "/target/" + artifactId + "-" + version + ".jar");
             if (file.exists()) {
                 return new CompiledModuleInfo(file, artifactId, version);
             } else {
@@ -399,7 +396,7 @@ public class ModuleBuildHelper implements InitializingBean {
         String nextVersion = releaseInfo.getNextVersion();
         String artifactId = model.getArtifactId();
         File pom = new File(sources, "pom.xml");
-        File generatedWar;
+        File generatedJar;
 
         if (scmUrl != null) {
             // release using maven-release-plugin
@@ -427,30 +424,22 @@ public class ModuleBuildHelper implements InitializingBean {
                 throw new IOException("Maven invocation failed\n" + s);
             }
 
-            File oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".war");
-            if (oldWar.exists()) {
-                oldWar.delete();
-            }
-            oldWar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".jar");
-            if (oldWar.exists()) {
-                oldWar.delete();
+            File oldJar = new File(settingsBean.getJahiaModulesDiskPath(), artifactId + "-" + lastVersion + ".jar");
+            if (oldJar.exists()) {
+                oldJar.delete();
             }
 
-            generatedWar = new File(sources.getPath() + "/target/checkout/target/" + artifactId + "-" + releaseVersion
-                    + ".war");
-            if (!generatedWar.exists()) {
-                generatedWar = new File(sources.getPath() + "/target/checkout/target/" + artifactId + "-"
+            generatedJar = new File(sources.getPath() + "/target/checkout/target/" + artifactId + "-"
                         + releaseVersion + ".jar");
-            }
         } else {
             // modify the version in the pom.xml and compile/install module
             PomUtils.updateVersion(pom, releaseVersion);
 
-            generatedWar = compileModule(sources).getFile();
+            generatedJar = compileModule(sources).getFile();
 
             PomUtils.updateVersion(pom, nextVersion);
         }
-        return generatedWar;
+        return generatedJar;
     }
 
     public void setIgnoreSnapshots(String ignoreSnapshots) {

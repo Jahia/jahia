@@ -88,7 +88,6 @@
         <module>blueprint-extender-config</module>
         <module>configadmin-persistence</module>
         <module>http-bridge</module>
-        <module>jahia-url-jahiawar</module>
         <module>jahiamodule-extender</module>
         <!--
         <module>jahiamodules</module>

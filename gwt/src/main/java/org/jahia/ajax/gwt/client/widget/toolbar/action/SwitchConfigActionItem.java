@@ -80,6 +80,7 @@ import com.google.gwt.storage.client.Storage;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.RootPanel;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
@@ -99,6 +100,7 @@ import java.util.Set;
  */
 @SuppressWarnings("serial")
 public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
+    private boolean checkPermissionOnSite;
     private String configurationName;
     private boolean updateSidePanel =true;
     private boolean updateToolbar =true;
@@ -146,7 +148,7 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
         if (!updateOnMainNodeRefresh || (noChecksInMode != null && noChecksInMode.contains(linker.getConfig().getName()))) {
             setEnabled(true);
         } else {
-            setEnabled(isNodeTypeAllowed(node) && !((EditLinker) linker).isInSettingsPage() && hasPermission(node)) ;
+            setEnabled(isNodeTypeAllowed(node) && !((EditLinker) linker).isInSettingsPage() && hasPermission(checkPermissionOnSite ? JahiaGWTParameters.getSiteNode() : node)) ;
         }
     }
 
@@ -259,5 +261,9 @@ public class SwitchConfigActionItem extends NodeTypeAwareBaseActionItem {
 
     public void setUpdateOnMainNodeRefresh(boolean updateOnMainNodeRefresh) {
         this.updateOnMainNodeRefresh = updateOnMainNodeRefresh;
+    }
+
+    public void setCheckPermissionOnSite(boolean checkPermissionOnSite) {
+        this.checkPermissionOnSite = checkPermissionOnSite;
     }
 }

@@ -115,9 +115,9 @@ public final class ProvisionActivator implements BundleActivator {
         servletContext.setAttribute(BundleContext.class.getName(), context);
 
         ArrayList<Bundle> installed = new ArrayList<Bundle>();
-        for (String name : findBundles()) {
-            logger.info("Installing bundle [{}]", name);
-            Bundle bundle = context.installBundle("dfwar:" + name, servletContext.getResourceAsStream(name));
+        for (URL url : findBundles()) {
+            logger.info("Installing bundle [{}]", url);
+            Bundle bundle = context.installBundle(url.toExternalForm());
             installed.add(bundle);
         }
 
@@ -149,14 +149,14 @@ public final class ProvisionActivator implements BundleActivator {
         return bundleContext;
     }
 
-    private List<String> findBundles() throws Exception {
-        ArrayList<String> list = new ArrayList<String>();
+    private List<URL> findBundles() throws Exception {
+        ArrayList<URL> list = new ArrayList<URL>();
         for (Object o : this.servletContext.getResourcePaths("/WEB-INF/bundles/")) {
             String name = (String) o;
             if (name.endsWith(".jar")) {
                 URL url = this.servletContext.getResource(name);
                 if (url != null) {
-                    list.add(name);
+                    list.add(url);
                 }
             }
         }

@@ -96,7 +96,6 @@
 		<module>webconsole-config</module>
         <module>jspapiusage-repackaging</module>
         <module>slf4j-loglistener</module>
-        <module>df-url-transformer</module>
     </modules>
 
     <build>

@@ -1070,8 +1070,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void addMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
-        applicablePropertyDefinition.clear();
-        objectNode.addMixin(s);
+        try {
+            objectNode.addMixin(s);
+        } finally {
+            applicablePropertyDefinition.clear();
+            hasPropertyCache.clear();
+        }
     }
 
     /**
@@ -1079,9 +1083,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
      */
     public void removeMixin(String s) throws NoSuchNodeTypeException, VersionException, ConstraintViolationException, LockException, RepositoryException {
         checkLock();
-        applicablePropertyDefinition.clear();
-        hasPropertyCache.clear();
-        objectNode.removeMixin(s);
+        try {
+            objectNode.removeMixin(s);
+        } finally {
+            applicablePropertyDefinition.clear();
+            hasPropertyCache.clear();
+        }
     }
 
     /**

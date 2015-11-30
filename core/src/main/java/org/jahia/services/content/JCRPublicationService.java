@@ -90,6 +90,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionManager;
+
 import java.util.*;
 
 import static org.jahia.api.Constants.*;

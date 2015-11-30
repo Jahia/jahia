@@ -81,14 +81,11 @@ import org.jahia.ajax.gwt.client.widget.poller.ProcessPollingEvent;
 import org.jahia.ajax.gwt.commons.server.ChannelHolder;
 import org.jahia.ajax.gwt.commons.server.JGroupsChannel;
 import org.jahia.ajax.gwt.commons.server.ManagedGWTResource;
-<<<<<<< .working
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.atmosphere.AtmosphereServlet;
-=======
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
->>>>>>> .merge-right.r53380
 import org.jahia.services.content.PublicationJob;
 import org.jahia.services.content.rules.ActionJob;
 import org.jahia.services.content.rules.RuleJob;
@@ -102,12 +99,9 @@ import org.quartz.listeners.JobListenerSupport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-<<<<<<< .working
-
-=======
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
->>>>>>> .merge-right.r53380
+
 import java.util.*;
 
 /**
@@ -348,14 +342,6 @@ public class SchedulerHelper {
                         } catch (Exception e) {
                             logger.debug(e.getMessage(), e);
                         }
-<<<<<<< .working
-=======
-                        if (endedJob != null) {
-                            pollingEvent.setEndedJob(convertToGWTJobs(endedJob));
-                        }
-                        pollingEvent.setTotalCount(totalCount);
-                        broadcaster.broadcast(pollingEvent);
->>>>>>> .merge-right.r53380
                     }
                 }
             } catch (GWTJahiaServiceException e) {

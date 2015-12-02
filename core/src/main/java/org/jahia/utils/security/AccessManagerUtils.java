@@ -474,7 +474,6 @@ public class AccessManagerUtils {
     /**
      * Get the list Privilege from granted roles for a given principal on a node, recursive check on parents nodes
      * when the acl node have the "inherit" flag, the getRoles(...) function is used to retrieve the roles.
-     * a System session is used to read the nodes.
      * @param absPath the path to the node
      * @param workspace the workspace
      * @param jahiaPrincipal the principal
@@ -499,8 +498,8 @@ public class AccessManagerUtils {
      * @throws RepositoryException
      */
     public static Privilege[] getPrivileges(Node node, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
-        Set<String> grantedRoles = getRoles(node, jahiaPrincipal);
 
+        Set<String> grantedRoles = getRoles(node, jahiaPrincipal);
         Set<Privilege> results = new HashSet<Privilege>();
 
         for (String role : grantedRoles) {
@@ -533,7 +532,6 @@ public class AccessManagerUtils {
 
     /**
      * Get the list of granted role for a given principal on a node, recursive check on parents when the acl node have the "inherit" flag
-     * A system session will be use to read the nodes
      * @param absPath the path of the node
      * @param workspace the workspace
      * @param jahiaPrincipal the jahiaPrincipal
@@ -555,6 +553,7 @@ public class AccessManagerUtils {
      * @throws RepositoryException
      */
     public static Set<String> getRoles(Node node, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
+
         Set<String> grantedRoles = new HashSet<String>();
         Set<String> foundRoles = new HashSet<String>();
 
@@ -620,10 +619,10 @@ public class AccessManagerUtils {
 
     private static boolean recurseOnACPs(String jcrPath, Session s, Set<String> permissions, String site, Map<String, CompiledAcl> compiledAcls, JahiaPrincipal jahiaPrincipal,
                                          boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry, String workspaceName) throws RepositoryException {
+
         Set<String> foundRoles = new HashSet<String>();
         permissions = new HashSet<String>(permissions);
         while (jcrPath.length() > 0) {
-            Map<String, Boolean> roles;
 
             CompiledAcl acl = compiledAcls.get(jcrPath);
 

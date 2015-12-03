@@ -143,7 +143,11 @@ public class JobSchedulingBean implements InitializingBean, DisposableBean {
     @Override
     public void destroy() throws Exception {
         if (JahiaContextLoaderListener.isRunning()) {
-            unscheduleJob();
+            if (isRamJob) {
+                deleteJob();
+            } else {
+                unscheduleJob();
+            }
         }
     }
 

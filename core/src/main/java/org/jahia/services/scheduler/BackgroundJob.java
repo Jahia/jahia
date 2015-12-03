@@ -94,7 +94,7 @@ import java.util.Date;
 public abstract class BackgroundJob implements StatefulJob {
     private final static Logger logger = LoggerFactory.getLogger(BackgroundJob.class);
 
-    private static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
+    public static IdentifierGenerator idGen = IdentifierGeneratorFactory.newInstance().uuidVersionFourGenerator();
 
     //job details constants
     public static final String JOB_CREATED = "created";

@@ -73,6 +73,7 @@ package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.ExtensionObserverRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -89,6 +90,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -114,6 +116,32 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private Comparator<ViewResourceInfo> scriptExtensionComparator;
     private List<String> scriptExtensionsOrdering;
     private BundleJSR223ScriptFactory bundleScriptFactory;
+    private ExtensionObserverRegistry observerRegistry;
+    private final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(this);
+
+    public void setExtensionObserverRegistry(ExtensionObserverRegistry extensionObserverRegistry) {
+        this.observerRegistry = extensionObserverRegistry;
+    }
+
+    public ExtensionObserverRegistry getObserverRegistry() {
+        return observerRegistry;
+    }
+
+    public void registerObservers() {
+        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
+        registerObservers(getScriptExtensionsOrdering());
+    }
+
+    public void registerObservers(List<String> extensions) {
+        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
+        for (String scriptExtension : extensions) {
+            observerRegistry.put(new ScriptBundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
+        }
+    }
+
+    public ScriptBundleObserver getBundleObserver() {
+        return scriptBundleObserver;
+    }
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -151,12 +179,18 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void register(ScriptEngineFactory scriptEngineFactory, Bundle bundle) {
         // todo: ordering of script engines is not well defined anymore since it depends on module deployment order, explicit ordering would be better
-        for (String extension : scriptEngineFactory.getExtensions()) {
+        final List<String> extensions = scriptEngineFactory.getExtensions();
+        List<String> newExtensions = new ArrayList<>(extensions.size());
+        for (String extension : extensions) {
             if (!scriptExtensionsOrdering.contains(extension)) {
                 scriptExtensionsOrdering.add(extension);
+                newExtensions.add(extension);
             }
             scriptFactoryMap.put(extension, bundleScriptFactory);
             logger.info("ScriptEngineFactory {} registered extension {}", scriptEngineFactory, extension);
+
+            // add observers for the new extensions
+            registerObservers(newExtensions);
 
             // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
             // register view script observers
@@ -164,9 +198,12 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             addBundleScripts(bundle, extensionPattern);
 
             // as we are starting up we insert all the bundle scripts for all the deployed bundles.
-            for (Bundle otherBundle : bundle.getBundleContext().getBundles()) {
-                if (otherBundle.getState() == Bundle.ACTIVE) {
-                    addBundleScripts(otherBundle, extensionPattern);
+            final BundleContext bundleContext = bundle.getBundleContext();
+            if (bundleContext != null) {
+                for (Bundle otherBundle : bundleContext.getBundles()) {
+                    if (otherBundle.getState() == Bundle.ACTIVE) {
+                        addBundleScripts(otherBundle, extensionPattern);
+                    }
                 }
             }
         }

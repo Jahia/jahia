@@ -69,9 +69,8 @@
  *
  *     For more information, please visit http://www.jahia.com
  */
-package org.jahia.bundles.extender.jahiamodules;
+package org.jahia.services.render.scripting.bundle;
 
-import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.osgi.framework.Bundle;
 
@@ -83,7 +82,7 @@ import java.util.List;
  */
 public class ScriptBundleObserver implements BundleObserver<URL> {
 
-    private BundleScriptResolver bundleScriptResolver = null;
+    private final BundleScriptResolver bundleScriptResolver;
 
     public ScriptBundleObserver(BundleScriptResolver bundleScriptResolver) {
         this.bundleScriptResolver = bundleScriptResolver;

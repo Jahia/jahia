@@ -439,7 +439,7 @@ public final class Jahia {
      */
     public static String getFullProductVersion() {
         StringBuilder version = new StringBuilder();
-        version.append("Digital Factory ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
+        version.append("Digital Experience Manager ").append(Jahia.VERSION).append(" [" + CODE_NAME + "] - ")
                 .append(isEnterpriseEdition() ? "Enterprise" : "Community").append(" Distribution - Build ")
                 .append(Jahia.getBuildNumber());
         if (isEnterpriseEdition()) {

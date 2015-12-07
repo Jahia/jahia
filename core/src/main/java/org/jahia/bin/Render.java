@@ -368,9 +368,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             parameters = toParameterMapOfListOfString(req);
         }
 
-        req.getSession().removeAttribute("formDatas");
-        req.getSession().removeAttribute("formError");
-
         Action action;
         Resource resource = null;
         if (urlResolver.getPath().endsWith(".do") || isWebflowRequest(req)) {

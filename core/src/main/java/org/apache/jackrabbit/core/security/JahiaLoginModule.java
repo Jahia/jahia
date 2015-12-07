@@ -98,7 +98,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Digital Factory specific implementation of the login module.
+ * Digital Experience Manager specific implementation of the login module.
  * 
  * @author toto
  */

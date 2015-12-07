@@ -90,7 +90,7 @@ import org.jahia.settings.SettingsBean;
 import com.google.common.collect.Lists;
 
 /**
- * Digital Factory specific servlet for Atmosphere framework that allows to configure asynchronous support implementation using
+ * Digital Experience Manager specific servlet for Atmosphere framework that allows to configure asynchronous support implementation using
  * <code>jahia.properties</code>.
  * 
  * @author Sergiy Shyrkov

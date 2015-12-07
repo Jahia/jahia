@@ -73,7 +73,7 @@ import org.apache.jackrabbit.server.CredentialsProvider;
 import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
 
 /**
- * Digital Factory specific implementation of the JCR remoting servlet.
+ * Digital Experience Manager specific implementation of the JCR remoting servlet.
  * 
  * @author Sergiy Shyrkov
  */

@@ -78,7 +78,7 @@ import javax.security.auth.callback.*;
 import javax.security.sasl.RealmCallback;
 
 /**
- * Digital Factory specific login callback handler.
+ * Digital Experience Manager specific login callback handler.
  * 
  * @author Sergiy Shyrkov
  */

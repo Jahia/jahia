@@ -82,7 +82,7 @@
     <name>Jahia Module Test Framework</name>
     <version>7.2.0.0-SNAPSHOT</version>    
     <packaging>jar</packaging>
-    <description>This is the Jahia Module Test Framework for running unit/integration tests for Digital Factory modules.</description>
+    <description>This is the Jahia Module Test Framework for running unit/integration tests for Digital Experience Manager modules.</description>
 
     <scm>
         <connection>scm:dummy:uri</connection>

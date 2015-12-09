@@ -86,6 +86,7 @@ import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JCRModuleListener;

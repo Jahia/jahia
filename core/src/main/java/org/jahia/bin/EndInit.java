@@ -119,10 +119,10 @@ public class EndInit extends HttpServlet {
             out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
             "\n" +
-            "\n  In development mode, Digital Experience Manager will allow JSPs to be modified, modules to be re-deployed and" +
-            "\n  other modifications to happen immediately, but these DO have a performance impact. It is strongly " +
-            "\n  recommended to switch to production mode when running performance tests or going live. The " +
-            "\n  setting to change modes is called operatingMode in the jahia.properties configuration file.");
+            "\n  In development mode, Digital Experience Manager will allow JSPs to be modified, modules to be" +
+            "\n  re-deployed and other modifications to happen immediately, but these DO have a performance impact." +
+            "\n  It is strongly recommended to switch to production mode when running performance tests or going live." +
+            "\n  The setting to change modes is called operatingMode in the jahia.properties configuration file.");
         } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
             out.append("\n--------------------------------------------------------------------------------------------------" +
             "\n  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");

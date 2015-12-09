@@ -72,6 +72,8 @@
 package org.jahia.services.content;
 
 import com.google.common.collect.ImmutableSet;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaAfterInitializationService;
@@ -81,17 +83,25 @@ import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.validation.JCRNodeValidator;
 import org.jahia.services.content.interceptor.InterceptorChain;
 import org.jahia.services.content.interceptor.PropertyInterceptor;
+import org.jahia.services.content.nodetypes.JahiaCndWriter;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
+import org.jahia.services.content.nodetypes.ParseException;
+import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.ByteArrayResource;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.observation.ObservationManager;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -126,6 +136,17 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     private JCRStoreProviderChecker providerChecker;
 
     private Map<String, List<DefaultEventListener>> listeners;
+
+    private NodeTypesDBServiceImpl nodeTypesDBService;
+
+    private final Properties deploymentProperties = new Properties() {
+        @Override
+        public synchronized Enumeration<Object> keys() {
+            return new Vector(new TreeSet<>(keySet())).elements();
+        }
+    };
+
+    private final List<String> initializedSystemIds = new ArrayList<>();
 
     private JCRSessionFactory sessionFactory;
 
@@ -273,20 +294,51 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
     }
 
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
+        deployDefinitions(systemId, null, -1);
+    }
+
+    public void deployDefinitions(String systemId, String moduleVersion, long lastModified) throws IOException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
                 provider.deployDefinitions(systemId);
             }
         }
         registerNamespaces();
+
+        logger.info("Updating database cnd");
+
+        synchronized (deploymentProperties) {
+            // If deployment goes well, store deployed definitions in DB
+            if (moduleVersion != null) {
+                deploymentProperties.put(systemId + ".version", moduleVersion);
+            }
+            if (lastModified > -1) {
+                deploymentProperties.put(systemId + ".lastModified", Long.toString(lastModified));
+            }
+            saveProperties();
+        }
+
+        final StringWriter out = new StringWriter();
+        new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
+        nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
     }
 
-    public void undeployDefinitions(String systemId) {
+    public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
                 provider.undeployDefinitions(systemId);
             }
         }
+
+        logger.info("Updating database cnd");
+
+        synchronized (deploymentProperties) {
+            deploymentProperties.remove(systemId + ".version");
+            deploymentProperties.remove(systemId + ".lastModified");
+            saveProperties();
+        }
+
+        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
     }
 
     public Map<String, Class<? extends JCRNodeDecorator>> getDecorators() {
@@ -435,17 +487,110 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         this.sessionFactory = sessionFactory;
     }
 
+    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
+        this.nodeTypesDBService = nodeTypesDBService;
+    }
+
     public void start() throws JahiaInitializationException {
         try {
-            registerNamespaces();
-
+            initPropertiesFile();
+            initNodeTypeRegistry();
+            reloadNodeTypeRegistry();
             initObservers(listeners);
         } catch (Exception e) {
             logger.error("Repository init error", e);
         }
     }
 
-    public void registerNamespaces() {
+    public void stop() throws JahiaException {
+    }
+
+    private void initPropertiesFile() throws IOException {
+        try {
+            final String propertyFile = nodeTypesDBService.readDefinitionPropertyFile();
+            if (propertyFile != null) {
+                deploymentProperties.load(new StringReader(propertyFile));
+            }
+        } catch (RepositoryException e) {
+            logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void initNodeTypeRegistry() throws ParseException, IOException, RepositoryException {
+        if (settingsBean.isProcessingServer()) {
+            for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
+                String systemId = entry.getKey();
+                File file = entry.getValue();
+                if (isLatestDefinitions(systemId, new ModuleVersion(Jahia.VERSION), file.lastModified())) {
+                    initializedSystemIds.add(systemId);
+                    NodeTypeRegistry.getInstance().addDefinitionsFile(file, systemId);
+                    deployDefinitions(systemId, Jahia.VERSION, file.lastModified());
+                }
+            }
+        }
+    }
+
+    public void reloadNodeTypeRegistry() throws RepositoryException {
+        List<String> filesList = new ArrayList<>();
+        List<String> remfiles;
+
+        NodeTypeRegistry instance = NodeTypeRegistry.getInstance();
+
+        logger.info("Loading all CNDs from DB ..");
+        remfiles = new ArrayList<>(nodeTypesDBService.getFilesList());
+        List<String> reloadedSystemIds = new ArrayList<>();
+        while (!remfiles.isEmpty() && !remfiles.equals(filesList)) {
+            filesList = new ArrayList<>(remfiles);
+            remfiles.clear();
+            for (final String file : filesList) {
+                try {
+                    if (file.endsWith(".cnd")) {
+                        final String cndFile = nodeTypesDBService.readCndFile(file);
+                        final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
+                        if (!initializedSystemIds.contains(systemId)) {
+                            logger.debug("Loading CND : " + file);
+                            instance.addDefinitionsFile(new ByteArrayResource(cndFile.getBytes("UTF-8"), file), systemId);
+                        }
+                        reloadedSystemIds.add(systemId);
+                    }
+                } catch (ParseException | NoSuchNodeTypeException e) {
+                    logger.debug(file + " cannot be parsed, reorder later");
+                    remfiles.add(file);
+                } catch (IOException e) {
+                    logger.error("Cannot parse CND file from DB : "+file,e);
+                }
+            }
+        }
+
+        List<String> systemIds = NodeTypeRegistry.getInstance().getSystemIds();
+        systemIds.removeAll(reloadedSystemIds);
+        for (String systemId : systemIds) {
+            NodeTypeRegistry.getInstance().unregisterNodeTypes(systemId);
+        }
+        if (!remfiles.isEmpty()) {
+            logger.error("Cannot read CND from : "+remfiles);
+        }
+
+//        for (ExtendedNodeType nodeType : nodetypes.values()) {
+//            nodeType.validate();
+//        }
+
+        registerNamespaces();
+    }
+
+    private void saveProperties() throws IOException {
+        synchronized (deploymentProperties) {
+            final StringWriter writer = new StringWriter();
+            deploymentProperties.store(writer, "");
+            try {
+                nodeTypesDBService.saveDefinitionPropertyFile(writer.toString());
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+    }
+
+    private void registerNamespaces() {
         try {
             NamespaceRegistry nsRegistry = sessionFactory.getNamespaceRegistry();
             NodeTypeRegistry ntRegistry = NodeTypeRegistry.getInstance();
@@ -461,7 +606,31 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
     }
 
-    public void stop() throws JahiaException {
+    public boolean isLatestDefinitions(String systemId, ModuleVersion version, long lastModified) {
+        if (version != null) {
+            String key = systemId + ".version";
+            if (deploymentProperties.containsKey(key)) {
+                ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
+                if (lastDeployed.compareTo(version) > 0) {
+                    logger.info("Previously deployed " + systemId + " version was : "+deploymentProperties.getProperty(key) + ", ignoring version "+systemId + " / " + version + " / " + lastModified);
+                    return false;
+                }
+            }
+        }
+        String key2 = systemId + ".lastModified";
+        if (deploymentProperties.containsKey(key2)) {
+            long lastDeployed = (long) Long.parseLong(deploymentProperties.getProperty(key2));
+            if (lastDeployed >= lastModified) {
+                logger.info("Previously deployed " + systemId + " was done at : " + new Date(lastDeployed) + ", ignoring version "+systemId + " / " + version + " / " + new Date(lastModified));
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public List<String> getInitializedSystemIds() {
+        return initializedSystemIds;
     }
 
     public Set<String> getNoValidityCheckTypes() {

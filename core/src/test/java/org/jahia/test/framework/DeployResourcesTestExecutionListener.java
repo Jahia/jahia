@@ -71,30 +71,13 @@
  */
 package org.jahia.test.framework;
 
-import java.io.File;
-import java.io.FileFilter;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import javax.jcr.ImportUUIDBehavior;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.rules.RulesListener;
 import org.jahia.services.importexport.DocumentViewImportHandler;
@@ -104,6 +87,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
+
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.RepositoryException;
+import java.io.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class DeployResourcesTestExecutionListener extends
         AbstractTestExecutionListener {
@@ -119,7 +110,7 @@ public class DeployResourcesTestExecutionListener extends
         addCndFiles(MAIN_META_INF, TEST_SYSTEM_ID);
         addCndFiles(TEST_META_INF, TEST_SYSTEM_ID);
         if (NodeTypeRegistry.getInstance().getFiles(TEST_SYSTEM_ID) != null) {
-            JCRStoreService.getInstance().deployDefinitions(TEST_SYSTEM_ID);
+            JCRStoreService.getInstance().deployDefinitions(TEST_SYSTEM_ID, null, -1);
         }
 
         addRuleFiles(MAIN_META_INF);

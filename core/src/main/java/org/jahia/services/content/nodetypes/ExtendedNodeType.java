@@ -321,6 +321,11 @@ public class ExtendedNodeType implements NodeType {
         }
     }
 
+    void removeSubType(ExtendedNodeType subType) {
+        declaredSubtypes.remove(subType);
+        declaredSubtypes.add(subType);
+    }
+
     void addSubType(ExtendedNodeType subType) {
         declaredSubtypes.remove(subType);
         declaredSubtypes.add(subType);

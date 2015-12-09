@@ -72,25 +72,16 @@
 package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
-import org.apache.jackrabbit.core.journal.AbstractJournal;
-import org.apache.jackrabbit.core.journal.FileRevision;
-import org.apache.jackrabbit.core.journal.InstanceRevision;
-import org.apache.jackrabbit.core.journal.Journal;
-import org.apache.jackrabbit.core.journal.JournalException;
-import org.apache.jackrabbit.core.journal.RecordProducer;
+import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.jahia.services.content.nodetypes.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import java.io.File;
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -366,7 +357,7 @@ public class JahiaClusterNode extends ClusterNode {
     public void process(NodeTypeRecord record) {
         try {
             // In case of any change in the registered nodetypes, reread the provider nodetype registry
-            NodeTypeRegistry.getInstance().reloadNodeTypeRegistry();
+            JCRStoreService.getInstance().reloadNodeTypeRegistry();
         } catch (RepositoryException e) {
             String msg = "Unable to register nodetypes : " + e.getMessage();
             log.error(msg);

@@ -85,7 +85,8 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -110,7 +111,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.rmi.Naming;
@@ -509,38 +509,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected void initNodeTypes() throws RepositoryException, IOException {
-//        JahiaUser root = getGroupManagerService().getAdminUser(0);
-        if (canRegisterCustomNodeTypes() && SettingsBean.getInstance().isProcessingServer()) {
-            JCRSessionWrapper session = getSystemSession();
-            try {
-                Workspace workspace = session.getProviderSession(this).getWorkspace();
-                workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
-            } catch (RepositoryException e) {
-
-            } finally {
-                session.logout();
-            }
-
-            // Register system node types if required
-            boolean updated = false;
-            NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
-            Properties p = nodeTypeRegistry.getDeploymentProperties();
-            String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
-            File f = new File(cnddir);
-            File[] files = f.listFiles();
-            if (files != null) {
-                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
-                for (File file : cndfiles) {
-                    String systemId = "system-" + Patterns.DASH.split(file.getName())[1];
-                    if (nodeTypeRegistry.isLatestDefinitions(systemId, null, file.lastModified())) {
-                        deployDefinitions(systemId);
-                        p.put(systemId + ".lastModified", Long.toString(file.lastModified()));
-                        updated = true;
-                    }
-                }
-            }
-            if (updated) {
-                nodeTypeRegistry.saveProperties();
+        if (canRegisterCustomNodeTypes()) {
+            for (String systemId : service.getInitializedSystemIds()) {
+                deployDefinitions(systemId);
             }
         }
     }
@@ -678,58 +649,22 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    public void undeployDefinitions(String systemId) {
+    public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
+        getRepository(); // create repository instance
+        JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
-            if (undeployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
-                NodeTypeRegistry.getInstance().saveProperties();
-            }
-        } catch (IOException e) {
-            logger.error("Cannot save definitions timestamps", e);
-        }
-    }
+            Workspace workspace = session.getProviderSession(this).getWorkspace();
 
-    public boolean undeployDefinitions(String systemId, Properties p) {
-//        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
-        boolean needUpdate = false;
-        try {
-            getRepository(); // create repository instance
-            JCRSessionWrapper session = sessionFactory.getSystemSession();
             try {
-                Workspace workspace = session.getProviderSession(this).getWorkspace();
-
-                try {
-                    unregisterCustomNodeTypes(systemId, workspace);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot register nodetypes", e);
-                }
-                session.save();
-            } finally {
-                session.logout();
+                unregisterCustomNodeTypes(systemId, workspace);
+            } catch (RepositoryException e) {
+                logger.error("Cannot register nodetypes", e);
             }
-        } catch (Exception e) {
-            logger.error("Repository init error", e);
+            session.save();
+        } finally {
+            session.logout();
         }
-//        if (files != null) {
-//            for (Resource file : files) {
-//                try {
-//                    String propKey = file.getURL().toString() + ".lastRegistered." + key;
-//                    p.remove(propKey);
-//                    try {
-//                        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
-//                    } catch (Exception e) {
-//                        logger.error(e.getMessage(), e);
-//                    }
-//                    needUpdate = true;
-//                } catch (IOException e) {
-//                    logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
-//                    needUpdate = true;
-//                }
-//            }
-//        }
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(systemId);
-        return needUpdate;
     }
-
 
     public Repository getRepository() {
         // Double-checked locking only works with volatile for Java 5+

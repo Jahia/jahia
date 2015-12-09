@@ -177,7 +177,7 @@ public class NodeTypesDBServiceImpl {
         try {
             session = getHibernateSessionFactory().openStatelessSession();
             session.beginTransaction();
-            List<String> nodeTypesDBProviderList = session.createQuery("select filename from NodeTypesDBProvider").setReadOnly(true).list();
+            List<String> nodeTypesDBProviderList = session.createQuery("select filename from NodeTypesDBProvider order by id").setReadOnly(true).list();
             session.getTransaction().commit();
             if (nodeTypesDBProviderList != null) {
                 return nodeTypesDBProviderList;

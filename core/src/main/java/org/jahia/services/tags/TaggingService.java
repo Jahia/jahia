@@ -70,14 +70,6 @@
  *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.tags;
-import javax.annotation.Nullable;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Collections2;
@@ -86,11 +78,19 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
+import javax.annotation.Nullable;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
 import java.util.*;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -100,7 +100,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  * 
  * @author Sergiy Shyrkov
  */
-public class TaggingService extends JahiaService{
+public class TaggingService extends JahiaService implements JahiaAfterInitializationService {
     private static final Logger logger = getLogger(TaggingService.class);
 
     private TagsSuggester tagsSuggester;
@@ -139,8 +139,16 @@ public class TaggingService extends JahiaService{
     }
 
     public void init() throws NoSuchNodeTypeException {
-        Map<String, String> tagPropSelectorOptions = NodeTypeRegistry.getInstance().getNodeType(TaggingService.JMIX_TAGGED).getPropertyDefinition(TaggingService.J_TAG_LIST).getSelectorOptions();
-        tagSeparator = tagPropSelectorOptions.get("separator");
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        try {
+            Map<String, String> tagPropSelectorOptions = NodeTypeRegistry.getInstance().getNodeType(TaggingService.JMIX_TAGGED).getPropertyDefinition(TaggingService.J_TAG_LIST).getSelectorOptions();
+            tagSeparator = tagPropSelectorOptions.get("separator");
+        } catch (NoSuchNodeTypeException e) {
+            throw new JahiaInitializationException("Cannot initialize tag service",e);
+        }
     }
 
     /**

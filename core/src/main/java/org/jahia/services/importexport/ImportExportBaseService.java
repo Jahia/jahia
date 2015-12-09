@@ -73,9 +73,7 @@ package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -101,7 +99,6 @@ import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.interceptor.TemplateModuleInterceptor;
-import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
@@ -123,6 +120,7 @@ import org.jahia.utils.zip.DirectoryZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -137,7 +135,6 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1025,19 +1022,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
                         reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
-                        reg.initSystemDefinitions();
-
                         try {
+                            for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
+                                reg.addDefinitionsFile(entry.getValue(), entry.getKey());
+                            }
                             if (legacyImport) {
                                 JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
                                         file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
-                                JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
-                                        file.getURL().getPath(), reg);
-                                r.parse();
+                                reg.addDefinitionsFile(new InputStreamResource(zis, zipentry.getName()), file.getURL().getPath());
                             }
-                        } catch (ParseException e) {
+                        } catch (RepositoryException | ParseException e) {
                             logger.error(e.getMessage(), e);
                         }
                     } else if (name.equals(DEFINITIONS_MAP)) {
@@ -1099,7 +1095,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                     }
                 } else {
-                    reg.initSystemDefinitions();
+                    try {
+                        for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
+                            reg.addDefinitionsFile(entry.getValue(), entry.getKey());
+                        }
+                    } catch (ParseException e) {
+                        logger.error("Cannot parse definitions : " + e.getMessage(), e);
+                    }
                 }
                 InputStreamReader streamReader = null;
                 try {

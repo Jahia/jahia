@@ -74,6 +74,7 @@ package org.apache.jackrabbit.core.cluster;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
 import org.apache.jackrabbit.core.state.ItemState;
+import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -311,7 +312,7 @@ public class JahiaClusterNode extends ClusterNode {
     public void process(NodeTypeRecord record) {
         try {
             // In case of any change in the registered nodetypes, reread the provider nodetype registry
-            NodeTypeRegistry.getInstance().reloadNodeTypeRegistry();
+            JCRStoreService.getInstance().reloadNodeTypeRegistry();
         } catch (RepositoryException e) {
             String msg = "Unable to register nodetypes : " + e.getMessage();
             log.error(msg);

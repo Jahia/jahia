@@ -71,13 +71,6 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.*;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.service.command.CommandProcessor;
 import org.jahia.bin.Jahia;
@@ -91,11 +84,7 @@ import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.sites.JahiaSitesService;
@@ -113,6 +102,13 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.*;
 
 /**
  * Activator for Jahia Modules extender
@@ -402,10 +398,11 @@ public class Activator implements BundleActivator {
                             && !templatesService.checkExistingContent(bundle.getSymbolicName())) {
                         JCRStoreService jcrStoreService = (JCRStoreService) SpringContextSingleton.getBean("JCRStoreService");
                         jcrStoreService.undeployDefinitions(bundle.getSymbolicName());
+                        NodeTypeRegistry.getInstance().unregisterNodeTypes(bundle.getSymbolicName());
                     }
                 }
-            } catch (RepositoryException e) {
-                logger.error("Error while initializing module content for module " + jahiaTemplatesPackage, e);
+            } catch (IOException | RepositoryException e) {
+                logger.error("Error while uninstalling module content for module " + jahiaTemplatesPackage, e);
             }
             templatePackageRegistry.unregisterPackageVersion(jahiaTemplatesPackage);
         }

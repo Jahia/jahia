@@ -29,8 +29,8 @@
         <property name="properties" ref="jahiaProperties"/>
         <property name="locations">
             <list>
-                <value>classpath*:jahia-modules-*.properties</value>
-                <value>classpath*:jahia/jahia-modules-*.properties</value>
+                <value>rootclasspath*:jahia-modules-*.properties</value>
+                <value>rootclasspath*:jahia/jahia-modules-*.properties</value>
             </list>
         </property>
         <property name="ignoreResourceNotFound" value="true"/>
@@ -64,7 +64,7 @@
         </property>
     </bean>
 
-    <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
+    <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader" lazy-init="true">
         <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">
@@ -79,20 +79,20 @@
         </property>
     </bean>
 
-    <bean id="springTypeConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>    
+    <bean id="springTypeConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" lazy-init="true"/>
     
-    <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService">
+    <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService" lazy-init="true">
         <constructor-arg ref="springTypeConversionService"/>
     </bean>
 
-    <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator"/>
+    <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator" lazy-init="true"/>
 
     <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true"
                                    conversion-service="JahiaFlowConversionService"
                                    view-factory-creator="JahiaViewFactoryCreator"
                                    validator="validatorFactoryBean"/>
 
-    <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/"
+    <webflow:flow-registry id="jahiaFlowRegistry" base-path="osgibundle:/"
                            flow-builder-services="jahiaFlowBuilderServices">
         <webflow:flow-location-pattern value="**/*.flow/flow.xml"/>
     </webflow:flow-registry>
@@ -119,7 +119,7 @@
         </property>
     </bean>
 
-    <bean class="org.jahia.params.valves.AuthPipelineInitializer">
+    <bean class="org.jahia.params.valves.AuthPipelineInitializer" lazy-init="true">
         <property name="authPipeline" ref="authPipeline"/>
     </bean>
 </beans>

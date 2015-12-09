@@ -75,8 +75,14 @@ import org.eclipse.gemini.blueprint.context.OsgiBundleApplicationContextExecutor
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.services.SpringContextSingleton;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.core.io.Resource;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.
@@ -98,6 +104,19 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
     public void refresh() throws BeansException, IllegalStateException {
         executor.refresh();
     }
+
+    private static Map<String, Resource[]> rootClassPathResourcesCache = new ConcurrentHashMap<>();
+
+    public Resource[] getResources(String locationPattern) throws IOException {
+        if (locationPattern.startsWith("rootclasspath")) {
+            if (!rootClassPathResourcesCache.containsKey(locationPattern)) {
+                rootClassPathResourcesCache.put(locationPattern, SpringContextSingleton.getInstance().getResources(locationPattern.substring(4)));
+            }
+            return rootClassPathResourcesCache.get(locationPattern);
+        }
+        return super.getResources(locationPattern);
+    }
+
 
     private class JahiaOsgiApplicationContextExecutor implements OsgiBundleApplicationContextExecutor {
         @Override

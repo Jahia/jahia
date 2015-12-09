@@ -84,7 +84,7 @@
     <artifactId>jahia-perf-test-module</artifactId>
     <name>Jahia performance test</name>
     <packaging>bundle</packaging>
-    <description>This is the custom module (jahia-perf-test-module) for running on a Digital Factory server.</description>
+    <description>This is the custom module (jahia-perf-test-module) for running on a Digital Experience Manager server.</description>
 
     <scm>
         <connection>scm:dummy:uri</connection>

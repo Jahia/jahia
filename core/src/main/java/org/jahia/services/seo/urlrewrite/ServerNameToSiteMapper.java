@@ -200,7 +200,7 @@ public class ServerNameToSiteMapper {
                 }
             }
             request.setAttribute(ATTR_NAME_SITE_KEY_FOR_LINK, serverName);
-            request.setAttribute(ATTR_NAME_SERVERNAME_FOR_LINK, request.getScheme() + "://" + serverName);
+            request.setAttribute(ATTR_NAME_SERVERNAME_FOR_LINK, serverName != null ? (request.getScheme() + "://" + serverName) : null);
         }
         
         checkCmsPrefix(request, ctx, path);

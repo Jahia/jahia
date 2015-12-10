@@ -333,7 +333,7 @@ public class JahiaCndReader {
                 }
             }
         }
-        List<String> nodeTypeNames = new ArrayList<>();
+        Map<String, ExtendedNodeType> nodeTypeNames = new LinkedHashMap<>();
         while (!currentTokenEquals(Lexer.EOF)) {
             ExtendedNodeType ntd = new ExtendedNodeType(registry, systemId);
             try {
@@ -344,7 +344,7 @@ public class JahiaCndReader {
 
                 try {
                     // Check if already declared in the same file
-                    if (nodeTypeNames.contains(ntd.getName())) {
+                    if (nodeTypeNames.containsKey(ntd.getName())) {
                         logger.warn("Node type '" + ntd.getName() + "' defined multiple times in " + filename + ", ignoring.");
                         continue;
                     }
@@ -361,7 +361,7 @@ public class JahiaCndReader {
                 }
 
                 nodeTypesList.add(ntd);
-                nodeTypeNames.add(ntd.getName());
+                nodeTypeNames.put(ntd.getName(), ntd);
             } catch (ParseException e) {
                 // Parse exception, try to find the next nodetype definition
                 hasEncounteredIssuesWithDefinitions = true;
@@ -374,25 +374,51 @@ public class JahiaCndReader {
             }
         }
 
+        Map<String,Set<String>> superTypes = new HashMap<>();
+
         // Consistency checks
         for (ExtendedNodeType type : nodeTypesList) {
             // Check that supertypes / mixin are available in the current scope
             for (String s : type.getDeclaredSupertypeNames()) {
-                if (!registry.hasNodeType(s) && !nodeTypeNames.contains(s)) {
+                try {
+                    ExtendedNodeType nodeType = nodeTypeNames.get(s);
+                    if (nodeType == null) {
+                        nodeType = registry.getNodeType(s);
+                    }
+                    if (!nodeType.isMixin() && type.isMixin()) {
+                        hasEncounteredIssuesWithDefinitions = true;
+                        parsingErrors.add("Mixin type " + type.getName() + " cannot have non-mixin supertype " + s);
+                    }
+                } catch (NoSuchNodeTypeException e) {
                     hasEncounteredIssuesWithDefinitions = true;
                     parsingErrors.add("Unknow supertype " + s + " for type " + type.getName());
                 }
             }
             for (String s : type.getMixinExtendNames()) {
-                if (!registry.hasNodeType(s) && !nodeTypeNames.contains(s)) {
+                if (!registry.hasNodeType(s) && !nodeTypeNames.containsKey(s)) {
                     hasEncounteredIssuesWithDefinitions = true;
                     parsingErrors.add("Unknow mixin " + s + " for type " + type.getName());
                 }
             }
+            checkRecursiveInheritance(type, nodeTypeNames, new ArrayList<String>());
         }
 
         if (hasEncounteredIssuesWithDefinitions) {
             throw new ParseException(StringUtils.join(parsingErrors, "\n"), -1, -1, filename);
+        }
+    }
+
+    public void checkRecursiveInheritance(ExtendedNodeType type, Map<String, ExtendedNodeType> nodeTypeNames, List<String> name) {
+        name.add(type.getName());
+        if (!Collections.disjoint(Arrays.asList(type.getDeclaredSupertypeNames()),name)) {
+            hasEncounteredIssuesWithDefinitions = true;
+            parsingErrors.add(name+ " invalid supertype: " + type.getName() + " (infinite recursion))");
+            return;
+        }
+        for (String s : type.getDeclaredSupertypeNames()) {
+            if (nodeTypeNames.containsKey(s)) {
+                checkRecursiveInheritance(nodeTypeNames.get(s), nodeTypeNames, new ArrayList<String>(name));
+            }
         }
     }
 

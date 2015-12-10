@@ -28,6 +28,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loginMain.css">
 </head>
 <body>
+<div class="login-bg">
 <div class="login-card">
     <h1><fmt:message key="label.login.welcome"/></h1>
     <div class="sep-top"></div>
@@ -111,5 +112,6 @@
     });
 
 </script>
+</div>
 </body>
 </html>

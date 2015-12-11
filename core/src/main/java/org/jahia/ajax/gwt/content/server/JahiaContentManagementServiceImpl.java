@@ -312,6 +312,13 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             if (!StringUtils.isEmpty(path)) {
                 context = retrieveCurrentSession().getNode(path);
             }
+
+            Map<String, List<String>> locks = (Map<String, List<String>>) getRequest().getSession().getAttribute("engineLocks");
+            if (locks == null) {
+                locks = new HashMap<String, List<String>>();
+                getRequest().getSession().setAttribute("engineLocks", locks);
+            }
+
             config = uiConfigHelper.getGWTManagerConfiguration(context, getSite(), getRemoteJahiaUser(), getLocale(), getUILocale(),
                     getRequest(), name);
         } catch (RepositoryException e) {

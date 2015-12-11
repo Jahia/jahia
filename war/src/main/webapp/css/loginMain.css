@@ -327,6 +327,6 @@ body h1 {
 	text-transform: uppercase;
 	word-spacing: 2px;
 	letter-spacing: 1px;
-	bottom: 0;
+	top: 0;
 	left: 0;
 }

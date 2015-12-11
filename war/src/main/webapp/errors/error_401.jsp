@@ -74,14 +74,22 @@
     $(window, document, undefined).ready(function() {
 
         // Fix for input label
+        setTimeout(function() {
+            var loginInput = $("input[name='username'],input[name='password']")
+            loginInput.blur(function() {
+                var $this = $(this);
+                if ($this.val())
+                    $this.addClass('used');
+                else
+                    $this.removeClass('used');
+            });
 
-        $('input').blur(function() {
-            var $this = $(this);
-            if ($this.val())
-                $this.addClass('used');
-            else
-                $this.removeClass('used');
-        });
+            // Fix for autofill
+            if ($("input[name='username']").val()) {
+                loginInput.addClass('used');
+            }
+        }, 20);
+
 
         // Button animation effects
 

@@ -87,9 +87,9 @@ public class WebflowAction extends Action {
             if (s.startsWith("webflowexecution")) {
                 String id = s.substring("webflowexecution".length()).replace('_','-');
                 String view = "default";
-                if (id.contains(".")) {
-                    view = StringUtils.substringAfter(id, ".");
-                    id = StringUtils.substringBefore(id,".");
+                if (id.contains("--")) {
+                    view = StringUtils.substringAfter(id, "--");
+                    id = StringUtils.substringBefore(id,"--");
                 }
                 JCRNodeWrapper n = JCRTemplate.getInstance().getSessionFactory().getCurrentUserSession(renderContext.getWorkspace(), renderContext.getMainResourceLocale()).getNodeByUUID(id);
                 req.setAttribute("actionParameters",parameters);

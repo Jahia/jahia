@@ -123,7 +123,7 @@ public class JahiaFlowUrlHandler extends DefaultFlowUrlHandler {
         String name = "webflowexecution" + StringUtils.replace(n.getIdentifier(), "-", "_");
         Script r = (Script) request.getAttribute("script");
         if (r != null && r.getView() != null && !r.getView().getKey().equals("default")) {
-            name += "." + r.getView().getKey();
+            name += "__" + r.getView().getKey();
         }
         return name;
     }

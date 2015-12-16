@@ -67,7 +67,7 @@
         </property>
     </bean>
 
-    <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader" lazy-init="true">
+    <bean id="jBPMModuleProcessLoader" class="org.jahia.services.workflow.jbpm.JBPMModuleProcessLoader">
         <property name="jbpm6WorkflowProvider" ref="jBPMProvider"/>
         <property name="mailTemplateRegistry" ref="mailTemplateRegistry"/>
         <property name="processes">

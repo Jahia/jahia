@@ -754,7 +754,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_TITLE, searchExpression, xpath));
                 }
                 if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_KEYWORDS, searchExpression, xpath));
+                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.KEYWORDS, searchExpression, xpath));
                 }
 
                 String[] terms = null;

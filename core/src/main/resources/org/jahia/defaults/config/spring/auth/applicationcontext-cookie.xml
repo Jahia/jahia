@@ -13,7 +13,7 @@
 		 -->
 	    <property name="idLength" value="40"/>
 	    <!--
-	    	name of user property under which we store the cookie identifier key in Digital Factory,
+	    	name of user property under which we store the cookie identifier key in Digital Experience Manager,
 	     	for matching with the value coming from the cookie.
 	     -->
 	    <property name="userPropertyName" value="cookieauth"/>

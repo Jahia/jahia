@@ -42,10 +42,7 @@
  * Public License for more details. You should have received a copy of the GNU *
  * General Public License along with this program; if not, write to the Free   *
  * Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,         *
- * MA 02110-1301, USA. As a special exception to the terms and conditions of   *
- * version 2.0 of the GPL (or any later version), you may redistribute this    *
- * Program in connection with Free/Libre and Open Source Software ("FLOSS")    *
- * applications as described in Jahia's FLOSS exception.                       *
+ * MA 02110-1301, USA.                                                         *
  *                                                                             *
  * Commercial and Supported Versions of the program (dual licensing):          *
  * Alternatively, commercial and supported versions - also known as            *

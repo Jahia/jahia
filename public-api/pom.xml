@@ -17,7 +17,7 @@
 
         IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
 
-        "This program is free software; you can redistribute it and/or
+        This program is free software; you can redistribute it and/or
         modify it under the terms of the GNU General Public License
         as published by the Free Software Foundation; either version 2
         of the License, or (at your option) any later version.
@@ -31,13 +31,6 @@
         along with this program; if not, write to the Free Software
         Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
 
-        As a special exception to the terms and conditions of version 2.0 of
-        the GPL (or any later version), you may redistribute this Program in connection
-        with Free/Libre and Open Source Software ("FLOSS") applications as described
-        in Jahia's FLOSS exception. You should have received a copy of the text
-        describing the FLOSS exception, also available here:
-        http://www.jahia.com/license"
-
         2/ JSEL - Commercial and Supported Versions of the program
         ===================================================================================
 
@@ -49,7 +42,6 @@
 
         If you are unsure which license is appropriate for your use,
         please contact the sales department at sales@jahia.com.
-
 
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">

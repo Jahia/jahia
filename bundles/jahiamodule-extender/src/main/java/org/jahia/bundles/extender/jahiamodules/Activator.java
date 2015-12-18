@@ -463,7 +463,7 @@ public class Activator implements BundleActivator {
                 cndBundleObserver.addingEntries(bundle, foundURLs);
             }
         } catch (Exception e) {
-            logger.info("--- Error parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+            logger.error("--- Error parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
             setModuleState(bundle, ModuleState.State.ERROR_DURING_START, e);
             return;
         }

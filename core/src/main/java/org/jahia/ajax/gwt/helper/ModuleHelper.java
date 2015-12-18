@@ -60,6 +60,9 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.JahiaCndReader;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.ParseException;
 import org.jahia.services.notification.HttpClientService;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.SourceControlManagement;
@@ -134,7 +137,16 @@ public class ModuleHelper {
     public void compileAndDeploy(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
             BundleException {
         File sources = getSources(moduleId, session);
-
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleId);
+        for (String def : templatePackage.getDefinitionsFiles()) {
+            File defFile = new File(sources,"src" + File.separator + "main" + File.separator + "resources" + File.separator + def);
+            JahiaCndReader r = new JahiaCndReader(new FileReader(defFile),defFile.getName(),moduleId, NodeTypeRegistry.getInstance());
+            try {
+                r.parse();
+            } catch (ParseException e) {
+                throw new IOException(e.getMessage());
+            }
+        }
         templateManagerService.regenerateImportFile(moduleId, sources, session);
         JahiaTemplatesPackage jahiaTemplatesPackage = templateManagerService.compileAndDeploy(moduleId, sources, session);
         final ModuleState state = jahiaTemplatesPackage.getState();

@@ -107,9 +107,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -1301,9 +1301,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, File> filePath = new HashMap<String, File>();
         File temp = null;
         try {
-            temp = File.createTempFile("migration", "");
-            temp.delete();
-            temp.mkdir();
+            Path tempPath = Files.createTempDirectory("migration");
+            temp = tempPath.toFile();
             ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;

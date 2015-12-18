@@ -241,6 +241,7 @@ public class Constants {
     public static final String THUMBNAIL = "j:thumbnail";
     public static final String FULLPATH = "j:fullpath";
     public static final String TAGS = "j:tags";
+    public static final String KEYWORDS = "j:keywords";
     public static final String DEFAULT_CATEGORY = "j:defaultCategory";
 
     public static final String SPLIT_CONFIG = "j:splitConfig";

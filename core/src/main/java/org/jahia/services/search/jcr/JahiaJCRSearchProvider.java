@@ -77,9 +77,7 @@ import java.math.BigDecimal;
 import java.util.*;
 import java.util.regex.Pattern;
 
-import static org.jahia.services.content.JCRContentUtils.stringToJCRSearchExp;
-import static org.jahia.services.content.JCRContentUtils.stringToQueryLiteral;
-import static org.jahia.services.content.JCRContentUtils.normalizeStringExpression;
+import static org.jahia.services.content.JCRContentUtils.*;
 
 /**
  * This is the default search provider used by Jahia and used the index created by Jahia's main
@@ -746,7 +744,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_TITLE, searchExpression, xpath));
                 }
                 if (searchFields.isKeywords()) {
-                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.JCR_KEYWORDS, searchExpression, xpath));
+                    addConstraint(textSearchConstraints, OR, getContainsExpr(Constants.KEYWORDS, searchExpression, xpath));
                 }
 
                 String[] terms = null;

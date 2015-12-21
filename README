@@ -2,7 +2,7 @@
  README FOR DIGITAL EXPERIENCE MANAGER SOURCE CODE
 ==============================================================================
 
- All source code, binaries and documentation is copyrighted (c) 2002-2015 by
+ All source code, binaries and documentation is copyrighted (c) 2002-2016 by
  Jahia Solutions Group SA. All Rights Reserved.
 
  INTRODUCTION
@@ -41,7 +41,7 @@ to bring more so it helps if people play fair :)
 ------------------------------------------------------------------------------
 
  Requirements:
- - JDK 1.5 or later 
+ - JDK 1.5 or later
  - Maven 2.1 / 3.x
  - Subversion client (for Windows at http://www.collab.net/downloads/subversion/
    for Mac OS X from http://www.finkproject.org/ or Xcode tools, under
@@ -105,17 +105,17 @@ to bring more so it helps if people play fair :)
          set CATALINA_OPTS=%CATALINA_OPTS% -Dsun.io.useCanonCaches=false -Xms1024m -Xmx1024m -XX:MaxPermSize=256m -server -Dhibernate.jdbc.use_streams_for_binary=true -verbose:gc
        before the line
          rem Guess CATALINA_HOME if not defined
-       
+
        If using embedded Derby database, please specify the correct Derby home folder in the
        Tomcat startup options by adding into bin/catalina.sh:
-       
+
          CATALINA_OPTS="$CATALINA_OPTS -Dderby.system.home=$CATALINA_HOME/webapps/ROOT/WEB-INF/var/dbdata"
          export CATALINA_OPTS
-         
+
        on Windows by adding into bin\catalina.bat:
-       
+
          set CATALINA_OPTS=%CATALINA_OPTS% -Dderby.system.home=%CATALINA_HOME%\webapps\ROOT\WEB-INF\var\dbdata
-         
+
     7. In the main directory, type:
        mvn install jahia:deploy jahia:configure
 
@@ -128,7 +128,7 @@ to bring more so it helps if people play fair :)
        GWT compilation.
 
     8. Point your browser to http://localhost:8080/
-    	 Default root password is root1234
+         Default root password is root1234
 
     9. Create your first virtual site and enjoy.
 
@@ -247,8 +247,8 @@ Adding a new test simply consist in adding a TestCase class in the test module. 
 will be executed automatically after each build on the Bamboo server.
 
 The existing tests are using the templates-web module, which needs to be deployed on your Jahia server. The module
-can be downloaded here: https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/templates-web/ 
-The source of the templates-web module is on github: https://github.com/Jahia/templates-web 
+can be downloaded here: https://devtools.jahia.com/nexus/content/groups/public/org/jahia/modules/templates-web/
+The source of the templates-web module is on github: https://github.com/Jahia/templates-web
 
 To manually run the tests:
 
@@ -349,7 +349,7 @@ perform the rest of the release
 3. It is recommended also to do all the following steps on a clean checkout of
 the codebase, as in your working directory you might have local changes or
 IDE project files that will conflict with proper preparation. You can for example
-checkout the project like this : 
+checkout the project like this :
 
 svn checkout https://username@svnserver/svn/jahia/trunk
 

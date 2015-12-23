@@ -1,7 +1,7 @@
 ==========================================================================================
 =                            JAHIA'S COMMUNITY DISTRIBUTION                              =
 ==========================================================================================
- 
+
 JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION
 ==========================================================================================
 
@@ -37,7 +37,7 @@ JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION
 
     Alternatively, commercial and supported versions of the program - as known as
     Enterprise Distributions - must be used in accordance with the terms and conditions
-    contained in a separate written agreement between you and Jahia Solutions Group SA 
+    contained in a separate written agreement between you and Jahia Solutions Group SA
     as well as the Jahia Sustainable Enterprise License (JSEL).
 
     If you are unsure which license is appropriate for your use,

@@ -17,10 +17,10 @@
 
         IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
 
-        This program is free software; you can redistribute it and/or
-        modify it under the terms of the GNU General Public License
-        as published by the Free Software Foundation; either version 2
-        of the License, or (at your option) any later version.
+        This program is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
 
         This program is distributed in the hope that it will be useful,
         but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -28,8 +28,8 @@
         GNU General Public License for more details.
 
         You should have received a copy of the GNU General Public License
-        along with this program; if not, write to the Free Software
-        Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+        along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 
         2/ JSEL - Commercial and Supported Versions of the program
         ===================================================================================
@@ -51,7 +51,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <artifactId>dummy-modules</artifactId>
-        <groupId>org.jahia.test</groupId>        
+        <groupId>org.jahia.test</groupId>
         <version>7.1.1.0-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.test</groupId>
@@ -105,14 +105,14 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <archive>
                         <manifestEntries>
-		                	<Implementation-Title>${project.name}</Implementation-Title>
-		                    <Implementation-Version>${project.version}</Implementation-Version>
-		                    <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
-		                    <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
-		                    <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
-		                    <Specification-Title>${project.name}</Specification-Title>
-		                    <Specification-Version>${project.version}</Specification-Version>
-		                    <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Implementation-Vendor>${jahia.manifest.vendor.name}</Implementation-Vendor>
+                            <Implementation-Vendor-Id>${jahia.manifest.vendor.id}</Implementation-Vendor-Id>
+                            <Implementation-URL>${jahia.manifest.vendor.url}</Implementation-URL>
+                            <Specification-Title>${project.name}</Specification-Title>
+                            <Specification-Version>${project.version}</Specification-Version>
+                            <Specification-Vendor>${jahia.manifest.vendor.name}</Specification-Vendor>
                             <Source-Folders>${project.basedir}</Source-Folders>
                             <Source-Control-URI>${project.scm.connection}</Source-Control-URI>
                             <package-name>${project.name}</package-name>

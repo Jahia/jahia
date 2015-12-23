@@ -53,6 +53,7 @@ import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.Window;
 import com.extjs.gxt.ui.client.widget.layout.CenterLayout;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
@@ -88,6 +89,7 @@ class FileImagesBrowseTabItem extends BrowseTabItem {
         contentContainer.setId("images-view");
         contentContainer.setBorders(true);
         contentContainer.setScrollMode(Style.Scroll.AUTOY);
+        contentContainer.setLayout(new FitLayout());
 
         // data proxy
         RpcProxy<PagingLoadResult<GWTJahiaNode>> listProxy = new RpcProxy<PagingLoadResult<GWTJahiaNode>>() {

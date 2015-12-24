@@ -285,20 +285,9 @@ public class AclExtendedNodesPerformanceTest {
     }
 
     private JCRUserNode getUser(String name) {
-
         JCRUserNode user = userManagerService.lookup(name);
         assert (user != null);
         assert (USER_GROUP_PROVIDER.equals(user.getPropertyAsString(JCRUserNode.J_EXTERNAL_SOURCE))); // Ensure the user is retrieved from the desired provider.
-
-        // Work around the https://jira.jahia.org/browse/BACKLOG-6053 issue.
-        // TODO: Remove entirely once BACKLOG-6053 is resolved.
-        try {
-            user.setProperty("j:skypeID", "test");
-            user.getSession().save();
-        } catch (RepositoryException e) {
-            throw new RuntimeException();
-        }
-
         return user;
     }
 

@@ -261,7 +261,11 @@ public class Activator implements BundleActivator {
                             update(bundle);
                             break;
                         case BundleEvent.RESOLVED:
-                            setModuleState(bundle,ModuleState.State.RESOLVED, null);
+                            if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
+                                    getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
+                                    getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
+                                setModuleState(bundle, ModuleState.State.RESOLVED, null);
+                            }
                             resolve(bundle);
                             break;
                         case BundleEvent.STARTING:
@@ -280,7 +284,9 @@ public class Activator implements BundleActivator {
                             stopped(bundle);
                             break;
                         case BundleEvent.UNRESOLVED:
-                            if (getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
+                            if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
+                                    getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
+                                    getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
                                 setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
                             }
                             unresolve(bundle);
@@ -472,8 +478,8 @@ public class Activator implements BundleActivator {
                 cndBundleObserver.addingEntries(bundle, foundURLs);
             }
         } catch (Exception e) {
-            logger.error("--- Error parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
-            setModuleState(bundle, ModuleState.State.ERROR_DURING_START, e);
+            logger.error("--- Error parsing definitions for Jahia OSGi bundle " + pkg.getId() + " v" + pkg.getVersion(), e);
+            setModuleState(bundle, ModuleState.State.ERROR_WITH_DEFINITIONS, e);
             return;
         }
 

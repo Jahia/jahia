@@ -77,7 +77,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Time: 15:08:56
  */
 public class NodeTypeRegistry implements NodeTypeManager {
-    private static final String SYSTEM = "system";
     private static final Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
     private final Map<Name, ExtendedNodeType> nodetypes = new LinkedHashMap<>();
@@ -122,8 +121,12 @@ public class NodeTypeRegistry implements NodeTypeManager {
         }
     }
 
+    /**
+     * Get all system definitions files
+     * @return system definitions files
+     */
     public static Map<String,File> getSystemDefinitionsFiles() {
-        LinkedHashMap<String, File> res = new LinkedHashMap<>();
+        Map<String, File> res = new LinkedHashMap<>();
         String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
         File f = new File(cnddir);
         File[] files = f.listFiles();
@@ -148,18 +151,18 @@ public class NodeTypeRegistry implements NodeTypeManager {
 
     @Deprecated
     public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException, RepositoryException {
-        addDefinitionsFile(file == null ? Collections.EMPTY_LIST : Collections.singletonList(new FileSystemResource(file)), systemId);
+        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
     }
 
     public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException, RepositoryException  {
-        addDefinitionsFile(file == null ? Collections.EMPTY_LIST : Collections.singletonList(new FileSystemResource(file)), systemId);
+        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
     }
 
 
-    public void addDefinitionsFile(List<Resource> resources, String systemId) throws IOException, ParseException, RepositoryException {
+    public void addDefinitionsFile(List<? extends Resource> resources, String systemId) throws IOException, ParseException, RepositoryException {
         List<ExtendedNodeType> types = new ArrayList<>();
         for (Resource resource : resources) {
-            logger.debug("Adding definitions file "+resource.toString() + " for "+systemId);
+            logger.debug("Adding definitions file {} for {}", resource, systemId);
             Reader resourceReader = null;
             try {
                 resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);

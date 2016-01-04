@@ -314,22 +314,8 @@ public class JahiaCndReader {
                 doOptions(ntd);
                 doItemDefs(ntd);
 
-                try {
-                    // Check if already declared in the same file
-                    if (nodeTypeNames.containsKey(ntd.getName())) {
-                        logger.warn("Node type '" + ntd.getName() + "' defined multiple times in " + filename + ", ignoring.");
-                        continue;
-                    }
-
-                    // Check if nodetype was already declared anywhere on the platform
-                    ExtendedNodeType existingType = NodeTypeRegistry.getInstance().getNodeType(ntd.getName());
-                    if (!systemId.equals(existingType.getSystemId())) {
-                        logger.warn("Node type '" + ntd.getName() + "' already defined with a different systemId (existing: '"
-                                + existingType.getSystemId() + "', provided: '" + systemId + " , ignoring.");
-                        continue;
-                    }
-                } catch (NoSuchNodeTypeException e) {
-                    // Node type does not exist, continue
+                if (!validateNameAndSystemId(nodeTypeNames, ntd)) {
+                    continue;
                 }
 
                 nodeTypesList.add(ntd);
@@ -346,8 +332,6 @@ public class JahiaCndReader {
             }
         }
 
-        Map<String,Set<String>> superTypes = new HashMap<>();
-
         // Consistency checks
         for (ExtendedNodeType type : nodeTypesList) {
             // Check that supertypes / mixin are available in the current scope
@@ -363,13 +347,13 @@ public class JahiaCndReader {
                     }
                 } catch (NoSuchNodeTypeException e) {
                     hasEncounteredIssuesWithDefinitions = true;
-                    parsingErrors.add("Unknow supertype " + s + " for type " + type.getName());
+                    parsingErrors.add("Unknown supertype " + s + " for type " + type.getName());
                 }
             }
             for (String s : type.getMixinExtendNames()) {
                 if (!registry.hasNodeType(s) && !nodeTypeNames.containsKey(s)) {
                     hasEncounteredIssuesWithDefinitions = true;
-                    parsingErrors.add("Unknow mixin " + s + " for type " + type.getName());
+                    parsingErrors.add("Unknown mixin " + s + " for type " + type.getName());
                 }
             }
             checkRecursiveInheritance(type, nodeTypeNames, new ArrayList<String>());
@@ -380,7 +364,28 @@ public class JahiaCndReader {
         }
     }
 
-    public void checkRecursiveInheritance(ExtendedNodeType type, Map<String, ExtendedNodeType> nodeTypeNames, List<String> name) {
+    private boolean validateNameAndSystemId(Map<String, ExtendedNodeType> nodeTypeNames, ExtendedNodeType ntd) {
+        try {
+            // Check if already declared in the same file
+            if (nodeTypeNames.containsKey(ntd.getName())) {
+                logger.warn("Node type '" + ntd.getName() + "' defined multiple times in " + filename + ", ignoring.");
+                return false;
+            }
+
+            // Check if nodetype was already declared anywhere on the platform
+            ExtendedNodeType existingType = NodeTypeRegistry.getInstance().getNodeType(ntd.getName());
+            if (!systemId.equals(existingType.getSystemId())) {
+                logger.warn("Node type '" + ntd.getName() + "' already defined with a different systemId (existing: '"
+                        + existingType.getSystemId() + "', provided: '" + systemId + " , ignoring.");
+                return false;
+            }
+        } catch (NoSuchNodeTypeException e) {
+            // Node type does not exist, continue
+        }
+        return true;
+    }
+
+    private void checkRecursiveInheritance(ExtendedNodeType type, Map<String, ExtendedNodeType> nodeTypeNames, List<String> name) {
         name.add(type.getName());
         if (!Collections.disjoint(Arrays.asList(type.getDeclaredSupertypeNames()),name)) {
             hasEncounteredIssuesWithDefinitions = true;

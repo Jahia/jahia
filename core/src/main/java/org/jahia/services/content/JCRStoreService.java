@@ -265,10 +265,24 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         return w;
     }
 
+    /**
+     * Deploy definitions in all providers and store them in database
+     * @param systemId
+     * @throws IOException
+     * @throws RepositoryException
+     */
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
         deployDefinitions(systemId, null, -1);
     }
 
+    /**
+     * Deploy definitions in all providers and store them in database
+     * @param systemId
+     * @param moduleVersion
+     * @param lastModified
+     * @throws IOException
+     * @throws RepositoryException
+     */
     public void deployDefinitions(String systemId, String moduleVersion, long lastModified) throws IOException, RepositoryException {
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
@@ -277,7 +291,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
         }
         registerNamespaces();
 
-        logger.info("Updating database cnd");
+        logger.info("Added {} definitions, updating database cnd", systemId);
 
         synchronized (deploymentProperties) {
             // If deployment goes well, store deployed definitions in DB
@@ -287,12 +301,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             if (lastModified > -1) {
                 deploymentProperties.put(systemId + ".lastModified", Long.toString(lastModified));
             }
-            saveProperties();
+            final StringWriter out = new StringWriter();
+            new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
+            nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString(), deploymentProperties);
         }
-
-        final StringWriter out = new StringWriter();
-        new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
-        nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
     }
 
     public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
@@ -302,15 +314,13 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             }
         }
 
-        logger.info("Updating database cnd");
+        logger.info("Removing {} definitions, updating database cnd", systemId);
 
         synchronized (deploymentProperties) {
             deploymentProperties.remove(systemId + ".version");
             deploymentProperties.remove(systemId + ".lastModified");
-            saveProperties();
+            nodeTypesDBService.saveCndFile(systemId + ".cnd", null, deploymentProperties);
         }
-
-        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
     }
 
     public Map<String, Class<? extends JCRNodeDecorator>> getDecorators() {
@@ -484,7 +494,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
                 deploymentProperties.load(new StringReader(propertyFile));
             }
         } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
+            throw new IOException(e);
         }
     }
 
@@ -517,10 +527,10 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             for (final String file : filesList) {
                 try {
                     if (file.endsWith(".cnd")) {
-                        final String cndFile = nodeTypesDBService.readCndFile(file);
+                        final String cndFile = nodeTypesDBService.readFile(file);
                         final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
                         if (!initializedSystemIds.contains(systemId)) {
-                            logger.debug("Loading CND : " + file);
+                            logger.debug("Loading CND : {}" , file);
                             instance.addDefinitionsFile(new ByteArrayResource(cndFile.getBytes("UTF-8"), file), systemId);
                         }
                         reloadedSystemIds.add(systemId);
@@ -543,23 +553,7 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             logger.error("Cannot read CND from : "+remfiles);
         }
 
-//        for (ExtendedNodeType nodeType : nodetypes.values()) {
-//            nodeType.validate();
-//        }
-
         registerNamespaces();
-    }
-
-    private void saveProperties() throws IOException {
-        synchronized (deploymentProperties) {
-            final StringWriter writer = new StringWriter();
-            deploymentProperties.store(writer, "");
-            try {
-                nodeTypesDBService.saveDefinitionPropertyFile(writer.toString());
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        }
     }
 
     private void registerNamespaces() {

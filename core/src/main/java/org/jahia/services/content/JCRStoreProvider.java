@@ -58,7 +58,6 @@ import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypesDBServiceImpl;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -154,7 +153,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private final Object syncRepoInit = new Object();
 
     private GroovyPatcher groovyPatcher;
-    private NodeTypesDBServiceImpl nodeTypesDBService;
 
     private boolean registerObservers = true;
 
@@ -603,8 +601,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return false;
     }
 
+    /**
+     * Deploy definitions registered with the given systemId into the underlying repository
+     * @param systemId
+     * @throws IOException
+     * @throws RepositoryException
+     */
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
-        getRepository(); // create repository instance
+        // create repository instance
+        getRepository();
         JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
             Workspace workspace = session.getProviderSession(this).getWorkspace();
@@ -621,8 +626,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
+    /**
+     * Undeploy definitions registered with the given systemId from the underlying repository
+     * @param systemId
+     * @throws IOException
+     * @throws RepositoryException
+     */
     public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
-        getRepository(); // create repository instance
+        // create repository instance
+        getRepository();
         JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
             Workspace workspace = session.getProviderSession(this).getWorkspace();
@@ -1192,10 +1204,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public Map<String, Constructor<?>> getValidators() {
         return service.getValidators();
-    }
-
-    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
-        this.nodeTypesDBService = nodeTypesDBService;
     }
 
     public void setRegisterObservers(boolean registerObservers) {

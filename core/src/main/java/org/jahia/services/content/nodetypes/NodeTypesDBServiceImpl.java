@@ -49,7 +49,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import java.io.StringWriter;
 import java.util.List;
+import java.util.Properties;
 
 /**
  * This class manage registration / load of cnd file in the DB
@@ -69,59 +71,10 @@ public class NodeTypesDBServiceImpl {
     }
 
     public String readDefinitionPropertyFile() throws RepositoryException {
-        StatelessSession session = null;
-        try {
-            session = getHibernateSessionFactory().openStatelessSession();
-            session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
-                    DEFINITIONS_PROPERTIES).setReadOnly(true).uniqueResult();
-            session.getTransaction().commit();
-            if (nodeTypesDBProvider != null) {
-                return nodeTypesDBProvider.getCndFile();
-            }
-        } catch (Exception e) {
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-            throw new RepositoryException(e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-        return null;
+        return readFile(DEFINITIONS_PROPERTIES);
     }
 
-    public void saveDefinitionPropertyFile(String content) throws RepositoryException {
-        StatelessSession session = null;
-        try {
-            session = getHibernateSessionFactory().openStatelessSession();
-            session.beginTransaction();
-            NodeTypesDBProvider nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
-                    DEFINITIONS_PROPERTIES).setReadOnly(false).uniqueResult();
-            if (nodeTypesDBProvider != null) {
-                nodeTypesDBProvider.setCndFile(content);
-                session.update(nodeTypesDBProvider);
-            } else {
-                nodeTypesDBProvider = new NodeTypesDBProvider();
-                nodeTypesDBProvider.setFilename(DEFINITIONS_PROPERTIES);
-                nodeTypesDBProvider.setCndFile(content);
-                session.insert(nodeTypesDBProvider);
-            }
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            if (session != null) {
-                session.getTransaction().rollback();
-            }
-            throw new RepositoryException(e);
-        } finally {
-            if (session != null) {
-                session.close();
-            }
-        }
-    }
-
-    public String readCndFile(String filename) throws RepositoryException {
+    public String readFile(String filename) throws RepositoryException {
         StatelessSession session = null;
         try {
             session = getHibernateSessionFactory().openStatelessSession();
@@ -167,7 +120,7 @@ public class NodeTypesDBServiceImpl {
         return null;
     }
 
-    public void saveCndFile(String filename, String content) throws RepositoryException {
+    public void saveCndFile(String filename, String content, Properties properties) throws RepositoryException {
         StatelessSession session = null;
         try {
             session = getHibernateSessionFactory().openStatelessSession();
@@ -179,12 +132,28 @@ public class NodeTypesDBServiceImpl {
                 session.update(nodeTypesDBProvider);
             } else if (nodeTypesDBProvider != null) {
                 session.delete(nodeTypesDBProvider);
-             } else if (content != null) {
+            } else if (content != null) {
                 nodeTypesDBProvider = new NodeTypesDBProvider();
                 nodeTypesDBProvider.setFilename(filename);
                 nodeTypesDBProvider.setCndFile(content);
                 session.insert(nodeTypesDBProvider);
             }
+
+            final StringWriter writer = new StringWriter();
+            properties.store(writer, "");
+
+            nodeTypesDBProvider = (NodeTypesDBProvider) session.createQuery("from NodeTypesDBProvider where filename=:filename").setString("filename",
+                    DEFINITIONS_PROPERTIES).setReadOnly(false).uniqueResult();
+            if (nodeTypesDBProvider != null) {
+                nodeTypesDBProvider.setCndFile(writer.toString());
+                session.update(nodeTypesDBProvider);
+            } else {
+                nodeTypesDBProvider = new NodeTypesDBProvider();
+                nodeTypesDBProvider.setFilename(DEFINITIONS_PROPERTIES);
+                nodeTypesDBProvider.setCndFile(writer.toString());
+                session.insert(nodeTypesDBProvider);
+            }
+
             session.getTransaction().commit();
         } catch (Exception e) {
             if (session != null) {

@@ -137,7 +137,7 @@ public class ModuleHelper {
     public void compileAndDeploy(String moduleId, JCRSessionWrapper session) throws IOException, RepositoryException,
             BundleException {
         File sources = getSources(moduleId, session);
-        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackage(moduleId);
+        JahiaTemplatesPackage templatePackage = templateManagerService.getTemplatePackageById(moduleId);
         for (String def : templatePackage.getDefinitionsFiles()) {
             File defFile = new File(sources,"src" + File.separator + "main" + File.separator + "resources" + File.separator + def);
             JahiaCndReader r = new JahiaCndReader(new FileReader(defFile),defFile.getName(),moduleId, NodeTypeRegistry.getInstance());

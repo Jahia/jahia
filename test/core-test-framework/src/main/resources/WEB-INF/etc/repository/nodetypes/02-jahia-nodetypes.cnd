@@ -623,9 +623,12 @@
 [jmix:hiddenNode] mixin
 
 // @since Jahia 6.6.2.0
-[jmix:unstructured] > nt:unstructured mixin
+[jmix:unstructured] mixin
   - * (UNDEFINED) i18n multiple
   - * (UNDEFINED) i18n
+  - * (UNDEFINED) multiple
+  - * (UNDEFINED)
+  + * (nt:base) = nt:unstructured sns VERSION
 
 // @since Jahia 7.0
 [jmix:hasIcon] mixin

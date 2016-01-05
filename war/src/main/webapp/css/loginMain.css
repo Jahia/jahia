@@ -1,0 +1,332 @@
+body {
+	margin: 0;
+	overflow: hidden;
+	padding: 0;
+}
+
+.login-bg {
+	font-family: 'Lato', sans-serif;
+	background-color: #231D1D ;
+	background-image: url('images/login.jpg');
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-font-smoothing: antialiased;
+	font-size: 14px;
+	line-height: 1.42857143;
+	color: #333;
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.login-card {
+	width: 100%;
+	max-width: 360px;
+	height: 380px;
+	background-color: #fff;
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	right: 0;
+	left: 0;
+	margin: auto;
+	box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+	box-shadow: 0 0px 5px 0 rgba(0, 0, 0, 0.1), 0 16px 20px -8px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 3px 9px 0 rgba(0, 0, 0, 0.1), 0 24px 38px -16px rgba(0, 0, 0, 0.2);
+	border: none;
+	padding: 14px;
+	padding-top: 40px;
+	border-radius: 2px;
+}
+
+body form {
+	margin: 10px 40px;
+}
+
+body h1 {
+	font-weight: 400;
+	font-size: 24px;
+	padding: 0;
+	margin-top: 20px;
+	margin-bottom: 10px;
+	text-align: center;
+	color: #00A0E3;
+}
+
+.sep-top {
+	width: 100%;
+	height: 30px;
+	background: transparent;
+}
+
+
+/* form, inputs and submit */
+
+.login-card .group {
+	position: relative;
+	margin-bottom: 45px;
+	line-height: normal;
+}
+
+.login-card .group input {
+	font-size: 18px;
+	padding: 10px 10px 10px 5px;
+	-webkit-appearance: none;
+	display: block;
+	background: transparent;
+	color: #636363;
+	width: 100%;
+	border: none;
+	border-radius: 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.login-card .group input:focus {
+	outline: none;
+}
+
+
+/* Label */
+
+.login-card .group label {
+	color: #ddd;
+	font-size: 18px;
+	font-weight: normal;
+	position: absolute;
+	pointer-events: none;
+	left: 5px;
+	top: 10px;
+	transition: all 0.2s ease;
+}
+
+
+/* active */
+
+.login-card .group input:focus ~ label,
+.login-card .group input.used ~ label {
+	top: -20px;
+	transform: scale(.75);
+	left: -4px;
+	color: #00A0E3;
+}
+
+
+/* Underline */
+
+.login-card .bar {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+
+.login-card .bar:before,
+.login-card .bar:after {
+	content: '';
+	height: 2px;
+	width: 0;
+	bottom: 1px;
+	position: absolute;
+	background: #00A0E3;
+	-webkit-transition: all 0.2s ease;
+	-moz-transition: all 0.2s ease;
+	-ms-transition: all 0.2s ease;
+	-o-transition: all 0.2s ease;
+	transition: all 0.2s ease;
+}
+
+.login-card .bar:before {
+	left: 50%;
+}
+
+.login-card .bar:after {
+	right: 50%;
+}
+
+
+/* active */
+
+.login-card .group input:focus ~ .bar:before,
+.login-card .group input:focus ~ .bar:after {
+	width: 50%;
+}
+
+
+/* Button */
+
+.button {
+	position: relative;
+	display: inline-block;
+	padding: 0 24px;
+	height: 42px;
+	color: #fff;
+	text-transform: uppercase;
+	font-size: 14px;
+	font-weight: 700;
+	line-height: 42px;
+	-webkit-font-smoothing: antialiased;
+	text-align: center;
+	letter-spacing: 1px;
+	background: transparent;
+	border: 0;
+	cursor: pointer;
+	-webkit-transition: all 0.15s ease;
+	-moz-transition: all 0.15s ease;
+	-ms-transition: all 0.15s ease;
+	-o-transition: all 0.15s ease;
+	transition: all 0.15s ease;
+	border-radius: 3px;
+	box-shadow: 0 1px 0 rgba(0,0,0,0.05);
+	float: right;
+}
+
+.button:focus {
+	outline: 0;
+}
+
+.button:hover {
+	background: #46ADD8;
+	box-shadow: inset 0 -2px 0 rgba(0,0,0,0.27);
+}
+
+
+/* Button modifiers */
+
+.buttonBlue {
+	background: #00A0E3;
+	text-shadow: 1px 1px 0 rgba(39, 110, 204, .5);
+}
+
+.buttonBlue:hover {
+	background: #0092D0;
+}
+
+
+/* Ripples container */
+
+.ripples {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	background: transparent;
+}
+
+
+/* Ripples circle */
+
+.ripplesCircle {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	-moz-transform: translate(-50%, -50%);
+	-webkit-transform: translate(-50%, -50%);
+	-o-transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	opacity: 0;
+	width: 0;
+	height: 0;
+	border-radius: 50%;
+	background: rgba(255, 255, 255, 0.25);
+}
+
+.ripples.is-active .ripplesCircle {
+	animation: ripples .4s ease-in;
+}
+
+
+/* Ripples animation */
+
+@keyframes ripples {
+
+	0% {
+		opacity: 0;
+	}
+
+	25% {
+		opacity: 1;
+	}
+
+	100% {
+		width: 200%;
+		padding-bottom: 200%;
+		opacity: 0;
+	}
+
+}
+
+.label--checkbox {
+	position: relative;
+	margin: 30px 0;
+	margin-top: -20px;
+	font-family: Lato, sans-serif;
+	line-height: 135%;
+	cursor: pointer;
+	display: block;
+	font-size: 14px;
+	font-weight: 400;
+	color: #9E9FA0;
+}
+
+.checkbox {
+	position: relative;
+	top: -3px;
+	margin: 0 1rem 0 0;
+	cursor: pointer;
+}
+
+.checkbox:before {
+	-webkit-transition: all 0.3s ease-in-out;
+	-moz-transition: all 0.3s ease-in-out;
+	transition: all 0.3s ease-in-out;
+	content: "";
+	position: absolute;
+	left: 0;
+	z-index: 1;
+	width: 1rem;
+	height: 1rem;
+	border: 2px solid #f2f2f2;
+}
+
+.checkbox:checked:before {
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	-ms-transform: rotate(-45deg);
+	-o-transform: rotate(-45deg);
+	transform: rotate(-45deg);
+	height: .5rem;
+	border-color: #00a0e3;
+	border-top-style: none;
+	border-right-style: none;
+}
+
+.checkbox:after {
+	content: "";
+	position: absolute;
+	top: -0.125rem;
+	left: 0;
+	width: 1.1rem;
+	height: 1.1rem;
+	background: #fff;
+	cursor: pointer;
+}
+
+.login-error {
+	position: fixed;
+	background: #DC233D ;
+	width: 100%;
+	height: 56px;
+	line-height: 56px;
+	color: #fff;
+	text-align: center;
+	font-size: 14px;
+	font-weight: 700;
+	text-transform: uppercase;
+	word-spacing: 2px;
+	letter-spacing: 1px;
+	top: 0;
+	left: 0;
+}

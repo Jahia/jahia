@@ -3,20 +3,22 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
  *
  *     1/ GPL
- *     ======================================================================================
+ *     ==================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,18 +26,11 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
  *
  *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ *     ===================================================================================
  *
  *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
@@ -45,29 +40,6 @@
  *
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
- *
- *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.content.nodetypes;
 
@@ -78,20 +50,22 @@ import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.jcr.nodetype.*;
-import java.io.*;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -102,11 +76,10 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Date: 4 janv. 2008
  * Time: 15:08:56
  */
-public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
-    private static final String SYSTEM = "system";
+public class NodeTypeRegistry implements NodeTypeManager {
     private static final Logger logger = LoggerFactory.getLogger(NodeTypeRegistry.class);
 
-    private final Map<Name, ExtendedNodeType> nodetypes = new HashMap<>();
+    private final Map<Name, ExtendedNodeType> nodetypes = new LinkedHashMap<>();
 
     private final BidiMap namespaces = new DualHashBidiMap();
 
@@ -115,16 +88,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
 
     private final Map<ExtendedNodeType, Set<ExtendedNodeType>> mixinExtensions = new HashMap<>();
     private final Map<String, Set<ExtendedItemDefinition>> typedItems = new HashMap<>();
-
-    private boolean propertiesLoaded = false;
-    private final Properties deploymentProperties = new Properties() {
-        @Override
-        public synchronized Enumeration<Object> keys() {
-            return new Vector(new TreeSet<>(keySet())).elements();
-        }
-    };
-
-    private NodeTypesDBServiceImpl nodeTypesDBService;
 
     private ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private Lock readLock = readWriteLock.readLock();
@@ -158,140 +121,118 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
         }
     }
 
-    public void initSystemDefinitions() throws IOException {
+    /**
+     * Get all system definitions files
+     * @return system definitions files
+     */
+    public static Map<String,File> getSystemDefinitionsFiles() {
+        Map<String, File> res = new LinkedHashMap<>();
         String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
-        try {
-            File f = new File(cnddir);
-            File[] files = f.listFiles();
-            if (files != null) {
-                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
-                for (File file : cndfiles) {
-                    addDefinitionsFile(file, SYSTEM + "-" + Patterns.DASH.split(file.getName())[1]);
-                }
-            }
-        } catch (ParseException e) {
-            logger.error(e.getMessage(), e);
-        }
-    }
-
-    public void initPropertiesFile() throws IOException {
-        try {
-            final String propertyFile = nodeTypesDBService.readDefinitionPropertyFile();
-            if (propertyFile != null) {
-                deploymentProperties.load(new StringReader(propertyFile));
-            }
-        } catch (RepositoryException e) {
-            logger.error(e.getMessage(), e);
-        }
-        propertiesLoaded = true;
-    }
-
-    public void saveProperties() throws IOException {
-        if (propertiesLoaded) {
-            synchronized (deploymentProperties) {
-                final StringWriter writer = new StringWriter();
-                deploymentProperties.store(writer, "");
-                try {
-                    nodeTypesDBService.saveDefinitionPropertyFile(writer.toString());
-                } catch (RepositoryException e) {
-                    logger.error(e.getMessage(), e);
-                }
+        File f = new File(cnddir);
+        File[] files = f.listFiles();
+        if (files != null) {
+            SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
+            for (File cndfile : cndfiles) {
+                res.put("system-" + Patterns.DASH.split(cndfile.getName())[1], cndfile);
             }
         }
-    }
-
-    public Properties getDeploymentProperties() {
-        return deploymentProperties;
+        return res;
     }
 
 
-    public boolean isLatestDefinitions(String systemId, ModuleVersion version, long lastModified) {
-        if (version != null) {
-            String key = systemId + ".version";
-            if (deploymentProperties.containsKey(key)) {
-                logger.info("Previously deployed version was : "+deploymentProperties.getProperty(key));
-                ModuleVersion lastDeployed = new ModuleVersion(deploymentProperties.getProperty(key));
-                if (lastDeployed.compareTo(version) > 0) {
-                    logger.info("Ignoring version "+systemId + " / " + version + " / "+ lastModified);
-                    return false;
-                }
-            }
-        }
-        String key2 = systemId + ".lastModified";
-        if (deploymentProperties.containsKey(key2)) {
-            logger.info("Previously deployed bundle was done at : " + deploymentProperties.getProperty(key2));
-            long lastDeployed = (long) Long.parseLong(deploymentProperties.getProperty(key2));
-            if (lastDeployed >= lastModified) {
-                logger.info("Ignoring version "+systemId + " / " + version + " / "+ lastModified);
-                return false;
-            }
-        }
+    @Deprecated
+    public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException, RepositoryException {
+        addDefinitionsFile(Collections.singletonList(resource), systemId);
+    }
 
-        return true;
+    public void addDefinitionsFile(Resource resource, String systemId) throws IOException, ParseException, RepositoryException {
+        addDefinitionsFile(Collections.singletonList(resource), systemId);
     }
 
     @Deprecated
-    public void addDefinitionsFile(Resource resource, String systemId, ModuleVersion version) throws IOException, ParseException {
-        addDefinitionsFile(resource, systemId);
+    public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException, RepositoryException {
+        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
     }
 
-    public boolean addDefinitionsFile(Resource resource, String systemId) throws IOException, ParseException {
-        logger.info("Adding definitions file "+resource.getURL() + " for "+systemId);
-        boolean needUpdate = false;
+    public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException, RepositoryException  {
+        addDefinitionsFile(file == null ? Collections.<Resource>emptyList() : Collections.singletonList(new FileSystemResource(file)), systemId);
+    }
 
-        String ext = resource.getURL().getPath().substring(resource.getURL().getPath().lastIndexOf('.'));
-        if (ext.equalsIgnoreCase(".cnd")) {
+
+    public void addDefinitionsFile(List<? extends Resource> resources, String systemId) throws IOException, ParseException, RepositoryException {
+        List<ExtendedNodeType> types = new ArrayList<>();
+        for (Resource resource : resources) {
+            logger.debug("Adding definitions file {} for {}", resource, systemId);
             Reader resourceReader = null;
             try {
-                logger.info("Parsing cnd " + resource.getFilename());
                 resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.toString(), systemId, this);
                 r.parse();
-                if (r.hasEncounteredIssuesWithDefinitions()) {
-                    logger.warn("Errors parsing definitions of " + systemId + ": \n" + StringUtils.join(r.getParsingErrors(), "\n"));
-                    return false;
-                }
-
-                logger.info("Updating database cnd");
-
-                try {
-                    final StringWriter out = new StringWriter();
-                    new JahiaCndWriter(NodeTypeRegistry.getInstance().getNodeTypes(systemId), NodeTypeRegistry.getInstance().getNamespaces(), out);
-                    nodeTypesDBService.saveCndFile(systemId + ".cnd", out.toString());
-                } catch (Exception e) {
-                    logger.error(e.getMessage(), e);
-                }
-                needUpdate = true;
-            } finally {
-                IOUtils.closeQuietly(resourceReader);
-            }
-        } else if (ext.equalsIgnoreCase(".grp")) {
-            Reader resourceReader = null;
-            try {
-                resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
-                JahiaGroupingFileReader r = new JahiaGroupingFileReader(resourceReader, resource.toString(), systemId, this);
-                r.parse();
+                types.addAll(r.getNodeTypesList());
             } finally {
                 IOUtils.closeQuietly(resourceReader);
             }
         }
+
+        registerNodeTypes(types);
 
         if (!files.containsKey(systemId)) {
             files.put(systemId, new ArrayList<Resource>());
         }
-        if (!files.get(systemId).contains(resource)) {
-            files.get(systemId).add(resource);
+        for (Resource resource : resources) {
+            if (!files.get(systemId).contains(resource)) {
+                files.get(systemId).add(resource);
+            }
         }
-        return needUpdate;
     }
 
-    @Deprecated
-    public void addDefinitionsFile(File file, String systemId, ModuleVersion version) throws ParseException, IOException {
-        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId);
-    }
+    /**
+     * Register node types into the registry. Replaces existing types
+     *
+     * Fill supertypes/subtypes lists
+     *
+     * @throws NoSuchNodeTypeException if one of the supertype/mixin extend cannot be found
+     */
+    private void registerNodeTypes(List<ExtendedNodeType> nodeTypesList) throws NoSuchNodeTypeException {
+        writeLock.lock();
+        try {
+            // Replaces types,
+            List<ExtendedNodeType> previousTypes = new ArrayList<>();
+            for (ExtendedNodeType nodeType : nodeTypesList) {
+                ExtendedNodeType previous = nodetypes.put(nodeType.getNameObject(), nodeType);
+                if (previous != null) {
+                    previousTypes.add(previous);
+                }
+            }
 
-    public void addDefinitionsFile(File file, String systemId) throws ParseException, IOException {
-        addDefinitionsFile(file == null ? null : new FileSystemResource(file), systemId);
+            for (ExtendedNodeType type : nodeTypesList) {
+                try {
+                    type.validate();
+                    if (!type.getPrefix().equals("nt") && !type.isMixin() && !type.isNodeType(Constants.MIX_REFERENCEABLE)) {
+                        int length = type.getDeclaredSupertypeNames().length;
+                        String[] newTypes = new String[length + 1];
+                        System.arraycopy(type.getDeclaredSupertypeNames(), 0, newTypes, 0, length);
+                        newTypes[length] = Constants.MIX_REFERENCEABLE;
+                        type.setDeclaredSupertypes(newTypes);
+                        type.validate();
+                    }
+                } catch (NoSuchNodeTypeException e) {
+                    logger.error("Cannot find parent type when registering new types", e);
+
+                    // Restoring previous state
+                    for (ExtendedNodeType addedType : nodeTypesList) {
+                        removeNodeType(addedType.getNameObject());
+                    }
+                    for (ExtendedNodeType previousType : previousTypes) {
+                        nodetypes.put(previousType.getNameObject(), previousType);
+                    }
+
+                    throw e;
+                }
+            }
+        } finally {
+            writeLock.unlock();
+        }
     }
 
     /**
@@ -314,7 +255,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             try {
                 resourceReader = new InputStreamReader(resource.getInputStream(), Charsets.UTF_8);
                 JahiaCndReader r = new JahiaCndReader(resourceReader, resource.getURL().getPath(), systemId, this);
-                r.setDoRegister(false);
                 r.parse();
                 return r.getNodeTypesList();
             } finally {
@@ -322,32 +262,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             }
         }
         return Collections.emptyList();
-    }
-
-    public void validateDefinitionsFile(InputStream inputStream, String filename, String systemId) throws ParseException, IOException, RepositoryException {
-        if (filename.toLowerCase().endsWith(".cnd")) {
-            Reader resourceReader = null;
-            try {
-                resourceReader = new InputStreamReader(inputStream, Charsets.UTF_8);
-                JahiaCndReader r = new JahiaCndReader(resourceReader, filename, systemId, this);
-                r.parse();
-
-                if (r.hasEncounteredIssuesWithDefinitions()) {
-                    throw new RepositoryException(StringUtils.join(r.getParsingErrors(), "\n"));
-                }
-
-                for (ExtendedNodeType nodeType : r.getNodeTypesList()) {
-                    if (NodeTypeRegistry.getInstance().hasNodeType(nodeType.getName())) {
-                        ExtendedNodeType existingNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType.getName());
-                        if (!existingNodeType.getSystemId().equals(nodeType.getSystemId())) {
-                            throw new NodeTypeExistsException("Node type already defined : " + nodeType.getName());
-                        }
-                    }
-                }
-            } finally {
-                IOUtils.closeQuietly(resourceReader);
-            }
-        }
     }
 
     public List<String> getSystemIds() {
@@ -529,9 +443,26 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
     public void unregisterNodeType(Name name) {
         writeLock.lock();
         try {
-            nodetypes.remove(name);
+            removeNodeType(name);
         } finally {
             writeLock.unlock();
+        }
+    }
+
+    private void removeNodeType(Name name) {
+        ExtendedNodeType ent = nodetypes.remove(name);
+        if (ent != null) {
+            // Remove type from supertype subtypes list and mixin extends list
+            for (ExtendedNodeType type : ent.getDeclaredSupertypes()) {
+                if (type != null) {
+                    type.removeSubType(ent);
+                }
+            }
+            for (ExtendedNodeType type : ent.getMixinExtends()) {
+                if (type != null && mixinExtensions.containsKey(type)) {
+                    mixinExtensions.get(type).remove(ent);
+                }
+            }
         }
     }
 
@@ -550,75 +481,6 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             readLock.unlock();
         }
         files.remove(systemId);
-    }
-
-    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
-        this.nodeTypesDBService = nodeTypesDBService;
-    }
-
-    public NodeTypesDBServiceImpl getNodeTypesDBService() {
-        return nodeTypesDBService;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        try {
-            logger.info("Initializing NodeTypeRegistry");
-            initPropertiesFile();
-            if (SettingsBean.getInstance().isProcessingServer()) {
-                initSystemDefinitions();
-            }
-
-            try {
-                reloadNodeTypeRegistry();
-            } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
-            }
-        } catch (IOException e) {
-            logger.error("Cannot load definition deployment properties");
-        }
-    }
-
-    public void reloadNodeTypeRegistry() throws RepositoryException {
-        List<String> filesList = new ArrayList<>();
-        List<String> remfiles;
-
-        logger.info("Loading all CNDs from DB ..");
-        remfiles = new ArrayList<>(getNodeTypesDBService().getFilesList());
-        while (!remfiles.isEmpty() && !remfiles.equals(filesList)) {
-            filesList = new ArrayList<>(remfiles);
-            remfiles.clear();
-            for (final String file : filesList) {
-                try {
-                    if (file.endsWith(".cnd")) {
-
-                        final String cndFile = getNodeTypesDBService().readCndFile(file);
-                        final String systemId = StringUtils.substringBeforeLast(file, ".cnd");
-                        logger.debug("Loading CND : "+file);
-                        unregisterNodeTypes(systemId);
-                        Reader resourceReader = new StringReader(cndFile);
-                        JahiaCndReader r = new JahiaCndReader(resourceReader, file, systemId, this);
-                        r.parse();
-
-                        if (r.hasEncounteredIssuesWithDefinitions()) {
-                            logger.debug(file + " cannot be parsed, reorder later");
-                            remfiles.add(file);
-                        } else if (!files.containsKey(systemId)) {
-                            files.put(systemId, new ArrayList<Resource>());
-                        }
-                    }
-                } catch (ParseException e) {
-                    logger.debug(file + " cannot be parsed, reorder later");
-                    remfiles.add(file);
-                }
-            }
-        }
-        if (!remfiles.isEmpty()) {
-            logger.error("Cannot parse CND from : "+remfiles);
-        }
-        for (ExtendedNodeType nodeType : nodetypes.values()) {
-            nodeType.validate();
-        }
     }
 
     public class JahiaNodeTypeIterator implements NodeTypeIterator, Iterable<ExtendedNodeType> {
@@ -737,7 +599,7 @@ public class NodeTypeRegistry implements NodeTypeManager, InitializingBean {
             }
             writeLock.lock();
             try {
-                nodetypes.remove(n);
+                removeNodeType(n);
             } finally {
                 writeLock.unlock();
             }

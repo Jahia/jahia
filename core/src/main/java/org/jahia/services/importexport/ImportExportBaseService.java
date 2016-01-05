@@ -3,20 +3,22 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
  *
  *     1/ GPL
- *     ======================================================================================
+ *     ==================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,18 +26,11 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
  *
  *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ *     ===================================================================================
  *
  *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
@@ -45,37 +40,12 @@
  *
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
- *
- *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.services.importexport;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
-
 import net.sf.saxon.TransformerFactoryImpl;
-
 import org.apache.commons.collections.set.ListOrderedSet;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.FileCleaningTracker;
@@ -101,7 +71,6 @@ import org.jahia.services.categories.CategoryService;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.interceptor.TemplateModuleInterceptor;
-import org.jahia.services.content.nodetypes.JahiaCndReader;
 import org.jahia.services.content.nodetypes.JahiaCndReaderLegacy;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ParseException;
@@ -123,6 +92,7 @@ import org.jahia.utils.zip.DirectoryZipOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
@@ -137,8 +107,9 @@ import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
-
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -377,6 +348,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
         Set<String> tti = new HashSet<String>();
         tti.add(Constants.JAHIANT_VIRTUALSITE);
+        tti.add("jnt:workflowTask");
 
         if (params.containsKey(INCLUDE_USERS)) {
             // export users
@@ -496,6 +468,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final HashSet<String> tti = new HashSet<String>();
         tti.add("jnt:templatesFolder");
         tti.add("jnt:externalUser");
+        tti.add("jnt:workflowTask");
         exportNodesWithBinaries(session.getRootNode(), nodes, zout, tti,
                 externalReferences, params);
         zout.finish();
@@ -1025,19 +998,18 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         catProps = importCategoriesAndGetUuidProps(zis, categoriesImportHandler);
                     } else if (name.equals(DEFINITIONS_CND)) {
                         reg = new NodeTypeRegistry(); // this is fishy: a new instance is created here when NodeTypeRegistry is meant to be used as a singleton
-                        reg.initSystemDefinitions();
-
                         try {
+                            for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
+                                reg.addDefinitionsFile(entry.getValue(), entry.getKey());
+                            }
                             if (legacyImport) {
                                 JahiaCndReaderLegacy r = new JahiaCndReaderLegacy(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
                                         file.getURL().getPath(), reg);
                                 r.parse();
                             } else {
-                                JahiaCndReader r = new JahiaCndReader(new InputStreamReader(zis, Charsets.UTF_8), zipentry.getName(),
-                                        file.getURL().getPath(), reg);
-                                r.parse();
+                                reg.addDefinitionsFile(new InputStreamResource(zis, zipentry.getName()), file.getURL().getPath());
                             }
-                        } catch (ParseException e) {
+                        } catch (RepositoryException | ParseException e) {
                             logger.error(e.getMessage(), e);
                         }
                     } else if (name.equals(DEFINITIONS_MAP)) {
@@ -1099,7 +1071,13 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                     }
                 } else {
-                    reg.initSystemDefinitions();
+                    try {
+                        for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
+                            reg.addDefinitionsFile(entry.getValue(), entry.getKey());
+                        }
+                    } catch (ParseException e) {
+                        logger.error("Cannot parse definitions : " + e.getMessage(), e);
+                    }
                 }
                 InputStreamReader streamReader = null;
                 try {
@@ -1325,9 +1303,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         Map<String, File> filePath = new HashMap<String, File>();
         File temp = null;
         try {
-            temp = File.createTempFile("migration", "");
-            temp.delete();
-            temp.mkdir();
+            Path tempPath = Files.createTempDirectory("migration");
+            temp = tempPath.toFile();
             ZipInputStream zis = getZipInputStream(file);
             try {
                 ZipEntry zipentry;

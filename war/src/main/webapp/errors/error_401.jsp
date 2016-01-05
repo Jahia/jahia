@@ -9,61 +9,117 @@
 <utility:setBundle basename="JahiaInternalResources"/>
 <html>
 <head>
-    <meta charset="utf-8">
-    <meta name="robots" content="noindex, nofollow"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/errors.css" type="text/css"/>
+    <!-- Meta info -->
     <title><fmt:message key="label.login"/></title>
-    <script type="text/javascript">
-        var clickcounter = 0;
-        document.onkeydown = function (e) {
-            if ((e || window.event).keyCode == 13) clickcounter++;
-            doSubmit();
-        };
-    </script>
+    <meta name="description" content=""/>
+    <meta name="keywords" content="">
+    <meta charset="UTF-8">
+    <meta name="robots" content="noindex, nofollow"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="${pageContext.request.contextPath}/favicon.ico">
+
+    <!-- Import Google font (Lato) -->
+    <link href="${pageContext.request.contextPath}/css/loginFont.css" rel="stylesheet">
+
+    <!-- Import jQuery (from Google) -->
+    <script src="${pageContext.request.contextPath}/css/jquery.min.js"></script>
+
+    <!-- Main style -->
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/loginMain.css">
 </head>
-<body class="login">
-<div class="row-fluid login-wrapper">
-    <div class="span4 box">
-        <div class="content-wrap">
-            <img class="logo" alt="jahia" src="${pageContext.request.contextPath}/css/images/jahia-logo.png">
-            <ui:loginArea>
-                <script type="text/javascript">
-                    function doSubmit() {
-                        if (clickcounter == 1) {
-                            document.forms.loginForm.submit();
-                        }
-                    }
-                </script>
-                <h1><fmt:message key="label.login"/></h1>
-                <ui:isLoginError var="loginResult">
-                    <div class="alert alert-error"><fmt:message
-                            key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
-                    <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
-                           maxlength="250" name="username" value="${fn:escapeXml(param['username'])}"/>
-                    <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
-                           maxlength="250" name="password" autocomplete="off" autofocus="autofocus"/>
-                </ui:isLoginError>
-                <c:if test="${empty loginResult}">
-                    <input class="span12 big-input" type="text" placeholder="<fmt:message key="label.username"/>" tabindex="1"
-                           maxlength="250" name="username" autofocus="autofocus"/>
-                    <input class="span12 big-input" type="password" placeholder="<fmt:message key="label.password"/>" tabindex="2"
-                           maxlength="250" name="password" autocomplete="off"/>
-                </c:if>
-                <c:if test="${not fn:contains(param.redirect, '/administration')}">
-                    <div class="remember">
-                        <ui:loginRememberMe id="rememberme" tabindex="3"/>
-                        <label for="rememberme"><fmt:message key="label.rememberme"/></label>
-                    </div>
-                </c:if>
-                <a class="btn  btn-large btn-large btn-block btn-primary" href="#login"
-                   onClick="document.forms.loginForm.submit(); return false;" tabindex="5"
-                   title="<fmt:message key='label.login'/>">
-                    <i class="icon-ok icon-white"></i>
-                    &nbsp;<fmt:message key="label.login"/>
-                </a>
-            </ui:loginArea>
-        </div>
-    </div>
+<body>
+<div class="login-bg">
+<div class="login-card">
+    <h1><fmt:message key="label.login.welcome"/></h1>
+    <div class="sep-top"></div>
+    <ui:loginArea>
+        <ui:isLoginError var="loginResult">
+            <div class="login-error"><fmt:message
+                    key="${loginResult == 'account_locked' ? 'message.accountLocked' : 'message.invalidUsernamePassword'}"/></div>
+            <div class="group">
+                <input class="used" type="text" maxlength="250" name="username" value="${fn:escapeXml(param['username'])}" required><span class="bar"></span>
+                <label><fmt:message key="label.username"/></label>
+            </div>
+            <div class="group">
+                <input type="password" maxlength="250" name="password" autocomplete="off" autofocus="autofocus" required><span class="bar"></span>
+                <label><fmt:message key="label.password"/></label>
+            </div>
+        </ui:isLoginError>
+        <c:if test="${empty loginResult}">
+            <div class="group">
+                <input type="text" maxlength="250" name="username" autofocus="autofocus" required><span class="bar"></span>
+                <label><fmt:message key="label.username"/></label>
+            </div>
+            <div class="group">
+                <input type="password" maxlength="250" name="password" autocomplete="off" required><span class="bar"></span>
+                <label><fmt:message key="label.password"/></label>
+            </div>
+        </c:if>
+        <c:if test="${not fn:contains(param.redirect, '/administration')}">
+        <label class="label--checkbox">
+            <ui:loginRememberMe class="checkbox" />
+            <fmt:message key="label.rememberme"/>
+        </label>
+        </c:if>
+        <button type="submit" class="button buttonBlue"><fmt:message key='label.login'/>
+            <div class="ripples buttonRipples">
+                <span class="ripplesCircle"></span>
+            </div>
+        </button>
+    </ui:loginArea>
+</div>
+
+<script>
+
+    $(window, document, undefined).ready(function() {
+
+        // Fix for input label
+        setTimeout(function() {
+            var loginInput = $("input[name='username'],input[name='password']")
+            loginInput.blur(function() {
+                var $this = $(this);
+                if ($this.val())
+                    $this.addClass('used');
+                else
+                    $this.removeClass('used');
+            });
+
+            // Fix for autofill
+            if ($("input[name='username']").val()) {
+                loginInput.addClass('used');
+            }
+        }, 20);
+
+
+        // Button animation effects
+
+        var $ripples = $('.ripples');
+
+        $ripples.on('click.Ripples', function(e) {
+
+            var $this = $(this);
+            var $offset = $this.parent().offset();
+            var $circle = $this.find('.ripplesCircle');
+
+            var x = e.pageX - $offset.left;
+            var y = e.pageY - $offset.top;
+
+            $circle.css({
+                top: y + 'px',
+                left: x + 'px'
+            });
+
+            $this.addClass('is-active');
+
+        });
+
+        $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
+            $(this).removeClass('is-active');
+        });
+
+    });
+
+</script>
 </div>
 </body>
 </html>

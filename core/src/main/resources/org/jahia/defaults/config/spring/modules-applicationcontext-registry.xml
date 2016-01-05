@@ -3,10 +3,13 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:webflow="http://www.springframework.org/schema/webflow-config"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
        http://www.springframework.org/schema/webflow-config
-       http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd">
+       http://www.springframework.org/schema/webflow-config/spring-webflow-config-2.3.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util-3.0.xsd">
 
     <bean name="org.jahia.modules.default.ModuleRegistry"
           class="org.jahia.services.templates.TemplatePackageRegistry$ModuleRegistry">
@@ -27,15 +30,15 @@
     <bean id="modulePlaceholderConfig"
           class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
         <property name="properties" ref="jahiaProperties"/>
-        <property name="locations">
-            <list>
-                <value>classpath*:jahia-modules-*.properties</value>
-                <value>classpath*:jahia/jahia-modules-*.properties</value>
-            </list>
-        </property>
+        <property name="locations" ref="modulePlaceholderConfigLocations"/>
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="localOverride" value="true"/>
     </bean>
+    
+    <util:list id="modulePlaceholderConfigLocations" value-type="java.lang.String">
+        <value>rootclasspath*:jahia-modules-*.properties</value>
+        <value>rootclasspath*:jahia/jahia-modules-*.properties</value>
+    </util:list>
 
     <bean name="managerEditorConfigurerModules" class="org.springframework.beans.factory.config.CustomEditorConfigurer">
         <property name="customEditors">
@@ -79,20 +82,20 @@
         </property>
     </bean>
 
-    <bean id="springTypeConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean"/>    
+    <bean id="springTypeConversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" lazy-init="true"/>
     
-    <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService">
+    <bean id="JahiaFlowConversionService" class="org.jahia.services.render.webflow.JahiaFlowConversionService" lazy-init="true">
         <constructor-arg ref="springTypeConversionService"/>
     </bean>
 
-    <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator"/>
+    <bean id="JahiaViewFactoryCreator" class="org.jahia.services.render.webflow.BundleViewFactoryCreator" lazy-init="true"/>
 
     <webflow:flow-builder-services id="jahiaFlowBuilderServices" development="true"
                                    conversion-service="JahiaFlowConversionService"
                                    view-factory-creator="JahiaViewFactoryCreator"
                                    validator="validatorFactoryBean"/>
 
-    <webflow:flow-registry id="jahiaFlowRegistry" base-path="classpath:/"
+    <webflow:flow-registry id="jahiaFlowRegistry" base-path="osgibundle:/"
                            flow-builder-services="jahiaFlowBuilderServices">
         <webflow:flow-location-pattern value="**/*.flow/flow.xml"/>
     </webflow:flow-registry>
@@ -119,7 +122,7 @@
         </property>
     </bean>
 
-    <bean class="org.jahia.params.valves.AuthPipelineInitializer">
+    <bean class="org.jahia.params.valves.AuthPipelineInitializer" lazy-init="true">
         <property name="authPipeline" ref="authPipeline"/>
     </bean>
 </beans>

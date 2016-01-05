@@ -3,71 +3,43 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *                                 http://www.jahia.com
  *
- * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- * 1/GPL OR 2/JSEL
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
- * 1/ GPL
- * ======================================================================================
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
  *
- * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     1/ GPL
+ *     ==================================================================================
  *
- * "This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, also available here:
- * http://www.jahia.com/license"
- *
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ======================================================================================
- *
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- * Alternatively, commercial and supported versions of the program - also known as
- * Enterprise Distributions - must be used in accordance with the terms and conditions
- * contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
  *
- * Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- * streamlining Enterprise digital projects across channels to truly control
- * time-to-market and TCO, project after project.
- * Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- * marketing teams to collaboratively and iteratively build cutting-edge
- * online business solutions.
- * These, in turn, are securely and easily deployed as modules and apps,
- * reusable across any digital projects, thanks to the Jahia Private App Store Software.
- * Each solution provided by Jahia stems from this overarching vision:
- * Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- * Founded in 2002 and headquartered in Geneva, Switzerland,
- * Jahia Solutions Group has its North American headquarters in Washington DC,
- * with offices in Chicago, Toronto and throughout Europe.
- * Jahia counts hundreds of global brands and governmental organizations
- * among its loyal customers, in more than 20 countries across the globe.
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * For more information, please visit http://www.jahia.com
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.content;
 
@@ -85,7 +57,7 @@ import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.content.nodetypes.*;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -110,7 +82,6 @@ import javax.naming.Reference;
 import javax.naming.StringRefAddr;
 import javax.naming.spi.ObjectFactory;
 import javax.servlet.ServletRequest;
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.rmi.Naming;
@@ -182,7 +153,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     private final Object syncRepoInit = new Object();
 
     private GroovyPatcher groovyPatcher;
-    private NodeTypesDBServiceImpl nodeTypesDBService;
 
     private boolean registerObservers = true;
 
@@ -509,38 +479,9 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
     }
 
     protected void initNodeTypes() throws RepositoryException, IOException {
-//        JahiaUser root = getGroupManagerService().getAdminUser(0);
-        if (canRegisterCustomNodeTypes() && SettingsBean.getInstance().isProcessingServer()) {
-            JCRSessionWrapper session = getSystemSession();
-            try {
-                Workspace workspace = session.getProviderSession(this).getWorkspace();
-                workspace.getNodeTypeManager().getNodeType("jmix:droppableContent");
-            } catch (RepositoryException e) {
-
-            } finally {
-                session.logout();
-            }
-
-            // Register system node types if required
-            boolean updated = false;
-            NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
-            Properties p = nodeTypeRegistry.getDeploymentProperties();
-            String cnddir = SettingsBean.getInstance().getJahiaEtcDiskPath() + "/repository/nodetypes";
-            File f = new File(cnddir);
-            File[] files = f.listFiles();
-            if (files != null) {
-                SortedSet<File> cndfiles = new TreeSet<>(Arrays.asList(files));
-                for (File file : cndfiles) {
-                    String systemId = "system-" + Patterns.DASH.split(file.getName())[1];
-                    if (nodeTypeRegistry.isLatestDefinitions(systemId, null, file.lastModified())) {
-                        deployDefinitions(systemId);
-                        p.put(systemId + ".lastModified", Long.toString(file.lastModified()));
-                        updated = true;
-                    }
-                }
-            }
-            if (updated) {
-                nodeTypeRegistry.saveProperties();
+        if (canRegisterCustomNodeTypes()) {
+            for (String systemId : service.getInitializedSystemIds()) {
+                deployDefinitions(systemId);
             }
         }
     }
@@ -660,8 +601,15 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         return false;
     }
 
+    /**
+     * Deploy definitions registered with the given systemId into the underlying repository
+     * @param systemId
+     * @throws IOException
+     * @throws RepositoryException
+     */
     public void deployDefinitions(String systemId) throws IOException, RepositoryException {
-        getRepository(); // create repository instance
+        // create repository instance
+        getRepository();
         JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
             Workspace workspace = session.getProviderSession(this).getWorkspace();
@@ -678,58 +626,29 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         }
     }
 
-    public void undeployDefinitions(String systemId) {
+    /**
+     * Undeploy definitions registered with the given systemId from the underlying repository
+     * @param systemId
+     * @throws IOException
+     * @throws RepositoryException
+     */
+    public void undeployDefinitions(String systemId) throws IOException, RepositoryException {
+        // create repository instance
+        getRepository();
+        JCRSessionWrapper session = sessionFactory.getSystemSession();
         try {
-            if (undeployDefinitions(systemId, NodeTypeRegistry.getInstance().getDeploymentProperties())) {
-                NodeTypeRegistry.getInstance().saveProperties();
-            }
-        } catch (IOException e) {
-            logger.error("Cannot save definitions timestamps", e);
-        }
-    }
+            Workspace workspace = session.getProviderSession(this).getWorkspace();
 
-    public boolean undeployDefinitions(String systemId, Properties p) {
-//        List<Resource> files = NodeTypeRegistry.getInstance().getFiles(systemId);
-        boolean needUpdate = false;
-        try {
-            getRepository(); // create repository instance
-            JCRSessionWrapper session = sessionFactory.getSystemSession();
             try {
-                Workspace workspace = session.getProviderSession(this).getWorkspace();
-
-                try {
-                    unregisterCustomNodeTypes(systemId, workspace);
-                } catch (RepositoryException e) {
-                    logger.error("Cannot register nodetypes", e);
-                }
-                session.save();
-            } finally {
-                session.logout();
+                unregisterCustomNodeTypes(systemId, workspace);
+            } catch (RepositoryException e) {
+                logger.error("Cannot register nodetypes", e);
             }
-        } catch (Exception e) {
-            logger.error("Repository init error", e);
+            session.save();
+        } finally {
+            session.logout();
         }
-//        if (files != null) {
-//            for (Resource file : files) {
-//                try {
-//                    String propKey = file.getURL().toString() + ".lastRegistered." + key;
-//                    p.remove(propKey);
-//                    try {
-//                        nodeTypesDBService.saveCndFile(systemId + ".cnd", null);
-//                    } catch (Exception e) {
-//                        logger.error(e.getMessage(), e);
-//                    }
-//                    needUpdate = true;
-//                } catch (IOException e) {
-//                    logger.error("Couldn't retrieve last modification date for file " + file + " will force updating !", e);
-//                    needUpdate = true;
-//                }
-//            }
-//        }
-        NodeTypeRegistry.getInstance().unregisterNodeTypes(systemId);
-        return needUpdate;
     }
-
 
     public Repository getRepository() {
         // Double-checked locking only works with volatile for Java 5+
@@ -1285,10 +1204,6 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
 
     public Map<String, Constructor<?>> getValidators() {
         return service.getValidators();
-    }
-
-    public void setNodeTypesDBService(NodeTypesDBServiceImpl nodeTypesDBService) {
-        this.nodeTypesDBService = nodeTypesDBService;
     }
 
     public void setRegisterObservers(boolean registerObservers) {

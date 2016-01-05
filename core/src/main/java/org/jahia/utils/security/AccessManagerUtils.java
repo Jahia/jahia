@@ -3,20 +3,22 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *     Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
  *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
  *     1/GPL OR 2/JSEL
  *
  *     1/ GPL
- *     ======================================================================================
+ *     ==================================================================================
  *
- *     IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     "This program is free software; you can redistribute it and/or
- *     modify it under the terms of the GNU General Public License
- *     as published by the Free Software Foundation; either version 2
- *     of the License, or (at your option) any later version.
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
  *     This program is distributed in the hope that it will be useful,
  *     but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -24,18 +26,11 @@
  *     GNU General Public License for more details.
  *
  *     You should have received a copy of the GNU General Public License
- *     along with this program; if not, write to the Free Software
- *     Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- *     As a special exception to the terms and conditions of version 2.0 of
- *     the GPL (or any later version), you may redistribute this Program in connection
- *     with Free/Libre and Open Source Software ("FLOSS") applications as described
- *     in Jahia's FLOSS exception. You should have received a copy of the text
- *     describing the FLOSS exception, also available here:
- *     http://www.jahia.com/license"
  *
  *     2/ JSEL - Commercial and Supported Versions of the program
- *     ======================================================================================
+ *     ===================================================================================
  *
  *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
@@ -45,29 +40,6 @@
  *
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
- *
- *
- * ==========================================================================================
- * =                                   ABOUT JAHIA                                          =
- * ==========================================================================================
- *
- *     Rooted in Open Source CMS, Jahia’s Digital Industrialization paradigm is about
- *     streamlining Enterprise digital projects across channels to truly control
- *     time-to-market and TCO, project after project.
- *     Putting an end to “the Tunnel effect”, the Jahia Studio enables IT and
- *     marketing teams to collaboratively and iteratively build cutting-edge
- *     online business solutions.
- *     These, in turn, are securely and easily deployed as modules and apps,
- *     reusable across any digital projects, thanks to the Jahia Private App Store Software.
- *     Each solution provided by Jahia stems from this overarching vision:
- *     Digital Factory, Workspace Factory, Portal Factory and eCommerce Factory.
- *     Founded in 2002 and headquartered in Geneva, Switzerland,
- *     Jahia Solutions Group has its North American headquarters in Washington DC,
- *     with offices in Chicago, Toronto and throughout Europe.
- *     Jahia counts hundreds of global brands and governmental organizations
- *     among its loyal customers, in more than 20 countries across the globe.
- *
- *     For more information, please visit http://www.jahia.com
  */
 package org.jahia.utils.security;
 
@@ -474,7 +446,6 @@ public class AccessManagerUtils {
     /**
      * Get the list Privilege from granted roles for a given principal on a node, recursive check on parents nodes
      * when the acl node have the "inherit" flag, the getRoles(...) function is used to retrieve the roles.
-     * a System session is used to read the nodes.
      * @param absPath the path to the node
      * @param workspace the workspace
      * @param jahiaPrincipal the principal
@@ -499,8 +470,8 @@ public class AccessManagerUtils {
      * @throws RepositoryException
      */
     public static Privilege[] getPrivileges(Node node, JahiaPrincipal jahiaPrincipal, JahiaPrivilegeRegistry privilegeRegistry) throws PathNotFoundException, RepositoryException {
-        Set<String> grantedRoles = getRoles(node, jahiaPrincipal);
 
+        Set<String> grantedRoles = getRoles(node, jahiaPrincipal);
         Set<Privilege> results = new HashSet<Privilege>();
 
         for (String role : grantedRoles) {
@@ -533,7 +504,6 @@ public class AccessManagerUtils {
 
     /**
      * Get the list of granted role for a given principal on a node, recursive check on parents when the acl node have the "inherit" flag
-     * A system session will be use to read the nodes
      * @param absPath the path of the node
      * @param workspace the workspace
      * @param jahiaPrincipal the jahiaPrincipal
@@ -555,6 +525,7 @@ public class AccessManagerUtils {
      * @throws RepositoryException
      */
     public static Set<String> getRoles(Node node, JahiaPrincipal jahiaPrincipal) throws PathNotFoundException, RepositoryException {
+
         Set<String> grantedRoles = new HashSet<String>();
         Set<String> foundRoles = new HashSet<String>();
 
@@ -620,10 +591,10 @@ public class AccessManagerUtils {
 
     private static boolean recurseOnACPs(String jcrPath, Session s, Set<String> permissions, String site, Map<String, CompiledAcl> compiledAcls, JahiaPrincipal jahiaPrincipal,
                                          boolean isAliased, JahiaPrivilegeRegistry privilegeRegistry, String workspaceName) throws RepositoryException {
+
         Set<String> foundRoles = new HashSet<String>();
         permissions = new HashSet<String>(permissions);
         while (jcrPath.length() > 0) {
-            Map<String, Boolean> roles;
 
             CompiledAcl acl = compiledAcls.get(jcrPath);
 

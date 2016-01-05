@@ -98,7 +98,6 @@ public class TokenizedFormTag extends BodyTagSupport {
 
             String bodyContent = getBodyContent().getString();
             Source source = new Source(bodyContent);
-            source.setLogger(null);
 
             OutputDocument outputDocument = new OutputDocument(source);
 

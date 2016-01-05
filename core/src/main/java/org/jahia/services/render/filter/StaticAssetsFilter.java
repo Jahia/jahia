@@ -215,7 +215,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String out = previousOut;
 
         Source source = new Source(previousOut);
-        source.setLogger(null);
 
         Map<String, Map<String, Map<String, Map<String, String>>>> assetsByTarget = new LinkedHashMap<String, Map<String, Map<String,Map<String,String>>>>();
 

@@ -2301,9 +2301,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             // what we need to do now is to do special processing for <script> tags, and on the client side we will
             // create them dynamically.
             Source source = new Source(portletOutput);
-            source.setLogger(null);
             source = new Source((new SourceFormatter(source)).toString());
-            source.setLogger(null);
             List<StartTag> scriptTags = source.getAllStartTags(HTMLElementName.SCRIPT);
             for (StartTag curScriptTag : scriptTags) {
                 if ((curScriptTag.getAttributeValue("src") != null) &&

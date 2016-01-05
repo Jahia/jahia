@@ -604,6 +604,14 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
         dslFiles.add(resource);
     }
 
+    public void addRulesDescriptor(Resource resource, JahiaTemplatesPackage aPackage) {
+        dslFiles.add(resource);
+        ClassLoader packageClassLoader =  aPackage != null ? aPackage.getClassLoader() : null;
+        if (packageClassLoader != null) {
+            ruleBaseClassLoader.addClassLoaderToEnd(packageClassLoader);
+        }
+    }
+
     public void setGlobalObjects(Map<String, Object> globalObjects) {
         this.globalObjects = globalObjects;
     }
@@ -702,11 +710,13 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
 
     }
 
-    private void removeRules(String moduleName) {
-        if (modulePackageNameMap.containsKey(moduleName)
-                && ruleBase.getPackage(modulePackageNameMap.get(moduleName)) != null) {
-            ruleBase.removePackage(modulePackageNameMap.get(moduleName));
-
+    private void removeRules(String moduleName, boolean forceRebuildOfRuleBase) {
+        String pkgName = modulePackageNameMap.get(moduleName);
+        if (pkgName != null && ruleBase.getPackage(pkgName) != null) {
+            ruleBase.removePackage(pkgName);
+            forceRebuildOfRuleBase = true;
+        }
+        if (forceRebuildOfRuleBase) {
             RuleBaseConfiguration conf = new RuleBaseConfiguration(ruleBaseClassLoader);
             RuleBase ruleBase = RuleBaseFactory.newRuleBase(conf);
             for (Package aPackage : this.ruleBase.getPackages()) {
@@ -717,7 +727,7 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
     }
 
     public void removeRules(JahiaTemplatesPackage module) {
-        removeRules(module.getName());
+        // first update the composite classloader
         ClassLoader cl = module.getClassLoader();
         if (cl == null) {
             for (ClassLoader classLoader : ruleBaseClassLoader.getClassLoaders()) {
@@ -728,9 +738,15 @@ public class RulesListener extends DefaultEventListener implements DisposableBea
                 }
             }
         }
+        boolean forceRebuildOfRuleBase = false;
         if (cl != null) {
             ruleBaseClassLoader.removeClassLoader(cl);
+            // classloader has changed -> force rebuild of rule base
+            forceRebuildOfRuleBase = true;
         }
+        
+        // now rebuild the rule base
+        removeRules(module.getName(), forceRebuildOfRuleBase);
     }
     
     public boolean removeRulesDescriptor(Resource resource) {

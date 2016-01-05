@@ -90,7 +90,7 @@ public class RulesBundleObserver implements BundleObserver<URL> {
                     module.setRulesDescriptorFile(bundleResource.getURL().getPath().substring(1));
 
                     for (RulesListener listener : RulesListener.getInstances()) {
-                        listener.addRulesDescriptor(bundleResource);
+                        listener.addRulesDescriptor(bundleResource, module);
                     }
                 }
 

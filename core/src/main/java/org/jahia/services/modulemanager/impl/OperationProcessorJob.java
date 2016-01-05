@@ -64,12 +64,12 @@ public class OperationProcessorJob extends BackgroundJob {
 
         JobDetail jobDetail = jobExecutionContext.getJobDetail();
         String jobName = jobDetail.getName();
-
-        logger.info("Executing module operation processing job {}...", jobName);
+        // FIXME: change log level to debug
+        logger.debug("Executing module operation processing job {}...", jobName);
 
         ((BaseOperationProcessor) jobDetail.getJobDataMap().get("operationProcessor")).process();
 
-        logger.info("Done executing module operation processing job {} in {} ms", jobName,
+        logger.debug("Done executing module operation processing job {} in {} ms", jobName,
                 System.currentTimeMillis() - start);
     }
 }

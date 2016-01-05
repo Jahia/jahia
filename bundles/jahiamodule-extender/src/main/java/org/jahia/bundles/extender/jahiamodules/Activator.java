@@ -424,7 +424,7 @@ public class Activator implements BundleActivator {
         }
     }
 
-    private void parseBundle(Bundle bundle, boolean shouldAutoStart) {
+    private void parseBundle(final Bundle bundle, boolean shouldAutoStart) {
         final JahiaTemplatesPackage pkg = BundleUtils.isJahiaModuleBundle(bundle) ? BundleUtils.getModule(bundle)
                 : null;
         
@@ -487,7 +487,7 @@ public class Activator implements BundleActivator {
 
         setModuleState(bundle, ModuleState.State.PARSED, null);
 
-        if (installedBundles.remove(bundle)) {
+        if (installedBundles.remove(bundle) || !checkImported(bundle, pkg)) {
             logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
             scanForImportFiles(bundle, pkg);
@@ -605,18 +605,8 @@ public class Activator implements BundleActivator {
         }
 
         final String id = jahiaTemplatesPackage.getId();
-        try {
-            boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return session.itemExists("/modules/" + id + "/" + jahiaTemplatesPackage.getVersion());
-                }
-            });
-            if (!imported) {
-                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_IMPORTED, null);
-                return;
-            }
-        } catch (RepositoryException e) {
-            logger.error("Error while reading module jcr content" + jahiaTemplatesPackage, e);
+        if (!checkImported(bundle, jahiaTemplatesPackage)) {
+            return;
         }
 
 
@@ -679,6 +669,23 @@ public class Activator implements BundleActivator {
                 setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
             }
         }
+    }
+
+    private boolean checkImported(Bundle bundle, final JahiaTemplatesPackage jahiaTemplatesPackage) {
+        try {
+            boolean imported = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, null, null, new JCRCallback<Boolean>() {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    return session.itemExists("/modules/" + jahiaTemplatesPackage.getId() + "/" + jahiaTemplatesPackage.getVersion());
+                }
+            });
+            if (!imported) {
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_IMPORTED, null);
+                return false;
+            }
+        } catch (RepositoryException e) {
+            logger.error("Error while reading module jcr content" + jahiaTemplatesPackage, e);
+        }
+        return true;
     }
 
     private boolean hasSpringFile(Bundle bundle) {

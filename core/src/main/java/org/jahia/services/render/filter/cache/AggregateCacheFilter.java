@@ -65,7 +65,6 @@ import org.jahia.utils.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.PathNotFoundException;
@@ -88,7 +87,7 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  * Created : 8 janv. 2010
  */
-public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
+public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
 
     public static final String CACHE_PER_USER = "cache.perUser";
@@ -144,21 +143,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     private Set<String> skipLatchForConfigurations;
     private Set<String> skipLatchForPaths;
     private Set<String> skipLatchForNodeTypes;
-
-    /**
-     * Invoked by a BeanFactory after it has set all bean properties supplied
-     * (and satisfied BeanFactoryAware and ApplicationContextAware).
-     * <p>This method allows the bean instance to perform initialization only
-     * possible when all bean properties have been set and to throw an
-     * exception in the event of misconfiguration.
-     *
-     * @throws Exception in the event of misconfiguration (such
-     *                   as failure to set an essential property) or if initialization fails.
-     */
-    public void afterPropertiesSet() throws Exception {
-        // not needed since we do not use jericho anymore
-        //Config.LoggerProvider = LoggerProvider.DISABLED;
-    }
 
     public void setDependenciesLimit(int dependenciesLimit) {
         this.dependenciesLimit = dependenciesLimit;

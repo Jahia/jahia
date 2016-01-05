@@ -433,6 +433,11 @@
             </exclusions>
         </dependency>
         <dependency>
+            <groupId>org.apache</groupId>
+            <artifactId>jackrabbit-ocm</artifactId>
+            <version>2.0.0</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
             <version>${slf4j.version}</version>
@@ -1365,6 +1370,7 @@
             <version>15.0</version>
             <classifier>cdi1.0</classifier>
         </dependency>
+
 
     </dependencies>
     <build>

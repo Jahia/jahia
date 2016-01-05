@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <bean id="messageSource" class="org.jahia.utils.i18n.ModuleMessageSource"/>
+
+    <bean id="ClusterNodeInfo" class="org.jahia.services.modulemanager.model.ClusterNodeInfo">
+        <property name="id" value="jahiaServer1" />
+        <property name="processingServer" value="${processingServer:true}" />
+        <property name="clusterActivated" value="false" />
+    </bean>
+
+    <bean id="BundleService" class="org.jahia.services.modulemanager.impl.BundleServiceImpl">
+        <property name="felixProperties" ref="felixProperties"/>
+    </bean>
+
+    <bean id="ModuleInfoPersister" class="org.jahia.services.modulemanager.persistence.ModuleInfoPersister">
+        <property name="clusterNodeInfo" ref="ClusterNodeInfo"/>
+        <property name="operationLogAutoSplitConfig" value="date,jcr:created,yyyy;date,jcr:created,MM;date,jcr:created,dd"/>
+        <property name="bundleService" ref="BundleService"/>
+    </bean>
+
+    <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
+        <property name="persister" ref="ModuleInfoPersister"/>
+        <property name="operationProcessor" ref="OperationProcessor"/>
+        <property name="clusterNodeInfo" ref="ClusterNodeInfo"/>
+    </bean>
+
+    <bean id="BaseOperationProcessor" class="org.jahia.services.modulemanager.impl.BaseOperationProcessor" abstract="true">
+        <property name="persister" ref="ModuleInfoPersister"/>
+        <property name="scheduler" ref="ramScheduler"/>
+        <property name="jobGroup" value="Modules" />
+    </bean>
+
+    <bean id="OperationProcessor" class="org.jahia.services.modulemanager.impl.OperationProcessor" parent="BaseOperationProcessor">
+        <property name="jobName" value="OperationProcessorJob" />
+        <property name="jobDelay" value="${jahia.moduleManager.operationProcessor.delay:2000}"/>
+    </bean>
+
+    <bean id="NodeOperationProcessor" class="org.jahia.services.modulemanager.impl.NodeOperationProcessor" parent="BaseOperationProcessor">
+        <property name="clusterNodeInfo" ref="ClusterNodeInfo"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService" />
+        <property name="jobName" value="NodeOperationProcessorJob" />
+        <property name="jobDelay" value="${jahia.moduleManager.nodeOperationProcessor.delay:2000}"/>
+    </bean>
+</beans>

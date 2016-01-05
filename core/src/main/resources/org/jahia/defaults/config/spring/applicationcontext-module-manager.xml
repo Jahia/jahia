@@ -8,7 +8,7 @@
     <bean id="messageSource" class="org.jahia.utils.i18n.ModuleMessageSource"/>
 
     <bean id="ClusterNodeInfo" class="org.jahia.services.modulemanager.model.ClusterNodeInfo">
-        <property name="id" value="jahiaServer1" />
+        <property name="id" value="${cluster.node.serverId:jahiaServer1}" />
         <property name="processingServer" value="${processingServer:true}" />
         <property name="clusterActivated" value="false" />
     </bean>

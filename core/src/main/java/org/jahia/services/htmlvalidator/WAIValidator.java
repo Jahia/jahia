@@ -108,7 +108,6 @@ public class WAIValidator {
         }
 
         final Source source = new Source(tmp);
-        source.setLogger(null);
 
         // The DOMFragmentParser generates a HTML and a BODY element which are
         // of no interest for us. We select the HTMLBodyElement which will then

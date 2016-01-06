@@ -43,13 +43,9 @@
  */
 package org.jahia.services.content.decorator;
 
-import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.LazyPropertyIterator;
 import org.jahia.services.pwd.PasswordService;
 import org.jahia.services.pwdpolicy.JahiaPasswordPolicyService;
 import org.jahia.services.pwdpolicy.PasswordHistoryEntry;
@@ -68,7 +64,7 @@ import java.util.*;
  *
  * @author rincevent
  */
-public class JCRUserNode extends JCRNodeDecorator {
+public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
     private transient static Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
     public static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     public static final String PROVIDER_NAME = "jcr";
@@ -82,11 +78,6 @@ public class JCRUserNode extends JCRNodeDecorator {
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
     }
-
-    @Override
-    public boolean hasProperty(String s) throws RepositoryException {
-        return super.hasProperty(s) && canGetProperty(s);
-    }
     
     public JahiaUser getJahiaUser() {
         Properties properties = new Properties();
@@ -97,59 +88,6 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
         return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName(), getRealm());
 
-    }
-
-    @Override
-    public JCRPropertyWrapper getProperty(String s) throws PathNotFoundException, RepositoryException {
-        if (!canGetProperty(s)) {
-            throw new PathNotFoundException(s);
-        }
-        return super.getProperty(s);
-    }
-
-    @Override
-    public PropertyIterator getProperties() throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        return new LazyUserPropertyIterator(locale);
-    }
-
-    @Override
-    public PropertyIterator getProperties(String s) throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        return new LazyUserPropertyIterator(this, locale, s);
-    }
-
-    @Override
-    public PropertyIterator getProperties(String[] strings) throws RepositoryException {
-        final Locale locale = getSession().getLocale();
-        return new LazyUserPropertyIterator(this, locale, strings);
-    }
-
-    @Override
-    public Map<String, String> getPropertiesAsString() throws RepositoryException {
-        return Maps.filterKeys(super.getPropertiesAsString(), new Predicate<String>() {
-            @Override
-            public boolean apply(String input) {
-                try {
-                    return canGetProperty(input);
-                } catch (RepositoryException e) {
-                    return false;
-                }
-            }
-        });
-    }
-
-    @Override
-    public String getPropertyAsString(String name) {
-        try {
-            if (!canGetProperty(name)) {
-                return null;
-            }
-        } catch (RepositoryException e) {
-            logger.error("Cannot read property",e);
-            return null;
-        }
-        return super.getPropertyAsString(name);
     }
 
     /**
@@ -169,7 +107,7 @@ public class JCRUserNode extends JCRNodeDecorator {
 
     public boolean isPropertyEditable(String name) {
         try {
-            return !(J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) && canGetProperty(name);
+            return !(J_EXTERNAL.equals(name) || Constants.CHECKIN_DATE.equals(name)) && canReadProperty(name);
         } catch (RepositoryException e) {
             return false;
         }
@@ -183,17 +121,17 @@ public class JCRUserNode extends JCRNodeDecorator {
         }
     }
 
-    private boolean canGetProperty(String s) throws RepositoryException {
-        if (publicProperties.contains(s) || JahiaUserManagerService.isGuest(this) || hasPermission("jcr:write")) {
+    boolean canReadProperty(String s) throws RepositoryException {
+        if (publicProperties.contains(s) || JahiaUserManagerService.isGuest(this) || node.hasPermission("jcr:write")) {
             return true;
         }
-        if (super.hasProperty(s) && !"jnt:user".equals(super.getProperty(s).getDefinition().getDeclaringNodeType().getName())) {
+        if (node.hasProperty(s) && !"jnt:user".equals(node.getProperty(s).getDefinition().getDeclaringNodeType().getName())) {
             return true;
         }
-        if (!super.hasProperty(J_PUBLIC_PROPERTIES)) {
+        if (!node.hasProperty(J_PUBLIC_PROPERTIES)) {
             return false;
         }
-        Property p = super.getProperty(J_PUBLIC_PROPERTIES);
+        Property p = node.getProperty(J_PUBLIC_PROPERTIES);
         Value[] values = p.getValues();
         for (Value value : values) {
             if (s.equals(value.getString())) {
@@ -258,36 +196,5 @@ public class JCRUserNode extends JCRNodeDecorator {
      */
     public String getLocalPath() {
         return getPath();
-    }
-
-    private class LazyUserPropertyIterator extends LazyPropertyIterator {
-        public LazyUserPropertyIterator(Locale locale) {
-            super(JCRUserNode.this, locale);
-        }
-
-        public LazyUserPropertyIterator(JCRNodeWrapper node, Locale locale, String singlePattern) {
-            super(node, locale, singlePattern);
-        }
-
-        public LazyUserPropertyIterator(JCRNodeWrapper node, Locale locale, String[] patternArray) {
-            super(node, locale, patternArray);
-        }
-
-        @Override
-        public boolean hasNext() {
-            while (super.hasNext()) {
-                try {
-                    if (!canGetProperty(tempNext.getName())) {
-                        tempNext = null;
-                    } else {
-                        return true;
-                    }
-                } catch (RepositoryException e) {
-                    tempNext = null;
-                    logger.error("Cannot read property",e);
-                }
-            }
-            return false;
-        }
     }
 }

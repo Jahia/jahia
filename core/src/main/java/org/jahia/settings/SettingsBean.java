@@ -92,6 +92,9 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.context.ServletContextAware;
 
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.LoggerProvider;
+
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.io.File;
@@ -477,6 +480,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             reindexIfNeeded();
 
             readTldConfigJarsToSkip();
+            
+            initJerichoLogging();
 
             DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
@@ -489,6 +494,16 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             logger.error("Properties file is not valid...!", nfe);
         }
     } // end load
+
+    /**
+     * Initializes the JerichoHTML parser logging.
+     */
+    private void initJerichoLogging() {
+        // if logging for Jericho is not explicitly enabled, we disable it by default
+        if (!getBoolean("jahia.jericho.logging.enabled", false)) {
+            Config.LoggerProvider = LoggerProvider.DISABLED;
+        }
+    }
 
     private void initBindAddress() {
         // First expose tcp ip binding address: use also cluster.tcp.start.ip_address for backward compatibility with Jahia 6.6

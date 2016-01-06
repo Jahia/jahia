@@ -71,7 +71,6 @@ public class FormTokenFilter extends AbstractFilter {
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
             throws Exception {
         Source source = new Source(previousOut);
-        source.setLogger(null);
 
         List<StartTag> jahiaFormTags = source.getAllStartTags("jahia:token-form");
         if (!jahiaFormTags.isEmpty()) {

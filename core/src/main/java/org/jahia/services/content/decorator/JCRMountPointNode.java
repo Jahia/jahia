@@ -45,10 +45,7 @@ package org.jahia.services.content.decorator;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.*;
 import org.jahia.settings.SettingsBean;
 
 import javax.jcr.InvalidItemStateException;
@@ -64,15 +61,38 @@ import java.util.Map;
  * Date: Dec 8, 2008
  * Time: 2:19:40 PM
  */
-public class JCRMountPointNode extends JCRNodeDecorator {
+public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
 
     public static final String MOUNT_POINT_PROPERTY_NAME = "mountPoint";
     public static final String MOUNT_STATUS_PROPERTY_NAME = "mountStatus";
     public static final String MOUNT_SUFFIX = "-mount";
     public static final String MOUNT_POINT_SUFFIX = "-mountPoint";
+    public static final String PROTECTED_PROPERTIES_PROPERTY_NAME = "protectedProperties";
 
     public static enum MountStatus {
         mounted, unmounted, waiting, error
+    }
+
+    boolean canReadProperty(String propertyName) throws RepositoryException {
+        if(PROTECTED_PROPERTIES_PROPERTY_NAME.equals(propertyName)) {
+            return false;
+        }
+
+        if(node.hasProperty(PROTECTED_PROPERTIES_PROPERTY_NAME)) {
+            JCRValueWrapper[] values = node.getProperty(PROTECTED_PROPERTIES_PROPERTY_NAME).getValues();
+            if(values != null && values.length > 0) {
+                for (JCRValueWrapper value : values) {
+                    if(value != null && value.getString() != null && value.getString().equals(propertyName)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    public void setProtectedPropertyNames(String[] propertyNames) throws RepositoryException {
+        super.setProperty(PROTECTED_PROPERTIES_PROPERTY_NAME, propertyNames);
     }
 
     private class JCRVirtualMountPointNode extends JCRNodeDecorator {
@@ -94,7 +114,7 @@ public class JCRMountPointNode extends JCRNodeDecorator {
      * @param node the node to be decorated
      */
     public JCRMountPointNode(JCRNodeWrapper node) {
-        super(node);
+        super(node, true);
     }
 
     public JCRStoreProvider getMountProvider() throws RepositoryException {

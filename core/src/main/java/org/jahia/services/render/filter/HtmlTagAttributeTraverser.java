@@ -124,7 +124,6 @@ public class HtmlTagAttributeTraverser {
         }
 
         Source source = new Source(htmlContent);
-        source.setLogger(null);
         OutputDocument document = null;
 
         for (Map.Entry<String, Set<String>> tag : attributesToVisit.entrySet()) {

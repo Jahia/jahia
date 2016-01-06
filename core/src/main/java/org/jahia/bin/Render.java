@@ -438,7 +438,6 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
         stringValue = TAG_MISSING_START_LESSERTHAN_PATTERN.matcher(stringValue).replaceAll("$1&gt;");
 
         Source source = new Source(stringValue);
-        source.setLogger(null);
         OutputDocument outputDocument = new OutputDocument(source);
         List<Element> elements = source.getAllElements();
 

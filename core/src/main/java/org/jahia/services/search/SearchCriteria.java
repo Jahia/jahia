@@ -51,7 +51,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -269,7 +268,7 @@ public class SearchCriteria implements Serializable {
 
         private DateValue dateValue = new DateValue();
 
-        private MatchType match = MatchType.AS_IS;
+        private Term.MatchType match = Term.MatchType.AS_IS;
 
         private boolean multiple;
 
@@ -287,7 +286,7 @@ public class SearchCriteria implements Serializable {
             return dateValue;
         }
 
-        public MatchType getMatch() {
+        public Term.MatchType getMatch() {
             return match;
         }
 
@@ -343,7 +342,7 @@ public class SearchCriteria implements Serializable {
             this.dateValue = dateValue;
         }
 
-        public void setMatch(MatchType matchType) {
+        public void setMatch(Term.MatchType matchType) {
             this.match = matchType;
         }
 

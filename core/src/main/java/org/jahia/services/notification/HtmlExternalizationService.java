@@ -129,7 +129,6 @@ public class HtmlExternalizationService {
             HttpServletResponse response) {
 
         Source source = new Source(previousOut);
-        source.setLogger(null);
         OutputDocument document = new OutputDocument(source);
         StringBuilder sb = new StringBuilder();
         List<StartTag> linkStartTags = source.getAllStartTags(HTMLElementName.LINK);
@@ -201,7 +200,6 @@ public class HtmlExternalizationService {
 
     protected String removeJavaScript(String out) {
         Source source = new Source(out);
-        source.setLogger(null);
         OutputDocument document = new OutputDocument(source);
         List<Element> scriptTags = source.getAllElements(HTMLElementName.SCRIPT);
         for (Element scriptElement : scriptTags) {

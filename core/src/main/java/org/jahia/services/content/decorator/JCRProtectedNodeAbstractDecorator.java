@@ -126,7 +126,7 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
      * @return true if the property is readable, false if not
      * @throws RepositoryException
      */
-    abstract boolean canReadProperty(String propertyName) throws RepositoryException;
+    protected abstract boolean canReadProperty(String propertyName) throws RepositoryException;
 
     private boolean canGetProperty(String propertyName) throws RepositoryException {
         return alwaysAllowSystem && getSession().isSystem() || canReadProperty(propertyName);

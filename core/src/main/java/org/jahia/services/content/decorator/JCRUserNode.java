@@ -123,7 +123,8 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
         }
     }
 
-    boolean canReadProperty(String s) throws RepositoryException {
+    @Override
+    protected boolean canReadProperty(String s) throws RepositoryException {
         if (publicProperties.contains(s) || JahiaUserManagerService.isGuest(this) || node.hasPermission("jcr:write")) {
             return true;
         }

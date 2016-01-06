@@ -86,7 +86,7 @@ public class ModulesProviderTest {
 
         // get default module
         templateManagerService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:svn:https://devtools.jahia.com/svn/jahia/trunk/test/dummy-modules/dummy1/", null, "dummy1", null, s);
+        final JCRNodeWrapper dummy1 = templateManagerService.checkoutModule(null, "scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/test/dummy-modules/dummy1/", null, "dummy1", null, s);
         root = dummy1.getNode("sources/src/main/resources");
     }
 

@@ -549,7 +549,6 @@ public class TextUtilsTest {
 
                 if (cachedRenderContent.contains(CACHE_ESI_TAG_START)) {
                     Source source = new Source(cachedRenderContent);
-                    source.setLogger(null);
 
                     //// This will remove all blank line and drastically reduce data in memory
                     // source = new Source((new SourceFormatter(source)).toString());

@@ -53,6 +53,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
+import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -77,7 +79,7 @@ import java.util.regex.Pattern;
  * <p/>
  * @author loom
  */
-public class ContentHistoryService implements Processor, CamelContextAware {
+public class ContentHistoryService implements Processor, CamelContextAware, JahiaAfterInitializationService {
     private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.SessionFactory sessionFactoryBean;
@@ -386,6 +388,20 @@ public class ContentHistoryService implements Processor, CamelContextAware {
 
     public void setCamelContext(final CamelContext camelContext) {
         this.camelContext = camelContext;
+    }
+
+    public CamelContext getCamelContext() {
+        return camelContext;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
+    @Override
+    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
+        logger.info("Registering Camel route for consuming content history messages");
+        
         final ContentHistoryService contentHistoryService = this;
         try {
             camelContext.addRoutes(new RouteBuilder() {
@@ -399,13 +415,4 @@ public class ContentHistoryService implements Processor, CamelContextAware {
             logger.error(e.getMessage(), e);
         }
     }
-
-    public CamelContext getCamelContext() {
-        return camelContext;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
 }

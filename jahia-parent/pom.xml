@@ -88,6 +88,7 @@
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
         <drools.version>${jbpm.version}</drools.version>
         <hibernate.version>4.2.7.SP1</hibernate.version>
+        <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>

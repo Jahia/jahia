@@ -45,6 +45,9 @@ package org.jahia.services.workflow.jbpm.command;
 
 import org.jahia.services.workflow.Workflow;
 import org.jahia.services.workflow.jbpm.BaseCommand;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +57,9 @@ import java.util.Locale;
 * Get processes based on list of ids
 */
 public class GetActiveWorkflowsInformationsCommand extends BaseCommand<List<Workflow>> {
+
+	private transient static Logger logger = LoggerFactory.getLogger(GetActiveWorkflowsInformationsCommand.class);
+	
     private final List<String> processIds;
     private final Locale uiLocale;
 
@@ -65,8 +71,13 @@ public class GetActiveWorkflowsInformationsCommand extends BaseCommand<List<Work
     @Override
     public List<Workflow> execute() {
         List<Workflow> activeWorkflows = new ArrayList<Workflow>();
-        for (String s : processIds) {
-            activeWorkflows.add(convertToWorkflow(getKieSession().getProcessInstance(Long.parseLong(s)), uiLocale, getKieSession(), getTaskService(), getLogService()));
+        for (String processId : processIds) {
+        	ProcessInstance processInstance = getKieSession().getProcessInstance(Long.parseLong(processId));
+        	if (processInstance != null) {
+                activeWorkflows.add(convertToWorkflow(processInstance, uiLocale, getKieSession(), getTaskService(), getLogService()));
+        	} else {
+        		logger.debug("Retrieving process instance with ID {} returned null while getting active workflows", processId);
+        	}
         }
         return activeWorkflows;
     }

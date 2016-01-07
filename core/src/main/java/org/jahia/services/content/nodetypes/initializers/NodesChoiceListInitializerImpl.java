@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -82,59 +83,62 @@ public class NodesChoiceListInitializerImpl implements ChoiceListInitializer {
     public List<ChoiceListValue> getChoiceListValues(ExtendedPropertyDefinition epd, String param, List<ChoiceListValue> values, Locale locale,
                                                      Map<String, Object> context) {
         final ArrayList<ChoiceListValue> listValues = new ArrayList<ChoiceListValue>();
+        if (CollectionUtils.isNotEmpty(values)) listValues.addAll(values);
         if (param != null) {
-            String[] s = Patterns.SEMICOLON.split(param);
-            String nodetype = null;
-            if (s.length > 1) {
-                nodetype = s[1];
-            }
-            try {
-                JCRSiteNode site;
-                JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextParent");
-                if (contextNode == null) {
-                    contextNode = (JCRNodeWrapper) context.get("contextNode");
+            for (String subParam : Patterns.PIPE.split(param)) {
+                String[] s = Patterns.SEMICOLON.split(subParam);
+                String nodetype = null;
+                if (s.length > 1) {
+                    nodetype = s[1];
                 }
-                if (contextNode != null) {
-                    site = contextNode.getResolveSite();
-                } else {
-                    final JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
-                    if (defaultSite != null) {
-                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/" + defaultSite.getSiteKey());
-                    } else {
-                        site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode(JCRContentUtils.getSystemSitePath());
+                try {
+                    JCRSiteNode site;
+                    JCRNodeWrapper contextNode = (JCRNodeWrapper) context.get("contextParent");
+                    if (contextNode == null) {
+                        contextNode = (JCRNodeWrapper) context.get("contextNode");
                     }
-                    contextNode = site;
+                    if (contextNode != null) {
+                        site = contextNode.getResolveSite();
+                    } else {
+                        final JahiaSite defaultSite = JahiaSitesService.getInstance().getDefaultSite();
+                        if (defaultSite != null) {
+                            site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode("/sites/" + defaultSite.getSiteKey());
+                        } else {
+                            site = (JCRSiteNode) sessionFactory.getCurrentUserSession().getNode(JCRContentUtils.getSystemSitePath());
+                        }
+                        contextNode = site;
+                    }
+                    String path = s[0];
+                    String returnType = "";
+                    if (s.length > 2) {
+                        returnType = s[2];
+                    }
+                    path = StringUtils.replace(path,"$currentSiteTemplatesSet","/modules/" + site.getTemplatePackage().getIdWithVersion());
+                    if (StringUtils.contains(path,"$currentSite/templates/")) {
+                        path = StringUtils.replace(path,"$currentSite", "/modules/" + site.getTemplatePackage().getIdWithVersion());
+                    } else {
+                        path = StringUtils.replace(path,"$currentSite", site.getPath());
+                    }
+                    boolean subTree = false;
+                    if (path.endsWith("//*")) {
+                        path = StringUtils.substringBeforeLast(path, "//*");
+                        subTree = true;
+                    }
+                    JCRSessionWrapper jcrSessionWrapper = contextNode.getSession();
+                    JCRNodeWrapper node;
+                    if (path.equals(".")) {
+                        node = contextNode;
+                    } else if (path.startsWith("./")) {
+                        node = contextNode.getNode(path.substring(2));
+                    } else {
+                        node = jcrSessionWrapper.getNode(path);
+                    }
+                    addSubnodes(listValues, nodetype, node, subTree, returnType);
+                } catch (PathNotFoundException e) {
+                    logger.debug("Cannot find node " + e.getMessage(), e);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
                 }
-                String path = s[0];
-                String returnType = "";
-                if (s.length > 2) {
-                    returnType = s[2];
-                }
-                path = StringUtils.replace(path,"$currentSiteTemplatesSet","/modules/" + site.getTemplatePackage().getIdWithVersion());
-                if (StringUtils.contains(path,"$currentSite/templates/")) {
-                    path = StringUtils.replace(path,"$currentSite", "/modules/" + site.getTemplatePackage().getIdWithVersion());
-                } else {
-                    path = StringUtils.replace(path,"$currentSite", site.getPath());
-                }
-                boolean subTree = false;
-                if (path.endsWith("//*")) {
-                    path = StringUtils.substringBeforeLast(path, "//*");
-                    subTree = true;
-                }
-                JCRSessionWrapper jcrSessionWrapper = contextNode.getSession();
-                JCRNodeWrapper node;
-                if (path.equals(".")) {
-                    node = contextNode;
-                } else if (path.startsWith("./")) {
-                    node = contextNode.getNode(path.substring(2));
-                } else {
-                    node = jcrSessionWrapper.getNode(path);
-                }
-                addSubnodes(listValues, nodetype, node, subTree, returnType);
-            } catch (PathNotFoundException e) {
-                logger.debug("Cannot find node " + e.getMessage(), e);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
             }
         }
         return listValues;

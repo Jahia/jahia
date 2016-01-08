@@ -673,6 +673,10 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                 if (attrName.equals("j:privileges") && child.isNodeType("jnt:ace")) {
                     attrName = "j:roles";
                     attrValue = mapAclAttributes(child, attrValue);
+                    if (StringUtils.isEmpty(attrValue)) {
+                        // Value is mandatory, set a fake role to allow import to continue
+                        attrValue = "dummy-role";
+                    }
                 }
 
                 if ((attrName.equals(Constants.JCR_TITLE) || attrName

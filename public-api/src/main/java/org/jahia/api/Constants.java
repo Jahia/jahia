@@ -161,7 +161,7 @@ public class Constants {
 
     public static final String JAHIAMIX_REFERENCES_IN_FIELD = "jmix:referencesInField";
     public static final String JAHIA_REFERENCE_IN_FIELD_PREFIX = "j:referenceInField*";
-    
+
     public static final String JAHIAMIX_TAGGED = "jmix:tagged";
 
     public static final String JAHIAMIX_EXTERNALREFERENCE = "jmix:externalReference";
@@ -174,6 +174,8 @@ public class Constants {
 
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";
+    public static final String JAHIANT_TEMP_FOLDER = "jnt:tempFolder";
+    public static final String JAHIANT_TEMP_FILE = "jnt:tempFile";
     public static final String JAHIANT_RESOURCE = "jnt:resource";
     public static final String JAHIANT_SYMLINK = "jnt:symLink";
     public static final String JAHIAMIX_SYSTEMNODE = "jmix:systemNode";

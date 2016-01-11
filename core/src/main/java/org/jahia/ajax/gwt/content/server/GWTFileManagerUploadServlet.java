@@ -43,6 +43,16 @@
  */
 package org.jahia.ajax.gwt.content.server;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileItemHeaders;
@@ -56,14 +66,16 @@ import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.LimitedInputStream;
 import org.apache.commons.fileupload.util.Streams;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.api.Constants;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -74,11 +86,11 @@ import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
-import javax.servlet.http.*;
-
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
 
 /**
  * File upload servlet to handle requests from GWT upload form.
@@ -87,14 +99,17 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 2 avr. 2008 - 16:51:39
  */
 public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSessionListener {
-    private static final long serialVersionUID = 1048509772346464862L;
-    public static final int OK = 0;
-    public static final int EXISTS = 1;
-    public static final int READONLY = 2;
-    public static final int BAD_LOCATION = 3;
-    public static final int UNKNOWN_ERROR = 9;
 
-    private static Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
+    private static final int OK = 0;
+    private static final int EXISTS = 1;
+    private static final int READONLY = 2;
+    private static final int BAD_LOCATION = 3;
+    private static final int UNKNOWN_ERROR = 9;
+
+    private static final Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
+    private static final long serialVersionUID = 1048509772346464862L;
+
+    private volatile UploadedPendingFileStorage fileStorage;
 
     private static long getContentLength(FileItemHeaders pHeaders) {
         try {
@@ -104,7 +119,9 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         }
     }
 
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
         FileItemFactory factory = new DiskFileItemFactory();
         ServletFileUpload upload = new ServletFileUpload(factory);
         SettingsBean settingsBean = SettingsBean.getInstance();
@@ -127,7 +144,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 FileItem fileItem = factory.createItem(item.getFieldName(), item.getContentType(), item.isFormField(),
                         item.getName());
                 long contentLength = getContentLength(item.getHeaders());
-                
+
                 // If we have a content length in the header we can use it
                 if (fileSizeLimit > 0 && contentLength != -1L && contentLength > fileSizeLimit) {
                     throw new FileSizeLimitExceededException("The field " + item.getFieldName()
@@ -139,6 +156,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 InputStream limitedInputStream = null;
                 try {
                     limitedInputStream = fileSizeLimit > 0 ? new LimitedInputStream(itemStream, fileSizeLimit) {
+
                         @Override
                         protected void raiseError(long pSizeMax, long pCount) throws IOException {
                             throw new FileUploadIOException(new FileSizeLimitExceededException("The field "
@@ -204,43 +222,33 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             final JahiaUser user = (JahiaUser) request.getSession().getAttribute(Constants.SESSION_USER);
 
             final List<String> pathsToUnzip = new ArrayList<String>();
-            for (String filename : uploads.keySet()) {
-                final FileItem item = uploads.get(filename);
+            for (String fileName : uploads.keySet()) {
+                final FileItem fileItem = uploads.get(fileName);
                 try {
-                    StringBuilder name = new StringBuilder(filename);
-                    final int i = writeToDisk(user, item, location, name);
-                    switch (i) {
+                    StringBuilder name = new StringBuilder(fileName);
+                    final int saveResult = saveToJcr(user, fileItem, location, name);
+                    switch (saveResult) {
                         case OK:
-                            if (unzip && filename.toLowerCase().endsWith(".zip")) {
+                            if (unzip && fileName.toLowerCase().endsWith(".zip")) {
                                 pathsToUnzip.add(new StringBuilder(location).append("/").append(name.toString()).toString());
                             }
                             printWriter.write("OK: " + name.toString() + "\n");
                             break;
                         case EXISTS:
-                            File f = File.createTempFile("upload", null);
-                            InputStream is = item.getInputStream();
-                            OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
-                            try {
-                                IOUtils.copy(is, os);
-                            } finally {
-                                IOUtils.closeQuietly(os);
-                                IOUtils.closeQuietly(is);
-                            }
-                            asyncItems.put(f.getName(), new Item(item.getName(), item.getContentType(), item.getSize(), f, request.getSession().getId()));
-
-                            printWriter.write("EXISTS: " + item.getFieldName() + " " + f.getName() + " " + filename + "\n");
+                            storeUploadedFile(request.getSession().getId(), fileItem);
+                            printWriter.write("EXISTS: " + fileItem.getFieldName() + " " + fileItem.getName() + " " + fileName + "\n");
                             break;
                         case READONLY:
-                            printWriter.write("READONLY: " + item.getFieldName() + "\n");
+                            printWriter.write("READONLY: " + fileItem.getFieldName() + "\n");
                             break;
                         default:
-                            printWriter.write("UPLOAD-FAILED: " + item.getFieldName() + "\n");
+                            printWriter.write("UPLOAD-FAILED: " + fileItem.getFieldName() + "\n");
                             break;
                     }
                 } catch (IOException e) {
                     logger.error("Upload failed for file \n", e);
                 } finally {
-                    item.delete();
+                    fileItem.delete();
                 }
             }
 
@@ -249,7 +257,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 try {
                     ZipHelper zip = ZipHelper.getInstance();
                     //todo : in which workspace do we upload ?
-                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(),(Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
+                    zip.unzip(pathsToUnzip, true, JCRSessionFactory.getInstance().getCurrentUserSession(), (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE));
                 } catch (RepositoryException e) {
                     logger.error("Auto-unzipping failed", e);
                 } catch (GWTJahiaServiceException e) {
@@ -258,27 +266,29 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             }
         } else {
             response.setContentType("text/html");
-
             for (FileItem fileItem : uploads.values()) {
+                storeUploadedFile(request.getSession().getId(), fileItem);
                 printWriter.write("<html><body>");
-                File f = File.createTempFile("upload", ".tmp");
-                InputStream is = fileItem.getInputStream();
-                OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
-                try {
-                    IOUtils.copy(is, os);
-                } finally {
-                    IOUtils.closeQuietly(os);
-                    IOUtils.closeQuietly(is);
-                }
-                printWriter.write("<div id=\"uploaded\" key=\"" + f.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
+                printWriter.write("<div id=\"uploaded\" key=\"" + fileItem.getName() + "\" name=\"" + fileItem.getName() + "\"></div>\n");
                 printWriter.write("</body></html>");
-                asyncItems.put(f.getName(), new Item(fileItem.getName(), fileItem.getContentType(), fileItem.getSize(), f, request.getSession().getId()));
             }
         }
     }
 
-    private String getSizeLimitErrorMessage(final long fileSizeLimit, FileSizeLimitExceededException e,
-            HttpServletRequest request) {
+    private void storeUploadedFile(String sessionID, FileItem fileItem) {
+        try {
+            InputStream contentStream = new BufferedInputStream(fileItem.getInputStream());
+            try {
+                getFileStorage().put(sessionID, fileItem.getName(), fileItem.getContentType(), contentStream);
+            } finally {
+                contentStream.close();
+            }
+        } catch (IOException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private String getSizeLimitErrorMessage(final long fileSizeLimit, FileSizeLimitExceededException e, HttpServletRequest request) {
         Locale locale = (Locale) request.getSession().getAttribute(Constants.SESSION_UI_LOCALE);
         if (locale == null) {
             locale = (Locale) request.getSession().getAttribute(Constants.SESSION_LOCALE);
@@ -288,11 +298,11 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         } else {
             logger.warn("File upload exceeding limit of {} bytes", fileSizeLimit);
         }
-        return Messages.getInternalWithArguments("fileSizeError.label", "File upload exceeding limit of {0} bytes",
-                locale, fileSizeLimit);
+        return Messages.getInternalWithArguments("fileSizeError.label", "File upload exceeding limit of {0} bytes", locale, fileSizeLimit);
     }
 
     private String extractFileName(String rawFileName, Map<String, FileItem> uploads) {
+
         String basename;
         if (rawFileName.indexOf("\\") >= 0) {
             basename = rawFileName.substring(rawFileName.lastIndexOf("\\") + 1);
@@ -326,7 +336,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         return name;
     }
 
-    private int writeToDisk(JahiaUser user, FileItem item, String location, StringBuilder name) throws IOException {
+    private int saveToJcr(JahiaUser user, FileItem item, String location, StringBuilder name) throws IOException {
+
         String filename = name.toString();
         if (logger.isDebugEnabled()) {
             logger.debug("item : " + item);
@@ -387,89 +398,27 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         return OK;
     }
 
-    private static Map<String, Item> asyncItems = new ConcurrentHashMap<String, Item>();
-
-    public static class Item {
-        private String contentType;
-        private long length;
-        private File file;
-        private String sessionId;
-        private String originalFileName;
-
-        Item(String originalFileName, String contentType, long length, final File file, String sessionId) throws FileNotFoundException {
-            this.originalFileName = originalFileName;
-            this.contentType = contentType;
-            this.length = length;
-            this.file = file;
-            this.sessionId = sessionId;
+    private UploadedPendingFileStorage getFileStorage() {
+        if (fileStorage != null) {
+            return fileStorage;
         }
-
-        public String getOriginalFileName() {
-            return originalFileName;
-        }
-
-        public InputStream getStream() throws FileNotFoundException {
-            return new BufferedInputStream(new FileInputStream(file));
-        }
-
-        public String getContentType() {
-            return contentType;
-        }
-
-        public long getLength() {
-            return length;
-        }
-
-        public File getFile() {
-            return file;
-        }
-
-        public String getSessionId() {
-            return sessionId;
-        }
-
-        /**
-         * Deletes the corresponding file and cleans up its reference.
-         */
-        public void dispose() {
-            if (file != null) {
-                asyncItems.remove(file.getName());
-                FileUtils.deleteQuietly(file);
+        synchronized (this) {
+            if (fileStorage != null) {
+                return fileStorage;
             }
+            ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
+            return (UploadedPendingFileStorage) context.getBean(UploadedPendingFileStorage.class.getSimpleName());
         }
     }
 
-    public static Item getItem(String key) {
-        return asyncItems.get(key);
-    }
-
+    @Override
     public void sessionCreated(HttpSessionEvent se) {
-        // do nothing
     }
 
+    @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        // clean up items, belonging to this session
-        String id = null;
-        try {
-            id = se.getSession().getId();
-        } catch (Exception e) {
-            logger.warn("Unable to get ID of the session. Skip cleaning up temporary uploaded files.", e);
-        }
-        if (id != null) {
-            if (logger.isDebugEnabled()) {
-                logger.debug("Checking temporary uploaded files for session with ID " + id);
-            }
-            for (Iterator<Map.Entry<String, Item>> iterator = asyncItems.entrySet().iterator(); iterator.hasNext();) {
-                Map.Entry<String, Item> entry = iterator.next();
-                Item item = entry.getValue();
-                if (item.sessionId != null && id.equals(item.sessionId)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Removing item " + item.file);
-                    }
-                    iterator.remove();
-                    item.file.delete();
-                }
-            }
-        }
+        String sessionID =se.getSession().getId();
+        logger.debug("Checking temporary uploaded files for session with ID {}", sessionID);
+        getFileStorage().removeIfExists(sessionID);
     }
 }

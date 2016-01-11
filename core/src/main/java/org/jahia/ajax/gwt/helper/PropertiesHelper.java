@@ -52,7 +52,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
@@ -72,6 +72,7 @@ import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.PropertyDefinition;
+
 import java.io.InputStream;
 import java.util.*;
 
@@ -82,10 +83,12 @@ import java.util.*;
  * Time: 2:45:42 PM
  */
 public class PropertiesHelper {
+
     private static Logger logger = LoggerFactory.getLogger(PropertiesHelper.class);
 
     private ContentDefinitionHelper contentDefinition;
     private NavigationHelper navigation;
+    private UploadedPendingFileStorage fileStorage;
 
     private Set<String> ignoredProperties = Collections.emptySet();
 
@@ -95,6 +98,10 @@ public class PropertiesHelper {
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
+    }
+
+    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+        this.fileStorage = fileStorage;
     }
 
     public Map<String, GWTJahiaNodeProperty> getProperties(String path, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
@@ -241,7 +248,7 @@ public class PropertiesHelper {
      * @param currentUserSession @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      * @param uiLocale
      */
-    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JCRSessionWrapper currentUserSession, Locale uiLocale) throws RepositoryException {
+    public void saveProperties(List<GWTJahiaNode> nodes, List<GWTJahiaNodeProperty> newProps, Set<String> removedTypes, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws RepositoryException {
         for (GWTJahiaNode aNode : nodes) {
             JCRNodeWrapper objectNode = currentUserSession.getNode(aNode.getPath());
             List<String> types = aNode.getNodeTypes();
@@ -270,7 +277,7 @@ public class PropertiesHelper {
                     objectNode.addMixin(type);
                 }
             }
-            setProperties(objectNode, newProps);
+            setProperties(objectNode, newProps, httpSessionID);
         }
     }
 
@@ -348,7 +355,7 @@ public class PropertiesHelper {
         }
     }
 
-    public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps) throws RepositoryException {
+    public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps, String httpSessionID) throws RepositoryException {
         if (objectNode == null || newProps == null || newProps.isEmpty()) {
             logger.debug("node or properties are null or empty");
             return;
@@ -379,7 +386,7 @@ public class PropertiesHelper {
                         if (prop.getValues().size() > 0) {
                             GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
                             if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
-                                GWTFileManagerUploadServlet.Item fileItem = GWTFileManagerUploadServlet.getItem(propValue.getString());
+                                UploadedPendingFileStorage.PendingFile fileItem = fileStorage.get(httpSessionID, propValue.getString());
                                 boolean clear = propValue.getString().equals("clear");
                                 if (!clear && fileItem == null) {
                                     continue;
@@ -397,12 +404,12 @@ public class PropertiesHelper {
                                                 content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
                                             }
                                             content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
-                                            InputStream is = fileItem.getStream();
+                                            InputStream is = fileItem.getContentStream();
                                             try {
                                                 content.setProperty(Constants.JCR_DATA, is);
                                             } finally {
                                                 IOUtils.closeQuietly(is);
-                                                fileItem.dispose();
+                                                fileStorage.remove(httpSessionID, propValue.getString());
                                             }
                                             content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                         } else {

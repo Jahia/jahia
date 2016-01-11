@@ -324,7 +324,7 @@ public class AclExtendedNodesPerformanceTest {
 
     private void createFoldersAndFiles(JCRNodeWrapper parent, int numLevelsToCreate, int numFilesPerFolder, InputStream fileContentStream, List<String> filePaths, Collection<Long> createFolderSamples, Collection<Long> uploadFileSamples) {
 
-        for (int j = 0; j < numFilesPerFolder; j++) {
+        for (int i = 0; i < numFilesPerFolder; i++) {
             String fileName = String.format(FOLDER_FILE_NAME, System.currentTimeMillis());
             try {
                 fileContentStream.reset();

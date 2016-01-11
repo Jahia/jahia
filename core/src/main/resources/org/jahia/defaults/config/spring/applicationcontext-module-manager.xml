@@ -25,6 +25,7 @@
         <property name="persister" ref="ModuleInfoPersister"/>
         <property name="operationProcessor" ref="OperationProcessor"/>
         <property name="clusterNodeInfo" ref="ClusterNodeInfo"/>
+        <property name="templateManagerService" ref="JahiaTemplateManagerService" />
     </bean>
 
     <bean id="BaseOperationProcessor" class="org.jahia.services.modulemanager.impl.BaseOperationProcessor" abstract="true">

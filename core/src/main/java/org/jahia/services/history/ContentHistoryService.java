@@ -257,50 +257,56 @@ public class ContentHistoryService implements Processor, CamelContextAware {
                 }
                 // Not found new object
                 if (!shouldSkipInsertion) {
-                    session.beginTransaction();
-                    HistoryEntry historyEntry = new HistoryEntry();
-                    historyEntry.setDate(date != null ? date.getTime() : null);
-                    historyEntry.setPath(path);
-                    historyEntry.setUuid(nodeIdentifier);
-                    final String userKey = matcher.group(2);
-                    historyEntry.setUserKey(userKey);
-                    historyEntry.setAction(action);
-                    historyEntry.setPropertyName(propertyName);
-                    String historyMessage = "";
-                    if (PUBLISHED_ACTION_NAME.equals(action)) {
-                        if (argList.length >= 8) {
-                            String sourceWorkspace = argList[3];
-                            String destinationWorkspace = argList[5];
-                            String historyComments = "";
-                            int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
-                            if (commentsPos > -1) {
-                                String comment = args.substring(commentsPos
-                                        + WITH_COMMENTS_MESSAGE_PART.length());
-                                if ((comment != null) && (!StringUtils.isEmpty(comment.trim()))) {
-                                    historyComments = ";;" + comment.trim();
+                    try {
+                        session.beginTransaction();
+                        HistoryEntry historyEntry = new HistoryEntry();
+                        historyEntry.setDate(date != null ? date.getTime() : null);
+                        historyEntry.setPath(path);
+                        historyEntry.setUuid(nodeIdentifier);
+                        final String userKey = matcher.group(2);
+                        historyEntry.setUserKey(userKey);
+                        historyEntry.setAction(action);
+                        historyEntry.setPropertyName(propertyName);
+                        String historyMessage = "";
+                        if (PUBLISHED_ACTION_NAME.equals(action)) {
+                            if (argList.length >= 8) {
+                                String sourceWorkspace = argList[3];
+                                String destinationWorkspace = argList[5];
+                                String historyComments = "";
+                                int commentsPos = args.indexOf(WITH_COMMENTS_MESSAGE_PART);
+                                if (commentsPos > -1) {
+                                    String comment = args.substring(commentsPos
+                                            + WITH_COMMENTS_MESSAGE_PART.length());
+                                    if ((comment != null) && (!StringUtils.isEmpty(comment.trim()))) {
+                                        historyComments = ";;" + comment.trim();
+                                    }
                                 }
+                                historyMessage = sourceWorkspace + ";;" + destinationWorkspace
+                                        + historyComments;
                             }
-                            historyMessage = sourceWorkspace + ";;" + destinationWorkspace
-                                    + historyComments;
                         }
+                        historyEntry.setMessage(historyMessage);
+                        session.save(historyEntry);
+                        session.flush();
+                        session.getTransaction().commit();
+                        insertedCount.incrementAndGet();
+                        latestTimeProcessed.set(date.getTime());
+                        lastUUIDProcessed = nodeIdentifier;
+                        lastPropertyProcessed = propertyName;
+                        lastActionProcessed = action;
+                    } catch (HibernateException e) {
+                        session.getTransaction().rollback();
+                        whatDidWeDo = "insertion failed";
+                        logger.error(e.getMessage(), e);
                     }
-                    historyEntry.setMessage(historyMessage);
-                    session.save(historyEntry);
-                    session.flush();
-                    session.getTransaction().commit();
-                    insertedCount.incrementAndGet();
-                    latestTimeProcessed.set(date.getTime());
-                    lastUUIDProcessed = nodeIdentifier;
-                    lastPropertyProcessed = propertyName;
-                    lastActionProcessed = action;
                 }
             } catch (HibernateException e) {
-                session.getTransaction().rollback();
                 whatDidWeDo = "insertion failed";
                 logger.error(e.getMessage(), e);
             } finally {
                 session.close();
             }
+
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry " + whatDidWeDo + " in " + (System.currentTimeMillis() - timer) + " ms");
             }

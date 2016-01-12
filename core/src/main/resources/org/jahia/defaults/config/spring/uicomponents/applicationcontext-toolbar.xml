@@ -385,6 +385,7 @@
         <property name="visibility">
             <bean class="org.jahia.services.uicomponents.bean.Visibility">
                 <property name="permission" value="administrationAccess"/>
+                <property name="contextNodePath" value="/"/>
             </bean>
         </property>
         <property name="actionItem">

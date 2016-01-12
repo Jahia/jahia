@@ -407,7 +407,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
                 return fileStorage;
             }
             ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-            return (UploadedPendingFileStorage) context.getBean(UploadedPendingFileStorage.class.getSimpleName());
+            fileStorage = (UploadedPendingFileStorage) context.getBean(UploadedPendingFileStorage.class.getSimpleName());
+            return fileStorage;
         }
     }
 
@@ -417,7 +418,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        String sessionID =se.getSession().getId();
+        String sessionID = se.getSession().getId();
         logger.debug("Checking temporary uploaded files for session with ID {}", sessionID);
         getFileStorage().removeIfExists(sessionID);
     }

@@ -43,9 +43,9 @@
  */
 package org.jahia.params.valves;
 
-import org.jahia.pipelines.PipelineException;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.pipelines.impl.GenericPipeline;
-import org.jahia.pipelines.valves.ValveContext;
+import org.jahia.pipelines.valves.Valve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -58,24 +58,6 @@ import org.springframework.beans.factory.InitializingBean;
  */
 public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implements InitializingBean {
 
-    private static final class AuthValveStub extends BaseAuthValve {
-
-        /**
-         * Initializes an instance of this class.
-         * 
-         * @param id
-         *            the valve unique identifier
-         */
-        public AuthValveStub(String id) {
-            super();
-            setId(id);
-        }
-
-        public void invoke(Object context, ValveContext valveContext) throws PipelineException {
-            // do nothing
-        }
-    }
-
     private static final Logger logger = LoggerFactory.getLogger(AutoRegisteredBaseAuthValve.class);
 
     private GenericPipeline authPipeline;
@@ -87,15 +69,15 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
     public void afterPropertiesSet() {
         initialize();
         
-        authPipeline.removeValve(new AuthValveStub(getId()));
+        removeValve(getId());
         
         int index = -1;
         if (position >= 0) {
             index = position;
         } else if (positionBefore != null) {
-            index = authPipeline.indexOf(new AuthValveStub(positionBefore));
+            index = indexOf(positionBefore);
         } else if (positionAfter != null) {
-            index = authPipeline.indexOf(new AuthValveStub(positionAfter));
+            index = indexOf(positionAfter);
             if (index != -1) {
                 index++;
             }
@@ -109,6 +91,42 @@ public abstract class AutoRegisteredBaseAuthValve extends BaseAuthValve implemen
         } else {
             authPipeline.addValve(this);
             logger.info("Registered authentication valve {}", getId());
+        }
+    }
+
+    /**
+     * Returns the position of the specified valve by ID.
+     * 
+     * @param id
+     *            the ID of the valve to search for
+     * @return the position of the specified valve by ID or <code>-1</code> if the valve is not found
+     */
+    private int indexOf(String id) {
+        Valve[] registeredValves = authPipeline.getValves();
+        for (int i = 0; i < registeredValves.length; i++) {
+            Valve v = registeredValves[i];
+            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
+                return i;
+            }
+
+        }
+
+        return -1;
+    }
+
+    /**
+     * Removes the valve by its ID.
+     * 
+     * @param id
+     *            the ID of the valve to be removed from the pipeline
+     */
+    private void removeValve(String id) {
+        Valve[] registeredValves = authPipeline.getValves();
+        for (Valve v : registeredValves) {
+            if (v instanceof BaseAuthValve && StringUtils.equals(((BaseAuthValve) v).getId(), id)) {
+                authPipeline.removeValve(v);
+                // do not stop: remove all for that ID
+            }
         }
     }
 

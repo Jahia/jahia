@@ -8,17 +8,23 @@ import javax.jcr.RepositoryException;
 
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.bin.listeners.JahiaContextLoaderListener.HttpSessionDestroyedEvent;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationListener;
 
 /**
  * File storage that stores files in JCR.
  */
-public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage {
+public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage, ApplicationListener<JahiaContextLoaderListener.HttpSessionDestroyedEvent> {
 
     private String jcrFolderName;
+    private static final Logger LOGGER = LoggerFactory.getLogger(UploadedPendingFileStorageJcr.class);
 
     public void setJcrFolderName(String jcrFolderName) {
         this.jcrFolderName = jcrFolderName;
@@ -116,6 +122,7 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
             // parent node (this is the actual case with the root node). So, to make sure any threads always use the same folder, just
             // pick the one with index equal to 1 (this is what getNode() does in case there are multiple equally named items exist).
             return parent.getNode(name);
+
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
@@ -134,6 +141,17 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
             return getSession().getRootNode();
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
+        }
+    }
+
+    @Override
+    public void onApplicationEvent(HttpSessionDestroyedEvent event) {
+        String sessionID = event.getSession().getId();
+        try {
+            removeIfExists(sessionID);
+        } catch (Exception e) {
+            // We still want to let other listeners receive the event, so just log to not interrupt general events processing.
+            LOGGER.error("Error cleaning files uploaded during HTTP session {}", sessionID);
         }
     }
 }

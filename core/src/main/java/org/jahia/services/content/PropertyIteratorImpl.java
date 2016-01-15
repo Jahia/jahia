@@ -73,7 +73,7 @@ public class PropertyIteratorImpl implements PropertyIterator {
             Property next = (Property) iterator.next();
             if (jcrStoreProvider.getMountPoint().equals("/")) {
                 for (Map.Entry<String, JCRStoreProvider> entry : JCRSessionFactory.getInstance().getMountPoints().entrySet()) {
-                    if (next.getPath().startsWith(entry.getKey())) {
+                    if (next.getPath().startsWith(entry.getKey() + '/')) {
                         return entry.getValue().getPropertyWrapper(next, session);
                     }
                 }

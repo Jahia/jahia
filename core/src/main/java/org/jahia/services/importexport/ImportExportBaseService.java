@@ -1100,6 +1100,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
             zis = new NoCloseZipInputStream(new BufferedInputStream(file.getInputStream()));
             try {
+                int legacyImportHandlerCtnId = 1;
                 while (true) {
                     ZipEntry zipentry = zis.getNextEntry();
                     if (zipentry == null)
@@ -1118,7 +1119,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
                         zipentry.getSize();
 
-                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode), infos != null ? originatingJahiaRelease : null, legacyPidMappingTool);
+                        LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode), infos != null ? originatingJahiaRelease : null, legacyPidMappingTool, legacyImportHandlerCtnId);
                         Map<String, List<String>> references = new HashMap<String, List<String>>();
                         importHandler.setReferences(references);
 
@@ -1146,6 +1147,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         }
 
                         handleImport(documentInput, importHandler, name);
+                        legacyImportHandlerCtnId = importHandler.getCtnId();
                         ReferencesHelper.resolveCrossReferences(session, references);
                         siteFolder.getSession().save(JCRObservationManager.IMPORT);
                     }

@@ -696,6 +696,8 @@ public class LegacyImportHandler extends DefaultHandler {
                 String parentPath = StringUtils.substringBeforeLast(nodeName, "/");
                 if (parent.hasNode(parentPath)) {
                     parent = parent.getNode(parentPath);
+                } else {
+                    parent = parent.addNode(parentPath, Constants.JAHIANT_CONTENTLIST)
                 }
                 nodeName = StringUtils.substringAfterLast(nodeName, "/");
             }

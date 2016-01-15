@@ -142,10 +142,11 @@ public class LegacyImportHandler extends DefaultHandler {
     private int level = 0;
 
     public LegacyImportHandler(JCRSessionWrapper session, JCRNodeWrapper currentSiteNode, NodeTypeRegistry registry,
-                               DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease, LegacyPidMappingTool legacyPidMappingTool) {
+                               DefinitionsMapping mapping, Locale locale, String originatingJahiaRelease, LegacyPidMappingTool legacyPidMappingTool, int initialCtnId) {
         this.session = session;
         this.uuidMapping = session.getUuidMapping();
         this.currentSiteNode = currentSiteNode;
+        ctnId = initialCtnId < 1 ? 1 : initialCtnId;
 
         this.registry = registry;
 
@@ -1309,6 +1310,10 @@ public class LegacyImportHandler extends DefaultHandler {
 
     private ExtendedNodeType getCurrentContentType() {
         return currentCtx.peek().contentsType.peek();
+    }
+
+    public int getCtnId() {
+        return ctnId;
     }
 
     class PageContext {

@@ -435,6 +435,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
+        logger.debug("HTTP session created: {}", se.getSession().getId());
         sessionCount++;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionCreatedEvent(se.getSession()));
@@ -443,6 +444,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
+        logger.debug("HTTP session destroyed: {}", se.getSession().getId());
         sessionCount--;
         if (isEventInterceptorActivated("interceptHttpSessionListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new HttpSessionDestroyedEvent(se.getSession()));

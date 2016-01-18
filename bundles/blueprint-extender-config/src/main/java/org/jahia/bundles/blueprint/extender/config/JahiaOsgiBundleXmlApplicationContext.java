@@ -48,6 +48,8 @@ import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationCont
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
@@ -60,6 +62,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.
  */
 public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicationContext {
+    
+    private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiBundleXmlApplicationContext.class);
 
     private OsgiBundleApplicationContextExecutor executor = new JahiaOsgiApplicationContextExecutor();
 
@@ -99,10 +103,18 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
                     // Module is already started by activator, start context now
                     BundleUtils.setContextToStartForModule(getBundle(), null);
                     JahiaOsgiBundleXmlApplicationContext.this.normalRefresh();
-                    for (AbstractApplicationContext context : BundleUtils.getDependantContexts(getBundle())) {
-                        context.refresh();
+                    try {
+                        for (AbstractApplicationContext context : BundleUtils.getDependantContexts(getBundle())) {
+                            try {
+                                logger.info("Refreshing dependant context of the bundle {}", getBundle());
+                                context.refresh();
+                            } catch (Exception e) {
+                                logger.error("Failed refreshing dependant context " + context, e);
+                            }
+                        }
+                    } finally {
+                        BundleUtils.getDependantContexts(getBundle()).clear();
                     }
-                    BundleUtils.getDependantContexts(getBundle()).clear();
                 } else {
                     // Delegate start to activator
                     BundleUtils.setContextToStartForModule(getBundle(), JahiaOsgiBundleXmlApplicationContext.this);

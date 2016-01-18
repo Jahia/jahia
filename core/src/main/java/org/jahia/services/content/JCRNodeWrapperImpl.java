@@ -79,7 +79,6 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeDefinition;
 import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
-import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlManager;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.*;
@@ -1600,16 +1599,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
+        checkLock();
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (locale != null) {
             if (epd.isInternationalized()) {
-                checkLock();
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value), session, provider, epd, name);
             }
         }
 
-        checkLock();
         if (value == null) {
             objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);

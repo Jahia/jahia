@@ -1632,16 +1632,15 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
+        checkLock();
         value = JCRStoreService.getInstance().getInterceptorChain().beforeSetValue(this, name, epd, value);
 
         if (locale != null) {
             if (epd.isInternationalized()) {
-                checkLock();
                 return new JCRPropertyWrapperImpl(this, getOrCreateI18N(locale).setProperty(name, value, type), session, provider, epd, name);
             }
         }
 
-        checkLock();
         if (value == null) {
             objectNode.setProperty(name, (Value) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -1682,11 +1681,11 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
+        checkLock();
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (locale != null) {
             if (epd.isInternationalized()) {
-                checkLock();
                 if (values == null) {
                     getOrCreateI18N(locale).setProperty(name, (Value[]) null);
                     return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -1695,7 +1694,6 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             }
         }
 
-        checkLock();
         if (values == null) {
             objectNode.setProperty(name, (Value[]) null);
             return new JCRPropertyWrapperImpl(this, null, session, provider, epd);
@@ -1729,6 +1727,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
             throw new ConstraintViolationException("Invalid value for : " + epd.getName());
         }
 
+        checkLock();
         values = JCRStoreService.getInstance().getInterceptorChain().beforeSetValues(this, name, epd, values);
 
         if (locale != null) {

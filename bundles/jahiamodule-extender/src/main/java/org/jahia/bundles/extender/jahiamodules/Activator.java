@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -101,7 +101,7 @@ public class Activator implements BundleActivator {
             return StringUtils.substringBeforeLast(o1.getFilename(), ".").compareTo(StringUtils.substringBeforeLast(o2.getFilename(), "."));
         }
     };
-    
+
     private CndBundleObserver cndBundleObserver = null;
     private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
     private BundleListener bundleListener = null;
@@ -114,8 +114,8 @@ public class Activator implements BundleActivator {
     private TemplatePackageDeployer templatePackageDeployer = null;
 
     private Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
-    private Map<String,List<Bundle>> toBeParsed;
-    private Map<String,List<Bundle>> toBeStarted;
+    private Map<String, List<Bundle>> toBeParsed;
+    private Map<String, List<Bundle>> toBeStarted;
 
     private BundleStarter bundleStarter;
 
@@ -186,7 +186,7 @@ public class Activator implements BundleActivator {
 
         // we won't register CND observer, but will rather call it manually
         cndBundleObserver = new CndBundleObserver();
-        
+
         // add listener for other bundle life cycle events
         setupBundleListener(context);
 
@@ -220,7 +220,7 @@ public class Activator implements BundleActivator {
     private void registerShellCommands(BundleContext context) {
         Dictionary<String, Object> dict = new Hashtable<String, Object>();
         dict.put(CommandProcessor.COMMAND_SCOPE, "jahia");
-        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[] {"modules"});
+        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[]{"modules"});
         ShellCommands shellCommands = new ShellCommands(this);
         serviceRegistrations.add(context.registerService(ShellCommands.class.getName(), shellCommands, dict));
     }
@@ -229,75 +229,75 @@ public class Activator implements BundleActivator {
         context.addFrameworkListener(bundleStarter);
         context.addBundleListener(bundleListener = new SynchronousBundleListener() {
 
-            public void bundleChanged(final BundleEvent bundleEvent) {
-                Bundle bundle = bundleEvent.getBundle();
-                if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
-                    return;
-                }
-                
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()),
-                            getDisplayName(bundleEvent.getBundle()));
-                }
-                boolean fromFileInstall = bundleEvent.getOrigin().getSymbolicName().equals("org.apache.felix.fileinstall");
-                try {
-                    switch (bundleEvent.getType()) {
-                        case BundleEvent.INSTALLED:
-                            setModuleState(bundle,ModuleState.State.INSTALLED, null);
-                            install(bundle, fromFileInstall);
-                            break;
-                        case BundleEvent.UPDATED:
-                            BundleUtils.unregisterModule(bundle);
-                            setModuleState(bundle,ModuleState.State.UPDATED, null);
-                            update(bundle);
-                            break;
-                        case BundleEvent.RESOLVED:
-                            if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
-                                    getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
-                                    getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
-                                setModuleState(bundle, ModuleState.State.RESOLVED, null);
-                            }
-                            resolve(bundle);
-                            break;
-                        case BundleEvent.STARTING:
-                            setModuleState(bundle,ModuleState.State.STARTING, null);
-                            starting(bundle);
-                            break;
-                        case BundleEvent.STARTED:
-                            start(bundle);
-                            break;
-                        case BundleEvent.STOPPING:
-                            setModuleState(bundle,ModuleState.State.STOPPING, null);
-                            stopping(bundle);
-                            break;
-                        case BundleEvent.STOPPED:
-                            setModuleState(bundle,ModuleState.State.STOPPED, null);
-                            stopped(bundle);
-                            break;
-                        case BundleEvent.UNRESOLVED:
-                            if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
-                                    getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
-                                    getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
-                                setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
-                            }
-                            unresolve(bundle);
-                            break;
-                        case BundleEvent.UNINSTALLED:
-                            BundleUtils.unregisterModule(bundle);
-                            moduleStates.remove(bundle);
-                            uninstall(bundle);
-                            break;
-                    }
-                } catch (Exception e) {
-                    logger.error("Error when handling event", e);
-                } finally {
-                    if (fromFileInstall) {
-                        JcrSessionFilter.endRequest();
-                    }
-                }
-            }
+                    public void bundleChanged(final BundleEvent bundleEvent) {
+                        Bundle bundle = bundleEvent.getBundle();
+                        if (bundle == null || !BundleUtils.isJahiaModuleBundle(bundle)) {
+                            return;
+                        }
 
-        }
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Received event {} for bundle {}", BundleUtils.bundleEventToString(bundleEvent.getType()),
+                                    getDisplayName(bundleEvent.getBundle()));
+                        }
+                        boolean fromFileInstall = bundleEvent.getOrigin().getSymbolicName().equals("org.apache.felix.fileinstall");
+                        try {
+                            switch (bundleEvent.getType()) {
+                                case BundleEvent.INSTALLED:
+                                    setModuleState(bundle, ModuleState.State.INSTALLED, null);
+                                    install(bundle, fromFileInstall);
+                                    break;
+                                case BundleEvent.UPDATED:
+                                    BundleUtils.unregisterModule(bundle);
+                                    setModuleState(bundle, ModuleState.State.UPDATED, null);
+                                    update(bundle);
+                                    break;
+                                case BundleEvent.RESOLVED:
+                                    if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
+                                            getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
+                                            getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
+                                        setModuleState(bundle, ModuleState.State.RESOLVED, null);
+                                    }
+                                    resolve(bundle);
+                                    break;
+                                case BundleEvent.STARTING:
+                                    setModuleState(bundle, ModuleState.State.STARTING, null);
+                                    starting(bundle);
+                                    break;
+                                case BundleEvent.STARTED:
+                                    start(bundle);
+                                    break;
+                                case BundleEvent.STOPPING:
+                                    setModuleState(bundle, ModuleState.State.STOPPING, null);
+                                    stopping(bundle);
+                                    break;
+                                case BundleEvent.STOPPED:
+                                    setModuleState(bundle, ModuleState.State.STOPPED, null);
+                                    stopped(bundle);
+                                    break;
+                                case BundleEvent.UNRESOLVED:
+                                    if (getModuleState(bundle).getState() != ModuleState.State.ERROR_WITH_DEFINITIONS &&
+                                            getModuleState(bundle).getState() != ModuleState.State.WAITING_TO_BE_PARSED &&
+                                            getModuleState(bundle).getState() != ModuleState.State.INCOMPATIBLE_VERSION) {
+                                        setModuleState(bundle, ModuleState.State.UNRESOLVED, null);
+                                    }
+                                    unresolve(bundle);
+                                    break;
+                                case BundleEvent.UNINSTALLED:
+                                    BundleUtils.unregisterModule(bundle);
+                                    moduleStates.remove(bundle);
+                                    uninstall(bundle);
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            logger.error("Error when handling event", e);
+                        } finally {
+                            if (fromFileInstall) {
+                                JcrSessionFilter.endRequest();
+                            }
+                        }
+                    }
+
+                }
         );
     }
 
@@ -406,7 +406,7 @@ public class Activator implements BundleActivator {
         }
         if (bundleFile != null
                 && bundleFile.getAbsolutePath().startsWith(
-                        SettingsBean.getInstance().getJahiaModulesDiskPath() + File.separatorChar)
+                SettingsBean.getInstance().getJahiaModulesDiskPath() + File.separatorChar)
                 && bundleFile.exists()) {
             // remove bundle file from var/modules
             if (!bundleFile.delete()) {
@@ -418,7 +418,7 @@ public class Activator implements BundleActivator {
     private void parseBundle(final Bundle bundle, boolean shouldAutoStart) {
         final JahiaTemplatesPackage pkg = BundleUtils.isJahiaModuleBundle(bundle) ? BundleUtils.getModule(bundle)
                 : null;
-        
+
         if (null == pkg) {
             // is not a Jahia module -> skip
             installedBundles.remove(bundle);
@@ -429,8 +429,8 @@ public class Activator implements BundleActivator {
         pkg.setState(getModuleState(bundle));
         //Check required version
         String jahiaRequiredVersion = bundle.getHeaders().get("Jahia-Required-Version");
-        if(!StringUtils.isEmpty(jahiaRequiredVersion) && new org.jahia.commons.Version(jahiaRequiredVersion).compareTo(new org.jahia.commons.Version(Jahia.VERSION))>0){
-            logger.error("Error while reading module, required version ("+jahiaRequiredVersion+") is higher than your Jahia version (" + Jahia.VERSION+")");
+        if (!StringUtils.isEmpty(jahiaRequiredVersion) && new org.jahia.commons.Version(jahiaRequiredVersion).compareTo(new org.jahia.commons.Version(Jahia.VERSION)) > 0) {
+            logger.error("Error while reading module, required version (" + jahiaRequiredVersion + ") is higher than your Jahia version (" + Jahia.VERSION + ")");
             setModuleState(bundle, ModuleState.State.INCOMPATIBLE_VERSION, jahiaRequiredVersion);
             return;
         }
@@ -439,7 +439,7 @@ public class Activator implements BundleActivator {
         if (!dependsList.contains("default")
                 && !dependsList.contains("Default Jahia Templates")
                 && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                        .contains(pkg.getId())) {
+                .contains(pkg.getId())) {
             dependsList.add("default");
         }
 
@@ -502,7 +502,18 @@ public class Activator implements BundleActivator {
             if (shouldAutoStart) {
                 JahiaTemplatesPackage previousVersion = templatePackageRegistry.lookupById(bundle.getSymbolicName());
                 // in case of new version and version superior to current one then start the new version (only in development mode)
-                if(newModuleDeployment || (SettingsBean.getInstance().isDevelopmentMode() && previousVersion != null && pkg.getVersion().compareTo(previousVersion.getVersion()) > 0)){
+                boolean autoStart;
+                if (newModuleDeployment) {
+                    autoStart = true;
+                } else {
+                    if ("auto".equalsIgnoreCase(SettingsBean.getInstance().getAutoStartNewModuleVersion())) {
+                        autoStart = SettingsBean.getInstance().isDevelopmentMode() && previousVersion != null && pkg.getVersion().compareTo(previousVersion.getVersion()) > 0;
+                    } else {
+                        autoStart = Boolean.parseBoolean(SettingsBean.getInstance().getAutoStartNewModuleVersion());
+                    }
+                }
+
+                if (autoStart) {
                     bundleStarter.startBundle(bundle);
                 }
             }
@@ -525,7 +536,7 @@ public class Activator implements BundleActivator {
         final List<Bundle> toBeParsedForKey = toBeParsed.get(key);
         if (toBeParsedForKey != null) {
             for (Bundle bundle : toBeParsedForKey) {
-                if(bundle.getState()!=Bundle.UNINSTALLED) {
+                if (bundle.getState() != Bundle.UNINSTALLED) {
                     logger.debug("Parsing module " + bundle.getSymbolicName() + " since it is dependent on just parsed module " + key);
                     parseBundle(bundle, shouldAutoStart);
                 }
@@ -570,7 +581,7 @@ public class Activator implements BundleActivator {
     private synchronized void start(final Bundle bundle, Bundle dependency) {
         final JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
         if (jahiaTemplatesPackage == null) {
-            logger.error("--- Bundle "+bundle+" is starting but has not yet been parsed");
+            logger.error("--- Bundle " + bundle + " is starting but has not yet been parsed");
             bundleStarter.stopBundle(bundle);
             return;
         }
@@ -726,10 +737,10 @@ public class Activator implements BundleActivator {
         if (jahiaTemplatesPackage == null || !jahiaTemplatesPackage.isActiveVersion()) {
             return;
         }
-        
+
         if (JahiaContextLoaderListener.isRunning()) {
             flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
-    
+
             final String symbolicName = bundle.getSymbolicName();
             for (JahiaTemplatesPackage dependant : templatePackageRegistry.getDependantModules(jahiaTemplatesPackage)) {
                 final Bundle dependantBundle = dependant.getBundle();
@@ -738,19 +749,19 @@ public class Activator implements BundleActivator {
                 stopping(dependantBundle);
                 setModuleState(dependantBundle, ModuleState.State.WAITING_TO_BE_STARTED, symbolicName);
             }
-    
+
             templatePackageRegistry.unregister(jahiaTemplatesPackage);
             jahiaTemplatesPackage.setActiveVersion(false);
             templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
-    
+
             if (jahiaTemplatesPackage.getContext() != null) {
                 jahiaTemplatesPackage.getContext().close();
                 final ModuleState state = getModuleState(bundle);
-                BundleUtils.setContextToStartForModule(bundle,jahiaTemplatesPackage.getContext());
+                BundleUtils.setContextToStartForModule(bundle, jahiaTemplatesPackage.getContext());
                 jahiaTemplatesPackage.setContext(null);
             }
             jahiaTemplatesPackage.setClassLoader(null);
-    
+
             // scan for resource and call observers
             for (Map.Entry<BundleURLScanner, BundleObserver<URL>> scannerAndObserver : extensionObservers.entrySet()) {
                 List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
@@ -758,11 +769,11 @@ public class Activator implements BundleActivator {
                     scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
                 }
             }
-    
+
             if (bundleHttpServiceTrackers.containsKey(bundle)) {
                 bundleHttpServiceTrackers.remove(bundle).close();
             }
-    
+
             setModuleState(bundle, ModuleState.State.STOPPED, null);
         } else {
             if (jahiaTemplatesPackage.getContext() != null) {
@@ -818,7 +829,7 @@ public class Activator implements BundleActivator {
         }
 
         // Ensure context is reset
-        BundleUtils.setContextToStartForModule(bundle,null);
+        BundleUtils.setContextToStartForModule(bundle, null);
     }
 
     private void registerHttpResources(final Bundle bundle) {
@@ -899,11 +910,11 @@ public class Activator implements BundleActivator {
         @Override
         public synchronized void frameworkEvent(FrameworkEvent event) {
             switch (event.getType()) {
-                case FrameworkEvent.PACKAGES_REFRESHED: 
+                case FrameworkEvent.PACKAGES_REFRESHED:
                     startAllBundles();
                     stopAllBundles();
                     break;
-                    
+
                 case FrameworkEvent.STARTED:
                     logger.info("Got started event from OSGi framework");
                     FrameworkService.notifyStarted();

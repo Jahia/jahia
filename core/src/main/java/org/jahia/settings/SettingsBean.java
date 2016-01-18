@@ -61,8 +61,8 @@
 
 package org.jahia.settings;
 
-import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
-
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.LoggerProvider;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -71,20 +71,20 @@ import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.core.stats.StatManager;
 import org.jahia.api.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.configuration.deployers.ServerDeploymentFactory;
+import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
-import org.jahia.bin.Jahia;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.configuration.deployers.ServerDeploymentFactory;
-import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.utils.zip.ZipEntryCharsetDetector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -94,12 +94,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.context.ServletContextAware;
 
-import net.htmlparser.jericho.Config;
-import net.htmlparser.jericho.LoggerProvider;
-
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -108,6 +104,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
+
+import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
@@ -137,6 +135,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private int siteURLPortOverride = -1;
     private boolean isSiteErrorEnabled;
     private String operatingMode = "development";
+    private String autoStartNewModuleVersion = "auto";
     private boolean productionMode = false;
     private boolean distantPublicationServerMode = true;
     private boolean considerPreferredLanguageAfterLogin;
@@ -400,6 +399,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             isSiteErrorEnabled = getBoolean("site.error.enabled",false);
 
             operatingMode = getString("operatingMode", "development");
+            autoStartNewModuleVersion = getString("autoStartNewModuleVersion", "auto");
             productionMode = !"development".equalsIgnoreCase(operatingMode);
             distantPublicationServerMode = "distantPublicationServer".equalsIgnoreCase(operatingMode);
 
@@ -1275,6 +1275,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public String getOperatingMode() {
         return operatingMode;
+    }
+
+    public String getAutoStartNewModuleVersion() {
+        return autoStartNewModuleVersion;
     }
 
     public boolean isProductionMode() {

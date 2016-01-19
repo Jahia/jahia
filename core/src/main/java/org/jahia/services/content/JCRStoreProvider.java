@@ -387,14 +387,13 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             mountStatusMessage = null;
             return true;
         } catch (RepositoryException e) {
+            mountStatusMessage = e.getCause() != null ? e.getMessage() + ": " + e.getCause().getMessage() : e.getMessage();
             if (!silent) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
-                } else {
-                    final String message = e.getMessage() + (e.getCause() != null ? ": " + e.getCause().getMessage() : "");
-                    logger.warn("Provider '{}' is not accessible and will not be available. Cause: {}", key, message);
-                    mountStatusMessage = message;
-                }
+//                if (logger.isDebugEnabled()) {
+//                    logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
+//                } else {
+                    logger.warn("Provider '{}' is not accessible and will not be available. Cause: {}", key, mountStatusMessage);
+//                }
             }
             return false;
         }

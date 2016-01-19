@@ -113,7 +113,7 @@ public class ModuleManagerHelper {
       }
     } 
     
-    return isValid & isValidJahiaVersion(bundleManifest.getMainAttributes(), context);
+    return isValid && isValidJahiaVersion(bundleManifest.getMainAttributes(), context);
   }
   
   /**

@@ -248,7 +248,7 @@ public class ModuleManagerImpl implements ModuleManager {
                 return new OperationResultImpl(false, "Module installation failed because a module exists with the same name " + symbolicName, null);
             }
             
-            if(!forceUpdate & ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(), symbolicName, version, context)) {
+            if(!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(), symbolicName, version, context)) {
                 return new OperationResultImpl(false, "Module installation failed because a module exists with the same name and version. " + symbolicName + "-" + version, null);
             }
             

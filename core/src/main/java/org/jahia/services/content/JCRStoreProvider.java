@@ -389,10 +389,12 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
         } catch (RepositoryException e) {
             mountStatusMessage = e.getCause() != null ? e.getMessage() + ": " + e.getCause().getMessage() : e.getMessage();
             if (!silent) {
+                logger.warn("Provider '" + key + "' on mountpoint '" + getMountPoint() + "' is not accessible and will not be available. ", e);
 //                if (logger.isDebugEnabled()) {
 //                    logger.debug("Provider '" + key + "' is not accessible and will not be available", e);
 //                } else {
-                    logger.warn("Provider '{}' is not accessible and will not be available. Cause: {}", key, mountStatusMessage);
+//                    logger.warn("Provider '{}' on mountpoint '{}' is not accessible and will not be available. Cause: {}",
+//                            new Object[] { key, getMountPoint(), mountStatusMessage });
 //                }
             }
             return false;

@@ -57,9 +57,6 @@ public class TemplateTypeCacheKeyPartGenerator implements CacheKeyPartGenerator 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         String templateType = resource.getTemplateType();
-        if (renderContext.isAjaxRequest()) {
-            templateType += ".ajax";
-        }
         return templateType;
     }
 

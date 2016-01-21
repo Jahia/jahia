@@ -43,11 +43,13 @@
  */
 package org.jahia.services.content.rules;
 
+import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.files.FileCacheManager;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
@@ -84,10 +86,27 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
         try {
             JCRNodeWrapper currentNode = node;
             workspace = node.getSession().getWorkspace().getName();
+
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
                     String path = currentNode.getPath();
                     cacheProvider.invalidate(path);
+                    // Invalidate references paths
+                    if(currentNode.getParent().isNodeType("jnt:conditionalVisibility"))
+                    {
+                        PropertyIterator propertyIterator = currentNode.getParent().getParent().getWeakReferences();
+                        if(propertyIterator != null)
+                        {
+                            while (propertyIterator.hasNext())
+                                {
+                                    JCRPropertyWrapper reference = (JCRPropertyWrapper) propertyIterator.next();
+                                    JCRNodeWrapper refNode = reference.getParent();
+                                    cacheProvider.invalidate(refNode.getPath());
+                                }
+                        }
+                    }
+
+
                     if (log) {
                         logger.debug("Flushed output caches for node {}", path);
                     }

@@ -95,6 +95,9 @@ public class JahiaSitesService extends JahiaService {
     private SelfPopulatingCache siteKeyByServerNameCache;
     private SelfPopulatingCache siteDefaultLanguageBySiteKey;
     private SelfPopulatingCache sitesListCache;
+    private String validServerNameRegex;
+
+
 
     public synchronized void setGroupService(JahiaGroupManagerService groupService) {
         this.groupService = groupService;
@@ -820,7 +823,7 @@ public class JahiaSitesService extends JahiaService {
     }
 
     public boolean isServerNameValid(String serverName) {
-        return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && !serverName.contains(":");
+        return StringUtils.isNotEmpty(serverName) && !serverName.contains(" ") && serverName.matches(validServerNameRegex);
     }
 
     public boolean updateSystemSiteLanguages(JahiaSite site, JCRSessionWrapper session) {
@@ -915,4 +918,10 @@ public class JahiaSitesService extends JahiaService {
             return "";
         }
     }
+
+    public void setValidServerNameRegex(String validServerNameRegex) {
+        this.validServerNameRegex = validServerNameRegex;
+    }
+
+
 }

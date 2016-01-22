@@ -117,6 +117,15 @@ public class CndBundleObserver implements BundleObserver<URL> {
         NodeTypeRegistry nodeTypeRegistry = NodeTypeRegistry.getInstance();
 
         String systemId = bundle.getSymbolicName();
+
+        try {
+            for (Resource resource : resources) {
+                module.setDefinitionsFile(resource.getURL().getPath().substring(1));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException("Error getting definition file for bundle " + bundle, e);
+        }
+
         boolean latestDefinitions = JCRStoreService.getInstance().isLatestDefinitions(systemId, moduleVersion, lastModified);
 
         if (!latestDefinitions) {
@@ -126,10 +135,6 @@ public class CndBundleObserver implements BundleObserver<URL> {
         String bundleName = BundleUtils.getDisplayName(bundle);
 
         try {
-            for (Resource resource : resources) {
-                module.setDefinitionsFile(resource.getURL().getPath().substring(1));
-            }
-
             nodeTypeRegistry.addDefinitionsFile(resources, systemId);
 
             jcrStoreService.deployDefinitions(systemId, module.getVersion().toString(), lastModified);

@@ -67,7 +67,7 @@
             <dependency>
                 <groupId>org.osgi</groupId>
                 <artifactId>org.osgi.compendium</artifactId>
-                <version>${osgi.version}</version>
+                <version>${osgi.compendium.version}</version>
                 <scope>runtime</scope>
             </dependency>
         </dependencies>
@@ -347,10 +347,17 @@
             <artifactId>org.apache.felix.http.proxy</artifactId>
             <version>${felix.http.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>apache-karaf</artifactId>
+            <type>zip</type>
+            <scope>provided</scope>
+        </dependency>
+
         <dependency>
             <groupId>org.apache.karaf.diagnostic</groupId>
             <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
-            <version>4.0.3</version>
         </dependency>
 
     </dependencies>
@@ -358,6 +365,7 @@
     <build>
         <finalName>jahia</finalName>
         <plugins>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -597,7 +605,7 @@
                             </artifactItems>
                             <stripVersion>false</stripVersion>
                             <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/bundles
+                                ${project.build.directory}/${project.build.finalName}/WEB-INF/karaf/system
                             </outputDirectory>
                         </configuration>
                     </execution>
@@ -699,7 +707,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <configuration>
-                    <warSourceExcludes>*Resources*.properties,**/felix-framework.properties</warSourceExcludes>
+                    <warSourceExcludes>*Resources*.properties,**/config.properties</warSourceExcludes>
                     <webResources>
                         <resource>
                             <directory>${project.build.directory}/native2ascii</directory>
@@ -709,10 +717,6 @@
                             <!--<directory>${project.build.directory}/generated-resources</directory>-->
                             <!--<targetPath>WEB-INF/karaf/etc</targetPath>-->
                         <!--</resource>-->
-                        <resource>
-                            <directory>${project.build.directory}/generated-resources</directory>
-                            <targetPath>WEB-INF/etc/config</targetPath>
-                        </resource>
                         <resource>
                             <directory>.</directory>
                             <targetPath>META-INF</targetPath>
@@ -742,10 +746,10 @@
                         <configuration>
                             <failBuildOnSplitPackages>false</failBuildOnSplitPackages>
                             <propertiesInputFile>
-                                ${project.basedir}/src/main/webapp/WEB-INF/etc/config/felix-framework.properties
+                                ${project.basedir}/src/main/webapp/WEB-INF/karaf/etc/config.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
-                                ${project.build.directory}/generated-resources/felix-framework.properties
+                                ${project.build.directory}/generated-resources/config.properties
                             </propertiesOutputFile>
                             <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
                             <artifactExcludes>
@@ -755,6 +759,7 @@
                                 <artifactExclude>*.jahia.modules</artifactExclude>
                             </artifactExcludes>
                             <packageExcludes>
+                                <packageExclude>java.*</packageExclude>
                                 <packageExclude>org.jahia.taglibs*</packageExclude>
                                 <packageExclude>org.apache.taglibs.standard*</packageExclude>
                                 <packageExclude>javax.servlet.jsp*</packageExclude>
@@ -770,6 +775,24 @@
                                 <packageExclude>org.springframework.web.servlet.view*</packageExclude>
                                 <packageExclude>org.springframework.web.util*</packageExclude>
                                 <packageExclude>org.osgi.service.cm</packageExclude>
+                                <packageExclude>org.eclipse*</packageExclude>
+                                <packageExclude>org.apache.sshd*</packageExclude>
+                                <packageExclude>org.bouncycastle*</packageExclude>
+                                <packageExclude>org.apache.felix*</packageExclude>
+                                <packageExclude>org.fusesource.jansi*</packageExclude>
+                                <packageExclude>rest-management-private-classpath*</packageExclude>
+                                <packageExclude>repackage*</packageExclude>
+                                <packageExclude>resources*</packageExclude>
+                                <packageExclude>schemaorg_apache_xmlbeans*</packageExclude>
+                                <packageExclude>schemas*</packageExclude>
+                                <packageExclude>shaded*</packageExclude>
+                                <packageExclude>org.slf4j*</packageExclude>
+                                <packageExclude>org.apache.log4j*</packageExclude>
+                                <packageExclude>org.ops4j*</packageExclude>
+                                <packageExclude>org.knopflerfish.service.log</packageExclude>
+                                <packageExclude>org.apache.karaf*</packageExclude>
+                                <packageExclude>jline*</packageExclude>
+                                <packageExclude>org.jledit*</packageExclude>
                             </packageExcludes>
                         </configuration>
                         <phase>prepare-package</phase>
@@ -782,10 +805,10 @@
                         <configuration>
                             <failBuildOnSplitPackages>false</failBuildOnSplitPackages>
                             <propertiesInputFile>
-                                ${project.build.directory}/generated-resources/felix-framework.properties
+                                ${project.build.directory}/generated-resources/config.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
-                                ${project.build.directory}/generated-resources/felix-framework.properties
+                                ${project.build.directory}/generated-resources/config.properties
                             </propertiesOutputFile>
                             <artifactExcludes>
                                 <exclude>org.jahia.modules:*</exclude>

@@ -48,8 +48,6 @@ import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationCont
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
 
@@ -61,18 +59,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * OsgiBundleXmlApplicationContext that does not start until jahia module is registered.
  */
 public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicationContext {
-    
-    private static final Logger logger = LoggerFactory.getLogger(JahiaOsgiBundleXmlApplicationContext.class);
 
     private OsgiBundleApplicationContextExecutor executor = new JahiaOsgiApplicationContextExecutor();
 
     public JahiaOsgiBundleXmlApplicationContext(String[] configLocations) {
         super(configLocations);
-    }
-
-    @Override
-    protected void doClose() {
-        executor.close();
     }
 
     @Override
@@ -101,43 +92,19 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
                 if (state != null && state.getState() != null && state.getState() == ModuleState.State.STARTED) {
                     // Module is already started by activator, start context now
                     BundleUtils.setContextToStartForModule(getBundle(), null);
-                    JahiaOsgiBundleXmlApplicationContext.this.normalRefresh();
-                    try {
-                        for (AbstractApplicationContext context : BundleUtils.getDependantContexts(getBundle())) {
-                            try {
-                                logger.info("Refreshing dependant context of the bundle {}", getBundle());
-                                context.refresh();
-                            } catch (Exception e) {
-                                logger.error("Failed refreshing dependant context " + context, e);
-                            }
-                        }
-                    } finally {
-                        BundleUtils.getDependantContexts(getBundle()).clear();
-                    }
+                    JahiaOsgiBundleXmlApplicationContext.super.refresh();
                 } else {
                     // Delegate start to activator
                     BundleUtils.setContextToStartForModule(getBundle(), JahiaOsgiBundleXmlApplicationContext.this);
                 }
             } else {
                 // Standard bundle, start context now
-                JahiaOsgiBundleXmlApplicationContext.this.normalRefresh();
+                JahiaOsgiBundleXmlApplicationContext.super.refresh();
             }
         }
 
         @Override
         public void close() {
-            if (BundleUtils.isJahiaModuleBundle(getBundle())) {
-                final ModuleState state = BundleUtils.getModule(getBundle()).getState();
-                if (state != null && state.getState() != null && state.getState() == ModuleState.State.STOPPING) {
-                    // Module is currently stopping,
-                    JahiaOsgiBundleXmlApplicationContext.this.normalClose();
-                } else {
-                    // Reset contextToStart if module has never been registered in jahia
-                    BundleUtils.setContextToStartForModule(getBundle(), null);
-                }
-            } else {
-                JahiaOsgiBundleXmlApplicationContext.this.normalClose();
-            }
         }
     }
 }

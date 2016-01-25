@@ -583,6 +583,13 @@ public class TemplatePackageRegistry {
         pack.resetDependencies();
         if (computeDependencies(pack, pack)) {
             computeResourceBundleHierarchy(pack);
+
+            for (JahiaTemplatesPackage aPackage : packagesById.values()) {
+                if (aPackage.getDepends().contains(pack.getId()) || aPackage.getDepends().contains(pack.getName())) {
+                    computeDependencies(aPackage);
+                }
+            }
+
             return true;
         }
         return false;

@@ -46,7 +46,7 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.framework.util.MapToDictionary;
+import org.apache.felix.utils.collections.MapToDictionary;
 import org.apache.jasper.JasperException;
 import org.apache.jasper.JspCompilationContext;
 import org.apache.jasper.servlet.JspServlet;

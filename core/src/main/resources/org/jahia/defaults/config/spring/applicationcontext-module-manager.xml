@@ -12,7 +12,7 @@
     </bean>
 
     <bean id="BundleService" class="org.jahia.services.modulemanager.impl.BundleServiceImpl">
-        <property name="felixProperties" ref="felixProperties"/>
+        <!--<property name="felixProperties" ref="felixProperties"/>-->
     </bean>
 
     <bean id="ModuleInfoPersister" class="org.jahia.services.modulemanager.persistence.ModuleInfoPersister">

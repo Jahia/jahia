@@ -47,7 +47,7 @@ import org.apache.commons.io.FileUtils;
 import org.jahia.bin.Action;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
-import org.jahia.osgi.ProvisionActivator;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -119,7 +119,7 @@ public class ModuleDeploymentTest {
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.0" + ".jar"));
                 FileUtils.deleteQuietly(new File(settingsBean.getJahiaModulesDiskPath(), "dummy1-" + "1.1" + ".jar"));
 
-                Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
+                Bundle[] bundles = FrameworkService.getInstance().getBundleContext().getBundles();
                 for (Bundle bundle : bundles) {
                     if (bundle.getSymbolicName().equals("dummy1")) {
                         try {

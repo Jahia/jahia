@@ -28,14 +28,7 @@
                 
                 <prop key="felix.cache.bufsize">65536</prop>
                 <prop key="felix.log.level">1</prop>
-                
-                <prop key="felix.fileinstall.active.level">2</prop>
-                <prop key="felix.fileinstall.bundles.new.start">false</prop>
-                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaVarDiskPath}/bundles,#{settingsBean.jahiaVarDiskPath}/modules</prop>
-                <prop key="felix.fileinstall.noInitialDelay">true</prop>
-                <prop key="felix.fileinstall.start.level">2</prop>
-                <prop key="felix.fileinstall.enableConfigSave">false</prop>
-                
+
                 <prop key="obr.repository.url">http://felix.apache.org/obr/releases.xml</prop>
                 
                 <prop key="org.osgi.framework.bootdelegation">com.yourkit.*</prop>
@@ -156,7 +149,7 @@
     </bean>
 
     <bean id="felixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <!-- Effective Felix properties: combined (defaults + configured in files) properties 
+        <!-- Effective Felix properties: combined (defaults + configured in files) properties
             are overridden with the system properties, having "jahiaConfig." prefix -->
         <property name="propertiesArray">
             <list>

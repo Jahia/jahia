@@ -356,17 +356,6 @@ public final class BundleUtils {
         contextToStart.put(bundle, context);
     }
 
-    public static void addContextToStartAfterDependency(Bundle dependency, AbstractApplicationContext contextToStart) {
-        if (contextDependenciesToStart.get(dependency) == null) {
-            contextDependenciesToStart.put(dependency, new ArrayList<AbstractApplicationContext>());
-        }
-        contextDependenciesToStart.get(dependency).add(contextToStart);
-    }
-
-    public static List<AbstractApplicationContext> getDependantContexts(Bundle dependency) {
-        return contextDependenciesToStart.containsKey(dependency) ? contextDependenciesToStart.get(dependency) : Collections.<AbstractApplicationContext>emptyList();
-    }
-
     public static Throwable getContextStartException(String key) {
         return contextException.get(key);
     }

@@ -51,7 +51,6 @@ import org.jahia.services.SpringContextSingleton;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 import java.io.IOException;

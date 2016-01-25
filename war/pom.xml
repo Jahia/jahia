@@ -615,6 +615,52 @@
                     <!--</outputDirectory>-->
                     <!--</configuration>-->
                     <!--</execution>-->
+                    <execution>
+                        <id>unpack-karaf</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.apache.karaf</groupId>
+                                    <artifactId>apache-karaf</artifactId>
+                                    <version>${karaf.version}</version>
+                                    <type>zip</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
+                                    <excludes>**/lib/*,**/*.txt,**/bin/*,**/demos/**,**/lib,**/bin,**/demos,**/config.properties,**/org.apache.felix.http.bridge-3.0.0.jar</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-karaf</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <move todir="${project.build.directory}/jahia/WEB-INF/karaf">
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}" />
+                                </move>
+                                <move todir="${project.build.directory}/karaf-etc">
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/etc" />
+                                </move>
+                                <move todir="${project.build.directory}/karaf-data">
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data" />
+                                </move>
+                            </target>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -659,6 +705,10 @@
                             <directory>${project.build.directory}/native2ascii</directory>
                             <targetPath>WEB-INF/classes</targetPath>
                         </resource>
+                        <!--<resource>-->
+                            <!--<directory>${project.build.directory}/generated-resources</directory>-->
+                            <!--<targetPath>WEB-INF/karaf/etc</targetPath>-->
+                        <!--</resource>-->
                         <resource>
                             <directory>${project.build.directory}/generated-resources</directory>
                             <targetPath>WEB-INF/etc/config</targetPath>
@@ -786,6 +836,22 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptor>src/data/assembly/src.xml</descriptor>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
 
         <resources>

@@ -1301,12 +1301,13 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>${osgi.version}</version>
+            <version>${osgi.compendium.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>${felix.framework.version}</version>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>${osgi.version}</version>
         </dependency>
         <!-- End of OSGi dependencies -->
 
@@ -1371,7 +1372,14 @@
             <classifier>cdi1.0</classifier>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.karaf.jaas</groupId>
+            <artifactId>org.apache.karaf.jaas.boot</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>org.apache.karaf.main</artifactId>
+        </dependency>
     </dependencies>
     <build>
 

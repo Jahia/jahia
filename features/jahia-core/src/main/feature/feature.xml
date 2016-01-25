@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+      Licensed to the Apache Software Foundation (ASF) under one or more
+      contributor license agreements.  See the NOTICE file distributed with
+      this work for additional information regarding copyright ownership.
+      The ASF licenses this file to You under the Apache License, Version 2.0
+      (the "License"); you may not use this file except in compliance with
+      the License.  You may obtain a copy of the License at
+
+         http://www.apache.org/licenses/LICENSE-2.0
+
+      Unless required by applicable law or agreed to in writing, software
+      distributed under the License is distributed on an "AS IS" BASIS,
+      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+      See the License for the specific language governing permissions and
+      limitations under the License.
+-->
+<features name="jahia-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
+
+    <!-- NB: this file is not the one really used. This file is used by the karaf-maven-plugin to define the start-level of bundles in the generated feature.xml -->
+
+    <feature name="jahia-core" description="Jahia Core OSGi bundles" version="7.2.0.0-SNAPSHOT">
+        <details>Jahia Base Package</details>
+        <feature prerequisite="true" dependency="false">wrap</feature>
+        <bundle start-level="30">mvn:org.apache.felix/org.apache.felix.http.api/2.2.1</bundle>
+        <bundle start-level="30">mvn:commons-io/commons-io/2.4</bundle>
+        <bundle start-level="30">mvn:commons-fileupload/commons-fileupload/1.2.2</bundle>
+        <bundle start-level="30">mvn:org.apache.felix/org.apache.felix.webconsole/4.2.8</bundle>
+        <bundle start-level="30">mvn:org.ops4j.pax.web/pax-web-api/3.0.7</bundle>
+        <bundle start-level="30">mvn:org.ops4j.pax.web/pax-web-jsp/3.0.7-jahia3</bundle>
+        <!--bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.blueprint.extender.config/7.2.0.0-SNAPSHOT</bundle-->
+        <bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.extender.jahiamodules/7.2.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.http.bridge/7.2.0.0-SNAPSHOT</bundle>
+        <!--bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.webconsole.config/7.2.0.0-SNAPSHOT</bundle-->
+        <!--bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.slf4j.loglistener/7.2.0.0-SNAPSHOT</bundle-->
+        <bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.configadmin.persistence/7.2.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.jahia.server/jahia-taglib/7.2.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.jahia.bundles/org.jahia.bundles.jspapiusage.repackaging/7.2.0.0-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.jahia.configuration/osgi-tools/4.9-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:org.jahia.configuration/migrators/4.9-SNAPSHOT</bundle>
+        <bundle start-level="30">mvn:biz.aQute/bndlib/2.0.0.20130123-133441</bundle>
+    </feature>
+
+    <feature name="jahia-jax-rs" version="7.2.0.0-SNAPSHOT">
+
+    </feature>
+
+</features>

@@ -164,11 +164,13 @@
         <gogo.command.version>0.14.0</gogo.command.version>
         <equinox.ver>3.2.2</equinox.ver>
         <slf4j.version>1.6.6</slf4j.version>
-        <osgi.version>4.3.1</osgi.version>
+        <osgi.version>6.0.0</osgi.version>
+        <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <pax.logging.version>1.7.0</pax.logging.version>
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
         <pax.web.api.version>3.0.7</pax.web.api.version>
         <pax.web.jsp.version>3.0.7-jahia3</pax.web.jsp.version>
+        <karaf.version>4.0.4</karaf.version>
         <!-- End of OSGi versions -->
 
         <jahia.commons.version>1.0.6</jahia.commons.version>
@@ -763,6 +765,42 @@
                 <version>2.1</version>
                 <scope>provided</scope>
             </dependency>
+            
+            <!-- Apache Karaf -->
+            <dependency>
+                <groupId>org.apache.karaf</groupId>
+                <artifactId>apache-karaf</artifactId>
+                <version>${karaf.version}</version>
+                <type>zip</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf</groupId>
+                <artifactId>org.apache.karaf.main</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.diagnostic</groupId>
+                <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.jaas</groupId>
+                <artifactId>org.apache.karaf.jaas.boot</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.shell</groupId>
+                <artifactId>org.apache.karaf.shell.console</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.features</groupId>
+                <artifactId>framework</artifactId>
+                <version>${karaf.version}</version>
+                <type>kar</type>
+            </dependency>
+            <!-- End of Apache Karaf -->
         </dependencies>
     </dependencyManagement>
 
@@ -842,6 +880,11 @@
                         <sigfile>jahia</sigfile>
                         <tsa>http://tsa.starfieldtech.com/</tsa>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

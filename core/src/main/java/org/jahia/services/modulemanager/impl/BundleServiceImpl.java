@@ -45,8 +45,8 @@ package org.jahia.services.modulemanager.impl;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.felix.framework.cache.BundleArchive;
-import org.apache.felix.framework.cache.BundleCache;
+// import org.apache.felix.framework.cache.BundleArchive;
+// import org.apache.felix.framework.cache.BundleCache;
 import org.apache.poi.util.IOUtils;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -81,7 +81,7 @@ public class BundleServiceImpl{
     private static final Logger logger = LoggerFactory.getLogger(BundleServiceImpl.class);
 
     
-    private Properties felixProperties; 
+//    private Properties felixProperties;
 
     /**
      * Get local bundles from Context
@@ -91,7 +91,7 @@ public class BundleServiceImpl{
      */
     private Map<Bundle, String> getLocalBundles() throws RepositoryException {
         Map<Bundle, String> result = new HashMap<>();
-        BundleArchive[] archives = null;
+        /* BundleArchive[] archives = null;
         // Get Felix Bundle Archives.
         try {
             archives = getBundleArchives();
@@ -99,6 +99,7 @@ public class BundleServiceImpl{
             logger.error(e.getMessage());
             // Continue
         }
+        */
 
         for (org.osgi.framework.Bundle contextBundle : FrameworkService.getBundleContext().getBundles()) {
             logger.info("putting " + contextBundle + " in JCR");
@@ -119,7 +120,8 @@ public class BundleServiceImpl{
                     }
                     bundleToAdd.setVersion(version);
                     bundleToAdd.setName(bundleToAdd.getSymbolicName() + "-" + bundleToAdd.getVersion());
-                    File jarFile = getBundleJar(contextBundle.getBundleId(), archives);
+                    // File jarFile = getBundleJar(contextBundle.getBundleId(), archives);
+                    File jarFile = null;
                     if (jarFile == null) {
                         logger.warn("Unable to find the location of the bundle.jar for bunlde {}", bundleToAdd.getName());
                         continue;
@@ -139,6 +141,7 @@ public class BundleServiceImpl{
         return result;
     }
 
+    /*
     private static File getBundleJar(long bundleId, BundleArchive[] archives) {
         BundleArchive arch = findBundleArchiveById(bundleId, archives);
 
@@ -150,6 +153,7 @@ public class BundleServiceImpl{
 
         return jar.exists() ? jar : null;
     }
+    */
 
     private static String calculateDigest(File jarFile) throws IOException {
         byte[] b = new byte[1024 * 8];
@@ -177,6 +181,7 @@ public class BundleServiceImpl{
      *            an array of bundle archives
      * @return the found bundle archive or null if no bundle archive with this ID could be found
      */
+    /*
     private static BundleArchive findBundleArchiveById(long bundleId, BundleArchive[] archives) {
         BundleArchive result = null;
         try {
@@ -191,12 +196,14 @@ public class BundleServiceImpl{
         }
         return result;
     }
+    */
 
     /**
      * Get Bundle Archives from Bundle Cache.
      *
      * @return list of archives
      */
+    /*
     private BundleArchive[] getBundleArchives() throws Exception {
         BundleArchive[] result = null;
         Map<String, String> configMap = new HashMap<String, String>();
@@ -206,6 +213,7 @@ public class BundleServiceImpl{
         result = bundleCache.getArchives();
         return result;
     }
+    */
 
     /**
      * populate the list of bundles in module management entity
@@ -251,7 +259,7 @@ public class BundleServiceImpl{
     }
 
 
-    public void setFelixProperties(Properties felixProperties) {
-        this.felixProperties = felixProperties;
-    }
+//    public void setFelixProperties(Properties felixProperties) {
+//        this.felixProperties = felixProperties;
+//    }
 }

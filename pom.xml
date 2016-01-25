@@ -94,6 +94,7 @@
                 <module>gwt</module>
                 <module>modules</module>
                 <module>bundles</module>
+                <module>features</module>
                 <module>war</module>
             </modules>
         </profile>
@@ -113,6 +114,7 @@
                 <module>gwt</module>
                 <module>modules</module>
                 <module>bundles</module>
+                <module>features</module>
                 <module>war</module>
                 <module>test</module>
             </modules>

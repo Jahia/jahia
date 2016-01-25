@@ -43,19 +43,19 @@
  */
 package org.jahia.osgi;
 
-import org.apache.felix.framework.Felix;
-import org.apache.felix.framework.util.FelixConstants;
+import org.apache.karaf.main.Main;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.services.SpringContextSingleton;
+import org.jahia.settings.SettingsBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.framework.FrameworkEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.servlet.ServletContext;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -79,72 +79,56 @@ public class FrameworkService {
         return Holder.INSTANCE;
     }
 
-    private final ServletContext context;
-    private Felix felix;
-    private ProvisionActivator provisionActivator = null;
-    
+    private final ServletContext servletContext;
+    private Main main;
+
     private boolean started;
 
-    private FrameworkService(ServletContext context) {
-        this.context = context;
+    private FrameworkService(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+
+    private void startKaraf() {
+        try {
+            String karafHome = new File(servletContext.getRealPath("/WEB-INF/karaf")).getAbsolutePath();
+            String varDiskPath = SettingsBean.getInstance().getJahiaVarDiskPath();
+            System.setProperty("karaf.home", karafHome);
+            System.setProperty("karaf.base", karafHome);
+            System.setProperty("karaf.data", varDiskPath + "/karaf-data");
+            System.setProperty("karaf.etc", varDiskPath + "/karaf-etc");
+            System.setProperty("org.osgi.framework.storage", varDiskPath + "/bundles-deployed");
+            System.setProperty("karaf.history", varDiskPath + "/karaf-data/history.txt");
+            System.setProperty("karaf.instances", varDiskPath + "/karaf-instances");
+            System.setProperty("karaf.startLocalConsole", "false");
+            System.setProperty("karaf.startRemoteShell", "true");
+            System.setProperty("karaf.lock", "false");
+            System.setProperty("log4j.ignoreTCL", "true");
+            System.setProperty("jahiaVarDiskPath", varDiskPath);
+            main = new Main(new String[0]);
+            main.launch();
+        } catch (Exception e) {
+            main = null;
+            e.printStackTrace();
+        }
+
     }
 
     public void start() throws BundleException {
-        Felix tmp = new Felix(createConfig());
-        tmp.start();
-        this.felix = tmp;
+        startKaraf();
+        servletContext.setAttribute(BundleContext.class.getName(), main.getFramework().getBundleContext());
+        started = true;
     }
 
     public void stop() throws BundleException {
-        provisionActivator = null;
-        if (this.felix != null) {
-            FrameworkEvent stopEvent;
-            this.felix.stop();
-            logger.info("Waiting for OSGi framework shutdown...");
+        if (this.main != null) {
+            servletContext.removeAttribute(BundleContext.class.getName());
             try {
-                stopEvent = this.felix.waitForStop(30000);
-                logger.info("Framework stopped with event {}", stopEvent.getType());
-            } catch (InterruptedException e) {
-                logger.error(e.getMessage(), e);
+                main.destroy();
+            } catch (Exception e) {
+                logger.error("Error shutting down Karaf framework", e);
             }
         }
-
         logger.info("OSGi framework stopped");
-    }
-
-    public ProvisionActivator getProvisionActivator() {
-        return provisionActivator;
-    }
-
-    private Map<String, Object> createConfig() {
-
-        @SuppressWarnings("unchecked")
-        Map<String,String> unreplaced = (Map<String,String>) SpringContextSingleton.getBean("felixProperties");
-        
-        PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper("${", "}");
-        Properties systemProps = System.getProperties();
-        HashMap<String, Object> map = new HashMap<>();
-        for (Map.Entry<String, String> entry : unreplaced.entrySet()) {
-            map.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
-        }
-        String value = (String) map.get("gosh.args");
-        if (value != null && value.contains("--port=-1")) {
-            map.put("gosh.args", "--nointeractive");
-        }
-
-        StringBuilder extra = new StringBuilder((String) map.get("org.osgi.framework.system.packages.extra"));
-        for (Map.Entry<String, Object> entry : map.entrySet()) {
-            if (entry.getKey().startsWith("org.osgi.framework.system.packages.extra.")) {
-                extra.append(',').append(entry.getValue());
-            }
-        }
-        map.put("org.osgi.framework.system.packages.extra",extra.toString());
-
-        map.put("org.jahia.servlet.context", context);
-
-        provisionActivator = new ProvisionActivator(this.context);
-        map.put(FelixConstants.SYSTEMBUNDLE_ACTIVATORS_PROP, Collections.singletonList(provisionActivator));
-        return map;
     }
 
     public boolean isStarted() {
@@ -153,8 +137,8 @@ public class FrameworkService {
     
     public static BundleContext getBundleContext() {
         final FrameworkService instance = getInstance();
-        if (instance != null && instance.felix != null) {
-            return instance.felix.getBundleContext();
+        if (instance != null && instance.main != null) {
+            return instance.main.getFramework().getBundleContext();
         } else {
             return null;
         }

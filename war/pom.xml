@@ -414,6 +414,9 @@
                                 <move todir="${project.build.directory}/karaf-data">
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data" />
                                 </move>
+                                <move todir="${project.build.directory}/karaf-data/deploy">
+                                    <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/deploy" />
+                                </move>
                             </target>
                         </configuration>
                     </execution>

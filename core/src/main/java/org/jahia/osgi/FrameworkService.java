@@ -98,7 +98,7 @@ public class FrameworkService {
             System.setProperty("karaf.etc", varDiskPath + "/karaf-etc");
             System.setProperty("org.osgi.framework.storage", varDiskPath + "/bundles-deployed");
             System.setProperty("karaf.history", varDiskPath + "/karaf-data/history.txt");
-            System.setProperty("karaf.instances", varDiskPath + "/karaf-instances");
+            System.setProperty("karaf.instances", varDiskPath + "/karaf-data/instances");
             System.setProperty("karaf.startLocalConsole", "false");
             System.setProperty("karaf.startRemoteShell", "true");
             System.setProperty("karaf.lock", "false");

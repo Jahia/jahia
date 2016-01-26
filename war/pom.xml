@@ -371,259 +371,6 @@
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-provisioned-bundles</id>
-                        <goals>
-                            <goal>copy</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <!-- OSGi -->
-                                <artifactItem>
-                                    <groupId>org.slf4j</groupId>
-                                    <artifactId>slf4j-api</artifactId>
-                                    <version>${slf4j.version}</version>
-                                    <type>jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.slf4j</groupId>
-                                    <artifactId>slf4j-log4j12</artifactId>
-                                    <version>${slf4j.version}</version>
-                                    <type>jar</type>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.log</artifactId>
-                                    <version>${felix.log.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.bundlerepository</artifactId>
-                                    <version>${felix.bundlerepository.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.http.api</artifactId>
-                                    <version>${felix.http.version}</version>
-                                </artifactItem>
-                                <!-- Felix WebConsole dependencies -->
-                                <artifactItem>
-                                    <groupId>commons-io</groupId>
-                                     <artifactId>commons-io</artifactId>
-                                    <version>2.4</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>commons-fileupload</groupId>
-                                    <artifactId>commons-fileupload</artifactId>
-                                    <version>1.2.2</version>
-                                </artifactItem>
-                                <!-- we already export the json taglib from Jahia
-                                <artifactItem>
-                                    <groupId>org.apache.geronimo.bundles</groupId>
-                                    <artifactId>json</artifactId>
-                                    <version>20090211_1</version>
-                                </artifactItem>
-                                -->
-                                <!-- End of Felix WebConsole dependencies -->
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.webconsole</artifactId>
-                                    <version>${felix.webconsole.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.configadmin</artifactId>
-                                    <version>${felix.configadmin.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.eventadmin</artifactId>
-                                    <version>${felix.eventadmin.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.fileinstall</artifactId>
-                                    <version>${felix.fileinstall.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.gogo.runtime</artifactId>
-                                    <version>${gogo.runtime.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.gogo.shell</artifactId>
-                                    <version>${gogo.shell.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.gogo.command</artifactId>
-                                    <version>${gogo.command.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.ops4j.pax.web</groupId>
-                                    <artifactId>pax-web-api</artifactId>
-                                    <version>${pax.web.api.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.ops4j.pax.web</groupId>
-                                    <artifactId>pax-web-jsp</artifactId>
-                                    <version>${pax.web.jsp.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.eclipse.gemini.blueprint</groupId>
-                                    <artifactId>gemini-blueprint-core</artifactId>
-                                    <version>${gemini.blueprint.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.gemini.blueprint</groupId>
-                                    <artifactId>gemini-blueprint-extender</artifactId>
-                                    <version>${gemini.blueprint.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.eclipse.gemini.blueprint</groupId>
-                                    <artifactId>gemini-blueprint-io</artifactId>
-                                    <version>${gemini.blueprint.version}</version>
-                                </artifactItem>
-
-                                <!--<artifactItem>
-                                    <groupId>org.apache.felix</groupId>
-                                    <artifactId>org.apache.felix.ipojo</artifactId>
-                                    <version>1.11.0</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.barjo.atmosgi</groupId>
-                                    <artifactId>atmosgi-component</artifactId>
-                                    <version>0.1.1-SNAPSHOT</version>
-                                </artifactItem>-->
-
-
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.http.bridge</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.webconsole.config</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.slf4j.loglistener</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.configadmin.persistence</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-taglib</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.bundles</groupId>
-                                    <artifactId>org.jahia.bundles.jspapiusage.repackaging</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.jahia.configuration</groupId>
-                                    <artifactId>osgi-tools</artifactId>
-                                    <version>${jahia.plugin.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>org.jahia.configuration</groupId>
-                                    <artifactId>migrators</artifactId>
-                                    <version>${jahia.plugin.version}</version>
-                                </artifactItem>
-
-                                <artifactItem>
-                                    <groupId>biz.aQute</groupId>
-                                    <artifactId>bndlib</artifactId>
-                                    <version>2.0.0.20130123-133441</version>
-                                </artifactItem>
-
-                                <!-- JAX-RS OSGi Extender dependencies -->
-                                <!-- Jersey and dependencies, versions are defined in jaxrs-osgi-extender-bom -->
-                                <dependency>
-                                    <groupId>org.glassfish.jersey.bundles</groupId>
-                                    <artifactId>jaxrs-ri</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.hk2</groupId>
-                                    <artifactId>hk2-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.hk2</groupId>
-                                    <artifactId>hk2-locator</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.hk2</groupId>
-                                    <artifactId>hk2-utils</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.hk2.external</groupId>
-                                    <artifactId>asm-all-repackaged</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-                                    <artifactId>jersey-guava</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.hk2</groupId>
-                                    <artifactId>osgi-resource-locator</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jboss.spec.javax.annotation</groupId>
-                                    <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.jersey.media</groupId>
-                                    <artifactId>jersey-media-multipart</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.jvnet.mimepull</groupId>
-                                    <artifactId>mimepull</artifactId>
-                                </dependency>
-                            </artifactItems>
-                            <stripVersion>false</stripVersion>
-                            <outputDirectory>
-                                ${project.build.directory}/${project.build.finalName}/WEB-INF/karaf/system
-                            </outputDirectory>
-                        </configuration>
-                    </execution>
-                    <!--<execution>-->
-                    <!--<id>copy-watched-bundles</id>-->
-                    <!--<goals>-->
-                    <!--<goal>copy</goal>-->
-                    <!--</goals>-->
-                    <!--<configuration>-->
-                    <!--<artifactItems>-->
-                    <!--</artifactItems>-->
-                    <!--<stripVersion>false</stripVersion>-->
-                    <!--<outputDirectory>-->
-                    <!--${project.build.directory}/${project.build.finalName}/WEB-INF/var/bundles-->
-                    <!--</outputDirectory>-->
-                    <!--</configuration>-->
-                    <!--</execution>-->
-                    <execution>
                         <id>unpack-karaf</id>
                         <phase>generate-resources</phase>
                         <goals>
@@ -638,7 +385,8 @@
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
-                                    <excludes>**/lib/*,**/*.txt,**/bin/*,**/demos/**,**/lib,**/bin,**/demos,**/config.properties,**/org.apache.felix.http.bridge-3.0.0.jar</excludes>
+                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy/**,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/lib/**,apache-karaf-${karaf.version}/system/**</includes>
+                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
@@ -651,7 +399,7 @@
                 <executions>
                     <execution>
                         <id>copy-karaf</id>
-                        <phase>process-resources</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
@@ -667,6 +415,30 @@
                                     <fileset dir="${project.build.directory}/jahia/WEB-INF/karaf/data" />
                                 </move>
                             </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.karaf.tooling</groupId>
+                <artifactId>karaf-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>features-add-to-repository</goal>
+                        </goals>
+                        <configuration>
+                            <addTransitiveFeatures>false</addTransitiveFeatures>
+                            <descriptors>
+                                <descriptor>mvn:org.jahia.features/jahia-core/${project.version}/xml/features</descriptor>
+                            </descriptors>
+                            <features>
+                                <feature>jahia-gemini-blueprint</feature>
+                                <feature>jahia-core</feature>
+                                <feature>jahia-jax-rs</feature>
+                            </features>
+                            <repository>${project.build.directory}/jahia/WEB-INF/karaf/system</repository>
                         </configuration>
                     </execution>
                 </executions>

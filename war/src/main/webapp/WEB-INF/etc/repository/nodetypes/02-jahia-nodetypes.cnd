@@ -218,8 +218,8 @@
 + * (jnt:tempFile)
 
 [jnt:tempFile] > nt:base
-- jcr:mimeType (string) nofulltext
-- jcr:data (binary) mandatory
+- jcr:mimeType (string) indexed=no nofulltext
+- jcr:data (binary) mandatory indexed=no
 
 //---------------------------------------------------------
 // Text extracts

@@ -1,11 +1,57 @@
+/**
+ * ==========================================================================================
+ * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
+ * ==========================================================================================
+ *
+ *                                 http://www.jahia.com
+ *
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ *
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
+ *
+ *     1/ GPL
+ *     ==================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ *
+ *
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
+ *
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ *
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
+ */
 package org.jahia.ajax.gwt.content.server;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -40,7 +86,12 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
             }
             JCRNodeWrapper file = sessionPendingFiles.addNode(name, Constants.JAHIANT_TEMP_FILE);
             file.setProperty(Constants.JCR_MIMETYPE, contentType);
-            file.setProperty(Constants.JCR_DATA, new BinaryImpl(contentStream));
+            Binary contentBinary = new BinaryImpl(contentStream);
+            try {
+                file.setProperty(Constants.JCR_DATA, contentBinary);
+            } finally {
+                contentBinary.dispose();
+            }
             getSession().save();
         } catch (RepositoryException | IOException e) {
             throw new JahiaRuntimeException(e);
@@ -52,7 +103,7 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
 
         final JCRNodeWrapper file;
         try {
-            file = getRootNode().getNode(jcrFolderName).getNode(sessionID).getNode(name);
+            file = getSession().getNode(getPathString(jcrFolderName, sessionID, name));
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
@@ -77,7 +128,12 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
             @Override
             public InputStream getContentStream() {
                 try {
-                    return file.getProperty(Constants.JCR_DATA).getBinary().getStream();
+                    Binary contentBinary = file.getProperty(Constants.JCR_DATA).getBinary();
+                    try {
+                        return contentBinary.getStream();
+                    } finally {
+                        contentBinary.dispose();
+                    }
                 } catch (RepositoryException e) {
                     throw new JahiaRuntimeException(e);
                 }
@@ -87,9 +143,10 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
 
     @Override
     public void remove(String sessionID, String name) {
+        Session session = getSession();
         try {
-            getRootNode().getNode(jcrFolderName).getNode(sessionID).getNode(name).remove();
-            getSession().save();
+            session.removeItem(getPathString(jcrFolderName, sessionID, name));
+            session.save();
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
@@ -97,9 +154,10 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
 
     @Override
     public void removeIfExists(String sessionID) {
+        Session session = getSession();
         try {
-            getRootNode().getNode(jcrFolderName).getNode(sessionID).remove();
-            getSession().save();
+            session.removeItem(getPathString(jcrFolderName, sessionID));
+            session.save();
         } catch (PathNotFoundException e) {
             // Session folder does not exist.
         } catch (RepositoryException e) {
@@ -142,6 +200,10 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
+    }
+
+    private static String getPathString(String... pathElements) {
+        return '/' + StringUtils.join(pathElements, '/');
     }
 
     @Override

@@ -385,8 +385,8 @@
                                     <type>zip</type>
                                     <overWrite>true</overWrite>
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
-                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy/**,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/lib/**,apache-karaf-${karaf.version}/system/**</includes>
-                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties</excludes>
+                                    <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/lib/**,apache-karaf-${karaf.version}/system/**</includes>
+                                    <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README</excludes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

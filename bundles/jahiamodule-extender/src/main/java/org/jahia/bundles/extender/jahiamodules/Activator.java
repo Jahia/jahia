@@ -938,7 +938,7 @@ public class Activator implements BundleActivator {
 
     private void unregisterFileInstallConfiguration(ConfigurationAdmin configurationAdmin) {
         Configuration moduleFileInstallConfiguration = findExistingFileInstallConfiguration(configurationAdmin);
-        if (moduleFileInstallConfiguration == null) {
+        if (moduleFileInstallConfiguration != null) {
             try {
                 moduleFileInstallConfiguration.delete();
             } catch (IOException e) {

@@ -99,7 +99,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
                     String[] mapping = StringUtils.split(clause, "=");
                     resources.put(mapping[0], mapping[1]);
                 } else {
-                    resources.put("/" + bundle.getSymbolicName() + clause, clause);
+                    if (bundle.findEntries(clause, "*", false) != null) {
+                        resources.put("/" + bundle.getSymbolicName() + clause, clause);
+                    }
                 }
             }
         }

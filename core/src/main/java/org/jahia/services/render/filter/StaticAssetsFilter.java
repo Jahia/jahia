@@ -102,35 +102,25 @@ import java.util.regex.Pattern;
  */
 public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
 
-    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
-        public Object transform(Object input) {
-            return input != null ? input.toString().toLowerCase() : null;
-        }
-    };
+    private String jahiaContext = null;
+    private boolean addLastModifiedDate = false;
+    private File generatedResourcesFolder;
+    private String ajaxResolvedTemplate;
+    private String ajaxTemplate;
+    private String ajaxTemplateExtension;
+    private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
+    private String resolvedTemplate;
+    private ScriptEngineUtils scriptEngineUtils;
+    private String template;
+    private String templateExtension;
+    private boolean aggregateAndCompress;
+    private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
+    private Set<String> ieHeaderRecognitions = new HashSet<String>();
+    private boolean forceLiveIEcompatiblity;
 
-    private static final Pattern CLEANUP_REGEXP = Pattern.compile(
-            "<!-- jahia:temp value=\".*?\" -->");
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp value=\".*?\" -->");
 
     private static final FastHashMap RANK;
-
-    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
-
-    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"(?!(/|http:|https:|data:))");
-
-    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
-
-    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
-
-    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
-    private static final String TARGET_TAG = "targetTag";
-    private static final String STATIC_ASSETS = "staticAssets";
-
-    private String jahiaContext = null;
-
-    private boolean addLastModifiedDate = false;
-
-    private File generatedResourcesFolder;
-
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", 0);
@@ -143,21 +133,41 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         RANK.setFast(true);
     }
 
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"(?!(/|http:|https:|data:))");
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
+    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
+
+    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
+    private static final String TARGET_TAG = "targetTag";
+    private static final String STATIC_ASSETS = "staticAssets";
+
+    private static final Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
+
+    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
+
+        @Override
+        public Object transform(Object input) {
+            return input != null ? input.toString().toLowerCase() : null;
+        }
+    };
+
     @SuppressWarnings("unchecked")
-    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils
-            .transformedComparator(null, new Transformer() {
-                public Object transform(Object input) {
-                    Integer rank = null;
-                    if (input != null) {
-                        rank = (Integer) RANK.get(input.toString());
-                    }
+    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils.transformedComparator(null, new Transformer() {
 
-                    return rank != null ? rank : RANK.get("unknown");
-                }
-            });
+        @Override
+        public Object transform(Object input) {
+            Integer rank = null;
+            if (input != null) {
+                rank = (Integer) RANK.get(input.toString());
+            }
+            return rank != null ? rank : RANK.get("unknown");
+        }
+    });
 
 
-    class AssetsScriptContext extends SimpleScriptContext {
+    private static class AssetsScriptContext extends SimpleScriptContext {
+
         private Writer writer = null;
 
         /**
@@ -171,8 +181,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             return writer;
         }
     }
-
-    private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
 
     private static void atomicMove(File src, File dest) throws IOException {
         if (src.exists()) {
@@ -190,26 +198,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
     }
-
-    private String ajaxResolvedTemplate;
-
-    private String ajaxTemplate;
-    private String ajaxTemplateExtension;
-
-    private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
-
-    private String resolvedTemplate;
-
-    private ScriptEngineUtils scriptEngineUtils;
-
-    private String template;
-    private String templateExtension;
-
-    private boolean aggregateAndCompress;
-    private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
-
-    private Set<String> ieHeaderRecognitions = new HashSet<String>();
-    private boolean forceLiveIEcompatiblity;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, org.jahia.services.render.Resource resource, RenderChain chain) throws Exception {
@@ -434,7 +422,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    private Map<String, String> getOptionMaps(StartTag esiResourceTag) {
+    private static Map<String, String> getOptionMaps(StartTag esiResourceTag) {
+
         Map<String, String> optionsMap = null;
 
         for (String attributeName : OPTIONAL_ATTRIBUTES) {
@@ -451,7 +440,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             }
         }
-
 
         return optionsMap != null ? optionsMap : Collections.<String, String>emptyMap();
     }
@@ -627,7 +615,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return minifiedAggregatedPath;
     }
 
-    private void minify(String path, Resource resource, String type, File minifiedFile) throws IOException {
+    private static void minify(String path, Resource resource, String type, File minifiedFile) throws IOException {
 
         Reader reader = null;
         Writer writer = null;
@@ -725,7 +713,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return key;
     }
 
-    private Resource getResource(String key) {
+    private static Resource getResource(String key) {
         Resource r = null;
         String filePath = StringUtils.substringAfter(key.substring(1), "/");
         String moduleId = StringUtils.substringBefore(filePath, "/");
@@ -738,11 +726,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return r;
     }
 
-    private String getFileSystemPath(String minifiedAggregatedPath) {
+    private static String getFileSystemPath(String minifiedAggregatedPath) {
         return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
     }
 
-    private Resource getResourceFromFile(String workspace, final String fFilePath) {
+    private static Resource getResourceFromFile(String workspace, final String fFilePath) {
 
         try {
 
@@ -816,7 +804,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return null;
     }
 
-    private String generateAggregateName(Collection<String> m) {
+    private static String generateAggregateName(Collection<String> m) {
         final StringBuilder sb = new StringBuilder(m.size() * 128);
         for (String s1 : m) {
             sb.append(s1);
@@ -880,18 +868,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.excludesFromAggregateAndCompress = skipAggregation;
     }
 
-    @Override
-    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
-        ajaxResolvedTemplate = null;
-        resolvedTemplate = null;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        jahiaContext = Jahia.getContextPath() + "/";
-        generatedResourcesFolder = new File(getFileSystemPath("/generated-resources"));
-    }
-
     public Set<String> getIeHeaderRecognitions() {
         return ieHeaderRecognitions;
     }
@@ -912,4 +888,15 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        jahiaContext = Jahia.getContextPath() + "/";
+        generatedResourcesFolder = new File(getFileSystemPath("/generated-resources"));
+    }
+
+    @Override
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        ajaxResolvedTemplate = null;
+        resolvedTemplate = null;
+    }
 }

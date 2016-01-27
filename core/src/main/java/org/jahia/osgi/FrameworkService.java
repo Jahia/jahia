@@ -45,18 +45,16 @@ package org.jahia.osgi;
 
 import org.apache.karaf.main.Main;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.SpringContextSingleton;
+import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.servlet.ServletContext;
 
 import java.io.File;
-import java.util.*;
 
 /**
  * OSGi framework service
@@ -75,11 +73,17 @@ public class FrameworkService {
         }
     }
 
+    /**
+     * Returns a singleton instance of this class.
+     * 
+     * @return a singleton instance of this class
+     */
     public static FrameworkService getInstance() {
         return Holder.INSTANCE;
     }
 
     private final ServletContext servletContext;
+    
     private Main main;
 
     private boolean started;
@@ -108,7 +112,8 @@ public class FrameworkService {
             main.launch();
         } catch (Exception e) {
             main = null;
-            e.printStackTrace();
+            logger.error("Error starting Karaf container", e);
+            throw new JahiaRuntimeException("Error starting Karaf container", e);
         }
 
     }
@@ -119,6 +124,11 @@ public class FrameworkService {
         started = true;
     }
 
+    /**
+     * Shuts the OSGi container down.
+     * 
+     * @throws BundleException in case of an error
+     */
     public void stop() throws BundleException {
         if (this.main != null) {
             servletContext.removeAttribute(BundleContext.class.getName());
@@ -131,10 +141,20 @@ public class FrameworkService {
         logger.info("OSGi framework stopped");
     }
 
+    /**
+     * Returns <code>true</code> if the OSGi container is completely started.
+     * 
+     * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
+     */
     public boolean isStarted() {
         return started;
     }
     
+    /**
+     * Returns bundle context.
+     * 
+     * @return bundle context or <code>null</code> in case the OSGi container has not been started yet
+     */
     public static BundleContext getBundleContext() {
         final FrameworkService instance = getInstance();
         if (instance != null && instance.main != null) {
@@ -145,7 +165,7 @@ public class FrameworkService {
     }
     
     /**
-     * Notify this service that the framework has actually started.
+     * Notify this service that the container has actually started.
      */
     public static void notifyStarted() {
         logger.info("Got started event");
@@ -154,7 +174,7 @@ public class FrameworkService {
             logger.info("Started event arrived");
             instance.started = true;
             instance.notifyAll();
-            logger.info("Notified all about framework started event");
+            logger.info("Notified all about OSGi container started event");
         }
     }
 }

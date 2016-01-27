@@ -76,7 +76,7 @@ import java.util.*;
  * 
  * @author Sergiy Shyrkov
  */
-public class BundleHttpResourcesTracker extends ServiceTracker {
+public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, HttpService> {
 
     private static Logger logger = LoggerFactory.getLogger(BundleHttpResourcesTracker.class);
 
@@ -123,9 +123,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
     }
 
     @Override
-    public Object addingService(ServiceReference reference) {
+    public HttpService addingService(ServiceReference<HttpService> reference) {
         try {
-            HttpService httpService = (HttpService) super.addingService(reference);
+            HttpService httpService = super.addingService(reference);
 
             long timer = System.currentTimeMillis();
 
@@ -250,22 +250,21 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
     }
 
     @Override
-    public void removedService(ServiceReference reference, Object service) {
+    public void removedService(ServiceReference<HttpService> reference, HttpService service) {
         if (!JahiaContextLoaderListener.isRunning()) {
             return;
         }
-        HttpService httpService = (HttpService) service;
         int count = 0;
         for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
             logger.debug("Unregistering static resource {}", curEntry.getKey());
             count++;
-            httpService.unregister(curEntry.getKey());
+            service.unregister(curEntry.getKey());
         }
         logger.info("Unregistered {} static resources for bundle {}", count, bundleName);
 
         // unregister servlets for JSPs
         if (jspServletAlias != null) {
-            httpService.unregister(jspServletAlias);
+            service.unregister(jspServletAlias);
             logger.info("Unregistered JSPs for bundle {}", bundleName);
         }
 

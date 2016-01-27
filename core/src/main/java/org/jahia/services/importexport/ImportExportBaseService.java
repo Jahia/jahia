@@ -57,7 +57,6 @@ import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.xerces.jaxp.SAXParserFactoryImpl;
-import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -127,8 +126,7 @@ import java.util.zip.ZipOutputStream;
 public class ImportExportBaseService extends JahiaService implements ImportExportService {
 
     private static Logger logger = LoggerFactory.getLogger(ImportExportBaseService.class);
-    private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of(
-            "application/zip", "application/xml", "text/xml");
+    private static final Set<String> KNOWN_IMPORT_CONTENT_TYPES = ImmutableSet.of("application/zip", "application/xml", "text/xml");
 
     private static final String FILESACL_XML = "filesacl.xml";
 
@@ -158,6 +156,9 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     private List<AttributeProcessor> attributeProcessors;
     private TemplatePackageRegistry templatePackageRegistry;
 
+    private ImportExportBaseService() {
+    }
+
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final ImportExportBaseService INSTANCE = new ImportExportBaseService();
@@ -173,41 +174,31 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @param item the uploaded file item
      * @return type of the import the uploaded file represents
      */
-    public static String detectImportContentType(GWTFileManagerUploadServlet.Item item) {
-        String contentType = item.getContentType();
+    public static String detectImportContentType(String declaredContentType, String fileName) {
+        String contentType = declaredContentType;
         if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
-            contentType = JCRContentUtils.getMimeType(item.getOriginalFileName());
+            contentType = JCRContentUtils.getMimeType(fileName);
             if (!KNOWN_IMPORT_CONTENT_TYPES.contains(contentType)) {
-                if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".xml")) {
+                if (StringUtils.endsWithIgnoreCase(fileName, ".xml")) {
                     contentType = "application/xml";
-                } else {
-
-                }
-                if (StringUtils.endsWithIgnoreCase(item.getOriginalFileName(), ".zip")) {
+                } else if (StringUtils.endsWithIgnoreCase(fileName, ".zip")) {
                     contentType = "application/zip";
                 } else {
                     // no chance to detect it
-                    logger.error("Unable to detect the content type for file {}."
-                            + " It is neither a ZIP file nor an XML. Skipping import.",
-                            item.getOriginalFileName());
+                    logger.error("Unable to detect the content type for file {}. It is neither a ZIP file nor an XML. Skipping import.", fileName);
                 }
             }
         }
-
         return contentType;
     }
 
-    private ImportExportBaseService() {
-    }
-
+    @Override
     public void start() {
         try {
             new ImportFileObserver(org.jahia.settings.SettingsBean.getInstance().getJahiaImportsDiskPath(), false, observerInterval, true);
         } catch (JahiaException je) {
             logger.error("exception with FilesObserver", je);
         }
-
-
     }
 
     public void setExpandImportedFilesOnDisk(boolean expandImportedFilesOnDisk) {
@@ -256,6 +247,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
 
+        @Override
         public void update(Observable observable, Object args) {
             synchronized (args) {
                 @SuppressWarnings("unchecked")
@@ -265,6 +257,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         JahiaUser user = JahiaUserManagerService.getInstance().lookupRootUser().getJahiaUser();
                         JCRSessionFactory.getInstance().setCurrentUser(user);
                         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, null, null, new JCRCallback<Object>() {
+
+                            @Override
                             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                 JCRNodeWrapper dest = session.getNode("/imports");
                                 for (File file : files) {
@@ -296,6 +290,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         }
     }
 
+    @Override
     public void stop() {
     }
 
@@ -486,6 +481,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     @Override
     public void exportNode(JCRNodeWrapper node, JCRNodeWrapper exportRoot, OutputStream out, Map<String, Object> params) throws RepositoryException, SAXException, IOException, TransformerException {
         TreeSet<JCRNodeWrapper> nodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+
+            @Override
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
             }
@@ -496,7 +493,10 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void exportNodesWithBinaries(JCRNodeWrapper rootNode, Set<JCRNodeWrapper> nodes, ZipOutputStream zout, Set<String> typesToIgnore, Set<String> externalReferences, Map<String, Object> params)
             throws SAXException, IOException, RepositoryException, TransformerException {
+
         TreeSet<JCRNodeWrapper> liveSortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+
+            @Override
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
             }
@@ -527,6 +527,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
             }
         }
         TreeSet<JCRNodeWrapper> sortedNodes = new TreeSet<JCRNodeWrapper>(new Comparator<JCRNodeWrapper>() {
+
+            @Override
             public int compare(JCRNodeWrapper o1, JCRNodeWrapper o2) {
                 return o1.getPath().compareTo(o2.getPath());
             }
@@ -764,6 +766,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         final String finalTpl = tpl;
                         try {
                             JCRObservationManager.doWithOperationType(session, JCRObservationManager.IMPORT, new JCRCallback<Object>() {
+
+                                @Override
                                 public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                                     try {
                                         JahiaSite site = sitesService.addSite(JCRSessionFactory.getInstance().getCurrentUser(), infos.getProperty("sitetitle"), infos.getProperty(
@@ -1464,6 +1468,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         return importHandler.getUuidProps();
     }
 
+    @Override
     public void importCategories(Category rootCategory, InputStream is) {
         CategoriesImportHandler importHandler = new CategoriesImportHandler();
         importHandler.setRootCategory(rootCategory);
@@ -1475,6 +1480,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         final InputStream is = new BufferedInputStream(new FileInputStream(file));
         try {
             return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<List<String[]>>() {
+
                 @Override
                 public List<String[]>  doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<String[]> l = importUsers(is, new UsersImportHandler(session), file.getName());
@@ -1497,28 +1503,6 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
         handleImport(is, importHandler, fileName);
         logger.info("Done importing users in {}", DateUtils.formatDurationWords(System.currentTimeMillis() - timer));
         return importHandler.getUuidProps();
-    }
-
-    private List<String[]> importUsersFromZip(File file, UsersImportHandler usersImportHandler)
-            throws IOException {
-        NoCloseZipInputStream zis = new NoCloseZipInputStream(new BufferedInputStream(new FileInputStream(file)));
-        List<String[]> userProps = null;
-        try {
-            while (true) {
-                ZipEntry zipentry = zis.getNextEntry();
-                if (zipentry == null)
-                    break;
-                String name = zipentry.getName();
-                if (name.equals(USERS_XML)) {
-                    userProps = importUsers(zis, usersImportHandler);
-                    break;
-                }
-                zis.closeEntry();
-            }
-        } finally {
-            zis.reallyClose();
-        }
-        return userProps;
     }
 
     private void handleImport(InputStream is, DefaultHandler h, String fileName) {
@@ -1666,6 +1650,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @return the validation result
      * @since Jahia 6.6
      */
+    @Override
     public ValidationResults validateImportFile(JCRSessionWrapper session, InputStream is, String contentType, List<String> installedModules) {
         DocumentViewValidationHandler documentViewValidationHandler = (DocumentViewValidationHandler) SpringContextSingleton
                 .getBean("DocumentViewValidationHandler");
@@ -1727,6 +1712,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
      * @throws IOException         in case of an I/O operation error
      * @throws RepositoryException in case of a JCR-related error
      */
+    @Override
     public void importZip(String parentNodePath, Resource file, int rootBehaviour, final JCRSessionWrapper session, Set<String> filesToIgnore, boolean useReferenceKeeper)
             throws IOException, RepositoryException {
         long timer = System.currentTimeMillis();
@@ -2028,8 +2014,8 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     }
 
     private class OrderedProperties extends Properties {
-        private static final long serialVersionUID = -2418536708883832686L;
 
+        private static final long serialVersionUID = -2418536708883832686L;
         Vector<Object> keys = new Vector<Object>();
 
         @Override

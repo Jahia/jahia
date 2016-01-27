@@ -84,7 +84,7 @@ import java.util.Locale;
  */
 public class PortletHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(PortletHelper.class);
-    
+
     private ApplicationsManagerService applicationsManager;
 
     private NavigationHelper navigation;
@@ -176,7 +176,7 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *          sthg bad happened
      */
-    public GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         try {
             String name = gwtJahiaNewPortletInstance.getInstanceName();
 
@@ -191,7 +191,7 @@ public class PortletHelper {
                 parentNode.checkout();
             }
 
-            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties(), uiLocale);
+            JCRPortletNode node = (JCRPortletNode) contentManager.addNode(parentNode, name, gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getPortletType(), null, gwtJahiaNewPortletInstance.getProperties(), uiLocale, httpSessionID);
 
             node.setApplication(gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getApplicationId(), gwtJahiaNewPortletInstance.getGwtJahiaPortletDefinition().getDefinitionName());
             node.revokeAllRoles();
@@ -245,7 +245,7 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public GWTJahiaNode createPortletInstance(String parentPath, String instanceName, String appName, String entryPointName, List<GWTJahiaNodeProperty> gwtJahiaNodeProperties, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         try {
             // get RSS GWTJahiaPortletDefinition
             GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, entryPointName, currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), uiLocale);
@@ -296,7 +296,7 @@ public class PortletHelper {
 
             // set name
             gwtJahiaNewPortletInstance.setInstanceName(instanceName);
-            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, currentUserSession, uiLocale);
+            return createPortletInstance(parentPath, gwtJahiaNewPortletInstance, currentUserSession, uiLocale, httpSessionID);
         } catch (GWTJahiaServiceException e) {
             throw e;
         } catch (Exception e) {
@@ -317,7 +317,7 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public GWTJahiaNode createRSSPortletInstance(String parentPath, String name, String url, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/rss" : "rss";
         GWTJahiaPortletDefinition gwtJahiaPortletDefinition = createJahiaGWTPortletDefinitionByName(appName, "JahiaRSSPortlet", currentUserSession.getLocale(), currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), uiLocale);
@@ -333,7 +333,7 @@ public class PortletHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("url", new GWTJahiaNodePropertyValue(url, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, appName, "JahiaRSSPortlet", gwtJahiaNodeProperties, site, currentUserSession, uiLocale);
+        return createPortletInstance(parentPath, name, appName, "JahiaRSSPortlet", gwtJahiaNodeProperties, site, currentUserSession, uiLocale, httpSessionID);
     }
 
     /**
@@ -348,7 +348,7 @@ public class PortletHelper {
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      *
      */
-    public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public GWTJahiaNode createGoogleGadgetPortletInstance(String parentPath, String name, String script, JCRSiteNode site, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         GWTJahiaNewPortletInstance gwtJahiaNewPortletInstance = new GWTJahiaNewPortletInstance();
         final String appName = Jahia.getContextPath().length() > 0 ? Jahia.getContextPath().substring(1) + "/googlegadget" : "googlegadget";
         // get RSS GWTJahiaPortletDefinition
@@ -365,7 +365,7 @@ public class PortletHelper {
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("j:expirationTime", new GWTJahiaNodePropertyValue("0", GWTJahiaNodePropertyType.LONG)));
         gwtJahiaNodeProperties.add(new GWTJahiaNodeProperty("code", new GWTJahiaNodePropertyValue(script, GWTJahiaNodePropertyType.STRING)));
 
-        return createPortletInstance(parentPath, name, appName, "JahiaGoogleGadget", gwtJahiaNodeProperties, site, currentUserSession, uiLocale);
+        return createPortletInstance(parentPath, name, appName, "JahiaGoogleGadget", gwtJahiaNodeProperties, site, currentUserSession, uiLocale, httpSessionID);
     }
 
     /**

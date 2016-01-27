@@ -213,7 +213,9 @@
                         <bean class="org.jahia.services.content.MountPointListener">
                             <property name="providerChecker" ref="JCRStoreProviderChecker"/>
                         </bean>
+                        <!--
                         <ref bean="NodeOperationEventListener" />
+                        -->
                     </list>
                 </entry>
                 <entry key="live">

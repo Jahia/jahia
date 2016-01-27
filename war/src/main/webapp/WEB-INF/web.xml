@@ -242,10 +242,6 @@
     </listener>
 
     <listener>
-        <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
-    </listener>
-
-    <listener>
         <listener-class>org.atmosphere.cpr.SessionSupport</listener-class>
     </listener>
 

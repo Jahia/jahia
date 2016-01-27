@@ -85,14 +85,10 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 
 import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 
 /**
  * File upload servlet to handle requests from GWT upload form.
@@ -100,7 +96,7 @@ import javax.servlet.http.HttpSessionListener;
  * @author rfelden
  * @version 2 avr. 2008 - 16:51:39
  */
-public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSessionListener {
+public class GWTFileManagerUploadServlet extends HttpServlet {
 
     private static final int OK = 0;
     private static final int EXISTS = 1;
@@ -281,8 +277,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         try {
             InputStream contentStream = new BufferedInputStream(fileItem.getInputStream());
             try {
-                UploadedPendingFileStorage fileStorage = getFileStorage(getServletContext());
-                fileStorage.put(sessionID, fileItem.getName(), fileItem.getContentType(), contentStream);
+                getFileStorage().put(sessionID, fileItem.getName(), fileItem.getContentType(), contentStream);
             } finally {
                 contentStream.close();
             }
@@ -401,7 +396,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
         return OK;
     }
 
-    private UploadedPendingFileStorage getFileStorage(ServletContext servletContext) {
+    private UploadedPendingFileStorage getFileStorage() {
         if (fileStorage != null) {
             return fileStorage;
         }
@@ -409,21 +404,9 @@ public class GWTFileManagerUploadServlet extends HttpServlet implements HttpSess
             if (fileStorage != null) {
                 return fileStorage;
             }
-            ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
+            ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
             fileStorage = (UploadedPendingFileStorage) context.getBean(UploadedPendingFileStorage.class.getSimpleName());
             return fileStorage;
         }
-    }
-
-    @Override
-    public void sessionCreated(HttpSessionEvent se) {
-    }
-
-    @Override
-    public void sessionDestroyed(HttpSessionEvent se) {
-        HttpSession session = se.getSession();
-        logger.debug("Checking temporary uploaded files for session with ID {}", session.getId());
-        UploadedPendingFileStorage fileStorage = getFileStorage(session.getServletContext());
-        fileStorage.removeIfExists(session.getId());
     }
 }

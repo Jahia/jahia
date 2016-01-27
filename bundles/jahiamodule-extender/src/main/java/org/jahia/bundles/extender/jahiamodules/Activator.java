@@ -75,6 +75,7 @@ import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
+import org.osgi.service.http.HttpService;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -118,12 +119,12 @@ public class Activator implements BundleActivator {
     };
 
     private CndBundleObserver cndBundleObserver = null;
-    private List<ServiceRegistration> serviceRegistrations = new ArrayList<ServiceRegistration>();
+    private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
     private BundleListener bundleListener = null;
     private Set<Bundle> installedBundles;
     private Set<Bundle> initializedBundles;
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
-    private Map<Bundle, ServiceTracker> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker>();
+    private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker<HttpService, HttpService>>();
     private JahiaTemplateManagerService templatesService;
     private TemplatePackageRegistry templatePackageRegistry = null;
     private TemplatePackageDeployer templatePackageDeployer = null;
@@ -355,7 +356,7 @@ public class Activator implements BundleActivator {
         bundleListener = null;
         bundleStarter = null;
 
-        for (ServiceRegistration serviceRegistration : serviceRegistrations) {
+        for (ServiceRegistration<?> serviceRegistration : serviceRegistrations) {
             try {
                 serviceRegistration.unregister();
             } catch (IllegalStateException e) {
@@ -364,7 +365,7 @@ public class Activator implements BundleActivator {
         }
 
         // Ensure all trackers are correctly closed - should be empty now
-        for (ServiceTracker tracker : bundleHttpServiceTrackers.values()) {
+        for (ServiceTracker<HttpService, HttpService> tracker : bundleHttpServiceTrackers.values()) {
             tracker.close();
         }
 
@@ -719,9 +720,9 @@ public class Activator implements BundleActivator {
             }
         }
         try {
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback() {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     List<JCRSiteNode> sitesNodeList = JahiaSitesService.getInstance().getSitesNodeList(session);
                     Set<String> pathsToFlush = new HashSet<String>();
                     for (JCRSiteNode site : sitesNodeList) {
@@ -733,7 +734,7 @@ public class Activator implements BundleActivator {
                     if (!pathsToFlush.isEmpty()) {
                         CacheHelper.flushOutputCachesForPaths(pathsToFlush, true);
                     }
-                    return null;
+                    return Boolean.TRUE;
                 }
             });
         } catch (RepositoryException e) {
@@ -757,7 +758,7 @@ public class Activator implements BundleActivator {
                 bundleHttpServiceTrackers.remove(bundle).close();
             }
             if (bundle.getBundleContext() != null) {
-                ServiceTracker bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
+                ServiceTracker<HttpService, HttpService> bundleServiceTracker = new BundleHttpResourcesTracker(bundle);
                 bundleServiceTracker.open(true);
                 bundleHttpServiceTrackers.put(bundle, bundleServiceTracker);
             }
@@ -826,10 +827,6 @@ public class Activator implements BundleActivator {
                     FrameworkService.notifyStarted();
                     break;
             }
-        }
-
-        public void startBundle(Bundle bundle) {
-            toStart.add(bundle);
         }
 
         public void stopBundle(Bundle bundle) {

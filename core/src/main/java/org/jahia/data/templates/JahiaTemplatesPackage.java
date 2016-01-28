@@ -969,8 +969,9 @@ public class JahiaTemplatesPackage {
         }
         final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
         classLoaders.add(Jahia.class.getClassLoader());
-        if (getClassLoader() != null) {
-            classLoaders.add(getClassLoader());
+        final ClassLoader classLoader = getClassLoader();
+        if (classLoader != null) {
+            classLoaders.add(classLoader);
         }
         for (JahiaTemplatesPackage dependentPack : getDependencies()) {
             if (dependentPack != null && dependentPack.getClassLoader() != null) {

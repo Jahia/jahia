@@ -802,10 +802,6 @@ public class Activator implements BundleActivator {
         }
     }
 
-    public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
-        return registeredBundles;
-    }
-
     public Map<ModuleState.State, Set<Bundle>> getModulesByState() {
         Map<ModuleState.State, Set<Bundle>> modulesByState = new TreeMap<ModuleState.State, Set<Bundle>>();
         for (Bundle bundle : moduleStates.keySet()) {

@@ -1,5 +1,3 @@
-package org.jahia.services.render.scripting.bundle;
-
 /**
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
@@ -71,89 +69,40 @@ package org.jahia.services.render.scripting.bundle;
  *
  * For more information, please visit http://www.jahia.com
  */
+package org.jahia.services.render.scripting.bundle;
 
-import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
-import java.util.List;
+import javax.script.ScriptEngineManager;
+import java.util.Map;
 
 /**
- * A {@link ScriptEngineFactory} implementation that makes sure that {@link ScriptEngine} are created using the appropriate class loader as some implementations have this
- * requirement in order to work properly in an OSGi environment.
+ * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
  */
-class BundleScriptEngineFactory implements ScriptEngineFactory {
+class BundleScriptingContext {
+    private final ScriptEngineManager scriptEngineManager;
+    private final ClassLoader classLoader;
+    private final Map<String, Integer> extensionPriorities;
 
-    private final ScriptEngineFactory factory;
-    private final BundleScriptingContext context;
-
-    BundleScriptEngineFactory(ScriptEngineFactory factory, BundleScriptingContext context) {
-        this.factory = factory;
-        this.context = context;
+    BundleScriptingContext(ScriptEngineManager scriptEngineManager, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
+        this.scriptEngineManager = scriptEngineManager;
+        this.classLoader = classLoader;
+        this.extensionPriorities = extensionsPrioritiesMap;
     }
 
-    public String getEngineName() {
-        return factory.getEngineName();
+    ScriptEngineManager getScriptEngineManager() {
+        return scriptEngineManager;
     }
 
-    public String getEngineVersion() {
-        return factory.getEngineVersion();
+    ClassLoader getClassLoader() {
+        return classLoader;
     }
 
-    public List<String> getExtensions() {
-        return factory.getExtensions();
-    }
-
-    public String getLanguageName() {
-        return factory.getLanguageName();
-    }
-
-    public String getLanguageVersion() {
-        return factory.getLanguageVersion();
-    }
-
-    public String getMethodCallSyntax(String obj, String m, String... args) {
-        return factory.getMethodCallSyntax(obj, m, args);
-    }
-
-    public List<String> getMimeTypes() {
-        return factory.getMimeTypes();
-    }
-
-    public List<String> getNames() {
-        return factory.getNames();
-    }
-
-    public String getOutputStatement(String toDisplay) {
-        return factory.getOutputStatement(toDisplay);
-    }
-
-    public Object getParameter(String key) {
-        return factory.getParameter(key);
-    }
-
-    public String getProgram(String... statements) {
-        return factory.getProgram(statements);
-    }
-
-    public ScriptEngine getScriptEngine() {
-        final ClassLoader contextClassLoader = context.getClassLoader();
-        ScriptEngine engine;
-        if (contextClassLoader != null) {
-            ClassLoader old = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(contextClassLoader);
-            engine = new BundleScriptEngine(factory.getScriptEngine(), this);
-            Thread.currentThread().setContextClassLoader(old);
+    int getPriorityFor(String extension, int defaultPriority) {
+        if (extensionPriorities != null) {
+            final Integer priority = extensionPriorities.get(extension);
+            return priority == null ? defaultPriority : priority;
         } else {
-            engine = factory.getScriptEngine();
+            return defaultPriority;
         }
-        return engine;
-    }
-
-    @Override
-    public String toString() {
-        return "BundleScriptEngineFactory wrapping " + factory.getClass().getName();
-    }
-
-    BundleScriptingContext getContext() {
-        return context;
     }
 }

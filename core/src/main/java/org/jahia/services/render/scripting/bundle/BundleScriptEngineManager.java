@@ -72,6 +72,7 @@ package org.jahia.services.render.scripting.bundle;
  * For more information, please visit http://www.jahia.com
  */
 
+import org.apache.commons.lang.StringUtils;
 import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,10 +82,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -198,8 +196,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         namesToScriptFactories.put(name, factory);
     }
 
-    private ScriptingContext getScriptManagerContext(Bundle bundle)
-            throws IOException, ClassNotFoundException {
+    private BundleScriptingContext getScriptManagerContext(Bundle bundle) throws IOException, ClassNotFoundException {
         List<String> factoryCandidates = findFactoryCandidates(bundle);
         if (factoryCandidates == null) {
             return null;
@@ -235,8 +232,35 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             }
         }
 
+        // check if the bundle defined any view extension priorities
+        final Dictionary<String, String> headers = bundle.getHeaders();
+        final String extensionsPriorities = headers.get("Jahia-Scripting-Extensions-Priorities");
+        final Map<String, Integer> extensionsPrioritiesMap;
+        if(extensionsPriorities != null) {
+            final String[] extensionPriorityPairs = StringUtils.split(extensionsPriorities);
+            extensionsPrioritiesMap = new HashMap<>(extensionPriorityPairs.length);
+            for (String extensionPriorityPair : extensionPriorityPairs) {
+                final String[] extensionPrioritySplit = StringUtils.split(extensionPriorityPair, '=');
+                boolean valid = false;
+                if (extensionPrioritySplit != null && extensionPrioritySplit.length == 2) {
+                    try {
+                        extensionsPrioritiesMap.put(extensionPrioritySplit[0], Integer.parseInt(extensionPrioritySplit[1]));
+                        valid = true;
+                    } catch (NumberFormatException e) {
+                        // do nothing
+                    }
+                }
+
+                if (!valid) {
+                    logger.warn("Invalid extension - priority pair: {}. Format is extension:priority, priority should be an integer.", extensionPriorityPair);
+                }
+            }
+        } else {
+            extensionsPrioritiesMap = null;
+        }
+
         // so that we can instantiate a ScriptManager with it and initialize our factory maps
-        return new ScriptingContext(new ScriptEngineManager(factoryLoader), factoryLoader);
+        return new BundleScriptingContext(new ScriptEngineManager(factoryLoader), factoryLoader, extensionsPrioritiesMap);
     }
 
     private BundleScriptEngineFactoryConfigurator getConfiguratorFor(String factory) {
@@ -300,7 +324,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     public void addScriptEngineFactoriesIfNeeded(Bundle bundle) {
         try {
-            final ScriptingContext scriptingContext = getScriptManagerContext(bundle);
+            final BundleScriptingContext scriptingContext = getScriptManagerContext(bundle);
             if (scriptingContext != null) {
                 final ScriptEngineManager scriptEngineManager = scriptingContext.getScriptEngineManager();
                 final List<ScriptEngineFactory> engineFactories = scriptEngineManager.getEngineFactories();
@@ -312,12 +336,12 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         }
     }
 
-    private void addFactories(Bundle bundle, ScriptingContext scriptingContext, List<ScriptEngineFactory> engineFactories) {
+    private void addFactories(Bundle bundle, BundleScriptingContext scriptingContext, List<ScriptEngineFactory> engineFactories) {
         final List<ScriptEngineFactory> existingFactories = new ArrayList<>(engineFactories.size());
         bundleIdsToScriptFactories.put(bundle.getBundleId(), existingFactories);
 
         for (ScriptEngineFactory factory : engineFactories) {
-            final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext.getClassLoader());
+            final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
 
             final List<String> extensions = factory.getExtensions();
             for (String extension : extensions) {
@@ -346,24 +370,4 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         }
     }
 
-    /**
-     * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
-     */
-    static class ScriptingContext {
-        private final ScriptEngineManager scriptEngineManager;
-        private final ClassLoader classLoader;
-
-        ScriptingContext(ScriptEngineManager scriptEngineManager, ClassLoader classLoader) {
-            this.scriptEngineManager = scriptEngineManager;
-            this.classLoader = classLoader;
-        }
-
-        ScriptEngineManager getScriptEngineManager() {
-            return scriptEngineManager;
-        }
-
-        ClassLoader getClassLoader() {
-            return classLoader;
-        }
-    }
 }

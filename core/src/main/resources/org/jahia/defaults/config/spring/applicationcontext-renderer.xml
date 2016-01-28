@@ -37,17 +37,6 @@
     <bean id="scriptEngineManager" class="org.jahia.services.render.scripting.bundle.BundleScriptEngineManager" factory-method="getInstance"/>
 
     <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver" factory-method="getInstance">
-        <property name="scriptExtensionsOrdering">
-            <list>
-                <value>jsp</value>
-                <value>groovy</value>
-                <value>js</value>
-                <value>php</value>
-                <value>vm</value>
-                <value>fm</value>
-                <value>flow</value>
-            </list>
-        </property>
         <property name="scriptFactoryMap">
             <map>
                 <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>

@@ -60,6 +60,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created : 27/01/11
  */
 public class ScriptEngineUtils {
+    private final BundleScriptEngineManager enginesManager;
+
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
         static final ScriptEngineUtils INSTANCE = new ScriptEngineUtils();
@@ -69,15 +71,11 @@ public class ScriptEngineUtils {
         return Holder.INSTANCE;
     }
 
-    private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByExtensionCache;
-    private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByNameCache;
-
     private ScriptEngineUtils() {
         super();
-        scriptEngineByExtensionCache = new ConcurrentHashMap<>(7);
-        scriptEngineByNameCache = new ConcurrentHashMap<>(7);
+        enginesManager = BundleScriptEngineManager.getInstance();
         try {
-            BundleScriptEngineManager.getInstance().getEngineByExtension("groovy").eval("true");
+            enginesManager.getEngineByExtension("groovy").eval("true");
         } catch (ScriptException e) {
             // Ignore
         }
@@ -104,29 +102,12 @@ public class ScriptEngineUtils {
     }
 
     private ScriptEngine getScriptEngineFrom(String nameOrExtension, boolean fromExtension) throws ScriptException {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
-        final Map<ClassLoader, Map<String, ScriptEngine>> cache = fromExtension ? scriptEngineByExtensionCache : scriptEngineByNameCache;
-
-        Map<String, ScriptEngine> stringScriptEngineMap = cache.get(contextClassLoader);
-
-        if (stringScriptEngineMap == null) {
-            stringScriptEngineMap = new ConcurrentHashMap<>();
-            cache.put(contextClassLoader, stringScriptEngineMap);
-        }
-
-        ScriptEngine scriptEngine = stringScriptEngineMap.get(nameOrExtension);
+        ScriptEngine scriptEngine = fromExtension ? enginesManager.getEngineByExtension(nameOrExtension) : enginesManager.getEngineByName(nameOrExtension);
 
         if (scriptEngine == null) {
-            scriptEngine = fromExtension ?
-                    BundleScriptEngineManager.getInstance().getEngineByExtension(nameOrExtension) :
-                    BundleScriptEngineManager.getInstance().getEngineByName(nameOrExtension);
-            if (scriptEngine == null) {
-                throw new ScriptException("Script engine not found for " + (fromExtension ? "extension: " : "name: ") + nameOrExtension);
-            }
-            initEngine(scriptEngine);
-            stringScriptEngineMap.put(nameOrExtension, scriptEngine);
+            throw new ScriptException("Script engine not found for " + (fromExtension ? "extension: " : "name: ") + nameOrExtension);
         }
+        initEngine(scriptEngine);
         return scriptEngine;
     }
 

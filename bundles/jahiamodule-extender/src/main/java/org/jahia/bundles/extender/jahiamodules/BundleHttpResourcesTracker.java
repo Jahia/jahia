@@ -46,7 +46,7 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.felix.framework.util.MapToDictionary;
+import org.apache.felix.utils.collections.MapToDictionary;
 import org.apache.jasper.JasperException;
 import org.apache.jasper.JspCompilationContext;
 import org.apache.jasper.servlet.JspServlet;
@@ -75,7 +75,7 @@ import java.util.*;
  * 
  * @author Sergiy Shyrkov
  */
-public class BundleHttpResourcesTracker extends ServiceTracker {
+public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, HttpService> {
 
     private static Logger logger = LoggerFactory.getLogger(BundleHttpResourcesTracker.class);
 
@@ -98,7 +98,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
                     String[] mapping = StringUtils.split(clause, "=");
                     resources.put(mapping[0], mapping[1]);
                 } else {
-                    resources.put("/" + bundle.getSymbolicName() + clause, clause);
+                    if (bundle.findEntries(clause, "*", false) != null) {
+                        resources.put("/" + bundle.getSymbolicName() + clause, clause);
+                    }
                 }
             }
         }
@@ -120,9 +122,9 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
     }
 
     @Override
-    public Object addingService(ServiceReference reference) {
+    public HttpService addingService(ServiceReference<HttpService> reference) {
         try {
-            HttpService httpService = (HttpService) super.addingService(reference);
+            HttpService httpService = super.addingService(reference);
 
             long timer = System.currentTimeMillis();
 
@@ -247,22 +249,21 @@ public class BundleHttpResourcesTracker extends ServiceTracker {
     }
 
     @Override
-    public void removedService(ServiceReference reference, Object service) {
+    public void removedService(ServiceReference<HttpService> reference, HttpService service) {
         if (!JahiaContextLoaderListener.isRunning()) {
             return;
         }
-        HttpService httpService = (HttpService) service;
         int count = 0;
         for (Map.Entry<String, String> curEntry : staticResources.entrySet()) {
             logger.debug("Unregistering static resource {}", curEntry.getKey());
             count++;
-            httpService.unregister(curEntry.getKey());
+            service.unregister(curEntry.getKey());
         }
         logger.info("Unregistered {} static resources for bundle {}", count, bundleName);
 
         // unregister servlets for JSPs
         if (jspServletAlias != null) {
-            httpService.unregister(jspServletAlias);
+            service.unregister(jspServletAlias);
             logger.info("Unregistered JSPs for bundle {}", bundleName);
         }
 

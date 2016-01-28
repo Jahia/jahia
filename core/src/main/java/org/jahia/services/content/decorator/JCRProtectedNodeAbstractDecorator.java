@@ -65,6 +65,7 @@ import java.util.Map;
 public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator {
 
     private boolean alwaysAllowSystem;
+    private static final Logger logger = LoggerFactory.getLogger(JCRProtectedNodeAbstractDecorator.class);
 
     /**
      * Instantiate this decorator, by default properties will be protect also from system session
@@ -84,8 +85,6 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
         super(node);
         this.alwaysAllowSystem = alwaysAllowSystem;
     }
-
-    private transient static Logger logger = LoggerFactory.getLogger(JCRProtectedNodeAbstractDecorator.class);
 
     private class FilteredIterator extends LazyPropertyIterator {
         public FilteredIterator() throws RepositoryException {
@@ -126,7 +125,7 @@ public abstract class JCRProtectedNodeAbstractDecorator extends JCRNodeDecorator
      * @return true if the property is readable, false if not
      * @throws RepositoryException
      */
-    abstract boolean canReadProperty(String propertyName) throws RepositoryException;
+    protected abstract boolean canReadProperty(String propertyName) throws RepositoryException;
 
     private boolean canGetProperty(String propertyName) throws RepositoryException {
         return alwaysAllowSystem && getSession().isSystem() || canReadProperty(propertyName);

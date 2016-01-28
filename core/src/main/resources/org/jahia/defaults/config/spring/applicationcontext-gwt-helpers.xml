@@ -25,6 +25,7 @@
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="properties" ref="PropertiesHelper"/>
         <property name="contentHistoryService" ref="ContentHistoryService"/>
+        <property name="fileStorage" ref="UploadedPendingFileStorage"/>
     </bean>
 
     <bean name="PortletHelper" class="org.jahia.ajax.gwt.helper.PortletHelper">
@@ -36,10 +37,10 @@
 
     <bean name="NavigationHelper" class="org.jahia.ajax.gwt.helper.NavigationHelper">
         <property name="ignoreInUsages">
-        	<set>
-        		<value>jnt:socialActivity.*</value>
-        		<value>jnt:workflowTask.*</value>
-        	</set>
+            <set>
+                <value>jnt:socialActivity.*</value>
+                <value>jnt:workflowTask.*</value>
+            </set>
         </property>
         <property name="nodeHelper">
             <bean class="org.jahia.ajax.gwt.helper.NodeHelper">
@@ -58,6 +59,7 @@
     <bean name="PropertiesHelper" class="org.jahia.ajax.gwt.helper.PropertiesHelper">
         <property name="contentDefinition" ref="ContentDefinitionHelper"/>
         <property name="navigation" ref="NavigationHelper"/>
+        <property name="fileStorage" ref="UploadedPendingFileStorage"/>
         <property name="ignoredProperties">
             <set>
                 <value>jcr:baseVersion</value>
@@ -96,6 +98,7 @@
         <property name="cacheService" ref="JahiaCacheService"/>
         <property name="versionService" ref="jcrVersionService"/>
         <property name="cacheManager" ref="FileCacheManager"/>
+        <property name="fileStorage" ref="UploadedPendingFileStorage"/>
     </bean>
 
     <bean name="ZipHelper" class="org.jahia.ajax.gwt.helper.ZipHelper" factory-method="getInstance"/>
@@ -155,6 +158,10 @@
         <property name="navigation" ref="NavigationHelper"/>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="httpClient" ref="HttpClientService"/>
+    </bean>
+
+    <bean name="UploadedPendingFileStorage" class="org.jahia.ajax.gwt.content.server.UploadedPendingFileStorageJcr">
+        <property name="jcrFolderName" value="pending-uploaded-files"/>
     </bean>
 
 </beans>

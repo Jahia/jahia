@@ -46,6 +46,7 @@ package org.jahia.services.modulemanager;
 import org.jahia.services.modulemanager.payload.BundleStateReport;
 import org.jahia.services.modulemanager.payload.NodeStateReport;
 import org.jahia.services.modulemanager.payload.OperationState;
+import org.springframework.binding.message.MessageContext;
 import org.springframework.core.io.Resource;
 
 import java.util.Set;
@@ -65,7 +66,7 @@ public interface ModuleManager {
      * @return the result of the install operation
      * @throws ModuleManagementException thrown exception is case of problems
      */
-    OperationResult install(Resource bundleResource, String... nodes) throws ModuleManagementException;
+    OperationResult install(Resource bundleResource, MessageContext context, String originalFilename, boolean forceUpdate, String... nodes) throws ModuleManagementException;
 
     /**
      * Start a bundle on a list of cluster nodes.

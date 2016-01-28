@@ -73,7 +73,8 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
         mounted, unmounted, waiting, error
     }
 
-    boolean canReadProperty(String propertyName) throws RepositoryException {
+    @Override
+    protected boolean canReadProperty(String propertyName) throws RepositoryException {
         if(PROTECTED_PROPERTIES_PROPERTY_NAME.equals(propertyName)) {
             return false;
         }

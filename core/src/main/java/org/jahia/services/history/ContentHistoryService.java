@@ -53,8 +53,6 @@ import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.*;
 import org.hibernate.criterion.Restrictions;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.JahiaAfterInitializationService;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -78,7 +76,7 @@ import java.util.regex.Pattern;
  * <p/>
  * @author loom
  */
-public class ContentHistoryService implements Processor, CamelContextAware, JahiaAfterInitializationService {
+public class ContentHistoryService implements Processor, CamelContextAware {
     private transient static Logger logger = LoggerFactory.getLogger(ContentHistoryService.class);
 
     private org.hibernate.SessionFactory sessionFactoryBean;
@@ -286,9 +284,14 @@ public class ContentHistoryService implements Processor, CamelContextAware, Jahi
                         }
                     }
                     historyEntry.setMessage(historyMessage);
-                    session.save(historyEntry);
-                    session.flush();
-                    session.getTransaction().commit();
+                    try {
+                        session.save(historyEntry);
+                        session.flush();
+                        session.getTransaction().commit();
+                    } catch (Exception e) {
+                        session.getTransaction().rollback();
+                        throw e;
+                    }
                     insertedCount.incrementAndGet();
                     latestTimeProcessed.set(date.getTime());
                     lastUUIDProcessed = nodeIdentifier;
@@ -296,12 +299,12 @@ public class ContentHistoryService implements Processor, CamelContextAware, Jahi
                     lastActionProcessed = action;
                 }
             } catch (HibernateException e) {
-                session.getTransaction().rollback();
                 whatDidWeDo = "insertion failed";
                 logger.error(e.getMessage(), e);
             } finally {
                 session.close();
             }
+
             if (logger.isDebugEnabled()) {
                 logger.debug("Entry " + whatDidWeDo + " in " + (System.currentTimeMillis() - timer) + " ms");
             }
@@ -387,20 +390,6 @@ public class ContentHistoryService implements Processor, CamelContextAware, Jahi
 
     public void setCamelContext(final CamelContext camelContext) {
         this.camelContext = camelContext;
-    }
-
-    public CamelContext getCamelContext() {
-        return camelContext;
-    }
-
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    @Override
-    public void initAfterAllServicesAreStarted() throws JahiaInitializationException {
-        logger.info("Registering Camel route for consuming content history messages");
-        
         final ContentHistoryService contentHistoryService = this;
         try {
             camelContext.addRoutes(new RouteBuilder() {
@@ -414,4 +403,13 @@ public class ContentHistoryService implements Processor, CamelContextAware, Jahi
             logger.error(e.getMessage(), e);
         }
     }
+
+    public CamelContext getCamelContext() {
+        return camelContext;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
+    }
+
 }

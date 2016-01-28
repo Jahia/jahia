@@ -43,36 +43,19 @@
  */
 package org.jahia.osgi;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.service.startlevel.StartLevel;
-import org.osgi.util.tracker.ServiceTracker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletContext;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Initial startup OSGi provision activator
  *
  * @author loom
- *         Date: Oct 11, 2010
- *         Time: 5:18:48 PM
+ * @deprecated since 7.2
  */
-public final class ProvisionActivator implements BundleActivator {
+@Deprecated
+public final class ProvisionActivator {
+    private static ProvisionActivator instance = new ProvisionActivator();
 
-    private final ServletContext servletContext;
-    private BundleContext bundleContext;
-
-    private static ProvisionActivator instance = null;
-    private static final Logger logger = LoggerFactory.getLogger(ProvisionActivator.class);
-
-    public ProvisionActivator(ServletContext servletContext) {
-        this.servletContext = servletContext;
+    private ProvisionActivator() {
         instance = this;
     }
 
@@ -80,58 +63,8 @@ public final class ProvisionActivator implements BundleActivator {
         return instance;
     }
 
-    @Override
-    public void start(BundleContext context) throws Exception {
-
-        bundleContext = context;
-        servletContext.setAttribute(BundleContext.class.getName(), context);
-
-        ArrayList<Bundle> installed = new ArrayList<Bundle>();
-        for (URL url : findBundles()) {
-            logger.info("Installing bundle [{}]", url);
-            Bundle bundle = context.installBundle(url.toExternalForm());
-            installed.add(bundle);
-        }
-
-        ServiceTracker st = new ServiceTracker(context, StartLevel.class.getName(), null);
-        st.open();
-        StartLevel sl = ((StartLevel)st.getService());
-
-        for (Bundle bundle : installed) {
-            if (bundle.getSymbolicName().equals("org.apache.felix.fileinstall")) {
-                // Start fileInstall only on level 2
-                sl.setBundleStartLevel(bundle,2);
-            }
-
-            // we first check if it is a fragment bundle, in which case we will not start it.
-            if (bundle.getHeaders().get("Fragment-Host") == null) {
-                bundle.start();
-            }
-        }
-    }
-
-    @Override
-    public void stop(BundleContext context) throws Exception {
-        bundleContext = null;
-        servletContext.removeAttribute(BundleContext.class.getName());
-        instance = null;
-    }
-
     public BundleContext getBundleContext() {
-        return bundleContext;
+        return FrameworkService.getBundleContext();
     }
 
-    private List<URL> findBundles() throws Exception {
-        ArrayList<URL> list = new ArrayList<URL>();
-        for (Object o : this.servletContext.getResourcePaths("/WEB-INF/bundles/")) {
-            String name = (String) o;
-            if (name.endsWith(".jar")) {
-                URL url = this.servletContext.getResource(name);
-                if (url != null) {
-                    list.add(url);
-                }
-            }
-        }
-        return list;
-    }
 }

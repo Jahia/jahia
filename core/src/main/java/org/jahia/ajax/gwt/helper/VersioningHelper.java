@@ -47,7 +47,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -60,7 +60,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
-import java.io.FileNotFoundException;
+
 import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
@@ -72,9 +72,9 @@ import java.util.List;
  * Time: 7:03:31 PM
  */
 public class VersioningHelper {
-    private static final FastDateFormat DF = FastDateFormat.getInstance("yyyy_MM_dd_HH_mm_ss");
 
-    private static Logger logger = LoggerFactory.getLogger(VersioningHelper.class);
+    private static final FastDateFormat DF = FastDateFormat.getInstance("yyyy_MM_dd_HH_mm_ss");
+    private static final Logger logger = LoggerFactory.getLogger(VersioningHelper.class);
 
     /**
      * Returns the formatted timestamp for the version label.
@@ -119,6 +119,7 @@ public class VersioningHelper {
     private CacheService cacheService;
     private JCRVersionService versionService;
     private FileCacheManager cacheManager;
+    private UploadedPendingFileStorage fileStorage;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -130,6 +131,10 @@ public class VersioningHelper {
 
     public void setCacheManager(FileCacheManager cacheManager) {
         this.cacheManager = cacheManager;
+    }
+
+    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+        this.fileStorage = fileStorage;
     }
 
     /**
@@ -160,9 +165,10 @@ public class VersioningHelper {
      * @param tmpName
      * @throws org.jahia.ajax.gwt.client.service.GWTJahiaServiceException
      */
-    public void addNewVersionFile(JCRNodeWrapper node, String tmpName) throws GWTJahiaServiceException {
+    public void addNewVersionFile(JCRNodeWrapper node, String tmpName, String httpSessionID) throws GWTJahiaServiceException {
         try {
             if (node != null) {
+
                 JCRSessionWrapper session = node.getSession();
                 VersionManager versionManager = session.getWorkspace().getVersionManager();
                 if (!node.isVersioned()) {
@@ -176,21 +182,14 @@ public class VersioningHelper {
                     versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
                 }
                 versionManager.checkout(node.getPath());
-                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
+                UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, tmpName);
                 InputStream is = null;
                 try {
-                    is = item.getStream();
-                    node.getFileContent().uploadFile(
-                            is,
-                            JCRContentUtils.getMimeType(
-                                    StringUtils.isNotEmpty(item.getOriginalFileName()) ? item
-                                            .getOriginalFileName() : node.getName(), item
-                                            .getContentType()));
-                } catch (FileNotFoundException e) {
-                    throw new GWTJahiaServiceException("Cannot add new version. Cause: " + e.getLocalizedMessage());
+                    is = item.getContentStream();
+                    node.getFileContent().uploadFile(is, JCRContentUtils.getMimeType(StringUtils.isNotEmpty(item.getName()) ? item.getName() : node.getName(), item.getContentType()));
                 } finally {
                     IOUtils.closeQuietly(is);
-                    item.dispose();
+                    fileStorage.remove(httpSessionID, tmpName);
                 }
 
                 session.save();

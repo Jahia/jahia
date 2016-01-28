@@ -84,6 +84,9 @@
         <property name="groupService" ref="JahiaGroupManagerService"/>
         <property name="sessionFactory" ref="jcrSessionFactory"/>
         <property name="ehCacheProvider" ref="ehCacheProvider"/>
+        <property name="validServerNameRegex">
+            <value ><![CDATA[[^~#%&*{}\\:<>?/+|\"]*$]]></value>
+        </property>
     </bean>
 
 	<bean id="CategoryService" class="org.jahia.services.categories.CategoryServiceImpl"

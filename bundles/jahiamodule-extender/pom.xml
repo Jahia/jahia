@@ -86,6 +86,7 @@
                         </Import-Package>
                         <Embed-Dependency>*; scope=compile; type=!pom; inline=true</Embed-Dependency>
                         <Embed-Transitive>true</Embed-Transitive>
+                        <Karaf-Commands>*</Karaf-Commands>
                         <_removeheaders>
                             Include-Resource,
                             Private-Package,
@@ -115,7 +116,7 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>${osgi.version}</version>
+            <version>${osgi.compendium.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -134,6 +135,12 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.base</artifactId>
             <version>${felix.http.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
+            <version>${karaf.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>

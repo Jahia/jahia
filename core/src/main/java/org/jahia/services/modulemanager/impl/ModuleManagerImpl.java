@@ -43,31 +43,6 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
-import org.jahia.services.modulemanager.persistence.ModuleInfoPersister.OCMCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.modulemanager.ModuleManagementException;
-import org.jahia.services.modulemanager.ModuleManager;
-import org.jahia.services.modulemanager.OperationResult;
-import org.jahia.services.modulemanager.model.*;
-import org.jahia.services.modulemanager.payload.BundleStateReport;
-import org.jahia.services.modulemanager.payload.NodeStateReport;
-import org.jahia.services.modulemanager.payload.OperationResultImpl;
-import org.jahia.services.modulemanager.payload.OperationState;
-import org.jahia.services.modulemanager.persistence.ModuleInfoPersister;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.core.io.Resource;
-
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -75,9 +50,59 @@ import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.jar.JarInputStream;
 import java.util.jar.Manifest;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.data.templates.ModulesPackage;
+import org.jahia.osgi.BundleUtils;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.modulemanager.ModuleManagementException;
+import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.ModuleManagerHelper;
+import org.jahia.services.modulemanager.OperationResult;
+import org.jahia.services.modulemanager.model.BinaryFile;
+import org.jahia.services.modulemanager.model.Bundle;
+import org.jahia.services.modulemanager.model.ClusterNode;
+import org.jahia.services.modulemanager.model.ClusterNodeInfo;
+import org.jahia.services.modulemanager.model.NodeBundle;
+import org.jahia.services.modulemanager.model.Operation;
+import org.jahia.services.modulemanager.payload.BundleInfo;
+import org.jahia.services.modulemanager.payload.BundleStateReport;
+import org.jahia.services.modulemanager.payload.NodeStateReport;
+import org.jahia.services.modulemanager.payload.OperationResultImpl;
+import org.jahia.services.modulemanager.payload.OperationState;
+import org.jahia.services.modulemanager.persistence.ModuleInfoPersister;
+import org.jahia.services.modulemanager.persistence.ModuleInfoPersister.OCMCallback;
+import org.jahia.services.templates.JahiaTemplateManagerService;
+import org.jahia.services.templates.ModuleVersion;
+import org.jahia.settings.SettingsBean;
+import org.osgi.framework.BundleException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.binding.message.MessageBuilder;
+import org.springframework.binding.message.MessageContext;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
@@ -89,6 +114,11 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
     private ClusterNodeInfo clusterNodeInfo;
+    
+    // MEGA-JAR handling review: template manager service
+    private JahiaTemplateManagerService templateManagerService;
+    
+    
 
     private static void populateFromManifest(Bundle bundle, File bundleFile) throws IOException {
         JarInputStream jarIs = new JarInputStream(new FileInputStream(bundleFile));
@@ -207,15 +237,26 @@ public class ModuleManagerImpl implements ModuleManager {
         return op;
     }
 
-    @Override
-    public OperationResult install(Resource bundleResource, String... nodes) throws ModuleManagementException {
-        Operation operation = null;
-        // save to a temporary file and create Bundle data object
-        File tmp = null;
-        try {
+    private OperationResult installModule(Resource bundleResource, Manifest manifest, MessageContext context, List<String> providedBundles, boolean forceUpdate, String... nodes) throws IOException, BundleException {
+      File tmp = null;  
+      try {
+            String symbolicName = ModuleManagerHelper.getManifestSymbolicName(manifest);
+            String version = ModuleManagerHelper.getManifestVersion(manifest);
+            String groupId = ModuleManagerHelper.getManifestGroupId(manifest);
+            
+            if(ModuleManagerHelper.isDifferentModuleWithSameIdExists(symbolicName, groupId, context, templateManagerService)) {
+                return new OperationResultImpl(false, "Module installation failed because a module exists with the same name " + symbolicName, null);
+            }
+            
+            if(!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(), symbolicName, version, context)) {
+                return new OperationResultImpl(false, "Module installation failed because a module exists with the same name and version. " + symbolicName + "-" + version, null);
+            }
+            
             tmp = File.createTempFile(bundleResource.getFilename() != null
-                    ? FilenameUtils.getBaseName(bundleResource.getFilename()) : "bundle", ".jar");
+                ? FilenameUtils.getBaseName(bundleResource.getFilename()) : "bundle", ".jar");
+            
             final Bundle bundle = toBundle(bundleResource, tmp);
+            
             if (bundle == null) {
                 return OperationResultImpl.NOT_VALID_BUNDLE;
             }
@@ -226,19 +267,111 @@ public class ModuleManagerImpl implements ModuleManager {
                 // we have exactly same bundle installed already -> refuse
                 return OperationResultImpl.ALREADY_INSTALLED;
             }
+            
+            // TODO check for missing dependencies before installing?
+            
             // store bundle in JCR and create operation node
-            operation = doInstall(bundle, nodes);
+            Operation operation = doInstall(bundle, nodes);
 
             // notify the processor
             notifyOperationProcessor();
+            OperationResult result = new OperationResultImpl(true, "Operation successfully performed", operation.getIdentifier());
+            result.getBundleInfoList().add(new BundleInfo(symbolicName, version));
+    
+            return result;
+        } catch (Exception ex) {
+          // Add message to the context
+          if(context != null) {
+            context.addMessage(new MessageBuilder().source("moduleInstallionFailed")
+                .code("serverSettings.manageModules.install.failed")
+                .arg(ex.getMessage())
+                .error()
+                .build());
+          }
+          return new OperationResultImpl(false, ex.getMessage());
+        }finally {
+          FileUtils.deleteQuietly(tmp);
+        }
+    }
+    
+    private void startBundles(MessageContext context, List<BundleInfo> bundleInfoList, SettingsBean settingsBean) throws BundleException {
+      for (BundleInfo bundleInfo : bundleInfoList) {
+          org.osgi.framework.Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+          if (bundle != null) {
+            Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
+            JahiaTemplatesPackage currentVersion = templateManagerService.getTemplatePackageRegistry().lookupById(bundle.getSymbolicName());
+            if (allVersions.size() == 1 ||
+                ((settingsBean.isDevelopmentMode() && currentVersion != null && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
+              start(bundleInfo.getSymbolicName() + "-" + bundleInfo.getVersion());
+              if(context != null) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.uploadedAndStarted")
+                    .args(new String[]{bundle.getSymbolicName(), bundle.getVersion().toString()})
+                    .build());
+              }
+              logger.info("Module has been successfully uploaded and started. Please check its status in the list.");
+            } else {
+              if(context != null) {
+                context.addMessage(new MessageBuilder().source("moduleFile")
+                    .code("serverSettings.manageModules.install.uploaded")
+                    .args(new String[]{bundle.getSymbolicName(), bundle.getVersion().toString()})
+                    .build());
+              }
+              logger.info("Module has been successfully uploaded. Check status in the list.");
+            }
+          }
+      }
+  }
+    @Override
+    public OperationResult install(Resource bundleResource, MessageContext context, String originalFilename, boolean forceUpdate, String... nodes) throws ModuleManagementException {
+        // save to a temporary file and create Bundle data object
+        
+        OperationResult installResult = null;
+        try {
+            // get the manifest
+            Manifest manifest = ModuleManagerHelper.getJarFileManifest(bundleResource.getFile());
+            if (ModuleManagerHelper.isPackageModule(manifest)) {
+              if(ModuleManagerHelper.isValidJahiaPackageFile(manifest, context, originalFilename)) {
+                JarFile jarFile = new JarFile(bundleResource.getFile());
+                try {
+                  ModulesPackage pack = ModulesPackage.create(jarFile);
+                  List<String> providedBundles = new ArrayList<String>(pack.getModules().keySet());
+                  for (Map.Entry<String, ModulesPackage.PackagedModule> entry : pack.getModules().entrySet()) {
+                    OperationResult res = installModule(new FileSystemResource(entry.getValue().getModuleFile()), ModuleManagerHelper.getJarFileManifest(entry.getValue().getModuleFile()), context, providedBundles, forceUpdate);
+                    // to be reviewed
+                    if(installResult == null) {
+                      installResult = res;
+                    } else {
+                      if(res != null && res.isSuccess()) {
+                        installResult.getBundleInfoList().addAll(res.getBundleInfoList());
+                      }
+                    }
+                  }
+                } catch (Exception ex) {
+                  logger.error("Error during jahia package installation.", ex);
+                } finally {
+                  IOUtils.closeQuietly(jarFile);
+                }
+                
+              } else {
+                installResult = new OperationResultImpl(false, "Operation aborted. Please, check the bundle package name or license.", null);
+              }
+            } else {
+              installResult = installModule(bundleResource, manifest, context, null, forceUpdate);
+            }
+            
         } catch (Exception e) {
             throw new ModuleManagementException(e);
-        } finally {
-            FileUtils.deleteQuietly(tmp);
         }
-
-        OperationResult result = new OperationResultImpl(true, "Operation successfully performed",operation.getIdentifier());
-        return result;
+        
+        if(installResult != null && installResult.isSuccess()) {
+          try {
+            startBundles(context, installResult.getBundleInfoList(), SettingsBean.getInstance());
+          } catch (BundleException bex) {
+            logger.error("An error occured during starting installed bundles", bex);
+          }
+        }
+        return installResult;
     }
 
     private void notifyOperationProcessor() {
@@ -301,7 +434,7 @@ public class ModuleManagerImpl implements ModuleManager {
     public OperationResult uninstall(String bundleKey, String... nodes) {
         Operation operation = null;
         try {
-            operation =doOperation(bundleKey, "uninstall");
+            operation = doOperation(bundleKey, "uninstall");
 
             // notify the processor
             notifyOperationProcessor();
@@ -409,5 +542,13 @@ public class ModuleManagerImpl implements ModuleManager {
         } catch (RepositoryException e) {
             throw new ModuleManagementException(e);
         }
+    }
+    
+    /**
+     * Set the Jahia template manager service
+     * @param templateManagerService the template manager service bean to set
+     */
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+      this.templateManagerService = templateManagerService;
     }
 }

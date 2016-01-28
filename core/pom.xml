@@ -327,7 +327,7 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>${hibernate.version}</version>
+            <version>${hibernate.core.version}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -436,6 +436,12 @@
             <groupId>org.apache</groupId>
             <artifactId>jackrabbit-ocm</artifactId>
             <version>2.0.0</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>cglib</groupId>
+                    <artifactId>cglib</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -1301,12 +1307,13 @@
         <dependency>
             <groupId>org.osgi</groupId>
             <artifactId>org.osgi.compendium</artifactId>
-            <version>${osgi.version}</version>
+            <version>${osgi.compendium.version}</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.felix</groupId>
-            <artifactId>org.apache.felix.framework</artifactId>
-            <version>${felix.framework.version}</version>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.core</artifactId>
+            <version>${osgi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
@@ -1387,7 +1394,16 @@
             <classifier>cdi1.0</classifier>
         </dependency>
 
-
+        <dependency>
+            <groupId>org.apache.karaf</groupId>
+            <artifactId>org.apache.karaf.main</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.apache.karaf.features</groupId>
+                    <artifactId>framework</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
     </dependencies>
     <build>
 

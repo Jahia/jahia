@@ -109,10 +109,10 @@
                 <module>public-api</module>
                 <module>taglib</module>
                 <module>core</module>
-                <module>data</module>
                 <module>gwt</module>
                 <module>modules</module>
                 <module>bundles</module>
+                <module>features</module>
                 <module>war</module>
                 <module>test</module>
             </modules>

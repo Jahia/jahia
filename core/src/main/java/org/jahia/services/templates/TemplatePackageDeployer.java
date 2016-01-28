@@ -49,7 +49,7 @@ import org.apache.jackrabbit.core.security.JahiaAccessManager;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;
-import org.jahia.osgi.ProvisionActivator;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.services.content.*;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportBaseService;
@@ -397,7 +397,7 @@ public class TemplatePackageDeployer {
     public JahiaTemplatesPackage deployModule(File jarFile, JCRSessionWrapper session) throws RepositoryException {
         try {
             String location = jarFile.toURI().toString();
-            Bundle bundle = ProvisionActivator.getInstance().getBundleContext().installBundle(location);
+            Bundle bundle = FrameworkService.getInstance().getBundleContext().installBundle(location);
             bundle.update();
             bundle.start();
             String moduleId = BundleUtils.getModuleId(bundle);
@@ -411,7 +411,7 @@ public class TemplatePackageDeployer {
     }
 
     public void undeployModule(String id, String version) throws RepositoryException {
-        Bundle[] bundles = ProvisionActivator.getInstance().getBundleContext().getBundles();
+        Bundle[] bundles = FrameworkService.getInstance().getBundleContext().getBundles();
         for (Bundle bundle : bundles) {
             String moduleId = BundleUtils.getModuleId(bundle);
             String moduleVersion = BundleUtils.getModuleVersion(bundle);

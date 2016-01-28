@@ -634,7 +634,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             throws GWTJahiaServiceException {
         JCRSessionWrapper s = retrieveCurrentSession();
         try {
-            properties.saveProperties(nodes, newProps, removedTypes, s, getLocale());
+            properties.saveProperties(nodes, newProps, removedTypes, s, getLocale(), getSession().getId());
             retrieveCurrentSession().save();
         } catch (javax.jcr.nodetype.ConstraintViolationException e) {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.could.not.save.properties", getUILocale(), getLocalizedMessage(e)));
@@ -664,7 +664,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             sessions.add(session);
 
             // save shared properties
-            properties.saveProperties(nodes, sharedProperties, removedTypes, session, getUILocale());
+            properties.saveProperties(nodes, sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
 
 
             // save properties per lang
@@ -673,7 +673,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 final Locale locale = LanguageCodeConverters.languageCodeToLocale(currentLangCode);
                 session = retrieveCurrentSession(locale);
                 sessions.add(session);
-                properties.saveProperties(nodes, props, removedTypes, session, getUILocale());
+                properties.saveProperties(nodes, props, removedTypes, session, getUILocale(), getSession().getId());
             }
             for (JCRSessionWrapper sessionWrapper : sessions) {
                 sessionWrapper.validate();
@@ -740,7 +740,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                 sessions.add(session);
 
                 // save shared properties
-                properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale());
+                properties.saveProperties(Arrays.asList(node), sharedProperties, removedTypes, session, getUILocale(), getSession().getId());
                 if (!removedTypes.isEmpty()) {
                     for (ExtendedNodeType mixin : retrieveCurrentSession().getNodeByUUID(node.getUUID()).getMixinNodeTypes()) {
                         removedTypes.remove(mixin.getName());
@@ -752,7 +752,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     List<GWTJahiaNodeProperty> props = langCodeProperties.get(currentLangCode);
                     session = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
                     sessions.add(session);
-                    properties.saveProperties(Arrays.asList(node), props, removedTypes, session, getUILocale());
+                    properties.saveProperties(Arrays.asList(node), props, removedTypes, session, getUILocale(), getSession().getId());
                 }
                 for (JCRSessionWrapper sessionWrapper : sessions) {
                     sessionWrapper.validate();
@@ -822,7 +822,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
             if (node.get("visibilityConditions") != null) {
                 List<GWTJahiaNode> visibilityConditions = (List<GWTJahiaNode>) node.get("visibilityConditions");
-                contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper, getUILocale());
+                contentManager.saveVisibilityConditions(node, visibilityConditions, jcrSessionWrapper, getUILocale(), getSession().getId());
                 try {
                     for (GWTJahiaNode condition : visibilityConditions) {
                         if (Boolean.TRUE.equals(condition.get("node-published") != null)) {
@@ -937,7 +937,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
             }
         }
         final JCRSessionWrapper session = retrieveCurrentSession();
-        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale(), parentNodesType, forceCreation);
+        GWTJahiaNode res = contentManager.createNode(parentPath, name, nodeType, mixin, props, session, getUILocale(), parentNodesType, forceCreation, getSession().getId());
         List<String> fields = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
         GWTJahiaNode node;
         try {
@@ -961,7 +961,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     List<GWTJahiaNodeProperty> properties = langCodeProperties.get(currentLangCode);
                     JCRSessionWrapper langSession = retrieveCurrentSession(LanguageCodeConverters.languageCodeToLocale(currentLangCode));
                     if (properties != null) {
-                        this.properties.saveProperties(nodes, properties, null, langSession, getUILocale());
+                        this.properties.saveProperties(nodes, properties, null, langSession, getUILocale(), getSession().getId());
                         langSession.validate();
                     }
                 }
@@ -1043,21 +1043,21 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
      * @throws GWTJahiaServiceException
      */
     public GWTJahiaNode createFolder(String parentPath, String name) throws GWTJahiaServiceException {
-        return contentManager.createFolder(parentPath, name, retrieveCurrentSession(), getUILocale());
+        return contentManager.createFolder(parentPath, name, retrieveCurrentSession(), getUILocale(), getSession().getId());
     }
 
     public GWTJahiaNode createPortletInstance(String path, GWTJahiaNewPortletInstance wiz)
             throws GWTJahiaServiceException {
-        return portlet.createPortletInstance(path, wiz, retrieveCurrentSession(), getUILocale());
+        return portlet.createPortletInstance(path, wiz, retrieveCurrentSession(), getUILocale(), getSession().getId());
     }
 
     public GWTJahiaNode createRSSPortletInstance(String path, String name, String url) throws GWTJahiaServiceException {
-        return portlet.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession(), getUILocale());
+        return portlet.createRSSPortletInstance(path, name, url, getSite(), retrieveCurrentSession(), getUILocale(), getSession().getId());
     }
 
     public GWTJahiaNode createGoogleGadgetPortletInstance(String path, String name, String script)
             throws GWTJahiaServiceException {
-        return portlet.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession(), getUILocale());
+        return portlet.createGoogleGadgetPortletInstance(path, name, script, getSite(), retrieveCurrentSession(), getUILocale(), getSession().getId());
     }
 
     public void checkExistence(String path) throws GWTJahiaServiceException {
@@ -1287,8 +1287,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public void uploadedFile(List<String[]> uploadeds) throws GWTJahiaServiceException {
         for (String[] uploaded : uploadeds) {
-            contentManager.uploadedFile(uploaded[0], uploaded[1], Integer.parseInt(uploaded[2]), uploaded[3],
-                    retrieveCurrentSession(), getUILocale());
+            contentManager.uploadedFile(uploaded[0], uploaded[1], Integer.parseInt(uploaded[2]), uploaded[3], retrieveCurrentSession(), getUILocale(), getSession().getId());
         }
     }
 
@@ -1334,7 +1333,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     public List<GWTJahiaJobDetail> importContent(String parentPath, String fileKey, Boolean replaceContent)
             throws GWTJahiaServiceException {
         List<GWTJahiaJobDetail> details = schedulerHelper.getActiveJobs(getUILocale());
-        contentManager.importContent(parentPath, fileKey, replaceContent, retrieveCurrentSession(), getUILocale());
+        contentManager.importContent(parentPath, fileKey, replaceContent, retrieveCurrentSession(), getUILocale(), getSession().getId());
         return details;
     }
 

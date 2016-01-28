@@ -7,12 +7,14 @@
 
     <display-name>Jahia</display-name>
 
+    <distributable/>
+
     <context-param>
-    	<description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
+        <description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
         <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>
         <param-value>false</param-value>
     </context-param>
-    
+
     <context-param>
         <description>
             The location of Spring's configuration files used by the listener upon startup
@@ -39,7 +41,7 @@
         <param-name>log4jRefreshInterval</param-name>
         <param-value>60000</param-value>
     </context-param>
-    
+
     <context-param>
         <!-- if you have trouble with the JDK detection code, you might want
              to remove the following parameter. Please note that this is here
@@ -48,7 +50,7 @@
         <param-name>supported_jdk_versions</param-name>
         <param-value>1.7 &lt;= x &lt; 1.9</param-value>
     </context-param>
-    
+
     <context-param>
         <description>Spring Expression Language Support</description>
         <param-name>springJspExpressionSupport</param-name>
@@ -56,11 +58,11 @@
     </context-param>
 
     <filter>
-    	<description>
-	      The following filter to use SPNEGO authentication is
-	      configured in applicationcontext-spnego.xml.
-	      It can be enabled in the jahia.properties.
-    	</description>
+        <description>
+          The following filter to use SPNEGO authentication is
+          configured in applicationcontext-spnego.xml.
+          It can be enabled in the jahia.properties.
+        </description>
         <filter-name>SpnegoHttpFilter</filter-name>
         <filter-class>org.jahia.bin.filters.FallbackDelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
@@ -73,7 +75,7 @@
     </filter>
 
     <filter>
-    	<filter-name>UrlRewriteFilter</filter-name>
+        <filter-name>UrlRewriteFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
         <init-param>
@@ -102,25 +104,25 @@
             <description>
                 The minimal error response code to fire an event.
                 For example the value 500 will only fire errorOccurred event for critical events.
-                In case the value is set to 400, also the "bad request", "unauthorized", "forbidden", "resource not found" errors will be reported 
+                In case the value is set to 400, also the "bad request", "unauthorized", "forbidden", "resource not found" errors will be reported
             </description>
             <param-name>minimalErrorCode</param-name>
             <param-value>500</param-value>
         </init-param>
     </filter>
-    
+
     <filter>
-    	<description>Sets request character encoding if it is not set already</description>
-    	<filter-name>CharacterEncodingFilter</filter-name>
-    	<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <description>Sets request character encoding if it is not set already</description>
+        <filter-name>CharacterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
         <async-supported>true</async-supported>
-    	<init-param>
-    		<description>Which encoding should we set?</description>
-    		<param-name>encoding</param-name>
-    		<param-value>UTF-8</param-value>
-    	</init-param>
+        <init-param>
+            <description>Which encoding should we set?</description>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
     </filter>
-    
+
     <filter>
         <filter-name>shiroFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
@@ -132,7 +134,7 @@
     </filter>
 
     <filter>
-    	<description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
+        <description>Allows temporary disabling request serving and switching to a maintenance mode.</description>
         <filter-name>MaintenanceFilter</filter-name>
         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
         <async-supported>true</async-supported>
@@ -169,16 +171,16 @@
         <filter-name>CharacterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
-	<filter-mapping>
-		<filter-name>MaintenanceFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping>
 
     <filter-mapping>
-		<filter-name>LicenseFilter</filter-name>
-		<url-pattern>/*</url-pattern>
-	</filter-mapping> 
+        <filter-name>MaintenanceFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>LicenseFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
     <filter-mapping>
         <filter-name>shiroFilter</filter-name>
@@ -234,18 +236,14 @@
     <listener>
         <listener-class>org.jahia.bin.listeners.LoggingConfigListener</listener-class>
     </listener>
-    
+
     <listener>
         <listener-class>org.jahia.bin.listeners.JahiaContextLoaderListener</listener-class>
     </listener>
 
     <listener>
-        <listener-class>org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet</listener-class>
-    </listener>
-    
-    <listener>
         <listener-class>org.atmosphere.cpr.SessionSupport</listener-class>
-    </listener>    
+    </listener>
 
     <servlet>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -411,14 +409,14 @@
         <load-on-startup>99</load-on-startup>
         <async-supported>true</async-supported>
     </servlet>
-    
+
     <!-- OSGi Proxy Servlet -->
     <servlet>
         <servlet-name>osgiProxy</servlet-name>
         <servlet-class>org.apache.felix.http.proxy.ProxyServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
         <async-supported>true</async-supported>
-    </servlet>    
+    </servlet>
 
     <!-- This servlet is used to indicate the end of the initialization process of Jahia, so it should always have
          the highest load-on-startup value. This servlet may also be queried to check if the server has completed
@@ -476,7 +474,7 @@
         </init-param>
         <load-on-startup>99</load-on-startup>
     </servlet>
-    
+
     <!-- Servlet mappings -->
     <servlet-mapping>
         <servlet-name>WelcomeServlet</servlet-name>
@@ -490,7 +488,7 @@
         <servlet-name>WelcomeServlet</servlet-name>
         <url-pattern>/welcome/*</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>ValidateTicket</servlet-name>
         <url-pattern>/validateTicket</url-pattern>
@@ -530,7 +528,7 @@
         <servlet-name>GWTDispatcherServlet</servlet-name>
         <url-pattern>*.gwt</url-pattern>
     </servlet-mapping>
-    
+
     <servlet-mapping>
         <servlet-name>RendererDispatcherServlet</servlet-name>
         <url-pattern>/cms/*</url-pattern>
@@ -563,7 +561,7 @@
         <servlet-name>FlowDispatcherServlet</servlet-name>
         <url-pattern>/flow/*</url-pattern>
     </servlet-mapping>
-    
+
     <session-config>
         <cookie-config>
             <path>/</path> <!-- This is needed for proper portlet external application scoped attributes to work -->
@@ -814,7 +812,7 @@
     </mime-mapping>
     <mime-mapping>
         <extension>mathml</extension>
-        <mime-type>application/mathml+xml</mime-type> 
+        <mime-type>application/mathml+xml</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>me</extension>

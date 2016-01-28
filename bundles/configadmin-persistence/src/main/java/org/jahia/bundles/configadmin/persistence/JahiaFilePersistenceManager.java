@@ -69,7 +69,7 @@ public class JahiaFilePersistenceManager extends FilePersistenceManager {
     public void store(String pid, Dictionary props) throws IOException {
         long timerstamp = getTimerstamp(props);
         if (timerstamp > 0) {
-            props.put("felix.fileinstall.source.timestamp", timerstamp);
+            props.put("felix.fileinstall.source.timestamp", ""+ timerstamp);
         }
         super.store(pid, props);
     }

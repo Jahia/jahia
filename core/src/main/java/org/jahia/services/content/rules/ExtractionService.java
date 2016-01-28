@@ -232,7 +232,7 @@ public class ExtractionService {
             return textExtracted;
         }
         try {
-            textExtracted = jcrTemplate.doExecuteWithSystemSession(null, workspace, new JCRCallback<Boolean>() {
+            textExtracted = jcrTemplate.doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Boolean>() {
                 public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
                     boolean success = false;
                     JCRNodeWrapper file = session.getNode(sourcePath);
@@ -290,9 +290,9 @@ public class ExtractionService {
             });
         } catch (RepositoryException e) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Cannot extract content: " + e.getMessage(), e);
+                logger.debug("Cannot extract content: " + e, e);
             } else {
-                logger.warn("Cannot extract content: " + e.getMessage());
+                logger.warn("Cannot extract content: " + e);
             }
         }
         return textExtracted;

@@ -60,7 +60,8 @@ public class JCRPasswordHistoryEntryNode extends JCRProtectedNodeAbstractDecorat
         super(node, true);
     }
 
-    boolean canReadProperty(String propertyName) throws RepositoryException {
+    @Override
+    protected boolean canReadProperty(String propertyName) throws RepositoryException {
         return !PROTECTED_PROPERTY.equals(propertyName);
     }
 }

@@ -197,7 +197,6 @@ public class AddResourcesTag extends AbstractJahiaTag {
                             writeResourceTag(type, pathWithContext, resource);
                         }
 
-                        found = true;
                         if (builder.length() > 0) {
                             builder.append(",");
                         }
@@ -205,9 +204,6 @@ public class AddResourcesTag extends AbstractJahiaTag {
                         break;
                     }
                 }
-            }
-            if (!found) {
-                return false;
             }
         }
         if (var != null && !"".equals(var.trim())) {

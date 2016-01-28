@@ -46,11 +46,14 @@ package org.jahia.ajax.gwt.client.widget.poller;
 import com.extjs.gxt.ui.client.GXT;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Window;
+
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.ArrayList;
@@ -63,16 +66,24 @@ import java.util.Map;
  */
 public class Poller {
 
-    private static final boolean isIE;
-
-    private static Poller instance;
-    
+    private static final boolean SSE_SUPPORT;
     static {
-        String ua = GXT.getUserAgent();
-        isIE = GXT.isIE || ua != null && ua.indexOf("trident/7") != -1; 
+        String userAgent = GXT.getUserAgent();
+        SSE_SUPPORT = !(GXT.isIE || userAgent != null && userAgent.indexOf("trident/7") != -1);
     }
 
+    private static Poller instance;
+
     private Map<Class, ArrayList<PollListener>> listeners = new HashMap<Class, ArrayList<PollListener>>();
+
+    // There are two basic scenarios of how instant communication with the server may be broken:
+    // 1) The server closes the connection in a conventional way (for example, due to shutdown).
+    // 2) The server disappears unexpectedly (for example, due to a network issue).
+    // Atmosphere in cooperation with the browser is able to restore the connection and continue retrieving messages in both cases when the server is available again,
+    // however in case 2 there might be messages broadcasted while the client was disconnected, which are typically lost. In order to mitigate this lost messages issue,
+    // we track the error/reconnection status and suggest page reloading to the user when the connection is restored. In this way, client side state gets synchronized
+    // with server side even though there were some missing messages.
+    private boolean reconnectingAfterError;
 
     public static Poller getInstance() {
         if (instance == null) {
@@ -82,37 +93,66 @@ public class Poller {
     }
 
     public Poller(final boolean useWebsockets) {
+
         Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+
+            @Override
             public void execute() {
 
-                RPCSerializer rpc_serializer = GWT.create(RPCSerializer.class);
+                RPCSerializer serializer = GWT.create(RPCSerializer.class);
+                AtmosphereRequestConfig requestConfig = AtmosphereRequestConfig.create(serializer);
+                requestConfig.setUrl(GWT.getModuleBaseURL().substring(0, GWT.getModuleBaseURL().indexOf("/gwt/")) + "/atmosphere/rpc?windowId=" + JahiaContentManagementService.App.getWindowId());
+                Transport transport = useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET : (SSE_SUPPORT ? AtmosphereRequestConfig.Transport.SSE : AtmosphereRequestConfig.Transport.STREAMING);
+                requestConfig.setTransport(transport);
+                requestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
+                requestConfig.setMaxReconnectOnClose(Integer.MAX_VALUE);
 
-                AtmosphereRequestConfig rpcRequestConfig = AtmosphereRequestConfig.create(rpc_serializer);
-                rpcRequestConfig.setUrl(GWT.getModuleBaseURL() .substring(0,GWT.getModuleBaseURL() .indexOf("/gwt/")) + "/atmosphere/rpc?windowId="+ JahiaContentManagementService.App.getWindowId());
-                Transport transport = useWebsockets ? AtmosphereRequestConfig.Transport.WEBSOCKET
-                        : (!isIE ? AtmosphereRequestConfig.Transport.SSE
-                                : AtmosphereRequestConfig.Transport.STREAMING);
-                rpcRequestConfig.setTransport(transport);
-                rpcRequestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
-                rpcRequestConfig.setOpenHandler(new AtmosphereOpenHandler() {
+                requestConfig.setErrorHandler(new AtmosphereErrorHandler() {
+
+                    @Override
+                    public void onError(AtmosphereResponse response) {
+                        // This only happens on unexpected communication failures, not on conventional connection close.
+                        GWT.log("RPC error");
+                        reconnectingAfterError = true;
+                    }
+                });
+
+                requestConfig.setReconnectHandler(new AtmosphereReconnectHandler() {
+
+                    @Override
+                    public void onReconnect(RequestConfig request, AtmosphereResponse response) {
+                        GWT.log("RPC reconnection");
+                    }
+                });
+
+                requestConfig.setOpenHandler(new AtmosphereOpenHandler() {
+
                     @Override
                     public void onOpen(AtmosphereResponse response) {
                         GWT.log("RPC Connection opened");
+                        onConnectionOpen();
                     }
                 });
-                rpcRequestConfig.setReopenHandler(new AtmosphereReopenHandler() {
+
+                requestConfig.setReopenHandler(new AtmosphereReopenHandler() {
+
                     @Override
                     public void onReopen(AtmosphereResponse response) {
                         GWT.log("RPC Connection reopened");
+                        onConnectionOpen();
                     }
                 });
-                rpcRequestConfig.setCloseHandler(new AtmosphereCloseHandler() {
+
+                requestConfig.setCloseHandler(new AtmosphereCloseHandler() {
+
                     @Override
                     public void onClose(AtmosphereResponse response) {
                         GWT.log("RPC Connection closed");
                     }
                 });
-                rpcRequestConfig.setMessageHandler(new AtmosphereMessageHandler() {
+
+                requestConfig.setMessageHandler(new AtmosphereMessageHandler() {
+
                     @Override
                     public void onMessage(AtmosphereResponse response) {
                         List<RPCEvent> messages = response.getMessages();
@@ -128,14 +168,26 @@ public class Poller {
                     }
                 });
 
-                rpcRequestConfig.setFlags(AtmosphereRequestConfig.Flags.enableProtocol);
-                rpcRequestConfig.setFlags(AtmosphereRequestConfig.Flags.trackMessageLength);
+                requestConfig.setFlags(AtmosphereRequestConfig.Flags.enableProtocol);
+                requestConfig.setFlags(AtmosphereRequestConfig.Flags.trackMessageLength);
 
-                // init atmosphere
                 Atmosphere atmosphere = Atmosphere.create();
-                atmosphere.subscribe(rpcRequestConfig);
+                atmosphere.subscribe(requestConfig);
             }
         });
+    }
+
+    private void onConnectionOpen() {
+
+        // Suggest page reloading to the user only in case there was unexpected communication failure, so some messages might be lost.
+        if (!reconnectingAfterError) {
+            return;
+        }
+
+        reconnectingAfterError = false;
+        if (Window.confirm(Messages.get("instantMessaging.connectionRecoveredReloadRecommended.confirm"))) {
+            Window.Location.reload();
+        }
     }
 
     public void registerListener(PollListener listener, Class eventType) {
@@ -154,6 +206,4 @@ public class Poller {
     public interface PollListener<T> {
         public void handlePollingResult(T result);
     }
-
-
 }

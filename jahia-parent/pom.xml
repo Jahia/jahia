@@ -88,6 +88,7 @@
         <jbpm.version.jahia>${jbpm.version}-jahia</jbpm.version.jahia>
         <drools.version>${jbpm.version}</drools.version>
         <hibernate.version>4.2.7.SP1</hibernate.version>
+        <hibernate.core.version>4.2.7.SP1-jahia1</hibernate.core.version>
         <hibernate.validator.version>5.0.1.Final</hibernate.validator.version>
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
@@ -163,15 +164,17 @@
         <gogo.command.version>0.14.0</gogo.command.version>
         <equinox.ver>3.2.2</equinox.ver>
         <slf4j.version>1.6.6</slf4j.version>
-        <osgi.version>4.3.1</osgi.version>
+        <osgi.version>6.0.0</osgi.version>
+        <osgi.compendium.version>5.0.0</osgi.compendium.version>
         <pax.logging.version>1.7.0</pax.logging.version>
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
         <pax.web.api.version>3.0.7</pax.web.api.version>
         <pax.web.jsp.version>3.0.7-jahia3</pax.web.jsp.version>
+        <karaf.version>4.0.4</karaf.version>
         <!-- End of OSGi versions -->
 
-        <jahia.commons.version>1.0.5</jahia.commons.version>
-        <jahia.plugin.version>4.9-SNAPSHOT</jahia.plugin.version>
+        <jahia.commons.version>1.0.6</jahia.commons.version>
+        <jahia.plugin.version>4.10-SNAPSHOT</jahia.plugin.version>
 		<jahia.archivers.version>${jahia.plugin.version}</jahia.archivers.version>
 		<jahia.configurators.version>${jahia.plugin.version}</jahia.configurators.version>
         <jahia.deployers.version>${jahia.plugin.version}</jahia.deployers.version>
@@ -762,6 +765,42 @@
                 <version>2.1</version>
                 <scope>provided</scope>
             </dependency>
+            
+            <!-- Apache Karaf -->
+            <dependency>
+                <groupId>org.apache.karaf</groupId>
+                <artifactId>apache-karaf</artifactId>
+                <version>${karaf.version}</version>
+                <type>zip</type>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf</groupId>
+                <artifactId>org.apache.karaf.main</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.diagnostic</groupId>
+                <artifactId>org.apache.karaf.diagnostic.boot</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.jaas</groupId>
+                <artifactId>org.apache.karaf.jaas.boot</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.shell</groupId>
+                <artifactId>org.apache.karaf.shell.console</artifactId>
+                <version>${karaf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.karaf.features</groupId>
+                <artifactId>framework</artifactId>
+                <version>${karaf.version}</version>
+                <type>kar</type>
+            </dependency>
+            <!-- End of Apache Karaf -->
         </dependencies>
     </dependencyManagement>
 
@@ -784,6 +823,80 @@
                     <groupId>org.jahia.server</groupId>
                     <artifactId>jahia-maven-plugin</artifactId>
                     <version>${jahia.plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-package-export</id>
+                            <phase>prepare-package</phase>
+                            <configuration>
+                                <failBuildOnSplitPackages>false</failBuildOnSplitPackages>
+                                <outputPackagesWithNoVersions>true</outputPackagesWithNoVersions>
+                                <artifactExcludes>
+                                    <artifactExclude>org.jahia.modules:*</artifactExclude>
+                                    <artifactExclude>org.jahia.templates:*</artifactExclude>
+                                    <artifactExclude>org.jahia.test:*</artifactExclude>
+                                    <artifactExclude>*.jahia.modules</artifactExclude>
+                                    <artifactExclude>com.google.gwt:gwt-user</artifactExclude>
+                                </artifactExcludes>
+                                <packageExcludes>
+                                    <packageExclude>java.*</packageExclude>
+                                    <packageExclude>org.jahia.taglibs*</packageExclude>
+                                    <packageExclude>org.apache.taglibs*</packageExclude>
+                                    <packageExclude>javax.servlet.jsp*</packageExclude>
+                                    <packageExclude>org.codehaus.groovy.ast*</packageExclude>
+                                    <packageExclude>junit*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.config*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.i18n*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.resource*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.support*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.tags*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.theme*</packageExclude>
+                                    <packageExclude>org.springframework.web.servlet.view*</packageExclude>
+                                    <packageExclude>org.springframework.web.util*</packageExclude>
+                                    <packageExclude>org.osgi.service.cm</packageExclude>
+                                    <packageExclude>org.eclipse*</packageExclude>
+                                    <packageExclude>org.apache.sshd*</packageExclude>
+                                    <packageExclude>org.bouncycastle*</packageExclude>
+                                    <packageExclude>org.apache.felix*</packageExclude>
+                                    <packageExclude>org.fusesource.jansi*</packageExclude>
+                                    <packageExclude>rest-management-private-classpath*</packageExclude>
+                                    <packageExclude>repackage*</packageExclude>
+                                    <packageExclude>resources*</packageExclude>
+                                    <packageExclude>schemaorg_apache_xmlbeans*</packageExclude>
+                                    <packageExclude>schemas*</packageExclude>
+                                    <packageExclude>shaded*</packageExclude>
+                                    <packageExclude>org.slf4j*</packageExclude>
+                                    <packageExclude>org.apache.log4j*</packageExclude>
+                                    <packageExclude>org.ops4j*</packageExclude>
+                                    <packageExclude>org.knopflerfish.service.log</packageExclude>
+                                    <packageExclude>org.apache.karaf*</packageExclude>
+                                    <packageExclude>jline*</packageExclude>
+                                    <packageExclude>org.jledit*</packageExclude>
+                                </packageExcludes>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>generate-system-capabilities</id>
+                            <phase>prepare-package</phase>
+                            <configuration>
+                                <propertiesInputFile>
+                                    ${project.build.directory}/generated-resources/config.properties
+                                </propertiesInputFile>
+                                <propertiesOutputFile>
+                                    ${project.build.directory}/generated-resources/config.properties
+                                </propertiesOutputFile>
+                                <artifactExcludes>
+                                    <exclude>org.jahia.modules:*</exclude>
+                                    <exclude>org.jahia.templates:*</exclude>
+                                    <exclude>org.jahia.test:*</exclude>
+                                    <exclude>*.jahia.modules</exclude>
+                                </artifactExcludes>
+                                <excludedJarEntries>
+                                    <entry>org/jahia/migration/legacyDefinitions/.*</entry>
+                                </excludedJarEntries>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -841,6 +954,11 @@
                         <sigfile>jahia</sigfile>
                         <tsa>http://tsa.starfieldtech.com/</tsa>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.karaf.tooling</groupId>
+                    <artifactId>karaf-maven-plugin</artifactId>
+                    <version>${karaf.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

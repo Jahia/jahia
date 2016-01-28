@@ -93,7 +93,7 @@ public class OperationResultImpl implements OperationResult {
     private String operationId;
     
     @XmlAttribute(name="bundleInfos", required = false)
-    private List<BundleInfo> bundleInfoList;
+    private List<BundleInfo> bundleInfoList = new ArrayList<BundleInfo>();
 
     /**
      * Initializes an instance of this class.
@@ -156,9 +156,6 @@ public class OperationResultImpl implements OperationResult {
      * @return the bundleInfoList the list of info
      */
     public List<BundleInfo> getBundleInfoList() {
-      if(bundleInfoList == null) {
-        bundleInfoList = new ArrayList<BundleInfo>();
-      }
       return bundleInfoList;
     }
 

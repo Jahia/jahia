@@ -213,6 +213,14 @@
  - j:height (long) protected
  - j:width (long) protected
 
+[jnt:tempFolder] > nt:base
++ * (jnt:tempFolder)
++ * (jnt:tempFile)
+
+[jnt:tempFile] > nt:base
+- jcr:mimeType (string) indexed=no nofulltext
+- jcr:data (binary) mandatory indexed=no
+
 //---------------------------------------------------------
 // Text extracts
 //---------------------------------------------------------

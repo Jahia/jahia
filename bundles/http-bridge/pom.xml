@@ -79,6 +79,7 @@
                             javax.servlet.*,
                             *;resolution:=optional
                         </Import-Package>
+                        <Karaf-Commands>*</Karaf-Commands>
                     </instructions>
                 </configuration>
             </plugin>
@@ -119,6 +120,11 @@
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.bridge</artifactId>
             <version>${felix.http.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.karaf.shell</groupId>
+            <artifactId>org.apache.karaf.shell.console</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

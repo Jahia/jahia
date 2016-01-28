@@ -36,6 +36,8 @@
     </bean>
     
     <util:list id="modulePlaceholderConfigLocations" value-type="java.lang.String">
+        <value>osgibundle:jahia-modules-*.properties</value>
+        <value>osgibundle:jahia/jahia-modules-*.properties</value>
         <value>rootclasspath*:jahia-modules-*.properties</value>
         <value>rootclasspath*:jahia/jahia-modules-*.properties</value>
     </util:list>

@@ -4,6 +4,22 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
+    <bean name="felixFileinstallProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
+        <property name="ignoreResourceNotFound" value="true"/>
+        <property name="properties">
+            <props value-type="java.lang.String">
+                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaVarDiskPath}/modules</prop>
+                <prop key="felix.fileinstall.poll">1000</prop>
+                <prop key="felix.fileinstall.start.level">90</prop>
+                <prop key="felix.fileinstall.active.level">90</prop>
+                <prop key="felix.fileinstall.log.level">3</prop>
+                <prop key="felix.fileinstall.bundles.new.start">true</prop>
+                <prop key="felix.fileinstall.noInitialDelay">true</prop>
+                <prop key="felix.fileinstall.enableConfigSave">false</prop>
+            </props>
+        </property>
+    </bean>
+
     <bean name="combinedFelixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="properties">
@@ -12,14 +28,7 @@
                 
                 <prop key="felix.cache.bufsize">65536</prop>
                 <prop key="felix.log.level">1</prop>
-                
-                <prop key="felix.fileinstall.active.level">2</prop>
-                <prop key="felix.fileinstall.bundles.new.start">false</prop>
-                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaVarDiskPath}/bundles,#{settingsBean.jahiaVarDiskPath}/modules</prop>
-                <prop key="felix.fileinstall.noInitialDelay">true</prop>
-                <prop key="felix.fileinstall.start.level">2</prop>
-                <prop key="felix.fileinstall.enableConfigSave">false</prop>
-                
+
                 <prop key="obr.repository.url">http://felix.apache.org/obr/releases.xml</prop>
                 
                 <prop key="org.osgi.framework.bootdelegation">com.yourkit.*</prop>
@@ -140,7 +149,7 @@
     </bean>
 
     <bean id="felixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <!-- Effective Felix properties: combined (defaults + configured in files) properties 
+        <!-- Effective Felix properties: combined (defaults + configured in files) properties
             are overridden with the system properties, having "jahiaConfig." prefix -->
         <property name="propertiesArray">
             <list>

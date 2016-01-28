@@ -15,7 +15,6 @@
     <import resource="classpath:/org/jahia/defaults/config/spring/auth/applicationcontext-auth-pipeline.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/auth/applicationcontext-security.xml" />    
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-services.xml" />
-    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-module-manager.xml" />
         
     <!-- These files are here to mock certain unneeded services and to set the embedded datasource and JCR settings -->
     <import resource="classpath:/org/jahia/defaults/config/spring/logging/applicationcontext-test-logging.xml" />
@@ -27,5 +26,6 @@
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-plutodriver.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/jcr/applicationcontext-test-jcr.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-renderer.xml" />
-    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-notification.xml" />        
+    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-notification.xml" />
+    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-module-manager.xml" />           
 </beans>

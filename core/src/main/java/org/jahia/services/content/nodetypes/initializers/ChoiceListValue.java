@@ -67,7 +67,15 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
     private Value value;
     private Map<String, Object> properties;
 
+    /**
+     * Initializes an instance of this class.
+     */
+    public ChoiceListValue() {
+        super();
+    }
+
     public ChoiceListValue(String displayName, Map<String, Object> properties, Value value) {
+        this();
         this.displayName = displayName;
         this.properties = properties;
         this.value = value;
@@ -95,6 +103,16 @@ public class ChoiceListValue implements Comparable<ChoiceListValue> {
 
     public void setProperties(Map<String, Object> properties) {
         this.properties = properties;
+    }
+
+    /**
+     * Sets the string value for this choice list option.
+     * 
+     * @param stringValue
+     *            the string value for this choice list option
+     */
+    public void setStringValue(String stringValue) {
+        this.value = new ValueImpl(stringValue);
     }
 
     public void setValue(Value value) {

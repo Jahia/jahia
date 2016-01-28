@@ -54,7 +54,7 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.GWTFileManagerUploadServlet;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
@@ -94,8 +94,8 @@ import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.Query;
 import javax.jcr.security.Privilege;
 import javax.jcr.version.VersionException;
+
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -110,7 +110,7 @@ public class ContentManagerHelper {
     private static final List<String> COPIED_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.PERMISSIONS);
 
     private static final List<String> NEW_NODE_FIELDS = Arrays.asList(GWTJahiaNode.ICON, GWTJahiaNode.TAGS, GWTJahiaNode.CHILDREN_INFO, "j:view", "j:width", "j:height", GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
-    
+
     private static Logger logger = LoggerFactory.getLogger(ContentManagerHelper.class);
 
     private JahiaSitesService sitesService;
@@ -120,6 +120,8 @@ public class ContentManagerHelper {
     private NavigationHelper navigation;
     private PropertiesHelper properties;
     private VersioningHelper versioning;
+
+    private UploadedPendingFileStorage fileStorage;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -145,8 +147,11 @@ public class ContentManagerHelper {
         this.templateManagerService = templateManagerService;
     }
 
-    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin,
-                                  List<GWTJahiaNodeProperty> props, Locale uiLocale) throws GWTJahiaServiceException {
+    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+        this.fileStorage = fileStorage;
+    }
+
+    public JCRNodeWrapper addNode(JCRNodeWrapper parentNode, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         if (!parentNode.hasPermission(Privilege.JCR_ADD_CHILD_NODES)) {
             throw new GWTJahiaServiceException(parentNode.getPath() + " - ACCESS DENIED");
         }
@@ -159,7 +164,7 @@ public class ContentManagerHelper {
                     childNode.addMixin(m);
                 }
             }
-            properties.setProperties(childNode, props);
+            properties.setProperties(childNode, props, httpSessionID);
         } catch (Exception e) {
             logger.error("Exception", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.get.node", uiLocale, e.getLocalizedMessage()));
@@ -170,8 +175,7 @@ public class ContentManagerHelper {
         return childNode;
     }
 
-    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin,
-                                   List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation)
+    public GWTJahiaNode createNode(String parentPath, String name, String nodeType, List<String> mixin, List<GWTJahiaNodeProperty> props, JCRSessionWrapper currentUserSession, Locale uiLocale, Map<String, String> parentNodesType, boolean forceCreation, String httpSessionID)
             throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parentNode = ensureParent(parentPath, currentUserSession, uiLocale, parentNodesType);
@@ -189,7 +193,7 @@ public class ContentManagerHelper {
                 nodeName = findAvailableName(parentNode, nodeName);
             }
 
-            JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale);
+            JCRNodeWrapper childNode = addNode(parentNode, nodeName, nodeType, mixin, props, uiLocale, httpSessionID);
             return navigation.getGWTJahiaNode(currentUserSession.getNode(childNode.getPath()), NEW_NODE_FIELDS);
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -244,7 +248,7 @@ public class ContentManagerHelper {
         return nodeName;
     }
 
-    public GWTJahiaNode createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession, Locale uiLocale)
+    public GWTJahiaNode createFolder(String parentPath, String name, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID)
             throws GWTJahiaServiceException {
         JCRNodeWrapper parentNode;
         GWTJahiaNode newNode = null;
@@ -252,7 +256,7 @@ public class ContentManagerHelper {
         try {
             jcrSessionWrapper = currentUserSession;
             parentNode = jcrSessionWrapper.getNode(parentPath);
-            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale, null, true);
+            newNode = createNode(parentPath, name, parentNode.isNodeType("jnt:folder") ? "jnt:folder" : "jnt:contentList", null, null, currentUserSession, uiLocale, null, true, httpSessionID);
             currentUserSession.save();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
@@ -634,21 +638,23 @@ public class ContentManagerHelper {
         }
     }
 
-    public void importContent(String parentPath, String fileKey, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
-        importContent(parentPath, fileKey, false, session, uiLocale);
+    public void importContent(String parentPath, String fileKey, JCRSessionWrapper session, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
+        importContent(parentPath, fileKey, false, session, uiLocale, httpSessionID);
     }
 
-    public void importContent(String parentPath, String fileKey, boolean replaceContent, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+    public void importContent(String parentPath, String fileKey, boolean replaceContent, JCRSessionWrapper session, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
+
         try {
-            GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(fileKey);
+
+            UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, fileKey);
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
             JCRNodeWrapper parent = session.getNode(parentPath);
             JCRSiteNode resolveSite = parent.getResolveSite();
-            String detectedContentType = ImportExportBaseService.detectImportContentType(item);
+            String detectedContentType = ImportExportBaseService.detectImportContentType(item.getContentType(), item.getName());
             InputStream itemStream = null;
             ValidationResults results;
             try {
-                itemStream = item.getStream();
+                itemStream = item.getContentStream();
                 results = importExport.validateImportFile(session, itemStream, detectedContentType, resolveSite != null ? resolveSite.getInstalledModules() : null);
             } finally {
                 IOUtils.closeQuietly(itemStream);
@@ -659,17 +665,16 @@ public class ContentManagerHelper {
                     // First let's copy the file in the JCR
                     JCRNodeWrapper privateFilesFolder = JCRContentUtils.getInstance().getUserPrivateFilesFolder(session);
                     String importFilename = "import" + Math.random() * 1000;
-                    itemStream = item.getStream();
+                    itemStream = item.getContentStream();
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
                     session.save();
                     // let's schedule an import job.
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale,
-                            "Import file") + " " + FilenameUtils.getName(item.getOriginalFileName()), ImportJob.class);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(item.getName()), ImportJob.class);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
                     jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
                     jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
-                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getOriginalFileName()));
+                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getName()));
                     jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
@@ -1058,8 +1063,7 @@ public class ContentManagerHelper {
      * @param currentUserSession
      * @throws GWTJahiaServiceException
      */
-    public void uploadedFile(String location, String tmpName, int operation, String newName,
-                             JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+    public void uploadedFile(String location, String tmpName, int operation, String newName, JCRSessionWrapper currentUserSession, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = currentUserSession.getNode(location);
             if (2 == operation) {
@@ -1067,7 +1071,7 @@ public class ContentManagerHelper {
                 if (node == null) {
                     throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.new.version.file.not.found", uiLocale, location, newName));
                 }
-                versioning.addNewVersionFile(node, tmpName);
+                versioning.addNewVersionFile(node, tmpName, httpSessionID);
             } else {
                 if (1 == operation) {
                     newName = findAvailableName(parent, newName);
@@ -1075,16 +1079,14 @@ public class ContentManagerHelper {
                 if (parent.hasNode(newName)) {
                     throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
                 }
-                GWTFileManagerUploadServlet.Item item = GWTFileManagerUploadServlet.getItem(tmpName);
+                UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, tmpName);
                 InputStream is = null;
                 try {
-                    is = item.getStream();
+                    is = item.getContentStream();
                     parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
-                } catch (FileNotFoundException e) {
-                    logger.error(e.getMessage(), e);
                 } finally {
                     IOUtils.closeQuietly(is);
-                    item.dispose();
+                    fileStorage.remove(httpSessionID, tmpName);
                 }
             }
             currentUserSession.save();
@@ -1201,7 +1203,7 @@ public class ContentManagerHelper {
     }
 
 
-    public void saveVisibilityConditions(GWTJahiaNode node, List<GWTJahiaNode> conditions, JCRSessionWrapper session, Locale uiLocale) throws GWTJahiaServiceException {
+    public void saveVisibilityConditions(GWTJahiaNode node, List<GWTJahiaNode> conditions, JCRSessionWrapper session, Locale uiLocale, String httpSessionID) throws GWTJahiaServiceException {
         try {
             JCRNodeWrapper parent = session.getNode(node.getPath());
 
@@ -1214,12 +1216,12 @@ public class ContentManagerHelper {
             for (GWTJahiaNode condition : conditions) {
                 List<GWTJahiaNodeProperty> props = condition.<List<GWTJahiaNodeProperty>>get("gwtproperties");
                 if (condition.get("new-node") != null) {
-                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale, null, true);
+                    GWTJahiaNode n = createNode(path, condition.getName(), condition.getNodeTypes().get(0), new ArrayList<String>(), props, session, uiLocale, null, true, httpSessionID);
                     condition.setUUID(n.getUUID());
                     condition.setPath(n.getPath());
                 } else {
                     JCRNodeWrapper jcrCondition = session.getNode(condition.getPath());
-                    properties.setProperties(jcrCondition, props);
+                    properties.setProperties(jcrCondition, props, httpSessionID);
                 }
             }
             try {

@@ -560,28 +560,29 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified) throws IOException {
 
         String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
-        String minifiedAggregatedPath = "/generated-resources/" + aggregatedKey + ".min." + type;
-        String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedPath);
+        String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
+        String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
+        File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
+        String minifiedAggregatedPath = "/generated-resources/" + minifiedAggregatedFileName;
         if (addLastModifiedDate) {
             minifiedAggregatedPath += "?" + maxLastModified;
         }
-        File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
         if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < maxLastModified) {
 
             generatedResourcesFolder.mkdirs();
 
             // aggregate minified resources
-            LinkedHashMap<String, String> minifiedPaths = new LinkedHashMap<String, String>();
+            LinkedHashMap<String, String> minifiedFileNames = new LinkedHashMap<String, String>();
             for (Map.Entry<String, Resource> entry : pathsToAggregate.entrySet()) {
                 String path = entry.getKey();
                 Resource resource = entry.getValue();
-                String minifiedPath = "/generated-resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
-                File minifiedFile = new File(getFileSystemPath(minifiedPath));
+                String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
+                File minifiedFile = new File(getFileSystemPath(minifiedFileName));
                 if (!minifiedFile.exists() || minifiedFile.lastModified() < resource.lastModified()) {
                     minify(path, resource, type, minifiedFile);
                 }
-                minifiedPaths.put(path, minifiedPath);
+                minifiedFileNames.put(path, minifiedFileName);
             }
 
             try {
@@ -589,7 +590,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(tmpMinifiedAggregatedFile));
                 InputStream is = null;
                 try {
-                    for (Map.Entry<String, String> entry : minifiedPaths.entrySet()) {
+                    for (Map.Entry<String, String> entry : minifiedFileNames.entrySet()) {
                         if (type.equals("js")) {
                             outMerged.write("//".getBytes());
                             outMerged.write(entry.getValue().getBytes());
@@ -726,8 +727,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return r;
     }
 
-    private static String getFileSystemPath(String minifiedAggregatedPath) {
-        return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
+    private static String getFileSystemPath(String minifiedAggregatedFileName) {
+        return SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath() + File.separator + minifiedAggregatedFileName;
     }
 
     private static Resource getResourceFromFile(String workspace, final String fFilePath) {
@@ -885,13 +886,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     public void setForceLiveIEcompatiblity(boolean forceLiveIEcompatiblity) {
-            this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
+        this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
-        generatedResourcesFolder = new File(getFileSystemPath("/generated-resources"));
+        generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
     }
 
     @Override

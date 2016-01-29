@@ -189,6 +189,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaModulesDiskPath;
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
+    private String  jahiaGeneratedResourcesDiskPath;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -481,7 +482,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             reindexIfNeeded();
 
             readTldConfigJarsToSkip();
-            
+
             initJerichoLogging();
 
             DatabaseUtils.setDatasource(dataSource);
@@ -575,16 +576,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     private void initPaths() {
+
         classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
 
         String jahiaDataDir = System.getProperty("jahia.data.dir");
         if (jahiaDataDir != null && jahiaDataDir.length() > 0) {
-            jahiaVarDiskPath = ensureEndSlash(interpolate(jahiaDataDir),
-                    true);
+            jahiaVarDiskPath = ensureEndSlash(interpolate(jahiaDataDir), true);
         } else {
-            jahiaVarDiskPath = ensureEndSlash(
-                    convertContexted(getString("jahiaVarDiskPath"),
-                            pathResolver), false);
+            jahiaVarDiskPath = ensureEndSlash(convertContexted(getString("jahiaVarDiskPath"), pathResolver), false);
         }
         try {
             jahiaVarDiskPath = new File(jahiaVarDiskPath).getCanonicalPath();
@@ -593,8 +592,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
         setSystemProperty("jahia.data.dir", jahiaVarDiskPath);
 
-        jahiaEtcDiskPath = new File(convertContexted (getString("jahiaEtcDiskPath", "$context/WEB-INF/etc/"), pathResolver)).getAbsolutePath();
-        tmpContentDiskPath = new File(convertContexted (getString("tmpContentDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaEtcDiskPath = new File(convertContexted(getString("jahiaEtcDiskPath", "$context/WEB-INF/etc/"), pathResolver)).getAbsolutePath();
+        tmpContentDiskPath = new File(convertContexted(getString("tmpContentDiskPath"), pathResolver)).getAbsolutePath();
         try {
             File tmpContentDisk = new File(tmpContentDiskPath);
             if (!tmpContentDisk.exists()) {
@@ -603,11 +602,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         } catch (Exception e) {
             logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
         }
-        jahiaImportsDiskPath = new File(convertContexted (getString("jahiaImportsDiskPath"), pathResolver)).getAbsolutePath();
-        jahiaModulesDiskPath = new File(convertContexted (getString("jahiaModulesDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaImportsDiskPath = new File(convertContexted(getString("jahiaImportsDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaModulesDiskPath = new File(convertContexted(getString("jahiaModulesDiskPath"), pathResolver)).getAbsolutePath();
         jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
-
         modulesSourcesDiskPath = new File(convertContexted(getString("modulesSourcesDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaGeneratedResourcesDiskPath = new File(convertContexted(getString("jahiaGeneratedResourcesDiskPath"), pathResolver)).getAbsolutePath();
     }
 
     private void detectServer() {
@@ -1014,7 +1013,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return jahiaVarDiskPath;
     }
 
-
     /**
      * Used to get the shared templates disk path.
      *
@@ -1024,6 +1022,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return jahiaModulesDiskPath;
     }
 
+    /**
+     * @return The generated resources disk path.
+     */
+    public String getJahiaGeneratedResourcesDiskPath() {
+        return jahiaGeneratedResourcesDiskPath;
+    }
 
     public String getClassDiskPath() {
         return classDiskPath;

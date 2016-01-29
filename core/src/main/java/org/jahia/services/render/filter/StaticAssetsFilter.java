@@ -104,6 +104,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     private String jahiaContext = null;
     private boolean addLastModifiedDate = false;
+<<<<<<< .working
+=======
+
+>>>>>>> .merge-right.r53770
     private File generatedResourcesFolder;
     private String ajaxResolvedTemplate;
     private String ajaxTemplate;
@@ -511,7 +515,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
+<<<<<<< .working
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> assets, String type) throws IOException {
+=======
+    private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {
+
+        List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(map.entrySet());
+        Map<String, Map<String, String>> newCss = new LinkedHashMap<String, Map<String, String>>();
+>>>>>>> .merge-right.r53770
 
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(assets.entrySet());
         Map<String, Map<String, String>> newEntries = new LinkedHashMap<String, Map<String, String>>();
@@ -537,10 +548,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
 
             if (!pathsToAggregate.isEmpty()) {
+<<<<<<< .working
                 String minifiedAggregatedPath = aggregate(pathsToAggregate, type, maxLastModified);
                 newEntries.put(Jahia.getContextPath() + minifiedAggregatedPath, new HashMap<String, String>());
             }
+=======
 
+                String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
+>>>>>>> .merge-right.r53770
+
+<<<<<<< .working
             if (i < entries.size()) {
                 // In case current entry should not be aggregated for whatever reason, add it as a non-aggregated one.
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
@@ -553,7 +570,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 i++;
             }
         }
+=======
+                String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
+                String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
+                File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
+>>>>>>> .merge-right.r53770
 
+<<<<<<< .working
         return newEntries;
     }
 
@@ -580,10 +603,16 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 File minifiedFile = new File(getFileSystemPath(minifiedPath));
                 if (!minifiedFile.exists() || minifiedFile.lastModified() < resource.lastModified()) {
                     minify(path, resource, type, minifiedFile);
+=======
+                String minifiedAggregatedPath = "/generated-resources/" + minifiedAggregatedFileName;
+                if (addLastModifiedDate) {
+                    minifiedAggregatedPath += "?" + filesDates;
+>>>>>>> .merge-right.r53770
                 }
                 minifiedPaths.put(path, minifiedPath);
             }
 
+<<<<<<< .working
             try {
                 File tmpMinifiedAggregatedFile = new File(minifiedAggregatedFile.getParentFile(), minifiedAggregatedFile.getName() + "." + System.nanoTime());
                 OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(tmpMinifiedAggregatedFile));
@@ -612,10 +641,47 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
 
+=======
+>>>>>>> .merge-right.r53770
+<<<<<<< .working
         return minifiedAggregatedPath;
     }
+=======
+                if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
+                    generatedResourcesFolder.mkdirs();
 
+                    // aggregate minified resources
+>>>>>>> .merge-right.r53770
+
+<<<<<<< .working
     private static void minify(String path, Resource resource, String type, File minifiedFile) throws IOException {
+=======
+                    LinkedHashMap<String,String> minifiedFileNames = new LinkedHashMap<String, String>();
+                    for (Map.Entry<String, org.springframework.core.io.Resource> entry : pathsToAggregate.entrySet()) {
+                        final String path = entry.getKey();
+                        String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
+                        final File minifiedFile = new File(getFileSystemPath(minifiedFileName));
+                        final org.springframework.core.io.Resource f = entry.getValue();
+                        if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
+                            // minify the file
+                            Reader reader = null;
+                            Writer writer = null;
+                            File tmpMinifiedFile = new File(minifiedFile.getParentFile(), minifiedFile.getName() + "." + System.nanoTime());
+                            try {
+                                reader = new InputStreamReader(f.getInputStream(), "UTF-8");
+                                writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
+                                boolean compress = true;
+                                if (compress && type.equals("css")) {
+                                    String s = IOUtils.toString(reader);
+                                    IOUtils.closeQuietly(reader);
+                                    if (s.indexOf("url(") != -1) {
+                                        String url = StringUtils.substringBeforeLast(path, "/") + "/";
+                                        s = URL_PATTERN_1.matcher(s).replaceAll("url(");
+                                        s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
+                                        s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
+                                        s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
+                                    }
+>>>>>>> .merge-right.r53770
 
         Reader reader = null;
         Writer writer = null;
@@ -661,13 +727,38 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 logger.debug(line + ":" + lineOffset + ":" + message);
                             }
                         }
+<<<<<<< .working
+=======
+                        minifiedFileNames.put(path, minifiedFileName);
+                    }
+>>>>>>> .merge-right.r53770
 
+<<<<<<< .working
                         @Override
                         public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
                             if (line < 0) {
                                 logger.error(message);
                             } else {
                                 logger.error(line + ":" + lineOffset + ":" + message);
+=======
+                    try {
+                        File tmpMinifiedAggregatedFile = new File(minifiedAggregatedFile.getParentFile(), minifiedAggregatedFile.getName() + "." + System.nanoTime());
+                        OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(tmpMinifiedAggregatedFile));
+                        InputStream is = null;
+                        try {
+                            for (Map.Entry<String, String> entry : minifiedFileNames.entrySet()) {
+                                if (type.equals("js")) {
+                                    outMerged.write("//".getBytes());
+                                    outMerged.write(entry.getValue().getBytes());
+                                    outMerged.write("\n".getBytes());
+                                }
+                                is = new FileInputStream(getFileSystemPath(entry.getValue()));
+                                IOUtils.copy(is, outMerged);
+                                if (type.equals("js")) {
+                                    outMerged.write(";\n".getBytes());
+                                }
+                                IOUtils.closeQuietly(is);
+>>>>>>> .merge-right.r53770
                             }
                         }
 
@@ -726,8 +817,13 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return r;
     }
 
+<<<<<<< .working
     private static String getFileSystemPath(String minifiedAggregatedPath) {
         return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
+=======
+    private String getFileSystemPath(String minifiedAggregatedFileName) {
+        return SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath() + File.separator + minifiedAggregatedFileName;
+>>>>>>> .merge-right.r53770
     }
 
     private static Resource getResourceFromFile(String workspace, final String fFilePath) {
@@ -868,6 +964,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         this.excludesFromAggregateAndCompress = skipAggregation;
     }
 
+<<<<<<< .working
+=======
+    public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
+        ajaxResolvedTemplate = null;
+        resolvedTemplate = null;
+    }
+
+    public void afterPropertiesSet() throws Exception {
+        jahiaContext = Jahia.getContextPath() + "/";
+        generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
+    }
+
+>>>>>>> .merge-right.r53770
     public Set<String> getIeHeaderRecognitions() {
         return ieHeaderRecognitions;
     }
@@ -885,9 +994,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     public void setForceLiveIEcompatiblity(boolean forceLiveIEcompatiblity) {
-            this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
+        this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
     }
-
     @Override
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";

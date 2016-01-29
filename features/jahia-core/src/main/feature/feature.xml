@@ -54,7 +54,7 @@
         <bundle start-level="30">mvn:biz.aQute/bndlib/2.0.0.20130123-133441</bundle>
     </feature>
 
-    <feature name="jahia-jax-rs" version="${project.version}">
+    <feature name="jahia-jax-rs" description="Jahia JAX RS Package" version="${project.version}">
         <details>Jahia JAX RS Package</details>
         <feature>jahia-core</feature>
         <bundle start-level="30">mvn:org.glassfish.jersey.bundles/jaxrs-ri/2.18</bundle>

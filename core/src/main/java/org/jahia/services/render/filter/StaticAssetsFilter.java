@@ -126,7 +126,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private String jahiaContext = null;
 
     private boolean addLastModifiedDate = false;
-    
+
     private File generatedResourcesFolder;
 
     static {
@@ -520,6 +520,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     private Map<String, Map<String, String>> aggregate(Map<String, Map<String, String>> map, String type) throws IOException {
+
         List<Map.Entry<String, Map<String, String>>> entries = new ArrayList<Map.Entry<String, Map<String, String>>>(map.entrySet());
         Map<String, Map<String, String>> newCss = new LinkedHashMap<String, Map<String, String>>();
 
@@ -545,27 +546,28 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 }
             }
             if (!pathsToAggregate.isEmpty()) {
+
                 String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
 
-                String minifiedAggregatedPath = "/generated-resources/" + aggregatedKey + ".min." + type;
-                String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedPath);
+                String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
+                String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
+                File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
+                String minifiedAggregatedPath = "/generated-resources/" + minifiedAggregatedFileName;
                 if (addLastModifiedDate) {
                     minifiedAggregatedPath += "?" + filesDates;
                 }
 
-                File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
-
                 if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
                     generatedResourcesFolder.mkdirs();
-                    
+
                     // aggregate minified resources
 
-                    LinkedHashMap<String,String> minifiedPaths = new LinkedHashMap<String, String>();
+                    LinkedHashMap<String,String> minifiedFileNames = new LinkedHashMap<String, String>();
                     for (Map.Entry<String, org.springframework.core.io.Resource> entry : pathsToAggregate.entrySet()) {
                         final String path = entry.getKey();
-                        String minifiedPath = "/generated-resources/" + Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
-                        final File minifiedFile = new File(getFileSystemPath(minifiedPath));
+                        String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
+                        final File minifiedFile = new File(getFileSystemPath(minifiedFileName));
                         final org.springframework.core.io.Resource f = entry.getValue();
                         if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
                             // minify the file
@@ -648,7 +650,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 atomicMove(tmpMinifiedFile, minifiedFile);
                             }
                         }
-                        minifiedPaths.put(path, minifiedPath);
+                        minifiedFileNames.put(path, minifiedFileName);
                     }
 
                     try {
@@ -656,7 +658,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         OutputStream outMerged = new BufferedOutputStream(new FileOutputStream(tmpMinifiedAggregatedFile));
                         InputStream is = null;
                         try {
-                            for (Map.Entry<String, String> entry : minifiedPaths.entrySet()) {
+                            for (Map.Entry<String, String> entry : minifiedFileNames.entrySet()) {
                                 if (type.equals("js")) {
                                     outMerged.write("//".getBytes());
                                     outMerged.write(entry.getValue().getBytes());
@@ -717,8 +719,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         return r;
     }
 
-    private String getFileSystemPath(String minifiedAggregatedPath) {
-        return SettingsBean.getInstance().getJahiaVarDiskPath() + minifiedAggregatedPath;
+    private String getFileSystemPath(String minifiedAggregatedFileName) {
+        return SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath() + File.separator + minifiedAggregatedFileName;
     }
 
     private org.springframework.core.io.Resource getResourceFromFile(String workspace, final String fFilePath) {
@@ -862,7 +864,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
     public void afterPropertiesSet() throws Exception {
         jahiaContext = Jahia.getContextPath() + "/";
-        generatedResourcesFolder = new File(getFileSystemPath("/generated-resources"));
+        generatedResourcesFolder = new File(SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath());
     }
 
     public Set<String> getIeHeaderRecognitions() {
@@ -882,7 +884,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     }
 
     public void setForceLiveIEcompatiblity(boolean forceLiveIEcompatiblity) {
-            this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
+        this.forceLiveIEcompatiblity = forceLiveIEcompatiblity;
     }
-
 }

@@ -10,6 +10,7 @@
             <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>db/*.script</exclude>
+                <exclude>karaf-etc/org.apache.karaf.features.cfg</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -18,6 +19,7 @@
             <filtered>true</filtered>
             <includes>
                 <include>db/*.script</include>
+                <include>karaf-etc/org.apache.karaf.features.cfg</include>
             </includes>
         </fileSet>
         <fileSet>

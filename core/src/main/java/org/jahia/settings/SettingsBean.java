@@ -66,6 +66,7 @@ import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProper
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
@@ -484,6 +485,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             readTldConfigJarsToSkip();
 
             initJerichoLogging();
+            
+            initKarafProperties();
 
             DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
@@ -495,7 +498,22 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         } catch (NumberFormatException nfe) {
             logger.error("Properties file is not valid...!", nfe);
         }
-    } // end load
+    }
+
+    /**
+     * Initializes settings for the Karaf container.
+     */
+    private void initKarafProperties() {
+        String features = getString("jahia.karaf.featuresBoot.extra", null);
+        if (StringUtils.isBlank(features)) {
+            features = isClusterActivated() ? "jahia-clustering" : "";
+        } else if (!isClusterActivated() && features.contains("jahia-clustering")) {
+            // Need to remove clustering is not activated
+            features = StringUtils
+                    .join(ArrayUtils.removeElement(StringUtils.split(features, " , \n\r\\"), "jahia-clustering"), ", ");
+        }
+        setSystemProperty("jahia.karaf.featuresBoot.extra", features);
+    }
 
     /**
      * Initializes the JerichoHTML parser logging.

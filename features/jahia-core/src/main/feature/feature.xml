@@ -69,4 +69,9 @@
         <bundle start-level="30">mvn:org.jvnet.mimepull/mimepull/1.9.4</bundle>
     </feature>
 
+    <feature name="jahia-clustering" version="${project.version}">
+        <feature>jahia-core</feature>
+        <feature>cellar</feature>
+    </feature>
+
 </features>

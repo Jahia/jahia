@@ -1407,7 +1407,7 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
 
     @Override
     public NodeIterator getI18Ns() throws RepositoryException {
-        return getNodes("j:translation*");
+        return objectNode.getNodes("j:translation*");
     }
 
     public Node getOrCreateI18N(final Locale locale) throws RepositoryException {

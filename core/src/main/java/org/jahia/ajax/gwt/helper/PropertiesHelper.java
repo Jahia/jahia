@@ -342,7 +342,7 @@ public class PropertiesHelper {
                             Node i18nNode = nodeIterator.nextNode();
                             if (i18nNode.hasProperty(item.getName())) {
                                 currentUserSession.checkout(i18nNode);
-                                i18nNode.getProperty(item.getName()).remove();
+                                objectNode.getProvider().getPropertyWrapper(i18nNode.getProperty(item.getName()), objectNode.getSession()).remove();
                             }
                         }
                     } else {

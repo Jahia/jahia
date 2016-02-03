@@ -64,6 +64,7 @@ package org.jahia.settings;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
@@ -188,6 +189,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String jahiaModulesDiskPath;
     private String modulesSourcesDiskPath;
     private String jahiaDatabaseScriptsPath;
+    private String  jahiaGeneratedResourcesDiskPath;
 
     /**
      * @param   pathResolver a path resolver used to locate files on the disk.
@@ -480,8 +482,10 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             reindexIfNeeded();
 
             readTldConfigJarsToSkip();
-            
+
             initJerichoLogging();
+            
+            initKarafProperties();
 
             DatabaseUtils.setDatasource(dataSource);
             if (isProcessingServer()) {
@@ -493,7 +497,22 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         } catch (NumberFormatException nfe) {
             logger.error("Properties file is not valid...!", nfe);
         }
-    } // end load
+    }
+
+    /**
+     * Initializes settings for the Karaf container.
+     */
+    private void initKarafProperties() {
+        String features = getString("jahia.karaf.featuresBoot.extra", null);
+        if (StringUtils.isBlank(features)) {
+            features = isClusterActivated() ? "jahia-clustering" : "";
+        } else if (!isClusterActivated() && features.contains("jahia-clustering")) {
+            // Need to remove clustering is not activated
+            features = StringUtils
+                    .join(ArrayUtils.removeElement(StringUtils.split(features, " , \n\r\\"), "jahia-clustering"), ", ");
+        }
+        setSystemProperty("jahia.karaf.featuresBoot.extra", features);
+    }
 
     /**
      * Initializes the JerichoHTML parser logging.
@@ -574,16 +593,14 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     }
 
     private void initPaths() {
+
         classDiskPath = pathResolver.resolvePath ("/WEB-INF/classes/");
 
         String jahiaDataDir = System.getProperty("jahia.data.dir");
         if (jahiaDataDir != null && jahiaDataDir.length() > 0) {
-            jahiaVarDiskPath = ensureEndSlash(interpolate(jahiaDataDir),
-                    true);
+            jahiaVarDiskPath = ensureEndSlash(interpolate(jahiaDataDir), true);
         } else {
-            jahiaVarDiskPath = ensureEndSlash(
-                    convertContexted(getString("jahiaVarDiskPath"),
-                            pathResolver), false);
+            jahiaVarDiskPath = ensureEndSlash(convertContexted(getString("jahiaVarDiskPath"), pathResolver), false);
         }
         try {
             jahiaVarDiskPath = new File(jahiaVarDiskPath).getCanonicalPath();
@@ -592,8 +609,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         }
         setSystemProperty("jahia.data.dir", jahiaVarDiskPath);
 
-        jahiaEtcDiskPath = new File(convertContexted (getString("jahiaEtcDiskPath", "$context/WEB-INF/etc/"), pathResolver)).getAbsolutePath();
-        tmpContentDiskPath = new File(convertContexted (getString("tmpContentDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaEtcDiskPath = new File(convertContexted(getString("jahiaEtcDiskPath", "$context/WEB-INF/etc/"), pathResolver)).getAbsolutePath();
+        tmpContentDiskPath = new File(convertContexted(getString("tmpContentDiskPath"), pathResolver)).getAbsolutePath();
         try {
             File tmpContentDisk = new File(tmpContentDiskPath);
             if (!tmpContentDisk.exists()) {
@@ -602,11 +619,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         } catch (Exception e) {
             logger.error("Provided folder for tmpContentDiskPath is not valid. Cause: " + e.getMessage(), e);
         }
-        jahiaImportsDiskPath = new File(convertContexted (getString("jahiaImportsDiskPath"), pathResolver)).getAbsolutePath();
-        jahiaModulesDiskPath = new File(convertContexted (getString("jahiaModulesDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaImportsDiskPath = new File(convertContexted(getString("jahiaImportsDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaModulesDiskPath = new File(convertContexted(getString("jahiaModulesDiskPath"), pathResolver)).getAbsolutePath();
         jahiaDatabaseScriptsPath = jahiaVarDiskPath + File.separator + "db";
-
         modulesSourcesDiskPath = new File(convertContexted(getString("modulesSourcesDiskPath"), pathResolver)).getAbsolutePath();
+        jahiaGeneratedResourcesDiskPath = new File(convertContexted(getString("jahiaGeneratedResourcesDiskPath"), pathResolver)).getAbsolutePath();
     }
 
     private void detectServer() {
@@ -1013,7 +1030,6 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return jahiaVarDiskPath;
     }
 
-
     /**
      * Used to get the shared templates disk path.
      *
@@ -1023,6 +1039,12 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         return jahiaModulesDiskPath;
     }
 
+    /**
+     * @return The generated resources disk path.
+     */
+    public String getJahiaGeneratedResourcesDiskPath() {
+        return jahiaGeneratedResourcesDiskPath;
+    }
 
     public String getClassDiskPath() {
         return classDiskPath;

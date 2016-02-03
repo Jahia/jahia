@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -341,7 +342,7 @@ public class PropertiesHelper {
                             Node i18nNode = nodeIterator.nextNode();
                             if (i18nNode.hasProperty(item.getName())) {
                                 currentUserSession.checkout(i18nNode);
-                                i18nNode.getProperty(item.getName()).remove();
+                                objectNode.getProvider().getPropertyWrapper(i18nNode.getProperty(item.getName()), objectNode.getSession()).remove();
                             }
                         }
                     } else {
@@ -356,6 +357,7 @@ public class PropertiesHelper {
     }
 
     public void setProperties(JCRNodeWrapper objectNode, List<GWTJahiaNodeProperty> newProps, String httpSessionID) throws RepositoryException {
+
         if (objectNode == null || newProps == null || newProps.isEmpty()) {
             logger.debug("node or properties are null or empty");
             return;
@@ -383,16 +385,34 @@ public class PropertiesHelper {
                         values.toArray(finalValues);
                         objectNode.setProperty(prop.getName(), finalValues);
                     } else {
+
                         if (prop.getValues().size() > 0) {
+
                             GWTJahiaNodePropertyValue propValue = prop.getValues().get(0);
                             if (propValue.getType() == GWTJahiaNodePropertyType.ASYNC_UPLOAD) {
-                                UploadedPendingFileStorage.PendingFile fileItem = fileStorage.get(httpSessionID, propValue.getString());
+
+                                // propValue.getString() value is actually file content type like "application/pdf" rather than file name in case we
+                                // open a file component for edit, but do not change its content, and then save. Code below relies on the fact that
+                                // there is unlikely any uploaded file named like "application/pdf" or similarly, and (wrapped) PathNotFoundException
+                                // will be thrown in this case. QA-8249 is to refactor the front end to not submit fake values like "application/pdf"
+                                // as an actual file names.
+                                UploadedPendingFileStorage.PendingFile fileItem;
+                                try {
+                                    fileItem = fileStorage.get(httpSessionID, propValue.getString());
+                                } catch (RuntimeException e) {
+                                    if (ExceptionUtils.indexOfType(e, PathNotFoundException.class) >= 0) {
+                                        fileItem = null;
+                                    } else {
+                                        throw e;
+                                    }
+                                }
+
                                 boolean clear = propValue.getString().equals("clear");
                                 if (!clear && fileItem == null) {
                                     continue;
                                 }
-                                ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
 
+                                ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
                                 if (end != null) {
                                     try {
                                         if (!clear) {
@@ -422,6 +442,7 @@ public class PropertiesHelper {
                                     }
                                 }
                             } else if (propValue.getType() == GWTJahiaNodePropertyType.PAGE_LINK) {
+
                                 if (objectNode.hasNode(prop.getName())) {
                                     Node content = objectNode.getNodes(prop.getName()).nextNode();
                                     content.remove();
@@ -443,6 +464,7 @@ public class PropertiesHelper {
                                     content.setProperty(Constants.ALT, alt);
                                     content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                 }
+
                                 // case of internal link
                                 else if (linkType.equalsIgnoreCase("internal") && nodeReference != null) {
                                     Node content = objectNode.addNode(prop.getName(), Constants.JAHIANT_NODE_LINK);
@@ -471,20 +493,15 @@ public class PropertiesHelper {
                             objectNode.getProperty(prop.getName()).remove();
                         }
                     }
-
                 } else if (prop != null && StringUtils.equals(prop.getName(), Constants.WORKINPROGRESS)) {
                     // do not set wip property here, as we are in a loop if wip property is the first the i18n nodes are may be not created yet
                     wipProp = prop;
                 }
             } catch (PathNotFoundException e) {
                 if (logger.isDebugEnabled()) {
-                    logger.debug("Property with the name '"
-                            + prop.getName() + "' not found on the node "
-                            + objectNode.getPath() + ". Skipping.", e);
+                    logger.debug("Property with the name '" + prop.getName() + "' not found on the node " + objectNode.getPath() + ". Skipping.", e);
                 } else {
-                    logger.info("Property with the name '" + prop.getName()
-                            + "' not found on the node "
-                            + objectNode.getPath() + ". Skipping.");
+                    logger.info("Property with the name '" + prop.getName()  + "' not found on the node " + objectNode.getPath() + ". Skipping.");
                 }
             }
         }

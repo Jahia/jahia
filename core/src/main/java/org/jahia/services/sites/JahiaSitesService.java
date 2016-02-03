@@ -386,7 +386,7 @@ public class JahiaSitesService extends JahiaService {
                     for (JahiaTemplatesPackage availableTemplatePackage : availableTemplatePackages) {
                         String autoDeployOnSite = availableTemplatePackage.getAutoDeployOnSite();
                         if (autoDeployOnSite != null
-                                && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite))) {
+                                && ("all".equals(autoDeployOnSite) || siteKey.equals(autoDeployOnSite) || (siteKey.equals("systemsite") && autoDeployOnSite.equals("system")))) {
                             String source = "/modules/" + availableTemplatePackage.getId();
                             try {
                                 logger.info("Deploying module {} to {}", source, target);

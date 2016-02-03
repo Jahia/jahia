@@ -54,7 +54,7 @@
         <bundle start-level="30">mvn:biz.aQute/bndlib/2.0.0.20130123-133441</bundle>
     </feature>
 
-    <feature name="jahia-jax-rs" version="${project.version}">
+    <feature name="jahia-jax-rs" description="Jahia JAX RS Package" version="${project.version}">
         <details>Jahia JAX RS Package</details>
         <feature>jahia-core</feature>
         <bundle start-level="30">mvn:org.glassfish.jersey.bundles/jaxrs-ri/2.18</bundle>
@@ -67,6 +67,11 @@
         <bundle start-level="30">mvn:org.glassfish.hk2.external/asm-all-repackaged/2.4.0-b25</bundle>
         <bundle start-level="30">mvn:org.jboss.spec.javax.annotation/jboss-annotations-api_1.2_spec/1.0.0.Final</bundle>
         <bundle start-level="30">mvn:org.jvnet.mimepull/mimepull/1.9.4</bundle>
+    </feature>
+
+    <feature name="jahia-clustering" version="${project.version}">
+        <feature>jahia-core</feature>
+        <feature>cellar</feature>
     </feature>
 
 </features>

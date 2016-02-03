@@ -89,14 +89,14 @@ import java.util.zip.GZIPOutputStream;
 public class StaticFileServlet extends HttpServlet {
 
     private static final long serialVersionUID = 7704264638970146054L;
-    
+
     // Constants ----------------------------------------------------------------------------------
 
     private static final Pattern PATTERN_ACCEPT_HEADER_REPLACE = Pattern.compile("/.*$");
     private static final Pattern PATTERN_ACCEPT_HEADER_SPLIT = Pattern.compile("\\s*(,|;)\\s*");
     private static final Pattern PATTERN_MATCH_HEADER_SPLIT = Pattern.compile("\\s*,\\s*");
     private static final Pattern PATTERN_RANGE = Pattern.compile("^bytes=\\d*-\\d*(,\\d*-\\d*)*$");
-    
+
     private static final int DEFAULT_BUFFER_SIZE = 10240; // ..bytes = 10KB.
     private static final long DEFAULT_EXPIRE_TIME = 604800000L; // ..ms = 1 week.
     private static final String MULTIPART_BOUNDARY = "MULTIPART_BYTERANGES";
@@ -104,7 +104,6 @@ public class StaticFileServlet extends HttpServlet {
     // Properties ---------------------------------------------------------------------------------
 
     private String basePath;
-    
     private boolean enableGzip;
 
     // Actions ------------------------------------------------------------------------------------
@@ -112,10 +111,7 @@ public class StaticFileServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-
-        // Get base path (path to get all resources from) as init parameter.
-        this.basePath = SettingsBean.getInstance().getJahiaVarDiskPath() + File.separator + StringUtils.defaultString(config.getInitParameter("generated-resources-dir-name"), "generated-resources");
-        
+        basePath = SettingsBean.getInstance().getJahiaGeneratedResourcesDiskPath();
         enableGzip = Boolean.valueOf(StringUtils.defaultString(config.getInitParameter("enable-gzip"), "true"));
     }
 
@@ -124,8 +120,8 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doHead(HttpServletRequest, HttpServletResponse).
      */
-    protected void doHead(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @Override
+    protected void doHead(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Process request without content.
         processRequest(request, response, false);
     }
@@ -135,8 +131,8 @@ public class StaticFileServlet extends HttpServlet {
      *
      * @see HttpServlet#doGet(HttpServletRequest, HttpServletResponse).
      */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // Process request with content.
         processRequest(request, response, true);
     }
@@ -149,9 +145,8 @@ public class StaticFileServlet extends HttpServlet {
      * @param content  Whether the request body should be written (GET) or not (HEAD).
      * @throws IOException If something fails at I/O level.
      */
-    private void processRequest
-    (HttpServletRequest request, HttpServletResponse response, boolean content)
-            throws IOException {
+    private void processRequest(HttpServletRequest request, HttpServletResponse response, boolean content) throws IOException {
+
         // Validate the requested file ------------------------------------------------------------
 
         // Get requested file by path info.

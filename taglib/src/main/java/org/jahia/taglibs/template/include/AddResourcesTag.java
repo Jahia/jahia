@@ -170,10 +170,8 @@ public class AddResourcesTag extends AbstractJahiaTag {
 
         StringBuilder builder = new StringBuilder();
         for (String resource : strings) {
-            boolean found = false;
             resource = resource.trim();
             if (resource.startsWith("/") || resource.startsWith("http://") || resource.startsWith("https://")) {
-                found = true;
                 writeResourceTag(type, resource, resource);
             } else {
                 String relativeResourcePath = "/" + type + "/" + resource;

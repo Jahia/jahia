@@ -98,11 +98,11 @@ public class FrameworkService {
             String varDiskPath = SettingsBean.getInstance().getJahiaVarDiskPath();
             System.setProperty("karaf.home", karafHome);
             System.setProperty("karaf.base", karafHome);
-            System.setProperty("karaf.data", varDiskPath + "/karaf-data");
-            System.setProperty("karaf.etc", varDiskPath + "/karaf-etc");
+            System.setProperty("karaf.data", varDiskPath + "/karaf");
+            System.setProperty("karaf.etc", varDiskPath + "/etc");
             System.setProperty("org.osgi.framework.storage", varDiskPath + "/bundles-deployed");
-            System.setProperty("karaf.history", varDiskPath + "/karaf-data/history.txt");
-            System.setProperty("karaf.instances", varDiskPath + "/karaf-data/instances");
+            System.setProperty("karaf.history", varDiskPath + "/karaf/history.txt");
+            System.setProperty("karaf.instances", varDiskPath + "/karaf/instances");
             System.setProperty("karaf.startLocalConsole", "false");
             System.setProperty("karaf.startRemoteShell", "true");
             System.setProperty("karaf.lock", "false");

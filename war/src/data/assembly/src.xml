@@ -10,7 +10,7 @@
             <outputDirectory>/</outputDirectory>
             <excludes>
                 <exclude>db/*.script</exclude>
-                <exclude>karaf-etc/org.apache.karaf.features.cfg</exclude>
+                <exclude>etc/org.apache.karaf.features.cfg</exclude>
             </excludes>
         </fileSet>
         <fileSet>
@@ -19,22 +19,22 @@
             <filtered>true</filtered>
             <includes>
                 <include>db/*.script</include>
-                <include>karaf-etc/org.apache.karaf.features.cfg</include>
+                <include>etc/org.apache.karaf.features.cfg</include>
             </includes>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/karaf-data</directory>
-            <outputDirectory>/karaf-data</outputDirectory>
+            <directory>${basedir}/target/karaf</directory>
+            <outputDirectory>/karaf</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
-            <directory>${basedir}/target/karaf-etc</directory>
-            <outputDirectory>/karaf-etc</outputDirectory>
+            <directory>${basedir}/target/etc</directory>
+            <outputDirectory>/etc</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
         <fileSet>
             <directory>${basedir}/target/generated-resources</directory>
-            <outputDirectory>/karaf-etc</outputDirectory>
+            <outputDirectory>/etc</outputDirectory>
             <filtered>false</filtered>
         </fileSet>
     </fileSets>

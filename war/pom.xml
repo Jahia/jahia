@@ -402,14 +402,12 @@
                             <goal>features-add-to-repository</goal>
                         </goals>
                         <configuration>
-                            <addTransitiveFeatures>false</addTransitiveFeatures>
+                            <addTransitiveFeatures>true</addTransitiveFeatures>
                             <descriptors>
-                                <descriptor>mvn:org.jahia.features/jahia-core/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features</descriptor>
                             </descriptors>
                             <features>
-                                <feature>jahia-gemini-blueprint</feature>
-                                <feature>jahia-core</feature>
-                                <feature>jahia-jax-rs</feature>
+                                <feature>dx-standard</feature>
                             </features>
                             <repository>${project.build.directory}/jahia/WEB-INF/karaf/system</repository>
                         </configuration>

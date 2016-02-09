@@ -99,36 +99,7 @@ import java.util.regex.Pattern;
  */
 public class StaticAssetsFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent>, InitializingBean {
 
-
-    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
-        public Object transform(Object input) {
-            return input != null ? input.toString().toLowerCase() : null;
-        }
-    };
-
-    private static final Pattern CLEANUP_REGEXP = Pattern.compile(
-            "<!-- jahia:temp value=\".*?\" -->");
-
     private static final FastHashMap RANK;
-
-    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
-
-    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"(?!(/|http:|https:|data:))");
-
-    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
-
-    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
-
-    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
-    private static final String TARGET_TAG = "targetTag";
-    private static final String STATIC_ASSETS = "staticAssets";
-
-    private String jahiaContext = null;
-
-    private boolean addLastModifiedDate = false;
-
-    private File generatedResourcesFolder;
-
     static {
         RANK = new FastHashMap();
         RANK.put("inlinebefore", 0);
@@ -141,18 +112,57 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         RANK.setFast(true);
     }
 
-    @SuppressWarnings("unchecked")
-    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils
-            .transformedComparator(null, new Transformer() {
-                public Object transform(Object input) {
-                    Integer rank = null;
-                    if (input != null) {
-                        rank = (Integer) RANK.get(input.toString());
-                    }
+    private static final Pattern URL_PATTERN_1 = Pattern.compile("url\\( ");
+    private static final Pattern URL_PATTERN_2 = Pattern.compile("url\\(\"(?!(/|http:|https:|data:))");
+    private static final Pattern URL_PATTERN_3 = Pattern.compile("url\\('(?!(/|http:|https:|data:))");
+    private static final Pattern URL_PATTERN_4 = Pattern.compile("url\\((?!(/|'|\"|http:|https:|data:))");
 
-                    return rank != null ? rank : RANK.get("unknown");
-                }
-            });
+    private static final Pattern CLEANUP_REGEXP = Pattern.compile("<!-- jahia:temp value=\".*?\" -->");
+    private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
+    private static final String TARGET_TAG = "targetTag";
+    private static final String STATIC_ASSETS = "staticAssets";
+
+    // This path must be is sync with the static files servlet URL pattern in web.xml.
+    private static final String GENERATED_RESOURCES_URL_PATH = "/generated-resources/";
+
+    private static final Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
+
+    private String jahiaContext = null;
+    private boolean addLastModifiedDate = false;
+    private File generatedResourcesFolder;
+    private String ajaxResolvedTemplate;
+    private String ajaxTemplate;
+    private String ajaxTemplateExtension;
+    private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
+    private String resolvedTemplate;
+    private ScriptEngineUtils scriptEngineUtils;
+    private String template;
+    private String templateExtension;
+    private boolean aggregateAndCompress;
+    private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
+    private Set<String> ieHeaderRecognitions = new HashSet<String>();
+    private boolean forceLiveIEcompatiblity;
+
+    private static final Transformer LOW_CASE_TRANSFORMER = new Transformer() {
+
+        @Override
+        public Object transform(Object input) {
+            return input != null ? input.toString().toLowerCase() : null;
+        }
+    };
+
+    @SuppressWarnings("unchecked")
+    private static final Comparator<String> ASSET_COMPARATOR = ComparatorUtils.transformedComparator(null, new Transformer() {
+
+        @Override
+        public Object transform(Object input) {
+            Integer rank = null;
+            if (input != null) {
+                rank = (Integer) RANK.get(input.toString());
+            }
+            return rank != null ? rank : RANK.get("unknown");
+        }
+    });
 
 
     class AssetsScriptContext extends SimpleScriptContext {
@@ -170,8 +180,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     }
 
-    private static Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
-
     private static void atomicMove(File src, File dest) throws IOException {
         if (src.exists()) {
             // perform the file move
@@ -188,26 +196,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
     }
-
-    private String ajaxResolvedTemplate;
-
-    private String ajaxTemplate;
-    private String ajaxTemplateExtension;
-
-    private String ckeditorJavaScript = "/modules/ckeditor/javascript/ckeditor.js";
-
-    private String resolvedTemplate;
-
-    private ScriptEngineUtils scriptEngineUtils;
-
-    private String template;
-    private String templateExtension;
-
-    private boolean aggregateAndCompress;
-    private List<String> excludesFromAggregateAndCompress = new ArrayList<String>();
-
-    private Set<String> ieHeaderRecognitions = new HashSet<String>();
-    private boolean forceLiveIEcompatiblity;
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -553,7 +541,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
                 File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
 
-                String minifiedAggregatedPath = "/generated-resources/" + minifiedAggregatedFileName;
+                String minifiedAggregatedPath = GENERATED_RESOURCES_URL_PATH + minifiedAggregatedFileName;
                 if (addLastModifiedDate) {
                     minifiedAggregatedPath += "?" + filesDates;
                 }

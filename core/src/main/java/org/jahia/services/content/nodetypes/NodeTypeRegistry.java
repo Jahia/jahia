@@ -86,6 +86,9 @@ public class NodeTypeRegistry implements NodeTypeManager {
     @SuppressWarnings("unchecked")
     private final Map<String, List<Resource>> files = new ListOrderedMap();
 
+    // map of mixin and associate extended node types index by mixin
+    private final Map<ExtendedNodeType, List<ExtendedNodeType>> extensionsMixin = new HashMap<>();
+    // map of extended node types and associate mixin index by extended node type
     private final Map<ExtendedNodeType, Set<ExtendedNodeType>> mixinExtensions = new HashMap<>();
     private final Map<String, Set<ExtendedItemDefinition>> typedItems = new HashMap<>();
 
@@ -407,6 +410,54 @@ public class NodeTypeRegistry implements NodeTypeManager {
         } finally {
             writeLock.unlock();
         }
+    }
+
+    /**
+     * add extends mixin (mixin that extends one or multiple types) on given extended names (nodetypes to be extends)
+     * @param mixin the mixin
+     * @param mixinExtendNames the types that need to be extended
+     * @return The list of extended node types
+     * @throws NoSuchNodeTypeException
+     */
+    public List<ExtendedNodeType> addMixinExtensions(ExtendedNodeType mixin, List<String> mixinExtendNames) throws NoSuchNodeTypeException {
+        List<ExtendedNodeType> newMixinExtend = new ArrayList<>();
+        for (String s : mixinExtendNames) {
+            final ExtendedNodeType type = getNodeType(s);
+            addMixinExtension(mixin, type);
+            newMixinExtend.add(type);
+        }
+
+        readLock.lock();
+        try {
+            if (extensionsMixin.containsKey(mixin)) {
+               // mixin was already extending some node types, check if we have to remove this extension on node types
+                Set<ExtendedNodeType> extendedNodeTypes  = new HashSet<>(extensionsMixin.get(mixin));
+                extendedNodeTypes.removeAll(newMixinExtend);
+
+                if(extendedNodeTypes.size() > 0) {
+                    // some node types should not be extended by this mixin anymore
+                    readLock.unlock();
+                    for (ExtendedNodeType extendedNodeType : extendedNodeTypes) {
+                        writeLock.lock();
+                        mixinExtensions.get(extendedNodeType).remove(mixin);
+                        writeLock.unlock();
+                    }
+                    readLock.lock();
+                }
+            }
+        } finally {
+            readLock.unlock();
+        }
+
+        writeLock.lock();
+        try {
+            // store the extends nodetypes index by mixin
+            extensionsMixin.put(mixin, newMixinExtend);
+        } finally {
+            writeLock.unlock();
+        }
+
+        return newMixinExtend;
     }
 
     public Map<ExtendedNodeType, Set<ExtendedNodeType>> getMixinExtensions() {

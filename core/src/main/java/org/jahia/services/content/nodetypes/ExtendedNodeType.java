@@ -279,13 +279,10 @@ public class ExtendedNodeType implements NodeType {
             }
             nodeType.addSubType(this);
         }
-        List<ExtendedNodeType> newMixinExtend = new ArrayList<ExtendedNodeType>();
-        for (String s : mixinExtendNames) {
-            final ExtendedNodeType type = registry.getNodeType(s);
-            registry.addMixinExtension(this, type);
-            newMixinExtend.add(type);
-        }
-        mixinExtend = newMixinExtend;
+
+        // only add mixin extensions if current nodetype is a mixin
+        mixinExtend = this.isMixin ? registry.addMixinExtensions(this, mixinExtendNames) : Collections.<ExtendedNodeType>emptyList();
+
         for (ExtendedItemDefinition itemDefinition : items) {
             if (itemDefinition.getItemType() != null) {
                 registry.addTypedItem(itemDefinition);

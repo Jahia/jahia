@@ -46,34 +46,30 @@
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>org.jahia.server</groupId>
-        <artifactId>jahia-root</artifactId>
+        <groupId>org.jahia.features</groupId>
+        <artifactId>jahia-features</artifactId>
         <version>7.2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.jahia.features</groupId>
-    <artifactId>jahia-features</artifactId>
-    <name>Jahia Karaf OSGi Features</name>
-    <packaging>pom</packaging>
+    <artifactId>dx-gemini-blueprint</artifactId>
+    <name>Jahia Gemini Blueprint Karaf OSGi Feature</name>
+    <packaging>feature</packaging>
 
-    <modules>
-        <module>gemini-blueprint</module>
-        <module>core</module>
-        <module>jax-rs</module>
-        <module>standard</module>
-    </modules>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <startLevel>30</startLevel>
-                    <includeTransitiveDependency>false</includeTransitiveDependency>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-core</artifactId>
+            <version>${gemini.blueprint.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-extender</artifactId>
+            <version>${gemini.blueprint.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.gemini.blueprint</groupId>
+            <artifactId>gemini-blueprint-io</artifactId>
+            <version>${gemini.blueprint.version}</version>
+        </dependency>
+    </dependencies>
 </project>

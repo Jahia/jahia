@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<features name="dx-standard-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.3.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://karaf.apache.org/xmlns/features/v1.3.0 http://karaf.apache.org/xmlns/features/v1.3.0">
+    <repository>mvn:org.apache.karaf.features/standard/4.0.4/xml/features</repository>
+    
+    <feature name="dx-standard" description="DX Standard Distribution">
+        <details>DX Standard Distribution</details>
+        <feature>dx-core</feature>
+    </feature>
+
+</features>

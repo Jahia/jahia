@@ -85,6 +85,7 @@ import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -632,8 +633,9 @@ public class Activator implements BundleActivator {
 
         if (hasSpringFile(bundle)) {
             try {
-                if (BundleUtils.getContextToStartForModule(bundle) != null) {
-                    BundleUtils.getContextToStartForModule(bundle).refresh();
+                final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
+                if (contextToStartForModule != null) {
+                    contextToStartForModule.refresh();
                 }
             } catch (Exception e) {
                 setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);

@@ -338,7 +338,6 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     private void addFactories(Bundle bundle, BundleScriptingContext scriptingContext, List<ScriptEngineFactory> engineFactories) {
         final List<ScriptEngineFactory> existingFactories = new ArrayList<>(engineFactories.size());
-        bundleIdsToScriptFactories.put(bundle.getBundleId(), existingFactories);
 
         for (ScriptEngineFactory factory : engineFactories) {
             final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
@@ -368,6 +367,11 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
             BundleScriptResolver.getInstance().register(bundleScriptEngineFactory, bundle);
         }
+
+        bundleIdsToScriptFactories.put(bundle.getBundleId(), existingFactories);
     }
 
+    ScriptEngineFactory getFactoryForExtension(String extension) {
+        return extensionsToScriptFactories.get(extension);
+    }
 }

@@ -75,22 +75,25 @@ import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.Bundle;
 
 import java.net.URL;
-import java.util.Dictionary;
+import java.util.Collections;
 import java.util.List;
 
 /**
  * A {@link BundleURLScanner} that properly implements {@link #hashCode()} and {@link #equals(Object)}
+ *
  * @author Christophe Laprun
  */
-public class ScriptBundleURLScanner extends BundleURLScanner {
+class ScriptBundleURLScanner extends BundleURLScanner {
     private final int hash;
+    private final String extension;
 
-    public ScriptBundleURLScanner(String path, String filePattern, boolean recurse) {
-        super(path, filePattern, recurse);
+    ScriptBundleURLScanner(String path, String extension, boolean recurse) {
+        super(path, BundleScriptResolver.getExtensionPattern(extension), recurse);
         int result = path != null ? path.hashCode() : 0;
-        result = 31 * result + (filePattern != null ? filePattern.hashCode() : 0);
+        result = 31 * result + (extension != null ? extension.hashCode() : 0);
         result = 31 * result + (recurse ? 1 : 0);
         hash = result;
+        this.extension = extension;
     }
 
     @Override
@@ -111,11 +114,10 @@ public class ScriptBundleURLScanner extends BundleURLScanner {
 
     @Override
     public List<URL> scan(Bundle bundle) {
-        final Dictionary<String, String> headers = bundle.getHeaders();
-        if(headers != null) {
-
+        if (BundleScriptResolver.shouldNotBeScannedForViews(bundle, extension)) {
+            return Collections.emptyList();
+        } else {
+            return super.scan(bundle);
         }
-
-        return super.scan(bundle);
     }
 }

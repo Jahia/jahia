@@ -58,10 +58,10 @@ import java.util.SortedSet;
  */
 public interface ScriptResolver {
 
-    public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
+    Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
 
-    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site,  String templateType);
+    boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site,  String templateType);
 
-    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
+    SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
 
 }

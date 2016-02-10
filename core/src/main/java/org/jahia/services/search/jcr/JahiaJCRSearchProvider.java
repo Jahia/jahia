@@ -261,6 +261,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
             if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
                 return true;
             }
+            //Check visibility of parents
+            if (!node.isFile() && JCRContentUtils.getParentOfType(node, "jnt:page") == null) {
+            	return true;
+            }
             if (!languages.isEmpty() && isSiteSearch(criteria)
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {
                 // if just site-search and no file-search, then skip the node unless it is referred

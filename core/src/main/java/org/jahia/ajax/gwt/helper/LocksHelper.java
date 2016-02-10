@@ -57,6 +57,7 @@ import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.lock.LockException;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +124,11 @@ public class LocksHelper implements ApplicationListener {
             for (String lock : locks) {
                 String[] vals = lock.split("/");
                 JCRSessionWrapper jcrsession = JCRSessionFactory.getInstance().getCurrentUserSession(null, LanguageCodeConverters.languageCodeToLocale(vals[0]));
-                jcrsession.getNodeByUUID(vals[1]).unlock("engine");
+                try {
+					jcrsession.getNodeByUUID(vals[1]).unlock("engine");
+				} catch (LockException e) {
+					logger.warn("Problem while trying to unlock node: " + vals[1], e);
+				}
             }
             locks.clear();
         } catch (RepositoryException e) {

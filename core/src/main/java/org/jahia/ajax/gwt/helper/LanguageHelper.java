@@ -88,7 +88,7 @@ public class LanguageHelper {
                         item.setLanguage(langCode);
                         item.setDisplayName(getDisplayName(langCode));
                         item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
-                        item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                        item.setCurrent(currentLocale != null && langCode.equalsIgnoreCase(currentLocale.toString()));
                         item.setActive(activeLanguages.contains(langCode));
                         item.setMandatory(mandatoryLanguages.contains(langCode));
                         items.add(item);
@@ -107,7 +107,7 @@ public class LanguageHelper {
                     item.setLanguage(langCode);
                     item.setDisplayName(getDisplayName(langCode));
                     item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
-                    item.setCurrent(langCode.equalsIgnoreCase(currentLocale.toString()));
+                    item.setCurrent(currentLocale != null && langCode.equalsIgnoreCase(currentLocale.toString()));
                     item.setActive(activeLanguages.contains(langCode));
                     item.setMandatory(mandatoryLanguages.contains(langCode));
                     items.add(item);

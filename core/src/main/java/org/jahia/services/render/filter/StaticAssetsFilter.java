@@ -141,6 +141,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
     private static final String[] OPTIONAL_ATTRIBUTES = new String[]{"title", "rel", "media", "condition"};
     private static final String TARGET_TAG = "targetTag";
     private static final String STATIC_ASSETS = "staticAssets";
+    private static final String ASSET_ENCODING = "UTF-8";
+
+    // This path must be is sync with the static files servlet URL pattern in web.xml.
+    private static final String GENERATED_RESOURCES_URL_PATH = "/generated-resources/";
 
     private static final Logger logger = LoggerFactory.getLogger(StaticAssetsFilter.class);
 
@@ -165,7 +169,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         }
     });
 
-
     private static class AssetsScriptContext extends SimpleScriptContext {
 
         private Writer writer = null;
@@ -179,6 +182,36 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 writer = new StringWriter();
             }
             return writer;
+        }
+    }
+
+    private static class JavaScriptErrorReporter implements ErrorReporter {
+
+        @Override
+        public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
+            if (!logger.isDebugEnabled()) {
+                return;
+            }
+            if (line < 0) {
+                logger.debug(message);
+            } else {
+                logger.debug(line + ":" + lineOffset + ":" + message);
+            }
+        }
+
+        @Override
+        public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
+            if (line < 0) {
+                logger.error(message);
+            } else {
+                logger.error(line + ":" + lineOffset + ":" + message);
+            }
+        }
+
+        @Override
+        public EvaluatorException runtimeError(String message, String sourceName, int line, String lineSource, int lineOffset) {
+            error(message, sourceName, line, lineSource, lineOffset);
+            return new EvaluatorException(message);
         }
     }
 
@@ -563,7 +596,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
         String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
         File minifiedAggregatedFile = new File(minifiedAggregatedRealPath);
-        String minifiedAggregatedPath = "/generated-resources/" + minifiedAggregatedFileName;
+        String minifiedAggregatedPath = GENERATED_RESOURCES_URL_PATH + minifiedAggregatedFileName;
         if (addLastModifiedDate) {
             minifiedAggregatedPath += "?" + maxLastModified;
         }
@@ -592,14 +625,14 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 try {
                     for (Map.Entry<String, String> entry : minifiedFileNames.entrySet()) {
                         if (type.equals("js")) {
-                            outMerged.write("//".getBytes());
-                            outMerged.write(entry.getValue().getBytes());
-                            outMerged.write("\n".getBytes());
+                            outMerged.write("//".getBytes(ASSET_ENCODING));
+                            outMerged.write(entry.getValue().getBytes(ASSET_ENCODING));
+                            outMerged.write("\n".getBytes(ASSET_ENCODING));
                         }
                         is = new FileInputStream(getFileSystemPath(entry.getValue()));
                         IOUtils.copy(is, outMerged);
                         if (type.equals("js")) {
-                            outMerged.write(";\n".getBytes());
+                            outMerged.write(";\n".getBytes(ASSET_ENCODING));
                         }
                         IOUtils.closeQuietly(is);
                     }
@@ -624,11 +657,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
 
         try {
 
-            reader = new InputStreamReader(resource.getInputStream(), "UTF-8");
-            writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
+            reader = new InputStreamReader(resource.getInputStream(), ASSET_ENCODING);
+            writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), ASSET_ENCODING);
 
             if (type.equals("css")) {
-
                 String s = IOUtils.toString(reader);
                 IOUtils.closeQuietly(reader);
                 if (s.indexOf("url(") != -1) {
@@ -638,55 +670,19 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
                     s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
                 }
-
                 reader = new StringReader(s);
-
                 CssCompressor compressor = new CssCompressor(reader);
                 compressor.compress(writer, -1);
-
             } else if (type.equals("js")) {
-
-                JavaScriptCompressor compressor = null;
                 try {
-
-                    compressor = new JavaScriptCompressor(reader, new ErrorReporter() {
-
-                        @Override
-                        public void warning(String message, String sourceName, int line, String lineSource, int lineOffset) {
-                            if (!logger.isDebugEnabled()) {
-                                return;
-                            }
-                            if (line < 0) {
-                                logger.debug(message);
-                            } else {
-                                logger.debug(line + ":" + lineOffset + ":" + message);
-                            }
-                        }
-
-                        @Override
-                        public void error(String message, String sourceName, int line, String lineSource, int lineOffset) {
-                            if (line < 0) {
-                                logger.error(message);
-                            } else {
-                                logger.error(line + ":" + lineOffset + ":" + message);
-                            }
-                        }
-
-                        @Override
-                        public EvaluatorException runtimeError(String message, String sourceName, int line, String lineSource, int lineOffset) {
-                            error(message, sourceName, line, lineSource, lineOffset);
-                            return new EvaluatorException(message);
-                        }
-                    });
-
+                    JavaScriptCompressor compressor  = new JavaScriptCompressor(reader, new JavaScriptErrorReporter());
                     compressor.compress(writer, -1, true, true, false, false);
-
                 } catch (EvaluatorException e) {
                     logger.error("Error when minifying " + path, e);
                     IOUtils.closeQuietly(reader);
                     IOUtils.closeQuietly(writer);
-                    reader = new InputStreamReader(resource.getInputStream(), "UTF-8");
-                    writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
+                    reader = new InputStreamReader(resource.getInputStream(), ASSET_ENCODING);
+                    writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), ASSET_ENCODING);
                     IOUtils.copy(reader, writer);
                 }
             } else {
@@ -700,6 +696,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 IOUtils.closeQuietly(bw);
                 IOUtils.closeQuietly(br);
             }
+
         } finally {
             IOUtils.closeQuietly(reader);
             IOUtils.closeQuietly(writer);

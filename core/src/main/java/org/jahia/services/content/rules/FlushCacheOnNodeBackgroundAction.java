@@ -86,26 +86,10 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
         try {
             JCRNodeWrapper currentNode = node;
             workspace = node.getSession().getWorkspace().getName();
-
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
                     String path = currentNode.getPath();
                     cacheProvider.invalidate(path);
-                    // Invalidate references paths
-                    if(currentNode.getParent().isNodeType("jnt:conditionalVisibility"))
-                    {
-                        PropertyIterator propertyIterator = currentNode.getParent().getParent().getWeakReferences();
-                        if(propertyIterator != null)
-                        {
-                            while (propertyIterator.hasNext())
-                                {
-                                    JCRPropertyWrapper reference = (JCRPropertyWrapper) propertyIterator.next();
-                                    JCRNodeWrapper refNode = reference.getParent();
-                                    cacheProvider.invalidate(refNode.getPath());
-                                }
-                        }
-                    }
-
 
                     if (log) {
                         logger.debug("Flushed output caches for node {}", path);
@@ -114,6 +98,22 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                         fileCacheManager.invalidate(workspace, path);
                         if (log) {
                             logger.debug("Flushed file cache for node {}", path);
+                        }
+                    }
+                }
+                // Invalidate references paths for conditional visibility
+                if(currentNode.getParent() !=null && currentNode.getParent().isNodeType("jnt:conditionalVisibility"))
+                {
+                    JCRNodeWrapper conditionalVisibilityParent = currentNode.getParent();
+                    JCRNodeWrapper conditionalVisibilityContainer = conditionalVisibilityParent.getParent();
+                    PropertyIterator propertyIterator = conditionalVisibilityContainer.getWeakReferences();
+                    if(propertyIterator != null)
+                    {
+                        while (propertyIterator.hasNext())
+                        {
+                            JCRPropertyWrapper reference = (JCRPropertyWrapper) propertyIterator.next();
+                            JCRNodeWrapper refNode = reference.getParent();
+                            cacheProvider.invalidate(refNode.getPath());
                         }
                     }
                 }

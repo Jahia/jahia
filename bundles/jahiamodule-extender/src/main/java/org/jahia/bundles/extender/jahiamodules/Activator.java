@@ -46,7 +46,6 @@ package org.jahia.bundles.extender.jahiamodules;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.apache.felix.service.command.CommandProcessor;
 import org.apache.poi.util.IOUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -227,8 +226,6 @@ public class Activator implements BundleActivator {
 
         checkExistingModules(context);
 
-        registerShellCommands(context);
-
         JCRModuleListener l = (JCRModuleListener) SpringContextSingleton.getBean("org.jahia.services.templates.JCRModuleListener");
         l.setListener(new JCRModuleListener.Listener() {
             @Override
@@ -274,14 +271,6 @@ public class Activator implements BundleActivator {
         for (Bundle bundle : toStart) {
             bundle.start();
         }
-    }
-
-    private void registerShellCommands(BundleContext context) {
-        Dictionary<String, Object> dict = new Hashtable<String, Object>();
-        dict.put(CommandProcessor.COMMAND_SCOPE, "jahia");
-        dict.put(CommandProcessor.COMMAND_FUNCTION, new String[]{"modules"});
-        ShellCommands shellCommands = new ShellCommands(this);
-        serviceRegistrations.add(context.registerService(ShellCommands.class.getName(), shellCommands, dict));
     }
 
     private synchronized void setupBundleListener(BundleContext context) {

@@ -51,37 +51,23 @@
         <version>7.2.0.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <artifactId>jahia-core</artifactId>
-    <name>Jahia Core Karaf OSGi Features</name>
-    <packaging>pom</packaging>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.jahia.modules</groupId>
-                <artifactId>jaxrs-osgi-extender-bom</artifactId>
-                <version>2.0.3</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.osgi</groupId>
-                <artifactId>org.osgi.compendium</artifactId>
-                <version>${osgi.compendium.version}</version>
-                <scope>runtime</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
+    <artifactId>dx-core</artifactId>
+    <name>Jahia DX Core Karaf OSGi Features</name>
+    <packaging>feature</packaging>
 
     <dependencies>
-        <!-- Framework distribution -->
         <dependency>
-            <groupId>org.apache.karaf.features</groupId>
-            <artifactId>framework</artifactId>
-            <type>kar</type>
-            <scope>provided</scope>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.4</version>
         </dependency>
 
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>1.2.2</version>
+        </dependency>
+        
         <dependency>
             <groupId>org.apache.felix</groupId>
             <artifactId>org.apache.felix.http.api</artifactId>
@@ -93,10 +79,17 @@
             <artifactId>pax-web-api</artifactId>
             <version>${pax.web.api.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.ops4j.pax.web</groupId>
             <artifactId>pax-web-jsp</artifactId>
             <version>${pax.web.jsp.version}</version>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.webconsole</artifactId>
+            <version>${felix.webconsole.version}</version>
         </dependency>
 
         <dependency>
@@ -104,26 +97,33 @@
             <artifactId>org.jahia.bundles.blueprint.extender.config</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.extender.jahiamodules</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.http.bridge</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.webconsole.config</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
+        <!--
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.slf4j.loglistener</artifactId>
             <version>${project.version}</version>
         </dependency>
+        -->
+        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.configadmin.persistence</artifactId>
@@ -135,6 +135,7 @@
             <artifactId>jahia-taglib</artifactId>
             <version>${project.version}</version>
         </dependency>
+        
         <dependency>
             <groupId>org.jahia.bundles</groupId>
             <artifactId>org.jahia.bundles.jspapiusage.repackaging</artifactId>
@@ -158,117 +159,5 @@
             <artifactId>bndlib</artifactId>
             <version>2.0.0.20130123-133441</version>
         </dependency>
-
-        <!-- JAX-RS OSGi Extender dependencies -->
-        <!-- Jersey and dependencies, versions are defined in jaxrs-osgi-extender-bom -->
-        <dependency>
-            <groupId>org.glassfish.jersey.bundles</groupId>
-            <artifactId>jaxrs-ri</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>hk2-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>hk2-locator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>hk2-utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2.external</groupId>
-            <artifactId>asm-all-repackaged</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>
-            <artifactId>jersey-guava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.hk2</groupId>
-            <artifactId>osgi-resource-locator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.spec.javax.annotation</groupId>
-            <artifactId>jboss-annotations-api_1.2_spec</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-multipart</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jvnet.mimepull</groupId>
-            <artifactId>mimepull</artifactId>
-        </dependency>
-
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.karaf.tooling</groupId>
-                <artifactId>karaf-maven-plugin</artifactId>
-                <configuration>
-                    <startLevel>30</startLevel>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>features-generate-descriptor</goal>
-                        </goals>
-                        <configuration>
-                            <addBundlesToPrimaryFeature>false</addBundlesToPrimaryFeature>
-                        </configuration>
-                    </execution>
-                    <!--
-                    <execution>
-                        <id>verify</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>verify</goal>
-                        </goals>
-                        <configuration>
-                            <descriptors>
-                                <descriptor>mvn:org.jahia.features/jahia-core/${project.version}/xml/features</descriptor>
-                                <descriptor>file:${project.build.directory}/feature/feature.xml</descriptor>
-                            </descriptors>
-                            <distribution>org.jahia.features:jahia-core</distribution>
-                            <javase>1.7</javase>
-                            <framework>
-                                <feature>jahia-core</feature>
-                            </framework>
-                        </configuration>
-                    </execution>
-                    -->
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>build-helper-maven-plugin</artifactId>
-                <version>1.10</version>
-                <executions>
-                    <execution>
-                        <id>attach-artifacts</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>attach-artifact</goal>
-                        </goals>
-                        <configuration>
-                            <artifacts>
-                                <artifact>
-                                    <file>target/feature/feature.xml</file>
-                                    <classifier>features</classifier>
-                                    <type>xml</type>
-                                </artifact>
-                            </artifacts>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>

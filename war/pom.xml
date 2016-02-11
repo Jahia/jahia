@@ -404,6 +404,8 @@
                         <configuration>
                             <addTransitiveFeatures>true</addTransitiveFeatures>
                             <descriptors>
+                                <descriptor>mvn:org.jahia.features/dx-jax-rs/${project.version}/xml/features</descriptor>
+                                <descriptor>mvn:org.jahia.features/dx-core/${project.version}/xml/features</descriptor>
                                 <descriptor>mvn:org.jahia.features/dx-standard/${project.version}/xml/features</descriptor>
                             </descriptors>
                             <features>

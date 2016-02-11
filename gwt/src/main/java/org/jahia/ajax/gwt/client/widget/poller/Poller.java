@@ -80,9 +80,11 @@ public class Poller {
     // 1) The server closes the connection in a conventional way (for example, due to shutdown).
     // 2) The server disappears unexpectedly (for example, due to a network issue).
     // Atmosphere in cooperation with the browser is able to restore the connection and continue retrieving messages in both cases when the server is available again,
-    // however in case 2 there might be messages broadcasted while the client was disconnected, which are typically lost. In order to mitigate this lost messages issue,
+    // however in case 2) there might be messages broadcasted while the client was disconnected, which are typically lost. In order to mitigate this lost messages issue,
     // we track the error/reconnection status and suggest page reloading to the user when the connection is restored. In this way, client side state gets synchronized
-    // with server side even though there were some missing messages.
+    // with server side even though there were some missing messages. However, note that we rely on corresponding Atmosphere events when tracking the connection state,
+    // so cannot actually track it precisely, since, for example, Atmosphere in cooperation with browser, OS, device driver, hardware or whatever is involved, themselves
+    // often need few seconds to tens seconds to recognize connection status change.
     private boolean reconnectingAfterError;
 
     public static Poller getInstance() {
@@ -179,15 +181,22 @@ public class Poller {
 
     private void onConnectionOpen() {
 
-        // Suggest page reloading to the user only in case there was unexpected communication failure, so some messages might be lost.
         if (!reconnectingAfterError) {
+            // Suggest page reloading to the user only in case there was an unexpected communication failure, so some messages might be lost.
+            return;
+        }
+        reconnectingAfterError = false;
+
+        if (!Window.confirm(Messages.get("instantMessaging.connectionRecoveredReloadRecommended.confirm"))) {
+            // User hasn't confirmed reload.
+            return;
+        }
+        if (reconnectingAfterError) {
+            // Do not reload the page in case we lost the connection again in the meanwhile.
             return;
         }
 
-        reconnectingAfterError = false;
-        if (Window.confirm(Messages.get("instantMessaging.connectionRecoveredReloadRecommended.confirm"))) {
-            Window.Location.reload();
-        }
+        Window.Location.reload();
     }
 
     public void registerListener(PollListener listener, Class eventType) {

@@ -82,6 +82,7 @@ class FileInstallConfigurer {
         @Override
         public ConfigurationAdmin addingService(ServiceReference<ConfigurationAdmin> reference) {
             ConfigurationAdmin configurationAdmin = bundleContext.getService(reference);
+            unregister(configurationAdmin);
             register(configurationAdmin);
             return configurationAdmin;
         }

@@ -1246,15 +1246,24 @@ public class JCRPublicationService extends JahiaService {
     private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession) throws RepositoryException {
         try {
             try {
-                JCRNodeWrapper n = destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                JCRNodeWrapper parent = node.getParent();
+                JCRNodeWrapper n = destinationSession.getNodeByIdentifier(parent.getIdentifier()).getNode(node.getName());
                 if (n.getIdentifier().equals(node.getIdentifier())) {
                     return 0;
+                } else if (parent.hasProperty("j:deletedChildren")) {
+                    //find if the live node has to be deleted
+                    JCRPropertyWrapper p = parent.getProperty("j:deletedChildren");
+                    Value[] values = p.getValues();
+                    for (Value value : values) {
+                        if(n.getIdentifier().equals(value.getString())) {
+                            return 0;
+                        }
+                    }
                 }
             } catch (UnsupportedRepositoryOperationException e) {
             }
-            // Conflict , a node exists in live !
+            // Conflict , a node exists in live that has not been deleted properly in default, or has just been created in live!
             return PublicationInfo.CONFLICT;
-
         } catch (ItemNotFoundException e) {
         } catch (PathNotFoundException e) {
         }

@@ -4,11 +4,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
-    <bean name="felixFileinstallProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
-        <property name="ignoreResourceNotFound" value="true"/>
+    <bean id="felixFileInstallConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
         <property name="properties">
             <props value-type="java.lang.String">
-                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaVarDiskPath}/modules</prop>
+                <prop key="felix.fileinstall.dir">#{settingsBean.jahiaModulesDiskPath}</prop>
                 <prop key="felix.fileinstall.poll">2000</prop>
                 <prop key="felix.fileinstall.start.level">90</prop>
                 <prop key="felix.fileinstall.active.level">90</prop>

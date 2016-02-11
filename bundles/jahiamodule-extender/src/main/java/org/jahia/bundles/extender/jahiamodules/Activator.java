@@ -72,13 +72,10 @@ import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
-import org.osgi.service.cm.Configuration;
-import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
-import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
@@ -97,7 +94,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * Activator for Jahia Modules extender
+ * Activator for DX Modules extender.
  */
 public class Activator implements BundleActivator {
 
@@ -137,7 +134,7 @@ public class Activator implements BundleActivator {
 
     private static Activator instance = null;
 
-    private ServiceTracker<ConfigurationAdmin, ConfigurationAdmin> configurationAdminConfigurationAdminServiceTracker = null;
+    private FileInstallConfigurer fileInstallConfigurer;
 
     public Activator() {
         instance = this;
@@ -149,7 +146,7 @@ public class Activator implements BundleActivator {
 
     @Override
     public void start(final BundleContext context) throws Exception {
-        logger.info("== Starting Jahia Extender ============================================================== ");
+        logger.info("== Starting DX Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
 
         // obtain service instances
@@ -230,10 +227,10 @@ public class Activator implements BundleActivator {
             }
         });
 
-        configurationAdminConfigurationAdminServiceTracker = new ServiceTracker<ConfigurationAdmin, ConfigurationAdmin>(context, ConfigurationAdmin.class, new ConfigAdminServiceCustomizer(context));
-        configurationAdminConfigurationAdminServiceTracker.open();
+        fileInstallConfigurer = new FileInstallConfigurer();
+        fileInstallConfigurer.start(context);
 
-        logger.info("== Jahia Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
+        logger.info("== DX Extender started in {}ms ============================================================== ", System.currentTimeMillis() - startTime);
 
     }
 
@@ -332,11 +329,11 @@ public class Activator implements BundleActivator {
     @Override
     public void stop(BundleContext context) throws Exception {
 
-        logger.info("== Stopping Jahia Extender ============================================================== ");
+        logger.info("== Stopping DX Extender ============================================================== ");
         long startTime = System.currentTimeMillis();
 
-        if (configurationAdminConfigurationAdminServiceTracker != null) {
-            configurationAdminConfigurationAdminServiceTracker.close();
+        if (fileInstallConfigurer != null) {
+            fileInstallConfigurer.stop();
         }
 
         context.removeBundleListener(bundleListener);
@@ -359,7 +356,7 @@ public class Activator implements BundleActivator {
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("== Jahia Extender stopped in {}ms ============================================================== ", totalTime);
+        logger.info("== DX Extender stopped in {}ms ============================================================== ", totalTime);
 
     }
 
@@ -869,89 +866,6 @@ public class Activator implements BundleActivator {
         ModuleState moduleState = getModuleState(bundle);
         moduleState.setState(state);
         moduleState.setDetails(details);
-    }
-
-    public class ConfigAdminServiceCustomizer implements ServiceTrackerCustomizer<ConfigurationAdmin, ConfigurationAdmin> {
-
-        private BundleContext bundleContext;
-
-        public ConfigAdminServiceCustomizer(BundleContext bundleContext) {
-            this.bundleContext = bundleContext;
-        }
-
-        @Override
-        public ConfigurationAdmin addingService(ServiceReference<ConfigurationAdmin> reference) {
-            ConfigurationAdmin configurationAdmin = bundleContext.getService(reference);
-            registerFileInstallConfiguration(configurationAdmin);
-            return configurationAdmin;
-        }
-
-        @Override
-        public void modifiedService(ServiceReference<ConfigurationAdmin> reference, ConfigurationAdmin configurationAdmin) {
-            unregisterFileInstallConfiguration(configurationAdmin);
-            registerFileInstallConfiguration(configurationAdmin);
-        }
-
-        @Override
-        public void removedService(ServiceReference<ConfigurationAdmin> reference, ConfigurationAdmin configurationAdmin) {
-            unregisterFileInstallConfiguration(configurationAdmin);
-        }
-    }
-
-    private void registerFileInstallConfiguration(ConfigurationAdmin configurationAdmin) {
-        // we create the FileInstall dynamically to make sure it is not used before this bundle is properly started.
-        // this is not ideal but seemed like the surest way to ensure proper startup sequencing. Ideally sequencing
-        // should not be needed and this bundle should be capable of starting after Jahia modules have been installed.
-        Configuration moduleFileInstallConfiguration = findExistingFileInstallConfiguration(configurationAdmin);
-        if (moduleFileInstallConfiguration == null) {
-            try {
-                moduleFileInstallConfiguration = configurationAdmin.createFactoryConfiguration("org.apache.felix.fileinstall");
-                Dictionary<String, Object> properties = moduleFileInstallConfiguration.getProperties();
-                if (properties == null) {
-                    properties = new Hashtable<String, Object>();
-                }
-                Properties felixProperties = ((Properties) SpringContextSingleton.getBean("felixFileinstallProperties"));
-                for (Map.Entry<Object, Object> entry : felixProperties.entrySet()) {
-                    String key = entry.getKey().toString();
-                    if (key.startsWith("felix.fileinstall")) {
-                        properties.put(key, entry.getValue());
-                    }
-                }
-                moduleFileInstallConfiguration.setBundleLocation(null);
-                moduleFileInstallConfiguration.update(properties);
-            } catch (IOException e) {
-                logger.error("Cannot update fileinstall configuration",e);
-            }
-        }
-    }
-
-    private void unregisterFileInstallConfiguration(ConfigurationAdmin configurationAdmin) {
-        Configuration moduleFileInstallConfiguration = findExistingFileInstallConfiguration(configurationAdmin);
-        if (moduleFileInstallConfiguration != null) {
-            try {
-                moduleFileInstallConfiguration.delete();
-            } catch (IOException e) {
-                logger.error("Cannot delete fileinstall configuration",e);
-            }
-        }
-    }
-
-    private Configuration findExistingFileInstallConfiguration(ConfigurationAdmin configurationAdmin) {
-        Configuration moduleFileInstallConfiguration = null;
-        try {
-            Configuration[] existingConfigurations = configurationAdmin.listConfigurations("(service.factoryPid=org.apache.felix.fileinstall)");
-            if (existingConfigurations != null) {
-                for (Configuration existingConfiguration : existingConfigurations) {
-                    String fileInstallDir = (String) existingConfiguration.getProperties().get("felix.fileinstall.dir");
-                    if (fileInstallDir.contains("digital-factory-data") && fileInstallDir.contains("modules")) {
-                        moduleFileInstallConfiguration = existingConfiguration;
-                    }
-                }
-            }
-        } catch (InvalidSyntaxException | IOException e) {
-            logger.error("Cannot get fileinstall configurations",e);
-        }
-        return moduleFileInstallConfiguration;
     }
 
     private void registerLegacyTransformer(BundleContext context) throws Exception {

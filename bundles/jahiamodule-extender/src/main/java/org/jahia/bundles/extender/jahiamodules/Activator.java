@@ -43,10 +43,11 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
+import static org.jahia.bundles.extender.jahiamodules.ModuleDependencyTransformer.HANDLER_PREFIX;
+
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
-import org.apache.poi.util.IOUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -73,7 +74,6 @@ import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
 import org.osgi.service.http.HttpService;
-import org.osgi.service.url.AbstractURLStreamHandlerService;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
@@ -85,20 +85,12 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.*;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 /**
  * Activator for DX Modules extender.
  */
 public class Activator implements BundleActivator {
-
-    public static final String LEGACY_HANDLER_PREFIX = "legacydepends";
 
     static Logger logger = LoggerFactory.getLogger(Activator.class);
 
@@ -234,33 +226,45 @@ public class Activator implements BundleActivator {
 
     }
 
-    private void checkExistingModules(BundleContext context) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, BundleException, IOException {
+    private void checkExistingModules(BundleContext context) throws IllegalAccessException, InvocationTargetException,
+            NoSuchMethodException, BundleException, IOException {
         List<Bundle> toStart = new ArrayList<>();
         // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
             // Parse bundle if activator has not seen them before
-
-            if (!registeredBundles.containsKey(bundle)) {
-                if (BundleUtils.isJahiaModuleBundle(bundle) && bundle.getState() > Bundle.INSTALLED) {
-                    String l = BeanUtils.getProperty(bundle,"location");
+            if (!registeredBundles.containsKey(bundle) && BundleUtils.isJahiaModuleBundle(bundle)
+                    && bundle.getState() > Bundle.INSTALLED) {
+                try {
+                    String l = BeanUtils.getProperty(bundle, "location");
+                    logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
+                            BundleUtils.getDisplayName(bundle), l);
                     if (bundle.getState() == Bundle.ACTIVE) {
                         bundle.stop();
                         toStart.add(bundle);
                     }
                     try {
-                        if (!l.startsWith(LEGACY_HANDLER_PREFIX)) {
-                            bundle.update(new URL(LEGACY_HANDLER_PREFIX + ":" + l).openStream());
+                        if (!l.startsWith(HANDLER_PREFIX) && !l.startsWith("inputstream:")
+                                && !StringUtils.contains((String) bundle.getHeaders().get("Provide-Capability"),
+                                        "com.jahia.modules.dependencies")) {
+                            // transform the module
+                            bundle.update(new URL(HANDLER_PREFIX + ":" + l).openStream());
                         } else {
                             bundle.update();
                         }
                     } catch (BundleException e) {
                         logger.warn("Cannot update bundle : " + e.getMessage(), e);
                     }
+                } catch (Exception e) {
+                    logger.error("Unable to process the bundle " + bundle, e);
                 }
             }
         }
         for (Bundle bundle : toStart) {
-            bundle.start();
+            try {
+                bundle.start();
+            } catch (Exception e) {
+                logger.error("Unable to start the bundle " + bundle, e);
+            }
         }
     }
 
@@ -868,103 +872,20 @@ public class Activator implements BundleActivator {
         moduleState.setDetails(details);
     }
 
-    private void registerLegacyTransformer(BundleContext context) throws Exception {
+    /**
+     * Registers services for module dependency transformation.
+     * 
+     * @param context
+     *            the OSGi bundle context object.
+     */
+    private void registerLegacyTransformer(BundleContext context) {
         Hashtable<String, Object> props = new Hashtable<String, Object>();
-        props.put("url.handler.protocol", LEGACY_HANDLER_PREFIX);
-        context.registerService(URLStreamHandlerService.class, new AbstractURLStreamHandlerService() {
-            @Override
-            public URLConnection openConnection(URL url) throws IOException {
-                return new URLConnection(url) {
-                    @Override
-                    public void connect() throws IOException {
-                        // Do nothing
-                    }
+        props.put("url.handler.protocol", HANDLER_PREFIX);
+        serviceRegistrations
+                .add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyTransformer(), props));
 
-                    @Override
-                    public InputStream getInputStream() throws IOException {
-                        ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-                        ZipInputStream zis = new ZipInputStream(new URL(url.getFile()).openConnection().getInputStream());
-                        ZipOutputStream zos = new ZipOutputStream(out);
-
-                        ZipEntry zipEntry;
-                        while ((zipEntry = zis.getNextEntry()) != null) {
-                            zos.putNextEntry(new ZipEntry(zipEntry.getName()));
-                            if (zipEntry.getName().equals("META-INF/MANIFEST.MF")) {
-                                addDependsCapabilitiesToManifest(zis, zos);
-                            } else {
-                                IOUtils.copy(zis, zos);
-                            }
-                        }
-                        zos.close();
-                        return new ByteArrayInputStream(out.toByteArray());
-                    }
-                };
-
-
-            }
-
-            private void addDependsCapabilitiesToManifest(InputStream is, OutputStream os) throws IOException {
-                Manifest mf = new Manifest();
-                mf.read(is);
-                Attributes atts = mf.getMainAttributes();
-
-                String provide = "";String bundleId = atts.getValue("Bundle-SymbolicName");
-                String bundleName = atts.getValue("Bundle-Name");
-                if (atts.containsKey(new Attributes.Name("Provide-Capability"))) {
-                    provide = atts.getValue("Provide-Capability") + ",";
-                }
-                if (!provide.contains("com.jahia.modules.dependencies")) {
-                    provide += "com.jahia.modules.dependencies;moduleIdentifier=\"" + bundleId + "\"";
-                    provide += ",com.jahia.modules.dependencies;moduleIdentifier=\"" + bundleName + "\"";
-                    atts.put(new Attributes.Name("Provide-Capability"), provide);
-                }
-
-
-                List<String> dependsList = new ArrayList<String>();
-                String deps = atts.getValue("Jahia-Depends");
-                if (StringUtils.isNotBlank(deps)) {
-                    String[] dependencies = StringUtils.split(deps, ",");
-                    for (String dependency : dependencies) {
-                        dependsList.add(dependency.trim());
-                    }
-                }
-
-                if (!dependsList.contains("default")
-                        && !dependsList.contains("Default Jahia Templates")
-                        && !ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModulesWithNoDefaultDependency()
-                        .contains(bundleId)) {
-                    dependsList.add("default");
-                }
-
-                if (!dependsList.isEmpty()) {
-                    String require = "";
-                    if (atts.containsKey(new Attributes.Name("Require-Capability"))) {
-                        require = atts.getValue("Require-Capability") + ",";
-                    }
-                    if (!require.contains("com.jahia.modules.dependencies")) {
-                        for (String depend : dependsList) {
-                            require += "com.jahia.modules.dependencies;filter:=\"(moduleIdentifier=" + depend + ")\",";
-                        }
-                        require = StringUtils.substringBeforeLast(require, ",");
-                        atts.put(new Attributes.Name("Require-Capability"), require);
-                    }
-                }
-                mf.write(os);
-            }
-        }, props);
-
-        context.registerService(new String[]{ArtifactUrlTransformer.class.getName()}, new ArtifactUrlTransformer() {
-            @Override
-            public URL transform(URL url) throws Exception {
-                return new URL(LEGACY_HANDLER_PREFIX, null, url.toString());
-            }
-
-            @Override
-            public boolean canHandle(File file) {
-                return true;
-            }
-        }, null);
+        serviceRegistrations.add(context.registerService(new String[] { ArtifactUrlTransformer.class.getName() },
+                new ModuleDependencyTransformer(), null));
 
     }
 

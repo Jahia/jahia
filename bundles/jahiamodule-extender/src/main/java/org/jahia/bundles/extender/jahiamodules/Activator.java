@@ -204,7 +204,7 @@ public class Activator implements BundleActivator {
         // add listener for other bundle life cycle events
         setupBundleListener(context);
 
-        // Add tranformer for jahia-depends capabilities
+        // Add transformer for jahia-depends capabilities
         registerLegacyTransformer(context);
 
         checkExistingModules(context);
@@ -231,31 +231,40 @@ public class Activator implements BundleActivator {
         List<Bundle> toStart = new ArrayList<>();
         // parse existing bundles
         for (Bundle bundle : context.getBundles()) {
-            // Parse bundle if activator has not seen them before
-            if (!registeredBundles.containsKey(bundle) && BundleUtils.isJahiaModuleBundle(bundle)
-                    && bundle.getState() > Bundle.INSTALLED) {
-                try {
-                    String l = BeanUtils.getProperty(bundle, "location");
-                    logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
-                            BundleUtils.getDisplayName(bundle), l);
-                    if (bundle.getState() == Bundle.ACTIVE) {
-                        bundle.stop();
-                        toStart.add(bundle);
-                    }
+            if (BundleUtils.isJahiaModuleBundle(bundle)) {
+                int state = bundle.getState();
+                boolean isRegistered = registeredBundles.containsKey(bundle);
+                
+                if (isRegistered && state == Bundle.ACTIVE) {
+                    // registering resources for already active bundles
+                    registerHttpResources(bundle);
+                }
+                
+                // Parse bundle if activator has not seen them before
+                if (!isRegistered && state > Bundle.INSTALLED) {
                     try {
-                        if (!l.startsWith(HANDLER_PREFIX) && !l.startsWith("inputstream:")
-                                && !StringUtils.contains((String) bundle.getHeaders().get("Provide-Capability"),
-                                        "com.jahia.modules.dependencies")) {
-                            // transform the module
-                            bundle.update(new URL(HANDLER_PREFIX + ":" + l).openStream());
-                        } else {
-                            bundle.update();
+                        String l = BeanUtils.getProperty(bundle, "location");
+                        logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
+                                BundleUtils.getDisplayName(bundle), l);
+                        if (state == Bundle.ACTIVE) {
+                            bundle.stop();
+                            toStart.add(bundle);
                         }
-                    } catch (BundleException e) {
-                        logger.warn("Cannot update bundle : " + e.getMessage(), e);
+                        try {
+                            if (!l.startsWith(HANDLER_PREFIX) && !l.startsWith("inputstream:")
+                                    && !StringUtils.contains((String) bundle.getHeaders().get("Provide-Capability"),
+                                            "com.jahia.modules.dependencies")) {
+                                // transform the module
+                                bundle.update(new URL(HANDLER_PREFIX + ":" + l).openStream());
+                            } else {
+                                bundle.update();
+                            }
+                        } catch (BundleException e) {
+                            logger.warn("Cannot update bundle : " + e.getMessage(), e);
+                        }
+                    } catch (Exception e) {
+                        logger.error("Unable to process the bundle " + bundle, e);
                     }
-                } catch (Exception e) {
-                    logger.error("Unable to process the bundle " + bundle, e);
                 }
             }
         }
@@ -338,6 +347,7 @@ public class Activator implements BundleActivator {
 
         if (fileInstallConfigurer != null) {
             fileInstallConfigurer.stop();
+            fileInstallConfigurer = null;
         }
 
         context.removeBundleListener(bundleListener);
@@ -346,17 +356,20 @@ public class Activator implements BundleActivator {
         bundleListener = null;
         bundleStarter = null;
 
-        for (ServiceRegistration<?> serviceRegistration : serviceRegistrations) {
+        for (Iterator<ServiceRegistration<?>> iterator = serviceRegistrations.iterator(); iterator.hasNext();) {
             try {
-                serviceRegistration.unregister();
+                iterator.next().unregister();
             } catch (IllegalStateException e) {
                 logger.warn(e.getMessage());
+            } finally {
+                iterator.remove();
             }
         }
 
         // Ensure all trackers are correctly closed - should be empty now
-        for (ServiceTracker<HttpService, HttpService> tracker : bundleHttpServiceTrackers.values()) {
-            tracker.close();
+        for (Iterator<ServiceTracker<HttpService, HttpService>> iterator = bundleHttpServiceTrackers.values().iterator(); iterator.hasNext();) {
+            iterator.next().close();
+            iterator.remove();
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
@@ -686,8 +699,9 @@ public class Activator implements BundleActivator {
                 }
             }
 
-            if (bundleHttpServiceTrackers.containsKey(bundle)) {
-                bundleHttpServiceTrackers.remove(bundle).close();
+            ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
+            if (tracker != null) {
+                tracker.close();
             }
 
             setModuleState(bundle, ModuleState.State.STOPPED, null);
@@ -744,8 +758,9 @@ public class Activator implements BundleActivator {
                 || !BundleHttpResourcesTracker.getJsps(bundle).isEmpty()) {
             logger.debug("Found HTTP resources for bundle {}." + " Will launch service tracker for HttpService",
                     displayName);
-            if (bundleHttpServiceTrackers.containsKey(bundle)) {
-                bundleHttpServiceTrackers.remove(bundle).close();
+            ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
+            if (tracker != null) {
+                tracker.close();
             }
             if (bundle.getBundleContext() != null) {
                 ServiceTracker<HttpService, HttpService> bundleServiceTracker = new BundleHttpResourcesTracker(bundle);

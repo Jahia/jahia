@@ -370,7 +370,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void uninstall(Bundle bundle) {
-        logger.info("--- Uninstalling Jahia OSGi bundle {} --", getDisplayName(bundle));
+        logger.info("--- Uninstalling DX OSGi bundle {} --", getDisplayName(bundle));
         BundleUtils.unregisterModule(bundle);
 
         long startTime = System.currentTimeMillis();
@@ -403,7 +403,7 @@ public class Activator implements BundleActivator {
         deleteBundleFileIfNeeded(bundle);
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("--- Finished uninstalling Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+        logger.info("--- Finished uninstalling DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
     private void deleteBundleFileIfNeeded(Bundle bundle) {
@@ -464,7 +464,7 @@ public class Activator implements BundleActivator {
             }
         }
 
-        logger.info("--- Parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+        logger.info("--- Parsing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         registeredBundles.put(bundle, pkg);
         templatePackageRegistry.registerPackageVersion(pkg);
@@ -475,15 +475,15 @@ public class Activator implements BundleActivator {
                 cndBundleObserver.addingEntries(bundle, foundURLs);
             }
         } catch (Exception e) {
-            logger.error("--- Error parsing definitions for Jahia OSGi bundle " + pkg.getId() + " v" + pkg.getVersion(), e);
+            logger.error("--- Error parsing definitions for DX OSGi bundle " + pkg.getId() + " v" + pkg.getVersion(), e);
             setModuleState(bundle, ModuleState.State.ERROR_WITH_DEFINITIONS, e);
             return;
         }
 
-        logger.info("--- Done parsing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+        logger.info("--- Done parsing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
         if (installedBundles.remove(bundle) || !checkImported(bundle, pkg)) {
-            logger.info("--- Installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+            logger.info("--- Installing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
 
             scanForImportFiles(bundle, pkg);
 
@@ -501,7 +501,7 @@ public class Activator implements BundleActivator {
                 }
                 initializedBundles.add(bundle);
             }
-            logger.info("--- Done installing Jahia OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+            logger.info("--- Done installing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
         }
 
         parseDependantBundles(pkg.getId());
@@ -572,7 +572,7 @@ public class Activator implements BundleActivator {
         }
 
 
-        logger.info("--- Start Jahia OSGi bundle {} --", getDisplayName(bundle));
+        logger.info("--- Start DX OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         templatePackageRegistry.register(jahiaTemplatesPackage);
@@ -606,7 +606,7 @@ public class Activator implements BundleActivator {
             }
         }
 
-        logger.info("--- Finished starting Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+        logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
         if (hasSpringFile(bundle)) {
             try {
@@ -654,7 +654,7 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void stopping(Bundle bundle) {
-        logger.info("--- Stopping Jahia OSGi bundle {} --", getDisplayName(bundle));
+        logger.info("--- Stopping DX OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 
         JahiaTemplatesPackage jahiaTemplatesPackage = templatePackageRegistry.lookupByBundle(bundle);
@@ -690,7 +690,7 @@ public class Activator implements BundleActivator {
         }
 
         long totalTime = System.currentTimeMillis() - startTime;
-        logger.info("--- Finished stopping Jahia OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
+        logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
     private void flushOutputCachesForModule(Bundle bundle, final JahiaTemplatesPackage pkg) {

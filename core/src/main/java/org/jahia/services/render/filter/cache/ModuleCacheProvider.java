@@ -46,7 +46,6 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
-
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
@@ -142,22 +141,22 @@ public class ModuleCacheProvider implements InitializingBean {
     /**
      * Flushes all the cache entries, related to the specified node.
      *
-     * @param nodePath the node path to be invalidated.
+     * @param nodePathOrIdentifier the node path or node uuid to be invalidated.
      * @throws ParseException in case of a malformed key
      */
-    public void invalidate(String nodePath) {
-        invalidate(nodePath, true);
+    public void invalidate(String nodePathOrIdentifier) {
+        invalidate(nodePathOrIdentifier, true);
     }
 
     /**
      * Flushes all the cache entries, related to the specified node.
-     * @param nodePath the node path to be invalidated.
+     * @param nodePathOrIdentifier the node path or node uuid to be invalidated.
      * @param propageToOtherClusterNodes do notify replicators of this event
      * @throws ParseException in case of a malformed key
      */
     @SuppressWarnings("unchecked")
-    public void invalidate(String nodePath, boolean propagateToOtherClusterNodes) {
-        Element element = dependenciesCache.get(nodePath);
+    public void invalidate(String nodePathOrIdentifier, boolean propagateToOtherClusterNodes) {
+        Element element = dependenciesCache.get(nodePathOrIdentifier);
         if (element != null) {
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
@@ -168,14 +167,14 @@ public class ModuleCacheProvider implements InitializingBean {
             }
         }
         if(propagateToOtherClusterNodes) {
-            propagatePathFlushToCluster(nodePath);
+            propagatePathFlushToCluster(nodePathOrIdentifier);
         }
     }
 
-    public void invalidate(Collection<String> nodePaths, boolean propagateToOtherClusterNodes) {
+    public void invalidate(Collection<String> nodePathOrIdentifiers, boolean propagateToOtherClusterNodes) {
         Set<String> all = new HashSet<>();
-        for (String nodePath : nodePaths) {
-            Element element = dependenciesCache.get(nodePath);
+        for (String nodePathOrIdentifier : nodePathOrIdentifiers) {
+            Element element = dependenciesCache.get(nodePathOrIdentifier);
             if (element != null) {
                 Set<String> deps = (Set<String>) element.getObjectValue();
                 if (deps.contains("ALL")) {
@@ -191,8 +190,8 @@ public class ModuleCacheProvider implements InitializingBean {
         htmlCache.removeAll(all);
 
         if(propagateToOtherClusterNodes) {
-            for (String nodePath : nodePaths) {
-                propagatePathFlushToCluster(nodePath);
+            for (String nodePathOrIdentifier : nodePathOrIdentifiers) {
+                propagatePathFlushToCluster(nodePathOrIdentifier);
             }
         }
     }
@@ -273,12 +272,12 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
-    public void propagatePathFlushToCluster(String nodePath) {
+    public void propagatePathFlushToCluster(String nodePathOrIdentifier) {
         if(syncCache != null) {
             if (logger.isDebugEnabled()) {
-                logger.debug("Sending flush of {} across cluster", nodePath);
+                logger.debug("Sending flush of {} across cluster", nodePathOrIdentifier);
             }
-            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), new CacheClusterEvent(nodePath,getClusterRevision())));
+            syncCache.put(new Element("FLUSH_PATH-" + UUID.randomUUID(), new CacheClusterEvent(nodePathOrIdentifier,getClusterRevision())));
         }
     }
 

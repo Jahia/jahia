@@ -316,7 +316,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                                 "\" locale=\"" +
                                 resource.getLocale() + "\"" +
                                 " template=\"" +
-                                (resource.getTemplate() != null ? resource.getTemplate() : "default") +
+                                resource.getResolvedTemplate() +
                                 "\"" + " nodetypes=\"" +
                                 ConstraintsHelper.getConstraints(
                                         renderContext.getMainResource().getNode()) +

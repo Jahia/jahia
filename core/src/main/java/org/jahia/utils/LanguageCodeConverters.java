@@ -49,7 +49,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
-import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.utils.i18n.ResourceBundles;
@@ -77,6 +76,8 @@ public class LanguageCodeConverters {
     public final static String JAVA7_LOCALE_TOSTRING = JAVA7_LOCALE_LANGUAGE + "?_?" + JAVA7_LOCALE_COUNTRY + "?(?:" + JAVA7_LOCALE_VARIANT + ")?";
     final static Pattern JAVA7_LOCALE_TOSTRING_PATTERN = Pattern.compile(JAVA7_LOCALE_TOSTRING);
 
+    private static volatile List<Locale> availableLocales;
+    
     private static volatile List<Locale> availableBundleLocales;
     
     private static Map<String, Locale> locales = new ConcurrentHashMap<String, Locale>();
@@ -307,10 +308,28 @@ public class LanguageCodeConverters {
     }
 
     public static List<Locale> getSortedLocaleList(Locale currentLocale) {
-        @SuppressWarnings("unchecked")
-        List<Locale> sortedLocaleList = new ArrayList<Locale>(LocaleUtils.availableLocaleList());
+        List<Locale> sortedLocaleList = new ArrayList<Locale>(getAvailableLocales());
         Collections.sort(sortedLocaleList, LanguageCodeConverters.getLocaleDisplayNameComparator(currentLocale));
         return sortedLocaleList;
+    }
+
+    private static List<Locale> getAvailableLocales() {
+        if (availableLocales == null) {
+            List<Locale> locales = new LinkedList<>();
+            for (Locale l : Locale.getAvailableLocales()) {
+                if (isSupportedLocale(l)) {
+                    locales.add(l);
+                }
+            }
+            availableLocales = Collections.unmodifiableList(locales);
+        }
+        return availableLocales;
+    }
+
+    private static boolean isSupportedLocale(Locale l) {
+        // we do not support locales with variants
+        // we do not support scripts
+        return StringUtils.isEmpty(l.getVariant()) && (StringUtils.isEmpty(l.getScript()));
     }
 
     public static Locale resolveLocaleForGuest(HttpServletRequest request) {
@@ -380,7 +399,7 @@ public class LanguageCodeConverters {
                 && ResourceBundle.getBundle(resourceBundleName, defaultLocale) != null) {
             availableBundleLocales.add(defaultLocale);
         }
-        for (Locale locale : Locale.getAvailableLocales()) {
+        for (Locale locale : getAvailableLocales()) {
             if(!StringUtils.isEmpty(locale.getDisplayName())) { // Avoid "default/system" empty locale
                 ResourceBundle res = ResourceBundle.getBundle(resourceBundleName,
                         locale);

@@ -217,6 +217,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                                 try {
                                     displayedNode = node.getProperty(Constants.NODE).getNode();
                                 } catch (ItemNotFoundException e) {
+                                    currentResource.getDependencies().add(node.getProperty(Constants.NODE).getString());
                                     return EVAL_PAGE;
                                 }
                             }

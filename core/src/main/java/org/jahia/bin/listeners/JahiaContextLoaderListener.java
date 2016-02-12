@@ -77,7 +77,6 @@ import org.springframework.web.context.support.XmlWebApplicationContext;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.jsp.jstl.core.Config;
-
 import java.io.File;
 import java.io.InputStream;
 import java.lang.management.ManagementFactory;
@@ -462,7 +461,8 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         ServletRequest servletRequest = sre.getServletRequest();
-        if(servletRequest instanceof HttpServletRequest && HTTP_METHOD.matcher(((HttpServletRequest)servletRequest).getMethod().toUpperCase()).matches()) {
+        if(servletRequest instanceof HttpServletRequest && HTTP_METHOD.matcher(((HttpServletRequest)servletRequest).getMethod().toUpperCase()).matches()
+                 && !sre.getServletRequest().getParameterMap().containsKey("X-Atmosphere-Transport")) {
             requestTimes.put(servletRequest, System.currentTimeMillis());
         }
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {

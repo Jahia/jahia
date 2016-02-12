@@ -262,7 +262,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 return true;
             }
             //Check visibility of parents
-            if (!node.isFile() && JCRContentUtils.getParentOfType(node, "jnt:page") == null) {
+            if (!node.isFile() && JCRContentUtils.getParentOfType(node, "jnt:page") == null && JCRContentUtils.getParentOfType(node, "jnt:contentFolder") == null) {
             	return true;
             }
             if (!languages.isEmpty() && isSiteSearch(criteria)

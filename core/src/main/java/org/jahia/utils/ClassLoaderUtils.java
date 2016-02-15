@@ -54,22 +54,48 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import org.jahia.osgi.BundleUtils;
+
 /**
  * Class loading related utilities.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class ClassLoaderUtils {
 
     /**
      * Defines a callback processor for an action which will be executed using the provided class loader.
-     * 
+     *
      * @param <T>
      *            the return type of the execution method
      * @author Sergiy Shyrkov
      */
     public static interface Callback<T> {
         T execute();
+    }
+
+    /**
+     * A class loader capable of loading both core and modules classes.
+     * <p>
+     * Relies solely on the parent class loader when loading core classes.
+     */
+    public static class CoreAndModulesClassLoader extends ClassLoader {
+
+        /**
+         * @param parent Parent class loader capable of loading core classes.
+         */
+        public CoreAndModulesClassLoader(ClassLoader parent) {
+            super(parent);
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            try {
+                return super.loadClass(name);
+            } catch (ClassNotFoundException e) {
+                return BundleUtils.loadModuleClass(name);
+            }
+        }
     }
 
     private static class ChainedClassLoader extends ClassLoader {
@@ -195,7 +221,7 @@ public final class ClassLoaderUtils {
 
     /**
      * Executes the provided callback within the context of the specified class loader.
-     * 
+     *
      * @param cl
      *            the class loader to use as a context class loader for the execution
      * @param callback
@@ -215,7 +241,7 @@ public final class ClassLoaderUtils {
 
     /**
      * Returns an instance of the class loader that uses provided set of class loaders in a chain.
-     * 
+     *
      * @param loaders
      *            the chain of the class loaders to use
      * @return an instance of the class loader that uses provided set of class loaders in a chain

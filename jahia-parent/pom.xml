@@ -156,7 +156,7 @@
         <felix.log.version>1.0.1</felix.log.version>
         <felix.configadmin.version>1.8.2</felix.configadmin.version>
         <felix.eventadmin.version>1.4.2</felix.eventadmin.version>
-        <felix.fileinstall.version>3.2.6-patch2</felix.fileinstall.version>
+        <felix.fileinstall.version>3.5.0</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gogo.runtime.version>0.16.2</gogo.runtime.version>

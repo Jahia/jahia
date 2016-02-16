@@ -52,6 +52,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -100,7 +101,7 @@ public class MountPointListener extends DefaultEventListener implements External
         return "/mounts";
     }
 
-    private void mount(final String uuid, final JCRStoreProvider provider) {
+    private void mount(final String uuid, final JCRStoreProvider provider, final boolean isExternal) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -130,8 +131,10 @@ public class MountPointListener extends DefaultEventListener implements External
                                             + " available until it is fixed. If you are migrating from Jahia 6.6 this"
                                             + " might be normal until the migration scripts have been completed.",
                                     mountPointTarget.getPath());
-                            mountPoint.setMountStatus(JCRMountPointNode.MountStatus.waiting);
-                            session.save();
+                            if(!isExternal) {
+                                mountPoint.setMountStatus(JCRMountPointNode.MountStatus.waiting);
+                                session.save();
+                            }
                             providerChecker.checkPeriodically(provider);
                         }
                     }
@@ -151,7 +154,7 @@ public class MountPointListener extends DefaultEventListener implements External
         }
         try {
             inListener.set(true);
-            Map<String, Integer> changeLog = new LinkedHashMap<String, Integer>(1);
+            Map<String, MountPointEventValue> changeLog = new LinkedHashMap<String, MountPointEventValue>(1);
             while (events.hasNext()) {
                 try {
                     final Event evt = events.nextEvent();
@@ -163,19 +166,20 @@ public class MountPointListener extends DefaultEventListener implements External
                             continue;
                         }
                     }
-                    setStatus(changeLog, evt.getIdentifier(), evtType);
+                    setStatus(changeLog, evt.getIdentifier(), evtType,isExternal(evt));
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
 
-            for (Map.Entry<String, Integer> change : changeLog.entrySet()) {
+            for (Map.Entry<String, MountPointEventValue> change : changeLog.entrySet()) {
                 String uuid = change.getKey();
-                Integer status = change.getValue();
+                Integer status = change.getValue().getStatus();
+                boolean isExternal = change.getValue().isExternal();
                 JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
                 unmount(uuid, p);
                 if (status != Event.NODE_REMOVED) {
-                    mount(uuid, p);
+                    mount(uuid, p,isExternal);
                 }
             }
         } finally {
@@ -183,14 +187,14 @@ public class MountPointListener extends DefaultEventListener implements External
         }
     }
 
-    private void setStatus(Map<String, Integer> changeLog, String identifier, int evtType) {
-        Integer status = changeLog.get(identifier);
+    private void setStatus(Map<String, MountPointEventValue> changeLog, String identifier, int evtType, boolean external) {
+        Integer status = changeLog.get(identifier).getStatus();
         if (status == null) {
-            changeLog.put(identifier, evtType);
+            changeLog.put(identifier, new MountPointEventValue(evtType,external));
         } else {
             if ((evtType & (Event.NODE_ADDED + Event.NODE_REMOVED)) != 0) {
                 // override change status only in case of node-level event type
-                changeLog.put(identifier, evtType);
+                changeLog.put(identifier, new MountPointEventValue(evtType,external));
             }
         }
     }
@@ -202,4 +206,35 @@ public class MountPointListener extends DefaultEventListener implements External
             p.stop();
         }
     }
+
+    /**
+     * Mount Point Event Value holder
+     */
+    public class MountPointEventValue implements Serializable {
+        private static final long serialVersionUID = 1L;
+        Integer status;
+        boolean external;
+
+        public MountPointEventValue(Integer status, boolean external) {
+            this.status = status;
+            this.external = external;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public void setStatus(Integer status) {
+            this.status = status;
+        }
+
+        public boolean isExternal() {
+            return external;
+        }
+
+        public void setExternal(boolean external) {
+            this.external = external;
+        }
+    }
+
 }

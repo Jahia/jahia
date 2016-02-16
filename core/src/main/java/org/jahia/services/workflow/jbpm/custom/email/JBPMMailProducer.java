@@ -99,8 +99,8 @@ public class JBPMMailProducer {
 
     protected MailTemplateRegistry mailTemplateRegistry;
     protected TaskIdentityService taskIdentityService;
-    private JahiaUserManagerService userManagerService;
-    private JahiaGroupManagerService groupManagerService;
+    protected JahiaUserManagerService userManagerService;
+    protected JahiaGroupManagerService groupManagerService;
 
     public void setMailTemplateRegistry(MailTemplateRegistry mailTemplateRegistry) {
         this.mailTemplateRegistry = mailTemplateRegistry;

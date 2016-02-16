@@ -94,11 +94,11 @@ import java.util.regex.Pattern;
 public class JBPMMailProducer {
     private transient static Logger logger = LoggerFactory.getLogger(JBPMMailProducer.class);
     private static final Pattern ACTORS_PATTERN = Pattern.compile("(assignableFor\\([^)]+\\))|([^,;\\s]+)");
-    ScriptEngine scriptEngine;
-    private Bindings bindings;
+    protected ScriptEngine scriptEngine;
+    protected Bindings bindings;
 
-    private MailTemplateRegistry mailTemplateRegistry;
-    private TaskIdentityService taskIdentityService;
+    protected MailTemplateRegistry mailTemplateRegistry;
+    protected TaskIdentityService taskIdentityService;
     private JahiaUserManagerService userManagerService;
     private JahiaGroupManagerService groupManagerService;
 
@@ -236,7 +236,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+    protected void fillRecipients(AddressTemplate addressTemplate, Message email, Message.RecipientType recipientType, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         // resolve and parse addresses
         String addresses = addressTemplate.getAddresses();
         if (addresses != null) {
@@ -292,7 +292,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+    protected String[] tokenizeActors(String recipients, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         List<String> actors = new ArrayList<String>();
 
         Matcher m = ACTORS_PATTERN.matcher(recipients);
@@ -305,7 +305,7 @@ public class JBPMMailProducer {
     /**
      * construct recipient addresses from user entities
      */
-    private Address[] getAddresses(List<User> users) {
+    protected Address[] getAddresses(List<User> users) {
         int userCount = users.size();
         List<Address> addresses = new ArrayList<Address>();
         for (int i = 0; i < userCount; i++) {
@@ -322,7 +322,11 @@ public class JBPMMailProducer {
         return addresses.toArray(new Address[addresses.size()]);
     }
 
+<<<<<<< .working
     private Address[] getAddresses(org.kie.api.task.model.Group group) {
+=======
+    protected Address[] getAddresses(Group group) {
+>>>>>>> .merge-right.r53859
         List<Address> addresses = new ArrayList<Address>();
         JCRGroupNode jahiaGroup = JahiaGroupManagerService.getInstance().lookupGroupByPath(group.getId());
         if (jahiaGroup == null) {
@@ -347,7 +351,7 @@ public class JBPMMailProducer {
         return addresses.toArray(new Address[addresses.size()]);
     }
 
-    private Address getAddress(User user) throws UnsupportedEncodingException {
+    protected Address getAddress(User user) throws UnsupportedEncodingException {
         if (user instanceof JBPMTaskIdentityService.UserImpl) {
             JBPMTaskIdentityService.UserImpl userImpl = (JBPMTaskIdentityService.UserImpl) user;
             return getAddress(userImpl.getGivenName(), userImpl.getFamilyName(), userImpl.getBusinessEmail());
@@ -356,7 +360,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private Address getAddress(String firstName, String lastName, String email) throws UnsupportedEncodingException {
+    protected Address getAddress(String firstName, String lastName, String email) throws UnsupportedEncodingException {
         String personal = null;
         if (StringUtils.isEmpty(email)) {
             return null;
@@ -424,7 +428,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private String evaluateExpression(WorkItem workItem, String scriptToExecute, JCRSessionWrapper session)
+    protected String evaluateExpression(WorkItem workItem, String scriptToExecute, JCRSessionWrapper session)
             throws RepositoryException, ScriptException {
         ScriptContext scriptContext = new SimpleScriptContext();
         if (bindings == null) {
@@ -442,7 +446,7 @@ public class JBPMMailProducer {
         return scriptContext.getWriter().toString().trim();
     }
 
-    private Bindings getBindings(WorkItem workItem, JCRSessionWrapper session) throws RepositoryException {
+    protected Bindings getBindings(WorkItem workItem, JCRSessionWrapper session) throws RepositoryException {
         final Map<String, Object> vars = workItem.getParameters();
         Locale locale = (Locale) vars.get("locale");
         final Bindings bindings = new MyBindings(workItem);
@@ -519,7 +523,7 @@ public class JBPMMailProducer {
         }
     }
 
-    private DataHandler createDataHandler(AttachmentTemplate attachmentTemplate, WorkItem workItem, JCRSessionWrapper session) throws Exception {
+    protected DataHandler createDataHandler(AttachmentTemplate attachmentTemplate, WorkItem workItem, JCRSessionWrapper session) throws Exception {
         // evaluate expression
         String expression = attachmentTemplate.getExpression();
         if (expression != null) {
@@ -559,7 +563,7 @@ public class JBPMMailProducer {
         return new DataHandler(targetUrl);
     }
 
-    private static String extractResourceName(URL url) {
+    protected static String extractResourceName(URL url) {
         String path = url.getPath();
         if (path == null || path.length() == 0) return null;
 
@@ -576,7 +580,7 @@ public class JBPMMailProducer {
     }
 
     public class MyBindings extends SimpleBindings {
-        private final WorkItem workItem;
+        protected final WorkItem workItem;
 
         public MyBindings(WorkItem workItem) {
             super();

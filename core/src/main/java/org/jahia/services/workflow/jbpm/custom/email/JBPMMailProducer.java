@@ -322,11 +322,7 @@ public class JBPMMailProducer {
         return addresses.toArray(new Address[addresses.size()]);
     }
 
-<<<<<<< .working
-    private Address[] getAddresses(org.kie.api.task.model.Group group) {
-=======
-    protected Address[] getAddresses(Group group) {
->>>>>>> .merge-right.r53859
+    protected Address[] getAddresses(org.kie.api.task.model.Group group) {
         List<Address> addresses = new ArrayList<Address>();
         JCRGroupNode jahiaGroup = JahiaGroupManagerService.getInstance().lookupGroupByPath(group.getId());
         if (jahiaGroup == null) {

@@ -241,7 +241,7 @@ public class URLResolver {
         String lastPart = StringUtils.substringAfterLast(path, "/");
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
         if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
-                && lastPart.endsWith(".html")) {
+                && (lastPart.endsWith(".html") || lastPart.endsWith(".html##requestParameters##"))) {
             mappable = true;
         }
     }

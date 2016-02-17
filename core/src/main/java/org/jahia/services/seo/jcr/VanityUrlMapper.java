@@ -144,11 +144,12 @@ public class VanityUrlMapper {
                                         urlResolver.getWorkspace(),
                                         urlResolver.getLocale(), siteKey);
                         if (vanityUrl != null && vanityUrl.isActive()) {
-                        	String makroExtension = "";
+                        	//for macros some parameters added (like ##requestParameters## for languageswitcher)
+                        	String macroExtension = "";
                         	if (fullUrl.matches("(.?)*##[a-zA-Z]*##$")) {
-                        		makroExtension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
+                        		macroExtension = "##" + StringUtils.substringBetween(fullUrl, "##") + "##";
                         	}
-                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + makroExtension);
+                            hsRequest.setAttribute(VANITY_KEY, ctx + Render.getRenderServletPath() + "/" + urlResolver.getWorkspace() + vanityUrl.getUrl() + macroExtension);
                             if (serverName != null) {
                                 hsRequest.setAttribute(ServerNameToSiteMapper.ATTR_NAME_SERVERNAME_FOR_LINK, serverName);
                             }                            

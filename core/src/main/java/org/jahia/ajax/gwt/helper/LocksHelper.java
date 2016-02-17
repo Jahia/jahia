@@ -129,9 +129,11 @@ public class LocksHelper implements ApplicationListener {
                 try {
                     jcrsession.getNodeByUUID(lockedNodeId).unlock("engine");
                 } catch (LockException e) {
+                    // We still want other nodes to get unlocked, so just log and not re-throw.
                     logger.warn("Problem while trying to unlock node: " + lockedNodeId + " - " + e);
                 } catch (Exception e) {
-                    logger.error("Unexpected problem while trying to unlock node - node may remain locked: " + lockedNodeId, e);                    
+                    // We still want other nodes to get unlocked, so just log and not re-throw.
+                    logger.error("Unexpected problem while trying to unlock node - node may remain locked: " + lockedNodeId, e);
                 }
             }
             locks.clear();

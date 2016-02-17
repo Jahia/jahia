@@ -46,9 +46,7 @@ package org.jahia.services.importexport.validation;
 import org.apache.commons.lang.StringUtils;
 
 import java.io.Serializable;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Constraints validator result object
@@ -113,6 +111,25 @@ public class ConstraintsValidatorResult implements ValidationResult, Serializabl
         out.append("]");
 
         return out.toString();
+    }
+
+    public String getMessageKey() {
+        return "failure.import.mandatoryProperties";
+    }
+
+    public List<Object> getMessageParams() {
+        Set<String> s = new TreeSet<String>();
+        int total = 0;
+        for (Set<String> set : missingMandatoryProperties.values()) {
+            total += set.size();
+        }
+        for (Set<String> set : missingMandatoryI18NProperties.values()) {
+            total += set.size();
+        }
+        s.addAll(missingMandatoryProperties.keySet());
+        s.addAll(missingMandatoryI18NProperties.keySet());
+        String res = s.size() > 10 ? StringUtils.join(s.toArray(new String[s.size()]), ",", 0, 10) + " ..." : StringUtils.join(s, ",");
+        return Arrays.asList( (Object) total, res);
     }
 
 }

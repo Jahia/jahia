@@ -123,12 +123,16 @@ public class LocksHelper implements ApplicationListener {
         try {
             for (String lock : locks) {
                 String[] vals = lock.split("/");
-                JCRSessionWrapper jcrsession = JCRSessionFactory.getInstance().getCurrentUserSession(null, LanguageCodeConverters.languageCodeToLocale(vals[0]));
+                String localeForLock = vals[0];
+                String lockedNodeId = vals[1];
+                JCRSessionWrapper jcrsession = JCRSessionFactory.getInstance().getCurrentUserSession(null, LanguageCodeConverters.languageCodeToLocale(localeForLock));
                 try {
-					jcrsession.getNodeByUUID(vals[1]).unlock("engine");
-				} catch (LockException e) {
-					logger.warn("Problem while trying to unlock node: " + vals[1], e);
-				}
+                    jcrsession.getNodeByUUID(lockedNodeId).unlock("engine");
+                } catch (LockException e) {
+                    logger.warn("Problem while trying to unlock node: " + lockedNodeId + " - " + e);
+                } catch (Exception e) {
+                    logger.error("Unexpected problem while trying to unlock node - node may remain locked: " + lockedNodeId, e);                    
+                }
             }
             locks.clear();
         } catch (RepositoryException e) {

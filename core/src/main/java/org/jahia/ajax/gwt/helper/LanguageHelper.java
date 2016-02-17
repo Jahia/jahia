@@ -66,7 +66,13 @@ public class LanguageHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LanguageHelper.class);
 
     /**
-     * Get available languages for the current site
+     * Get available languages for the current site. 
+     * 
+     * When the site object is a jnt:module (mainly in studio mode) or if the passed site has no languages configured, 
+     * then we retrieve the languages of the system site.
+     * 
+     * If the currentLocale parameter is empty or does not match any of the language of the site, none of the languages
+     * will be flagged as current.
      *
      * @param site
      * @param currentLocale
@@ -114,7 +120,7 @@ public class LanguageHelper {
                 }
             }
         } catch (Exception e) {
-            logger.error("Error while creating change site link", e);
+            logger.error("Error while retrieving languages for a site/module", e);
         }
 
         return items;

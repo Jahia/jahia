@@ -54,8 +54,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
 import org.jahia.api.Constants;
+import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
@@ -121,7 +122,7 @@ public class ContentManagerHelper {
     private PropertiesHelper properties;
     private VersioningHelper versioning;
 
-    private UploadedPendingFileStorage fileStorage;
+    private SessionNamedDataStorage<UploadedPendingFile> fileStorage;
 
     public void setNavigation(NavigationHelper navigation) {
         this.navigation = navigation;
@@ -147,7 +148,7 @@ public class ContentManagerHelper {
         this.templateManagerService = templateManagerService;
     }
 
-    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+    public void setFileStorage(SessionNamedDataStorage<UploadedPendingFile> fileStorage) {
         this.fileStorage = fileStorage;
     }
 
@@ -646,11 +647,11 @@ public class ContentManagerHelper {
 
         try {
 
-            UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, fileKey);
+            UploadedPendingFile item = fileStorage.getRequired(httpSessionID, fileKey);
             ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
             JCRNodeWrapper parent = session.getNode(parentPath);
             JCRSiteNode resolveSite = parent.getResolveSite();
-            String detectedContentType = ImportExportBaseService.detectImportContentType(item.getContentType(), item.getName());
+            String detectedContentType = ImportExportBaseService.detectImportContentType(item.getContentType(), fileKey);
             InputStream itemStream = null;
             ValidationResults results;
             try {
@@ -669,12 +670,12 @@ public class ContentManagerHelper {
                     JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
                     session.save();
                     // let's schedule an import job.
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(item.getName()), ImportJob.class);
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(fileKey), ImportJob.class);
                     JobDataMap jobDataMap;
                     jobDataMap = jobDetail.getJobDataMap();
                     jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
                     jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
-                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(item.getName()));
+                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(fileKey));
                     jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
 
                     ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
@@ -1079,7 +1080,7 @@ public class ContentManagerHelper {
                 if (parent.hasNode(newName)) {
                     throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
                 }
-                UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, tmpName);
+                UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
                 InputStream is = null;
                 try {
                     is = item.getContentStream();

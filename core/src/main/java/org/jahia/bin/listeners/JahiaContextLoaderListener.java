@@ -45,10 +45,10 @@ package org.jahia.bin.listeners;
 
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.vfs2.FileSystemException;
 import org.apache.commons.vfs2.VFS;
 import org.apache.pluto.driver.PortalStartupListener;
-import org.codehaus.plexus.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.exceptions.JahiaException;
@@ -461,9 +461,12 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @Override
     public void requestInitialized(ServletRequestEvent sre) {
         ServletRequest servletRequest = sre.getServletRequest();
-        if(servletRequest instanceof HttpServletRequest && HTTP_METHOD.matcher(((HttpServletRequest)servletRequest).getMethod().toUpperCase()).matches()
-                 && !sre.getServletRequest().getParameterMap().containsKey("X-Atmosphere-Transport")) {
-            requestTimes.put(servletRequest, System.currentTimeMillis());
+        if (servletRequest instanceof HttpServletRequest) {
+            HttpServletRequest req = (HttpServletRequest) servletRequest;
+            if (HTTP_METHOD.matcher(req.getMethod().toUpperCase()).matches()
+                    && !StringUtils.contains(req.getQueryString(), "X-Atmosphere-Transport=")) {
+                requestTimes.put(servletRequest, System.currentTimeMillis());
+            }
         }
         if (isEventInterceptorActivated("interceptServletRequestListenerEvents")) {
             SpringContextSingleton.getInstance().publishEvent(new ServletRequestInitializedEvent(servletRequest));

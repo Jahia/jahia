@@ -59,6 +59,7 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +67,12 @@ import java.util.Map;
 /**
  * Helper related to locking/unlocking
  */
-public class LocksHelper implements ApplicationListener {
+public class LocksHelper implements ApplicationListener<ApplicationEvent> {
 
     private static Logger logger = LoggerFactory.getLogger(LocksHelper.class);
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof JahiaContextLoaderListener.HttpSessionDestroyedEvent) {
             HttpSession httpSession = ((JahiaContextLoaderListener.HttpSessionDestroyedEvent) applicationEvent).getSession();
@@ -110,6 +112,7 @@ public class LocksHelper implements ApplicationListener {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void closeAllLocks(HttpSession httpSession) {
         Map<String, List<String>> locks = (Map<String, List<String>>) httpSession.getAttribute("engineLocks");
         if (locks != null) {

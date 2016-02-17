@@ -188,8 +188,8 @@ public class MountPointListener extends DefaultEventListener implements External
     }
 
     private void setStatus(Map<String, MountPointEventValue> changeLog, String identifier, int evtType, boolean external) {
-        Integer status = changeLog.get(identifier).getStatus();
-        if (status == null) {
+        MountPointEventValue mountPointEventValue = changeLog.get(identifier);
+        if (mountPointEventValue == null) {
             changeLog.put(identifier, new MountPointEventValue(evtType,external));
         } else {
             if ((evtType & (Event.NODE_ADDED + Event.NODE_REMOVED)) != 0) {

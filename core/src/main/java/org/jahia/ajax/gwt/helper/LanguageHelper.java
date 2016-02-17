@@ -66,11 +66,11 @@ public class LanguageHelper {
     private static Logger logger = org.slf4j.LoggerFactory.getLogger(LanguageHelper.class);
 
     /**
-     * Get available languages for the current site. 
-     * 
-     * When the site object is a jnt:module (mainly in studio mode) or if the passed site has no languages configured, 
+     * Get available languages for the current site.
+     *
+     * When the site object is a jnt:module (mainly in studio mode) or if the passed site has no languages configured,
      * then we retrieve the languages of the system site.
-     * 
+     *
      * If the currentLocale parameter is empty or does not match any of the language of the site, none of the languages
      * will be flagged as current.
      *
@@ -103,7 +103,7 @@ public class LanguageHelper {
             } else {
                 JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
                         JahiaSitesService.SYSTEM_SITE_KEY);
-                final Set<String>languages  = siteByKey.getLanguages();
+                final Set<String> languages = siteByKey.getLanguages();
                 final Set<String> activeLanguages = siteByKey.getActiveLiveLanguages();
                 final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
                 final TreeSet<String> orderedLangs = new TreeSet<String>();

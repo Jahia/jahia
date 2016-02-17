@@ -44,7 +44,6 @@
 package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.jackrabbit.value.StringValue;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
@@ -53,8 +52,9 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTCompositeConstraintViolationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
 import org.jahia.api.Constants;
+import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.services.categories.Category;
 import org.jahia.services.content.*;
@@ -89,7 +89,7 @@ public class PropertiesHelper {
 
     private ContentDefinitionHelper contentDefinition;
     private NavigationHelper navigation;
-    private UploadedPendingFileStorage fileStorage;
+    private SessionNamedDataStorage<UploadedPendingFile> fileStorage;
 
     private Set<String> ignoredProperties = Collections.emptySet();
 
@@ -101,7 +101,7 @@ public class PropertiesHelper {
         this.navigation = navigation;
     }
 
-    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+    public void setFileStorage(SessionNamedDataStorage<UploadedPendingFile> fileStorage) {
         this.fileStorage = fileStorage;
     }
 
@@ -393,19 +393,10 @@ public class PropertiesHelper {
 
                                 // propValue.getString() value is actually file content type like "application/pdf" rather than file name in case we
                                 // open a file component for edit, but do not change its content, and then save. Code below relies on the fact that
-                                // there is unlikely any uploaded file named like "application/pdf" or similarly, and (wrapped) PathNotFoundException
-                                // will be thrown in this case. QA-8249 is to refactor the front end to not submit fake values like "application/pdf"
-                                // as an actual file names.
-                                UploadedPendingFileStorage.PendingFile fileItem;
-                                try {
-                                    fileItem = fileStorage.get(httpSessionID, propValue.getString());
-                                } catch (RuntimeException e) {
-                                    if (ExceptionUtils.indexOfType(e, PathNotFoundException.class) >= 0) {
-                                        fileItem = null;
-                                    } else {
-                                        throw e;
-                                    }
-                                }
+                                // there is unlikely any uploaded file named like "application/pdf" or similarly, and null will be returned by the
+                                // storage in this case. QA-8249 is to refactor the front end to not submit fake values like "application/pdf" as an
+                                // actual file names.
+                                UploadedPendingFile fileItem = fileStorage.get(httpSessionID, propValue.getString());
 
                                 boolean clear = propValue.getString().equals("clear");
                                 if (!clear && fileItem == null) {

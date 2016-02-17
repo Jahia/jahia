@@ -75,6 +75,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.helper.VersioningHelper;
 import org.jahia.ajax.gwt.helper.ZipHelper;
 import org.jahia.api.Constants;
+import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -107,7 +108,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
     private static final Logger logger = LoggerFactory.getLogger(GWTFileManagerUploadServlet.class);
     private static final long serialVersionUID = 1048509772346464862L;
 
-    private volatile UploadedPendingFileStorage fileStorage;
+    private volatile SessionNamedDataStorage<UploadedPendingFile> fileStorage;
 
     private static long getContentLength(FileItemHeaders pHeaders) {
         try {
@@ -273,11 +274,22 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         }
     }
 
-    private void storeUploadedFile(String sessionID, FileItem fileItem) {
+    private void storeUploadedFile(String sessionID, final FileItem fileItem) {
         try {
-            InputStream contentStream = new BufferedInputStream(fileItem.getInputStream());
+            final InputStream contentStream = new BufferedInputStream(fileItem.getInputStream());
             try {
-                getFileStorage().put(sessionID, fileItem.getName(), fileItem.getContentType(), contentStream);
+                getFileStorage().put(sessionID, fileItem.getName(), new UploadedPendingFile() {
+
+                    @Override
+                    public String getContentType() {
+                        return fileItem.getContentType();
+                    }
+
+                    @Override
+                    public InputStream getContentStream() {
+                        return contentStream;
+                    }
+                });
             } finally {
                 contentStream.close();
             }
@@ -396,7 +408,8 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
         return OK;
     }
 
-    private UploadedPendingFileStorage getFileStorage() {
+    @SuppressWarnings("unchecked")
+    private SessionNamedDataStorage<UploadedPendingFile> getFileStorage() {
         if (fileStorage != null) {
             return fileStorage;
         }
@@ -405,7 +418,7 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                 return fileStorage;
             }
             ApplicationContext context = WebApplicationContextUtils.getRequiredWebApplicationContext(getServletContext());
-            fileStorage = (UploadedPendingFileStorage) context.getBean(UploadedPendingFileStorage.class.getSimpleName());
+            fileStorage = (SessionNamedDataStorage<UploadedPendingFile>) context.getBean("UploadedPendingFileStorage");
             return fileStorage;
         }
     }

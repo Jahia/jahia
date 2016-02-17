@@ -43,6 +43,7 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.bin.Jahia;
@@ -82,47 +83,27 @@ public class LanguageHelper {
         List<GWTJahiaLanguage> items = new ArrayList<GWTJahiaLanguage>();
 
         try {
-            if (!site.isNodeType("jnt:module") && site.getLanguages() != null && site.getLanguages().size()>0)  {
-                final Set<String> languageSettings = site.getLanguages();
-                final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
-                final Set<String> activeLanguages = site.getActiveLiveLanguages();
-                if (languageSettings != null && languageSettings.size() > 0) {
-                    final TreeSet<String> orderedLangs = new TreeSet<String>();
-                    orderedLangs.addAll(languageSettings);
-                    for (String langCode : orderedLangs) {
-                        GWTJahiaLanguage item = new GWTJahiaLanguage();
-                        item.setLanguage(langCode);
-                        item.setDisplayName(getDisplayName(langCode));
-                        item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
-                        item.setCurrent(currentLocale != null && langCode.equalsIgnoreCase(currentLocale.toString()));
-                        item.setActive(activeLanguages.contains(langCode));
-                        item.setMandatory(mandatoryLanguages.contains(langCode));
-                        items.add(item);
-                    }
-                }
-            } else {
-                JCRSiteNode siteByKey = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService().getSiteByKey(
-                        JahiaSitesService.SYSTEM_SITE_KEY);
-                final Set<String>languages  = siteByKey.getLanguages();
-                final Set<String> activeLanguages = siteByKey.getActiveLiveLanguages();
-                final Set<String> mandatoryLanguages = site.getMandatoryLanguages();
-                final TreeSet<String> orderedLangs = new TreeSet<String>();
-                orderedLangs.addAll(languages);
-                for (String langCode : orderedLangs) {
-                    GWTJahiaLanguage item = new GWTJahiaLanguage();
-                    item.setLanguage(langCode);
-                    item.setDisplayName(getDisplayName(langCode));
-                    item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
-                    item.setCurrent(currentLocale != null && langCode.equalsIgnoreCase(currentLocale.toString()));
-                    item.setActive(activeLanguages.contains(langCode));
-                    item.setMandatory(mandatoryLanguages.contains(langCode));
-                    items.add(item);
-                }
+            JCRSiteNode siteToCheck = site;
+            if (site.isNodeType("jnt:module") || CollectionUtils.isEmpty(site.getLanguages())) {
+                siteToCheck = (JCRSiteNode) ServicesRegistry.getInstance().getJahiaSitesService()
+                        .getSiteByKey(JahiaSitesService.SYSTEM_SITE_KEY);
+            }
+            final Set<String> mandatoryLanguages = siteToCheck.getMandatoryLanguages();
+            final Set<String> activeLanguages = siteToCheck.getActiveLiveLanguages();
+            final TreeSet<String> orderedLanguages = new TreeSet<String>(siteToCheck.getLanguages());
+            for (String langCode : orderedLanguages) {
+                GWTJahiaLanguage item = new GWTJahiaLanguage();
+                item.setLanguage(langCode);
+                item.setDisplayName(getDisplayName(langCode));
+                item.setImage(getLangIcon(Jahia.getContextPath(), LanguageCodeConverters.languageCodeToLocale(langCode)));
+                item.setCurrent(currentLocale != null && langCode.equalsIgnoreCase(currentLocale.toString()));
+                item.setActive(activeLanguages.contains(langCode));
+                item.setMandatory(mandatoryLanguages.contains(langCode));
+                items.add(item);
             }
         } catch (Exception e) {
-            logger.error("Error while retrieving languages for a site/module", e);
+            logger.error("Error while retrieving languages for site/module: " + site.getPath(), e);
         }
-
         return items;
     }
 

@@ -52,6 +52,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.SessionNamedDataStorageSupport;
@@ -73,6 +74,8 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     @Override
     public void put(String sessionID, String name, UploadedPendingFile file) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
         JCRNodeWrapper pendingFiles = getFolderCreateIfNeeded(getRootNode(), jcrFolderName);
         JCRNodeWrapper sessionPendingFiles = getFolderCreateIfNeeded(pendingFiles, sessionID);
         try {
@@ -115,6 +118,8 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     @Override
     public void remove(String sessionID, String name) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
         Session session = getSession();
         try {
             session.removeItem(getPathString(jcrFolderName, sessionID, name));
@@ -126,6 +131,7 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     @Override
     public void removeIfExists(String sessionID) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
         Session session = getSession();
         try {
             session.removeItem(getPathString(jcrFolderName, sessionID));
@@ -180,6 +186,8 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     private UploadedPendingFile retrieve(String sessionID, String name) throws RepositoryException {
 
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
         final JCRNodeWrapper fileNode;
         fileNode = getSession().getNode(getPathString(jcrFolderName, sessionID, name));
 

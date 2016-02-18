@@ -234,12 +234,12 @@ public class Activator implements BundleActivator {
             if (BundleUtils.isJahiaModuleBundle(bundle)) {
                 int state = bundle.getState();
                 boolean isRegistered = registeredBundles.containsKey(bundle);
-                
+
                 if (isRegistered && state == Bundle.ACTIVE) {
                     // registering resources for already active bundles
                     registerHttpResources(bundle);
                 }
-                
+
                 // Parse bundle if activator has not seen them before
                 if (!isRegistered && state > Bundle.INSTALLED) {
                     try {
@@ -680,9 +680,23 @@ public class Activator implements BundleActivator {
         }
 
         if (JahiaContextLoaderListener.isRunning()) {
-            flushOutputCachesForModule(bundle, jahiaTemplatesPackage);
+            final String pkgId = jahiaTemplatesPackage.getId();
+            final String pkgName = jahiaTemplatesPackage.getName();
 
             templatePackageRegistry.unregister(jahiaTemplatesPackage);
+
+            boolean cachesNeedFlushing = true;
+            if (jahiaTemplatesPackage.getInitialImports().isEmpty()) {
+                // check for initial imports
+                Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
+                if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                    importXMLEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
+                    if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
+                        // no templates -> no need to flush caches
+                        cachesNeedFlushing = false;
+                    }
+                }
+            }
             jahiaTemplatesPackage.setActiveVersion(false);
             templatesService.fireTemplatePackageRedeployedEvent(jahiaTemplatesPackage);
 
@@ -696,7 +710,12 @@ public class Activator implements BundleActivator {
                 List<URL> foundURLs = scannerAndObserver.getKey().scan(bundle);
                 if (!foundURLs.isEmpty()) {
                     scannerAndObserver.getValue().removingEntries(bundle, foundURLs);
+                    cachesNeedFlushing = true;
                 }
+            }
+
+            if (cachesNeedFlushing) {
+                flushOutputCachesForModule(bundle, pkgId, pkgName);
             }
 
             ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
@@ -711,18 +730,7 @@ public class Activator implements BundleActivator {
         logger.info("--- Finished stopping DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
     }
 
-    private void flushOutputCachesForModule(Bundle bundle, final JahiaTemplatesPackage pkg) {
-        if (pkg.getInitialImports().isEmpty()) {
-            // check for initial imports
-            Enumeration<URL> importXMLEntryEnum = bundle.findEntries("META-INF", "import*.xml", false);
-            if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
-                importXMLEntryEnum = bundle.findEntries("META-INF", "import*.zip", false);
-                if (importXMLEntryEnum == null || !importXMLEntryEnum.hasMoreElements()) {
-                    // no templates -> no need to flush caches
-                    return;
-                }
-            }
-        }
+    private void flushOutputCachesForModule(Bundle bundle, final String pkgId, final String pkgName) {
         try {
             JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
                 @Override
@@ -731,7 +739,7 @@ public class Activator implements BundleActivator {
                     Set<String> pathsToFlush = new HashSet<String>();
                     for (JCRSiteNode site : sitesNodeList) {
                         Set<String> installedModules = site.getInstalledModulesWithAllDependencies();
-                        if (installedModules.contains(pkg.getId()) || installedModules.contains(pkg.getName())) {
+                        if (installedModules.contains(pkgId) || installedModules.contains(pkgName)) {
                             pathsToFlush.add(site.getPath());
                         }
                     }
@@ -889,7 +897,7 @@ public class Activator implements BundleActivator {
 
     /**
      * Registers services for module dependency transformation.
-     * 
+     *
      * @param context
      *            the OSGi bundle context object.
      */

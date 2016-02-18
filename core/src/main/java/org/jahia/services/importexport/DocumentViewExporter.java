@@ -253,7 +253,7 @@ public class DocumentViewExporter {
             for (String prop : sortedProps) {
                 try {
                     Property property = node.getRealNode().getProperty(prop);
-                    if ((property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
+                    if (node.hasProperty(prop) && (property.getType() != PropertyType.BINARY || !skipBinary) && !propertiestoIgnore.contains(property.getName())) {
                         String key = property.getName();
                         String prefix = null;
                         String localname = key;

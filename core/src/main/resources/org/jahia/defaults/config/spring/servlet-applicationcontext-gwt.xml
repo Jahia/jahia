@@ -15,8 +15,6 @@
         <property name="mappings">
             <value>
                 /**/contentManager.gwt=contentManagerServiceController
-                /**/subscription.gwt=subscriptionServiceController
-                /**/toolbar.gwt=toolbarServiceController
             </value>
         </property>
     </bean>
@@ -24,7 +22,9 @@
     <bean name="abstractServiceController" class="org.jahia.ajax.gwt.commons.server.GWTController"  abstract="true">
         <property name="sessionExpiryTime" value="${sessionExpiryTime}" />
         <property name="allowPostMethodOnly" value="true"/>
-        <property name="requireAuthenticatedUser" value="true"/>
+        <property name="requireAuthenticatedUser" value="${jahia.gwt.requireAuthenticatedUser:true}"/>
+        <property name="requiredPermission" value="${jahia.gwt.requiredPermission:jcr:read_default}"/>
+        <property name="requiredPermissionCheckCache" value="${jahia.gwt.requiredPermission.cache:true}"/>
     </bean>
 
     <bean name="contentManagerServiceController" parent="abstractServiceController">
@@ -58,14 +58,6 @@
         <property name="stubHelper" ref="StubHelper"/>
         <property name="moduleHelper" ref="ModuleHelper"/>
         <property name="taggingService" ref="org.jahia.services.tags.TaggingService"/>
-    </bean>
-
-    <bean name="toolbarServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtToolbarService"/>
-    </bean>
-
-    <bean name="subscriptionServiceController" parent="abstractServiceController">
-        <property name="remoteServiceName" value="gwtSubscriptionService"/>
     </bean>
 
     <bean id="localeResolver" class="org.jahia.services.multilang.UILocaleResolver" />

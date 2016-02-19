@@ -93,6 +93,10 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private JahiaTemplateManagerService templateManagerService;
     private final Comparator<ViewResourceInfo> scriptExtensionComparator = new Comparator<ViewResourceInfo>() {
         public int compare(ViewResourceInfo o1, ViewResourceInfo o2) {
+            if(Objects.equals(o1, o2)) {
+                return 1;
+            }
+
             final Integer o1Priority = extensionPriorities.get(o1.extension);
             final Integer o2Priority = extensionPriorities.get(o2.extension);
             if (o1Priority == null) {

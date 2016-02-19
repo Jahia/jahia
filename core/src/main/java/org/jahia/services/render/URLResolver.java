@@ -232,10 +232,12 @@ public class URLResolver {
 
         // TODO: this is perhaps a temporary limitation as URL points to special templates, when 
         // there are more than one dots - and the path needs to end with .html
+        // and in some cases macro extension are added like the ##requestParameters## for languageswitcher
         String lastPart = StringUtils.substringAfterLast(path, "/");
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
         if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
-                && lastPart.endsWith(".html")) {
+                && (lastPart.endsWith(".html") ||
+                		lastPart.matches("(.?)*.html##[a-zA-Z]*##$"))) {
             mappable = true;
         }
     }

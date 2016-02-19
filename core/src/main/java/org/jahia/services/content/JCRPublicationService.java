@@ -1094,7 +1094,7 @@ public class JCRPublicationService extends JahiaService {
                 info.setWorkInProgress(true);
             }
 
-            info.setStatus(getStatus(node, destinationSession, languages));
+            info.setStatus(getStatus(node, destinationSession, languages, infosMap.keySet()));
             // If in conflict we still need to have the translation nodes has they are part of the node to make it valid
             // in case we manage to resolve the conflict on publication
             if (info.getStatus() == PublicationInfo.CONFLICT) {
@@ -1171,7 +1171,17 @@ public class JCRPublicationService extends JahiaService {
         return info;
     }
 
+    /**
+     * Get the publication status of a specific node
+     */
     public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages) throws RepositoryException {
+        return getStatus(node, destinationSession, languages, Collections.<String>emptySet());
+    }
+
+    /**
+     * Get the publication status of a specific node, taking into account nodes being published at the same time (used for conflict detection)
+     */
+    public int getStatus(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> languages, Set<String> includedUuids) throws RepositoryException {
         int status;
         if (!node.checkLanguageValidity(languages)) {
             status = PublicationInfo.MANDATORY_LANGUAGE_UNPUBLISHABLE;
@@ -1183,7 +1193,7 @@ public class JCRPublicationService extends JahiaService {
             }
         } else if (!node.hasProperty("j:published")) {
             // Node has never been published, check for potential conflict in live
-            if (checkConflict(node, destinationSession) == PublicationInfo.CONFLICT) {
+            if (checkConflict(node, destinationSession, includedUuids) == PublicationInfo.CONFLICT) {
                 return PublicationInfo.CONFLICT;
             }
 
@@ -1227,7 +1237,7 @@ public class JCRPublicationService extends JahiaService {
                         if (modProp.after(pubProp)) {
                             if (node.hasProperty(FULLPATH) && !node.getCanonicalPath().equals(node.getProperty(FULLPATH).getString())) {
                                 // Check conflict in case of renamed / moved node
-                                if (checkConflict(node, destinationSession) == PublicationInfo.CONFLICT) {
+                                if (checkConflict(node, destinationSession, includedUuids) == PublicationInfo.CONFLICT) {
                                     return PublicationInfo.CONFLICT;
                                 }
                             }
@@ -1242,18 +1252,27 @@ public class JCRPublicationService extends JahiaService {
         return status;
     }
 
-    private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession) throws RepositoryException {
+    private int checkConflict(JCRNodeWrapper node, JCRSessionWrapper destinationSession, Set<String> includedUuids) throws RepositoryException {
         try {
             try {
-                JCRNodeWrapper n = destinationSession.getNodeByUUID(node.getParent().getUUID()).getNode(node.getName());
+                JCRNodeWrapper parent = node.getParent();
+                JCRNodeWrapper n = destinationSession.getNodeByIdentifier(parent.getIdentifier()).getNode(node.getName());
                 if (n.getIdentifier().equals(node.getIdentifier())) {
                     return 0;
+                } else if (includedUuids.contains(parent.getIdentifier()) && parent.hasProperty("j:deletedChildren")) {
+                    //find if the live node has to be deleted
+                    JCRPropertyWrapper p = parent.getProperty("j:deletedChildren");
+                    Value[] values = p.getValues();
+                    for (Value value : values) {
+                        if(n.getIdentifier().equals(value.getString())) {
+                            return 0;
+                        }
+                    }
                 }
             } catch (UnsupportedRepositoryOperationException e) {
             }
-            // Conflict , a node exists in live !
+            // Conflict , a node exists in live that has not been deleted properly in default, or has just been created in live!
             return PublicationInfo.CONFLICT;
-
         } catch (ItemNotFoundException e) {
         } catch (PathNotFoundException e) {
         }

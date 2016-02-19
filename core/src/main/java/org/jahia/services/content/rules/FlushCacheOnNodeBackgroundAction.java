@@ -43,21 +43,19 @@
  */
 package org.jahia.services.content.rules;
 
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.files.FileCacheManager;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
+
 /**
  * Background action that invalidates output caches for the node or its parents.
- * 
+ *
  * @author Sergiy Shyrkov
  * @since JAHIA 6.6
  */
@@ -90,7 +88,7 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                 if (level >= startLevel) {
                     String path = currentNode.getPath();
                     cacheProvider.invalidate(path);
-
+                    cacheProvider.invalidate(currentNode.getIdentifier());
                     if (log) {
                         logger.debug("Flushed output caches for node {}", path);
                     }
@@ -101,36 +99,20 @@ public class FlushCacheOnNodeBackgroundAction extends BaseBackgroundAction {
                         }
                     }
                 }
-                // Invalidate references paths for conditional visibility
-                if(currentNode.getParent() !=null && currentNode.getParent().isNodeType("jnt:conditionalVisibility"))
-                {
-                    JCRNodeWrapper conditionalVisibilityParent = currentNode.getParent();
-                    JCRNodeWrapper conditionalVisibilityContainer = conditionalVisibilityParent.getParent();
-                    PropertyIterator propertyIterator = conditionalVisibilityContainer.getWeakReferences();
-                    if(propertyIterator != null)
-                    {
-                        while (propertyIterator.hasNext())
-                        {
-                            JCRPropertyWrapper reference = (JCRPropertyWrapper) propertyIterator.next();
-                            JCRNodeWrapper refNode = reference.getParent();
-                            cacheProvider.invalidate(refNode.getPath());
-                        }
-                    }
-                }
                 currentNode = currentNode.getParent();
             }
         } catch (RepositoryException e) {
             //Flush by path directly as node might not be visible anymore
-            String currentNode = node.getPath();
+            String currentNodePath = node.getPath();
             for (int level = 0; level <= (startLevel + levelsUp); level++) {
                 if (level >= startLevel) {
-                    cacheProvider.invalidate(currentNode);
-                    fileCacheManager.invalidate(workspace, currentNode);
+                    cacheProvider.invalidate(currentNodePath);
+                    fileCacheManager.invalidate(workspace, currentNodePath);
                     if (log) {
-                        logger.debug("Flushed output and file caches for node {}", currentNode);
+                        logger.debug("Flushed output and file caches for node {}", currentNodePath);
                     }
                 }
-                currentNode = StringUtils.substringBeforeLast(currentNode,"/");
+                currentNodePath = StringUtils.substringBeforeLast(currentNodePath,"/");
             }
         }
     }

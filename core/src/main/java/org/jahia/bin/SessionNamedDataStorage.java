@@ -41,75 +41,47 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.ajax.gwt.content.server;
-
-import java.io.InputStream;
+package org.jahia.bin;
 
 /**
- * A storage where files temporarily live during multiple steps upload actions when a file is uploaded first and then waits for some processing to start
- * (typically by the end user).
- * <p>
- * Files belonging to different HTTP sessions must be isolated, so that specifically equally named files uploaded by different sessions could co-exist in
- * the storage. However, file name must be unique within a single session: we assume a single user won't upload multiple equally named files simultaneously.
- * <p>
- * In a cluster setup, the storage must be shared between cluster nodes, so that different steps of the upload action could be performed by different
- * cluster nodes even with non-sticky sessions used.
+ * Storage of named data objects belonging to a single HTTP session.
  */
-public interface UploadedPendingFileStorage {
+public interface SessionNamedDataStorage<T> {
 
     /**
-     * Put file uploaded by specific HTTP session; overwrite in case a file with the same name already exists in the storage
+     * Put data belonging to specific HTTP session; overwrite in case an equally named data already exists in the storage
      * @param sessionID HTTP session ID
-     * @param name File name
-     * @param contentType Content type
-     * @param contentStream File bytes stream
+     * @param name Data name
+     * @param data Data object
      */
-    void put(String sessionID, String name, String contentType, InputStream contentStream);
+    void put(String sessionID, String name, T data);
 
     /**
-     * Get file previously uploaded by specific HTTP session, by name
+     * Get data belonging to specific HTTP session, by name
      * @param sessionID HTTP session ID
-     * @param name File name
-     * @return Given file presentation
+     * @param name Data name
+     * @return Data object corresponding to the name, null if does not exist
      */
-    PendingFile get(String sessionID, String name);
+    T get(String sessionID, String name);
 
     /**
-     * Remove file previously uploaded by specific HTTP session, by name
+     * Get data belonging to specific HTTP session, by name; throw an exception if does not exist
      * @param sessionID HTTP session ID
-     * @param name File name
+     * @param name Data name
+     * @return Data object corresponding to the name
+     */
+    T getRequired(String sessionID, String name);
+
+    /**
+     * Remove data belonging to specific HTTP session, by name; throw an exception if does not exist
+     * @param sessionID HTTP session ID
+     * @param name Data name
      */
     void remove(String sessionID, String name);
 
     /**
-     * Remove all files previously uploaded by specific HTTP session, if any.
+     * Remove all data belonging to specific HTTP session, if any.
      * @param sessionID HTTP session ID
      */
     void removeIfExists(String sessionID);
-
-    /**
-     * A file pending further processing in the storage
-     */
-    interface PendingFile {
-
-        /**
-         * @return ID of the HTTP session that uploaded the file
-         */
-        String getSessionID();
-
-        /**
-         * @return File name
-         */
-        String getName();
-
-        /**
-         * @return File content type
-         */
-        String getContentType();
-
-        /**
-         * @return File bytes stream
-         */
-        InputStream getContentStream();
-    }
 }

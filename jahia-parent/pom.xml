@@ -93,7 +93,7 @@
         <camel.version>2.12.5</camel.version>
         <gwt.version>2.5.1</gwt.version>
         <!--Atmosphere javascript is defined as a static resource in Jahia and has to be update manually-->
-        <atmosphere.version>2.3.1-jahia1</atmosphere.version>
+        <atmosphere.version>2.3.1-jahia2-SNAPSHOT</atmosphere.version>
         <atmosphere.gwt.version>2.3.0</atmosphere.gwt.version>
         <ant.version>1.8.2</ant.version>
         <junit.version>4.12</junit.version>
@@ -156,7 +156,7 @@
         <felix.log.version>1.0.1</felix.log.version>
         <felix.configadmin.version>1.8.2</felix.configadmin.version>
         <felix.eventadmin.version>1.4.2</felix.eventadmin.version>
-        <felix.fileinstall.version>3.2.6-patch2</felix.fileinstall.version>
+        <felix.fileinstall.version>3.5.0</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
         <gogo.runtime.version>0.16.2</gogo.runtime.version>

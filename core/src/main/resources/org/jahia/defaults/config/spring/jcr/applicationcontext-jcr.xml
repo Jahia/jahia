@@ -629,6 +629,9 @@
                     <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
                 </bean>
                 <bean class="org.jahia.services.importexport.validation.ConstraintsValidator" />
+                <bean class="org.jahia.services.importexport.validation.UserValidator" >
+                    <property name="userManagerService" ref="JahiaUserManagerService"/>
+                </bean>
             </list>
         </property>
     </bean>

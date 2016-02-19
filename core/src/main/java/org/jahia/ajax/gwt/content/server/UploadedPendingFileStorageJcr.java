@@ -52,43 +52,41 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.util.Text;
 import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.bin.listeners.JahiaContextLoaderListener.HttpSessionDestroyedEvent;
+import org.jahia.bin.SessionNamedDataStorageSupport;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationListener;
 
 /**
- * File storage that stores files in JCR.
+ * File storage that keeps files in JCR.
  */
-public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage, ApplicationListener<JahiaContextLoaderListener.HttpSessionDestroyedEvent> {
+public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSupport<UploadedPendingFile> {
 
     private String jcrFolderName;
-    private static final Logger LOGGER = LoggerFactory.getLogger(UploadedPendingFileStorageJcr.class);
 
     public void setJcrFolderName(String jcrFolderName) {
         this.jcrFolderName = jcrFolderName;
     }
 
     @Override
-    public void put(String sessionID, String name, String contentType, InputStream contentStream) {
+    public void put(String sessionID, String name, UploadedPendingFile file) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
         JCRNodeWrapper pendingFiles = getFolderCreateIfNeeded(getRootNode(), jcrFolderName);
         JCRNodeWrapper sessionPendingFiles = getFolderCreateIfNeeded(pendingFiles, sessionID);
         try {
             if (sessionPendingFiles.hasNode(name)) {
                 sessionPendingFiles.getNode(name).remove();
             }
-            JCRNodeWrapper file = sessionPendingFiles.addNode(name, Constants.JAHIANT_TEMP_FILE);
-            file.setProperty(Constants.JCR_MIMETYPE, contentType);
-            Binary contentBinary = new BinaryImpl(contentStream);
+            JCRNodeWrapper fileNode = sessionPendingFiles.addNode(name, Constants.JAHIANT_TEMP_FILE);
+            fileNode.setProperty(Constants.JCR_MIMETYPE, file.getContentType());
+            Binary contentBinary = new BinaryImpl(file.getContentStream());
             try {
-                file.setProperty(Constants.JCR_DATA, contentBinary);
+                fileNode.setProperty(Constants.JCR_DATA, contentBinary);
             } finally {
                 contentBinary.dispose();
             }
@@ -99,50 +97,29 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
     }
 
     @Override
-    public PendingFile get(final String sessionID, final String name) {
-
-        final JCRNodeWrapper file;
+    public UploadedPendingFile get(String sessionID, String name) {
         try {
-            file = getSession().getNode(getPathString(jcrFolderName, sessionID, name));
+            return retrieve(sessionID, name);
+        } catch (PathNotFoundException e) {
+            return null;
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
+    }
 
-        return new PendingFile() {
-
-            @Override
-            public String getSessionID() {
-                return sessionID;
-            }
-
-            @Override
-            public String getName() {
-                return name;
-            }
-
-            @Override
-            public String getContentType() {
-                return file.getPropertyAsString(Constants.JCR_MIMETYPE);
-            }
-
-            @Override
-            public InputStream getContentStream() {
-                try {
-                    Binary contentBinary = file.getProperty(Constants.JCR_DATA).getBinary();
-                    try {
-                        return contentBinary.getStream();
-                    } finally {
-                        contentBinary.dispose();
-                    }
-                } catch (RepositoryException e) {
-                    throw new JahiaRuntimeException(e);
-                }
-            }
-        };
+    @Override
+    public UploadedPendingFile getRequired(String sessionID, String name) {
+        try {
+            return retrieve(sessionID, name);
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
     }
 
     @Override
     public void remove(String sessionID, String name) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
         Session session = getSession();
         try {
             session.removeItem(getPathString(jcrFolderName, sessionID, name));
@@ -154,6 +131,7 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
 
     @Override
     public void removeIfExists(String sessionID) {
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
         Session session = getSession();
         try {
             session.removeItem(getPathString(jcrFolderName, sessionID));
@@ -206,14 +184,33 @@ public class UploadedPendingFileStorageJcr implements UploadedPendingFileStorage
         return '/' + StringUtils.join(pathElements, '/');
     }
 
-    @Override
-    public void onApplicationEvent(HttpSessionDestroyedEvent event) {
-        String sessionID = event.getSession().getId();
-        try {
-            removeIfExists(sessionID);
-        } catch (Exception e) {
-            // We still want to let other listeners receive the event, so just log to not interrupt general events processing.
-            LOGGER.error("Error cleaning files uploaded during HTTP session {}", sessionID);
-        }
+    private UploadedPendingFile retrieve(String sessionID, String name) throws RepositoryException {
+
+        sessionID = Text.escapeIllegalJcrChars(sessionID);
+        name = Text.escapeIllegalJcrChars(name);
+        final JCRNodeWrapper fileNode;
+        fileNode = getSession().getNode(getPathString(jcrFolderName, sessionID, name));
+
+        return new UploadedPendingFile() {
+
+            @Override
+            public String getContentType() {
+                return fileNode.getPropertyAsString(Constants.JCR_MIMETYPE);
+            }
+
+            @Override
+            public InputStream getContentStream() {
+                try {
+                    Binary contentBinary = fileNode.getProperty(Constants.JCR_DATA).getBinary();
+                    try {
+                        return contentBinary.getStream();
+                    } finally {
+                        contentBinary.dispose();
+                    }
+                } catch (RepositoryException e) {
+                    throw new JahiaRuntimeException(e);
+                }
+            }
+        };
     }
 }

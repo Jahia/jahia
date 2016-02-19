@@ -60,6 +60,7 @@ import org.apache.maven.model.Scm;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
 import org.dom4j.DocumentException;
 import org.jahia.api.Constants;
+import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
 import org.jahia.data.templates.ModuleState;
@@ -119,6 +120,7 @@ public class ModuleBuildHelper implements InitializingBean {
     private String ignoreSnapshots;
     private boolean ignoreSnapshotsFlag;
     private String mavenArchetypeCatalog;
+    private String mavenArchetypeVersion;
     private String mavenMinRequiredVersion;
     private String mavenReleasePlugin;
     private SourceControlHelper scmHelper;
@@ -245,6 +247,7 @@ public class ModuleBuildHelper implements InitializingBean {
         archetypeParams.add("-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local");
         archetypeParams.add("-DarchetypeGroupId=org.jahia.archetypes");
         archetypeParams.add("-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype");
+        archetypeParams.add("-DarchetypeVersion=" + mavenArchetypeVersion);
         archetypeParams.add("-Dversion=1.0-SNAPSHOT");
         archetypeParams.add("\"-DmoduleName=" + moduleName + "\"");
         archetypeParams.add("-DartifactId=" + artifactId);
@@ -434,12 +437,26 @@ public class ModuleBuildHelper implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        boolean isProjectInSnapshotVersion = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
         if (mavenArchetypeCatalog == null || mavenArchetypeCatalog.length() == 0) {
-            mavenArchetypeCatalog = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT") ? "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml"
-                    : "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+            if (isProjectInSnapshotVersion) {
+                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-snapshots/archetype-catalog.xml";
+                if (!mavenArchetypeVersion.endsWith("-SNAPSHOT")) {
+                    Version v = new Version(mavenArchetypeVersion);
+                    v.getOrderedVersionNumbers().set(v.getOrderedVersionNumbers().size() - 1,
+                            v.getOrderedVersionNumbers().get(v.getOrderedVersionNumbers().size() - 1).intValue() + 1);
+                    mavenArchetypeVersion = v.toString() + "-SNAPSHOT";
+                }
+            } else {
+                mavenArchetypeCatalog = "https://devtools.jahia.com/nexus/content/repositories/jahia-releases/archetype-catalog.xml";
+            }
         }
+
+        logger.info("Using version {} for the module archetypes from catalog {}", mavenArchetypeVersion,
+                mavenArchetypeCatalog);
+
         if (ignoreSnapshots == null || ignoreSnapshots.length() == 0) {
-            ignoreSnapshotsFlag = Constants.JAHIA_PROJECT_VERSION.contains("-SNAPSHOT");
+            ignoreSnapshotsFlag = isProjectInSnapshotVersion;
         } else {
             ignoreSnapshotsFlag = Boolean.valueOf(ignoreSnapshots.trim());
         }
@@ -957,5 +974,15 @@ public class ModuleBuildHelper implements InitializingBean {
 
         }
 
+    }
+
+    /**
+     * Supplies the exact version of the Maven archetypes to use when creating a module.
+     * 
+     * @param mavenArchetypeVersion
+     *            the exact version of the Maven archetypes to use when creating a module
+     */
+    public void setMavenArchetypeVersion(String mavenArchetypeVersion) {
+        this.mavenArchetypeVersion = mavenArchetypeVersion;
     }
 }

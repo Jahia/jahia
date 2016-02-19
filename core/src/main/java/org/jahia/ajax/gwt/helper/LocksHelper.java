@@ -59,6 +59,7 @@ import org.springframework.context.ApplicationListener;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.servlet.http.HttpSession;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +67,12 @@ import java.util.Map;
 /**
  * Helper related to locking/unlocking
  */
-public class LocksHelper implements ApplicationListener {
+public class LocksHelper implements ApplicationListener<ApplicationEvent> {
 
     private static Logger logger = LoggerFactory.getLogger(LocksHelper.class);
 
     @Override
+    @SuppressWarnings("unchecked")
     public void onApplicationEvent(ApplicationEvent applicationEvent) {
         if (applicationEvent instanceof JahiaContextLoaderListener.HttpSessionDestroyedEvent) {
             HttpSession httpSession = ((JahiaContextLoaderListener.HttpSessionDestroyedEvent) applicationEvent).getSession();
@@ -110,6 +112,7 @@ public class LocksHelper implements ApplicationListener {
         }
     }
 
+    @SuppressWarnings("unchecked")
     private void closeAllLocks(HttpSession httpSession) {
         Map<String, List<String>> locks = (Map<String, List<String>>) httpSession.getAttribute("engineLocks");
         if (locks != null) {
@@ -123,12 +126,18 @@ public class LocksHelper implements ApplicationListener {
         try {
             for (String lock : locks) {
                 String[] vals = lock.split("/");
-                JCRSessionWrapper jcrsession = JCRSessionFactory.getInstance().getCurrentUserSession(null, LanguageCodeConverters.languageCodeToLocale(vals[0]));
+                String localeForLock = vals[0];
+                String lockedNodeId = vals[1];
+                JCRSessionWrapper jcrsession = JCRSessionFactory.getInstance().getCurrentUserSession(null, LanguageCodeConverters.languageCodeToLocale(localeForLock));
                 try {
-					jcrsession.getNodeByUUID(vals[1]).unlock("engine");
-				} catch (LockException e) {
-					logger.warn("Problem while trying to unlock node: " + vals[1], e);
-				}
+                    jcrsession.getNodeByUUID(lockedNodeId).unlock("engine");
+                } catch (LockException e) {
+                    // We still want other nodes to get unlocked, so just log and not re-throw.
+                    logger.warn("Problem while trying to unlock node: " + lockedNodeId + " - " + e);
+                } catch (Exception e) {
+                    // We still want other nodes to get unlocked, so just log and not re-throw.
+                    logger.error("Unexpected problem while trying to unlock node - node may remain locked: " + lockedNodeId, e);
+                }
             }
             locks.clear();
         } catch (RepositoryException e) {

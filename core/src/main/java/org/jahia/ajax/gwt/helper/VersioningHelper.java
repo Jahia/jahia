@@ -47,7 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.tika.io.IOUtils;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
-import org.jahia.ajax.gwt.content.server.UploadedPendingFileStorage;
+import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
+import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.services.cache.CacheService;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -119,7 +120,7 @@ public class VersioningHelper {
     private CacheService cacheService;
     private JCRVersionService versionService;
     private FileCacheManager cacheManager;
-    private UploadedPendingFileStorage fileStorage;
+    private SessionNamedDataStorage<UploadedPendingFile> fileStorage;
 
     public void setCacheService(CacheService cacheService) {
         this.cacheService = cacheService;
@@ -133,7 +134,7 @@ public class VersioningHelper {
         this.cacheManager = cacheManager;
     }
 
-    public void setFileStorage(UploadedPendingFileStorage fileStorage) {
+    public void setFileStorage(SessionNamedDataStorage<UploadedPendingFile> fileStorage) {
         this.fileStorage = fileStorage;
     }
 
@@ -182,11 +183,11 @@ public class VersioningHelper {
                     versionService.addVersionLabel(node, getVersionLabel(node.getProperty("jcr:created").getDate().getTime().getTime()));
                 }
                 versionManager.checkout(node.getPath());
-                UploadedPendingFileStorage.PendingFile item = fileStorage.get(httpSessionID, tmpName);
+                UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
                 InputStream is = null;
                 try {
                     is = item.getContentStream();
-                    node.getFileContent().uploadFile(is, JCRContentUtils.getMimeType(StringUtils.isNotEmpty(item.getName()) ? item.getName() : node.getName(), item.getContentType()));
+                    node.getFileContent().uploadFile(is, JCRContentUtils.getMimeType(StringUtils.isNotEmpty(tmpName) ? tmpName : node.getName(), item.getContentType()));
                 } finally {
                     IOUtils.closeQuietly(is);
                     fileStorage.remove(httpSessionID, tmpName);

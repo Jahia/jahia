@@ -57,7 +57,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -65,24 +64,21 @@ import java.util.*;
  *
  * @author rincevent
  */
-public class JCRUserNode extends JCRProtectedNodeAbstractDecorator implements Serializable {
-
-    private static final String J_PUBLIC_PROPERTIES = "j:publicProperties";
-    private static final Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
-    private static final long serialVersionUID = -4242265117577876164L;
-
+public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
+    private transient static Logger logger = LoggerFactory.getLogger(JCRUserNode.class);
     public static final String ROOT_USER_UUID = "b32d306a-6c74-11de-b3ef-001e4fead50b";
     public static final String PROVIDER_NAME = "jcr";
     public static final String J_DISPLAYABLE_NAME = "j:displayableName";
     public static final String J_PASSWORD = "j:password";
     public static final String J_EXTERNAL = "j:external";
     public static final String J_EXTERNAL_SOURCE = "j:externalSource";
-    public static final List<String> publicProperties = Arrays.asList(J_EXTERNAL, J_EXTERNAL_SOURCE, J_PUBLIC_PROPERTIES);
+    private static final String J_PUBLIC_PROPERTIES = "j:publicProperties";
+    public final List<String> publicProperties = Arrays.asList(J_EXTERNAL, J_EXTERNAL_SOURCE, J_PUBLIC_PROPERTIES);
 
     public JCRUserNode(JCRNodeWrapper node) {
         super(node);
     }
-
+    
     public JahiaUser getJahiaUser() {
         Properties properties = new Properties();
         try {
@@ -91,10 +87,11 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator implements Se
             logger.error("Cannot read user properties",e);
         }
         return new JahiaUserImpl(getName(), getPath(), properties, isRoot(), getProviderName(), getRealm());
+
     }
 
     /**
-     * @deprecated
+     * @deprecated 
      */
     public String getUsername() {
         return getName();

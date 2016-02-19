@@ -43,6 +43,8 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +52,15 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gwt.user.server.rpc.SerializationPolicy;
 
+import org.codehaus.plexus.util.StringUtils;
+import org.jahia.bin.JahiaControllerUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -75,6 +85,8 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 public class GWTController extends RemoteServiceServlet implements Controller,
         ServletContextAware, ApplicationContextAware {
 
+    private static final String SESSION_ATTRIBUTE_PERMISSION_CHECK = "org.jahia.gwt.requiredPermission.ok";
+
     private static final long serialVersionUID = -74193665963116797L;
 
     private final static Logger logger = LoggerFactory.getLogger(GWTController.class);
@@ -90,6 +102,16 @@ public class GWTController extends RemoteServiceServlet implements Controller,
     private boolean allowPostMethodOnly = true;
 
     private boolean requireAuthenticatedUser = true;
+    
+    /**
+     * A permission, required to access the GWT services. A <code>null</code> or an empty value means no permission check is done.
+     */
+    private String requiredPermission;
+    
+    /**
+     * Do we allow to cache the successful required permission check in a session?
+     */
+    private boolean requiredPermissionCheckCache = true;
 
     public void setSessionExpiryTime(int sessionExpiryTime) {
         this.sessionExpiryTime = sessionExpiryTime;
@@ -107,10 +129,13 @@ public class GWTController extends RemoteServiceServlet implements Controller,
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
             return null;
         }
-        if (requireAuthenticatedUser && JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())) {
+        if (requireAuthenticatedUser
+                && JahiaUserManagerService.isGuest(JCRSessionFactory.getInstance().getCurrentUser())
+                || StringUtils.isNotEmpty(requiredPermission) && !isAllowed(request)) {
             response.sendError(HttpServletResponse.SC_FORBIDDEN);
             return null;
         }
+
         final HttpSession session = request.getSession(false);
         if (session != null) {
             if (sessionExpiryTime != null && session.getMaxInactiveInterval() != sessionExpiryTime * 60) {
@@ -121,6 +146,87 @@ public class GWTController extends RemoteServiceServlet implements Controller,
         if (logger.isDebugEnabled()) {
             logger.debug("Handled request to GWT service '{}' in {} ms", remoteServiceName, System.currentTimeMillis() - startTime);
         }
+        return null;
+    }
+
+    /**
+     * Checks the required permission to access the GWT service.
+     * 
+     * @param request
+     *            current HTTP request
+     * @return <code>true</code> if the current user is permitted to access the GWT service
+     */
+    private boolean isAllowed(HttpServletRequest request) {
+        HttpSession session = null;
+        if (requiredPermissionCheckCache) {
+            // see if we have already performed the check
+            session = request.getSession(false);
+            if (session != null && session.getAttribute(SESSION_ATTRIBUTE_PERMISSION_CHECK) != null) {
+                return true;
+            }
+        }
+
+        boolean debugEnabled = logger.isDebugEnabled();
+        long startTime = debugEnabled ? System.currentTimeMillis() : 0;
+        boolean allowed = false;
+        try {
+            JCRNodeWrapper targetNode = getTargetNodeForPermissionCheck(request);
+            JahiaUser currentUser = JCRSessionFactory.getInstance().getCurrentUser();
+            allowed = targetNode != null
+                    && JahiaControllerUtils.hasRequiredPermission(targetNode, currentUser, requiredPermission);
+            if (session != null) {
+                if (allowed) {
+                    session.setAttribute(SESSION_ATTRIBUTE_PERMISSION_CHECK, Boolean.TRUE);
+                } else {
+                    session.removeAttribute(SESSION_ATTRIBUTE_PERMISSION_CHECK);
+                }
+            }
+            if (debugEnabled) {
+                logger.debug(
+                        "Checked permission for GWT service access and target node {} in {} ms."
+                                + " User {} is {}allowed to access it.",
+                        new Object[] { targetNode != null ? targetNode.getPath() : null,
+                                System.currentTimeMillis() - startTime, currentUser.getUsername(),
+                                allowed ? "" : "NOT " });
+            }
+        } catch (ItemNotFoundException e) {
+            // ignore
+        } catch (RepositoryException e) {
+            logger.warn(e.getMessage(), e);
+        }
+        return allowed;
+    }
+
+    /**
+     * Detects the target JCR node for permission check.
+     * 
+     * @param request
+     *            current HTTP request
+     * 
+     * @return the detected target JCR node for permission check
+     */
+    private JCRNodeWrapper getTargetNodeForPermissionCheck(HttpServletRequest request) {
+        String siteId = request.getParameter("site");
+
+        try {
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession();
+            if (StringUtils.isNotEmpty(siteId)) {
+                return currentUserSession.getNodeByUUID(siteId);
+            } else {
+                JahiaSitesService siteService = JahiaSitesService.getInstance();
+                JahiaSite defaultSite = siteService.getDefaultSite();
+                if (defaultSite != null) {
+                    return (JCRSiteNode) defaultSite;
+                }
+            }
+
+            return currentUserSession.getRootNode();
+        } catch (ItemNotFoundException e) {
+            // no access
+        } catch (RepositoryException e) {
+            logger.warn("Unble to find target JCR node for permission check", e);
+        }
+
         return null;
     }
 
@@ -221,5 +327,25 @@ public class GWTController extends RemoteServiceServlet implements Controller,
 
     public void setRequireAuthenticatedUser(boolean requireAuthenticatedUser) {
         this.requireAuthenticatedUser = requireAuthenticatedUser;
+    }
+
+    /**
+     * Sets a permission, required to access the GWT services. A <code>null</code> or an empty value means no permission check is done.
+     * 
+     * @param requiredPermission
+     *            a permission, required to access the GWT services
+     */
+    public void setRequiredPermission(String requiredPermission) {
+        this.requiredPermission = requiredPermission;
+    }
+
+    /**
+     * Set it to <code>true</code> if we allow to cache the successful required permission check in a session.
+     * 
+     * @param requiredPermissionCheckCache
+     *            <code>true</code> if we allow to cache the successful required permission check in a session; <code>false</code> otherwise
+     */
+    public void setRequiredPermissionCheckCache(boolean requiredPermissionCheckCache) {
+        this.requiredPermissionCheckCache = requiredPermissionCheckCache;
     }
 }

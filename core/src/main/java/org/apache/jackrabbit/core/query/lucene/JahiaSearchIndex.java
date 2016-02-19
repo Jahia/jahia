@@ -47,6 +47,7 @@ import com.google.common.collect.Sets;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaSearchManager;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 import org.apache.jackrabbit.core.query.ExecutableQuery;
@@ -84,6 +85,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.NamespaceException;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.QueryObjectModel;
 
@@ -395,6 +397,14 @@ public class JahiaSearchIndex extends SearchIndex {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
                 try {
+                    if (add instanceof JahiaSearchManager.NodeStateIterator) {
+                        Event event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
+                        if (event != null && event.getType() != Event.NODE_ADDED) {
+                            continue;
+                        }
+                    }
+
+
                     // if acl node is added for the first time we need to add our ACL_UUID field
                     // to parent's and all affected subnodes' index documents
                     if (JNT_ACL.equals(node.getNodeTypeName())) {
@@ -402,6 +412,7 @@ public class JahiaSearchIndex extends SearchIndex {
                                 .getParentId());
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                         recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                        break;
                     }
                     // if an acl is modified, we need to reindex all its subnodes only if we use the optimized ACE
                     if (JNT_ACE.equals(node.getNodeTypeName())) {
@@ -410,6 +421,7 @@ public class JahiaSearchIndex extends SearchIndex {
                         if (canUseOptimizedACEIndexation(nodeParent)) {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                             recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                            break;
                         }
                     }
                 } catch (ItemStateException e) {

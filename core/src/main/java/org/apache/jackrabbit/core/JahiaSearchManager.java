@@ -149,20 +149,25 @@ public class JahiaSearchManager extends SearchManager {
         for (EventImpl e : propEvents) {
             NodeId nodeId = e.getParentId();
             if (e.getType() == Event.PROPERTY_ADDED) {
-                if (addedNodes.put(nodeId, e) == null) {
+                if (!addedNodes.containsKey(nodeId)) {
                     // only property added
                     // need to re-index
+                    addedNodes.put(nodeId, e);
                     removedNodes.add(nodeId);
                 } else {
                     // the node where this prop belongs to is also new
                 }
             } else if (e.getType() == Event.PROPERTY_CHANGED) {
                 // need to re-index
-                addedNodes.put(nodeId, e);
+                if (!addedNodes.containsKey(nodeId)) {
+                    addedNodes.put(nodeId, e);
+                }
                 removedNodes.add(nodeId);
             } else {
                 // property removed event is only generated when node still exists
-                addedNodes.put(nodeId, e);
+                if (!addedNodes.containsKey(nodeId)) {
+                    addedNodes.put(nodeId, e);
+                }
                 removedNodes.add(nodeId);
             }
         }
@@ -171,35 +176,7 @@ public class JahiaSearchManager extends SearchManager {
         
             boolean addedNodesPresent = addedNodes.size() > 0;
             if (addedNodesPresent || removedNodes.size() > 0) {
-                Iterator<NodeState> addedStates = addedNodesPresent ? new Iterator<NodeState>() {
-                    private final Iterator<NodeId> iter = addedNodes.keySet().iterator();
-
-                    public void remove() {
-                        throw new UnsupportedOperationException();
-                    }
-
-                    public boolean hasNext() {
-                        return iter.hasNext();
-                    }
-
-                    public NodeState next() {
-                        NodeState item = null;
-                        NodeId id = (NodeId) iter.next();
-                        try {
-                            item = (NodeState) itemMgr.getItemState(id);
-                        } catch (ItemStateException ise) {
-                            // check whether this item state change originated from
-                            // an external event
-                            EventImpl e = addedNodes.get(id);
-                            if (e == null || !e.isExternal()) {
-                                log.error("Unable to index node " + id + ": does not exist");
-                            } else {
-                                log.info("Node no longer available {}, skipped.", id);
-                            }
-                        }
-                        return item;
-                    }
-                } : Collections.<NodeState>emptyIterator();
+                Iterator<NodeState> addedStates = addedNodesPresent ? new NodeStateIterator(addedNodes) : Collections.<NodeState>emptyIterator();
                 Iterator<NodeId> removedIds = removedNodes.iterator();            
             
                 getQueryHandler().updateNodes(removedIds, addedStates);
@@ -323,5 +300,45 @@ public class JahiaSearchManager extends SearchManager {
             }
         }
         return hierarchicalNodes;
-    }       
+    }
+
+    public class NodeStateIterator implements Iterator<NodeState> {
+        private final Iterator<NodeId> iter;
+        private final Map<NodeId, EventImpl> addedNodes;
+
+        public NodeStateIterator(Map<NodeId, EventImpl> addedNodes) {
+            this.addedNodes = addedNodes;
+            iter = addedNodes.keySet().iterator();
+        }
+
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        public boolean hasNext() {
+            return iter.hasNext();
+        }
+
+        public Event getEvent(NodeId nodeId) {
+            return addedNodes.get(nodeId);
+        }
+
+        public NodeState next() {
+            NodeState item = null;
+            NodeId id = (NodeId) iter.next();
+            try {
+                item = (NodeState) itemMgr.getItemState(id);
+            } catch (ItemStateException ise) {
+                // check whether this item state change originated from
+                // an external event
+                EventImpl e = addedNodes.get(id);
+                if (e == null || !e.isExternal()) {
+                    log.error("Unable to index node " + id + ": does not exist");
+                } else {
+                    log.info("Node no longer available {}, skipped.", id);
+                }
+            }
+            return item;
+        }
+    }
 }

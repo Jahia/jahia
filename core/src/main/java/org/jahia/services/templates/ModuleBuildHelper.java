@@ -811,10 +811,6 @@ public class ModuleBuildHelper implements InitializingBean {
                         if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
                             modifiedFiles.add(sourceFile);
                         }
-                        // Save file after merge
-                        if (name.equals("repository.xml")) {
-                            FileUtils.copyFile(sourceFile, new File(sourceFile.getPath() + ".orig"));
-                        }
 
                         files.remove(sourceFile);
                     } catch (IOException e) {
@@ -864,14 +860,20 @@ public class ModuleBuildHelper implements InitializingBean {
                     IOUtils.closeQuietly(output);
                 }
             }
+
+            // Save repository.xml file after first generation
+            if (target.getName().equals("repository.xml")) {
+                FileUtils.copyFile(target, new File(target.getPath() + ".generated"));
+            }
+
             return true;
         } else {
             List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
             if (!isBinary(targetContent)) {
-                File orig = new File(target.getPath() + ".orig");
-                List<String> origContent = targetContent;
-                if (orig.exists()) {
-                    origContent = FileUtils.readLines(orig, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
+                File previouslyGenerated = new File(target.getPath() + ".generated");
+                List<String> previouslyGeneratedContent = targetContent;
+                if (previouslyGenerated.exists()) {
+                    previouslyGeneratedContent = FileUtils.readLines(previouslyGenerated, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
                 }
                 DiffMatchPatch dmp = new DiffMatchPatch();
                 List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
@@ -879,14 +881,19 @@ public class ModuleBuildHelper implements InitializingBean {
                     sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
                 }
 
-                LinkedList<DiffMatchPatch.Patch> l = dmp.patch_make(StringUtils.join(origContent, "\n"), StringUtils.join(sourceContent, "\n"));
+                LinkedList<DiffMatchPatch.Patch> l = dmp.patch_make(StringUtils.join(previouslyGeneratedContent, "\n"), StringUtils.join(sourceContent, "\n"));
+
+                if (previouslyGenerated.exists()) {
+                    // Keep generated file uptodate
+                    FileUtils.writeLines(new File(target.getPath() + ".generated"), transCodeTarget != null ? transCodeTarget.name() : "UTF-8", sourceContent);
+                }
 
                 if (!l.isEmpty()) {
                     Object[] objects = dmp.patch_apply(l, StringUtils.join(targetContent, "\n"));
+
                     for (boolean b : ((boolean[]) objects[1])) {
                         if (!b) {
-                            FileUtils.write(new File(target.getPath() + ".generated"), (CharSequence) objects[0], transCodeTarget != null ? transCodeTarget.name() : "UTF-8");
-                            throw new IOException("Cannot apply modification on "+target.getName());
+                            throw new IOException("Cannot apply modification on "+target.getName() + ", check generated file at : " + target.getPath() + ".generated");
                         }
                     }
                     FileUtils.write(target, (CharSequence) objects[0], transCodeTarget != null ? transCodeTarget.name() : "UTF-8");

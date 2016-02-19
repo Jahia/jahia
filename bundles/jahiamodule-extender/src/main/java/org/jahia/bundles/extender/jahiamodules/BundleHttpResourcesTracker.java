@@ -65,6 +65,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.ServletException;
+
 import java.io.File;
 import java.net.URL;
 import java.util.*;
@@ -128,8 +129,7 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
 
             long timer = System.currentTimeMillis();
 
-            HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
-                    httpService.createDefaultHttpContext());
+            HttpContext httpContext = new FileHttpContext(bundle, httpService.createDefaultHttpContext());
 
             int resourceCount = registerStaticResources(httpService, httpContext);
 

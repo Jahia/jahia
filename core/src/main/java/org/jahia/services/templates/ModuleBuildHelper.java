@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -43,12 +43,7 @@
  */
 package org.jahia.services.templates;
 
-import difflib.DiffUtils;
-import difflib.Patch;
-import difflib.PatchFailedException;
-import difflib.myers.Equalizer;
-import difflib.myers.MyersDiff;
-
+import name.fraser.neil.plaintext.DiffMatchPatch;
 import org.apache.commons.io.Charsets;
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
@@ -109,13 +104,6 @@ import java.util.zip.ZipInputStream;
 public class ModuleBuildHelper implements InitializingBean {
 
     private static Logger logger = LoggerFactory.getLogger(ModuleBuildHelper.class);
-    private static final MyersDiff MYERS_DIFF = new MyersDiff(new Equalizer() {
-        public boolean equals(Object o, Object o1) {
-            String s1 = (String) o;
-            String s2 = (String) o1;
-            return s1.trim().equals(s2.trim());
-        }
-    });
     private static final Pattern UNICODE_PATTERN = Pattern.compile("\\\\u([0-9A-Fa-f]{2})([0-9A-Fa-f]{2})");
 
     private String mavenExecutable;
@@ -484,7 +472,7 @@ public class ModuleBuildHelper implements InitializingBean {
         if (settingsBean.isDevelopmentMode()) {
             StringBuilder resultOut = new StringBuilder();
             try {
-                String[] args = new String[] { "-version" };
+                String[] args = new String[]{"-version"};
                 int res = 0;
                 if (System.getProperty("os.name").toLowerCase().startsWith("windows")
                         && !mavenExecutable.endsWith(".bat") && !mavenExecutable.endsWith(".cmd")) {
@@ -541,7 +529,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     public JahiaTemplatesPackage duplicateModule(String dstModuleName, String dstModuleId, String dstGroupId, String srcPath, String scmURI, String branchOrTag,
-                                                 String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder , JCRSessionWrapper session)
+                                                 String srcModuleId, String srcModuleVersion, boolean uninstallSrcModule, String dstPath, boolean deleteSrcFolder, JCRSessionWrapper session)
             throws IOException, RepositoryException, BundleException {
         if (StringUtils.isBlank(dstModuleName)) {
             throw new SourceControlException("Cannot create module because no module name has been specified");
@@ -812,6 +800,11 @@ public class ModuleBuildHelper implements InitializingBean {
                         if (nodeMoreRecentThanSourceFile && saveFile(zis, sourceFile)) {
                             modifiedFiles.add(sourceFile);
                         }
+                        // Save file after merge
+                        if (name.equals("repository.xml")) {
+                            FileUtils.copyFile(sourceFile, new File(sourceFile.getPath() + ".orig"));
+                        }
+
                         files.remove(sourceFile);
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
@@ -835,7 +828,7 @@ public class ModuleBuildHelper implements InitializingBean {
     }
 
     @SuppressWarnings("unchecked")
-    private boolean saveFile(InputStream source, File target) throws IOException, PatchFailedException {
+    private boolean saveFile(InputStream source, File target) throws IOException {
         Charset transCodeTarget = null;
         if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {
             transCodeTarget = Charsets.ISO_8859_1;
@@ -864,14 +857,28 @@ public class ModuleBuildHelper implements InitializingBean {
         } else {
             List<String> targetContent = FileUtils.readLines(target, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
             if (!isBinary(targetContent)) {
+                File orig = new File(target.getPath() + ".orig");
+                List<String> origContent = targetContent;
+                if (orig.exists()) {
+                    origContent = FileUtils.readLines(orig, transCodeTarget != null ? transCodeTarget : Charsets.UTF_8);
+                }
+                DiffMatchPatch dmp = new DiffMatchPatch();
                 List<String> sourceContent = IOUtils.readLines(source, Charsets.UTF_8);
                 if (transCodeTarget != null) {
                     sourceContent = convertToNativeEncoding(sourceContent, transCodeTarget);
                 }
-                Patch patch = DiffUtils.diff(targetContent, sourceContent, MYERS_DIFF);
-                if (!patch.getDeltas().isEmpty()) {
-                    targetContent = (List<String>) patch.applyTo(targetContent);
-                    FileUtils.writeLines(target, transCodeTarget != null ? transCodeTarget.name() : "UTF-8", targetContent, "\n");
+
+                LinkedList<DiffMatchPatch.Patch> l = dmp.patch_make(StringUtils.join(origContent, "\n"), StringUtils.join(sourceContent, "\n"));
+
+                if (!l.isEmpty()) {
+                    Object[] objects = dmp.patch_apply(l, StringUtils.join(targetContent, "\n"));
+                    for (boolean b : ((boolean[]) objects[1])) {
+                        if (!b) {
+                            FileUtils.write(new File(target.getPath() + ".generated"), (CharSequence) objects[0], transCodeTarget != null ? transCodeTarget.name() : "UTF-8");
+                            throw new IOException("Cannot apply modification on "+target.getName());
+                        }
+                    }
+                    FileUtils.write(target, (CharSequence) objects[0], transCodeTarget != null ? transCodeTarget.name() : "UTF-8");
                     return true;
                 }
             } else {
@@ -980,7 +987,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
     /**
      * Supplies the exact version of the Maven archetypes to use when creating a module.
-     * 
+     *
      * @param mavenArchetypeVersion
      *            the exact version of the Maven archetypes to use when creating a module
      */

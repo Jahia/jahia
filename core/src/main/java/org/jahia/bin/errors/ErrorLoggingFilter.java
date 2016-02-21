@@ -45,20 +45,19 @@ package org.jahia.bin.errors;
 
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Iterator;

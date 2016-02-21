@@ -59,7 +59,6 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
-
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

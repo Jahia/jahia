@@ -50,6 +50,7 @@ import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

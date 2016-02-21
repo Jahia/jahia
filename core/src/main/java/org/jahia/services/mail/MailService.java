@@ -43,9 +43,6 @@
  */
  package org.jahia.services.mail;
 
-import java.util.Locale;
-import java.util.Map;
-
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.JahiaService;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -54,6 +51,8 @@ import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.script.ScriptException;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Jahia mail service implementation.

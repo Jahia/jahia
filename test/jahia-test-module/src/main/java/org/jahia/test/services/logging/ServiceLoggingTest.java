@@ -43,11 +43,8 @@
  */
 package org.jahia.test.services.logging;
 
-import java.util.Arrays;
-import java.util.Comparator;
-
-import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -65,9 +62,11 @@ import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
+import java.util.Arrays;
+import java.util.Comparator;
 
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.lessThan;
+import static org.junit.Assert.assertThat;
 
 /**
  * 

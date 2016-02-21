@@ -44,7 +44,6 @@
 package org.jahia.test.services.query;
 
 import org.apache.jackrabbit.util.ISO8601;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -53,17 +52,17 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import static org.junit.Assert.*;
 

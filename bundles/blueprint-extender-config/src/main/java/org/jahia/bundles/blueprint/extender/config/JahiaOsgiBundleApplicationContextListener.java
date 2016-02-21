@@ -43,11 +43,7 @@
  */
 package org.jahia.bundles.blueprint.extender.config;
 
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleApplicationContextListener;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextClosedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextFailedEvent;
-import org.eclipse.gemini.blueprint.context.event.OsgiBundleContextRefreshedEvent;
+import org.eclipse.gemini.blueprint.context.event.*;
 import org.eclipse.gemini.blueprint.util.OsgiStringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.osgi.BundleUtils;

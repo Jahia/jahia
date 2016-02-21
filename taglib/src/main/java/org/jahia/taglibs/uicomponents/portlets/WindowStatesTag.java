@@ -43,24 +43,22 @@
  */
 package org.jahia.taglibs.uicomponents.portlets;
 
+import org.jahia.api.Constants;
+import org.jahia.data.beans.portlets.PortletWindowBean;
+import org.jahia.data.beans.portlets.WindowStateBean;
 import org.jahia.services.render.RenderContext;
 import org.jahia.settings.SettingsBean;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.ResourceBundles;
-import org.jahia.api.Constants;
-import org.jahia.data.beans.portlets.PortletWindowBean;
-import org.jahia.data.beans.portlets.WindowStateBean;
 
+import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * <p>Title: Renders list of window states.</p>

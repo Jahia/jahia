@@ -43,11 +43,11 @@
  */
 package org.jahia.services.content.rules;
 
-import javax.jcr.RepositoryException;
-
 import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Working memory fact that represents a copied node

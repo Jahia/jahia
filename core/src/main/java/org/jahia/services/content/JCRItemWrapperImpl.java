@@ -43,13 +43,13 @@
  */
 package org.jahia.services.content;
 
+import org.apache.commons.lang.StringUtils;
+
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
-
-import org.apache.commons.lang.StringUtils;
 
 /**
  * Jahia wrappers around <code>javax.jcr.Item</code> to be able to inject

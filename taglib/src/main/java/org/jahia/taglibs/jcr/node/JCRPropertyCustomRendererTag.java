@@ -43,14 +43,14 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRenderer;
 import org.jahia.services.content.nodetypes.renderer.ChoiceListRendererService;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.Property;
@@ -60,7 +60,10 @@ import javax.jcr.nodetype.ConstraintViolationException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This Tag allows access to specific property of a node.

@@ -43,11 +43,7 @@
  */
 package org.jahia.utils.i18n;
 
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+import java.util.*;
 
 /**
  * Custom implementation of the property-based {@link ResourceBundle} that considers resource bundle of "dependent" modules in the lookup

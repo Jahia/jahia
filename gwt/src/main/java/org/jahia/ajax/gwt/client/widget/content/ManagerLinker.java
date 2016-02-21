@@ -54,6 +54,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.tripanel.*;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

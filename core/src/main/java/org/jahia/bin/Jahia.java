@@ -60,14 +60,7 @@
 
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.Date;
-import java.util.Locale;
-
+import com.ibm.icu.text.DateFormat;
 import org.apache.commons.io.IOUtils;
 import org.jahia.api.Constants;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -77,7 +70,13 @@ import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ibm.icu.text.DateFormat;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.JarURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Jahia version and support utilities.

@@ -46,8 +46,8 @@
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 
-import java.util.Set;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * User: Serge Huber

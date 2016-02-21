@@ -43,12 +43,12 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.slf4j.Logger;
-import org.apache.commons.lang.*;
+import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.jcr.AbstractJCRTag;
+import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.PathNotFoundException;

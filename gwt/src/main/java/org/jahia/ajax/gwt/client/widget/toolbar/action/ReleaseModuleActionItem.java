@@ -43,10 +43,10 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.data.RpcMap;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.MessageBox;
+import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTModuleReleaseInfo;
@@ -57,8 +57,8 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 
-import com.extjs.gxt.ui.client.data.RpcMap;
-import com.google.gwt.user.client.ui.HTML;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Action item to export and download the current templates set as a war

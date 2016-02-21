@@ -44,9 +44,9 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.google.gwt.user.client.Window;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.util.Constants;
-import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.util.URL;
 
 import java.util.Map;

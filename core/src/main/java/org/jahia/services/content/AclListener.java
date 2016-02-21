@@ -46,7 +46,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSitesService;

@@ -43,9 +43,9 @@
  */
 package org.jahia.services.search;
 
-import java.util.List;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.util.List;
 
 /**
  * Represents a spell checker corrected query (suggestion) that can be used to

@@ -43,21 +43,20 @@
  */
 package org.jahia.services.preferences.user;
 
-import java.io.UnsupportedEncodingException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-
-import javax.mail.internet.InternetAddress;
-
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
+import org.slf4j.Logger;
+
+import javax.mail.internet.InternetAddress;
+import java.io.UnsupportedEncodingException;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Helper class for accessing user preferences.

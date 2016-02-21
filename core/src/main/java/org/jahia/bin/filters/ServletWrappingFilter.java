@@ -43,23 +43,14 @@
  */
 package org.jahia.bin.filters;
 
+import com.google.common.collect.Iterators;
+import org.springframework.beans.factory.BeanNameAware;
+
+import javax.servlet.*;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Map;
-
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.Servlet;
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-
-import org.springframework.beans.factory.BeanNameAware;
-
-import com.google.common.collect.Iterators;
 
 /**
  * Servlet filter that wraps the calls to the configured servlet class.<br>

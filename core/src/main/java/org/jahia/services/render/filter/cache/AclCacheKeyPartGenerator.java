@@ -53,7 +53,9 @@ import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -62,7 +64,10 @@ import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**

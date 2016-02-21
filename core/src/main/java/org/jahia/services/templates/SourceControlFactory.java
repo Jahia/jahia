@@ -43,13 +43,6 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
@@ -57,6 +50,12 @@ import org.apache.commons.exec.PumpStreamHandler;
 import org.jahia.utils.StringOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Source control management central factory class responsible for checking out a remote SCM repository content and instantiating

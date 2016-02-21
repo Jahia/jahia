@@ -43,11 +43,11 @@
  */
 package org.springframework.webflow.conversation.impl;
 
-import java.util.Iterator;
-
 import org.springframework.webflow.conversation.Conversation;
 import org.springframework.webflow.conversation.ConversationId;
 import org.springframework.webflow.conversation.NoSuchConversationException;
+
+import java.util.Iterator;
 
 /**
  * Container for Web Flow conversations that is stored in the HTTP session. 

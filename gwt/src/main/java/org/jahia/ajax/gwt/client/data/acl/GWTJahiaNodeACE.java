@@ -44,8 +44,8 @@
 package org.jahia.ajax.gwt.client.data.acl;
 
 import java.io.Serializable;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 

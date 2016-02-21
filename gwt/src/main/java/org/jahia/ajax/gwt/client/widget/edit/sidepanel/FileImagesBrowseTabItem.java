@@ -58,6 +58,7 @@ import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.Image;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.Collator;
@@ -65,9 +66,10 @@ import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
 import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.content.ThumbsListView;
 import org.jahia.ajax.gwt.client.widget.edit.EditLinker;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Map;
 
 /**
  * Side panel tab item for browsing image resources in the repository.

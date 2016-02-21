@@ -45,7 +45,10 @@ package org.jahia.ajax.gwt.client.widget.form.tag;
 
 import com.extjs.gxt.ui.client.data.BaseListLoader;
 import com.extjs.gxt.ui.client.data.RpcProxy;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.FieldEvent;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Util;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;

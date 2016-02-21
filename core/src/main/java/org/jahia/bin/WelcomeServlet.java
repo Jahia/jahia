@@ -43,21 +43,6 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Locale;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.api.Constants;
@@ -81,6 +66,20 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Url;
 import org.jahia.utils.WebUtils;
 import org.slf4j.Logger;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Servlet for the first entry point in Jahia portal that performs a client-side redirect

@@ -43,24 +43,19 @@
  */
 package org.jahia.test.services.content.nodetypes;
 
-import static org.junit.Assert.*;
-
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.jcr.RepositoryException;
-
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.test.JahiaTestCase;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
+
+import javax.jcr.RepositoryException;
+import java.util.Calendar;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Integration test for the default values of node properties.

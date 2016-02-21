@@ -43,10 +43,10 @@
  */
 package org.jahia.services.cache.ehcache;
 
+import net.sf.ehcache.CacheManager;
+
 import java.util.Map;
 import java.util.TreeMap;
-
-import net.sf.ehcache.CacheManager;
 
 /**
  * Cache manager information and statistics.

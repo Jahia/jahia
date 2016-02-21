@@ -42,20 +42,25 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.applications.pluto;
-import org.apache.pluto.container.PortletPreference;
-import org.apache.pluto.container.impl.PortletPreferenceImpl;
-import org.apache.pluto.container.PortletWindow;
+
 import org.apache.pluto.container.PortletContainerException;
+import org.apache.pluto.container.PortletPreference;
+import org.apache.pluto.container.PortletWindow;
+import org.apache.pluto.container.impl.PortletPreferenceImpl;
 import org.apache.pluto.driver.container.DefaultPortletPreferencesService;
-import org.jahia.services.preferences.JahiaPreferencesService;
-import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreference;
+import org.jahia.services.preferences.JahiaPreferencesProvider;
 import org.jahia.services.preferences.JahiaPreferencesQueryHelper;
+import org.jahia.services.preferences.JahiaPreferencesService;
 import org.jahia.services.preferences.exception.JahiaPreferenceProviderException;
 import org.jahia.services.usermanager.JahiaUser;
-import javax.portlet.PortletRequest;
+
 import javax.jcr.RepositoryException;
-import java.util.*;
+import javax.portlet.PortletRequest;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 

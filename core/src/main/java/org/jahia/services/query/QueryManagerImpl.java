@@ -43,30 +43,24 @@
  */
 package org.jahia.services.query;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.HashSet;
-import java.util.Set;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRStoreProvider;
+import org.jahia.services.content.QueryManagerWrapper;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryManager;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Source;
-
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreProvider;
-import org.jahia.services.content.QueryManagerWrapper;
+import javax.jcr.query.qom.*;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Implementation of the {@link QueryManager} to support multiple providers.

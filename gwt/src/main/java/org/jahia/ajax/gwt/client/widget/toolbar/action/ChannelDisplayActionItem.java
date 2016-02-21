@@ -43,7 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.SelectionChangedEvent;
+import com.extjs.gxt.ui.client.event.SelectionChangedListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.HorizontalPanel;

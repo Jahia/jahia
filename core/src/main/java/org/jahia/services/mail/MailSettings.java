@@ -43,14 +43,14 @@
  */
 package org.jahia.services.mail;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.exceptions.JahiaException;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Mail configuration values.

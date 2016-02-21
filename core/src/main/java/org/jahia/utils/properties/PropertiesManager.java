@@ -52,24 +52,16 @@
 
 package org.jahia.utils.properties;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
-import java.util.ArrayList;
-import java.util.regex.PatternSyntaxException;
-
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
+
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
+import java.util.regex.PatternSyntaxException;
 
 
 /**

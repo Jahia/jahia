@@ -43,11 +43,11 @@
  */
 package org.jahia.services.logging;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCREventIterator;
 import org.jahia.services.content.JCRObservationManager;
 import org.json.JSONObject;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;

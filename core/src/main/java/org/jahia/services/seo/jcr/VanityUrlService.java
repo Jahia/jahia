@@ -43,13 +43,6 @@
  */
 package org.jahia.services.seo.jcr;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-import javax.validation.ConstraintViolationException;
-
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
@@ -60,6 +53,12 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.URLResolverListener;
 import org.jahia.services.seo.VanityUrl;
 import org.slf4j.Logger;
+
+import javax.jcr.RepositoryException;
+import javax.validation.ConstraintViolationException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 /**
  * Service to manage vanity urls in Jahia

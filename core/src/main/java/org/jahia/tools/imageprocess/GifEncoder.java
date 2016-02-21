@@ -43,9 +43,12 @@
  */
  package org.jahia.tools.imageprocess;
 
-import java.io.*;
-import java.awt.Image;
-import java.awt.image.*;
+import java.awt.*;
+import java.awt.image.ColorModel;
+import java.awt.image.IndexColorModel;
+import java.awt.image.PixelGrabber;
+import java.io.IOException;
+import java.io.OutputStream;
 
 /**  GifEncoder - writes out an image as a GIF.
 *

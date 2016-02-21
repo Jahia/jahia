@@ -43,37 +43,20 @@
  */
 package org.jahia.services.content;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFormatException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.nodetypes.DynamicValueImpl;
-import org.jahia.services.content.nodetypes.ExtendedNodeDefinition;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.*;
 
 /**
  * JCR listener that automatically populates node properties with default values (in case of dynamic values or i18n properties) and creates

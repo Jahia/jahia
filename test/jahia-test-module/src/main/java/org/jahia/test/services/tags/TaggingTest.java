@@ -43,18 +43,24 @@
  */
 package org.jahia.test.services.tags;
 
-import java.util.*;
-
-import javax.jcr.*;
-
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.*;
-import org.jahia.services.tags.*;
+import org.jahia.services.tags.TagActionCallback;
+import org.jahia.services.tags.TaggingService;
+import org.jahia.services.tags.TagsSuggester;
+import org.jahia.services.tags.TagsSuggesterImpl;
+import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.test.TestHelper;
 
-import static org.junit.Assert.*;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.TreeMap;
+
+import static org.junit.Assert.fail;
 
 /**
  * Unit test for the Tagging feature: creating tags, assigning tags to nodes etc.

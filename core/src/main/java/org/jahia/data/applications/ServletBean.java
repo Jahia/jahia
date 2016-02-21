@@ -43,13 +43,12 @@
  */
  package org.jahia.data.applications;
 
+import org.jahia.registries.ServicesRegistry;
+
+import javax.portlet.PortletMode;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.portlet.PortletMode;
-
-import org.jahia.registries.ServicesRegistry;
 
 /**
  * This object contains all the data relative to a servlet, notably the

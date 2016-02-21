@@ -43,8 +43,6 @@
  */
 package org.jahia.services.content;
 
-import org.jahia.data.beans.CategoryBean;
-
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;

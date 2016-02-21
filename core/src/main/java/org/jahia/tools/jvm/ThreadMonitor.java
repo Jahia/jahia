@@ -43,17 +43,6 @@
  */
 package org.jahia.tools.jvm;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.RuntimeMXBean;
-import java.lang.management.ThreadMXBean;
-import java.lang.management.ThreadInfo;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.management.*;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.time.FastDateFormat;
@@ -63,7 +52,16 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
+import javax.management.MBeanServerConnection;
 import java.io.*;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**

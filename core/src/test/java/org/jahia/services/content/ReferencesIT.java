@@ -46,14 +46,9 @@ package org.jahia.services.content;
 import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.test.utils.TestHelper;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,7 +59,7 @@ import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import java.util.Locale;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Test with multilingual and langauge independent references

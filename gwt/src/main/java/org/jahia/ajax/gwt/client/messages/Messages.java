@@ -43,10 +43,10 @@
  */
 package org.jahia.ajax.gwt.client.messages;
 
-import java.util.MissingResourceException;
-
 import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.i18n.client.Dictionary;
+
+import java.util.MissingResourceException;
 
 /**
  * Provider of the I18N text in the GWT components.

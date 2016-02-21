@@ -43,12 +43,13 @@
  */
 package org.jahia.services.render;
 
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.services.render.scripting.bundle.BundleSourceResourceResolver;
+import org.osgi.framework.Bundle;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.osgi.framework.Bundle;
 
 /**
  * Implementation of a view, located in an OSGi bundle.
@@ -56,6 +57,7 @@ import org.osgi.framework.Bundle;
 public class BundleView extends BaseView {
 
     private String resource;
+    private BundleSourceResourceResolver bundleSourceResourceResolver;
 
     /**
      * Initializes an instance of this class.
@@ -88,6 +90,13 @@ public class BundleView extends BaseView {
         return getModule().getBundle();
     }
 
+    public BundleSourceResourceResolver getBundleSourceResourceResolver() {
+        if (bundleSourceResourceResolver == null) {
+            bundleSourceResourceResolver = new BundleSourceResourceResolver(getBundle());
+        }
+        return bundleSourceResourceResolver;
+    }
+
     /**
      * Returns an input stream for the view resource or null if the resource does not exist.
      * 
@@ -111,6 +120,12 @@ public class BundleView extends BaseView {
 
     @Override
     protected URL getResource(String resource) {
+        if (getBundleSourceResourceResolver().hasSourceURLs()) {
+            URL resourceURL = getBundleSourceResourceResolver().getResource(resource);
+            if (resourceURL != null) {
+                return resourceURL;
+            }
+        }
         return getBundle().getResource(resource);
     }
 

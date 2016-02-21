@@ -44,11 +44,6 @@
 package org.jahia.services.applications;
 
 
-import java.io.InputStream;
-import java.util.List;
-
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.IOUtils;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.ServletBean;
@@ -62,6 +57,10 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.cache.Cache;
 import org.jahia.services.cache.CacheService;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.servlet.ServletContext;
+import java.io.InputStream;
+import java.util.List;
 
 
 /**

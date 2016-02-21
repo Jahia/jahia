@@ -43,13 +43,13 @@
  */
 package org.jahia.data.applications;
 
+import org.apache.pluto.container.om.portlet.UserAttribute;
+import org.jahia.registries.ServicesRegistry;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.pluto.container.om.portlet.UserAttribute;
-import org.jahia.registries.ServicesRegistry;
 
 /**
  * This object contains all the data relative to an application, notably the

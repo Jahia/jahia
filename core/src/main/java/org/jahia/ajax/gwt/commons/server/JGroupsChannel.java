@@ -43,8 +43,6 @@
  */
 package org.jahia.ajax.gwt.commons.server;
 
-import org.atmosphere.cpr.Broadcaster;
-
 /**
  * Created by IntelliJ IDEA.
  * @author : rincevent

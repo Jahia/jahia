@@ -43,17 +43,16 @@
  */
 package org.jahia.data.beans.portlets;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.portlet.PortletMode;
-import javax.portlet.WindowState;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.EntryPointDefinition;
 import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.portlet.PortletMode;
+import javax.portlet.WindowState;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>Title: Bean that contains all information relative to a portlet

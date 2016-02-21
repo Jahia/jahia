@@ -43,15 +43,15 @@
  */
 package org.jahia.bundles.configadmin.persistence;
 
+import org.apache.felix.cm.PersistenceManager;
+import org.apache.felix.cm.file.FilePersistenceManager;
+import org.osgi.framework.BundleContext;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Dictionary;
-
-import org.apache.felix.cm.PersistenceManager;
-import org.apache.felix.cm.file.FilePersistenceManager;
-import org.osgi.framework.BundleContext;
 
 /**
  * Adjusted {@link PersistenceManager} service for ConfigurationAdmin service.

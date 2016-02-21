@@ -43,15 +43,9 @@
  */
  package org.jahia.engines;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.PageContext;
+import java.util.*;
 
 /**
  * <p>Title: Container for EngineMessage objects</p> <p>Description: Inspired by Struts

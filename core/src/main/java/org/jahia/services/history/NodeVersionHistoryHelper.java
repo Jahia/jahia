@@ -43,19 +43,6 @@
  */
 package org.jahia.services.history;
 
-import java.io.Writer;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.version.VersionException;
-
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.version.InternalVersionHistory;
@@ -68,6 +55,14 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.tools.OutWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.VersionException;
+import java.io.Writer;
+import java.util.*;
 
 /**
  * Version history utility class for purging all version entries of the specified node.

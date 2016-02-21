@@ -44,17 +44,16 @@
 package org.jahia.services.query;
 
 
-import java.util.Arrays;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.query.qom.*;
-
 import org.apache.jackrabbit.spi.commons.query.qom.*;
 import org.apache.jackrabbit.value.ValueFactoryImpl;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
 import org.slf4j.Logger;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.qom.*;
+import java.util.Arrays;
 
 
 /**

@@ -43,10 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget;
 
-import org.jahia.ajax.gwt.client.messages.Messages;
-
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import com.extjs.gxt.ui.client.widget.MessageBox.MessageBoxType;
+import org.jahia.ajax.gwt.client.messages.Messages;
 
 /**
  * UI component for displaying "loading..." control using modal panel and a

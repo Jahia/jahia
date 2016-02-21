@@ -43,11 +43,11 @@
  */
 package org.jahia.services.scheduler;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.jahia.osgi.BundleUtils;
 import org.springframework.scheduling.quartz.ResourceLoaderClassLoadHelper;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Implementation of the {@link ResourceLoaderClassLoadHelper} utility class for loading of job and trigger related classes from Jahia

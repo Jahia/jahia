@@ -47,10 +47,10 @@ import org.apache.jackrabbit.api.JackrabbitRepository;
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.config.RepositoryConfig;
 
-import javax.naming.Reference;
 import javax.jcr.RepositoryException;
-import java.util.regex.Pattern;
+import javax.naming.Reference;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * 

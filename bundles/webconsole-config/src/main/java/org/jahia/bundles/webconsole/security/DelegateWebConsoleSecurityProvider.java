@@ -43,10 +43,10 @@
  */
 package org.jahia.bundles.webconsole.security;
 
+import org.apache.felix.webconsole.WebConsoleSecurityProvider2;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.felix.webconsole.WebConsoleSecurityProvider2;
 
 /**
  * Jahia security provider for the Felix OSGi Web console that delegates the authentication to the Web container and checks that the user

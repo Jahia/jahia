@@ -43,14 +43,13 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.pwd.PasswordService;
 
 import javax.jcr.RepositoryException;
+import java.util.List;
 
 /**
  * Includes a set of conditions for the Password Policy Service.

@@ -43,21 +43,20 @@
  */
 package org.jahia.taglibs.internal.i18n;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.MissingResourceException;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
-import javax.servlet.jsp.tagext.TagSupport;
-
 import org.jahia.engines.EngineMessage;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.taglibs.utility.Utils;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.tagext.TagSupport;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.MissingResourceException;
 
 /**
  * Support for Jahia Message ResourceBundle within Jahia

@@ -43,21 +43,9 @@
  */
 package org.jahia.services.usermanager;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
-import javax.jcr.*;
-import javax.jcr.query.Query;
-import javax.jcr.query.RowIterator;
-
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -68,6 +56,12 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.query.RowIterator;
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Group manager cache helper.

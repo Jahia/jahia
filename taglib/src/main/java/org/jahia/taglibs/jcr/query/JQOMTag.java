@@ -43,16 +43,16 @@
  */
 package org.jahia.taglibs.jcr.query;
 
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.taglibs.query.QueryDefinitionTag;
+import org.slf4j.Logger;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.qom.QueryObjectModel;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
-
-import org.slf4j.Logger;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.taglibs.query.QueryDefinitionTag;
 
 /**
  * Tag implementation for exposing a result of a QueryObjectModel query into the template

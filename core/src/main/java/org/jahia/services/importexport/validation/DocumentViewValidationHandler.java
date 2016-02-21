@@ -43,13 +43,13 @@
  */
 package org.jahia.services.importexport.validation;
 
-import java.util.Collections;
-import java.util.List;
-
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.services.importexport.BaseDocumentViewHandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * SAX handler that performs validation of the JCR content, provided in a document format.

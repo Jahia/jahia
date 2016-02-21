@@ -43,19 +43,18 @@
  */
 package org.jahia.taglibs.uicomponents.image;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
-
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.taglibs.jcr.AbstractJCRTag;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**

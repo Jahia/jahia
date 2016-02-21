@@ -43,12 +43,12 @@
  */
 package org.jahia.ajax.gwt.client.widget.calendar;
 
-import java.util.Date;
-
+import com.allen_sauer.gwt.log.client.Log;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.ui.RootPanel;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+
+import java.util.Date;
 
 /**
  * Helper class for instantiating date picker controls in the page.

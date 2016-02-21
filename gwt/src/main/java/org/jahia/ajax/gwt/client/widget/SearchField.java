@@ -43,14 +43,15 @@
  */
 package org.jahia.ajax.gwt.client.widget;
 
-import com.extjs.gxt.ui.client.widget.toolbar.*;
-import com.extjs.gxt.ui.client.widget.form.TextField;
-import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.event.KeyListener;
-import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.form.TextField;
+import com.extjs.gxt.ui.client.widget.toolbar.FillToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.LabelToolItem;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 

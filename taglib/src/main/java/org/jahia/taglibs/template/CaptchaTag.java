@@ -43,15 +43,14 @@
  */
 package org.jahia.taglibs.template;
 
-import java.io.IOException;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.URLGenerator;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.TagSupport;
-
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.URLGenerator;
+import java.io.IOException;
 
 /**
  * Generates an image element with a captcha for validation: <code><img src="captchaUrl" alt="captcha"/></code>

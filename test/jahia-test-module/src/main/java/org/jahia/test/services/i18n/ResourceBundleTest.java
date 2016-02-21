@@ -43,16 +43,6 @@
  */
 package org.jahia.test.services.i18n;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.utils.i18n.JahiaResourceBundle;
@@ -61,6 +51,10 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Test cases for the resource bundle loading. 

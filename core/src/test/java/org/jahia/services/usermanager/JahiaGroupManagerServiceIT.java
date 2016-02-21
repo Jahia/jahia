@@ -48,10 +48,10 @@ import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
-import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.framework.AbstractJUnitTest;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.Collection;
 import java.util.List;

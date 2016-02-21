@@ -44,7 +44,6 @@
 package org.jahia.hibernate.cache.ehcache;
 
 import net.sf.ehcache.CacheManager;
-
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.ehcache.EhCacheRegionFactory;
 import org.hibernate.cfg.Settings;

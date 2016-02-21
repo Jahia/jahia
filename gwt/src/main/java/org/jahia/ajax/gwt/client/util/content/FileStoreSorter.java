@@ -43,8 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.util.content;
 
-import com.extjs.gxt.ui.client.store.StoreSorter;
 import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**

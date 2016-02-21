@@ -46,7 +46,6 @@ package org.jahia.services.importexport.validation;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreProvider;

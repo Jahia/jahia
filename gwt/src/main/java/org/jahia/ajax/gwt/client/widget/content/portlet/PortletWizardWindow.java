@@ -46,8 +46,8 @@ package org.jahia.ajax.gwt.client.widget.content.portlet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNewPortletInstance;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.content.wizard.AddContentWizardWindow;
 
 /**
  * User: ktlili

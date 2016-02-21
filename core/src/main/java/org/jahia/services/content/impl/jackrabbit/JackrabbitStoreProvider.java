@@ -49,22 +49,6 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import javax.jcr.*;
-import javax.jcr.nodetype.NodeTypeDefinition;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.nodetype.NodeTypeManager;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryResult;
-import javax.jcr.version.VersionManager;
-
 import org.apache.jackrabbit.api.JackrabbitWorkspace;
 import org.apache.jackrabbit.commons.iterator.PropertyIteratorAdapter;
 import org.apache.jackrabbit.spi.Name;
@@ -79,6 +63,16 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeTypeDefinition;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.nodetype.NodeTypeManager;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryResult;
+import javax.jcr.version.VersionManager;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author hollis

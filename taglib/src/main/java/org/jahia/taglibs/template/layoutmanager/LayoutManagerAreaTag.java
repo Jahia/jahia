@@ -43,14 +43,13 @@
  */
 package org.jahia.taglibs.template.layoutmanager;
 
-import java.io.IOException;
-
-import javax.jcr.Node;
-import javax.servlet.jsp.JspWriter;
-
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Node;
+import javax.servlet.jsp.JspWriter;
+import java.io.IOException;
 
 /**
  * User: ktlili

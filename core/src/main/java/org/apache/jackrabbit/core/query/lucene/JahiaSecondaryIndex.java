@@ -58,7 +58,6 @@ import org.apache.tika.parser.Parser;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
-
 import java.io.IOException;
 import java.util.*;
 

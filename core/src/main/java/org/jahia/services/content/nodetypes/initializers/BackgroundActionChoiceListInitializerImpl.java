@@ -47,7 +47,10 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.rules.BackgroundAction;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author rincevent

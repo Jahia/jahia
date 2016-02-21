@@ -57,14 +57,18 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
-import org.junit.*;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 

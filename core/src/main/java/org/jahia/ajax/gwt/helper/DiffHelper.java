@@ -45,7 +45,6 @@ package org.jahia.ajax.gwt.helper;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.outerj.daisy.diff.HtmlCleaner;
@@ -54,10 +53,12 @@ import org.outerj.daisy.diff.html.HTMLDiffer;
 import org.outerj.daisy.diff.html.HtmlSaxDiffOutput;
 import org.outerj.daisy.diff.html.TextNodeComparator;
 import org.outerj.daisy.diff.html.dom.DomTreeBuilder;
+import org.slf4j.Logger;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.AttributesImpl;
+
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.sax.SAXTransformerFactory;
 import javax.xml.transform.sax.TransformerHandler;

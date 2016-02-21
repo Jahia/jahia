@@ -43,12 +43,12 @@
  */
 package org.jahia.services.uicomponents.bean.toolbar;
 
-import java.io.Serializable;
-import java.util.Locale;
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.Serializable;
+import java.util.Locale;
 
 /**
  * User: jahia

@@ -43,12 +43,12 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+
 import java.text.ParseException;
 import java.util.Map;
 import java.util.Properties;
-
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
 
 /**
  * Describes the module output cache key generator.

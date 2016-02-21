@@ -43,17 +43,12 @@
  */
 package org.jahia.services.query;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Source;
-
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.JCRSessionWrapper;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.query.qom.*;
 
 /**
  * Jahia's query service is based on the JCR QueryObjectModelFactory and thus supports all kinds of

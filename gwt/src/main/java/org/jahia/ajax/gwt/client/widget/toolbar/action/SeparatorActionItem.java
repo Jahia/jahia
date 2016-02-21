@@ -45,13 +45,12 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.widget.Html;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.extjs.gxt.ui.client.widget.menu.MenuItem;
 import com.extjs.gxt.ui.client.widget.menu.SeparatorMenuItem;
-import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.button.Button;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTJahiaToolbarItem;
-import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 /**

@@ -43,15 +43,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.menu;
 
-import java.util.Date;
-
-import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
-
 import com.extjs.gxt.ui.client.event.ComponentEvent;
-import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.event.Events;
+import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.menu.Item;
 import com.google.gwt.user.client.Element;
+import org.jahia.ajax.gwt.client.widget.calendar.CalendarPicker;
+
+import java.util.Date;
 
 /**
  * 

@@ -43,18 +43,18 @@
  */
 package org.jahia.ajax.gwt.helper;
 
-import org.jahia.api.Constants;
-import org.jahia.services.content.*;
-import org.jahia.utils.i18n.Messages;
-import org.slf4j.Logger;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
+import org.jahia.api.Constants;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.jcr.JahiaJCRSearchProvider;
+import org.jahia.utils.i18n.Messages;
+import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;

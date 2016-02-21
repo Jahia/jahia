@@ -43,10 +43,10 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.nodetype.NodeType;

@@ -43,13 +43,13 @@
  */
 package org.jahia.bundles.configadmin.persistence;
 
-import java.util.Dictionary;
-import java.util.Hashtable;
-
 import org.apache.felix.cm.PersistenceManager;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 /**
  * Registers the persistence service.

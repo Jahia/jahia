@@ -43,19 +43,6 @@
  */
 package org.jahia.services.importexport.validation;
 
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -63,6 +50,9 @@ import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Helper class for performing a validation for missing templates in the imported content.

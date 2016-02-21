@@ -43,13 +43,13 @@
  */
 package org.jahia.services.content.interceptor;
 
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
-import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;

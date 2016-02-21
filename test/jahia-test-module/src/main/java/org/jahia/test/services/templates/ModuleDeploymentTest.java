@@ -66,7 +66,9 @@ import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import static org.junit.Assert.*;
 

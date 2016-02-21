@@ -43,16 +43,11 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+
+import java.util.*;
 
 /**
  * Default implementation of the module output cache key generator.

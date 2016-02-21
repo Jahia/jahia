@@ -52,7 +52,6 @@ import javax.jcr.Item;
 import javax.jcr.NamespaceException;
 import javax.jcr.RepositoryException;
 import javax.security.auth.Subject;
-
 import java.util.HashMap;
 import java.util.Map;
 

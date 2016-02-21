@@ -43,8 +43,8 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
 
 /**
  * 

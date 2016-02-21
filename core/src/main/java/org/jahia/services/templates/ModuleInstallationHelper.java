@@ -43,35 +43,10 @@
  */
 package org.jahia.services.templates;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.nodetype.NodeTypeIterator;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -81,6 +56,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.nodetype.NodeTypeIterator;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import java.util.*;
 
 /**
  * Module installation helper.

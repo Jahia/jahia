@@ -43,11 +43,6 @@
  */
 package org.jahia.services.content;
 
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.RepositoryException;
-import javax.jcr.observation.*;
-import javax.jcr.observation.EventListener;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.apache.jackrabbit.spi.Name;
@@ -55,6 +50,10 @@ import org.apache.jackrabbit.spi.commons.AdditionalEventInfo;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.*;
+import javax.jcr.observation.EventListener;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.regex.Pattern;

@@ -43,11 +43,6 @@
  */
 package org.jahia.services.content.rules;
 
-import java.util.Set;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
@@ -55,14 +50,13 @@ import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.scheduler.BackgroundJob;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
+import java.util.Set;
 
 /**
  * Background task that purges orphaned action jobs (in case the corresponding node is no longer present).

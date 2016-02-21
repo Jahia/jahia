@@ -43,25 +43,23 @@
  */
 package org.jahia.test.services.render.filter;
 
-import static junit.framework.Assert.assertTrue;
-
+import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
 import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.BaseAttributesFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.services.render.filter.WrapperFilter;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.api.Constants;
 import org.jahia.test.JahiaAdminUser;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -73,6 +71,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.regex.Pattern;
+
+import static junit.framework.Assert.assertTrue;
 
 /**
  * Unit test for the {@link WrapperFilter} 

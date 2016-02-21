@@ -43,8 +43,6 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
-import org.jahia.ajax.gwt.client.data.GWTJahiaAjaxActionResultError;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

@@ -43,16 +43,9 @@
  */
 package org.jahia.services.usermanager;
 
-import java.io.Serializable;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.RowIterator;
-
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -60,6 +53,11 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.sites.JahiaSitesService;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.RowIterator;
+import java.io.Serializable;
 
 /**
  * User path by user name cache helper.

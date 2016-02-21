@@ -65,15 +65,6 @@ package org.apache.jackrabbit.webdav.jcr;
  * limitations under the License.
  */
 
-import javax.jcr.Repository;
-import javax.jcr.Session;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-
 import org.apache.jackrabbit.webdav.*;
 import org.apache.jackrabbit.webdav.io.InputContext;
 import org.apache.jackrabbit.webdav.io.OutputContext;
@@ -83,6 +74,15 @@ import org.apache.jackrabbit.webdav.lock.Scope;
 import org.apache.jackrabbit.webdav.lock.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.Repository;
+import javax.jcr.Session;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 /**
  * <code>JahiaServerRootCollection</code> represent the WebDAV root resource that does not

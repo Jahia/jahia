@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget;
 
-import com.google.gwt.user.client.ui.ToggleButton;
-import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Image;
+import com.google.gwt.user.client.ui.ToggleButton;
 
 /**
  * This is a ToggleButton with an index value.

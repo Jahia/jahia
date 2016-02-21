@@ -44,19 +44,14 @@
 package org.jahia.test.services.acl;
 
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.TestHelper;
-import org.jahia.test.services.content.*;
+import org.jahia.test.services.content.ContentTest;
 import org.junit.*;
 import org.slf4j.Logger;
 
@@ -66,9 +61,7 @@ import java.util.Collections;
 import java.util.Properties;
 import java.util.Set;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.*;
 
 public class AclTest {
     private static final transient Logger logger = org.slf4j.LoggerFactory.getLogger(ContentTest.class);

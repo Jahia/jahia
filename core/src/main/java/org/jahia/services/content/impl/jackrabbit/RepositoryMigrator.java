@@ -43,12 +43,6 @@
  */
 package org.jahia.services.content.impl.jackrabbit;
 
-import java.io.*;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
@@ -70,6 +64,14 @@ import org.jdom.output.XMLOutputter;
 import org.jdom.xpath.XPath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * A utility tool to automatically migrate an existing Jackrabbit repository from BLOB storage to a DataStore one, if required.

@@ -568,12 +568,12 @@ public class JahiaTemplatesPackage {
 
 
     /**
-     * Returns a list of modules which this module depends on.
+     * Returns a read-only list of modules which this module depends on.
      * 
-     * @return a list of modules which this module depends on
+     * @return a read-only list of modules which this module depends on
      */
     public List<JahiaTemplatesPackage> getDependencies() {
-        return new ArrayList<JahiaTemplatesPackage>(dependencies.values());
+        return Collections.unmodifiableList(new ArrayList<>(dependencies.values()));
     }
 
     /**
@@ -585,6 +585,8 @@ public class JahiaTemplatesPackage {
     public void addDependency(JahiaTemplatesPackage dep) {
         if (dep != null) {
             dependencies.put(dep.getId(), dep);
+            // reset chained classloader
+            chainedClassLoader = null;
         }
     }
 
@@ -592,7 +594,9 @@ public class JahiaTemplatesPackage {
      * Reset the module dependencies.
      */
     public void resetDependencies() {
-        dependencies = new LinkedHashMap<String, JahiaTemplatesPackage>();
+        dependencies = new LinkedHashMap<>();
+        // reset chained classloader
+        chainedClassLoader = null;
     }
 
     /**
@@ -965,8 +969,9 @@ public class JahiaTemplatesPackage {
         }
         final List<ClassLoader> classLoaders = new ArrayList<ClassLoader>();
         classLoaders.add(Jahia.class.getClassLoader());
-        if (getClassLoader() != null) {
-            classLoaders.add(getClassLoader());
+        final ClassLoader classLoader = getClassLoader();
+        if (classLoader != null) {
+            classLoaders.add(classLoader);
         }
         for (JahiaTemplatesPackage dependentPack : getDependencies()) {
             if (dependentPack != null && dependentPack.getClassLoader() != null) {

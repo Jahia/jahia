@@ -43,27 +43,28 @@
  */
 package org.jahia.test.services.content;
 
-import static org.junit.Assert.*;
-
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.slf4j.Logger;
+import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.*;
-
-import com.google.common.collect.Sets;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
-
 import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Regroups tests that test multi-lingual features of Jahia.

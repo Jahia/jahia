@@ -43,12 +43,10 @@
  */
 package org.jahia.services.cache;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Collection;
 
 /** <p>This is the root class for all the cache in Jahia.</p>
  *

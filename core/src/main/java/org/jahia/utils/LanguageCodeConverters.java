@@ -43,17 +43,16 @@
  */
 package org.jahia.utils;
 
-import java.text.Collator;
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.regex.Pattern;
-import java.util.regex.Matcher;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
 import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.Collator;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * <p>Title: Utility class to convert between the different type of language

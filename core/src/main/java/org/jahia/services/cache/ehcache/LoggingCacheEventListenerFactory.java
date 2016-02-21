@@ -43,8 +43,8 @@
  */
 package org.jahia.services.cache.ehcache;
 
-import net.sf.ehcache.event.CacheEventListenerFactory;
 import net.sf.ehcache.event.CacheEventListener;
+import net.sf.ehcache.event.CacheEventListenerFactory;
 
 import java.util.Properties;
 

@@ -44,12 +44,14 @@
 package org.jahia.taglibs.template.include;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.ParamParent;
-import org.jahia.services.content.*;
-import org.jahia.services.render.*;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
+import org.slf4j.Logger;
 
-import javax.jcr.*;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.io.IOException;
 

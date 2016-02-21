@@ -43,8 +43,8 @@
  */
  package org.jahia.utils;
 
-import java.util.*;
 import java.io.Serializable;
+import java.util.*;
 
 
 /**

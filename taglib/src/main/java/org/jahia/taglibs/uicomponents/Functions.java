@@ -50,8 +50,6 @@ import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.Node;
-import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 
 /**

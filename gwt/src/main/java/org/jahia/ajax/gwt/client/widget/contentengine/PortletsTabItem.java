@@ -43,20 +43,19 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-
 import com.extjs.gxt.ui.client.Style.SelectionMode;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
 import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents a dedicated tab for viewing the list of portlet in a deployed Web

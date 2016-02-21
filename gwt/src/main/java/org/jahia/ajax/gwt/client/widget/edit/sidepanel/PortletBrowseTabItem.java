@@ -57,7 +57,6 @@ import com.extjs.gxt.ui.client.widget.ListView;
 import com.extjs.gxt.ui.client.widget.TabItem;
 import com.extjs.gxt.ui.client.widget.layout.VBoxLayoutData;
 import com.google.gwt.user.client.rpc.AsyncCallback;
-
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTSidePanelTab;
 import org.jahia.ajax.gwt.client.messages.Messages;

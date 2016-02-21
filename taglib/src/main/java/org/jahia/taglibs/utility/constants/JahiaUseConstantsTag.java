@@ -43,16 +43,15 @@
  */
 package org.jahia.taglibs.utility.constants;
 
-import java.util.Map;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspTagException;
-
 import org.apache.commons.collections.map.CaseInsensitiveMap;
 import org.apache.commons.collections.map.UnmodifiableMap;
 import org.apache.taglibs.unstandard.ClassUtils;
 import org.apache.taglibs.unstandard.TagUtils;
 import org.apache.taglibs.unstandard.UseConstantsTag;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspTagException;
+import java.util.Map;
 
 /**
  * This is a simple wrapper to the UseConstantsTag taken from the jakarta unstandard taglibs

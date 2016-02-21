@@ -45,12 +45,12 @@
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.jackrabbit.server.JahiaBasicCredentialsProvider;
+import org.jahia.pipelines.PipelineException;
+import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.pipelines.PipelineException;
-import org.jahia.pipelines.valves.ValveContext;
 
 import javax.servlet.http.HttpServletRequest;
 

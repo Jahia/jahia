@@ -43,8 +43,8 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.apache.pluto.driver.core.PortalServletResponse;
 import org.apache.pluto.container.util.PrintWriterServletOutputStream;
+import org.apache.pluto.driver.core.PortalServletResponse;
 
 import javax.servlet.ServletOutputStream;
 import java.io.IOException;

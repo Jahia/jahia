@@ -43,27 +43,22 @@
  */
 package org.jahia.services.publication;
 
-import java.util.*;
-
-import javax.jcr.*;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.PublicationInfo;
-import org.jahia.services.content.PublicationInfoNode;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.jahia.test.utils.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 
-import com.google.common.collect.Lists;
+import javax.jcr.*;
+import java.util.*;
 
 import static org.junit.Assert.*;
 

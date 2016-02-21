@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
+import org.jahia.ajax.gwt.client.widget.content.ContentViews;
 import org.jahia.ajax.gwt.client.widget.content.ManagerLinker;
 import org.jahia.ajax.gwt.client.widget.tripanel.TopRightComponent;
-import org.jahia.ajax.gwt.client.widget.content.ContentViews;
 
 /**
  * 

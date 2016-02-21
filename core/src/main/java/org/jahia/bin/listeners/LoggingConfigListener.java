@@ -43,12 +43,11 @@
  */
 package org.jahia.bin.listeners;
 
-import java.io.File;
+import org.springframework.web.util.Log4jConfigListener;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-
-import org.springframework.web.util.Log4jConfigListener;
+import java.io.File;
 
 /**
  * Listener for log4j configuration initialization.

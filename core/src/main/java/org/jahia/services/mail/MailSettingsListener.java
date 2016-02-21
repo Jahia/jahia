@@ -43,9 +43,6 @@
  */
 package org.jahia.services.mail;
 
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.ExternalEventListener;
 import org.jahia.services.mail.MailServiceImpl.MailSettingsChangedEvent;
@@ -53,6 +50,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
+
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
 
 /**
  * Listener for external (from other cluster nodes) change events for the mail server settings.

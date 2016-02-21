@@ -43,14 +43,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.contentengine;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.widget.AsyncTabItem;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Edit engine tab that embeds resource bundle editor.

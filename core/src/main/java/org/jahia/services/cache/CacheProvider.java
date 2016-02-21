@@ -43,8 +43,8 @@
  */
  package org.jahia.services.cache;
 
-import org.jahia.settings.SettingsBean;
 import org.jahia.exceptions.JahiaInitializationException;
+import org.jahia.settings.SettingsBean;
 
 /**
  * Jahia cache provider definition.

@@ -59,7 +59,6 @@ import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;

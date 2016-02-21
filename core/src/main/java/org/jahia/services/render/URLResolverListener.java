@@ -44,7 +44,6 @@
 package org.jahia.services.render;
 
 import net.sf.ehcache.Element;
-
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.content.JCRSessionFactory;
@@ -60,12 +59,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
-
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * JCR listener to invalidate URL resolver caches

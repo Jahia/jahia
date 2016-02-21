@@ -43,18 +43,12 @@
  */
 package org.jahia.services.importexport.validation;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-import java.util.StringTokenizer;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-
 import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.xml.sax.Attributes;
+
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import java.util.*;
 
 /**
  * Helper class for performing a validation for missing node types and mixins in the imported content.

@@ -46,7 +46,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
-import static org.jahia.api.Constants.*;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -56,6 +55,9 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.util.HashSet;
 import java.util.Set;
+
+import static org.jahia.api.Constants.JAHIAMIX_NODENAMEINFO;
+import static org.jahia.api.Constants.NODENAME;
 
 /**
  * Listener implementation used to update node name property when a node is added/moved/renamed.

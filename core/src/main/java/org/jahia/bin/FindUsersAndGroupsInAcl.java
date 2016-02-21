@@ -43,17 +43,6 @@
  */
 package org.jahia.bin;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaRuntimeException;
@@ -64,6 +53,12 @@ import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Controller for performing user and group mixed search in the list of principles of a specified node's ACL.

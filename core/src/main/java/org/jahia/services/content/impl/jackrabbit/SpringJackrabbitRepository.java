@@ -56,7 +56,6 @@ import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.*;
 import javax.servlet.ServletContext;
-
 import java.io.File;
 import java.io.IOException;
 

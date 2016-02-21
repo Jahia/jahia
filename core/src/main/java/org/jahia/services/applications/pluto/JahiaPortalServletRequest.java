@@ -43,16 +43,15 @@
  */
 package org.jahia.services.applications.pluto;
 
-import java.security.Principal;
-import java.util.Locale;
+import org.apache.pluto.container.PortletWindow;
+import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
-import org.apache.pluto.container.PortletWindow;
+import java.security.Principal;
+import java.util.Locale;
 
 /**
  * 

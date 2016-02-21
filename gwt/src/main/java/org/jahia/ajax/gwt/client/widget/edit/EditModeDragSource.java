@@ -45,7 +45,9 @@ package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.dnd.DragSource;
 import com.extjs.gxt.ui.client.dnd.StatusProxy;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.event.DragEvent;
+import com.extjs.gxt.ui.client.event.DragListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.core.client.GWT;

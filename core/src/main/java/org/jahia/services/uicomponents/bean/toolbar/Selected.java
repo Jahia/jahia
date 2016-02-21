@@ -43,10 +43,10 @@
  */
 package org.jahia.services.uicomponents.bean.toolbar;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.Locale;

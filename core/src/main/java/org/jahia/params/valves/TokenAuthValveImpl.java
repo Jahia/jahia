@@ -43,16 +43,15 @@
  */
  package org.jahia.params.valves;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.jahia.pipelines.PipelineException;
 import org.jahia.pipelines.valves.ValveContext;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Valve that uses tokens to authenticate the user.

@@ -44,14 +44,13 @@
 package org.jahia.taglibs.utility;
 
 import name.fraser.neil.plaintext.DiffMatchPatch;
+import org.apache.taglibs.standard.tag.common.core.Util;
 
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import java.util.LinkedList;
+import javax.servlet.jsp.tagext.TagSupport;
 import java.io.IOException;
-
-import org.apache.taglibs.standard.tag.common.core.Util;
+import java.util.LinkedList;
 
 /**
  * 

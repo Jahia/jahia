@@ -49,9 +49,9 @@ import org.apache.jackrabbit.spi.commons.nodetype.constraint.ValueConstraint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.Value;
-import javax.jcr.RepositoryException;
 import javax.jcr.PropertyType;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;

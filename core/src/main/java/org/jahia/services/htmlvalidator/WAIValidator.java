@@ -43,22 +43,7 @@
  */
 package org.jahia.services.htmlvalidator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import net.htmlparser.jericho.Attribute;
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.HTMLElementName;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTag;
-
+import net.htmlparser.jericho.*;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.htmlvalidator.Result.Type;
@@ -68,6 +53,9 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.DOMException;
+
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * This class is used to validate an HTML fragment against the WAI (Accessiweb Section 508) rules. All the 55 "Bronze" criteria can be found

@@ -45,7 +45,6 @@ package org.jahia.services.workflow.jbpm.command;
 
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.jbpm.BaseCommand;
-import org.kie.api.definition.process.*;
 
 import java.util.Collection;
 import java.util.Locale;

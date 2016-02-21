@@ -43,9 +43,10 @@
  */
 package org.jahia.utils;
 
+import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
+
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import java.util.Map;
 import java.util.Properties;
@@ -59,6 +60,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created : 27/01/11
  */
 public class ScriptEngineUtils {
+    private final BundleScriptEngineManager enginesManager;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
     private static class Holder {
@@ -69,18 +71,11 @@ public class ScriptEngineUtils {
         return Holder.INSTANCE;
     }
 
-    private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByExtensionCache;
-    private Map<ClassLoader, Map<String, ScriptEngine>> scriptEngineByNameCache;
-
-    private ScriptEngineManager scriptEngineManager;
-
     private ScriptEngineUtils() {
         super();
-        scriptEngineManager = new ScriptEngineManager();
-        scriptEngineByExtensionCache = new ConcurrentHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
-        scriptEngineByNameCache = new ConcurrentHashMap<ClassLoader, Map<String, ScriptEngine>>(3);
+        enginesManager = BundleScriptEngineManager.getInstance();
         try {
-            scriptEngineManager.getEngineByExtension("groovy").eval("true");
+            enginesManager.getEngineByExtension("groovy").eval("true");
         } catch (ScriptException e) {
             // Ignore
         }
@@ -93,39 +88,9 @@ public class ScriptEngineUtils {
      * @throws ScriptException in case of a script engine initialization error
      */
     public ScriptEngine getEngineByName(String name) throws ScriptException {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-
-        Map<String, ScriptEngine> stringScriptEngineMap = scriptEngineByNameCache.get(contextClassLoader);
-
-        if (stringScriptEngineMap == null) {
-            stringScriptEngineMap = new ConcurrentHashMap<String, ScriptEngine>();
-            scriptEngineByNameCache.put(contextClassLoader, stringScriptEngineMap);
-        }
-
-        ScriptEngine scriptEngine = stringScriptEngineMap.get(name);
-        if (scriptEngine == null) {
-            scriptEngine = scriptEngineManager.getEngineByName(name);
-            if (scriptEngine == null) {
-                throw new ScriptException("Script engine not found for name :" + name);
-            }
-            initEngine(scriptEngine);
-            stringScriptEngineMap.put(name, scriptEngine);
-        }
-        return scriptEngine;
+        return getScriptEngineFrom(name, false);
     }
 
-    private void initEngine(ScriptEngine engine) {
-        if (engine.getFactory().getNames().contains("velocity")) {
-            Properties velocityProperties = new Properties();
-            if(System.getProperty("runtime.log.logsystem.log4j.logger")!=null)  {
-            	velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", System.getProperty("runtime.log.logsystem.log4j.logger")); 
-            } else {
-              velocityProperties.setProperty("runtime.log.logsystem.log4j.logger", "root");
-            }
-            engine.getContext().setAttribute("com.sun.script.velocity.properties", velocityProperties, ScriptContext.GLOBAL_SCOPE);
-        }
-    }
-    
     /**
      * Returns an instance of a {@link ScriptEngine} by its file extension.
      * @param extension the extension of the script engine to look for
@@ -133,25 +98,30 @@ public class ScriptEngineUtils {
      * @throws ScriptException in case of a script engine initialization error
      */
     public ScriptEngine scriptEngine(String extension) throws ScriptException {
-        final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
+        return getScriptEngineFrom(extension, true);
+    }
 
-        Map<String, ScriptEngine> stringScriptEngineMap = scriptEngineByExtensionCache.get(contextClassLoader);
-
-        if (stringScriptEngineMap == null) {
-            stringScriptEngineMap = new ConcurrentHashMap<String, ScriptEngine>();
-            scriptEngineByExtensionCache.put(contextClassLoader, stringScriptEngineMap);
-        }
-
-        ScriptEngine scriptEngine = stringScriptEngineMap.get(extension);
+    private ScriptEngine getScriptEngineFrom(String nameOrExtension, boolean fromExtension) throws ScriptException {
+        ScriptEngine scriptEngine = fromExtension ? enginesManager.getEngineByExtension(nameOrExtension) : enginesManager.getEngineByName(nameOrExtension);
 
         if (scriptEngine == null) {
-            scriptEngine = scriptEngineManager.getEngineByExtension(extension);
-            if (scriptEngine == null) {
-                throw new ScriptException("Script engine not found for extension: " + extension);
-            }
-            initEngine(scriptEngine);
-            stringScriptEngineMap.put(extension, scriptEngine);
+            throw new ScriptException("Script engine not found for " + (fromExtension ? "extension: " : "name: ") + nameOrExtension);
         }
+        initEngine(scriptEngine);
         return scriptEngine;
+    }
+
+    private void initEngine(ScriptEngine engine) {
+        if (engine.getFactory().getNames().contains("velocity")) {
+            final Properties velocityProperties = new Properties();
+            final String key = "runtime.log.logsystem.log4j.logger";
+            final String log4jLoggerProp = System.getProperty(key);
+            if (log4jLoggerProp != null) {
+                velocityProperties.setProperty(key, log4jLoggerProp);
+            } else {
+                velocityProperties.setProperty(key, "root");
+            }
+            engine.getContext().setAttribute("com.sun.script.velocity.properties", velocityProperties, ScriptContext.GLOBAL_SCOPE);
+        }
     }
 }

@@ -44,8 +44,8 @@
 package org.jahia.services.content.nodetypes;
 
 import javax.jcr.PropertyType;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 

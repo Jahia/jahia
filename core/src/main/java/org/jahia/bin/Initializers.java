@@ -44,15 +44,9 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
@@ -66,6 +60,8 @@ import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.jcr.ItemNotFoundException;

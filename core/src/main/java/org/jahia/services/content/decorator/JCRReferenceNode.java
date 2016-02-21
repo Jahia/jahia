@@ -48,8 +48,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
 import javax.jcr.Node;
+import javax.jcr.RepositoryException;
 
 /**
  * TODO Comment me

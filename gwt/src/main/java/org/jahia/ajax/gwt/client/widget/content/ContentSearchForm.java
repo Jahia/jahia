@@ -46,7 +46,10 @@ package org.jahia.ajax.gwt.client.widget.content;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.data.*;
-import com.extjs.gxt.ui.client.event.*;
+import com.extjs.gxt.ui.client.event.ButtonEvent;
+import com.extjs.gxt.ui.client.event.ComponentEvent;
+import com.extjs.gxt.ui.client.event.KeyListener;
+import com.extjs.gxt.ui.client.event.SelectionListener;
 import com.extjs.gxt.ui.client.store.ListStore;
 import com.extjs.gxt.ui.client.util.Margins;
 import com.extjs.gxt.ui.client.widget.ContentPanel;
@@ -54,15 +57,18 @@ import com.extjs.gxt.ui.client.widget.HorizontalPanel;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.form.*;
-import com.extjs.gxt.ui.client.widget.layout.*;
+import com.extjs.gxt.ui.client.widget.layout.FormData;
+import com.extjs.gxt.ui.client.widget.layout.FormLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
+import com.extjs.gxt.ui.client.widget.layout.RowLayout;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.GWTJahiaSearchQuery;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.ExistingFileException;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -72,7 +78,8 @@ import org.jahia.ajax.gwt.client.util.content.actions.ManagerConfigurationFactor
 import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
 import org.jahia.ajax.gwt.client.widget.form.CalendarField;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Date;
 
 /**
  * Form for searching repository content.

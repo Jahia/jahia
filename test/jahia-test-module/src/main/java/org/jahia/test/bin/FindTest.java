@@ -43,13 +43,6 @@
  */
 package org.jahia.test.bin;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.httpclient.HttpStatus;
 import org.jahia.api.Constants;
 import org.jahia.bin.Find;
@@ -57,13 +50,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
@@ -72,13 +59,15 @@ import org.jahia.utils.LanguageCodeConverters;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.springframework.context.ApplicationContext;
+
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+import java.util.Locale;
+
+import static org.junit.Assert.*;
 
 /**
  * Test case for find servlet.

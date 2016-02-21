@@ -43,14 +43,14 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
+import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
 import com.extjs.gxt.ui.client.widget.form.TextField;
 import com.google.gwt.user.client.Window;
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.Arrays;

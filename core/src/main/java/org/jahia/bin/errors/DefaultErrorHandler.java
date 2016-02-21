@@ -43,34 +43,24 @@
  */
 package org.jahia.bin.errors;
 
-import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static javax.servlet.http.HttpServletResponse.SC_NOT_FOUND;
-import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
-import static javax.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
-
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-
-import javax.jcr.AccessDeniedException;
-import javax.jcr.PathNotFoundException;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import org.jahia.exceptions.JahiaBadRequestException;
-import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaNotFoundException;
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.exceptions.JahiaUnauthorizedException;
+import org.jahia.exceptions.*;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
+
+import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+
+import static javax.servlet.http.HttpServletResponse.*;
 
 /**
  * Handler class for captured exceptions.

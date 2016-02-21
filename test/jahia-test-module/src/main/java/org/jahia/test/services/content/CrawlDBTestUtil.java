@@ -43,10 +43,6 @@
  */
 package org.jahia.test.services.content;
 
-import java.io.IOException;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.hadoop.conf.Configuration;
@@ -57,6 +53,10 @@ import org.apache.hadoop.io.MapFile;
 import org.apache.hadoop.io.Text;
 import org.apache.nutch.crawl.CrawlDatum;
 import org.apache.nutch.crawl.CrawlDb;
+
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.List;
 
 public class CrawlDBTestUtil {
 

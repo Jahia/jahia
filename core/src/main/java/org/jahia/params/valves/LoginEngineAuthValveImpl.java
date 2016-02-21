@@ -56,11 +56,12 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
-import org.springframework.context.ApplicationEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * @author Thomas Draier

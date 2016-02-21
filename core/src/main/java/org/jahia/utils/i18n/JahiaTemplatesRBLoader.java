@@ -43,7 +43,6 @@
  */
 package org.jahia.utils.i18n;
 
-import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -51,15 +50,9 @@ import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
+import org.slf4j.Logger;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.io.*;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;

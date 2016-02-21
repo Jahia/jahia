@@ -43,18 +43,15 @@
  */
 package org.jahia.services.scheduler;
 
-import static org.jahia.services.scheduler.BackgroundJob.JOB_CREATED;
-import static org.jahia.services.scheduler.BackgroundJob.JOB_STATUS;
-import static org.jahia.services.scheduler.BackgroundJob.STATUS_ADDED;
-import static org.jahia.services.scheduler.BackgroundJob.STATUS_SCHEDULED;
-
-import java.util.Date;
-
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
 import org.quartz.listeners.SchedulerListenerSupport;
+
+import java.util.Date;
+
+import static org.jahia.services.scheduler.BackgroundJob.*;
 
 /**
  * Scheduler listener that does job status changes.

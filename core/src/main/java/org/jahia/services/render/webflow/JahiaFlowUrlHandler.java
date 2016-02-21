@@ -45,7 +45,6 @@ package org.jahia.services.render.webflow;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +53,6 @@ import org.springframework.webflow.core.collection.AttributeMap;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.HashMap;
 import java.util.Map;
 

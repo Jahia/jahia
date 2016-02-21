@@ -43,10 +43,8 @@
  */
 package org.jahia.services.content.decorator;
 
-import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.JCRNodeIteratorWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;

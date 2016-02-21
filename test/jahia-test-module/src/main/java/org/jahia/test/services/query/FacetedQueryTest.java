@@ -56,11 +56,7 @@ import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;

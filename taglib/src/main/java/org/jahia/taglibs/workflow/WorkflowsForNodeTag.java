@@ -43,12 +43,12 @@
  */
 package org.jahia.taglibs.workflow;
 
-import org.slf4j.Logger;
 import org.apache.taglibs.standard.tag.common.core.Util;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.workflow.WorkflowDefinition;
 import org.jahia.services.workflow.WorkflowService;
 import org.jahia.taglibs.AbstractJahiaTag;
+import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;

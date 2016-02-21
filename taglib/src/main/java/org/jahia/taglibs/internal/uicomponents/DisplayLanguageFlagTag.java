@@ -81,9 +81,9 @@
 
 package org.jahia.taglibs.internal.uicomponents;
 
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
-import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;

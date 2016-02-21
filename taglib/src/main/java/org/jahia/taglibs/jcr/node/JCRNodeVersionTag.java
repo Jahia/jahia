@@ -43,13 +43,13 @@
  */
 package org.jahia.taglibs.jcr.node;
 
-import org.jahia.services.content.JCRNodeWrapper;
 import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.servlet.jsp.PageContext;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.TagSupport;
 import javax.jcr.RepositoryException;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+import javax.servlet.jsp.tagext.TagSupport;
 
 /**
  * 

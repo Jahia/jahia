@@ -49,9 +49,9 @@ import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
 
-import java.util.Set;
-import java.util.Map;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * 

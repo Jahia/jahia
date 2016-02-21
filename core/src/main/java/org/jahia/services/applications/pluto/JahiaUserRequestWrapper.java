@@ -43,11 +43,11 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.data.applications.EntryPointInstance;
+import org.jahia.services.usermanager.JahiaUser;
 
-import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import java.security.Principal;
 
 /**

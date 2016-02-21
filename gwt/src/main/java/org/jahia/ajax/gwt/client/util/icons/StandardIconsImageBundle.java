@@ -43,8 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.util.icons;
 
-import com.google.gwt.user.client.ui.ImageBundle;
 import com.google.gwt.user.client.ui.AbstractImagePrototype;
+import com.google.gwt.user.client.ui.ImageBundle;
 
 
 public interface StandardIconsImageBundle extends ImageBundle {

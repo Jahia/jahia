@@ -43,16 +43,12 @@
  */
 package org.jahia.services.workflow.jbpm;
 
-import org.jahia.services.SpringContextSingleton;
 import org.jbpm.runtime.manager.impl.SimpleRuntimeEnvironment;
 import org.jbpm.runtime.manager.impl.factory.LocalTaskServiceFactory;
 import org.jbpm.services.task.HumanTaskServiceFactory;
 import org.jbpm.shared.services.api.JbpmServicesPersistenceManager;
 import org.jbpm.shared.services.api.JbpmServicesTransactionManager;
-import org.jbpm.shared.services.impl.JbpmLocalTransactionManager;
-import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
 import org.kie.api.task.TaskService;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 
 import javax.persistence.EntityManagerFactory;
 

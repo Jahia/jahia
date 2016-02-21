@@ -43,18 +43,12 @@
  */
 package org.jahia.services.query;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFactory;
 import javax.jcr.query.InvalidQueryException;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.QueryObjectModel;
-import javax.jcr.query.qom.QueryObjectModelFactory;
-import javax.jcr.query.qom.Source;
+import javax.jcr.query.qom.*;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Utility class to help building a query object mode in several steps. It is

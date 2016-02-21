@@ -43,13 +43,13 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
+
+import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Jahia password policy object, holding a list of rules to be enforced e.g. on

@@ -43,17 +43,6 @@
  */
 package org.jahia.services.query;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.query.qom.*;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.jackrabbit.spi.commons.query.qom.*;
@@ -63,6 +52,16 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.ValueFactory;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.query.qom.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * We use this QOMTreeVisitor implementation to traverse through the query object model three times.

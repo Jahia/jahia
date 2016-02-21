@@ -43,10 +43,9 @@
  */
 package org.jahia.bin.filters;
 
-import javax.servlet.*;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 
+import javax.servlet.*;
 import java.io.IOException;
 
 /**

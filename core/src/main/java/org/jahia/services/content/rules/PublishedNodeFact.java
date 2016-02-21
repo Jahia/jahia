@@ -43,9 +43,9 @@
  */
 package org.jahia.services.content.rules;
 
-import javax.jcr.RepositoryException;
-
 import org.jahia.services.content.JCRNodeWrapper;
+
+import javax.jcr.RepositoryException;
 
 public class PublishedNodeFact extends AbstractNodeFact {
 

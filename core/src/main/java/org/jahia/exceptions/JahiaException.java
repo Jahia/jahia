@@ -43,13 +43,12 @@
  */
 package org.jahia.exceptions;
 
-import java.io.PrintStream;
-import java.io.PrintWriter;
-
-import javax.servlet.http.HttpServletResponse;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 
 public class JahiaException extends Exception
 {

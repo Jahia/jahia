@@ -47,8 +47,8 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.utils.i18n.Messages;
 
-import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * User: jahia

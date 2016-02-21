@@ -43,24 +43,23 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
-import com.extjs.gxt.ui.client.widget.Viewport;
-import com.extjs.gxt.ui.client.widget.layout.FitLayout;
-import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
-import org.jahia.ajax.gwt.client.util.WindowUtil;
-import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-import org.jahia.ajax.gwt.client.messages.Messages;
-
-import java.util.List;
-import java.util.Map;
-
-import com.extjs.gxt.ui.client.widget.button.ButtonBar;
-import com.extjs.gxt.ui.client.widget.button.Button;
-import com.extjs.gxt.ui.client.widget.LayoutContainer;
-import com.extjs.gxt.ui.client.widget.Component;
 import com.extjs.gxt.ui.client.Style;
 import com.extjs.gxt.ui.client.event.ButtonEvent;
 import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
+import com.extjs.gxt.ui.client.widget.Viewport;
+import com.extjs.gxt.ui.client.widget.button.Button;
+import com.extjs.gxt.ui.client.widget.button.ButtonBar;
+import com.extjs.gxt.ui.client.widget.layout.FitLayout;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
+import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.util.WindowUtil;
+import org.jahia.ajax.gwt.client.util.icons.StandardIconsProvider;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * File and folder picker control.

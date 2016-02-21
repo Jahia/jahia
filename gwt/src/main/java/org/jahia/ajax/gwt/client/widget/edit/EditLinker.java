@@ -55,15 +55,15 @@ import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.Linker;
+import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.SidePanel;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionToolbarLayoutContainer;
-import org.jahia.ajax.gwt.client.widget.Linker;
-import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 

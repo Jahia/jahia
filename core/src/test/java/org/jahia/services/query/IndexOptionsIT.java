@@ -43,26 +43,30 @@
  */
 package org.jahia.services.query;
 
-import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.test.utils.TestHelper;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
 
-import javax.jcr.*;
+import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.Assert.*;
-
-import java.io.InputStream;
-import java.util.*;
 
 /**
  * Unit test for checking different index options

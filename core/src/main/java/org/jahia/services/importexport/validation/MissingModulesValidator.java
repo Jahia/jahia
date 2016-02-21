@@ -43,15 +43,15 @@
  */
 package org.jahia.services.importexport.validation;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.xml.sax.Attributes;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * Helper class for performing a validation for missing templates in the imported content.

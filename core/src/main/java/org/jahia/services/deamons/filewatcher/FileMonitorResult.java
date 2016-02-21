@@ -43,13 +43,13 @@
  */
 package org.jahia.services.deamons.filewatcher;
 
+import org.apache.commons.collections.IteratorUtils;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.apache.commons.collections.IteratorUtils;
 
 /**
  * The result of the file monitor check with the list of created, changed and deleted files.

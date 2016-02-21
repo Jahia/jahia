@@ -43,11 +43,11 @@
  */
 package org.jahia.services.pwdpolicy;
 
+import org.jahia.engines.EngineMessages;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.jahia.engines.EngineMessages;
 
 /**
  * The password policy evaluation result.

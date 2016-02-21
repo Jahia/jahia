@@ -43,10 +43,10 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.render.RenderContext;
 
 import javax.jcr.PropertyType;

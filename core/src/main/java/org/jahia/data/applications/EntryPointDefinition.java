@@ -45,7 +45,6 @@
 
 import javax.portlet.PortletMode;
 import javax.portlet.WindowState;
-
 import java.util.List;
 
 /**

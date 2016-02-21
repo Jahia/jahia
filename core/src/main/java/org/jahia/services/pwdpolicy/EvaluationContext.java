@@ -45,7 +45,6 @@ package org.jahia.services.pwdpolicy;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * The rule condition evaluation context.

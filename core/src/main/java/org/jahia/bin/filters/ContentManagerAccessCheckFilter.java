@@ -43,21 +43,6 @@
  */
 package org.jahia.bin.filters;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.servlet.Filter;
-import javax.servlet.FilterChain;
-import javax.servlet.FilterConfig;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.JahiaControllerUtils;
@@ -79,6 +64,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.context.ApplicationListener;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.servlet.*;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Protects access to the content manager and content picker by enforcing permission checks and validating parameters.

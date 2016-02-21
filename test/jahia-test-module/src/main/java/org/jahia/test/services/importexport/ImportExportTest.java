@@ -43,59 +43,16 @@
  */
 package org.jahia.test.services.importexport;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-
-import javax.jcr.ItemExistsException;
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.lock.LockException;
-import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
-import javax.xml.transform.TransformerException;
-
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.slf4j.Logger;
-import org.springframework.core.io.FileSystemResource;
-import org.xml.sax.SAXException;
-
-import static org.junit.Assert.*;
-
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.jahia.api.Constants;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.importexport.DocumentViewImportHandler;
 import org.jahia.services.importexport.ImportExportService;
 import org.jahia.services.importexport.NoCloseZipInputStream;
@@ -109,9 +66,22 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
+import org.slf4j.Logger;
+import org.springframework.core.io.FileSystemResource;
+import org.xml.sax.SAXException;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import javax.jcr.*;
+import javax.jcr.lock.LockException;
+import javax.jcr.nodetype.ConstraintViolationException;
+import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.jcr.version.VersionException;
+import javax.xml.transform.TransformerException;
+import java.io.*;
+import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+
+import static org.junit.Assert.*;
 
 /**
  * Unit test for import/export functionality

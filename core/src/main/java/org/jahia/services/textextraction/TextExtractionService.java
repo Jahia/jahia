@@ -43,11 +43,6 @@
  */
 package org.jahia.services.textextraction;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.apache.tika.config.TikaConfig;
 import org.apache.tika.exception.TikaException;
@@ -59,8 +54,13 @@ import org.apache.tika.parser.CompositeParser;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.sax.BodyContentHandler;
 import org.apache.tika.sax.WriteOutContentHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.xml.sax.SAXException;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Jahia metadata and text extraction service that uses Apache Tika for parsing

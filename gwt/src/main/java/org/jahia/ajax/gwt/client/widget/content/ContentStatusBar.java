@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.content;
 
+import com.extjs.gxt.ui.client.widget.Component;
 import org.jahia.ajax.gwt.client.widget.tripanel.BottomBar;
 import org.jahia.ajax.gwt.client.widget.tripanel.MyStatusBar;
-import com.extjs.gxt.ui.client.widget.Component;
 
 /**
  * 

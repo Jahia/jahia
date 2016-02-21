@@ -49,10 +49,8 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.test.utils.TestHelper;
 import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
 import org.junit.Test;
 
 import javax.jcr.RepositoryException;

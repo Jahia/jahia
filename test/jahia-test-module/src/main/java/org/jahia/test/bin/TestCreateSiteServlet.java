@@ -43,18 +43,15 @@
  */
 package org.jahia.test.bin;
 
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.api.Constants;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.*;
+import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.TestHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;

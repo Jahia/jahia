@@ -43,15 +43,14 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.slf4j.Logger;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.slf4j.Logger;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

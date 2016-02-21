@@ -43,13 +43,6 @@
  */
 package org.jahia.services.history;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-
 import org.jahia.services.content.DefaultEventListener;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
@@ -58,6 +51,12 @@ import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * JCR listener for purging the version history of nodes when a site is deleted.

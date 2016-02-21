@@ -47,8 +47,8 @@ import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: jahia

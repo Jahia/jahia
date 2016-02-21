@@ -43,17 +43,6 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import javax.jcr.ItemNotFoundException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
@@ -61,6 +50,12 @@ import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.*;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Choice list initializer that uses values of the specified node property (multiple).

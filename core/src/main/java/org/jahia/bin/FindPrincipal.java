@@ -44,25 +44,27 @@
 package org.jahia.bin;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.decorator.JCRGroupNode;
-import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.sites.JahiaSitesService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
+import org.jahia.services.content.decorator.JCRGroupNode;
+import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.sites.JahiaSite;
-import org.jahia.services.usermanager.*;
+import org.jahia.services.sites.JahiaSitesService;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.Property;
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;

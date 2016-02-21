@@ -49,9 +49,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.observation.EventIterator;
 import javax.jcr.observation.Event;
-
+import javax.jcr.observation.EventIterator;
 import java.util.ArrayList;
 import java.util.List;
 

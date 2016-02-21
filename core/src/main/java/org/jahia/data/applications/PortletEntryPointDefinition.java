@@ -43,17 +43,16 @@
  */
 package org.jahia.data.applications;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import javax.portlet.PortletMode;
-
 import org.apache.pluto.container.om.portlet.InitParam;
 import org.apache.pluto.container.om.portlet.PortletDefinition;
 import org.apache.pluto.container.om.portlet.Supports;
 import org.jahia.registries.ServicesRegistry;
+
+import javax.portlet.PortletMode;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * <p>Title: Portlet API Entry point definition</p>

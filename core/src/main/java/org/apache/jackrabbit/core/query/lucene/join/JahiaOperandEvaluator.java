@@ -43,19 +43,14 @@
  */
 package org.apache.jackrabbit.core.query.lucene.join;
 
-import java.util.Locale;
-import java.util.Map;
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.Property;
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
+import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
+
+import javax.jcr.*;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.Operand;
 import javax.jcr.query.qom.PropertyValue;
-
-import org.apache.jackrabbit.commons.query.qom.OperandEvaluator;
+import java.util.Locale;
+import java.util.Map;
 
 public class JahiaOperandEvaluator extends OperandEvaluator {
 

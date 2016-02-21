@@ -43,13 +43,6 @@
  */
 package org.jahia.services.search;
 
-import java.io.Serializable;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.FactoryUtils;
 import org.apache.commons.collections.list.LazyList;
@@ -61,6 +54,9 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.utils.DateUtils;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+
+import java.io.Serializable;
+import java.util.*;
 
 /**
  * Bean for holding all search parameters.

@@ -45,7 +45,6 @@ package org.jahia.services.workflow.jbpm;
 
 import org.jbpm.runtime.manager.impl.RuntimeManagerFactoryImpl;
 import org.jbpm.shared.services.impl.JbpmServicesPersistenceManagerImpl;
-import org.kie.internal.runtime.manager.RuntimeEnvironment;
 import org.kie.internal.runtime.manager.TaskServiceFactory;
 
 /**

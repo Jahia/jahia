@@ -43,27 +43,13 @@
  */
 package org.jahia.test.services.render.filter.channels;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.jcr.ImportUUIDBehavior;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPublicationService;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRStoreService;
+import org.jahia.services.content.*;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
@@ -71,6 +57,12 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.slf4j.Logger;
+
+import javax.jcr.ImportUUIDBehavior;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static org.junit.Assert.*;
 
 public class ChannelResolutionAndExclusionTest extends JahiaTestCase {
 

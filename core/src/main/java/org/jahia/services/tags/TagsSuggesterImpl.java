@@ -45,11 +45,14 @@ package org.jahia.services.tags;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.response.FacetField;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.query.QOMBuilder;
 import org.jahia.services.query.QueryResultWrapper;
-import org.jahia.services.query.ScrollableQueryCallback;
 import org.jahia.services.query.ScrollableQuery;
+import org.jahia.services.query.ScrollableQueryCallback;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;

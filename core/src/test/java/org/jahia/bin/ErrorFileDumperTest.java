@@ -47,17 +47,12 @@ import org.apache.commons.io.FileUtils;
 import org.jahia.bin.errors.ErrorFileDumper;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.RequestLoadAverage;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.util.StopWatch;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;

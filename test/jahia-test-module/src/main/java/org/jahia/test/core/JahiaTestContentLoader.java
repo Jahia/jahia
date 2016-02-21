@@ -43,23 +43,16 @@
  */
 package org.jahia.test.core;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Calendar;
-
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.ValueFactory;
-import javax.jcr.nodetype.NodeType;
-
 import org.apache.jackrabbit.commons.JcrUtils;
 import org.apache.jackrabbit.core.NodeImpl;
 import org.apache.jackrabbit.core.TestContentLoader;
 import org.jahia.services.content.JCRNodeWrapper;
+
+import javax.jcr.*;
+import javax.jcr.nodetype.NodeType;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Calendar;
 
 public class JahiaTestContentLoader extends TestContentLoader {
     

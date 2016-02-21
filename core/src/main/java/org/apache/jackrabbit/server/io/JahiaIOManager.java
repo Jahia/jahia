@@ -43,8 +43,8 @@
  */
 package org.apache.jackrabbit.server.io;
 
-import org.slf4j.Logger;
 import org.jahia.api.Constants;
+import org.slf4j.Logger;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

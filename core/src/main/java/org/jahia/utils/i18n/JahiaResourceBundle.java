@@ -43,16 +43,11 @@
  */
 package org.jahia.utils.i18n;
 
-import java.util.Enumeration;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.JahiaTemplateManagerService;
+
+import java.util.*;
 
 /**
  * Jahia implementation of the resource bundle, which considers module inheritance.

@@ -44,7 +44,6 @@
 package org.jahia.test.services.notification;
 
 import junit.framework.TestCase;
-
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.mail.MailService;
 import org.jahia.services.notification.CamelNotificationService;

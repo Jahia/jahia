@@ -43,13 +43,6 @@
  */
 package org.jahia.services.content.nodetypes.renderer;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Locale;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -57,6 +50,12 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRValueWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.render.RenderContext;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Renderer that is used to display a title or name of the referenced node, e.g. a category or a tag.

@@ -45,16 +45,16 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.apache.commons.collections.Factory;
 import org.apache.commons.collections.map.LazyMap;
-import org.jahia.services.content.nodetypes.NodeTypeRegistry;
-import org.slf4j.Logger;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.content.nodetypes.renderer.AbstractChoiceListRenderer;
 import org.jahia.services.render.RenderContext;
+import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PropertyType;

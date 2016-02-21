@@ -54,6 +54,7 @@ import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.osgi.ExtensionObserverRegistry;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
@@ -61,7 +62,9 @@ import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
+import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.templates.JCRModuleListener;
 import org.jahia.services.templates.JahiaTemplateManagerService;
@@ -78,6 +81,7 @@ import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.Resource;
 
 import javax.jcr.RepositoryException;
@@ -117,8 +121,10 @@ public class Activator implements BundleActivator {
     private TemplatePackageRegistry templatePackageRegistry = null;
     private TemplatePackageDeployer templatePackageDeployer = null;
 
-    private Map<BundleURLScanner, BundleObserver<URL>> extensionObservers = new LinkedHashMap<BundleURLScanner, BundleObserver<URL>>();
-    private Map<String, List<Bundle>> toBeParsed;
+    private ExtensionObserverRegistry extensionObservers;
+    private BundleScriptEngineManager scriptEngineManager;
+    private Map<String,List<Bundle>> toBeParsed;
+    private Map<String,List<Bundle>> toBeStarted;
 
     private BundleStarter bundleStarter;
 
@@ -146,6 +152,11 @@ public class Activator implements BundleActivator {
         templatePackageDeployer = templatesService.getTemplatePackageDeployer();
         templatePackageRegistry = templatesService.getTemplatePackageRegistry();
 
+        BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
+        scriptEngineManager = (BundleScriptEngineManager) SpringContextSingleton.getBean("scriptEngineManager");
+
+        extensionObservers = bundleScriptResolver.getObserverRegistry();
+
         // register rule observers
         RulesBundleObserver rulesBundleObserver = new RulesBundleObserver();
         extensionObservers.put(DSL_SCANNER, rulesBundleObserver);
@@ -158,14 +169,9 @@ public class Activator implements BundleActivator {
         toBeParsed = templatesService.getToBeParsed();
         moduleStates = templatesService.getModuleStates();
 
-        BundleScriptResolver bundleScriptResolver = (BundleScriptResolver) SpringContextSingleton.getBean("BundleScriptResolver");
-
         // register view script observers
-        final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(bundleScriptResolver);
-        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
-        for (String scriptExtension : bundleScriptResolver.getScriptExtensionsOrdering()) {
-            extensionObservers.put(new BundleURLScanner("/", "*." + scriptExtension, true), scriptBundleObserver);
-        }
+        bundleScriptResolver.registerObservers();
+        final ScriptBundleObserver scriptBundleObserver = bundleScriptResolver.getBundleObserver();
 
         bundleStarter = new BundleStarter();
 
@@ -175,7 +181,7 @@ public class Activator implements BundleActivator {
                 for (URL entry : entries) {
                     try {
                         URL parent = new URL(entry.getProtocol(), entry.getHost(), entry.getPort(), new File(entry.getFile()).getParent());
-                        scriptBundleObserver.addingEntries(bundle, Arrays.asList(parent));
+                        scriptBundleObserver.addingEntries(bundle, Collections.singletonList(parent));
                     } catch (MalformedURLException e) {
                         //
                     }
@@ -187,7 +193,7 @@ public class Activator implements BundleActivator {
                 for (URL entry : entries) {
                     try {
                         URL parent = new URL(entry.getProtocol(), entry.getHost(), entry.getPort(), new File(entry.getFile()).getParent());
-                        scriptBundleObserver.removingEntries(bundle, Arrays.asList(parent));
+                        scriptBundleObserver.removingEntries(bundle, Collections.singletonList(parent));
                     } catch (MalformedURLException e) {
                         //
                     }
@@ -623,12 +629,16 @@ public class Activator implements BundleActivator {
             }
         }
 
+        // check for script engine factories
+        scriptEngineManager.addScriptEngineFactoriesIfNeeded(bundle);
+
         logger.info("--- Finished starting DX OSGi bundle {} in {}ms --", getDisplayName(bundle), totalTime);
 
         if (hasSpringFile(bundle)) {
             try {
-                if (BundleUtils.getContextToStartForModule(bundle) != null) {
-                    BundleUtils.getContextToStartForModule(bundle).refresh();
+                final AbstractApplicationContext contextToStartForModule = BundleUtils.getContextToStartForModule(bundle);
+                if (contextToStartForModule != null) {
+                    contextToStartForModule.refresh();
                 }
             } catch (Exception e) {
                 setModuleState(bundle, ModuleState.State.SPRING_NOT_STARTED, e);
@@ -718,6 +728,13 @@ public class Activator implements BundleActivator {
                 flushOutputCachesForModule(bundle, pkgId, pkgName);
             }
 
+            // deal with script engine factories
+            scriptEngineManager.removeScriptEngineFactoriesIfNeeded(bundle);
+
+            if (cachesNeedFlushing) {
+                flushOutputCachesForModule(bundle, pkgId, pkgName);
+            }
+
             ServiceTracker<HttpService, HttpService> tracker = bundleHttpServiceTrackers.remove(bundle);
             if (tracker != null) {
                 tracker.close();
@@ -802,10 +819,6 @@ public class Activator implements BundleActivator {
                 logger.error("Error retrieving URL for resource " + importFile, e);
             }
         }
-    }
-
-    public Map<Bundle, JahiaTemplatesPackage> getRegisteredBundles() {
-        return registeredBundles;
     }
 
     public Map<ModuleState.State, Set<Bundle>> getModulesByState() {

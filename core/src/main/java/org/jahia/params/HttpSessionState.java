@@ -43,14 +43,13 @@
  */
  package org.jahia.params;
 
+import org.apache.commons.collections.iterators.EnumerationIterator;
+
+import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
-import org.apache.commons.collections.iterators.EnumerationIterator;
 
 /**
  * 

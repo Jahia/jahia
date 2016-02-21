@@ -54,8 +54,10 @@ import org.jahia.utils.i18n.Messages;
 import org.jahia.utils.i18n.ResourceBundles;
 
 import javax.jcr.RepositoryException;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Choice list initializer, based on the resource bundle values lookup.

@@ -43,29 +43,24 @@
  */
 package org.jahia.services.content.interceptor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.io.IOUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.test.framework.AbstractJUnitTest;
+import org.jahia.test.utils.TestHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 
-import javax.jcr.RepositoryException;
-
-import org.apache.commons.io.IOUtils;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.interceptor.HtmlFilteringInterceptor;
-import org.jahia.test.framework.AbstractJUnitTest;
-import org.jahia.test.utils.TestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.*;
 
 /**
  * Test case for the {@link HtmlFilteringInterceptor}.

@@ -45,7 +45,10 @@ package org.jahia.services.content.nodetypes.initializers;
 
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRNodeWrapperImpl;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.templates.JahiaTemplateManagerService;

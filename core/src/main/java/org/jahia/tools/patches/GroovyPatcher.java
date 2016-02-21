@@ -43,25 +43,6 @@
  */
 package org.jahia.tools.patches;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.ScriptException;
-import javax.script.SimpleScriptContext;
-import javax.servlet.ServletContext;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOCase;
 import org.apache.commons.io.IOUtils;
@@ -79,6 +60,14 @@ import org.springframework.beans.factory.DisposableBean;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.script.*;
+import javax.servlet.ServletContext;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.StringWriter;
+import java.util.*;
 
 /**
  * Simple patch service that monitors specified folder (by default <code>WEB-INF/var/patches/groovy/</code>) for Groovy scripts, executes

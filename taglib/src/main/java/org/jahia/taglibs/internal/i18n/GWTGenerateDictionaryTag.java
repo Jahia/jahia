@@ -43,11 +43,10 @@
  */
 package org.jahia.taglibs.internal.i18n;
 
-import java.io.IOException;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspTagException;
-
-import org.jahia.taglibs.AbstractJahiaTag;
+import java.io.IOException;
 
 /**
  * Create a resource bundle dictionary.

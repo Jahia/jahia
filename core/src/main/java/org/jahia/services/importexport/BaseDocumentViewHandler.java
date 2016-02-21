@@ -43,17 +43,15 @@
  */
 package org.jahia.services.importexport;
 
-import java.util.Set;
-import java.util.Stack;
-
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.RepositoryException;
-
+import com.google.common.collect.ImmutableSet;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import com.google.common.collect.ImmutableSet;
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.RepositoryException;
+import java.util.Set;
+import java.util.Stack;
 
 /**
  * Base class for SAX-based handlers for JCR content in a document format.

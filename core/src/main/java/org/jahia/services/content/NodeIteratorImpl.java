@@ -44,7 +44,6 @@
 package org.jahia.services.content;
 
 import javax.jcr.Node;
-
 import java.util.Iterator;
 import java.util.LinkedList;
 

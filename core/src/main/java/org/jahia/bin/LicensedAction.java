@@ -43,11 +43,11 @@
  */
 package org.jahia.bin;
 
-import javax.jcr.RepositoryException;
-
 import org.jahia.security.license.LicenseCheckerService;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.springframework.beans.factory.InitializingBean;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Action implementation that is checking the configured license feature for being enabled.

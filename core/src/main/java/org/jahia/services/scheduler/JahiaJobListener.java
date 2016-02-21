@@ -43,15 +43,11 @@
  */
 package org.jahia.services.scheduler;
 
-import static org.jahia.services.scheduler.BackgroundJob.*;
-
 import org.apache.commons.lang.time.FastDateFormat;
-import org.quartz.JobDataMap;
-import org.quartz.JobDetail;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.SchedulerException;
+import org.quartz.*;
 import org.quartz.listeners.JobListenerSupport;
+
+import static org.jahia.services.scheduler.BackgroundJob.*;
 
 /**
  * Job listener that does status changes and logging.

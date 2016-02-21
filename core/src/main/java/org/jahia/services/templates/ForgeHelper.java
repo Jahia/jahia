@@ -43,14 +43,7 @@
  */
 package org.jahia.services.templates;
 
-import static org.apache.commons.httpclient.HttpStatus.SC_OK;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
 import net.htmlparser.jericho.Source;
-
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.StatusLine;
@@ -68,6 +61,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static org.apache.commons.httpclient.HttpStatus.SC_OK;
 
 /**
  * Helper class for Private App Store related operations.

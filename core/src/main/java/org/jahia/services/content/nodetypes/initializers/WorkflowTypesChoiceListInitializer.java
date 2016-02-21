@@ -46,7 +46,10 @@ package org.jahia.services.content.nodetypes.initializers;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.workflow.WorkflowService;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Initializer that returns the list of all workflow definitions

@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
-import java.util.*;
-
 import com.extjs.gxt.ui.client.data.BaseModelData;
+
+import java.util.*;
 
 /**
  * Data object that represents a resource bundle in multiple languages.

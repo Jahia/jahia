@@ -44,10 +44,19 @@
 package org.jahia.ajax.gwt.client.widget.edit;
 
 import com.extjs.gxt.ui.client.Style;
-import com.extjs.gxt.ui.client.store.*;
-import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.store.ListStore;
+import com.extjs.gxt.ui.client.store.Store;
+import com.extjs.gxt.ui.client.store.StoreSorter;
+import com.extjs.gxt.ui.client.store.TreeStore;
+import com.extjs.gxt.ui.client.widget.ComponentPlugin;
+import com.extjs.gxt.ui.client.widget.HorizontalPanel;
+import com.extjs.gxt.ui.client.widget.Layout;
+import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.StoreFilterField;
-import com.extjs.gxt.ui.client.widget.grid.*;
+import com.extjs.gxt.ui.client.widget.grid.ColumnConfig;
+import com.extjs.gxt.ui.client.widget.grid.ColumnData;
+import com.extjs.gxt.ui.client.widget.grid.ColumnModel;
+import com.extjs.gxt.ui.client.widget.grid.Grid;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;

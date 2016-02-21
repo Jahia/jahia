@@ -43,10 +43,10 @@
  */
 package org.jahia.services.applications.pluto;
 
-import org.jahia.services.usermanager.JahiaUser;
-import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.bin.Jahia;
+import org.jahia.data.applications.EntryPointInstance;
 import org.jahia.exceptions.JahiaException;
+import org.jahia.services.usermanager.JahiaUser;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;

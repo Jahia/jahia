@@ -46,7 +46,6 @@ package org.jahia.services.image;
 import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.jcr.RepositoryException;
-
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;

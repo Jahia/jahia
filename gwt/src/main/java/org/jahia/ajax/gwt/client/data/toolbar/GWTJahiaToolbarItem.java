@@ -46,10 +46,10 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.io.Serializable;
 
 /**
  * User: jahia

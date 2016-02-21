@@ -43,14 +43,13 @@
  */
 package org.jahia.services.uicomponents.bean.contentmanager;
 
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * Checks for the availability of the specified module (using bundle symbolic name).

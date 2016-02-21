@@ -43,34 +43,6 @@
  */
 package org.apache.jackrabbit.core.query.lucene.join;
 
-import java.io.IOException;
-import java.util.*;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.nodetype.NodeType;
-import javax.jcr.query.QueryResult;
-import javax.jcr.query.Row;
-import javax.jcr.query.RowIterator;
-import javax.jcr.query.qom.And;
-import javax.jcr.query.qom.Column;
-import javax.jcr.query.qom.Comparison;
-import javax.jcr.query.qom.Constraint;
-import javax.jcr.query.qom.DynamicOperand;
-import javax.jcr.query.qom.EquiJoinCondition;
-import javax.jcr.query.qom.FullTextSearchScore;
-import javax.jcr.query.qom.Join;
-import javax.jcr.query.qom.LowerCase;
-import javax.jcr.query.qom.Not;
-import javax.jcr.query.qom.Or;
-import javax.jcr.query.qom.Ordering;
-import javax.jcr.query.qom.PropertyValue;
-import javax.jcr.query.qom.QueryObjectModelConstants;
-import javax.jcr.query.qom.Selector;
-import javax.jcr.query.qom.Source;
-import javax.jcr.query.qom.UpperCase;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.commons.JcrUtils;
@@ -88,6 +60,18 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
+import javax.jcr.Value;
+import javax.jcr.nodetype.NodeType;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import javax.jcr.query.qom.*;
+import javax.jcr.query.qom.Join;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Override QueryEngine :

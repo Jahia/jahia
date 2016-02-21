@@ -43,13 +43,6 @@
  */
 package org.jahia.services.history;
 
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.jackrabbit.core.SessionImpl;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.persistence.PersistenceManager;
@@ -65,6 +58,12 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.tools.OutWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.RepositoryException;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Utility class for performing orphaned version history check and cleanup.

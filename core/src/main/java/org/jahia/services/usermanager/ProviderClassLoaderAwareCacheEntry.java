@@ -43,11 +43,11 @@
  */
 package org.jahia.services.usermanager;
 
+import org.jahia.services.cache.ClassLoaderAwareCacheEntry;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-
-import org.jahia.services.cache.ClassLoaderAwareCacheEntry;
 
 /**
  * Wrapper for the cache entry to use the chained class loader of all registered user/group providers, if more than one is registered.

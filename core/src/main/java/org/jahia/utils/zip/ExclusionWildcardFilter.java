@@ -43,9 +43,9 @@
  */
 package org.jahia.utils.zip;
 
-import java.util.List;
-
 import org.apache.commons.io.FilenameUtils;
+
+import java.util.List;
 
 /**
  * Wildcard based exclusion filter for ZIP archive entries.

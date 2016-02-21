@@ -43,26 +43,25 @@
  */
 package org.jahia.bin;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.*;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.URLResolver;
+import org.jahia.services.render.URLResolverFactory;
+import org.jahia.services.render.filter.HistoryTrackerBean;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
 import javax.jcr.query.InvalidQueryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.*;
-import org.jahia.services.render.URLResolverFactory;
-import org.jahia.services.render.filter.HistoryTrackerBean;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.services.render.RenderException;
-import org.jahia.services.render.URLResolver;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * A small servlet to allow us to perform queries on the JCR.

@@ -43,13 +43,12 @@
  */
 package org.jahia.taglibs.query;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.qom.Constraint;
 import javax.servlet.jsp.JspTagException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Represents constraint aggregation tag (AND or OR) that is used to conjunct

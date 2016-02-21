@@ -43,9 +43,14 @@
  */
 package org.jahia.services.content.interceptor;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import net.htmlparser.jericho.*;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.decorator.JCRSiteNode;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.sites.SitesSettings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -53,21 +58,9 @@ import javax.jcr.ValueFormatException;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.version.VersionException;
-
-import net.htmlparser.jericho.Element;
-import net.htmlparser.jericho.EndTag;
-import net.htmlparser.jericho.OutputDocument;
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.StartTag;
-import net.htmlparser.jericho.StartTagType;
-
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.sites.SitesSettings;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Filters out unwanted HTML elements from the rich text property values before saving.

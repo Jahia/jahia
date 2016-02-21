@@ -43,13 +43,6 @@
  */
 package org.jahia.test.bin;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.log4j.AppenderSkeleton;
@@ -60,6 +53,12 @@ import org.jahia.bin.JahiaController;
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Servlet class creating an appender in the log system, which stores all errors between a start 

@@ -43,7 +43,6 @@
  */
 package org.jahia.services.workflow.jbpm.custom;
 
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPublicationService;
 import org.jahia.services.content.JCRSessionFactory;
@@ -57,7 +56,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-
 import java.util.Date;
 import java.util.List;
 

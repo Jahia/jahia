@@ -43,11 +43,10 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.VersionIteratorImpl;
 import org.jahia.services.content.NodeIteratorImpl;
+import org.jahia.services.content.VersionIteratorImpl;
 
 import javax.jcr.*;
 import javax.jcr.lock.Lock;

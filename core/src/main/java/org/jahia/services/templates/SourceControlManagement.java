@@ -43,19 +43,17 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.Serializable;
-import java.io.StringReader;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import com.google.common.collect.ImmutableList;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.ProcessHelper;
 
-import com.google.common.collect.ImmutableList;
+import java.io.File;
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Base service class for SCM related operations.

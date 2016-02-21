@@ -45,7 +45,6 @@ package org.jahia.taglibs.functions;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.TextExtractor;
-
 import org.apache.commons.collections.EnumerationUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
@@ -73,7 +72,6 @@ import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 

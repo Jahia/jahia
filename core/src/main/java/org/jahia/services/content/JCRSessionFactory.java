@@ -43,19 +43,6 @@
  */
 package org.jahia.services.content;
 
-import java.util.*;
-import javax.jcr.Credentials;
-import javax.jcr.LoginException;
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Repository;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.SimpleCredentials;
-import javax.jcr.Value;
-import javax.security.auth.Subject;
-import javax.servlet.ServletContext;
-
 import org.apache.jackrabbit.core.JahiaSessionImpl;
 import org.apache.jackrabbit.core.security.JahiaCallbackHandler;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
@@ -68,6 +55,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.context.ServletContextAware;
+
+import javax.jcr.*;
+import javax.security.auth.Subject;
+import javax.servlet.ServletContext;
+import java.util.*;
 
 /**
  * The entry point into the content repositories provided by the <code>JCRStoreProvider</code> list.

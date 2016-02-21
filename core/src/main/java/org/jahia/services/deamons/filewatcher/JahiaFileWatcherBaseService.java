@@ -53,15 +53,15 @@
 package org.jahia.services.deamons.filewatcher;
 
 
+import org.jahia.exceptions.JahiaException;
+import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.tools.files.FileWatcher;
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Observer;
-
-import org.jahia.exceptions.JahiaException;
-import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.tools.files.FileWatcher;
 
 
 /**

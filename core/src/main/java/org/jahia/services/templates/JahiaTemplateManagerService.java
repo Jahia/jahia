@@ -43,17 +43,6 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.*;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.xml.transform.TransformerException;
-
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -98,6 +87,17 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Template and template set deployment and management service.

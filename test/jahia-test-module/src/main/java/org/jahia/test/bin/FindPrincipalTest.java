@@ -43,12 +43,6 @@
  */
 package org.jahia.test.bin;
 
-import static org.junit.Assert.assertNotNull;
-
-import java.io.IOException;
-
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -66,14 +60,14 @@ import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.slf4j.Logger;
 
-import static org.junit.Assert.*;
+import javax.jcr.RepositoryException;
+import java.io.IOException;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
  * Test of the find principal servlet.

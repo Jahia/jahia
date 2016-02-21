@@ -48,7 +48,6 @@ import org.jahia.services.templates.JahiaModuleAware;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Helper bean to allow auto-registration of the workflow types.

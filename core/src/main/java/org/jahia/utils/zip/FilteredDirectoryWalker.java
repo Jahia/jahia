@@ -43,6 +43,11 @@
  */
 package org.jahia.utils.zip;
 
+import org.apache.commons.io.DirectoryWalker;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOCase;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -51,11 +56,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import org.apache.commons.io.DirectoryWalker;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.io.IOCase;
 
 /**
  * Utility class for zipping a directory tree content considering path

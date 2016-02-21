@@ -43,11 +43,11 @@
  */
 package org.jahia.ajax.gwt.client.data.workflow.history;
 
-import java.util.Date;
-import java.util.List;
-
 import com.extjs.gxt.ui.client.data.BaseTreeModel;
 import org.jahia.ajax.gwt.client.data.workflow.GWTJahiaWorkflowTask;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Represents a history record with a workflow process instance.

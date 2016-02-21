@@ -43,22 +43,15 @@
  */
 package org.jahia.services.search.jcr;
 
-import java.io.IOException;
-import java.io.StringReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apache.jackrabbit.util.Text;
 import org.apache.lucene.document.Field;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.index.TermPositionVector;
 import org.apache.lucene.index.TermVectorOffsetInfo;
+
+import java.io.IOException;
+import java.io.StringReader;
+import java.util.*;
 
 /**
  * This is an adapted version of the <code>FulltextHighlighter</code> posted in

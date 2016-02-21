@@ -43,22 +43,20 @@
  */
 package org.jahia.services.htmlvalidator;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
-import java.io.InputStream;
-import java.util.Locale;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.htmlvalidator.ValidatorResults;
-import org.jahia.services.htmlvalidator.WAIValidator;
 import org.jahia.test.framework.AbstractJUnitTest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.Resource;
+
+import java.io.InputStream;
+import java.util.Locale;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test to test the accessibility check methods implemented by Jahia's WAIValidator.

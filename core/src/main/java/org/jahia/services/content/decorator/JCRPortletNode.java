@@ -43,11 +43,11 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.data.applications.EntryPointDefinition;
-import org.jahia.data.applications.ApplicationBean;
-import org.jahia.exceptions.JahiaException;
 import org.jahia.bin.Jahia;
+import org.jahia.data.applications.ApplicationBean;
+import org.jahia.data.applications.EntryPointDefinition;
+import org.jahia.exceptions.JahiaException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -56,9 +56,9 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.HashMap;
 
 /**
  * 

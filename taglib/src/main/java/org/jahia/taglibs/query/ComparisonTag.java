@@ -43,18 +43,9 @@
  */
 package org.jahia.taglibs.query;
 
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_GREATER_THAN_OR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LESS_THAN_OR_EQUAL_TO;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_LIKE;
-import static javax.jcr.query.qom.QueryObjectModelConstants.JCR_OPERATOR_NOT_EQUAL_TO;
-
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apache.commons.collections.FastHashMap;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.InvalidQueryException;
@@ -63,10 +54,12 @@ import javax.jcr.query.qom.DynamicOperand;
 import javax.jcr.query.qom.PropertyValue;
 import javax.jcr.query.qom.StaticOperand;
 import javax.servlet.jsp.JspTagException;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import org.apache.commons.collections.FastHashMap;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.Patterns;
+import static javax.jcr.query.qom.QueryObjectModelConstants.*;
 
 /**
  * Creates a query constraint, using comparison.

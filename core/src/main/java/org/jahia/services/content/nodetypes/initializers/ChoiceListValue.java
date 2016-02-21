@@ -43,15 +43,14 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
-
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Represents a single item in the choice list.

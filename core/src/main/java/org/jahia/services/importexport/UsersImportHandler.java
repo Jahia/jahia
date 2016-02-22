@@ -50,6 +50,8 @@ import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
@@ -59,13 +61,16 @@ import java.util.List;
 import java.util.Properties;
 
 /**
+ * Import handler for the legacy user/groups.
  * 
  * User: toto
  * Date: 5 juin 2006
  * Time: 17:57:36
- * 
  */
 public class UsersImportHandler extends DefaultHandler {
+    
+    private static Logger LOG = LoggerFactory.getLogger(UsersImportHandler.class);
+    
     private JahiaUserManagerService u;
     private JahiaGroupManagerService g;
     private JahiaSite site;
@@ -112,6 +117,7 @@ public class UsersImportHandler extends DefaultHandler {
                 if (name != null && pass != null) {
                     if (!u.userExists(name)) {
                         u.createUser(name, pass, p, session);
+                        LOG.debug("Created user {}", name);
                     }
                 }
             } else if (localName.equals("group")) {
@@ -129,7 +135,12 @@ public class UsersImportHandler extends DefaultHandler {
                     }
                 }
                 if (name != null) {
-                    currentGroup = g.lookupGroup(site.getSiteKey(), name, session);
+                    String siteKey = site.getSiteKey();
+                    currentGroup = g.lookupGroup(siteKey, name, session);
+                    if (currentGroup == null) {
+                        currentGroup = g.createGroup(siteKey, name, p, false, session);
+                        LOG.debug("Created group {} for site {}", name, siteKey);
+                    }
                 }
             }
         } else {
@@ -143,6 +154,7 @@ public class UsersImportHandler extends DefaultHandler {
             }
             if (p != null && !currentGroup.getMembers().contains(p)) {
                 currentGroup.addMember(p);
+                LOG.debug("Added member {} for group {}", name, currentGroup.getName());
             }
         }
     }

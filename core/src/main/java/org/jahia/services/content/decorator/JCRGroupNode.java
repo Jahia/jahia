@@ -50,6 +50,7 @@ import org.jahia.services.usermanager.*;
 import org.slf4j.Logger;
 
 import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import java.security.Principal;
@@ -102,7 +103,10 @@ public class JCRGroupNode extends JCRNodeDecorator {
         try {
             return new GroupNodeMembers(this);
         } catch (RepositoryException e) {
-            logger.error("Cannot get member nodes");
+            // do not log error in case of a PathNotFoundException on a transient (newly created) group node
+            if (!(e instanceof PathNotFoundException) || !isNew()) {
+                logger.error("Cannot get member nodes");
+            }
         }
         return Collections.emptyList();
     }

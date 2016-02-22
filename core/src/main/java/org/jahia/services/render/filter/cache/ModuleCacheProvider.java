@@ -151,7 +151,7 @@ public class ModuleCacheProvider implements InitializingBean {
     /**
      * Flushes all the cache entries, related to the specified node.
      * @param nodePathOrIdentifier the node path or node uuid to be invalidated.
-     * @param propageToOtherClusterNodes do notify replicators of this event
+     * @param propagateToOtherClusterNodes do notify replicators of this event
      * @throws ParseException in case of a malformed key
      */
     @SuppressWarnings("unchecked")

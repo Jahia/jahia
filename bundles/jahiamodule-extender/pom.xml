@@ -172,24 +172,20 @@
           <version>${pax.web.jsp.version}</version>
           <scope>provided</scope>
         </dependency>
-
-        <!-- Embedded dependencies -->
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-extender</artifactId>
             <version>${pax.swissbox.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.ops4j.pax.swissbox</groupId>
             <artifactId>pax-swissbox-core</artifactId>
             <version>${pax.swissbox.version}</version>
+            <scope>provided</scope>
         </dependency>
+
+        <!-- Embedded dependencies -->
         <dependency>
             <groupId>org.ops4j.base</groupId>
             <artifactId>ops4j-base-io</artifactId>

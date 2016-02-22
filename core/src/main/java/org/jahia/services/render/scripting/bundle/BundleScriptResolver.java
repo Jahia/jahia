@@ -45,6 +45,7 @@ package org.jahia.services.render.scripting.bundle;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.osgi.ExtensionObserverRegistry;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.channels.Channel;
 import org.jahia.services.channels.ChannelService;
@@ -61,6 +62,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDependenci
 import org.jahia.services.templates.JahiaTemplateManagerService.ModuleDeployedOnSiteEvent;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEvent;
@@ -68,6 +70,7 @@ import org.springframework.context.ApplicationListener;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
+import javax.script.ScriptEngineFactory;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
@@ -75,32 +78,271 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BundleScriptResolver implements ScriptResolver, ApplicationListener<ApplicationEvent> {
 
+    private static final int PRIORITY_STAGGER_FACTOR = 100;
+    private static final String EXTENSION_PATTERN_PREFIX = "*.";
     private static Logger logger = LoggerFactory.getLogger(BundleScriptResolver.class);
 
-    private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<String, SortedSet<View>>(512);
+    private static Map<String, SortedSet<View>> viewSetCache = new ConcurrentHashMap<>(512);
 
-    private Map<String, SortedMap<String, ViewResourceInfo>> availableScripts = new HashMap<String, SortedMap<String, ViewResourceInfo>>(64);
-    private Map<String, ScriptFactory> scriptFactoryMap;
+    private Map<String, SortedMap<String, ViewResourceInfo>> availableScripts = new HashMap<>(64);
+
+    private LinkedHashMap<String, ScriptFactory> scriptFactoryMap;
+    private Set<String> preRegisteredExtensions;
+
+    private HashMap<String, Integer> extensionPriorities;
     private JahiaTemplateManagerService templateManagerService;
-    private Comparator<ViewResourceInfo> scriptExtensionComparator;
-    private List<String> scriptExtensionsOrdering;
+    private final Comparator<ViewResourceInfo> scriptExtensionComparator = new Comparator<ViewResourceInfo>() {
+        public int compare(ViewResourceInfo o1, ViewResourceInfo o2) {
+            if(Objects.equals(o1, o2)) {
+                return 1;
+            }
+
+            final Integer o1Priority = extensionPriorities.get(o1.extension);
+            final Integer o2Priority = extensionPriorities.get(o2.extension);
+            if (o1Priority == null) {
+                throw new IllegalArgumentException("Unknown extension " + o1.extension);
+            }
+            if (o2Priority == null) {
+                throw new IllegalArgumentException("Unknown extension " + o2.extension);
+            }
+            final int i = o1Priority - o2Priority;
+            return i != 0 ? i : 1; // not sure why returning 1 is needed when i == 0 here but not doing so seems to break :(
+        }
+    };
+    private BundleJSR223ScriptFactory bundleScriptFactory;
+    private ExtensionObserverRegistry observerRegistry;
+    private final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(this);
+
+    public void setExtensionObserverRegistry(ExtensionObserverRegistry extensionObserverRegistry) {
+        this.observerRegistry = extensionObserverRegistry;
+    }
+
+    public ExtensionObserverRegistry getObserverRegistry() {
+        return observerRegistry;
+    }
+
+    public void registerObservers() {
+        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
+        registerObservers(scriptFactoryMap.keySet());
+    }
+
+    private void registerObserver(String extension) {
+        observerRegistry.put(new ScriptBundleURLScanner("/", extension, true), scriptBundleObserver);
+    }
+
+    public void registerObservers(Iterable<String> extensions) {
+        // add scanners for all types of scripts of the views to register them in the BundleScriptResolver
+        for (String scriptExtension : extensions) {
+            registerObserver(scriptExtension);
+        }
+    }
+
+    public ScriptBundleObserver getBundleObserver() {
+        return scriptBundleObserver;
+    }
+
+    // Initialization on demand holder idiom: thread-safe singleton initialization
+    private static class Holder {
+        static final BundleScriptResolver INSTANCE = new BundleScriptResolver();
+
+        private Holder() {
+        }
+    }
+
+    public static BundleScriptResolver getInstance() {
+        return Holder.INSTANCE;
+    }
 
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
-        this.scriptFactoryMap = scriptFactoryMap;
+        if(!(scriptFactoryMap instanceof LinkedHashMap)) {
+            throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> property but didn't. Was: "
+                    + scriptFactoryMap.getClass().getName());
+        }
+        this.scriptFactoryMap = (LinkedHashMap<String, ScriptFactory>) scriptFactoryMap;
+
+        // record pre-registered extensions
+        preRegisteredExtensions = new HashSet<>(scriptFactoryMap.size());
+        preRegisteredExtensions.addAll(scriptFactoryMap.keySet());
+
+        // record priorities of extensions, each pre-registered extension is assigned a priority of its registration index times 100
+        extensionPriorities = new HashMap<>(scriptFactoryMap.size());
+        int i = 0;
+        for (String extension : scriptFactoryMap.keySet()) {
+            extensionPriorities.put(extension, PRIORITY_STAGGER_FACTOR * i);
+            i++;
+        }
     }
 
-    public List<String> getScriptExtensionsOrdering() {
-        return scriptExtensionsOrdering;
-    }
+    public void register(ScriptEngineFactory scriptEngineFactory, Bundle bundle) {
+        // todo: ordering of script engines is not well defined anymore since it depends on module deployment order, explicit ordering would be better
+        final List<String> extensions = scriptEngineFactory.getExtensions();
 
-    public void setScriptExtensionsOrdering(final List<String> extensionsOrdering) {
-        this.scriptExtensionsOrdering = extensionsOrdering;
-        scriptExtensionComparator = new Comparator<ViewResourceInfo>() {
-            public int compare(ViewResourceInfo o1, ViewResourceInfo o2) {
-                int i = scriptExtensionsOrdering.indexOf(o1.extension) - scriptExtensionsOrdering.indexOf(o2.extension);
-                return i != 0 ? i : 1;
+        if (extensions.isEmpty()) {
+            return;
+        }
+
+        // determine if the bundle provided any scripting-related information
+        final BundleScriptingContext context;
+        if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
+            BundleScriptEngineFactory engineFactory = (BundleScriptEngineFactory) scriptEngineFactory;
+            context = engineFactory.getContext();
+        } else {
+            context = null;
+        }
+
+        for (String extension : extensions) {
+            // first check that we don't already have a script factory assigned to that extension
+            final ScriptFactory scriptFactory = scriptFactoryMap.get(extension);
+            if (scriptFactory != null) {
+                // todo: do something different here?
+                throw new IllegalArgumentException("Extension " + extension + " is already associated with ScriptEngineFactory " + scriptEngineFactory);
             }
-        };
+
+            scriptFactoryMap.put(extension, bundleScriptFactory);
+
+            // compute or retrieve the extensions priority and record it
+            final int priority = getPriorityFor(extension, context);
+            extensionPriorities.put(extension, priority);
+
+            logger.info("ScriptEngineFactory {} registered extension {} with priority {}", new Object[]{scriptEngineFactory, extension, priority});
+
+            // now we need to activate the bundle script scanner inside of newly deployed or existing bundles
+            // register view script observers
+            addBundleScripts(bundle, extension, scriptEngineFactory);
+
+            // as we are starting up we insert all the bundle scripts for all the deployed bundles only if
+            final BundleContext bundleContext = bundle.getBundleContext();
+            if (bundleContext != null) {
+                for (Bundle otherBundle : bundleContext.getBundles()) {
+                    if (otherBundle.getState() == Bundle.ACTIVE) {
+                        addBundleScripts(otherBundle, extension, scriptEngineFactory);
+                    }
+                }
+            }
+        }
+
+        // add observers for the extensions
+        registerObservers(extensions);
+    }
+
+    private int getPriorityFor(String extension, BundleScriptingContext context) {
+        final int defaultPriority = extensionPriorities.size() * PRIORITY_STAGGER_FACTOR;
+        if(context == null) {
+            return defaultPriority;
+        } else {
+            return  context.getPriorityFor(extension, defaultPriority);
+        }
+    }
+
+    public void remove(ScriptEngineFactory factory,  Bundle bundle) {
+        for (String extension : factory.getExtensions()) {
+            // we need to remove the views associated with our bundle
+            availableScripts.remove(bundle.getSymbolicName());
+
+            // remove all the bundle scripts for all the deployed bundles.
+            for (Bundle otherBundle : bundle.getBundleContext().getBundles()) {
+                if (otherBundle.getState() == Bundle.ACTIVE) {
+                    removeBundleScripts(otherBundle, extension);
+                }
+            }
+
+            scriptFactoryMap.remove(extension);
+            extensionPriorities.remove(extension);
+        }
+    }
+
+    /**
+     * Whether or not to scan the specified bundle for views with the specified extension.
+     *
+     * @param bundle the bundle to possibly scan
+     * @param viewExtension the extension for views we're looking for in bundles
+     * @return {@code true} if the specified bundle should be scanned for views with the specified extension, {@code false} otherwise
+     */
+    static boolean shouldNotBeScannedForViews(Bundle bundle, String viewExtension) {
+        if(isIgnoredBundle(bundle)) {
+            return true;
+        } else if(isPreRegisteredExtension(viewExtension)) {
+            // if the extension is one of the pre-registered ones (via Spring configuration), we should scan the bundle
+            return false;
+        } else {
+            final ScriptEngineFactory scriptFactory = BundleScriptEngineManager.getInstance().getFactoryForExtension(viewExtension);
+            if (scriptFactory == null) {
+                // we don't have a ScriptEngineFactory associated with this extension so no need to scan
+                return true;
+            } else {
+                // check headers for view markers
+                final Dictionary<String, String> headers = bundle.getHeaders();
+                final String hasViews = headers.get("Jahia-Module-Has-Views");
+                if ("no".equalsIgnoreCase(StringUtils.trim(hasViews))) {
+                    // if the bundle indicated that it doesn't provide views, no need to scan
+                    return true;
+                } else {
+                    // check if the bundle provided a list of of comma-separated scripting language names for the views it provides
+                    final String commaSeparatedScriptNames = headers.get("Jahia-Module-Scripting-Views");
+                    final String[] split = StringUtils.split(commaSeparatedScriptNames, ',');
+                    if (split != null) {
+                        List<String> result = new ArrayList<>(split.length);
+                        for (String name : split) {
+                            result.add(name.trim().toLowerCase());
+                        }
+
+                        // the bundle should only be scanned if it defined the header and the header contains the name of the factory associated with the extension
+                        return !result.contains(scriptFactory.getEngineName().toLowerCase());
+                    } else {
+                        return true;
+                    }
+                }
+
+            }
+        }
+    }
+
+    private static boolean isIgnoredBundle(Bundle bundle) {
+        final String symbolicName = bundle.getSymbolicName();
+        for (String ignoredBundlePrefix : IGNORED_BUNDLE_PREFIXES) {
+            if(symbolicName.startsWith(ignoredBundlePrefix)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static boolean isPreRegisteredExtension(String viewExtension) {
+        return getInstance().preRegisteredExtensions.contains(viewExtension);
+    }
+
+    private void addBundleScripts(Bundle bundle, String extension, ScriptEngineFactory scriptEngineFactory) {
+        // only add views if we need to
+        if (!shouldNotBeScannedForViews(bundle, extension)) {
+            final String extensionPattern = getExtensionPattern(extension);
+            final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
+            if (entries != null) {
+                final List<URL> scripts = new LinkedList<>();
+                while(entries.hasMoreElements()) {
+                    scripts.add(entries.nextElement());
+                }
+                addBundleScripts(bundle, scripts);
+            }
+        }
+    }
+
+    static String getExtensionPattern(String extension) {
+        return EXTENSION_PATTERN_PREFIX + extension;
+    }
+
+    private void removeBundleScripts(Bundle bundle, String extension) {
+        if (!shouldNotBeScannedForViews(bundle, extension)) {
+            final String extensionPattern = getExtensionPattern(extension);
+            final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
+            if (entries != null) {
+                final List<URL> scripts = new LinkedList<>();
+                while (entries.hasMoreElements()) {
+                    scripts.add(entries.nextElement());
+                }
+                removeBundleScripts(bundle, scripts);
+            }
+        }
     }
 
     /**
@@ -110,8 +352,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      */
     public void addBundleScripts(Bundle bundle, List<URL> scripts) {
         // TODO consider versions of modules/bundles
-        for (URL script : scripts) {
-            addBundleScript(bundle, script.getPath());
+        if (!scripts.isEmpty()) {
+            for (URL script : scripts) {
+                addBundleScript(bundle, script.getPath());
+            }
+            logger.info("Bundle {} registered {} views", bundle, scripts);
         }
     }
 
@@ -125,10 +370,11 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             return;
         }
         ViewResourceInfo scriptResource = new ViewResourceInfo(path);
-        SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final String symbolicName = bundle.getSymbolicName();
+        SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(symbolicName);
         if (existingBundleScripts == null) {
-            existingBundleScripts = new TreeMap<String, ViewResourceInfo>();
-            availableScripts.put(bundle.getSymbolicName(), existingBundleScripts);
+            existingBundleScripts = new TreeMap<>();
+            availableScripts.put(symbolicName, existingBundleScripts);
             existingBundleScripts.put(scriptResource.path, scriptResource);
         } else if (!existingBundleScripts.containsKey(scriptResource.path)) {
             existingBundleScripts.put(scriptResource.path, scriptResource);
@@ -139,7 +385,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             scriptResource = existingBundleScripts.get(scriptResource.path);
         }
 
-        String properties = StringUtils.substringBeforeLast(path,".") + ".properties";
+        String properties = StringUtils.substringBeforeLast(path, ".") + ".properties";
         final URL propertiesResource = bundle.getResource(properties);
         if (propertiesResource != null) {
             Properties p = new Properties();
@@ -161,14 +407,27 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @param scripts the URLs of the views to unregister
      */
     public void removeBundleScripts(Bundle bundle, List<URL> scripts) {
-        final SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundle.getSymbolicName());
+        final String bundleName = bundle.getSymbolicName();
+        final SortedMap<String, ViewResourceInfo> existingBundleScripts = availableScripts.get(bundleName);
         if (existingBundleScripts == null) {
             return;
         }
-        for (URL script : scripts) {
-            existingBundleScripts.remove(script.getPath());
+        if (!scripts.isEmpty()) {
+            boolean didRemove = false;
+            for (URL script : scripts) {
+                didRemove = existingBundleScripts.remove(script.getPath()) != null;
+            }
+
+            if (didRemove) {
+                // remove entry if we don't have any scripts anymore for this bundle
+                if(existingBundleScripts.isEmpty()) {
+                    availableScripts.remove(bundleName);
+                }
+
+                logger.info("Bundle {} unregistered {} views", bundle, scripts);
+                clearCaches();
+            }
         }
-        clearCaches();
     }
 
     /**
@@ -235,7 +494,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             templateTypeMappings.add(resource.getTemplateType());
         }
         Set<View> s = getViewsSet(nodeTypeList, site,
-                templateTypeMappings != null ? templateTypeMappings : Arrays.asList(resource.getTemplateType()));
+                templateTypeMappings != null ? templateTypeMappings : Collections.singletonList(resource.getTemplateType()));
         View selected;
         selected = getView(template, s);
         if (selected == null && !"default".equals(template)) {
@@ -266,7 +525,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     @Override
     public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType) {
         try {
-            return getViewsSet(getNodeTypeList(nt), site, Arrays.asList(templateType));
+            return getViewsSet(getNodeTypeList(nt), site, Collections.singletonList(templateType));
         } catch (NoSuchNodeTypeException e) {
             logger.error(e.getMessage(), e);
         }
@@ -291,7 +550,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     private SortedSet<View> getViewsSet(List<ExtendedNodeType> nodeTypeList, JCRSiteNode site,
-            List<String> templateTypes) {
+                                        List<String> templateTypes) {
 
         StringBuilder cacheKey = new StringBuilder();
         for (ExtendedNodeType type : nodeTypeList) {
@@ -414,8 +673,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
         for (ViewResourceInfo res : sortedScripts) {
             if (!views.containsKey(res.viewKey)) {
-                if(!scriptFactoryMap.containsKey(res.extension)){
-                    logger.error("Script extension "+res.extension+ " can not be handle by this system.");
+                if (!scriptFactoryMap.containsKey(res.extension)) {
+                    logger.error("Script extension " + res.extension + " can not be handle by this system.");
                     break;
                 }
                 BundleView view = new BundleView(res.path, res.viewKey, tplPackage, res.filename);
@@ -429,7 +688,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     /**
      * Returns view scripts for the specified module bundle which match the specified path.
-     * 
+     *
      * @param module
      *            the module bundle to perform lookup in
      * @param pathPrefix
@@ -439,26 +698,25 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private Set<ViewResourceInfo> findBundleScripts(String module, String pathPrefix) {
         final SortedMap<String, ViewResourceInfo> allBundleScripts = availableScripts.get(module);
         if (allBundleScripts == null || allBundleScripts.isEmpty()) {
-            return new TreeSet<ViewResourceInfo>();
+            return Collections.emptySet();
         }
 
         // get all the ViewResourceInfos which path is greater than or equal to the given prefix
         final SortedMap<String, ViewResourceInfo> viewInfosWithPathGTEThanPrefix = allBundleScripts.tailMap(pathPrefix);
 
         // if the tail map is empty, we won't find the path prefix in the available scripts so return an empty set
-        if(viewInfosWithPathGTEThanPrefix.isEmpty()) {
-            return new TreeSet<ViewResourceInfo>();
+        if (viewInfosWithPathGTEThanPrefix.isEmpty()) {
+            return Collections.emptySet();
         }
 
         // check if the first key contains the prefix. If not, the prefix will not match any entries so return an empty set
-        if(!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
-            return new TreeSet<ViewResourceInfo>();
-        }
-        else {
+        if (!viewInfosWithPathGTEThanPrefix.firstKey().startsWith(pathPrefix)) {
+            return Collections.emptySet();
+        } else {
             SortedSet<ViewResourceInfo> sortedScripts = new TreeSet<ViewResourceInfo>(scriptExtensionComparator);
             for (String path : viewInfosWithPathGTEThanPrefix.keySet()) {
                 // we should have only few values to look at
-                if(path.startsWith(pathPrefix)) {
+                if (path.startsWith(pathPrefix)) {
                     sortedScripts.add(viewInfosWithPathGTEThanPrefix.get(path));
                 } else {
                     // as soon as the path doesn't start with the given prefix anymore, we won't have a match in the remaining so return
@@ -482,5 +740,18 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public static void clearCaches() {
         viewSetCache.clear();
+    }
+
+    public void setBundleScriptFactory(BundleJSR223ScriptFactory bundleScriptFactory) {
+        this.bundleScriptFactory = bundleScriptFactory;
+    }
+
+
+    private static final Set<String> IGNORED_BUNDLE_PREFIXES = new HashSet<>(7);
+    static {
+        IGNORED_BUNDLE_PREFIXES.add("org.apache");
+        IGNORED_BUNDLE_PREFIXES.add("org.ops4j");
+        IGNORED_BUNDLE_PREFIXES.add("assets");
+        IGNORED_BUNDLE_PREFIXES.add("ckeditor");
     }
 }

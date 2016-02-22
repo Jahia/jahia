@@ -45,11 +45,11 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.JahiaVersionManagerImpl;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRVersion;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.query.QueryManagerImpl;
-import org.slf4j.Logger;
 import org.xml.sax.ContentHandler;
 
 import javax.jcr.*;

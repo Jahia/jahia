@@ -43,10 +43,10 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import org.apache.commons.collections.ComparatorUtils;
-
 import java.io.Serializable;
 import java.util.Date;
+
+import org.apache.commons.collections.ComparatorUtils;
 
 /**
  * Represents a history entry for the user password (encrypted).

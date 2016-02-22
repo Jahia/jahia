@@ -43,11 +43,11 @@
  */
 package org.jahia.services.usermanager;
 
+import java.util.Properties;
+
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.registries.ServicesRegistry;
-
-import java.util.Properties;
 
 /**
  * Represent a base class for an external user.

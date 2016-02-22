@@ -43,9 +43,9 @@
  */
 package org.jahia.bin;
 
-import org.json.JSONObject;
-
 import javax.servlet.http.HttpServletResponse;
+
+import org.json.JSONObject;
 
 /**
  * Result of the action handler execution.

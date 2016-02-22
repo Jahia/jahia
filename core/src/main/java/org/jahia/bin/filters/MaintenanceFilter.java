@@ -43,17 +43,23 @@
  */
 package org.jahia.bin.filters;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.bin.Jahia;
-import org.jahia.bin.errors.ErrorServlet;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.errors.ErrorServlet;
 
 /**
  * Allows temporary disabling request serving and switching to a maintenance mode.

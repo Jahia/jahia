@@ -43,11 +43,11 @@
  */
 package org.jahia.services.importexport.validation;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Represents a validation result, containing missing modules in the content to be imported.

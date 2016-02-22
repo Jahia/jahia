@@ -43,9 +43,9 @@
  */
 package org.jahia.services.render.filter;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.*;
 import org.slf4j.Logger;
+import org.jahia.services.content.*;
+import org.jahia.services.render.*;
 
 /**
  * WrapperFilter

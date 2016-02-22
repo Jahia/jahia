@@ -43,14 +43,15 @@
  */
 package org.jahia.services.content;
 
+import javax.jcr.*;
+
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.util.XMLChar;
 import org.jahia.api.Constants;
 
-import javax.jcr.*;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Jahia's implementation of the JCR <code>javax.jcr.NamespaceRegistry</code>. 

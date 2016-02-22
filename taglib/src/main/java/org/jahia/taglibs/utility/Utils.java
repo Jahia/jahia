@@ -43,12 +43,13 @@
  */
 package org.jahia.taglibs.utility;
 
+import java.util.Iterator;
+
+import javax.servlet.jsp.PageContext;
+
 import org.jahia.services.render.RenderContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.jsp.PageContext;
-import java.util.Iterator;
 
 /**
  * Class Utils :  provides miscellaneous methods used by the taglibs

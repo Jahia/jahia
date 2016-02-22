@@ -48,8 +48,8 @@ import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
 import org.jahia.services.usermanager.JahiaUser;
 
-import javax.jcr.PropertyType;
 import javax.jcr.Value;
+import javax.jcr.PropertyType;
 import java.util.List;
 
 /**

@@ -43,6 +43,9 @@
  */
 package org.jahia.bin;
 
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
@@ -54,9 +57,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Utility class for Jahia specific action controllers.

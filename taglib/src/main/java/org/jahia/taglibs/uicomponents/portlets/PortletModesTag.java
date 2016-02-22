@@ -43,6 +43,7 @@
  */
 package org.jahia.taglibs.uicomponents.portlets;
 
+import org.apache.pluto.container.PortletContainerException;
 import org.apache.pluto.container.PortletWindow;
 import org.jahia.data.applications.ApplicationBean;
 import org.jahia.data.applications.EntryPointDefinition;

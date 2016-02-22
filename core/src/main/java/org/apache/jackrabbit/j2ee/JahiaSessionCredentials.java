@@ -43,8 +43,8 @@
  */
 package org.apache.jackrabbit.j2ee;
 
-import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.apache.jackrabbit.server.BasicCredentialsProvider;
+import org.apache.jackrabbit.core.security.JahiaLoginModule;
 import org.jahia.services.usermanager.JahiaUser;
 
 import javax.jcr.Credentials;

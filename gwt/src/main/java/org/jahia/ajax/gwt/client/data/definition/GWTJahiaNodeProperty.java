@@ -44,8 +44,8 @@
 package org.jahia.ajax.gwt.client.data.definition;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * This is a bean to wrap a JCR node property, made from JCR 2.0 specs.

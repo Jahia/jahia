@@ -44,20 +44,22 @@
 package org.jahia.services.render;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.templates.ModuleVersion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.RequestDispatcher;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Map;
 import java.util.Properties;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.io.InputStream;
+import java.io.IOException;
+
+import javax.servlet.RequestDispatcher;
 
 /**
  * Implementation of the {@link View} that uses {@link RequestDispatcher} to forward to a JSP resource.

@@ -45,9 +45,9 @@ package org.jahia.services.content;
 
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
+import javax.jcr.version.VersionException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
-import javax.jcr.version.VersionException;
 
 
 /**

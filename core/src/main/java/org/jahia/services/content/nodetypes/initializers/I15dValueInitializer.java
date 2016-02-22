@@ -43,11 +43,12 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-
-import javax.jcr.Value;
 import java.util.List;
 import java.util.Locale;
+
+import javax.jcr.Value;
+
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 /**
  * Defines a default value initializer for node properties, which support internationalization.

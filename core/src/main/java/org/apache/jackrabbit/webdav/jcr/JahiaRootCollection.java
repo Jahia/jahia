@@ -43,14 +43,6 @@
  */
 package org.apache.jackrabbit.webdav.jcr;
 
-import org.apache.jackrabbit.webdav.*;
-import org.apache.jackrabbit.webdav.io.InputContext;
-import org.apache.jackrabbit.webdav.io.OutputContext;
-import org.apache.jackrabbit.webdav.search.SearchResource;
-import org.apache.jackrabbit.webdav.version.DeltaVResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.jcr.Repository;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
@@ -60,6 +52,14 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.jackrabbit.webdav.*;
+import org.apache.jackrabbit.webdav.io.InputContext;
+import org.apache.jackrabbit.webdav.io.OutputContext;
+import org.apache.jackrabbit.webdav.search.SearchResource;
+import org.apache.jackrabbit.webdav.version.DeltaVResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * <code>JahiaRootCollection</code> represent the WebDAV root resource that does not

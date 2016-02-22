@@ -43,16 +43,22 @@
  */
 package org.jahia.test.services.versioning;
 
-import org.jahia.api.Constants;
-import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
-import org.jahia.services.sites.JahiaSite;
-import org.jahia.test.JahiaTestCase;
-import org.jahia.test.TestHelper;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.slf4j.Logger;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
@@ -61,11 +67,26 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
 
-import static org.junit.Assert.*;
+import org.jahia.api.Constants;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.JCRPublicationService;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.JCRVersionService;
+import org.jahia.services.content.PublicationInfo;
+import org.jahia.services.content.VersionInfo;
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.test.JahiaTestCase;
+import org.jahia.test.TestHelper;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
 
 /**
  * Unit test to test version listing created during publication

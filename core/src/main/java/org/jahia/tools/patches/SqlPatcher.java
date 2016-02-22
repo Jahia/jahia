@@ -43,6 +43,11 @@
  */
 package org.jahia.tools.patches;
 
+import static org.jahia.tools.patches.GroovyPatcher.rename;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 import org.apache.commons.io.Charsets;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.utils.DatabaseUtils;
@@ -50,11 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.io.Resource;
-
-import java.io.IOException;
-import java.io.InputStreamReader;
-
-import static org.jahia.tools.patches.GroovyPatcher.rename;
 
 /**
  * Utility class for applying SQL-based patches on Jahia startup.

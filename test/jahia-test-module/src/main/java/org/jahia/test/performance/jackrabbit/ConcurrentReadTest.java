@@ -43,6 +43,7 @@
  */
 package org.jahia.test.performance.jackrabbit;
 
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -53,7 +54,6 @@ import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.slf4j.Logger;
 import org.springframework.util.StopWatch;
 
 import javax.jcr.Node;

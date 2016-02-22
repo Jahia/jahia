@@ -44,23 +44,24 @@
 package org.jahia.services.cache.ehcache;
 
 import net.sf.ehcache.Cache;
-import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.PinningConfiguration;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
-import net.sf.ehcache.management.ManagementService;
-import org.apache.tika.io.IOUtils;
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.CacheImplementation;
-import org.jahia.services.cache.CacheProvider;
-import org.jahia.services.cache.CacheService;
-import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
+import org.apache.tika.io.IOUtils;
+import org.jahia.services.cache.CacheProvider;
+import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.CacheImplementation;
+import org.jahia.settings.SettingsBean;
+import org.jahia.exceptions.JahiaInitializationException;
+
+import net.sf.ehcache.CacheManager;
+import net.sf.ehcache.management.ManagementService;
 
 import java.io.IOException;
 import java.io.InputStream;

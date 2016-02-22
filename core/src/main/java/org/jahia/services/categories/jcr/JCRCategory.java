@@ -43,8 +43,8 @@
  */
 package org.jahia.services.categories.jcr;
 
-import org.jahia.services.categories.CategoryBean;
 import org.slf4j.Logger;
+import org.jahia.services.categories.CategoryBean;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;

@@ -43,14 +43,18 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import com.allen_sauer.gwt.log.client.Log;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.GWTJahiaCreatePortletInitBean;
-import org.jahia.ajax.gwt.client.data.definition.*;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
-import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaItemDefinition;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyValue;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodePropertyType;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaPortletDefinition;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import com.allen_sauer.gwt.log.client.Log;
 
 import java.util.*;
 

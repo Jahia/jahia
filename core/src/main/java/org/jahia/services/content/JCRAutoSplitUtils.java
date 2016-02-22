@@ -43,22 +43,20 @@
  */
 package org.jahia.services.content;
 
-import org.apache.commons.beanutils.PropertyUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
-import org.jahia.utils.Patterns;
-import org.slf4j.Logger;
+import static org.jahia.services.content.JCRContentUtils.findAvailableNodeName;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
-import static org.jahia.services.content.JCRContentUtils.findAvailableNodeName;
+import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.jahia.api.Constants;
+import org.jahia.utils.Patterns;
 
 /**
  * Utility class for auto-splitting child nodes of a node, based on the provided

@@ -43,6 +43,8 @@
  */
 package org.jahia.services.content;
 
+import static org.jahia.api.Constants.*;
+
 import org.apache.jackrabbit.api.observation.JackrabbitEvent;
 import org.jahia.services.content.JCRObservationManager.EventWrapper;
 
@@ -54,8 +56,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static org.jahia.api.Constants.*;
 
 /**
  * User: toto

@@ -43,6 +43,7 @@
  */
 package org.jahia.test.services.query;
 
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRSessionFactory;
@@ -50,15 +51,19 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.test.TestHelper;
-import org.junit.*;
-import org.slf4j.Logger;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import javax.jcr.RepositoryException;
+import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
-import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
+
+import java.util.*;
 
 /**
  * Unit test for checking all different cases where we modify the query

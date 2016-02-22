@@ -43,6 +43,11 @@
  */
 package org.jahia.test.framework;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Properties;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.exceptions.JahiaException;
@@ -55,11 +60,6 @@ import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.core.io.Resource;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
-import java.util.Properties;
 
 public class JahiaWebInitializer implements ApplicationContextInitializer<GenericWebApplicationContext> {
 

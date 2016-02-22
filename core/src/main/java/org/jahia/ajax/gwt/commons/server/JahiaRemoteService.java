@@ -45,21 +45,21 @@ package org.jahia.ajax.gwt.commons.server;
 
 import com.google.gwt.user.client.rpc.RemoteService;
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.decorator.JCRUserNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.ajax.gwt.client.core.SessionExpirationException;
 import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
-import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.preferences.user.UserPreferencesHelper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.i18n.Messages;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.jcr.ItemNotFoundException;

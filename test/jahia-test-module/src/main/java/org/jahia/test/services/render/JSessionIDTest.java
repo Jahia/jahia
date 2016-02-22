@@ -43,6 +43,10 @@
  */
 package org.jahia.test.services.render;
 
+import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -50,14 +54,13 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Jahia;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * This test case verify that the jsessionid parameter is correctly removed from the URL

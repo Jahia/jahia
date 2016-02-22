@@ -46,8 +46,8 @@ package org.jahia.ajax.gwt.client.data.toolbar;
 import org.jahia.ajax.gwt.client.messages.Messages;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: rfelden

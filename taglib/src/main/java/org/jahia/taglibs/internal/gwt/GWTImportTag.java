@@ -43,11 +43,12 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
-import org.jahia.taglibs.AbstractJahiaTag;
+import java.io.IOException;
+
 import org.slf4j.Logger;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
-import java.io.IOException;
 
 /**
  * Generates a script element for loading the GWT module.

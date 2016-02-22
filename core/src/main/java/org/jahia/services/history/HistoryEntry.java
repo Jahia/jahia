@@ -43,9 +43,10 @@
  */
 package org.jahia.services.history;
 
+import javax.persistence.*;
+
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.*;
 import java.util.Locale;
 
 /**

@@ -68,10 +68,7 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleDropTarget;
 import org.jahia.ajax.gwt.client.widget.edit.sidepanel.PagesTabItem;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**

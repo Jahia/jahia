@@ -43,10 +43,11 @@
  */
 package org.jahia.services.content.files;
 
-import javax.jcr.Binary;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+
+import javax.jcr.Binary;
 
 /**
  * Represents an entry in the file cache.

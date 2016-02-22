@@ -44,9 +44,9 @@
 package org.jahia.services.applications.pluto;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.pluto.driver.url.PortalURL;
 import org.apache.pluto.driver.url.PortalURLParameter;
 import org.apache.pluto.driver.url.PortalURLParser;
+import org.apache.pluto.driver.url.PortalURL;
 import org.apache.pluto.driver.url.impl.PortalURLParserImpl;
 import org.apache.pluto.driver.url.impl.RelativePortalURLImpl;
 import org.slf4j.Logger;

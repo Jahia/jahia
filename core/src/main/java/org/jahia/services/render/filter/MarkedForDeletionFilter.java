@@ -43,6 +43,17 @@
  */
 package org.jahia.services.render.filter;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
+
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.SimpleScriptContext;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.apache.commons.lang.StringUtils;
@@ -56,16 +67,6 @@ import org.jahia.utils.i18n.ResourceBundles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationListener;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-import javax.script.SimpleScriptContext;
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
 
 /**
  * This filter hides the nodes that are "marked for deletion" nodes in preview mode

@@ -43,15 +43,16 @@
  */
 package org.jahia.services.uicomponents.bean.contentmanager;
 
+import java.util.List;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.services.usermanager.JahiaUser;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Evaluates the need to display provider key column in the content manager,

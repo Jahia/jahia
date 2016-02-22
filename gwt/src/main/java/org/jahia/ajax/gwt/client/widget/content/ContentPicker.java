@@ -50,13 +50,10 @@ import com.extjs.gxt.ui.client.event.SelectionEvent;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.google.gwt.storage.client.Storage;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.widget.toolbar.ActionContextMenu;
-import org.jahia.ajax.gwt.client.widget.tripanel.BottomRightComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.LeftComponent;
-import org.jahia.ajax.gwt.client.widget.tripanel.TopBar;
-import org.jahia.ajax.gwt.client.widget.tripanel.TriPanelBrowserLayout;
+import org.jahia.ajax.gwt.client.widget.tripanel.*;
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -43,10 +43,11 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import java.util.List;
 
 import javax.jcr.Value;
-import java.util.List;
+
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 
 /**
  * Defines a property value initializer.

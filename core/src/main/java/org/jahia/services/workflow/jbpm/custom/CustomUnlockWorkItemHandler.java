@@ -57,6 +57,7 @@ import org.kie.api.runtime.process.WorkItemManager;
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.lock.LockException;
+
 import java.util.List;
 
 public class CustomUnlockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {

@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
-
 import java.util.List;
+
+import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 
 /**
  * Abstract action item that considers allowed node types, i.e. a selected node should have of the allowed node types for this action to be

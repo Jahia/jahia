@@ -46,6 +46,7 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.value.ValueHelper;
 import org.jahia.api.Constants;
+import org.jahia.data.beans.CategoryBean;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.slf4j.Logger;
 
@@ -54,6 +55,7 @@ import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.version.VersionException;
+
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;

@@ -46,6 +46,7 @@ package org.jahia.services.cache.ehcache;
 import net.sf.ehcache.pool.SizeOfEngine;
 import net.sf.ehcache.pool.SizeOfEngineFactory;
 import net.sf.ehcache.pool.impl.DefaultSizeOfEngine;
+import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.slf4j.Logger;
 
 public class JahiaSizeOfEngineFactory implements SizeOfEngineFactory {

@@ -43,13 +43,13 @@
  */
 package org.jahia.test.services.usermanager;
 
-import org.jahia.services.usermanager.DefaultJahiaUserSplittingRuleImpl;
-import org.jahia.services.usermanager.JahiaUserSplittingRule;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.assertEquals;
+import org.jahia.services.usermanager.DefaultJahiaUserSplittingRuleImpl;
+import org.jahia.services.usermanager.JahiaUserSplittingRule;
+import org.junit.Test;
 
 /**
  * Test the splitting rules for user folders.

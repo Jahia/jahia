@@ -129,7 +129,8 @@ public class BundleHttpResourcesTracker extends ServiceTracker<HttpService, Http
 
             long timer = System.currentTimeMillis();
 
-            HttpContext httpContext = new FileHttpContext(bundle, httpService.createDefaultHttpContext());
+            HttpContext httpContext = new FileHttpContext(FileHttpContext.getSourceURLs(bundle),
+                    httpService.createDefaultHttpContext());
 
             int resourceCount = registerStaticResources(httpService, httpContext);
 

@@ -43,6 +43,8 @@
  */
 package org.jahia.services.transform;
 
+import java.io.File;
+
 import org.artofsolving.jodconverter.office.DefaultOfficeManagerConfiguration;
 import org.artofsolving.jodconverter.office.OfficeConnectionProtocol;
 import org.artofsolving.jodconverter.office.OfficeManager;
@@ -53,8 +55,6 @@ import org.artofsolving.jodconverter.util.PlatformUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AbstractFactoryBean;
-
-import java.io.File;
 
 /**
  * Factory bean for instantiating and configuring instance of the

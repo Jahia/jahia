@@ -43,10 +43,10 @@
  */
 package org.jahia.services.render.filter;
 
+import org.slf4j.Logger;
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.slf4j.Logger;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;

@@ -43,11 +43,29 @@
  */
 package org.apache.jackrabbit.core;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+import javax.jcr.observation.EventIterator;
+
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.observation.EventImpl;
 import org.apache.jackrabbit.core.persistence.PersistenceManager;
 import org.apache.jackrabbit.core.query.QueryHandlerFactory;
-import org.apache.jackrabbit.core.query.lucene.*;
+import org.apache.jackrabbit.core.query.lucene.FieldSelectors;
+import org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl;
+import org.apache.jackrabbit.core.query.lucene.JahiaNodeIndexer;
+import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.Util;
 import org.apache.jackrabbit.core.query.lucene.hits.AbstractHitCollector;
 import org.apache.jackrabbit.core.state.ChildNodeEntry;
 import org.apache.jackrabbit.core.state.ItemStateException;
@@ -56,15 +74,13 @@ import org.apache.jackrabbit.core.state.SharedItemStateManager;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
-import org.apache.lucene.search.*;
+import org.apache.lucene.search.BooleanClause;
+import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.Searcher;
+import org.apache.lucene.search.TermQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.jcr.observation.Event;
-import javax.jcr.observation.EventIterator;
-import java.io.IOException;
-import java.util.*;
 
 public class JahiaSearchManager extends SearchManager {
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";

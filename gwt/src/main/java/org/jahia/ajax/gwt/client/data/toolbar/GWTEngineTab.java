@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.data.toolbar;
 
-import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
-
 import java.io.Serializable;
+
+import org.jahia.ajax.gwt.client.widget.contentengine.EditEngineTabItem;
 
 /**
  * User: toto

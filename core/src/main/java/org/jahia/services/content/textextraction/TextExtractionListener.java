@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content.textextraction;
 
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.rules.ExtractionService;
@@ -51,12 +52,12 @@ import org.jahia.services.scheduler.SchedulerService;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
-import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.ConstraintViolationException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
+
 import java.io.IOException;
 import java.util.Calendar;
 

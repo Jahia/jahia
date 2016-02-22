@@ -46,6 +46,10 @@ package org.jahia.taglibs.jcr.node;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRContentUtils;
+import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.i18n.ResourceBundles;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.*;
 import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializer;
@@ -53,10 +57,6 @@ import org.jahia.services.content.nodetypes.initializers.ChoiceListInitializerSe
 import org.jahia.services.content.nodetypes.initializers.ChoiceListValue;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.Messages;
-import org.jahia.utils.i18n.ResourceBundles;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;

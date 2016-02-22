@@ -43,13 +43,13 @@
  */
 package org.jahia.ajax.gwt.client.widget.edit;
 
-import com.extjs.gxt.ui.client.dnd.GridDragSource;
-import com.extjs.gxt.ui.client.dnd.StatusProxy;
-import com.extjs.gxt.ui.client.event.DNDEvent;
-import com.extjs.gxt.ui.client.event.DragEvent;
-import com.extjs.gxt.ui.client.event.DragListener;
 import com.extjs.gxt.ui.client.util.Point;
 import com.extjs.gxt.ui.client.widget.grid.Grid;
+import com.extjs.gxt.ui.client.event.DragListener;
+import com.extjs.gxt.ui.client.event.DragEvent;
+import com.extjs.gxt.ui.client.event.DNDEvent;
+import com.extjs.gxt.ui.client.dnd.StatusProxy;
+import com.extjs.gxt.ui.client.dnd.GridDragSource;
 import com.google.gwt.core.client.GWT;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 

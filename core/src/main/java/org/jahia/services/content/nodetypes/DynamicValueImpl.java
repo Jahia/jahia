@@ -43,19 +43,20 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
-import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.io.InputStream;
+import java.util.*;
+import java.math.BigDecimal;
 
-import javax.jcr.Binary;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
-import java.io.InputStream;
-import java.math.BigDecimal;
-import java.util.*;
+import javax.jcr.Binary;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jahia.services.content.nodetypes.initializers.I15dValueInitializer;
+import org.jahia.services.content.nodetypes.initializers.ValueInitializer;
 
 /**
  * 

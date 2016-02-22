@@ -45,10 +45,7 @@ package org.jahia.services.search.spell;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.QueryHandler;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl;
-import org.apache.jackrabbit.core.query.lucene.JahiaSecondaryIndex;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.*;
 import org.apache.lucene.analysis.Analyzer;

@@ -43,6 +43,16 @@
  */
 package org.jahia.test.services.seo.urlrewrite;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.ServletException;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRSessionFactory;
@@ -51,19 +61,14 @@ import org.jahia.services.sites.JahiaSite;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.tuckey.web.filters.urlrewrite.RewrittenUrl;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.ServletException;
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.HashSet;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Test case for URL rewriting.

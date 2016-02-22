@@ -43,16 +43,16 @@
  */
 package org.jahia.ajax.gwt.helper;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.jcr.RepositoryException;
+
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
-
-import javax.jcr.RepositoryException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * User: toto

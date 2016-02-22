@@ -43,6 +43,14 @@
  */
 package org.jahia.test;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.IOException;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpStatus;
@@ -60,13 +68,6 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.test.bin.BaseTestController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Super class for Jahia tests

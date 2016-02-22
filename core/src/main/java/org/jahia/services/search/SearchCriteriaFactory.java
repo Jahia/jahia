@@ -43,29 +43,39 @@
  */
 package org.jahia.services.search;
 
-import org.apache.commons.beanutils.BeanUtilsBean;
-import org.apache.commons.beanutils.ConvertUtilsBean;
-import org.apache.commons.beanutils.Converter;
-import org.apache.commons.beanutils.PropertyUtilsBean;
-import org.apache.commons.beanutils.converters.ArrayConverter;
-import org.apache.commons.beanutils.converters.StringConverter;
-import org.jahia.services.content.JCRContentUtils;
-import org.jahia.services.content.nodetypes.*;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.search.SearchCriteria.DateValue;
-import org.jahia.services.search.SearchCriteria.NodeProperty;
-import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
-import org.jahia.services.search.SearchCriteria.Term;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import javax.jcr.PropertyType;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.nodetype.PropertyDefinition;
 import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+
+import org.apache.commons.beanutils.BeanUtilsBean;
+import org.apache.commons.beanutils.ConvertUtilsBean;
+import org.apache.commons.beanutils.Converter;
+import org.apache.commons.beanutils.PropertyUtilsBean;
+import org.apache.commons.beanutils.converters.ArrayConverter;
+import org.apache.commons.beanutils.converters.StringConverter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.nodetypes.ExtendedItemDefinition;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.content.nodetypes.SelectorType;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.search.SearchCriteria.DateValue;
+import org.jahia.services.search.SearchCriteria.NodeProperty;
+import org.jahia.services.search.SearchCriteria.NodePropertyDescriptor;
+import org.jahia.services.search.SearchCriteria.Term;
 
 /**
  * Factory for retrieving {@link SearchCriteria} object data.

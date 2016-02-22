@@ -43,14 +43,15 @@
  */
 package org.jahia.ajax.gwt.client.util;
 
-import com.extjs.gxt.ui.client.widget.Component;
-import com.extjs.gxt.ui.client.widget.menu.Item;
-import com.extjs.gxt.ui.client.widget.menu.MenuItem;
-import com.google.gwt.i18n.client.DateTimeFormat;
-import com.google.gwt.i18n.client.NumberFormat;
+import java.util.Date;
+
 import org.jahia.ajax.gwt.client.messages.Messages;
 
-import java.util.Date;
+import com.extjs.gxt.ui.client.widget.menu.MenuItem;
+import com.extjs.gxt.ui.client.widget.menu.Item;
+import com.extjs.gxt.ui.client.widget.Component;
+import com.google.gwt.i18n.client.DateTimeFormat;
+import com.google.gwt.i18n.client.NumberFormat;
 
 /**
  * Helper to format strings, numbers, and other stuff.

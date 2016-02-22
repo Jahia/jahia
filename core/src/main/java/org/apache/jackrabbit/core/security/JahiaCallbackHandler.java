@@ -45,10 +45,11 @@ package org.apache.jackrabbit.core.security;
 
 import org.apache.jackrabbit.core.security.authentication.CredentialsCallback;
 
+import java.io.IOException;
+
 import javax.jcr.SimpleCredentials;
 import javax.security.auth.callback.*;
 import javax.security.sasl.RealmCallback;
-import java.io.IOException;
 
 /**
  * Digital Experience Manager specific login callback handler.

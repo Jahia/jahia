@@ -43,19 +43,20 @@
  */
 package org.jahia.ajax.gwt.client.widget.content.portlet;
 
-import com.allen_sauer.gwt.log.client.Log;
-import com.google.gwt.user.client.ui.Label;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
-import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
-import org.jahia.ajax.gwt.client.messages.Messages;
-import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.acleditor.AclEditor;
 import org.jahia.ajax.gwt.client.util.content.JCRClientUtils;
+import org.jahia.ajax.gwt.client.messages.Messages;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACL;
+import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
+import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
-import java.util.ArrayList;
+import com.google.gwt.user.client.ui.Label;
+import com.allen_sauer.gwt.log.client.Log;
+
 import java.util.Collections;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * User: ktlili

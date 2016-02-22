@@ -43,19 +43,19 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
 import org.jahia.services.content.nodetypes.ValueImpl;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.NodeIterator;
-import javax.jcr.PropertyType;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
+import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+import javax.jcr.PropertyType;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import java.util.*;
 
 /**

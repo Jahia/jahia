@@ -45,8 +45,8 @@ package org.jahia.services.content.nodetypes;
 
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import java.io.Reader;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 
 /**
  * 

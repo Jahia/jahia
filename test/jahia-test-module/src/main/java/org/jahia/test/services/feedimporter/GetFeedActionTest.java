@@ -43,6 +43,11 @@
  */
 package org.jahia.test.services.feedimporter;
 
+import java.io.IOException;
+import java.net.URL;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
@@ -65,11 +70,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.net.URL;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Unit test for feed importer action.

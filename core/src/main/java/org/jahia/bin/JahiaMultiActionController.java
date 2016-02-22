@@ -43,14 +43,14 @@
  */
 package org.jahia.bin;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.usermanager.JahiaUser;
 import org.springframework.web.servlet.mvc.multiaction.MultiActionController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Base class for Jahia specific action controllers.

@@ -43,17 +43,17 @@
  */
 package org.jahia.utils.comparator;
 
-import org.jahia.services.categories.Category;
-import org.jahia.services.categories.CategoryBean;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.VersionInfo;
 import org.jahia.utils.i18n.ResourceBundleMarker;
+import org.jahia.services.categories.Category;
+import org.jahia.services.categories.CategoryBean;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
-import java.io.Serializable;
-import java.text.Collator;
 import java.util.Comparator;
+import java.text.Collator;
+import java.io.Serializable;
 import java.util.Locale;
 
 /**

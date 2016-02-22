@@ -43,10 +43,10 @@
  */
 package org.jahia.services.content.nodetypes;
 
+import java.util.Map;
+
 import org.apache.commons.collections.BidiMap;
 import org.apache.commons.lang.StringUtils;
-
-import java.util.Map;
 
 /**
  * User: toto

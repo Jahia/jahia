@@ -43,17 +43,17 @@
  */
 package org.jahia.ajax.gwt.client.widget.wizard;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.extjs.gxt.ui.client.Style.Orientation;
 import com.extjs.gxt.ui.client.event.BaseEvent;
 import com.extjs.gxt.ui.client.event.Listener;
 import com.extjs.gxt.ui.client.widget.LayoutContainer;
 import com.extjs.gxt.ui.client.widget.form.FormPanel;
-import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.extjs.gxt.ui.client.widget.layout.RowLayout;
+import com.extjs.gxt.ui.client.widget.layout.RowData;
 import com.google.gwt.user.client.Element;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Part of wizard window, WizardCard is used to show & validate a step in the

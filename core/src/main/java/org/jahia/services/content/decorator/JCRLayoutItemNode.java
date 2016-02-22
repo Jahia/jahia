@@ -45,8 +45,8 @@ package org.jahia.services.content.decorator;
 
 import org.jahia.services.content.JCRNodeWrapper;
 
-import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+import javax.jcr.Node;
 
 /**
  * 

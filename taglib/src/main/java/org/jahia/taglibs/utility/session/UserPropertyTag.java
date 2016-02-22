@@ -43,15 +43,17 @@
  */
 package org.jahia.taglibs.utility.session;
 
-import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.jcr.AbstractJCRTag;
-import org.slf4j.Logger;
+import java.io.IOException;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-import java.io.IOException;
+
+import org.jahia.services.render.RenderContext;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.jcr.AbstractJCRTag;
+import org.slf4j.Logger;
 
 /**
  * Simple tags that prints out the value of the specified property for currently logged in user.

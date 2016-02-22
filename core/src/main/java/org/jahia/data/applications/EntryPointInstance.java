@@ -44,8 +44,8 @@
 package org.jahia.data.applications;
 
 import org.jahia.services.applications.ApplicationsManagerServiceImpl;
-import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.services.content.JCRContentUtils;
 import org.slf4j.Logger;
 
 import javax.portlet.PortletMode;

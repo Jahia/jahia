@@ -43,11 +43,16 @@
  */
 package org.jahia.services.importexport.validation;
 
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
-
-import java.io.Serializable;
-import java.util.*;
 
 /**
  * An instance of this class is being returned when validating JCR document view import files and contains information about expected import

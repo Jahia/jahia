@@ -43,11 +43,11 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import org.apache.commons.collections.FastHashMap;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.collections.FastHashMap;
 
 /**
  * Policy rules evaluator.

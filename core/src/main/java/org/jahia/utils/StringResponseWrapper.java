@@ -43,11 +43,16 @@
  */
 package org.jahia.utils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.Locale;
+
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
-import java.io.*;
-import java.util.Locale;
 
 /**
  * Response wrapper to retrieve included output as string. As an example the

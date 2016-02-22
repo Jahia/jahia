@@ -43,12 +43,12 @@
  */
 package org.jahia.services.render;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.utils.Patterns;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.Patterns;
 
 /**
  * Template information including the name, the node path, the view name, an optional priority and a reference to the next template.

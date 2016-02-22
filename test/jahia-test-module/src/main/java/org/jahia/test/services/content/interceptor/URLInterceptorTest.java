@@ -43,22 +43,25 @@
  */
 package org.jahia.test.services.content.interceptor;
 
-import org.jahia.bin.Jahia;
+import static junit.framework.Assert.*;
+
+import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.interceptor.URLInterceptor;
-import org.jahia.services.sites.JahiaSite;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.junit.*;
+import org.jahia.bin.Jahia;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.ConstraintViolationException;
 import java.util.Locale;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.fail;
 
 /**
  * Test case for the {@link URLInterceptor}.

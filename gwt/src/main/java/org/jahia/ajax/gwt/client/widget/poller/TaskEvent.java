@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.widget.poller;
 
-import org.atmosphere.gwt20.client.managed.RPCEvent;
-
 import java.io.Serializable;
+
+import org.atmosphere.gwt20.client.managed.RPCEvent;
 
 public class TaskEvent extends RPCEvent implements Serializable {
     private static final long serialVersionUID = 7742645002324255207L;

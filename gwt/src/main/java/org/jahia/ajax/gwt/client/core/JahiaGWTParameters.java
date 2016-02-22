@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.core;
 
 import com.google.gwt.i18n.client.Dictionary;
+
 import org.jahia.ajax.gwt.client.data.GWTJahiaChannel;
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;

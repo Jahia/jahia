@@ -43,16 +43,17 @@
  */
 package org.jahia.taglibs.uicomponents.loginform;
 
-import org.jahia.params.valves.LoginEngineAuthValveImpl;
+import java.io.IOException;
+
 import org.jahia.services.render.RenderContext;
 import org.jahia.taglibs.ValueJahiaTag;
+import org.jahia.params.valves.LoginEngineAuthValveImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
-import java.io.IOException;
 
 /**
  * @author Xavier Lawrence

@@ -50,6 +50,7 @@ import org.jahia.data.applications.WebAppContext;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.applications.ApplicationsManagerService;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

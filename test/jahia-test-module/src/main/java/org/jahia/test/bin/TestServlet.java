@@ -43,20 +43,22 @@
  */
 package org.jahia.test.bin;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.test.SurefireJUnitXMLResultFormatter;
 import org.jahia.test.SurefireTestNGXMLResultFormatter;
 import org.jahia.utils.ClassLoaderUtils;
 import org.jahia.utils.ClassLoaderUtils.Callback;
+import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.junit.internal.requests.FilterRequest;
 import org.junit.internal.runners.ErrorReportingRunner;
-import org.junit.runner.*;
+import org.junit.runner.Description;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Request;
+import org.junit.runner.Result;
+import org.junit.runner.Runner;
 import org.junit.runner.manipulation.Filter;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.ISuiteListener;
@@ -66,16 +68,18 @@ import org.testng.xml.Parser;
 import org.testng.xml.XmlSuite;
 import org.testng.xml.XmlTest;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.PrintWriter;
+import javax.servlet.ServletException;
+
+import java.io.*;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 /**
  * JUnit test runner servlet.

@@ -43,6 +43,8 @@
  */
 package org.jahia.test.bin;
 
+import junit.framework.TestCase;
+
 import java.util.List;
 
 /**

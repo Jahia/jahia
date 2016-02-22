@@ -43,21 +43,23 @@
  */
 package org.jahia.services.atmosphere;
 
-import com.google.common.collect.Lists;
+import static org.atmosphere.cpr.ApplicationConfig.PROPERTY_COMET_SUPPORT;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
+
+import javax.servlet.ServletConfig;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.atmosphere.cpr.BroadcasterFactory;
 import org.atmosphere.util.ServletContextFactory;
 import org.jahia.settings.SettingsBean;
 
-import javax.servlet.ServletConfig;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
-
-import static org.atmosphere.cpr.ApplicationConfig.PROPERTY_COMET_SUPPORT;
+import com.google.common.collect.Lists;
 
 /**
  * Digital Experience Manager specific servlet for Atmosphere framework that allows to configure asynchronous support implementation using

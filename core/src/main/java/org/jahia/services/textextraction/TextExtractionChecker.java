@@ -43,6 +43,16 @@
  */
 package org.jahia.services.textextraction;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jcr.NodeIterator;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
 import org.jahia.api.Constants;
@@ -53,15 +63,6 @@ import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.tools.OutWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.NodeIterator;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Utility class for performing text extraction check and fixing.

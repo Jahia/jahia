@@ -43,17 +43,18 @@
  */
 package org.jahia.services.content;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import javax.jcr.query.Query;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.jcr.*;
+import javax.jcr.query.Query;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility class for managing roles and permissions for JCR nodes.

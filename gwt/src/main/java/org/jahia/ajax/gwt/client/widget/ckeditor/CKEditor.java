@@ -43,14 +43,15 @@
  */
 package org.jahia.ajax.gwt.client.widget.ckeditor;
 
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
+import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
+
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.widget.Component;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.core.client.Scheduler.ScheduledCommand;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
-import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
 
 /**
  * User: ktlili

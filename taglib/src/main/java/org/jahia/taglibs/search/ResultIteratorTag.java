@@ -43,13 +43,14 @@
  */
 package org.jahia.taglibs.search;
 
-import org.jahia.services.search.Hit;
-
-import javax.servlet.jsp.JspTagException;
-import javax.servlet.jsp.jstl.core.LoopTagSupport;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.servlet.jsp.JspTagException;
+import javax.servlet.jsp.jstl.core.LoopTagSupport;
+
+import org.jahia.services.search.Hit;
 
 /**
  * Iterator over search results.

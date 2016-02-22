@@ -43,11 +43,13 @@
  */
 package org.jahia.services.content.interceptor;
 
-import com.google.common.collect.ImmutableSet;
-import org.jahia.services.content.nodetypes.SelectorType;
+import java.util.Set;
 
 import javax.jcr.PropertyType;
-import java.util.Set;
+
+import org.jahia.services.content.nodetypes.SelectorType;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Property interceptor that is applied on rich text properties. Needs to be subclassed to perform value modifications.

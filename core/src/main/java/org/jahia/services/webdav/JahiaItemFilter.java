@@ -43,12 +43,12 @@
  */
 package org.jahia.services.webdav;
 
+import javax.jcr.Item;
+import javax.jcr.Session;
+
 import org.apache.jackrabbit.webdav.simple.DefaultItemFilter;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
-
-import javax.jcr.Item;
-import javax.jcr.Session;
 
 /**
  * WebDAV resource filter that disables directory listing completely if activated in <code>jahia.properties</code> or delegates to the

@@ -43,10 +43,10 @@
  */
 package org.jahia.services.cache.ehcache;
 
-import net.sf.ehcache.CacheException;
+import net.sf.ehcache.event.CacheEventListener;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-import net.sf.ehcache.event.CacheEventListener;
+import net.sf.ehcache.CacheException;
 import org.slf4j.Logger;
 
 import java.util.Properties;

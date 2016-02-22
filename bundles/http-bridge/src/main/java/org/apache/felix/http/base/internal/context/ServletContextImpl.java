@@ -43,20 +43,21 @@
  */
 package org.apache.felix.http.base.internal.context;
 
-import org.apache.felix.http.base.internal.logger.SystemLogger;
-import org.apache.felix.http.base.internal.util.MimeTypes;
-import org.osgi.framework.Bundle;
-import org.osgi.service.http.HttpContext;
-
-import javax.servlet.*;
-import javax.servlet.descriptor.JspConfigDescriptor;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+
+import javax.servlet.*;
+import javax.servlet.descriptor.JspConfigDescriptor;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.felix.http.base.internal.logger.SystemLogger;
+import org.apache.felix.http.base.internal.util.MimeTypes;
+import org.osgi.framework.Bundle;
+import org.osgi.service.http.HttpContext;
 
 public final class ServletContextImpl
     implements ExtServletContext

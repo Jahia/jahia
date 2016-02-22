@@ -43,20 +43,25 @@
  */
 package org.jahia.services.content.decorator;
 
-import org.jahia.services.content.JCRCallback;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.content.JCRTemplate;
-import org.jahia.test.framework.AbstractJUnitTest;
-import org.junit.Test;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.Locale;
 
 import javax.jcr.NodeIterator;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
-import java.util.Locale;
 
-import static org.junit.Assert.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRPasswordHistoryEntryNode;
+import org.jahia.test.framework.AbstractJUnitTest;
+import org.junit.Test;
 
 /**
  * Test of the {@link JCRPasswordHistoryEntryNode} decorator.

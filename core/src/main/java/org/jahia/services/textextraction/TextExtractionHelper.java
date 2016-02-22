@@ -43,6 +43,10 @@
  */
 package org.jahia.services.textextraction;
 
+import java.io.Writer;
+
+import javax.jcr.RepositoryException;
+
 import org.drools.core.util.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRCallback;
@@ -51,9 +55,6 @@ import org.jahia.services.content.JCRTemplate;
 import org.jahia.tools.OutWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import java.io.Writer;
 
 /**
  * Text extraction utility class for (re-)extracting text on existing document nodes.

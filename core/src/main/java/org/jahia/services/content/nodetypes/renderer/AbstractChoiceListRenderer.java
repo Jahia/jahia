@@ -43,14 +43,15 @@
  */
 package org.jahia.services.content.nodetypes.renderer;
 
-import org.jahia.services.content.JCRPropertyWrapper;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.render.RenderContext;
-
-import javax.jcr.RepositoryException;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.jcr.RepositoryException;
+
+import org.jahia.services.content.JCRPropertyWrapper;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.render.RenderContext;
 
 /**
  * Base class for the renderer that is used to show a display title or name of the referenced node, e.g. a category or a tag.

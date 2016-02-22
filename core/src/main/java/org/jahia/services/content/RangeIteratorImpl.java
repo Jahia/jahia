@@ -43,9 +43,9 @@
  */
 package org.jahia.services.content;
 
-import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
-
 import java.util.Iterator;
+
+import org.apache.jackrabbit.commons.iterator.RangeIteratorAdapter;
 
 /**
  * Jahia's wrapper of the JCR <code>javax.jcr.RangeIterator</code>.

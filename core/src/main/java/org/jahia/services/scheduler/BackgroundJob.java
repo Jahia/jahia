@@ -46,15 +46,15 @@ package org.jahia.services.scheduler;
 import org.apache.commons.id.IdentifierGenerator;
 import org.apache.commons.id.IdentifierGeneratorFactory;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.jahia.bin.filters.jcr.JcrSessionFilter;
-import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
-import org.jahia.utils.LanguageCodeConverters;
-import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.jahia.bin.filters.jcr.JcrSessionFilter;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUser;
+import org.jahia.utils.LanguageCodeConverters;
+import org.quartz.*;
 
 import java.util.Date;
 

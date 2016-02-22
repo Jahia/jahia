@@ -44,11 +44,15 @@
 package org.jahia.services.content.decorator;
 
 import org.apache.jackrabbit.value.BinaryImpl;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.slf4j.Logger;
 
-import javax.jcr.*;
+import javax.jcr.Binary;
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.Property;
+import javax.jcr.RepositoryException;
 import java.io.IOException;
 import java.io.InputStream;
 

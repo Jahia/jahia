@@ -43,19 +43,28 @@
  */
 package org.jahia.utils;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+
+import javax.sql.DataSource;
+
 import org.apache.commons.lang.StringUtils;
-import org.hibernate.*;
+import org.hibernate.ScrollMode;
+import org.hibernate.ScrollableResults;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.StatelessSession;
 import org.jahia.commons.DatabaseScripts;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.sql.DataSource;
-import java.io.IOException;
-import java.io.Reader;
-import java.sql.*;
-import java.util.List;
 
 /**
  * Database related utility tool.

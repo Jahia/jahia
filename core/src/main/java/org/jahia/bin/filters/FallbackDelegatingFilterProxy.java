@@ -43,12 +43,12 @@
  */
 package org.jahia.bin.filters;
 
+import javax.servlet.Filter;
+import javax.servlet.ServletException;
+
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
-
-import javax.servlet.Filter;
-import javax.servlet.ServletException;
 
 /**
  * Extends the behaviour of standard Spring's {@link DelegatingFilterProxy} by

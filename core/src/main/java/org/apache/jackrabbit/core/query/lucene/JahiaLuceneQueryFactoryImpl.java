@@ -44,6 +44,7 @@
 package org.apache.jackrabbit.core.query.lucene;
 
 import com.google.common.collect.Sets;
+
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.math.util.MathUtils;
@@ -81,6 +82,7 @@ import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Row;
 import javax.jcr.query.qom.*;
 import javax.jcr.security.Privilege;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.*;

@@ -43,11 +43,12 @@
  */
 package org.jahia.services.content.nodetypes.renderer;
 
+import org.jahia.services.render.RenderContext;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.render.RenderContext;
 
 import javax.jcr.RepositoryException;
+
 import java.util.Locale;
 import java.util.Map;
 

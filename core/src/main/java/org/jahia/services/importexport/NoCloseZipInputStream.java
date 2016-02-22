@@ -43,8 +43,8 @@
  */
 package org.jahia.services.importexport;
 
-import java.io.IOException;
 import java.io.InputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.zip.ZipInputStream;
 

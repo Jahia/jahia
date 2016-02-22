@@ -43,10 +43,10 @@
  */
 package org.jahia.services.uicomponents.bean.editmode;
 
+import java.beans.PropertyEditorSupport;
+
 import org.jahia.services.uicomponents.bean.Visibility;
 import org.jahia.utils.Patterns;
-
-import java.beans.PropertyEditorSupport;
 
 /**
  * Engine tab specific property editor.

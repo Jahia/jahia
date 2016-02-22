@@ -43,10 +43,10 @@
  */
 package org.jahia.services.content.decorator;
 
+import org.slf4j.Logger;
 import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.slf4j.Logger;
 
 import javax.jcr.ItemNotFoundException;
 import javax.jcr.RepositoryException;

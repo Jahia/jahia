@@ -43,10 +43,10 @@
  */
 package org.jahia.services.search;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import org.apache.commons.lang.StringUtils;
 
 public class SearchURLService {
 

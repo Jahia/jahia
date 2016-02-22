@@ -44,13 +44,14 @@
 package org.jahia.taglibs.uicomponents.i18n;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.jahia.services.content.JCRNodeWrapper;
+import org.slf4j.Logger;
 import org.jahia.taglibs.ValueJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
-import org.slf4j.Logger;
+import org.jahia.services.content.JCRNodeWrapper;
 
 import javax.servlet.jsp.JspTagException;
 import javax.servlet.jsp.PageContext;
+
 import java.util.Locale;
 
 /**

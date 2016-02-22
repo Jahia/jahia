@@ -42,9 +42,14 @@
  *     please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.usermanager;
-
 import java.io.Serializable;
-import java.util.*;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * This class stores user properties, which are different from regular

@@ -43,8 +43,14 @@
  */
 package org.jahia.bin.filters;
 
-import javax.servlet.*;
 import java.io.IOException;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
 /**
  * A no operation filter that does nothing except invoking the next filter in

@@ -43,29 +43,39 @@
  */
 package org.jahia.test.services.render.filter;
 
-import com.google.common.collect.Sets;
-import org.jahia.api.Constants;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.jcr.NoSuchWorkspaceException;
+import javax.jcr.PathNotFoundException;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
+
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.URLResolver;
 import org.jahia.services.render.URLResolverFactory;
 import org.jahia.services.render.filter.URLFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
 import org.jahia.services.sites.JahiaSite;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.api.Constants;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.junit.*;
-import org.springframework.mock.web.MockHttpServletRequest;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.PathNotFoundException;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.ConstraintViolationException;
-import java.util.*;
+import com.google.common.collect.Sets;
+import org.springframework.mock.web.MockHttpServletRequest;
 
 import static org.junit.Assert.*;
 

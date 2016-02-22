@@ -45,7 +45,10 @@ package org.jahia.services.workflow.jbpm.command;
 
 import org.jahia.services.workflow.HistoryWorkflow;
 import org.jahia.services.workflow.jbpm.BaseCommand;
+import org.jbpm.process.audit.ProcessInstanceLog;
+import org.jbpm.process.audit.VariableInstanceLog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 

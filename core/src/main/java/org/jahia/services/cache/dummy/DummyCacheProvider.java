@@ -43,10 +43,10 @@
  */
 package org.jahia.services.cache.dummy;
 
-import org.jahia.exceptions.JahiaInitializationException;
-import org.jahia.services.cache.CacheImplementation;
 import org.jahia.services.cache.CacheProvider;
 import org.jahia.services.cache.CacheService;
+import org.jahia.services.cache.CacheImplementation;
+import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.settings.SettingsBean;
 
 /**

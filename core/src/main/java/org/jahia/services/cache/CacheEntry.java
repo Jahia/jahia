@@ -43,11 +43,11 @@
  */
 package org.jahia.services.cache;
 
-import java.io.Serializable;
 import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.HashMap;
+import java.util.Date;
+import java.io.Serializable;
 
 
 /** <p>This class represents an entry in a class.</p>

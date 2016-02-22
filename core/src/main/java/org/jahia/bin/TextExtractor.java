@@ -43,23 +43,24 @@
  */
 package org.jahia.bin;
 
+import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
 import org.apache.tika.metadata.Metadata;
 import org.jahia.services.textextraction.TextExtractionService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.files.FileUpload;
-import org.slf4j.Logger;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.View;
 import org.springframework.web.servlet.view.InternalResourceView;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Performs text and metadata extraction from the submitted document.

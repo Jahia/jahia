@@ -43,17 +43,18 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import com.ibm.icu.text.MessageFormat;
-import org.jahia.engines.EngineMessage;
-import org.jahia.engines.EngineMessages;
-import org.jahia.utils.i18n.Messages;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.jahia.engines.EngineMessage;
+import org.jahia.engines.EngineMessages;
+import org.jahia.utils.i18n.Messages;
+
+import com.ibm.icu.text.MessageFormat;
 
 /**
  * Convenient utility class for converting the password policy enforcement

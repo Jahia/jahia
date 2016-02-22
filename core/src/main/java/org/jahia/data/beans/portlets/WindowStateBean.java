@@ -43,11 +43,11 @@
  */
  package org.jahia.data.beans.portlets;
 
-import org.apache.pluto.driver.core.PortalRequestContext;
-import org.apache.pluto.driver.url.PortalURL;
-
 import javax.portlet.WindowState;
 import javax.servlet.http.HttpServletRequest;
+
+import org.apache.pluto.driver.core.PortalRequestContext;
+import org.apache.pluto.driver.url.PortalURL;
 
 /**
  * <p>Title: </p>

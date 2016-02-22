@@ -43,19 +43,21 @@
  */
 package org.jahia.services.tasks;
 
-import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.slf4j.Logger;
 
+import static org.jahia.api.Constants.JAHIANT_TASK;
+import static org.jahia.api.Constants.JAHIANT_TASKS;
+
+import org.jahia.services.content.*;
+import org.jahia.services.usermanager.JahiaGroupManagerService;
+
+import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.Calendar;
 import java.util.Set;
-
-import static org.jahia.api.Constants.JAHIANT_TASK;
-import static org.jahia.api.Constants.JAHIANT_TASKS;
 
 /**
  * Task management service.

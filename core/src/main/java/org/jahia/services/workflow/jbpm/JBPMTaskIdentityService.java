@@ -56,8 +56,10 @@ import org.kie.internal.task.api.TaskIdentityService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.jcr.RepositoryException;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInput;

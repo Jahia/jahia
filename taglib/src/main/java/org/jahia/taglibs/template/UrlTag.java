@@ -45,9 +45,14 @@ package org.jahia.taglibs.template;
 
 import org.apache.taglibs.standard.tag.common.core.Util;
 
-import javax.servlet.jsp.JspException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
+
+import javax.servlet.jsp.JspException;
 
 /**
  * JSP tag for creating URLs. Inheriting from the JSTL c:url tag, but adds the possibility

@@ -45,9 +45,10 @@ package org.jahia.services.render.filter;
 
 import net.htmlparser.jericho.Source;
 import net.htmlparser.jericho.SourceFormatter;
+
+import org.slf4j.Logger;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.slf4j.Logger;
 
 /**
  * Formats the rendered HTML output.

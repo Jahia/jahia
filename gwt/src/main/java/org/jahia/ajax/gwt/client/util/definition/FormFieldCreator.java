@@ -72,8 +72,7 @@ import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.CronField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
 import org.jahia.ajax.gwt.client.widget.definition.PropertiesEditor;
-import org.jahia.ajax.gwt.client.widget.form.CKEditorField;
-import org.jahia.ajax.gwt.client.widget.form.CalendarField;
+import org.jahia.ajax.gwt.client.widget.form.*;
 import org.jahia.ajax.gwt.client.widget.form.FileUploadField;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 

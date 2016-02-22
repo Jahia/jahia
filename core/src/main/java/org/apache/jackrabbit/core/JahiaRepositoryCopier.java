@@ -43,6 +43,13 @@
  */
 package org.apache.jackrabbit.core;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.jcr.NamespaceRegistry;
+import javax.jcr.RepositoryException;
+
 import org.apache.jackrabbit.core.lock.LockManagerImpl;
 import org.apache.jackrabbit.core.nodetype.InvalidNodeTypeDefException;
 import org.apache.jackrabbit.core.nodetype.NodeTypeRegistry;
@@ -51,12 +58,6 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.QNodeTypeDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.NamespaceRegistry;
-import javax.jcr.RepositoryException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Tool for migrating or backing up the Jackrabbit content repository. Optimized version of the

@@ -43,8 +43,7 @@
  */
 package org.jahia.services.render.filter;
 
-import net.htmlparser.jericho.Source;
-import net.htmlparser.jericho.Tag;
+import net.htmlparser.jericho.*;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 

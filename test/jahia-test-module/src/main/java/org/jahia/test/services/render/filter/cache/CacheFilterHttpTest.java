@@ -46,6 +46,7 @@ package org.jahia.test.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -74,6 +75,7 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;

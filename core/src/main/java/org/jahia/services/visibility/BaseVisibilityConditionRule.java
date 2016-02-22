@@ -43,10 +43,10 @@
  */
 package org.jahia.services.visibility;
 
-import org.jahia.services.Conditional;
-
 import java.util.Collections;
 import java.util.List;
+
+import org.jahia.services.Conditional;
 
 /**
  * Base class for visibility condition rules.

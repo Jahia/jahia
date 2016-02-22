@@ -44,8 +44,8 @@
 package org.jahia.taglibs.internal.uicomponents;
 
 import org.jahia.services.render.RenderContext;
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

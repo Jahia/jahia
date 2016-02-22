@@ -43,9 +43,9 @@
  */
 package org.jahia.ajax.gwt.client.data;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.io.Serializable;
 
 /**
  * 

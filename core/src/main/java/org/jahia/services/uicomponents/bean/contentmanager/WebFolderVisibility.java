@@ -43,12 +43,13 @@
  */
 package org.jahia.services.uicomponents.bean.contentmanager;
 
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.settings.SettingsBean;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 
 /**
  * Checks if the "Open in a Web folder" toolbar item can be shown (if the WebDAV directory listing is not disabled).

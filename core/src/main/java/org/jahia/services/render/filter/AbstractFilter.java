@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render.filter;
 
+import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -50,7 +51,6 @@ import org.jahia.services.render.RenderService;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
-import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;
 import java.util.LinkedList;

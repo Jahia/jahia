@@ -43,12 +43,14 @@
  */
 package org.jahia.services.seo.jcr;
 
-import org.apache.commons.collections.KeyValue;
-import org.apache.commons.collections.keyvalue.DefaultKeyValue;
-import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
-import org.jahia.services.content.*;
-import org.jahia.services.seo.VanityUrl;
+import static org.jahia.api.Constants.JCR_LANGUAGE;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -56,9 +58,17 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.validation.ConstraintViolationException;
-import java.util.*;
 
-import static org.jahia.api.Constants.JCR_LANGUAGE;
+import org.apache.commons.collections.KeyValue;
+import org.apache.commons.collections.keyvalue.DefaultKeyValue;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.seo.VanityUrl;
 
 /**
  * Manager for vanity URLs in Jahia

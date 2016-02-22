@@ -43,6 +43,10 @@
  */
 package org.jahia.tools.files;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
 import org.apache.commons.io.DirectoryWalker;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.comparator.PathFileComparator;
@@ -53,10 +57,6 @@ import org.quartz.JobExecutionException;
 import org.quartz.StatefulJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Background job that allows to watch files for modifications and call appropriate observers.

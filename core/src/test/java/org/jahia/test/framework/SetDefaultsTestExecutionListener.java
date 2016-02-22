@@ -43,11 +43,11 @@
  */
 package org.jahia.test.framework;
 
+import java.io.OutputStream;
+
 import org.jahia.bin.Jahia;
 import org.springframework.test.context.TestContext;
 import org.springframework.test.context.support.AbstractTestExecutionListener;
-
-import java.io.OutputStream;
 
 public class SetDefaultsTestExecutionListener extends
         AbstractTestExecutionListener {

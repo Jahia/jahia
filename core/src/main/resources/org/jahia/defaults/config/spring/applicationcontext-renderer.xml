@@ -32,11 +32,18 @@
         <property name="userManagerService" ref="JahiaUserManagerService"/>
     </bean>
 
-    <bean id="extensionObserverRegistry" class="org.jahia.osgi.ExtensionObserverRegistry" factory-method="getInstance"/>
-
-    <bean id="scriptEngineManager" class="org.jahia.services.render.scripting.bundle.BundleScriptEngineManager" factory-method="getInstance"/>
-
-    <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver" factory-method="getInstance">
+    <bean id="BundleScriptResolver" class="org.jahia.services.render.scripting.bundle.BundleScriptResolver">
+        <property name="scriptExtensionsOrdering">
+            <list>
+                <value>jsp</value>
+                <value>groovy</value>
+                <value>js</value>
+                <value>php</value>
+                <value>vm</value>
+                <value>fm</value>
+                <value>flow</value>
+            </list>
+        </property>
         <property name="scriptFactoryMap">
             <map>
                 <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
@@ -49,8 +56,6 @@
             </map>
         </property>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
-        <property name="bundleScriptFactory" ref="BundleJSR223ScriptFactory"/>
-        <property name="extensionObserverRegistry" ref="extensionObserverRegistry"/>
     </bean>
 
 

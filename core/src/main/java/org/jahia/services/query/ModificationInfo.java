@@ -43,11 +43,12 @@
  */
 package org.jahia.services.query;
 
-import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
-
-import javax.jcr.query.qom.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.jcr.query.qom.*;
+
+import org.jahia.services.query.QueryModifierAndOptimizerVisitor.TraversingMode;
 
 /**
  * This class is used to gather modification information mainly set during the INITIALIZE_MODE traversing. During traversing in

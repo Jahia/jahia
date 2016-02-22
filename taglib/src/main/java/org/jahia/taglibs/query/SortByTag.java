@@ -43,12 +43,12 @@
  */
 package org.jahia.taglibs.query;
 
-import org.apache.commons.lang.StringUtils;
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.qom.PropertyValue;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * Used to specify query sorting parameters.

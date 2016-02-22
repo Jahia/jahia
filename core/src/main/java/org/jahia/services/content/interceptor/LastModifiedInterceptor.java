@@ -43,15 +43,20 @@
  */
 package org.jahia.services.content.interceptor;
 
+import static org.jahia.api.Constants.JCR_LASTMODIFIED;
+import static org.jahia.api.Constants.MIX_LAST_MODIFIED;
+
+import java.util.Locale;
+
+import javax.jcr.ItemNotFoundException;
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.ValueFormatException;
+
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-
-import javax.jcr.*;
-import java.util.Locale;
-
-import static org.jahia.api.Constants.JCR_LASTMODIFIED;
-import static org.jahia.api.Constants.MIX_LAST_MODIFIED;
 
 /**
  * Handles last modified date property considering translation sub-nodes.

@@ -43,8 +43,8 @@
  */
 package org.jahia.services.render.filter;
 
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.*;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.slf4j.Logger;
 
 import javax.jcr.RepositoryException;

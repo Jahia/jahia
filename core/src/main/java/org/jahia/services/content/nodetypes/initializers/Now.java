@@ -43,18 +43,19 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
-import org.apache.commons.jexl.ExpressionFactory;
-import org.apache.commons.jexl.JexlHelper;
-import org.apache.jackrabbit.util.ISO8601;
-import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
-import org.jahia.services.content.nodetypes.ValueImpl;
-import org.slf4j.Logger;
-
-import javax.jcr.PropertyType;
-import javax.jcr.Value;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import javax.jcr.PropertyType;
+import javax.jcr.Value;
+
+import org.apache.commons.jexl.ExpressionFactory;
+import org.apache.commons.jexl.JexlHelper;
+import org.apache.jackrabbit.util.ISO8601;
+import org.slf4j.Logger;
+import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.ValueImpl;
 
 /**
  * Initial value provider for the current date.

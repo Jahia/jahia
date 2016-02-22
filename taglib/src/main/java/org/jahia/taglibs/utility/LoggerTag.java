@@ -43,8 +43,8 @@
  */
 package org.jahia.taglibs.utility;
 
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.slf4j.Logger;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 import javax.servlet.jsp.JspException;
 

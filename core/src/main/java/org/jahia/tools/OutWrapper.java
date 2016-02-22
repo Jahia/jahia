@@ -43,11 +43,11 @@
  */
 package org.jahia.tools;
 
-import org.slf4j.Logger;
-import org.slf4j.helpers.MessageFormatter;
-
 import java.io.IOException;
 import java.io.Writer;
+
+import org.slf4j.Logger;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * Wrapper around writer and logger to be able to perform simultaneous output into a logger and JSP writer.

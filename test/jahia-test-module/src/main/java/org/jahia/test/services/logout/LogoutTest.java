@@ -43,6 +43,14 @@
  */
 package org.jahia.test.services.logout;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
+
+import javax.jcr.PathNotFoundException;
+
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.lang.StringUtils;
@@ -64,13 +72,6 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import javax.jcr.PathNotFoundException;
-import java.util.HashSet;
-import java.util.Locale;
-import java.util.Set;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * User: david

@@ -45,9 +45,9 @@ package org.jahia.services.content;
 
 import org.jahia.data.beans.CategoryBean;
 
-import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.jcr.ValueFormatException;
+import javax.jcr.RepositoryException;
 import javax.jcr.nodetype.PropertyDefinition;
 import java.util.Date;
 

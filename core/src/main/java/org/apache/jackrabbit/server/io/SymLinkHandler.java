@@ -43,8 +43,8 @@
  */
 package org.apache.jackrabbit.server.io;
 
-import org.apache.jackrabbit.JcrConstants;
 import org.apache.jackrabbit.webdav.DavResource;
+import org.apache.jackrabbit.JcrConstants;
 
 import javax.jcr.Item;
 import javax.jcr.Node;

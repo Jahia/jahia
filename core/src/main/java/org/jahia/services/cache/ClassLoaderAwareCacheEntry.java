@@ -43,7 +43,11 @@
  */
 package org.jahia.services.cache;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
+import java.io.Serializable;
 
 /**
  * Wrapper for the cache entry to use the classloader of the specified module.

@@ -43,12 +43,13 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import java.util.Properties;
+
+import javax.jcr.RepositoryException;
+
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.slf4j.Logger;
-
-import javax.jcr.RepositoryException;
-import java.util.Properties;
 
 /**
  * Module content caching filter, which only caches the modules having an expiration set.

@@ -58,10 +58,11 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.Value;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 
 /**
  * User: toto

@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.client.util;
 
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.Window;
+
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 

@@ -43,12 +43,12 @@
  */
 package org.apache.jackrabbit.server.io;
 
-import org.apache.jackrabbit.JcrConstants;
-import org.apache.jackrabbit.webdav.DavResource;
-
 import javax.jcr.Item;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
+
+import org.apache.jackrabbit.JcrConstants;
+import org.apache.jackrabbit.webdav.DavResource;
 
 /**
  * 

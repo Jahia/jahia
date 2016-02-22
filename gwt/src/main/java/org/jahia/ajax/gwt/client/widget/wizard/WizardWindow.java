@@ -44,22 +44,22 @@
 package org.jahia.ajax.gwt.client.widget.wizard;
 
 
+import java.util.LinkedList;
+import java.util.List;
+
+import org.jahia.ajax.gwt.client.messages.Messages;
+
 import com.extjs.gxt.ui.client.Style.HorizontalAlignment;
 import com.extjs.gxt.ui.client.Style.LayoutRegion;
-import com.extjs.gxt.ui.client.event.ButtonEvent;
-import com.extjs.gxt.ui.client.event.SelectionListener;
+import com.extjs.gxt.ui.client.event.*;
 import com.extjs.gxt.ui.client.widget.*;
+import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.extjs.gxt.ui.client.widget.button.Button;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayout;
 import com.extjs.gxt.ui.client.widget.layout.BorderLayoutData;
 import com.extjs.gxt.ui.client.widget.layout.TableData;
-import com.extjs.gxt.ui.client.widget.toolbar.ToolBar;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Element;
-import org.jahia.ajax.gwt.client.messages.Messages;
-
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * A wizard window intended to display wizard cards.</br></br>

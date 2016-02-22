@@ -43,16 +43,17 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import org.apache.jackrabbit.util.ISO8601;
-import org.slf4j.Logger;
-
-import javax.jcr.*;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.regex.Pattern;
+import java.math.BigDecimal;
+
+import javax.jcr.*;
+
+import org.apache.jackrabbit.util.ISO8601;
+import org.slf4j.Logger;
 
 /**
  * Implementation of the JCR's {@link Value} interface for holding property

@@ -43,13 +43,17 @@
  */
 package org.jahia.services.render.filter;
 
-import net.htmlparser.jericho.*;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
-
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.htmlparser.jericho.Attribute;
+import net.htmlparser.jericho.Attributes;
+import net.htmlparser.jericho.OutputDocument;
+import net.htmlparser.jericho.Source;
+import net.htmlparser.jericho.StartTag;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.Resource;
 
 /**
  * Traverses the configured HTML tag attributes of the provided document and

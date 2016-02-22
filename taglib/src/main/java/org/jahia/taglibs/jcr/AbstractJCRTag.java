@@ -43,15 +43,16 @@
  */
 package org.jahia.taglibs.jcr;
 
+import java.util.Locale;
+
+import javax.jcr.RepositoryException;
+
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
-
-import javax.jcr.RepositoryException;
-import java.util.Locale;
 
 /**
  * Base tag for the JCR related tags.

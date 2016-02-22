@@ -46,6 +46,7 @@ package org.jahia.bin.errors;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.statistics.StatisticsGateway;
+
 import org.apache.commons.collections.iterators.EnumerationIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -64,6 +65,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.management.*;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;

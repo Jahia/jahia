@@ -43,11 +43,11 @@
  */
 package org.jahia.settings;
 
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.config.PropertiesFactoryBean;
-
 import java.io.IOException;
 import java.util.Properties;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.config.PropertiesFactoryBean;
 
 /**
  * Properties factory bean that retrieves the matching system properties.

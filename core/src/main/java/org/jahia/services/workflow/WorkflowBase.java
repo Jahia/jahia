@@ -43,9 +43,9 @@
  */
 package org.jahia.services.workflow;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import java.io.Serializable;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 /**
  * Common workflow item.

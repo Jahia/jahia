@@ -43,11 +43,12 @@
  */
 package org.jahia.services.uicomponents.bean;
 
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.usermanager.JahiaUser;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
+
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.usermanager.JahiaUser;
 
 /**
  * Utility bean for inverted visibility. It returns the negated value of the

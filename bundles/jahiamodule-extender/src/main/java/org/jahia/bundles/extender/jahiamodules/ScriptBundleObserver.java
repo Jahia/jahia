@@ -41,39 +41,37 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.workflow.jbpm.custom;
+package org.jahia.bundles.extender.jahiamodules;
 
-import org.jahia.services.content.JCRPublicationService;
-import org.kie.api.runtime.process.WorkItem;
-import org.kie.api.runtime.process.WorkItemHandler;
-import org.kie.api.runtime.process.WorkItemManager;
+import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
+import org.ops4j.pax.swissbox.extender.BundleObserver;
+import org.osgi.framework.Bundle;
 
-import javax.jcr.RepositoryException;
-
+import java.net.URL;
 import java.util.List;
 
 /**
- * Lock custom activity for jBPM workflow
- * <p/>
- * Lock the current node
+ * Bundle observer for all scripts (JSP, Velocity, Freemarker, etc...)
  */
-public class LockWorkItemHandler extends AbstractWorkItemHandler implements WorkItemHandler {
+public class ScriptBundleObserver implements BundleObserver<URL> {
 
-    @Override
-    public void executeWorkItem(WorkItem workItem, WorkItemManager manager) {
-        @SuppressWarnings("unchecked")
-        List<String> info = (List<String>) workItem.getParameter("nodeIds");
-        String workspace = (String) workItem.getParameter("workspace");
-        try {
-            JCRPublicationService.getInstance().lockForPublication(info, workspace, "publication-process-" + workItem.getProcessInstanceId());
-        } catch (RepositoryException e) {
-            throw new RuntimeException("Error while executing lock work item " + workItem, e);
-        }
-        manager.completeWorkItem(workItem.getId(), null);
+    private BundleScriptResolver bundleScriptResolver = null;
+
+    public ScriptBundleObserver(BundleScriptResolver bundleScriptResolver) {
+        this.bundleScriptResolver = bundleScriptResolver;
+    }
+
+    public BundleScriptResolver getBundleScriptResolver() {
+        return bundleScriptResolver;
     }
 
     @Override
-    public void abortWorkItem(WorkItem workItem, WorkItemManager manager) {
-        manager.abortWorkItem(workItem.getId());
+    public void addingEntries(Bundle bundle, List<URL> urls) {
+        bundleScriptResolver.addBundleScripts(bundle, urls);
+    }
+
+    @Override
+    public void removingEntries(Bundle bundle, List<URL> urls) {
+        bundleScriptResolver.removeBundleScripts(bundle, urls);
     }
 }

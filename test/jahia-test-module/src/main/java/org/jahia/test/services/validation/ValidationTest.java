@@ -44,10 +44,7 @@
 package org.jahia.test.services.validation;
 
 import org.jahia.api.Constants;
-import org.jahia.services.content.CompositeConstraintViolationException;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 import org.jahia.test.TestHelper;
 import org.junit.*;
 import org.slf4j.Logger;
@@ -55,6 +52,7 @@ import org.springframework.context.i18n.LocaleContext;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import javax.jcr.nodetype.ConstraintViolationException;
+
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;

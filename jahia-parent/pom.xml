@@ -868,6 +868,7 @@
                                     <packageExclude>shaded*</packageExclude>
                                     <packageExclude>org.slf4j*</packageExclude>
                                     <packageExclude>org.apache.log4j*</packageExclude>
+                                    <packageExclude>org.ops4j*</packageExclude>
                                     <packageExclude>org.knopflerfish.service.log</packageExclude>
                                     <packageExclude>org.apache.karaf*</packageExclude>
                                     <packageExclude>jline*</packageExclude>

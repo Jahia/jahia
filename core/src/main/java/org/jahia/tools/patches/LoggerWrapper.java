@@ -43,11 +43,11 @@
  */
 package org.jahia.tools.patches;
 
-import org.slf4j.Logger;
-import org.slf4j.helpers.MessageFormatter;
-
 import java.io.PrintWriter;
 import java.io.Writer;
+
+import org.slf4j.Logger;
+import org.slf4j.helpers.MessageFormatter;
 
 /**
  * SLF4J logger wrapper to also log into the provided instance of {@link PrintWriter}. Used by Groovy Console and {@link GroovyPatcher}.

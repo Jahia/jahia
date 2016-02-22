@@ -49,7 +49,7 @@ import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.name.NameFactoryImpl;
 import org.jahia.settings.SettingsBean;
 
-import javax.jcr.NamespaceException;
+import javax.jcr.*;
 import javax.jcr.query.qom.PropertyValue;
 import java.util.Map;
 import java.util.regex.Matcher;

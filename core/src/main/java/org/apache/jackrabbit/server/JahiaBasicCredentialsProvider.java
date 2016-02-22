@@ -43,19 +43,20 @@
  */
 package org.apache.jackrabbit.server;
 
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.security.SecurityConstants;
-import org.apache.jackrabbit.util.Base64;
-import org.apache.jackrabbit.webdav.DavConstants;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 import javax.jcr.Credentials;
 import javax.jcr.LoginException;
 import javax.jcr.SimpleCredentials;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.security.SecurityConstants;
+import org.apache.jackrabbit.util.Base64;
+import org.apache.jackrabbit.webdav.DavConstants;
 
 /**
  * Credentials provider that extracts the credentials information from the "Authorization" header (basic authentication type) and also

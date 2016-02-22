@@ -44,6 +44,7 @@
 package org.jahia.bin;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
+
 import org.jahia.bin.errors.DefaultErrorHandler;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.utils.WebUtils;
@@ -53,6 +54,7 @@ import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
 import java.util.List;

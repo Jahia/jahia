@@ -45,7 +45,9 @@ package org.jahia.services.workflow.jbpm.custom;
 
 import org.jahia.pipelines.Pipeline;
 import org.jahia.pipelines.PipelineException;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.services.workflow.WorkflowVariable;
 import org.jbpm.services.task.exception.PermissionDeniedException;
 import org.jbpm.services.task.impl.model.I18NTextImpl;

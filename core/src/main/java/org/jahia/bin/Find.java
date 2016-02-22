@@ -43,7 +43,24 @@
  */
 package org.jahia.bin;
 
+import java.io.IOException;
+import java.util.*;
+import java.util.regex.Pattern;
+
+import javax.jcr.*;
+import javax.jcr.query.InvalidQueryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import javax.jcr.query.Row;
+import javax.jcr.query.RowIterator;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.render.URLResolverFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.lucene.queryParser.QueryParser;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaForbiddenAccessException;
@@ -53,20 +70,9 @@ import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.URLResolver;
-import org.jahia.services.render.URLResolverFactory;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.*;
-import javax.jcr.query.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
 
 /**
  * A small servlet to allow us to perform queries on the JCR.

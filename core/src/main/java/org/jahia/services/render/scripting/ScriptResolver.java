@@ -47,8 +47,9 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.View;
+import org.jahia.services.render.TemplateNotFoundException;
+import org.jahia.services.render.scripting.Script;
 
 import java.util.SortedSet;
 
@@ -58,10 +59,10 @@ import java.util.SortedSet;
  */
 public interface ScriptResolver {
 
-    Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
+    public Script resolveScript(Resource resource, RenderContext renderContext) throws TemplateNotFoundException;
 
-    boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site,  String templateType);
+    public boolean hasView(ExtendedNodeType nt, String viewName, JCRSiteNode site,  String templateType);
 
-    SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
+    public SortedSet<View> getViewsSet(ExtendedNodeType nt, JCRSiteNode site, String templateType);
 
 }

@@ -43,22 +43,28 @@
  */
 package org.jahia.services.pwdpolicy;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
-import com.thoughtworks.xstream.io.xml.CompactWriter;
-import com.thoughtworks.xstream.io.xml.XppDriver;
-import org.apache.commons.lang.time.FastDateFormat;
-import org.jahia.api.Constants;
-import org.jahia.services.content.*;
-import org.jahia.services.content.decorator.JCRUserNode;
-
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+
+import org.apache.commons.lang.time.FastDateFormat;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRContentUtils;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
+import org.jahia.services.content.decorator.JCRUserNode;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
+import com.thoughtworks.xstream.io.xml.CompactWriter;
+import com.thoughtworks.xstream.io.xml.XppDriver;
 
 /**
  * Business object controller class for the Jahia Password Policy Service.

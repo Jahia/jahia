@@ -43,13 +43,13 @@
  */
 package org.jahia.utils;
 
-import org.apache.lucene.index.CheckIndex;
-import org.apache.lucene.index.CheckIndex.Status;
-import org.apache.lucene.store.FSDirectory;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+
+import org.apache.lucene.index.CheckIndex;
+import org.apache.lucene.index.CheckIndex.Status;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * Search index related utilities.

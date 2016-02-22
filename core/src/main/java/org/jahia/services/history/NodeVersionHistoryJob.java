@@ -43,13 +43,13 @@
  */
 package org.jahia.services.history;
 
+import java.util.Set;
+
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Set;
 
 /**
  * Node version history purge operation as a background job.

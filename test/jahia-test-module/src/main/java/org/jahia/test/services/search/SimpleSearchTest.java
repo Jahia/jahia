@@ -43,29 +43,31 @@
  */
 package org.jahia.test.services.search;
 
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.URLGenerator;
 import org.jahia.services.search.Hit;
 import org.jahia.services.search.SearchCriteria;
+import org.jahia.services.search.SearchService;
 import org.jahia.services.search.SearchCriteria.CommaSeparatedMultipleValue;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
-import org.jahia.services.search.SearchService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.slf4j.Logger;
+
+import java.util.*;
+
+import static org.junit.Assert.*;
+import org.junit.*;
 
 import javax.jcr.RepositoryException;
-import java.util.List;
-import java.util.Locale;
-
-import static org.junit.Assert.assertEquals;
 
 /**
  * Unit test for simple fulltext search

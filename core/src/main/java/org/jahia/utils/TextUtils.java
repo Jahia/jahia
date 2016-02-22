@@ -43,9 +43,9 @@
  */
 package org.jahia.utils;
 
-import org.apache.commons.lang.StringUtils;
-
 import java.util.Arrays;
+
+import org.apache.commons.lang.StringUtils;
 
 /**
  * @author Christophe Laprun

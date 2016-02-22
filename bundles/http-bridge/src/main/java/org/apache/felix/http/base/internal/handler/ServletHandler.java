@@ -43,6 +43,9 @@
  */
 package org.apache.felix.http.base.internal.handler;
 
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
+import static javax.servlet.http.HttpServletResponse.SC_OK;
+
 import org.apache.felix.http.base.internal.context.ExtServletContext;
 
 import javax.servlet.Servlet;
@@ -55,9 +58,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
-import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN;
-import static javax.servlet.http.HttpServletResponse.SC_OK;
 
 public final class ServletHandler
     extends AbstractHandler implements Comparable<ServletHandler>

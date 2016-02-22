@@ -44,12 +44,12 @@
 package org.jahia.ajax.gwt.client.data.node;
 
 import org.jahia.ajax.gwt.client.data.GWTJahiaLanguage;
-import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
+import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeProperty;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.io.Serializable;
 
 /**
  * GWT bean, representing result of the node properties request.

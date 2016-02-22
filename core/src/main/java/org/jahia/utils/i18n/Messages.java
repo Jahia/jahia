@@ -43,16 +43,16 @@
  */
 package org.jahia.utils.i18n;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.utils.Patterns;
-
 import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.utils.Patterns;
 
 /**
  * Jahia i18n message utilities.

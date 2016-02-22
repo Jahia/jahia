@@ -43,11 +43,11 @@
  */
 package org.jahia.services.content.nodetypes;
 
-import org.jahia.utils.ArrayUtils;
-
-import java.io.IOException;
-import java.io.Reader;
 import java.io.StreamTokenizer;
+import java.io.Reader;
+import java.io.IOException;
+
+import org.jahia.utils.ArrayUtils;
 
 /**
  * Lexer

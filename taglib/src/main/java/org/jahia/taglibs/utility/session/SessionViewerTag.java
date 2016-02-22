@@ -43,16 +43,17 @@
  */
 package org.jahia.taglibs.utility.session;
 
-import org.apache.taglibs.standard.tag.common.core.Util;
-import org.jahia.taglibs.AbstractJahiaTag;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import javax.servlet.jsp.JspWriter;
 import java.io.IOException;
 import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import javax.servlet.jsp.JspWriter;
+
+import org.apache.taglibs.standard.tag.common.core.Util;
+import org.jahia.taglibs.AbstractJahiaTag;
 
 /**
  * <p>Title: Debugging tool that displays the content of the current HTTP

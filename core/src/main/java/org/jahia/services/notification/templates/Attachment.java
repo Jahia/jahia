@@ -43,10 +43,11 @@
  */
 package org.jahia.services.notification.templates;
 
+import java.io.File;
+
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
 import javax.mail.Part;
-import java.io.File;
 
 /**
  * Represents an e-mail attachment.

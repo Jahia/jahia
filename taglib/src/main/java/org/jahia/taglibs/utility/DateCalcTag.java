@@ -43,11 +43,11 @@
  */
 package org.jahia.taglibs.utility;
 
-import org.jahia.taglibs.internal.date.AbstractDateTag;
-import org.slf4j.Logger;
-
 import java.util.Calendar;
 import java.util.Date;
+
+import org.slf4j.Logger;
+import org.jahia.taglibs.internal.date.AbstractDateTag;
 
 /**
  * @author Xavier Lawrence

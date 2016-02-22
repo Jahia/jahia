@@ -43,6 +43,16 @@
  */
 package org.jahia.bin;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Properties;
+import java.util.Set;
+
+import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+
 import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -53,10 +63,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.RepositoryException;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 /**
  * Controller for performing user and group mixed search.

@@ -44,9 +44,9 @@
 package org.jahia.services.content.nodetypes;
 
 import javax.jcr.query.qom.QueryObjectModelConstants;
-import java.io.IOException;
-import java.io.Reader;
 import java.io.StreamTokenizer;
+import java.io.Reader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 

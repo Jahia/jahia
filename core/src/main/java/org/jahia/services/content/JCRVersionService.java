@@ -44,15 +44,15 @@
 package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.utils.comparator.NumericStringComparator;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.exceptions.JahiaInitializationException;
 import org.jahia.services.JahiaService;
 import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
-import org.jahia.utils.comparator.NumericStringComparator;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
-import org.slf4j.Logger;
 
 import javax.jcr.*;
 import javax.jcr.nodetype.NodeType;
@@ -60,6 +60,7 @@ import javax.jcr.version.Version;
 import javax.jcr.version.VersionHistory;
 import javax.jcr.version.VersionIterator;
 import javax.jcr.version.VersionManager;
+
 import java.util.*;
 
 /**

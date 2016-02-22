@@ -43,6 +43,8 @@
  */
 package org.jahia.services.search;
 
+import java.util.Map;
+
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
@@ -50,7 +52,6 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 
 import javax.jcr.RepositoryException;
-import java.util.Map;
 
 /**
  * File and folder search result item, used as a view object in JSP templates.

@@ -44,11 +44,11 @@
 package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.utils.i18n.ResourceBundleMarker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;

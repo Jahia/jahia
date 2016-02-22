@@ -43,12 +43,13 @@
  */
 package org.jahia.services.uicomponents.bean.toolbar;
 
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.jahia.params.valves.LogoutConfig;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.usermanager.JahiaUser;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
 
 /**
  * @author Christophe Laprun

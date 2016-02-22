@@ -45,6 +45,7 @@ package org.jahia.taglibs.template.pager;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.TagSupport;
+
 import java.util.HashMap;
 import java.util.Map;
 

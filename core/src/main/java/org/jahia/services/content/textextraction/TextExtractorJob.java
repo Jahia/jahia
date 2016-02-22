@@ -43,13 +43,13 @@
  */
 package org.jahia.services.content.textextraction;
 
+import org.slf4j.Logger;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRStoreProvider;
 import org.jahia.services.content.rules.ExtractionService;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
-import org.slf4j.Logger;
 
 /**
  * 

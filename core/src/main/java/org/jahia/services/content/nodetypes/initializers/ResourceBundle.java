@@ -43,6 +43,11 @@
  */
 package org.jahia.services.content.nodetypes.initializers;
 
+import java.util.List;
+import java.util.Locale;
+
+import javax.jcr.Value;
+
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -51,10 +56,6 @@ import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.jcr.Value;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Default value initializer for a node property that looks up the value from a resource bundle.

@@ -43,12 +43,12 @@
  */
 package org.jahia.services.importexport.validation;
 
-import org.jahia.api.Constants;
-import org.xml.sax.Attributes;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
+
+import org.jahia.api.Constants;
+import org.xml.sax.Attributes;
 
 /**
  * Validator that gets the list of all sites and sites properties from the xml import file.

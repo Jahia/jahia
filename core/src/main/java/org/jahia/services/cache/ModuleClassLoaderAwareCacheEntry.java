@@ -43,12 +43,12 @@
  */
 package org.jahia.services.cache;
 
-import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.registries.ServicesRegistry;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+
+import org.jahia.data.templates.JahiaTemplatesPackage;
+import org.jahia.registries.ServicesRegistry;
 
 /**
  * Wrapper for the cache entry to use the classloader of the specified module.

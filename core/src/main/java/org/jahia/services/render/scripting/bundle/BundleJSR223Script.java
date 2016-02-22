@@ -43,11 +43,11 @@
  */
 package org.jahia.services.render.scripting.bundle;
 
-import org.jahia.services.render.BundleView;
-import org.jahia.services.render.scripting.JSR223Script;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import org.jahia.services.render.BundleView;
+import org.jahia.services.render.scripting.JSR223Script;
 
 /**
  * JSR-223 script engine dispatcher for view scripts, located in an OSGi bundle.

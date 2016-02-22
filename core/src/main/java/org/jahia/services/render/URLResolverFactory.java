@@ -43,18 +43,20 @@
  */
 package org.jahia.services.render;
 
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.search.Query;
 import net.sf.ehcache.search.Result;
 import net.sf.ehcache.search.expression.Criteria;
+
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * Basic factory for URL resolver, we will optimize it later, as it makes no sense to create these objects all the

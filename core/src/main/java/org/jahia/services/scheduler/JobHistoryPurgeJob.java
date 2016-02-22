@@ -43,15 +43,15 @@
  */
 package org.jahia.services.scheduler;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Pattern;
+
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Background task that purges completed jobs based on the configured expiration.

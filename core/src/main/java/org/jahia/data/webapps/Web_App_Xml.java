@@ -49,18 +49,19 @@
 //
 package org.jahia.data.webapps;
 
-import org.jahia.exceptions.JahiaException;
-import org.jahia.utils.xml.XMLParser;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.jahia.exceptions.JahiaException;
+import org.jahia.utils.xml.XMLParser;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 /**
  * Holds Informations about the Web Component deployment descriptors file web.xml

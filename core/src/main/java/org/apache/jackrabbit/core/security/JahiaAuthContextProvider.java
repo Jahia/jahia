@@ -43,15 +43,19 @@
  */
 package org.apache.jackrabbit.core.security;
 
-import org.apache.jackrabbit.core.config.LoginModuleConfig;
-import org.apache.jackrabbit.core.security.authentication.*;
-import org.apache.jackrabbit.core.security.principal.PrincipalProviderRegistry;
-
 import javax.jcr.Credentials;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
+
+import org.apache.jackrabbit.core.config.LoginModuleConfig;
+import org.apache.jackrabbit.core.security.authentication.AuthContext;
+import org.apache.jackrabbit.core.security.authentication.AuthContextProvider;
+import org.apache.jackrabbit.core.security.authentication.CallbackHandlerImpl;
+import org.apache.jackrabbit.core.security.authentication.JAASAuthContext;
+import org.apache.jackrabbit.core.security.authentication.LocalAuthContext;
+import org.apache.jackrabbit.core.security.principal.PrincipalProviderRegistry;
 
 /**
  * Jahia authentication provider. Introduced to work around the bug https://issues.apache.org/jira/browse/JCR-1977 <br>

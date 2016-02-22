@@ -43,11 +43,11 @@
  */
 package org.jahia.taglibs.internal.gwt;
 
-import org.apache.commons.lang.StringUtils;
-import org.jahia.ajax.gwt.utils.GWTInitializer;
-import org.jahia.taglibs.AbstractJahiaTag;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
+import org.apache.commons.lang.StringUtils;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.ajax.gwt.utils.GWTInitializer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;

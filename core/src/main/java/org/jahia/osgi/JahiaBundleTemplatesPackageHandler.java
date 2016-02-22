@@ -43,16 +43,16 @@
  */
 package org.jahia.osgi;
 
+import java.io.File;
+import java.net.URL;
+import java.util.Enumeration;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.Bundle;
-
-import java.io.File;
-import java.net.URL;
-import java.util.Enumeration;
 
 /**
  * Utility class for creating {@link JahiaTemplatesPackage} from a provided bundle and populating data from the manifest headers.

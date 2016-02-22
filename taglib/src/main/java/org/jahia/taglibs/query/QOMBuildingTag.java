@@ -43,14 +43,14 @@
  */
 package org.jahia.taglibs.query;
 
-import org.jahia.services.query.QOMBuilder;
-import org.jahia.taglibs.AbstractJahiaTag;
-import org.jahia.taglibs.jcr.query.JQOMTag;
-
 import javax.jcr.query.qom.QueryObjectModelFactory;
 import javax.jcr.query.qom.Selector;
 import javax.jcr.query.qom.Source;
 import javax.servlet.jsp.JspTagException;
+
+import org.jahia.services.query.QOMBuilder;
+import org.jahia.taglibs.AbstractJahiaTag;
+import org.jahia.taglibs.jcr.query.JQOMTag;
 
 /**
  * Superclass for tags, which are nested inside {@link QueryDefinitionTag} or {@link JQOMTag},

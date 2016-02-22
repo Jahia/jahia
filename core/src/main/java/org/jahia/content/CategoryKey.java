@@ -43,8 +43,8 @@
  */
 package org.jahia.content;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * <p>Title: A ObjectKey class for categories</p>

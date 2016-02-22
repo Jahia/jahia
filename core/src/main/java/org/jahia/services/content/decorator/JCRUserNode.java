@@ -43,6 +43,7 @@
  */
 package org.jahia.services.content.decorator;
 
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -57,6 +58,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.*;
+
 import java.util.*;
 
 /**

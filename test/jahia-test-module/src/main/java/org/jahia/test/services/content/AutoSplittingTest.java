@@ -43,21 +43,25 @@
  */
 package org.jahia.test.services.content;
 
+import org.slf4j.Logger;
 import org.apache.commons.lang.time.DateUtils;
 import org.jahia.api.Constants;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRAutoSplitUtils;
+import org.jahia.services.content.JCRCallback;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.JCRTemplate;
 import org.jahia.test.TestHelper;
 import org.jahia.utils.LanguageCodeConverters;
 import org.junit.*;
-import org.slf4j.Logger;
+import static org.junit.Assert.*;
 
 import javax.jcr.RepositoryException;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 /**
  * A unit test to validate the proper behavior of the auto-splitting algorithm when creating nodes through the API

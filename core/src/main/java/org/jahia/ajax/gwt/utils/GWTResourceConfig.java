@@ -43,17 +43,18 @@
  */
 package org.jahia.ajax.gwt.utils;
 
-import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
-import org.springframework.context.ApplicationListener;
-import org.springframework.web.context.ServletContextAware;
-
-import javax.servlet.ServletContext;
 import java.net.MalformedURLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
+
+import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.web.context.ServletContextAware;
 
 /**
  * GWT mode configuration options.

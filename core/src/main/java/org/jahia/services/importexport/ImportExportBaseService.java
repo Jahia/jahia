@@ -1120,7 +1120,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
                         zipentry.getSize();
 
                         LegacyImportHandler importHandler = new LegacyImportHandler(session, siteFolder, reg, mapping, LanguageCodeConverters.languageCodeToLocale(languageCode), infos != null ? originatingJahiaRelease : null, legacyPidMappingTool, legacyImportHandlerCtnId);
-                        Map<String, List<String>> references = new HashMap<String, List<String>>();
+                        Map<String, List<String>> references = new LinkedHashMap<String, List<String>>();
                         importHandler.setReferences(references);
 
                         InputStream documentInput = zis;

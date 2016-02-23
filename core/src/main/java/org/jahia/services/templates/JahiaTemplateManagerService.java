@@ -635,6 +635,10 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         moduleInstallationHelper.uninstallModules(moduleIds, sitePath, session);
     }
 
+    public void uninstallModulesByIds(final List<String> moduleIds, final String sitePath, final JCRSessionWrapper session) throws RepositoryException {
+        moduleInstallationHelper.uninstallModules(moduleIds, sitePath, session);
+    }
+
     public void uninstallModulesFromAllSites(final String module, final String username, final boolean purgeAllContent) throws RepositoryException {
         moduleInstallationHelper.uninstallModulesFromAllSites(module, username, purgeAllContent);
     }

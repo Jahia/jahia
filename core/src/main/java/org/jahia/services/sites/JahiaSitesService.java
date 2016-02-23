@@ -537,13 +537,18 @@ public class JahiaSitesService extends JahiaService {
         }
         // un-install modules if there are any
         if (!modulesToUninstall.isEmpty()) {
-            List<JahiaTemplatesPackage> uninstalledModules = moduleIdsToTemplatesPackage(modulesToUninstall, templateService);
+            Set<String> moduleIds = new LinkedHashSet<>();
             // uninstall modules that are not needed anymore
             try {
-                logger.info("Uninstalling modules " + uninstalledModules + " from " + siteKey);
-                templateService.uninstallModules(uninstalledModules, site.getJCRLocalPath(), session);
+                for (String s : modulesToUninstall) {
+                    JahiaTemplatesPackage pkg = templateService.getAnyDeployedTemplatePackage(s);
+                    moduleIds.add(pkg != null ? pkg.getId() : s);
+                }
+                List<String> ids = new ArrayList<>(moduleIds);
+                logger.info("Uninstalling modules {} from {}", ids.toArray(), siteKey);
+                templateService.uninstallModulesByIds(ids, site.getJCRLocalPath(), session);
             } catch (RepositoryException re) {
-                logger.error("Unable to uninstall modules " + uninstalledModules + " from "
+                logger.error("Unable to uninstall modules " + modulesToUninstall + " from "
                         + siteKey + ". Cause: " + re.getMessage(), re);
             }
         }

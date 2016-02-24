@@ -47,33 +47,22 @@ import javax.servlet.Filter;
 import javax.servlet.ServletException;
 
 import org.jahia.services.SpringContextSingleton;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 /**
- * Extends the behaviour of standard Spring's {@link DelegatingFilterProxy} by
- * falling back to a {@link PassThroughFilter} (pass through) filter if the
- * target filter cannot be found in any of the modules.
- * 
+ * Extends the behavior of standard Spring's {@link DelegatingFilterProxy} to allow for delegate bean defined either in the core or in a module.
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleDelegatingFilterProxy extends DelegatingFilterProxy {
 
     @Override
     protected Filter initDelegate(WebApplicationContext wac) throws ServletException {
-        Filter delegate = null;
-
-        try {
-            delegate = (Filter) SpringContextSingleton.getBeanInModulesContext(getTargetBeanName());
-            if (isTargetFilterLifecycle()) {
-                delegate.init(getFilterConfig());
-            }
-        } catch (NoSuchBeanDefinitionException e) {
-            delegate = PassThroughFilter.INSTANCE;
+        Filter delegate = (Filter) SpringContextSingleton.getBeanInModulesContext(getTargetBeanName());
+        if (isTargetFilterLifecycle()) {
+            delegate.init(getFilterConfig());
         }
-
         return delegate;
     }
-
 }

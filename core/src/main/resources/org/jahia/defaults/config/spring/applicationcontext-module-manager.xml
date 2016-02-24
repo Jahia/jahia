@@ -46,7 +46,7 @@
         <property name="jobDelay" value="${jahia.moduleManager.nodeOperationProcessor.delay:2000}"/>
     </bean>
 
-    <bean parent="jobSchedulingBean">
+    <!--<bean parent="jobSchedulingBean">
         <property name="ramJob" value="true"/>
         <property name="overwriteExisting" value="true"/>
         <property name="jobDetail">
@@ -71,9 +71,9 @@
                 <property name="repeatCount" value="0"/>
             </bean>
         </property>
-    </bean>
+    </bean>-->
 
-    <bean parent="jobSchedulingBean">
+    <!--<bean parent="jobSchedulingBean">
         <property name="ramJob" value="true"/>
         <property name="overwriteExisting" value="true"/>
         <property name="jobDetail">
@@ -99,7 +99,7 @@
             </bean>
         </property>
     </bean>
-
+-->
     <bean id="NodeOperationEventListener" class="org.jahia.services.modulemanager.impl.NodeOperationEventListener">
         <property name="workspace" value="default"/>
         <property name="operationTypes">

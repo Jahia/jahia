@@ -89,8 +89,8 @@ public class BundleServiceImpl{
      * @return local bundles with states
      * @throws RepositoryException
      */
-    private Map<Bundle, String> getLocalBundles() throws RepositoryException {
-        Map<Bundle, String> result = new HashMap<>();
+    private Map<BundleDTO, String> getLocalBundles() throws RepositoryException {
+        Map<BundleDTO, String> result = new HashMap<>();
         /* BundleArchive[] archives = null;
         // Get Felix Bundle Archives.
         try {
@@ -104,12 +104,26 @@ public class BundleServiceImpl{
         for (org.osgi.framework.Bundle contextBundle : FrameworkService.getBundleContext().getBundles()) {
             logger.info("putting " + contextBundle + " in JCR");
             if (contextBundle.getHeaders().get("Jahia-Module-Type") != null || contextBundle.getHeaders().get("Jahia-Cluster-Deployment") != null) {
-                Bundle bundleToAdd = new Bundle();
+                BundleDTO bundleToAdd = new BundleDTO();
                 String bundleLocation = contextBundle.getLocation();
+                // Remove 'legacydepends:' from location if it exists
+                if(bundleLocation.startsWith("legacydepends:"))
+                {
+                    bundleLocation = bundleLocation.substring("legacydepends:".length());
+                }
                 try {
                     bundleToAdd.setFileName(FilenameUtils.getName(new URL(bundleLocation).getPath()));
+                    File jarFile = new File(new URL(bundleLocation).getPath());
+                    if (jarFile == null) {
+                        logger.warn("Unable to find the location of the bundle.jar for bunlde {}", bundleToAdd.getName());
+                        continue;
+                    }
+                    bundleToAdd.setJarFile(jarFile);
+                    bundleToAdd.setChecksum(calculateDigest(jarFile));
                 } catch (MalformedURLException e) {
-                    // ignore;
+                    logger.error(e.getMessage());
+                } catch (IOException e) {
+                    logger.error(e.getMessage());
                 }
                 try {
                     bundleToAdd.setSymbolicName(contextBundle.getHeaders().get("Bundle-SymbolicName"));
@@ -120,18 +134,8 @@ public class BundleServiceImpl{
                     }
                     bundleToAdd.setVersion(version);
                     bundleToAdd.setName(bundleToAdd.getSymbolicName() + "-" + bundleToAdd.getVersion());
-                    // File jarFile = getBundleJar(contextBundle.getBundleId(), archives);
-                    File jarFile = null;
-                    if (jarFile == null) {
-                        logger.warn("Unable to find the location of the bundle.jar for bunlde {}", bundleToAdd.getName());
-                        continue;
-                    }
-                    BinaryFile file = new BinaryFile(jarFile);
-                    bundleToAdd.setFile(file);
-                    bundleToAdd.setChecksum(calculateDigest(jarFile));
-                    result.put(bundleToAdd, BundleUtils.getModule(contextBundle).getState().getState().toString().toLowerCase());
-                } catch (IOException e) {
-                    logger.error("Error storing bundle " + contextBundle + " in JCR", e);
+                    bundleToAdd.setGroupId(contextBundle.getHeaders().get("Jahia-GroupId"));
+                    result.put(bundleToAdd, "test");
                 } catch (Exception e) {
                     logger.error("Error finding bundle file from history " + contextBundle , e);
                 }
@@ -217,15 +221,15 @@ public class BundleServiceImpl{
 
     /**
      * populate the list of bundles in module management entity
-     * @param moduleManagement module management entity
+     * @param bundles bundles
      * @return map of the bundle list states
      */
-    public Map<String, String> populateBundles(ModuleManagement moduleManagement) {
+    public Map<String, String> populateBundles(TreeMap<String, BundleDTO> bundles) {
         Map<String, String> states = new HashMap<>();
         try {
-            for (Map.Entry<Bundle, String> entry : getLocalBundles().entrySet()) {
-                Bundle bundle = entry.getKey();
-                moduleManagement.getBundles().put(bundle.getName(), bundle);
+            for (Map.Entry<BundleDTO, String> entry : getLocalBundles().entrySet()) {
+                BundleDTO bundle = entry.getKey();
+                bundles.put(bundle.getName(), bundle);
                 states.put(bundle.getName(), entry.getValue());
             }
         } catch (RepositoryException e) {

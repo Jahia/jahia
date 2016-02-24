@@ -1023,13 +1023,11 @@ extends = jnt:content
 // Module Management nodes
 //---------------------------------------------------------
 
-[jnt:moduleManagement] > nt:base, jmix:observable, mix:created, mix:lastModified, jmix:nolive
-  + bundles (jnt:moduleManagementBundles) = jnt:moduleManagementBundles
-  + operations (jnt:moduleManagementOperations) = jnt:moduleManagementOperations
-  + operationLog (jnt:moduleManagementOperations) = jnt:moduleManagementOperations
-  + nodes (jnt:moduleManagementNodes) = jnt:moduleManagementNodes
+[jnt:moduleManagement] > nt:base, mix:created, mix:lastModified, jmix:nolive
+  + bundles (jnt:moduleManagementBundleFolder) = jnt:moduleManagementBundleFolder
 
-[jnt:moduleManagementBundles] > nt:base, jmix:observable, mix:created, mix:lastModified, jmix:nolive
+[jnt:moduleManagementBundleFolder] > nt:base, mix:created, mix:lastModified, jmix:nolive
+  + * (jnt:moduleManagementBundleFolder) = jnt:moduleManagementBundleFolder
   + * (jnt:moduleManagementBundle) = jnt:moduleManagementBundle
 
 [jnt:moduleManagementBundle] > nt:file, mix:created, mix:lastModified, jmix:nolive

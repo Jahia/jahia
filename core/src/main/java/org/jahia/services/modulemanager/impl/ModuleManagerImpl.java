@@ -375,11 +375,11 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     private void notifyOperationProcessor() {
-        try {
-            operationProcessor.process();
-        } catch (ModuleManagementException e) {
-            logger.error(e.getMessage(), e);
-        }
+//        try {
+//            operationProcessor.process();
+//        } catch (ModuleManagementException e) {
+//            logger.error(e.getMessage(), e);
+//        }
     }
 
     public void setOperationProcessor(OperationProcessor operationProcessor) {
@@ -456,76 +456,78 @@ public class ModuleManagerImpl implements ModuleManager {
 
     @Override
     public BundleStateReport getBundleState(final String bundleKey, String... targetNodes) throws ModuleManagementException {
-        final String[] finalTargetNodes = targetNodes == null || targetNodes.length == 0
-                ? new String[] { clusterNodeInfo.getId() } : targetNodes;
-
-        Map<String, String> map = new HashMap<String,String>();
-        try {
-            map = persister.doExecute(new OCMCallback<Map<String, String>>() {
-                @Override
-                public Map<String, String>  doInOCM(ObjectContentManager ocm) {
-                    Map<String, String> result = new HashMap<String,String>();
-                    for (String targetNode : finalTargetNodes) {
-                        String path = "/module-management/nodes/" +targetNode+ "/bundles/" + bundleKey;
-                        NodeBundle nodeBundle = (NodeBundle) ocm.getObject(NodeBundle.class, path);
-                        if (nodeBundle != null) {
-                            result.put(targetNode, nodeBundle.getState());
-                        }
-                    }
-                    return result;
-                }
-            });
-
-            BundleStateReport bundleStateReport = new BundleStateReport(bundleKey,map);
-            return  bundleStateReport;
-        } catch (RepositoryException e) {
-            throw new ModuleManagementException(e);
-        }
+//        final String[] finalTargetNodes = targetNodes == null || targetNodes.length == 0
+//                ? new String[] { clusterNodeInfo.getId() } : targetNodes;
+//
+//        Map<String, String> map = new HashMap<String,String>();
+//        try {
+//            map = persister.doExecute(new OCMCallback<Map<String, String>>() {
+//                @Override
+//                public Map<String, String>  doInOCM(ObjectContentManager ocm) {
+//                    Map<String, String> result = new HashMap<String,String>();
+//                    for (String targetNode : finalTargetNodes) {
+//                        String path = "/module-management/nodes/" +targetNode+ "/bundles/" + bundleKey;
+//                        NodeBundle nodeBundle = (NodeBundle) ocm.getObject(NodeBundle.class, path);
+//                        if (nodeBundle != null) {
+//                            result.put(targetNode, nodeBundle.getState());
+//                        }
+//                    }
+//                    return result;
+//                }
+//            });
+//
+//            BundleStateReport bundleStateReport = new BundleStateReport(bundleKey,map);
+//            return  bundleStateReport;
+//        } catch (RepositoryException e) {
+//            throw new ModuleManagementException(e);
+//        }
+        return null;
     }
 
     @Override
     public Set<NodeStateReport> getNodesBundleStates(String... targetNodes) throws ModuleManagementException {
-        final Set<String> finalTargetNodes = new HashSet<>();
-        if (targetNodes == null || targetNodes.length == 0) {
-            finalTargetNodes.add(clusterNodeInfo.getId());
-        } else {
-            finalTargetNodes.addAll(Arrays.asList(targetNodes));
-        }
-        Set<NodeStateReport> result = new HashSet<NodeStateReport>();
-        try {
-            result = persister.doExecute(new OCMCallback<Set<NodeStateReport>>() {
-                @Override
-                public Set<NodeStateReport> doInOCM(ObjectContentManager ocm) throws RepositoryException {
-                    List<ClusterNode> nodes = new ArrayList<ClusterNode>();
-                    Set<NodeStateReport> result = new HashSet<NodeStateReport>();
-                    Node node = ocm.getSession().getNode("/module-management/nodes");
-                    NodeIterator ops = node.getNodes();
-                    if (ops.hasNext()) {
-                        String nodePath = ops.nextNode().getPath();
-                        if(finalTargetNodes.contains(nodePath.substring("/module-management/nodes/".length()))) {
-                            nodes.add((ClusterNode) ocm.getObject(ClusterNode.class, nodePath));
-                        }
-                    }
-                    for (ClusterNode clusterNode : nodes)
-                    {
-                        Set<BundleStateReport> bundleStateReports = new HashSet<BundleStateReport>();
-                        for (String key : clusterNode.getBundles().keySet()) {
-                            Map<String,String> map = new HashMap<String, String>();
-                            NodeBundle nodeBundle = clusterNode.getBundles().get(key);
-                            map.put(nodeBundle.getBundle().getIdentifier(),nodeBundle.getState());
-                            BundleStateReport bundleStateReport = new BundleStateReport(nodeBundle.getBundle().getName(),map);
-                            bundleStateReports.add(bundleStateReport);
-                        }
-                        NodeStateReport nodeStateReport = new NodeStateReport(clusterNode.getIdentifier(),bundleStateReports);
-                        result.add(nodeStateReport);
-                    }
-                    return result;
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new ModuleManagementException(e);
-        }
-        return result;
+//        final Set<String> finalTargetNodes = new HashSet<>();
+//        if (targetNodes == null || targetNodes.length == 0) {
+//            finalTargetNodes.add(clusterNodeInfo.getId());
+//        } else {
+//            finalTargetNodes.addAll(Arrays.asList(targetNodes));
+//        }
+//        Set<NodeStateReport> result = new HashSet<NodeStateReport>();
+//        try {
+//            result = persister.doExecute(new OCMCallback<Set<NodeStateReport>>() {
+//                @Override
+//                public Set<NodeStateReport> doInOCM(ObjectContentManager ocm) throws RepositoryException {
+//                    List<ClusterNode> nodes = new ArrayList<ClusterNode>();
+//                    Set<NodeStateReport> result = new HashSet<NodeStateReport>();
+//                    Node node = ocm.getSession().getNode("/module-management/nodes");
+//                    NodeIterator ops = node.getNodes();
+//                    if (ops.hasNext()) {
+//                        String nodePath = ops.nextNode().getPath();
+//                        if(finalTargetNodes.contains(nodePath.substring("/module-management/nodes/".length()))) {
+//                            nodes.add((ClusterNode) ocm.getObject(ClusterNode.class, nodePath));
+//                        }
+//                    }
+//                    for (ClusterNode clusterNode : nodes)
+//                    {
+//                        Set<BundleStateReport> bundleStateReports = new HashSet<BundleStateReport>();
+//                        for (String key : clusterNode.getBundles().keySet()) {
+//                            Map<String,String> map = new HashMap<String, String>();
+//                            NodeBundle nodeBundle = clusterNode.getBundles().get(key);
+//                            map.put(nodeBundle.getBundle().getIdentifier(),nodeBundle.getState());
+//                            BundleStateReport bundleStateReport = new BundleStateReport(nodeBundle.getBundle().getName(),map);
+//                            bundleStateReports.add(bundleStateReport);
+//                        }
+//                        NodeStateReport nodeStateReport = new NodeStateReport(clusterNode.getIdentifier(),bundleStateReports);
+//                        result.add(nodeStateReport);
+//                    }
+//                    return result;
+//                }
+//            });
+//        } catch (RepositoryException e) {
+//            throw new ModuleManagementException(e);
+//        }
+//        return result;
+        return null;
     }
 
     @Override

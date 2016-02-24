@@ -43,8 +43,9 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.ocm.exception.ObjectContentManagerException;
+
 import org.apache.jackrabbit.ocm.manager.ObjectContentManager;
 import org.apache.jackrabbit.ocm.manager.impl.ObjectContentManagerImpl;
 import org.apache.jackrabbit.ocm.mapper.Mapper;
@@ -61,13 +62,14 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.util.*;
 
 /**
  * Responsible for managing the JCR structure and information about deployment of modules.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class ModuleInfoPersister implements JahiaAfterInitializationService {
@@ -79,7 +81,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Callback interface for operations, that are executed in OCM.
-     * 
+     *
      * @author Sergiy Shyrkov
      *
      * @param <T>
@@ -103,7 +105,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Checks if the specified bundle is already installed on the current node.
-     * 
+     *
      * @param uniqueBundleKey
      *            the unique key of the bundle
      * @param checksum
@@ -120,14 +122,14 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
                         ROOT_NODE_PATH + "/bundles/" + uniqueBundleKey);
                 return (existingBundle != null && existingBundle.getChecksum() != null
                         && StringUtils.equals(existingBundle.getChecksum(), checksum) && ocm.objectExists(
-                                ROOT_NODE_PATH + "/nodes/" + clusterNodeInfo.getId() + "/bundles/" + uniqueBundleKey));
+                        ROOT_NODE_PATH + "/nodes/" + clusterNodeInfo.getId() + "/bundles/" + uniqueBundleKey));
             }
         });
     }
 
     /**
      * Executes the provided callback in the OCM context.
-     * 
+     *
      * @param callback
      *            a callback to be executed
      * @return the result of the callback execution
@@ -149,7 +151,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Returns a list of known cluster nodes.
-     * 
+     *
      * @param ocm
      *            current instance of the object manager
      * @return a list of known cluster nodes
@@ -157,17 +159,18 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
      *             in case of a JCR error
      */
     public List<ClusterNode> getClusterNodes(ObjectContentManager ocm) throws RepositoryException {
-        NodeIterator it = ocm.getSession().getNode("/module-management/nodes").getNodes();
-
-        List<ClusterNode> nodes = new LinkedList<>();
-        while (it.hasNext()) {
-            Node nextNode = it.nextNode();
-            if (nextNode.isNodeType("jnt:moduleManagementNode")) {
-                nodes.add((ClusterNode) ocm.getObject(nextNode.getPath()));
-            }
-        }
-
-        return nodes;
+//        NodeIterator it = ocm.getSession().getNode("/module-management/nodes").getNodes();
+//
+//        List<ClusterNode> nodes = new LinkedList<>();
+//        while (it.hasNext()) {
+//            Node nextNode = it.nextNode();
+//            if (nextNode.isNodeType("jnt:moduleManagementNode")) {
+//                nodes.add((ClusterNode) ocm.getObject(nextNode.getPath()));
+//            }
+//        }
+//
+//        return nodes;
+        return null;
     }
 
     private Mapper getMapper() {
@@ -176,7 +179,6 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
             @SuppressWarnings("rawtypes")
             List<Class> classes = new LinkedList<Class>();
-            classes.add(ModuleManagement.class);
             classes.add(Bundle.class);
             classes.add(BinaryFile.class);
             classes.add(Operation.class);
@@ -187,27 +189,6 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
             mapper = new AnnotationMapperImpl(classes);
         }
         return mapper;
-    }
-
-    private ModuleManagement getModuleManagement(ObjectContentManager ocm) {
-        ModuleManagement mgt = (ModuleManagement) ocm.getObject(ModuleManagement.class, ROOT_NODE_PATH);
-        if (mgt == null) {
-            logger.info("Creating initial JCR structure skeletong for " + ROOT_NODE_PATH);
-            try {
-                ocm.insert(new ModuleManagement(ROOT_NODE_PATH));
-                Node opLog = ocm.getSession().getNode(ROOT_NODE_PATH).addNode("operationLog", "jnt:moduleManagementOperations");
-                JCRAutoSplitUtils.enableAutoSplitting((JCRNodeWrapper) opLog, operationLogAutoSplitConfig,
-                        "jnt:moduleManagementOperations");
-                ocm.save();
-
-                logger.info("Done creating initial JCR structure skeletong for " + ROOT_NODE_PATH);
-            } catch (ObjectContentManagerException | RepositoryException e) {
-                // is already created
-            }
-            mgt = (ModuleManagement) ocm.getObject(ModuleManagement.class, ROOT_NODE_PATH);
-        }
-
-        return mgt;
     }
 
     /**
@@ -236,7 +217,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Returns the next module operation (global level) from the queue to be processed.
-     * 
+     *
      * @return the next module operation (global level) from the queue to be processed
      * @throws RepositoryException
      *             in case of a repository access error
@@ -258,7 +239,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Injects an instance of the service, which populates the JCR tree structure with module information.
-     * 
+     *
      * @param bundleService
      *            an instance of the service, which populates the JCR tree structure with module information
      */
@@ -268,7 +249,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Injects the information for the current cluster node.
-     * 
+     *
      * @param clusterNodeInfo
      *            the information for the current cluster node
      */
@@ -278,7 +259,7 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
 
     /**
      * Injects the auto split configuration for the operation log entries.
-     * 
+     *
      * @param operationLogAutoSplitConfig
      *            the auto split configuration for the operation log entries
      */
@@ -291,58 +272,80 @@ public class ModuleInfoPersister implements JahiaAfterInitializationService {
      * management.
      */
     protected void start() {
-        try {
-            doExecute(new OCMCallback<Object>() {
-                @Override
-                public Object doInOCM(ObjectContentManager ocm) throws RepositoryException {
-                    validateJcrTreeStructure(ocm);
-                    return null;
-                }
-            });
+        try{
+            validateJcrTreeStructure();
         } catch (RepositoryException e) {
             logger.error("Unable to validate module management JCR tree structure. Cause: " + e.getMessage(), e);
         }
     }
 
-    private void validateJcrTreeStructure(ObjectContentManager ocm) throws RepositoryException {
-        // 1) ensure module-management skeleton is created in JCR
-        ModuleManagement mgt = getModuleManagement(ocm);
+    private void validateJcrTreeStructure() throws RepositoryException {
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper pathNode = session.getNode("/");
+                    // 1) ensure module-management skeleton is created in JCR
+                    if(!pathNode.hasNode("module-management"))
+                    {
+                        pathNode.addNode("module-management", "jnt:moduleManagement");
+                    }
+                    pathNode = pathNode.getNode("module-management");
+                    if(!pathNode.hasNode("bundles"))
+                    {
+                        pathNode.addNode("bundles","jnt:moduleManagementBundleFolder");
+                    }
+                    pathNode = pathNode.getNode("bundles");
 
-        Map<String, String> bundeStates = null;
-        if (mgt.getBundles().isEmpty()) {
-            // 2) populate information about available bundles
-            logger.info("Start populating information about available module bundles...");
-            long startTime = System.currentTimeMillis();
+                    final TreeMap<String, BundleDTO> bundles = new TreeMap<>();
 
-            bundeStates = bundleService.populateBundles(mgt);
-            ocm.update(mgt);
-            ocm.save();
+                    Map<String, String> bundeStates = null;
 
-            logger.info("Done populating information about available module bundles in {} ms",
-                    System.currentTimeMillis() - startTime);
-            mgt = getModuleManagement(ocm);
-        }
+                    // 2) populate information about available bundles
+                    logger.info("Start populating information about available module bundles...");
+                    long startTime = System.currentTimeMillis();
+                    bundeStates = bundleService.populateBundles(bundles);
+                    // Check if '/module-management/bundles' has child nodes or not
+                    if(!pathNode.hasNodes())
+                    {
+                    for (String bundleName : bundles.keySet()){
+                        pathNode = session.getNode("/module-management/bundles");
+                        BundleDTO bundle = bundles.get(bundleName);
+                        String groupId = bundle.getGroupId();
+                        final String[] packageFolders = groupId.split("\\.");
 
-        if (!mgt.getNodes().containsKey(clusterNodeInfo.getId())) {
-            // 3) create cluster node
-            ClusterNode cn = new ClusterNode(clusterNodeInfo.getId(), clusterNodeInfo.isProcessingServer());
-            cn.setPath(ROOT_NODE_PATH + "/nodes/" + clusterNodeInfo.getId());
-            ocm.insert(cn);
-            Node opLog = ocm.getSession().getNode(cn.getPath()).addNode("operationLog", "jnt:moduleManagementNodeOperations");
-            JCRAutoSplitUtils.enableAutoSplitting((JCRNodeWrapper) opLog, operationLogAutoSplitConfig,
-                    "jnt:moduleManagementNodeOperations");
+                        for (int i = 0; i < packageFolders.length; i++) {
+                            if(!pathNode.hasNode(packageFolders[i])){
+                                pathNode = pathNode.addNode(packageFolders[i],"jnt:moduleManagementBundleFolder");
+                            }
+                            else{
+                                pathNode = pathNode.getNode(packageFolders[i]);
+                            }
+                        }
+                        pathNode = pathNode.addNode(bundle.getSymbolicName(),"jnt:moduleManagementBundleFolder");
+                        pathNode = pathNode.addNode(bundle.getVersion(),"jnt:moduleManagementBundleFolder");
+                        pathNode = pathNode.addNode(bundle.getSymbolicName() + "-" + bundle.getVersion() + ".jar",
+                                "jnt:moduleManagementBundle");
+                        pathNode.setProperty("j:checksum",bundle.getChecksum());
+                        pathNode.setProperty("j:displayName",bundle.getDisplayName());
+                        try {
+                            InputStream is = new BufferedInputStream(new FileInputStream(bundle.getJarFile()));
+                            try {
+                                pathNode.getFileContent().uploadFile(is, "application/jar");
+                            } finally {
+                                IOUtils.closeQuietly(is);
+                            }
+                        } catch (Exception t) {
+                            logger.error("file observer error : ", t);
+                        }
+                        pathNode.setProperty("j:fileName",bundle.getFileName());
+                        pathNode.setProperty("j:symbolicName",bundle.getSymbolicName());
+                        pathNode.setProperty("j:version",bundle.getVersion());
+                    }
+                    }
 
-            // 4) populate the information about node bundles
-            logger.info("Start populating information about module bundles for node {}...", clusterNodeInfo.getId());
-            long startTime = System.currentTimeMillis();
-
-            ClusterNode clusterNodeToUpdate = (ClusterNode) ocm.getObject(ClusterNode.class, cn.getPath());
-            bundleService.populateNodeBundles(clusterNodeToUpdate, getModuleManagement(ocm).getBundles(), bundeStates);
-            ocm.update(clusterNodeToUpdate);
-            ocm.save();
-
-            logger.info("Done populating information about module bundles for node {} in {} ms",
-                    clusterNodeInfo.getId(), System.currentTimeMillis() - startTime);
-        }
+                    session.save();
+                    return null;
+                }
+            });
     }
 }

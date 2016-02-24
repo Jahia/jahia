@@ -108,8 +108,6 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<Long, List<ScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
 
-    private static final ScriptEngineManager DEFAULT = new ScriptEngineManager();
-
     private enum KeyType {extension, mimeType, name}
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -153,11 +151,11 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         } else {
             switch (keyType) {
                 case extension:
-                    return DEFAULT.getEngineByExtension(key);
+                    return super.getEngineByExtension(key);
                 case mimeType:
-                    return DEFAULT.getEngineByMimeType(key);
+                    return super.getEngineByMimeType(key);
                 case name:
-                    return DEFAULT.getEngineByName(key);
+                    return super.getEngineByName(key);
                 default:
                     return null;
             }
@@ -196,21 +194,31 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         namesToScriptFactories.put(name, factory);
     }
 
-    private BundleScriptingContext getScriptManagerContext(Bundle bundle) throws IOException, ClassNotFoundException {
+    private BundleScriptingContext getScriptingContext(Bundle bundle) throws IOException {
         List<String> factoryCandidates = findFactoryCandidates(bundle);
         if (factoryCandidates == null) {
             return null;
         }
 
         ClassLoader factoryLoader = null;
+        final List<ScriptEngineFactory> factories = new ArrayList<>(factoryCandidates.size());
         for (String factoryCandidate : factoryCandidates) {
+            final Class<? extends ScriptEngineFactory> factoryClass;
+            try {
+                factoryClass = bundle.loadClass(factoryCandidate).asSubclass(ScriptEngineFactory.class);
+                factories.add(factoryClass.cast(factoryClass.newInstance()));
+            } catch (ClassNotFoundException e) {
+                logger.warn("ScriptEngineFactory {} was registered to be loaded but no associated class was found in bundle {}. Ignoring.", factoryCandidate, bundle);
+                continue;
+            } catch (InstantiationException | IllegalAccessException e) {
+                logger.warn("Couldn't instantiate ScriptEngineFactory {}. Cause: {}. Ignoring.", factoryCandidate, e.getLocalizedMessage());
+                continue;
+            }
+
             if (factoryLoader == null) {
                 // retrieve the class loader associated with the bundle
                 try {
-                    factoryLoader = bundle.loadClass(factoryCandidate).asSubclass(ScriptEngineFactory.class).getClassLoader();
-                } catch (ClassNotFoundException e) {
-                    logger.warn("ScriptEngineFactory {} was registered to be loaded but no associated class was found in bundle {}. Ignoring.", factoryCandidate, bundle);
-                    continue;
+                    factoryLoader = factoryClass.getClassLoader();
                 } catch (ClassCastException e) {
                     logger.warn("Registered ScriptEngineFactory {} doesn't implement ScriptEngineFactory in bundle {}. Ignoring.", factoryCandidate, bundle);
                     continue;
@@ -236,7 +244,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         final Dictionary<String, String> headers = bundle.getHeaders();
         final String extensionsPriorities = headers.get("Jahia-Scripting-Extensions-Priorities");
         final Map<String, Integer> extensionsPrioritiesMap;
-        if(extensionsPriorities != null) {
+        if (extensionsPriorities != null) {
             final String[] extensionPriorityPairs = StringUtils.split(extensionsPriorities);
             extensionsPrioritiesMap = new HashMap<>(extensionPriorityPairs.length);
             for (String extensionPriorityPair : extensionPriorityPairs) {
@@ -259,8 +267,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             extensionsPrioritiesMap = null;
         }
 
-        // so that we can instantiate a ScriptManager with it and initialize our factory maps
-        return new BundleScriptingContext(new ScriptEngineManager(factoryLoader), factoryLoader, extensionsPrioritiesMap);
+        return new BundleScriptingContext(factories, factoryLoader, extensionsPrioritiesMap);
     }
 
     private BundleScriptEngineFactoryConfigurator getConfiguratorFor(String factory) {
@@ -324,14 +331,13 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
 
     public void addScriptEngineFactoriesIfNeeded(Bundle bundle) {
         try {
-            final BundleScriptingContext scriptingContext = getScriptManagerContext(bundle);
+            final BundleScriptingContext scriptingContext = getScriptingContext(bundle);
             if (scriptingContext != null) {
-                final ScriptEngineManager scriptEngineManager = scriptingContext.getScriptEngineManager();
-                final List<ScriptEngineFactory> engineFactories = scriptEngineManager.getEngineFactories();
+                final List<ScriptEngineFactory> engineFactories = scriptingContext.getEngineFactories();
 
                 addFactories(bundle, scriptingContext, engineFactories);
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             logger.error("Error trying to get bundle " + bundle + " script engine factory information", e);
         }
     }

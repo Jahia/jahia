@@ -72,25 +72,21 @@
 package org.jahia.services.render.scripting.bundle;
 
 import javax.script.ScriptEngineFactory;
-import javax.script.ScriptEngineManager;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Contextual information resulting from the loading of {@link ScriptEngineFactory} from OSGi bundles.
  */
 class BundleScriptingContext {
-    private final ScriptEngineManager scriptEngineManager;
     private final ClassLoader classLoader;
     private final Map<String, Integer> extensionPriorities;
+    private final List<ScriptEngineFactory> engineFactories;
 
-    BundleScriptingContext(ScriptEngineManager scriptEngineManager, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
-        this.scriptEngineManager = scriptEngineManager;
+    BundleScriptingContext(List<ScriptEngineFactory> engineFactories, ClassLoader classLoader, Map<String, Integer> extensionsPrioritiesMap) {
         this.classLoader = classLoader;
         this.extensionPriorities = extensionsPrioritiesMap;
-    }
-
-    ScriptEngineManager getScriptEngineManager() {
-        return scriptEngineManager;
+        this.engineFactories = engineFactories;
     }
 
     ClassLoader getClassLoader() {
@@ -104,5 +100,9 @@ class BundleScriptingContext {
         } else {
             return defaultPriority;
         }
+    }
+
+    List<ScriptEngineFactory> getEngineFactories() {
+        return engineFactories;
     }
 }

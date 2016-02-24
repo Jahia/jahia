@@ -3,43 +3,43 @@
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
  *
- *                                 http://www.jahia.com
+ * http://www.jahia.com
  *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
  *
- *     1/ GPL
- *     ==================================================================================
+ * 1/ GPL
+ * ==================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
  *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
  *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.services.render.scripting.bundle;
 
@@ -93,7 +93,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private JahiaTemplateManagerService templateManagerService;
     private final Comparator<ViewResourceInfo> scriptExtensionComparator = new Comparator<ViewResourceInfo>() {
         public int compare(ViewResourceInfo o1, ViewResourceInfo o2) {
-            if(Objects.equals(o1, o2)) {
+            if (Objects.equals(o1, o2)) {
                 return 1;
             }
 
@@ -154,7 +154,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     public void setScriptFactoryMap(Map<String, ScriptFactory> scriptFactoryMap) {
-        if(!(scriptFactoryMap instanceof LinkedHashMap)) {
+        if (!(scriptFactoryMap instanceof LinkedHashMap)) {
             throw new IllegalArgumentException("Error instantiating BundleScriptResolver: Spring is supposed to create a SortedMap when using a <map> property but didn't. Was: "
                     + scriptFactoryMap.getClass().getName());
         }
@@ -174,7 +174,6 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     }
 
     public void register(ScriptEngineFactory scriptEngineFactory, Bundle bundle) {
-        // todo: ordering of script engines is not well defined anymore since it depends on module deployment order, explicit ordering would be better
         final List<String> extensions = scriptEngineFactory.getExtensions();
 
         if (extensions.isEmpty()) {
@@ -227,14 +226,14 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private int getPriorityFor(String extension, BundleScriptingContext context) {
         final int defaultPriority = extensionPriorities.size() * PRIORITY_STAGGER_FACTOR;
-        if(context == null) {
+        if (context == null) {
             return defaultPriority;
         } else {
-            return  context.getPriorityFor(extension, defaultPriority);
+            return context.getPriorityFor(extension, defaultPriority);
         }
     }
 
-    public void remove(ScriptEngineFactory factory,  Bundle bundle) {
+    public void remove(ScriptEngineFactory factory, Bundle bundle) {
         for (String extension : factory.getExtensions()) {
             // we need to remove the views associated with our bundle
             availableScripts.remove(bundle.getSymbolicName());
@@ -259,9 +258,9 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
      * @return {@code true} if the specified bundle should be scanned for views with the specified extension, {@code false} otherwise
      */
     static boolean shouldNotBeScannedForViews(Bundle bundle, String viewExtension) {
-        if(isIgnoredBundle(bundle)) {
+        if (isIgnoredBundle(bundle)) {
             return true;
-        } else if(isPreRegisteredExtension(viewExtension)) {
+        } else if (isPreRegisteredExtension(viewExtension)) {
             // if the extension is one of the pre-registered ones (via Spring configuration), we should scan the bundle
             return false;
         } else {
@@ -286,8 +285,8 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
                             result.add(name.trim().toLowerCase());
                         }
 
-                        // the bundle should only be scanned if it defined the header and the header contains the name of the factory associated with the extension
-                        return !result.contains(scriptFactory.getEngineName().toLowerCase());
+                        // the bundle should only be scanned if it defined the header and the header contains the name or language of the factory associated with the extension
+                        return !doesFactorySupport(scriptFactory, result);
                     } else {
                         return true;
                     }
@@ -297,10 +296,28 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         }
     }
 
+    private static boolean doesFactorySupport(ScriptEngineFactory scriptFactory, List<String> scriptNames) {
+        final boolean nameOrLanguage = scriptNames.contains(scriptFactory.getEngineName().toLowerCase()) ||
+                scriptNames.contains(scriptFactory.getLanguageName().toLowerCase());
+        if (!nameOrLanguage) {
+            // check extensions
+            final List<String> extensions = scriptFactory.getExtensions();
+            for (String scriptName : scriptNames) {
+                if (extensions.contains(scriptName)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
     private static boolean isIgnoredBundle(Bundle bundle) {
         final String symbolicName = bundle.getSymbolicName();
         for (String ignoredBundlePrefix : IGNORED_BUNDLE_PREFIXES) {
-            if(symbolicName.startsWith(ignoredBundlePrefix)) {
+            if (symbolicName.startsWith(ignoredBundlePrefix)) {
                 return true;
             }
         }
@@ -319,7 +336,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             final Enumeration<URL> entries = bundle.findEntries("/", extensionPattern, true);
             if (entries != null) {
                 final List<URL> scripts = new LinkedList<>();
-                while(entries.hasMoreElements()) {
+                while (entries.hasMoreElements()) {
                     scripts.add(entries.nextElement());
                 }
                 addBundleScripts(bundle, scripts);
@@ -420,7 +437,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
             if (didRemove) {
                 // remove entry if we don't have any scripts anymore for this bundle
-                if(existingBundleScripts.isEmpty()) {
+                if (existingBundleScripts.isEmpty()) {
                     availableScripts.remove(bundleName);
                 }
 
@@ -748,6 +765,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
 
     private static final Set<String> IGNORED_BUNDLE_PREFIXES = new HashSet<>(7);
+
     static {
         IGNORED_BUNDLE_PREFIXES.add("org.apache");
         IGNORED_BUNDLE_PREFIXES.add("org.ops4j");

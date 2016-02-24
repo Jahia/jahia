@@ -42,9 +42,7 @@
                 <entry key="jsp" value-ref="org.jahia.services.render.scripting.RequestDispatcherScriptFactory"/>
                 <entry key="groovy" value-ref="BundleJSR223ScriptFactory"/>
                 <entry key="js" value-ref="BundleJSR223ScriptFactory"/>
-                <entry key="php" value-ref="BundleJSR223ScriptFactory"/>
                 <entry key="vm" value-ref="BundleJSR223ScriptFactory"/>
-                <entry key="fm" value-ref="BundleJSR223ScriptFactory"/>
                 <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
             </map>
         </property>

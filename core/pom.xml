@@ -624,12 +624,6 @@
 
         <!-- Scripting engines  -->
         <dependency>
-            <groupId>com.sun.script.freemarker</groupId>
-            <artifactId>jsr223-freemarker-engine</artifactId>
-            <version>1.1</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
             <groupId>com.sun.script.js</groupId>
             <artifactId>jsr223-js-engine</artifactId>
             <version>1.1</version>
@@ -909,13 +903,6 @@
                     <artifactId>sslext</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-
-        <!-- Freemarker engine for BSF -->
-        <dependency>
-            <groupId>org.freemarker</groupId>
-            <artifactId>freemarker</artifactId>
-            <version>2.3.16</version>
         </dependency>
 
         <!-- jBPM dependencies -->

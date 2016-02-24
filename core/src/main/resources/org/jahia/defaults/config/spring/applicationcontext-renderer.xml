@@ -367,7 +367,7 @@
                 <value>/modules/assets/javascript/codemirror.mode.jsp.js</value>
                 -->
                 <value>/modules/assets/javascript/codemirror.jahia.min.js</value>
-                <value>/modules/assets/javascript/atmosphere-min.js</value>
+                <value>/modules/assets/javascript/atmosphere-min-2.2.12.js</value>
             </list>
         </property>
         <property name="detectCustomCKEditorConfig" value="${detectCustomCKEditorConfig:true}"/>

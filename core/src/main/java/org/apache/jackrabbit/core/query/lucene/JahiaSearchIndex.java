@@ -372,6 +372,7 @@ public class JahiaSearchIndex extends SearchIndex {
         final Set<NodeId> removedIds = new HashSet<NodeId>();
         final Set<NodeId> addedIds = new HashSet<NodeId>();
         final List<NodeId> aclChangedList = new ArrayList<NodeId>();
+        final Set<NodeId> topIdsRecursedForAcl = new HashSet<NodeId>();
 
         boolean hasAclOrAce = false;
         while (add.hasNext()) {
@@ -397,34 +398,40 @@ public class JahiaSearchIndex extends SearchIndex {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
                 try {
+                    // if an acl node is added, removed or j:inherit property is changed we need to add/modify ACL_UUID field
+                    // into parent's and all affected subnodes' index documents
                     if (add instanceof JahiaSearchManager.NodeStateIterator) {
                         Event event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
-                        if (event != null && event.getType() != Event.NODE_ADDED) {
-                            continue;
+                        // skip adding subnodes if just a property changed and its not j:inherit
+                        if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
+                            if (!(JNT_ACL.equals(node.getNodeTypeName()) && event.getPath().endsWith("j:inherit"))) {
+                                continue;
+                            }
                         }
                     }
 
-
-                    // if acl node is added for the first time we need to add our ACL_UUID field
-                    // to parent's and all affected subnodes' index documents
                     if (JNT_ACL.equals(node.getNodeTypeName())) {
                         NodeState nodeParent = (NodeState) itemStateManager.getItemState(node
                                 .getParentId());
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                        recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
-                        break;
+                        if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
+                            recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                            topIdsRecursedForAcl.add(node.getParentId());
+                        }
                     }
-                    // if an acl is modified, we need to reindex all its subnodes only if we use the optimized ACE
+                    // if an ace is modified, we need to reindex all its subnodes only if we can use the optimized ACE
                     if (JNT_ACE.equals(node.getNodeTypeName())) {
                         NodeState acl = (NodeState) itemStateManager.getItemState(node.getParentId());
                         NodeState nodeParent = (NodeState) itemStateManager.getItemState(acl.getParentId());
                         if (canUseOptimizedACEIndexation(nodeParent)) {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
-                            recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
-                            break;
+                            if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
+                                recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
+                                topIdsRecursedForAcl.add(node.getParentId());
+                            }
                         }
                     }
-                } catch (ItemStateException e) {
+                } catch (ItemStateException | RepositoryException e) {
                     log.warn("ACL_UUID field in documents may not be updated, so access rights check in search may not work correctly", e);
                 }
             }

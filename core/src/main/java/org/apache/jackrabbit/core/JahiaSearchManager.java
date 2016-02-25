@@ -158,10 +158,20 @@ public class JahiaSearchManager extends SearchManager {
                     // the node where this prop belongs to is also new
                 }
             } else if (e.getType() == Event.PROPERTY_CHANGED) {
-                // need to re-index
+                // need to re-index, but set the event only if there is not already another one set for the node, 
+                // or the property is j:inherit
                 if (!addedNodes.containsKey(nodeId)) {
                     addedNodes.put(nodeId, e);
+                } else {
+                    try {
+                        if (e.getPath().endsWith("j:inherit")) {
+                            addedNodes.put(nodeId, e);
+                        }
+                    } catch (RepositoryException ex) {
+                        log.warn("Exception retrieving path: " + ex);
+                    }
                 }
+                    
                 removedNodes.add(nodeId);
             } else {
                 // property removed event is only generated when node still exists

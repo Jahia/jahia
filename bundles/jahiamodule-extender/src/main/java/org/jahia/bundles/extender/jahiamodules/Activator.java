@@ -89,6 +89,7 @@ import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.*;
 
 /**
@@ -212,6 +213,7 @@ public class Activator implements BundleActivator {
 
         // Add transformer for jahia-depends capabilities
         registerLegacyTransformer(context);
+        registerJcrUrlHandler(context);
 
         checkExistingModules(context);
 
@@ -920,9 +922,23 @@ public class Activator implements BundleActivator {
         serviceRegistrations
                 .add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyTransformer(), props));
 
-        serviceRegistrations.add(context.registerService(new String[] { ArtifactUrlTransformer.class.getName() },
+        serviceRegistrations.add(context.registerService(new String[]{ArtifactUrlTransformer.class.getName()},
                 new ModuleDependencyTransformer(), null));
 
     }
+
+    /**
+     * Registers services for Jcr bundle protocol url resolution transformation.
+     *
+     * @param context
+     *            the OSGi bundle context object.
+     */
+    private void registerJcrUrlHandler(BundleContext context) throws IOException {
+        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        props.put("url.handler.protocol", "jcr");
+        serviceRegistrations
+                .add(context.registerService(URLStreamHandlerService.class, new JcrBundleTransformer(), props));
+    }
+
 
 }

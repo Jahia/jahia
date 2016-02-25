@@ -335,7 +335,6 @@
     <build>
         <finalName>jahia</finalName>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -357,6 +356,23 @@
                                     <outputDirectory>${project.build.directory}/jahia/WEB-INF</outputDirectory>
                                     <includes>apache-karaf-${karaf.version}/data/**,apache-karaf-${karaf.version}/deploy,apache-karaf-${karaf.version}/etc/**,apache-karaf-${karaf.version}/lib/**,apache-karaf-${karaf.version}/system/**</includes>
                                     <excludes>apache-karaf-${karaf.version}/lib/org*,**/demos/**,apache-karaf-${karaf.version}/etc/config.properties,**/README, **/org.eclipse.osgi-*.jar</excludes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-pax-logging-bridge-appender</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.bundles</groupId>
+                                    <artifactId>org.jahia.bundles.pax.logging.bridging.appender</artifactId>
+                                    <version>${project.version}</version>
+                                    <outputDirectory>${project.build.directory}/jahia/WEB-INF/apache-karaf-${karaf.version}/system/org/jahia/bundles/org.jahia.bundles.pax.logging.bridging.appender/${project.version}</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

@@ -217,7 +217,7 @@
 + * (jnt:tempFolder)
 + * (jnt:tempFile)
 
-[jnt:tempFile] > nt:base
+[jnt:tempFile] > nt:base, mix:lastModified
 - jcr:mimeType (string) indexed=no nofulltext
 - jcr:data (binary) mandatory indexed=no
 

@@ -44,25 +44,33 @@
 package org.jahia.osgi;
 
 import org.apache.karaf.main.Main;
+import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaRuntimeException;
+import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.BundleException;
+import org.osgi.framework.*;
+import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.*;
 
 import javax.servlet.ServletContext;
 
 import java.io.File;
+import java.util.*;
 
 /**
  * OSGi framework service
  *
  * @author Serge Huber
  */
-public class FrameworkService {
-    
+public class FrameworkService implements BundleListener, FrameworkListener {
+
+    private static final org.springframework.core.Constants FRAMEWORK_EVENTS = new org.springframework.core.Constants(FrameworkEvent.class);
+
     private static final Logger logger = LoggerFactory.getLogger(FrameworkService.class);
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -88,8 +96,76 @@ public class FrameworkService {
 
     private boolean started;
 
+    private long lastBundleEventTime = -1;
+    private long timeoutBetweenBundleEvents = 30 * 1000;
+    private long startupEventCount = 0;
+    private long totalIntervalTime = 0;
+    Set<String> modulesInDirectory = new HashSet<>();
+    private boolean countModules = true;
+    private Timer startupBundleEventTimer = new Timer("startup-bundle-event-timer", true);
+
     private FrameworkService(ServletContext servletContext) {
         this.servletContext = servletContext;
+    }
+
+    public void start() throws BundleException {
+        startKaraf();
+        servletContext.setAttribute(BundleContext.class.getName(), main.getFramework().getBundleContext());
+        started = true;
+    }
+
+    /**
+     * Shuts the OSGi container down.
+     *
+     * @throws BundleException in case of an error
+     */
+    public void stop() throws BundleException {
+        if (this.main != null) {
+            servletContext.removeAttribute(BundleContext.class.getName());
+            try {
+                main.destroy();
+            } catch (Exception e) {
+                logger.error("Error shutting down Karaf framework", e);
+            }
+        }
+        logger.info("OSGi framework stopped");
+    }
+
+    /**
+     * Returns <code>true</code> if the OSGi container is completely started.
+     *
+     * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
+     */
+    public boolean isStarted() {
+        return started;
+    }
+
+    /**
+     * Returns bundle context.
+     *
+     * @return bundle context or <code>null</code> in case the OSGi container has not been started yet
+     */
+    public static BundleContext getBundleContext() {
+        final FrameworkService instance = getInstance();
+        if (instance != null && instance.main != null) {
+            return instance.main.getFramework().getBundleContext();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Notify this service that the container has actually started.
+     */
+    public static void notifyStarted() {
+        logger.info("Got started event");
+        final FrameworkService instance = getInstance();
+        synchronized (instance) {
+            logger.info("Started event arrived");
+            instance.started = true;
+            instance.notifyAll();
+            logger.info("Notified all about OSGi container started event");
+        }
     }
 
     private void startKaraf() {
@@ -110,6 +186,7 @@ public class FrameworkService {
             System.setProperty("jahiaVarDiskPath", varDiskPath);
             main = new Main(new String[0]);
             main.launch();
+            setupStartupListener();
         } catch (Exception e) {
             main = null;
             logger.error("Error starting Karaf container", e);
@@ -118,63 +195,148 @@ public class FrameworkService {
 
     }
 
-    public void start() throws BundleException {
-        startKaraf();
-        servletContext.setAttribute(BundleContext.class.getName(), main.getFramework().getBundleContext());
-        started = true;
-    }
-
-    /**
-     * Shuts the OSGi container down.
-     * 
-     * @throws BundleException in case of an error
-     */
-    public void stop() throws BundleException {
-        if (this.main != null) {
-            servletContext.removeAttribute(BundleContext.class.getName());
-            try {
-                main.destroy();
-            } catch (Exception e) {
-                logger.error("Error shutting down Karaf framework", e);
+    private void setupStartupListener() {
+        if (countModules) {
+            File modulesDiskPath = new File(SettingsBean.getInstance().getJahiaModulesDiskPath());
+            modulesInDirectory.clear();
+            if (modulesDiskPath.exists()) {
+                File[] moduleFiles = modulesDiskPath.listFiles();
+                for (File moduleFile : moduleFiles) {
+                    if (moduleFile.isFile() && moduleFile.getName().endsWith(".jar")) {
+                        modulesInDirectory.add(moduleFile.getAbsolutePath());
+                    }
+                }
             }
         }
-        logger.info("OSGi framework stopped");
+        main.getFramework().getBundleContext().addBundleListener(this);
+        main.getFramework().getBundleContext().addFrameworkListener(this);
+        startupBundleEventTimer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                if (lastBundleEventTime != -1 &&
+                        (System.currentTimeMillis() - lastBundleEventTime) > timeoutBetweenBundleEvents) {
+                    shutdownStartupListener();
+                }
+            }
+        }, 1000, 1000);
     }
 
-    /**
-     * Returns <code>true</code> if the OSGi container is completely started.
-     * 
-     * @return <code>true</code> if the OSGi container is completely started; <code>false</code> otherwise
-     */
-    public boolean isStarted() {
-        return started;
-    }
-    
-    /**
-     * Returns bundle context.
-     * 
-     * @return bundle context or <code>null</code> in case the OSGi container has not been started yet
-     */
-    public static BundleContext getBundleContext() {
-        final FrameworkService instance = getInstance();
-        if (instance != null && instance.main != null) {
-            return instance.main.getFramework().getBundleContext();
+    private void shutdownStartupListener() {
+        startupBundleEventTimer.cancel();
+        startupBundleEventTimer = null;
+        main.getFramework().getBundleContext().removeBundleListener(this);
+        main.getFramework().getBundleContext().removeFrameworkListener(this);
+
+        double averageIntervalTime = totalIntervalTime / startupEventCount;
+        logger.info("Average interval between bundle events=" + Double.toString(averageIntervalTime));
+
+        long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
+        StringBuilder out = new StringBuilder(256);
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            out.append("\n--------------------------------------------------------------------------------------------------" +
+                    "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
+                    "\n" +
+                    "\n  In development mode, Digital Experience Manager will allow JSPs to be modified, modules to be" +
+                    "\n  re-deployed and other modifications to happen immediately, but these DO have a performance impact." +
+                    "\n  It is strongly recommended to switch to production mode when running performance tests or going live." +
+                    "\n  The setting to change modes is called operatingMode in the jahia.properties configuration file.");
+        } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
+            out.append("\n--------------------------------------------------------------------------------------------------" +
+                    "\n  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");
         } else {
-            return null;
+            out.append("\n--------------------------------------------------------------------------------------------------" +
+                    "\n  P R O D U C T I O N   M O D E   A C T I V E");
+        }
+        out.append("\n--------------------------------------------------------------------------------------------------\n");
+        appendModulesInfo(out);
+        out.append("\n--------------------------------------------------------------------------------------------------"+
+                "\n  ").append(Jahia.getFullProductVersion()).append(" is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
+        out.append("\n--------------------------------------------------------------------------------------------------");
+        logger.info(out.toString());
+
+    }
+
+    private void appendModulesInfo(StringBuilder out) {
+        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
+        out.append("  Modules:");
+        for (ModuleState.State state : ModuleState.State.values()) {
+            List<Bundle> modules = templateService.getModulesByState(state);
+            if (modules.isEmpty()) {
+                continue;
+            }
+            out.append("\n      ").append(state).append(": ").append(modules.size());
         }
     }
-    
-    /**
-     * Notify this service that the container has actually started.
-     */
-    public static void notifyStarted() {
-        logger.info("Got started event");
-        final FrameworkService instance = getInstance();
-        synchronized (instance) {
-            logger.info("Started event arrived");
-            instance.started = true;
-            instance.notifyAll();
-            logger.info("Notified all about OSGi container started event");
+
+
+    public BundleStats getBundleStats() {
+        Bundle[] bundles = main.getFramework().getBundleContext().getBundles();
+        int numActive = 0;
+        int numBundles = bundles.length;
+        int numJahiaModules = 0;
+        int numFragments = 0;
+        for (Bundle bundle : bundles) {
+            if (bundle.getHeaders().get(Constants.FRAGMENT_HOST) != null) {
+                numBundles--;
+                numFragments++;
+                if (bundle.getState() == Bundle.RESOLVED) {
+                    numJahiaModules += countNumJahiaModules(bundle);
+                }
+            } else {
+                if (bundle.getState() == Bundle.ACTIVE) {
+                    numActive++;
+                    numJahiaModules += countNumJahiaModules(bundle);
+                }
+            }
+        }
+        BundleStats stats = new BundleStats();
+        stats.numActive = numActive;
+        stats.numTotal = numBundles;
+        stats.numJahiaModules = numJahiaModules;
+        stats.numFragments = numFragments;
+        return stats;
+    }
+
+    private int countNumJahiaModules(Bundle bundle) {
+        String moduleLocation = bundle.getLocation();
+        if (moduleLocation.startsWith("legacydepends:")) {
+            moduleLocation = moduleLocation.substring("legacydepends:".length());
+        }
+        if (moduleLocation.startsWith("file:")) {
+            moduleLocation = moduleLocation.substring("file:".length());
+        }
+        if (modulesInDirectory.contains(moduleLocation)) {
+            return 1;
+        }
+        return 0;
+    }
+
+    @Override
+    public void bundleChanged(BundleEvent event) {
+        startupEventCount++;
+        if (lastBundleEventTime > 0) {
+            totalIntervalTime += System.currentTimeMillis() - lastBundleEventTime;
+        }
+        lastBundleEventTime = System.currentTimeMillis();
+        BundleStats stats = getBundleStats();
+        if (countModules) {
+            if (stats.numJahiaModules >= modulesInDirectory.size()) {
+                // become more impatient if the standard modules have all been deployed.
+                timeoutBetweenBundleEvents = 10*1000;
+            }
         }
     }
+
+    @Override
+    public void frameworkEvent(FrameworkEvent event) {
+        logger.info("Framework event type=" + FRAMEWORK_EVENTS.toCode(event.getType(), "") + " bundle=" + event.getBundle());
+    }
+
+    class BundleStats {
+        int numJahiaModules = 0;
+        int numActive = 0;
+        int numTotal = 0;
+        int numFragments = 0;
+    }
+
 }

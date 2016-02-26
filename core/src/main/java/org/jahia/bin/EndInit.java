@@ -85,29 +85,6 @@ public class EndInit extends HttpServlet {
         
         finishInit();
         
-        long initializationTime = System.currentTimeMillis() - JahiaContextLoaderListener.getStartupTime() ;
-        StringBuilder out = new StringBuilder(256);
-        if (SettingsBean.getInstance().isDevelopmentMode()) {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  D E V E L O P M E N T   M O D E   A C T I V E" +
-            "\n" +
-            "\n  In development mode, Digital Experience Manager will allow JSPs to be modified, modules to be" +
-            "\n  re-deployed and other modifications to happen immediately, but these DO have a performance impact." +
-            "\n  It is strongly recommended to switch to production mode when running performance tests or going live." +
-            "\n  The setting to change modes is called operatingMode in the jahia.properties configuration file.");
-        } else if (SettingsBean.getInstance().isDistantPublicationServerMode()) {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  D I S T A N T  P U B L I C A T I O N  S E R V E R  M O D E   A C T I V E");
-        } else {
-            out.append("\n--------------------------------------------------------------------------------------------------" +
-            "\n  P R O D U C T I O N   M O D E   A C T I V E");
-        }
-        out.append("\n--------------------------------------------------------------------------------------------------\n");
-        appendModulesInfo(out);
-        out.append("\n--------------------------------------------------------------------------------------------------"+
-        "\n  ").append(Jahia.getFullProductVersion()).append(" is now ready. Initialization completed in ").append((initializationTime/1000)).append(" seconds");
-        out.append("\n--------------------------------------------------------------------------------------------------");
-        logger.info(out.toString());
         initialized = true;
     }
 
@@ -118,18 +95,6 @@ public class EndInit extends HttpServlet {
         } catch (JahiaInitializationException e) {
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);
-        }
-    }
-
-    private void appendModulesInfo(StringBuilder out) {
-        JahiaTemplateManagerService templateService = ServicesRegistry.getInstance().getJahiaTemplateManagerService();
-        out.append("  Modules:");
-        for (State state : ModuleState.State.values()) {
-            List<Bundle> modules = templateService.getModulesByState(state);
-            if (modules.isEmpty()) {
-                continue;
-            }
-            out.append("\n      ").append(state).append(": ").append(modules.size());
         }
     }
 

@@ -122,6 +122,11 @@ public class NavigationHelper {
         JCRNodeWrapper node = null;
         try {
             node = currentUserSession.getNode(parentPath != null ? parentPath : "/");
+        } catch (PathNotFoundException e) {
+            logger.error(e.toString());
+            if (logger.isDebugEnabled()) {
+                logger.error(e.toString(), e);
+            }
         } catch (RepositoryException e) {
             logger.error(e.toString(), e);
         }

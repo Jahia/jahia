@@ -105,7 +105,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private final Map<String, ScriptEngineFactory> extensionsToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, ScriptEngineFactory> namesToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, ScriptEngineFactory> mimeTypesToScriptFactories = new ConcurrentHashMap<>(17);
-    private final Map<Long, List<ScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
+    private final Map<Long, List<BundleScriptEngineFactory>> bundleIdsToScriptFactories = new ConcurrentHashMap<>(17);
     private final Map<String, BundleScriptEngineFactoryConfigurator> configurators = new ConcurrentHashMap<>(17);
 
     private enum KeyType {extension, mimeType, name}
@@ -145,6 +145,15 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     private ScriptEngine getEngine(String key, Map<String, ScriptEngineFactory> factoriesForKeyType, KeyType keyType) {
         final ScriptEngineFactory scriptEngineFactory = factoriesForKeyType.get(key);
         if (scriptEngineFactory != null) {
+            // perform configuration of the factory if needed
+            if (scriptEngineFactory instanceof BundleScriptEngineFactory) {
+                BundleScriptEngineFactory factory = (BundleScriptEngineFactory) scriptEngineFactory;
+                final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getWrappedFactoryClassName());
+                if (configurator != null) {
+                    configurator.configurePreScriptEngineCreation(factory.getWrappedFactory());
+                }
+            }
+
             final ScriptEngine scriptEngine = scriptEngineFactory.getScriptEngine();
             scriptEngine.setBindings(getBindings(), ScriptContext.GLOBAL_SCOPE);
             return scriptEngine;
@@ -298,31 +307,31 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     }
 
     public void removeScriptEngineFactoriesIfNeeded(Bundle bundle) {
-        final List<ScriptEngineFactory> factories = bundleIdsToScriptFactories.remove(bundle.getBundleId());
+        final List<BundleScriptEngineFactory> factories = bundleIdsToScriptFactories.remove(bundle.getBundleId());
         if (factories != null) {
-            for (ScriptEngineFactory factory : factories) {
-                final List<String> extensions = factory.getExtensions();
+            for (BundleScriptEngineFactory bundleScriptEngineFactory : factories) {
+                final List<String> extensions = bundleScriptEngineFactory.getExtensions();
                 for (String extension : extensions) {
                     extensionsToScriptFactories.remove(extension);
                 }
 
-                final List<String> mimeTypes = factory.getMimeTypes();
+                final List<String> mimeTypes = bundleScriptEngineFactory.getMimeTypes();
                 for (String mimeType : mimeTypes) {
                     mimeTypesToScriptFactories.remove(mimeType);
                 }
 
-                final List<String> names = factory.getNames();
+                final List<String> names = bundleScriptEngineFactory.getNames();
                 for (String name : names) {
                     namesToScriptFactories.remove(name);
                 }
 
-                BundleScriptResolver.getInstance().remove(factory, bundle);
+                BundleScriptResolver.getInstance().remove(bundleScriptEngineFactory, bundle);
 
                 // check if we have a configurator to call
-                final String factoryClassName = factory.getClass().getName();
+                final String factoryClassName = bundleScriptEngineFactory.getWrappedFactoryClassName();
                 final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factoryClassName);
                 if (configurator != null) {
-                    configurator.destroy(factory);
+                    configurator.destroy(bundleScriptEngineFactory.getWrappedFactory());
                 }
                 configurators.remove(factoryClassName);
             }
@@ -343,7 +352,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
     }
 
     private void addFactories(Bundle bundle, BundleScriptingContext scriptingContext, List<ScriptEngineFactory> engineFactories) {
-        final List<ScriptEngineFactory> existingFactories = new ArrayList<>(engineFactories.size());
+        final List<BundleScriptEngineFactory> existingFactories = new ArrayList<>(engineFactories.size());
 
         for (ScriptEngineFactory factory : engineFactories) {
             final BundleScriptEngineFactory bundleScriptEngineFactory = new BundleScriptEngineFactory(factory, scriptingContext);
@@ -366,7 +375,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
             existingFactories.add(bundleScriptEngineFactory);
 
             // check if we need to further configure the factory
-            final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(factory.getClass().getName());
+            final BundleScriptEngineFactoryConfigurator configurator = getConfiguratorFor(bundleScriptEngineFactory.getWrappedFactoryClassName());
             if (configurator != null) {
                 configurator.configure(factory, bundle, scriptingContext.getClassLoader());
             }

@@ -84,9 +84,11 @@ class BundleScriptEngineFactory implements ScriptEngineFactory {
 
     private final ScriptEngineFactory factory;
     private final BundleScriptingContext context;
+    private final String wrappedFactoryClassName;
 
     BundleScriptEngineFactory(ScriptEngineFactory factory, BundleScriptingContext context) {
         this.factory = factory;
+        wrappedFactoryClassName = factory.getClass().getName();
         this.context = context;
     }
 
@@ -150,10 +152,18 @@ class BundleScriptEngineFactory implements ScriptEngineFactory {
 
     @Override
     public String toString() {
-        return "BundleScriptEngineFactory wrapping " + factory.getClass().getName();
+        return "BundleScriptEngineFactory wrapping " + wrappedFactoryClassName;
     }
 
     BundleScriptingContext getContext() {
         return context;
+    }
+
+    String getWrappedFactoryClassName() {
+        return wrappedFactoryClassName;
+    }
+
+    ScriptEngineFactory getWrappedFactory() {
+        return factory;
     }
 }

@@ -98,4 +98,16 @@ public interface BundleScriptEngineFactoryConfigurator<T extends ScriptEngineFac
      * @param factory the factory for which we want to perform clean up
      */
     void destroy(final T factory);
+
+    /**
+     * Configures the specified {@link ScriptEngineFactory} if needed right before a {@link javax.script.ScriptEngine} instance is created. This is useful when some
+     * configuration details are not yet available when the bundle that declared the {@link ScriptEngineFactory} is started (e.g. when the configuration is in a Spring context
+     * that is not yet available during module startup).
+     * <p/>
+     * Note that this method is called each time a {@link javax.script.ScriptEngine} instance is retrieved so it needs to be efficient, be thread-safe and guard against multiple
+     * calls when the configuration needs to happen only once.
+     *
+     * @param scriptEngineFactory the factory to configure
+     */
+    void configurePreScriptEngineCreation(T scriptEngineFactory);
 }

@@ -220,7 +220,7 @@ public class LegacyImportHandler extends DefaultHandler {
                         ExtendedNodeDefinition nodeDef = getCurrentContentType().getChildNodeDefinitionsAsMap()
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
 
-                        createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
+                        createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes), attributes);
                         setMetadata(attributes);
                         setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
                     } else {
@@ -245,7 +245,7 @@ public class LegacyImportHandler extends DefaultHandler {
                                 .get(StringUtils.substringBeforeLast(localName, "List"));
 
                         try {
-                            createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes));
+                            createContentList(nodeDef, uuid, getMetadataForNodeCreation(attributes), attributes);
                             if (currentCtx.peek().ctx.peek() != CTX_DIRECTSUBNODES) {
                                 setMetadata(attributes);
                                 setAcl(attributes.getValue(HTTP_WWW_JAHIA_ORG, "acl"));
@@ -669,7 +669,7 @@ public class LegacyImportHandler extends DefaultHandler {
         return node;
     }
 
-    private void createContentList(ExtendedNodeDefinition listDefinition, String uuid, Map<String, String> creationMetadata) throws RepositoryException {
+    private void createContentList(ExtendedNodeDefinition listDefinition, String uuid, Map<String, String> creationMetadata, Attributes attributes) throws RepositoryException {
         String nodeName = mapping.getMappedNode(getCurrentContentType(), listDefinition.getName());
 
         String nodeType = Constants.JAHIANT_CONTENTLIST;
@@ -727,6 +727,32 @@ public class LegacyImportHandler extends DefaultHandler {
                     setPropertyField(getCurrentContentType(), entry.getKey(), entry.getValue());
                 }
             }
+        }
+        
+        handleContainerListSorting(attributes.getValue("jahia:sortHandler"), primaryNodeType);
+    }
+
+    private void handleContainerListSorting(String sortHandler, ExtendedNodeType primaryNodeType) {
+        if (sortHandler == null || sortHandler.length() == 0) {
+            return;
+        }
+
+        JCRNodeWrapper node = currentCtx.peek().contents.peek();
+        String path = node.getPath();
+        try {
+            String[] sortConfig = StringUtils.split(sortHandler, "; ");
+            String field = sortConfig[sortConfig.length - 1];
+            String targetProperty = mapping.getMappedProperty(primaryNodeType, field);
+            String direction = sortConfig[1];
+            if (targetProperty != null && (node.isNodeType("jnt:contentList") || node.isNodeType("jnt:area"))) {
+                logger.debug("Setting automatic ordering for list {} using property {} and direction {}",
+                        new String[] { path, targetProperty, direction });
+                node.addMixin("jmix:orderedList");
+                node.setProperty("firstField", targetProperty);
+                node.setProperty("firstDirection", direction != null && "desc".equals(direction) ? "desc" : "asc");
+            }
+        } catch (Exception e) {
+            logger.warn("Unable to handle container list sorting property " + sortHandler + " on node " + path, e);
         }
     }
 

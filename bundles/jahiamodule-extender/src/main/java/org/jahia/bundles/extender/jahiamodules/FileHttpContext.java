@@ -104,11 +104,16 @@ public class FileHttpContext implements HttpContext {
             }
             try {
                 final Model model = PomUtils.read(pomFile);
+
                 String s = model.getVersion();
                 if (s == null) {
                     s = model.getParent().getVersion();
+                } else if (s.matches("\\$\\{.*\\}")) {
+                    logger.warn("'version' contains an expression but should be a constant. Stopping mount of source forlder.");
+                    return null;
                 }
                 if (!s.equals(bundle.getHeaders().get("Implementation-Version"))) {
+                    logger.warn("pom.xml 'version' is not matching the Manifest Implementation-Version. Stopping mount of source forlder.");
                     return null;
                 }
             } catch (Exception e) {

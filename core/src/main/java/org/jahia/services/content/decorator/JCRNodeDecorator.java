@@ -150,8 +150,8 @@ public class JCRNodeDecorator implements JCRNodeWrapper {
         return node.getAclInheritanceBreak();
     }
 
-    public boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException {
-        return node.setAclInheritanceBreak(inheritance);
+    public boolean setAclInheritanceBreak(boolean breakAclInheritance) throws RepositoryException {
+        return node.setAclInheritanceBreak(breakAclInheritance);
     }
 
     public JCRNodeWrapper uploadFile(String name, InputStream is, String contentType) throws RepositoryException {

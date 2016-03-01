@@ -85,61 +85,6 @@ public class FileHttpContext implements HttpContext {
         this.bundleSourceResourceResolver = new BundleSourceResourceResolver(bundle);
     }
 
-<<<<<<< .working
-=======
-    public static URL[] getSourceURLs(Bundle bundle) {
-        URL[] urls = EMPTY_URL_ARRAY;
-        String sourceFolder = (String) bundle.getHeaders().get("Jahia-Source-Folders");
-        if (StringUtils.isNotEmpty(sourceFolder)) {
-            File pomFile = new File(sourceFolder, "pom.xml");
-            if (!pomFile.exists()) {
-                return null;
-            }
-            try {
-                final Model model = PomUtils.read(pomFile);
-
-                String s = model.getVersion();
-                if (s == null) {
-                    s = model.getParent().getVersion();
-                } else if (s.matches("\\$\\{.*\\}")) {
-                    logger.warn("'version' contains an expression but should be a constant. Stopping mount of source forlder.");
-                    return null;
-                }
-                if (!s.equals(bundle.getHeaders().get("Implementation-Version"))) {
-                    logger.warn("pom.xml 'version' is not matching the Manifest Implementation-Version. Stopping mount of source forlder.");
-                    return null;
-                }
-            } catch (Exception e) {
-                logger.warn("Invalid source folder " + sourceFolder + ", cannot read pom file", e.getMessage());
-                return null;
-            }
-
-            List<URL> sourceURLs = new ArrayList<URL>();
-            File resourceFolderFile = new File(sourceFolder, "src/main/resources");
-            if (resourceFolderFile.exists()) {
-                try {
-                    sourceURLs.add(resourceFolderFile.toURI().toURL());
-                } catch (MalformedURLException e) {
-                    logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
-                }
-            }
-            // Legacy sources
-            File webappFolderFile = new File(sourceFolder, "src/main/webapp");
-            if (webappFolderFile.exists()) {
-                try {
-                    sourceURLs.add(webappFolderFile.toURI().toURL());
-                } catch (MalformedURLException e) {
-                    logger.warn("Invalid source folder " + sourceFolder + ", cannot convert to URL", e);
-                }
-            }
-
-            urls = sourceURLs.toArray(new URL[sourceURLs.size()]);
-            logger.debug("Detected {} source folders for bundle {}", sourceURLs.size(), bundle.getSymbolicName());
-        }
-        return urls;
-    }
-
->>>>>>> .merge-right.r53961
     @Override
     public boolean handleSecurity(HttpServletRequest request, HttpServletResponse response) throws IOException {
         return parentHttpContext.handleSecurity(request, response);

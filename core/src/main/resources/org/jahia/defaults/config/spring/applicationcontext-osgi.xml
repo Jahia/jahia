@@ -20,25 +20,28 @@
         </property>
     </bean>
 
-    <bean name="combinedFelixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
+    <bean name="combinedOsgiProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean" depends-on="settingsBean">
         <property name="ignoreResourceNotFound" value="true"/>
         <property name="properties">
             <props value-type="java.lang.String">
-                <prop key="gosh.args">--nointeractive -sc telnetd --port=${felix.gogo.shell.telnet.port:-1} start</prop>
-                
-                <prop key="felix.cache.bufsize">65536</prop>
-                <prop key="felix.log.level">1</prop>
 
-                <prop key="obr.repository.url">http://felix.apache.org/obr/releases.xml</prop>
-                
-                <prop key="org.osgi.framework.bootdelegation">com.yourkit.*</prop>
-                <prop key="org.osgi.framework.bundle.parent">framework</prop>
-                <prop key="org.osgi.framework.startlevel.beginning">2</prop>
+                <prop key="karaf.home">${jahiaWebAppRoot}/WEB-INF/karaf</prop>
+                <prop key="karaf.base">${jahiaWebAppRoot}/WEB-INF/karaf</prop>
+                <prop key="karaf.data">#{settingsBean.jahiaVarDiskPath}/karaf</prop>
+                <prop key="karaf.etc">#{settingsBean.jahiaVarDiskPath}/etc</prop>
+                <prop key="karaf.history">#{settingsBean.jahiaVarDiskPath}/karaf/history.txt</prop>
+                <prop key="karaf.instances">#{settingsBean.jahiaVarDiskPath}/karaf/instances</prop>
+                <prop key="karaf.startLocalConsole">false</prop>
+                <prop key="karaf.startRemoteShell">true</prop>
+                <prop key="karaf.lock">false</prop>
+
                 <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>
-                <prop key="org.osgi.framework.storage.clean">none</prop>
-                <prop key="org.apache.felix.http.shared_servlet_context_attributes">true</prop>
-                
+
+                <prop key="log4j.ignoreTCL">true</prop>
+                <prop key="jahiaVarDiskPath">#{settingsBean.jahiaVarDiskPath}</prop>
+
                 <prop key="felix.webconsole.manager.root">/console</prop>
+
             </props>
         </property>
         <property name="locations">
@@ -47,16 +50,19 @@
                 <value>/WEB-INF/etc/config/felix-framework.properties</value>
                 <value>classpath*:org/jahia/config/felix-framework*.properties</value>
                 <value>classpath*:jahia/felix-framework*.properties</value>
+                <value>classpath*:org/jahia/defaults/config/properties/osgi-framework*.properties</value>
+                <value>classpath*:org/jahia/config/osgi-framework*.properties</value>
+                <value>classpath*:jahia/osgi-framework*.properties</value>
             </list>
         </property>
     </bean>
 
-    <bean id="felixProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+    <bean id="osgiProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
         <!-- Effective Felix properties: combined (defaults + configured in files) properties
             are overridden with the system properties, having "jahiaConfig." prefix -->
         <property name="propertiesArray">
             <list>
-                <ref bean="combinedFelixProperties"/>
+                <ref bean="combinedOsgiProperties"/>
                 <ref bean="jahiaSystemProperties"/>
             </list>
         </property>

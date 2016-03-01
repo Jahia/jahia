@@ -44,18 +44,20 @@
 package org.jahia.osgi;
 
 import org.apache.karaf.main.Main;
+import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.registries.ServicesRegistry;
+import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.settings.SettingsBean;
 import org.osgi.framework.*;
 import org.osgi.framework.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.*;
+import org.springframework.util.PropertyPlaceholderHelper;
 
 import javax.servlet.ServletContext;
 
@@ -63,7 +65,7 @@ import java.io.File;
 import java.util.*;
 
 /**
- * OSGi framework service
+ * OSGi framework service. This class is responsible for setting up and starting the embedded Karaf OSGi runtime.
  *
  * @author Serge Huber
  */
@@ -170,20 +172,7 @@ public class FrameworkService implements BundleListener, FrameworkListener {
 
     private void startKaraf() {
         try {
-            String karafHome = new File(servletContext.getRealPath("/WEB-INF/karaf")).getAbsolutePath();
-            String varDiskPath = SettingsBean.getInstance().getJahiaVarDiskPath();
-            System.setProperty("karaf.home", karafHome);
-            System.setProperty("karaf.base", karafHome);
-            System.setProperty("karaf.data", varDiskPath + "/karaf");
-            System.setProperty("karaf.etc", varDiskPath + "/etc");
-            System.setProperty("org.osgi.framework.storage", varDiskPath + "/bundles-deployed");
-            System.setProperty("karaf.history", varDiskPath + "/karaf/history.txt");
-            System.setProperty("karaf.instances", varDiskPath + "/karaf/instances");
-            System.setProperty("karaf.startLocalConsole", "false");
-            System.setProperty("karaf.startRemoteShell", "true");
-            System.setProperty("karaf.lock", "false");
-            System.setProperty("log4j.ignoreTCL", "true");
-            System.setProperty("jahiaVarDiskPath", varDiskPath);
+            setupSystemProperties();
             main = new Main(new String[0]);
             main.launch();
             setupStartupListener();
@@ -194,6 +183,53 @@ public class FrameworkService implements BundleListener, FrameworkListener {
         }
 
     }
+
+    private void setupSystemProperties() {
+
+        String varDiskPath = SettingsBean.getInstance().getJahiaVarDiskPath();
+
+        @SuppressWarnings("unchecked")
+        Map<String,String> unreplaced = (Map<String,String>) SpringContextSingleton.getBean("osgiProperties");
+        Map<String,String> newSystemProperties = new TreeMap<>();
+
+        PropertyPlaceholderHelper placeholderHelper = new PropertyPlaceholderHelper("${", "}");
+        Properties systemProps = System.getProperties();
+
+        for (Map.Entry<String, String> entry : unreplaced.entrySet()) {
+            newSystemProperties.put(entry.getKey(), placeholderHelper.replacePlaceholders(entry.getValue(), systemProps));
+        }
+
+        for (Map.Entry<String,String> property : newSystemProperties.entrySet()) {
+            String propertyName = property.getKey();
+            if (System.getProperty(propertyName) != null) {
+                logger.warn("Overriding system property " + propertyName + "=" + System.getProperty(propertyName) + " with new value=" + property.getValue());
+            }
+            System.setProperty(propertyName, property.getValue());
+        }
+
+        File file = new File(varDiskPath + "/etc", "config.properties");
+        org.apache.felix.utils.properties.Properties karafConfigProperties = null;
+        try {
+            karafConfigProperties = PropertiesLoader.loadConfigProperties(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+            karafConfigProperties = new org.apache.felix.utils.properties.Properties();
+        }
+
+        StringBuilder extraSystemPackages = new StringBuilder(karafConfigProperties.getProperty("org.osgi.framework.system.packages.extra"));
+        boolean modifiedExtraSystemPackages = false;
+        for (Map.Entry<String, String> entry : newSystemProperties.entrySet()) {
+            if (entry.getKey().startsWith("org.osgi.framework.system.packages.extra.")) {
+                extraSystemPackages.append(',').append(entry.getValue());
+                modifiedExtraSystemPackages = true;
+            }
+        }
+        if (modifiedExtraSystemPackages) {
+            System.setProperty("org.osgi.framework.system.packages.extra", extraSystemPackages.toString());
+        }
+
+    }
+
 
     private void setupStartupListener() {
         if (countModules) {

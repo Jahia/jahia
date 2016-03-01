@@ -617,11 +617,12 @@ public class JCRNodeWrapperImpl extends JCRItemWrapperImpl implements JCRNodeWra
     /**
      * {@inheritDoc}
      */
-    public boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException {
+    public boolean setAclInheritanceBreak(boolean breakAclInheritance) throws RepositoryException {
         try {
+            boolean inheritAcl = !breakAclInheritance;
             Node aclNode = getOrCreateAcl();
-            if (!aclNode.hasProperty("j:inherit") || aclNode.getProperty("j:inherit").getBoolean() != !inheritance) {
-                aclNode.setProperty("j:inherit", !inheritance);
+            if (!aclNode.hasProperty("j:inherit") || aclNode.getProperty("j:inherit").getBoolean() != inheritAcl) {
+                aclNode.setProperty("j:inherit", inheritAcl);
             }
         } catch (RepositoryException e) {
             logger.error("Cannot change acl", e);

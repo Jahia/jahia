@@ -364,12 +364,12 @@ public interface JCRNodeWrapper extends Node, JCRItemWrapper {
     boolean getAclInheritanceBreak() throws RepositoryException;
 
     /**
-     * Set acl break inheritance - if true, no acls will be inherited from parent nodes.
+     * Set acl break inheritance - if true, no ACLs will be inherited from parent nodes.
      *
-     * @param inheritance
-     * @return true if action was successful, or false if not
+     * @param breakAclInheritance if <code>true</code>, no ACLs will be inherited from parent nodes
+     * @return <code>true</code> if action was successful, or <code>false</code> if not
      */
-    boolean setAclInheritanceBreak(boolean inheritance) throws RepositoryException;
+    boolean setAclInheritanceBreak(boolean breakAclInheritance) throws RepositoryException;
 
     /**
      * Create a sub folder of type jnt:folder

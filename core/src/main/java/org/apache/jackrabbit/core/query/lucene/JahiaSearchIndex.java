@@ -404,7 +404,7 @@ public class JahiaSearchIndex extends SearchIndex {
                         Event event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
                         // skip adding subnodes if just a property changed and its not j:inherit
                         if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
-                            if (!(JNT_ACL.equals(node.getNodeTypeName()) && event.getPath().endsWith("j:inherit"))) {
+                            if (!(JNT_ACL.equals(node.getNodeTypeName()) && event.getPath().endsWith("/j:inherit"))) {
                                 continue;
                             }
                         }

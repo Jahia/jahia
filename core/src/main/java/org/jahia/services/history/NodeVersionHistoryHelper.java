@@ -398,7 +398,7 @@ public final class NodeVersionHistoryHelper {
 
         final VersionHistoryCheckStatus status = purgeVersionHistoryForNodes(nodeIdentifiers, out);
         
-        out.echo("Done checking version history for nodes. Version histrory status: {}", status.toString());
+        out.echo("Done checking version history for nodes. Version history status: {}", status.toString());
 
         return status;
     }

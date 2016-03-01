@@ -44,6 +44,8 @@
 package org.jahia.ajax.gwt.client.widget.poller;
 
 import com.extjs.gxt.ui.client.GXT;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
 import com.google.gwt.user.client.Window;
@@ -71,6 +73,8 @@ public class Poller {
         String userAgent = GXT.getUserAgent();
         SSE_SUPPORT = !(GXT.isIE || userAgent != null && userAgent.indexOf("trident/7") != -1);
     }
+
+    private static final int CONNECTION_RESTORED_NOTIFICATION_DELAY_MS = 15000;
 
     private static Poller instance;
 
@@ -187,16 +191,9 @@ public class Poller {
         }
         reconnectingAfterError = false;
 
-        if (!Window.confirm(Messages.get("instantMessaging.connectionRecoveredReloadRecommended.confirm"))) {
-            // User hasn't confirmed reload.
-            return;
-        }
-        if (reconnectingAfterError) {
-            // Do not reload the page in case we lost the connection again in the meanwhile.
-            return;
-        }
-
-        Window.Location.reload();
+        InfoConfig infoConfig = new InfoConfig(Messages.get("label.information"), Messages.get("instantMessaging.connectionRecovered.notification"));
+        infoConfig.display = CONNECTION_RESTORED_NOTIFICATION_DELAY_MS;
+        Info.display(infoConfig);
     }
 
     public void registerListener(PollListener listener, Class eventType) {

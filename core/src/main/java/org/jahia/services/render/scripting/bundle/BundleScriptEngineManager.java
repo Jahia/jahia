@@ -250,6 +250,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
         }
 
         // check if the bundle defined any view extension priorities
+        // todo: add more validation and better specify how this functionality should work
         final Dictionary<String, String> headers = bundle.getHeaders();
         final String extensionsPriorities = headers.get("Jahia-Scripting-Extensions-Priorities");
         final Map<String, Integer> extensionsPrioritiesMap;
@@ -269,7 +270,7 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                 }
 
                 if (!valid) {
-                    logger.warn("Invalid extension - priority pair: {}. Format is extension:priority, priority should be an integer.", extensionPriorityPair);
+                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer.", extensionPriorityPair);
                 }
             }
         } else {

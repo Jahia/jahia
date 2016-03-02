@@ -113,6 +113,7 @@ public class ModuleBuildHelper implements InitializingBean {
     private String mavenArchetypeVersion;
     private String mavenMinRequiredVersion;
     private String mavenReleasePlugin;
+    private int moduleStartLevel;
     private SourceControlHelper scmHelper;
     private SettingsBean settingsBean;
     private TemplatePackageRegistry templatePackageRegistry;
@@ -142,7 +143,8 @@ public class ModuleBuildHelper implements InitializingBean {
         FileInputStream is = new FileInputStream(moduleInfo.getFile());
         try {
             bundle = FrameworkService.getBundleContext().installBundle(moduleInfo.getFile().toURI().toString(), is);
-            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
+            bundle.start();
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -613,7 +615,8 @@ public class ModuleBuildHelper implements InitializingBean {
         Bundle bundle;
         try {
             bundle = FrameworkService.getBundleContext().installBundle(compiledModuleInfo.getFile().toURI().toString(), is);
-            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleStartLevel);
+            bundle.start();
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -1000,5 +1003,9 @@ public class ModuleBuildHelper implements InitializingBean {
      */
     public void setMavenArchetypeVersion(String mavenArchetypeVersion) {
         this.mavenArchetypeVersion = mavenArchetypeVersion;
+    }
+
+    public void setModuleStartLevel(int moduleStartLevel) {
+        this.moduleStartLevel = moduleStartLevel;
     }
 }

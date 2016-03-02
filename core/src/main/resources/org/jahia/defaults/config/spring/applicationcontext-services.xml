@@ -215,6 +215,7 @@
         <property name="mavenMinRequiredVersion" value="3.0"/>
         <property name="mavenExecutable" value="${mvnPath:mvn}"/>
         <property name="mavenReleasePlugin" value="${mavenReleasePlugin:org.apache.maven.plugins:maven-release-plugin:2.5}"/>
+        <property name="moduleStartLevel" value="${jahia.moduleStartLevel:90}"/>
         <property name="sourceControlHelper" ref="SourceControlHelper"/>
         <property name="templatePackageRegistry" ref="org.jahia.services.templates.TemplatePackageRegistry"/>
     </bean>

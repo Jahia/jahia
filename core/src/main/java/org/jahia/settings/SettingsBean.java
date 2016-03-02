@@ -473,7 +473,11 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 if (StringUtils.isNotEmpty(bindPort)) {
                     setSystemProperty("cluster.tcp.bindPort", bindPort);
                 }
+
                 setSystemProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
+                if (System.getProperty("cluster.node.hazelcast.port") == null) {
+                    setSystemProperty("cluster.node.hazelcast.port", getString("cluster.node.hazelcast.port", "9999"));
+                }
             }
 
             initJcrSystemProperties();

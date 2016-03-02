@@ -220,6 +220,33 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             }
         }
 
+        // deal with extension priorities if needed
+        if (context != null && context.specifiesExtensionPriorities()) {
+            final Map<String, Integer> specifiedPriorities = context.getExtensionPriorities();
+            final SortedMap<Integer, String> orderedPriorities = new TreeMap<>();
+
+            for (Map.Entry<String, Integer> entry : extensionPriorities.entrySet()) {
+                final String extension = entry.getKey();
+                Integer priority = entry.getValue();
+
+                final Integer newPriority = specifiedPriorities.get(extension);
+                if (newPriority != null) {
+                    extensionPriorities.put(extension, newPriority);
+                    priority = newPriority;
+                }
+                orderedPriorities.put(priority, extension);
+            }
+
+            //check if we specified unknown extensions
+            final Set<String> specifiedExtensions = specifiedPriorities.keySet();
+            specifiedExtensions.removeAll(extensionPriorities.keySet());
+            if (!specifiedExtensions.isEmpty()) {
+                logger.warn("Module {} specified priorities for unknown extensions {}", bundle.getSymbolicName(), specifiedExtensions);
+            }
+
+            logger.info("Extension priorities got re-ordered by module {} to {}", bundle.getSymbolicName(), orderedPriorities);
+        }
+
         // add observers for the extensions
         registerObservers(extensions);
     }

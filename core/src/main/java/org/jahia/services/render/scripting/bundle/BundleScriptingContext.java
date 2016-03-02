@@ -72,6 +72,7 @@
 package org.jahia.services.render.scripting.bundle;
 
 import javax.script.ScriptEngineFactory;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -102,7 +103,15 @@ class BundleScriptingContext {
         }
     }
 
+    boolean specifiesExtensionPriorities() {
+        return extensionPriorities != null && !extensionPriorities.isEmpty();
+    }
+
     List<ScriptEngineFactory> getEngineFactories() {
         return engineFactories;
+    }
+
+    Map<String, Integer> getExtensionPriorities() {
+        return extensionPriorities != null ? extensionPriorities : Collections.<String, Integer>emptyMap();
     }
 }

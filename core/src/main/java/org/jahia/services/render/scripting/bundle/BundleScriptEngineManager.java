@@ -265,12 +265,13 @@ public class BundleScriptEngineManager extends ScriptEngineManager {
                         extensionsPrioritiesMap.put(extensionPrioritySplit[0], Integer.parseInt(extensionPrioritySplit[1]));
                         valid = true;
                     } catch (NumberFormatException e) {
-                        // do nothing
+                        valid = false;
                     }
                 }
 
                 if (!valid) {
-                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer.", extensionPriorityPair);
+                    logger.warn("Invalid extension - priority pair: {}. Format is extension=priority, priority should be an integer. Extension will be ignored.",
+                            extensionPriorityPair);
                 }
             }
         } else {

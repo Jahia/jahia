@@ -76,11 +76,16 @@ public class JCRMountPointNode extends JCRProtectedNodeAbstractDecorator {
 
     @Override
     protected boolean canReadProperty(String propertyName) throws RepositoryException {
-        if(PROTECTED_PROPERTIES_PROPERTY_NAME.equals(propertyName)) {
+
+        if (node.hasPermission("adminMountPoints")) {
+            return true;
+        }
+
+        if (PROTECTED_PROPERTIES_PROPERTY_NAME.equals(propertyName)) {
             return false;
         }
 
-        if(node.hasProperty(PROTECTED_PROPERTIES_PROPERTY_NAME)) {
+        if (node.hasProperty(PROTECTED_PROPERTIES_PROPERTY_NAME)) {
             JCRValueWrapper[] values = node.getProperty(PROTECTED_PROPERTIES_PROPERTY_NAME).getValues();
             if(values != null && values.length > 0) {
                 for (JCRValueWrapper value : values) {

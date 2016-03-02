@@ -394,14 +394,17 @@ public class JahiaSearchIndex extends SearchIndex {
             removeList.add(nodeId);
         }
 
+        boolean debugEnabled = log.isDebugEnabled();
+        
         if (isAddAclUuidInIndex() && hasAclOrAce) {
             final ItemStateManager itemStateManager = getContext().getItemStateManager();
             for (final NodeState node : new ArrayList<NodeState>(addList)) {
                 try {
                     // if an acl node is added, removed or j:inherit property is changed we need to add/modify ACL_UUID field
                     // into parent's and all affected subnodes' index documents
+                    Event event = null;
                     if (add instanceof JahiaSearchManager.NodeStateIterator) {
-                        Event event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
+                        event = ((JahiaSearchManager.NodeStateIterator)add).getEvent(node.getNodeId());
                         // skip adding subnodes if just a property changed and its not j:inherit
                         if (event != null && event.getType() != Event.NODE_ADDED && event.getType() != Event.NODE_REMOVED) {
                             if (!(JNT_ACL.equals(node.getNodeTypeName()) && event.getPath().endsWith("/j:inherit"))) {
@@ -415,8 +418,16 @@ public class JahiaSearchIndex extends SearchIndex {
                                 .getParentId());
                         addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                         if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
+                            long startTime = debugEnabled ? System.currentTimeMillis() : 0;
+                            
                             recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                             topIdsRecursedForAcl.add(node.getParentId());
+                            
+                            if (debugEnabled) {
+                                log.debug("ACL updated {}. Recursed down the JCR tree to update the index in {} ms.",
+                                        event != null ? event.getPath() : nodeParent.getId(),
+                                        System.currentTimeMillis() - startTime);
+                            }
                         }
                     }
                     // if an ace is modified, we need to reindex all its subnodes only if we can use the optimized ACE
@@ -426,8 +437,17 @@ public class JahiaSearchIndex extends SearchIndex {
                         if (canUseOptimizedACEIndexation(nodeParent)) {
                             addIdToBeIndexed(nodeParent.getNodeId(), addedIds, removedIds, addList, removeList);
                             if (!topIdsRecursedForAcl.contains(nodeParent.getNodeId()) && !aclChangedList.contains(nodeParent.getNodeId())) {
+                                long startTime = debugEnabled ? System.currentTimeMillis() : 0;
+                                
                                 recurseTreeForAclIdSetting(nodeParent, addedIds, removedIds, aclChangedList, itemStateManager);
                                 topIdsRecursedForAcl.add(node.getParentId());
+                                
+                                if (debugEnabled) {
+                                    log.debug(
+                                            "ACE entry updated: {}. Recursed down the JCR tree to update the index in {} ms.",
+                                            event != null ? event.getPath() : nodeParent.getId(),
+                                            System.currentTimeMillis() - startTime);
+                                }
                             }
                         }
                     }
@@ -448,7 +468,7 @@ public class JahiaSearchIndex extends SearchIndex {
             // If switching index, updates will be handled in delayed updates
         }
 
-        if (log.isDebugEnabled()) {
+        if (debugEnabled) {
             log.debug("Re-indexed nodes in {} ms: {} removed, {} added", new Object[]{
                     (System.currentTimeMillis() - timer), removeList.size(), addList.size()});
         }
@@ -483,7 +503,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 aclSubListStart += batchSize;
                 aclSubListEnd = Math.min(aclChangedList.size(), aclSubListEnd + batchSize);
             }
-            if (log.isDebugEnabled()) {
+            if (debugEnabled) {
                 log.debug("Re-indexed {} nodes after ACL change in {} ms", new Object[]{aclChangedList.size(),
                         (System.currentTimeMillis() - timer)});
             }

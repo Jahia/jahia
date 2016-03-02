@@ -475,8 +475,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 }
 
                 setSystemProperty("cluster.configFile.jahia", getString("cluster.configFile.jahia", "tcp.xml"));
-                if (System.getProperty("cluster.node.hazelcast.port") == null) {
-                    setSystemProperty("cluster.node.hazelcast.port", getString("cluster.node.hazelcast.port", "9999"));
+                if (System.getProperty("cluster.hazelcast.port") == null) {
+                    setSystemProperty("cluster.hazelcast.port", getString("cluster.hazelcast.port", "7860"));
                 }
             }
 

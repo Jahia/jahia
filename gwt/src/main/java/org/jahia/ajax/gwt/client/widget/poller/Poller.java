@@ -112,6 +112,7 @@ public class Poller {
                 requestConfig.setTransport(transport);
                 requestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
                 requestConfig.setMaxReconnectOnClose(Integer.MAX_VALUE);
+                requestConfig.setReconnectInterval(5000);
 
                 requestConfig.setErrorHandler(new AtmosphereErrorHandler() {
 

@@ -48,7 +48,6 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Window;
 
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
@@ -74,6 +73,7 @@ public class Poller {
         SSE_SUPPORT = !(GXT.isIE || userAgent != null && userAgent.indexOf("trident/7") != -1);
     }
 
+    private static final int RECONNECT_INTERVAL_MS = 5000;
     private static final int CONNECTION_RESTORED_NOTIFICATION_DELAY_MS = 15000;
 
     private static Poller instance;
@@ -112,7 +112,7 @@ public class Poller {
                 requestConfig.setTransport(transport);
                 requestConfig.setFallbackTransport(AtmosphereRequestConfig.Transport.LONG_POLLING);
                 requestConfig.setMaxReconnectOnClose(Integer.MAX_VALUE);
-                requestConfig.setReconnectInterval(5000);
+                requestConfig.setReconnectInterval(RECONNECT_INTERVAL_MS);
 
                 requestConfig.setErrorHandler(new AtmosphereErrorHandler() {
 

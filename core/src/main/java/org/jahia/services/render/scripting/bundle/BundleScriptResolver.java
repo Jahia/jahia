@@ -112,6 +112,14 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
     private BundleJSR223ScriptFactory bundleScriptFactory;
     private ExtensionObserverRegistry observerRegistry;
     private final ScriptBundleObserver scriptBundleObserver = new ScriptBundleObserver(this);
+    /**
+     * Prefixes for bundles that are excluded from bundle scanning for views since they contain lots of files with registered extensions that would be considered as views.
+     */
+    private Set<String> ignoredBundlePrefixes = new HashSet<>(7);
+
+    public void setIgnoredBundlePrefixes(Set<String> ignoredBundlePrefixes) {
+        this.ignoredBundlePrefixes = ignoredBundlePrefixes;
+    }
 
     public void setExtensionObserverRegistry(ExtensionObserverRegistry extensionObserverRegistry) {
         this.observerRegistry = extensionObserverRegistry;
@@ -209,7 +217,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             // register view script observers
             addBundleScripts(bundle, extension, scriptEngineFactory);
 
-            // as we are starting up we insert all the bundle scripts for all the deployed bundles only if
+            // check existing bundles to see if they provide views for the newly deployed scripting language
             final BundleContext bundleContext = bundle.getBundleContext();
             if (bundleContext != null) {
                 for (Bundle otherBundle : bundleContext.getBundles()) {
@@ -343,7 +351,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     private static boolean isIgnoredBundle(Bundle bundle) {
         final String symbolicName = bundle.getSymbolicName();
-        for (String ignoredBundlePrefix : IGNORED_BUNDLE_PREFIXES) {
+        for (String ignoredBundlePrefix : getInstance().ignoredBundlePrefixes) {
             if (symbolicName.startsWith(ignoredBundlePrefix)) {
                 return true;
             }
@@ -788,15 +796,5 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
 
     public void setBundleScriptFactory(BundleJSR223ScriptFactory bundleScriptFactory) {
         this.bundleScriptFactory = bundleScriptFactory;
-    }
-
-
-    private static final Set<String> IGNORED_BUNDLE_PREFIXES = new HashSet<>(7);
-
-    static {
-        IGNORED_BUNDLE_PREFIXES.add("org.apache");
-        IGNORED_BUNDLE_PREFIXES.add("org.ops4j");
-        IGNORED_BUNDLE_PREFIXES.add("assets");
-        IGNORED_BUNDLE_PREFIXES.add("ckeditor");
     }
 }

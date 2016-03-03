@@ -46,6 +46,14 @@
                 <entry key="flow" value-ref="org.jahia.services.render.webflow.WebflowDispatcherScriptFactory"/>
             </map>
         </property>
+        <property name="ignoredBundlePrefixes">
+            <set>
+                <value>org.apache</value>
+                <value>org.ops4j</value>
+                <value>assets</value>
+                <value>ckeditor</value>
+            </set>
+        </property>
         <property name="templateManagerService" ref="JahiaTemplateManagerService"/>
         <property name="bundleScriptFactory" ref="BundleJSR223ScriptFactory"/>
         <property name="extensionObserverRegistry" ref="extensionObserverRegistry"/>

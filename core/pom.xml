@@ -624,6 +624,15 @@
 
         <!-- Scripting engines  -->
         <dependency>
+<<<<<<< .working
+=======
+            <groupId>com.sun.script.freemarker</groupId>
+            <artifactId>jsr223-freemarker-engine</artifactId>
+            <version>1.1</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+>>>>>>> .merge-right.r53985
             <groupId>com.sun.script.velocity</groupId>
             <artifactId>jsr223-velocity-engine</artifactId>
             <version>1.1</version>

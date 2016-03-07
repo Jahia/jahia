@@ -62,7 +62,6 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.bin.Render;
 import org.jahia.exceptions.JahiaBadRequestException;
 import org.jahia.exceptions.JahiaException;
-import org.jahia.exceptions.JahiaNotFoundException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRCallback;
@@ -101,6 +100,8 @@ public class URLResolver {
     private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
     
     private static final String DEFAULT_WORKSPACE = LIVE_WORKSPACE;
+    
+    private static final Pattern MACRO_URL_PATTERN = Pattern.compile("(.?)*.html##[a-zA-Z]*##$");
 
     private static final String VANITY_URL_NODE_PATH_SEGMENT = "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE + "/";
 
@@ -243,7 +244,7 @@ public class URLResolver {
         int indexOfHTMLSuffix = lastPart.indexOf(".html");
         if (isServletAllowingUrlMapping() && indexOfHTMLSuffix > 0
                 && (lastPart.endsWith(".html") ||
-                		lastPart.matches("(.?)*.html##[a-zA-Z]*##$"))) {
+                        MACRO_URL_PATTERN.matcher(lastPart).matches())) {
             mappable = true;
         }
     }

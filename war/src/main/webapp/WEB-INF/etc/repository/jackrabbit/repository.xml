@@ -98,7 +98,7 @@
 
         </NodeTypeInstanceHandler>
 
-
+        <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
     </Workspace>
 
     <Cluster id="${cluster.node.serverId}">
@@ -156,6 +156,8 @@
         <param name="forceConsistencyCheck" value="${jahia.jackrabbit.searchIndex.forceConsistencyCheck}"/>
         <param name="autoRepair" value="${jahia.jackrabbit.searchIndex.autoRepair}"/>
     </SearchIndex>
+
+    <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
         <param name="path" value="${jahia.jackrabbit.datastore.path}"/>

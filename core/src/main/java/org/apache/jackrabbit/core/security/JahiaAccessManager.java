@@ -135,7 +135,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
     protected JahiaPrincipal jahiaPrincipal;
 
-    private Session securitySession;
+    private JahiaSystemSession securitySession;
     private Session defaultWorkspaceSecuritySession;
 
     private RepositoryContext repositoryContext;
@@ -144,7 +144,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private static volatile Cache<String, Set<Privilege>> privilegesInRole = null;
     private static volatile Cache<String, Boolean> matchingPermissions = null;
     private Map<String, Boolean> pathPermissionCache = null;
-    private Map<String, CompiledAcl> compiledAcls = new HashMap<String, CompiledAcl>();
+    private Map<Path, CompiledAcl> compiledAcls = new HashMap<Path, CompiledAcl>();
     private Boolean isAdmin = null;
 
     private static ThreadLocal<Collection<String>> deniedPathes = new ThreadLocal<Collection<String>>();
@@ -215,7 +215,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
         init(amContext, null, null, null, null);
     }
 
-    public Session getSecuritySession() throws RepositoryException {
+    public JahiaSystemSession getSecuritySession() throws RepositoryException {
         if (securitySession != null) {
             return securitySession;
         }
@@ -359,12 +359,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
      */
     @Override
     protected void checkValidNodePath(String absPath) throws PathNotFoundException, RepositoryException {
-        Path p = resolver.getQPath(absPath);
+        checkValidNodePath(resolver.getQPath(absPath));
+    }
+
+    protected void checkValidNodePath(Path p) throws RepositoryException {
         if (!p.isAbsolute()) {
             throw new RepositoryException("Absolute path expected.");
         }
         if (hierMgr.resolveNodePath(p) == null) {
-            throw new PathNotFoundException("No such node " + absPath);
+            throw new PathNotFoundException("No such node " + p);
         }
     }
 
@@ -434,7 +437,8 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
         String jcrPath = pr.getJCRPath(absPath);
 
-        if (permissions.size() == 1 && jcrPath.equals("/") && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
+        absPath = absPath.getCanonicalPath();
+        if (permissions.size() == 1 && absPath.denotesRoot() && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
         }
 
@@ -465,9 +469,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if (permissions.contains(getPrivilegeName(Privilege.JCR_WRITE, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName)) ||
                     permissions.contains(getPrivilegeName(Privilege.JCR_REMOVE_NODE, workspaceName))) {
-                itemExists = getSecuritySession().itemExists(jcrPath);
+                itemExists = getSecuritySession().itemExists(absPath);
                 if (itemExists) {
-                    i = getSecuritySession().getItem(jcrPath);
+                    i = getSecuritySession().getItem(absPath);
                     if (i.isNode()) {
                         if (((Node) i).isNodeType(Constants.JAHIAMIX_SYSTEMNODE)) {
                             pathPermissionCachePut(cacheKey, false);
@@ -487,7 +491,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
             int depth = 1;
             if (itemExists == null) {
-                itemExists = getSecuritySession().itemExists(jcrPath);
+                itemExists = getSecuritySession().itemExists(absPath);
             }
 
             if (!itemExists) {
@@ -495,13 +499,15 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return true;
             }
 
+            Path nodePath = absPath;
+
             while (!itemExists) {
-                jcrPath = pr.getJCRPath(absPath.getAncestor(depth++));
-                itemExists = getSecuritySession().itemExists(jcrPath);
+                nodePath = absPath.getAncestor(depth++);
+                itemExists = getSecuritySession().itemExists(nodePath);
             }
 
             if (i == null) {
-                i = getSecuritySession().getItem(jcrPath);
+                i = getSecuritySession().getItem(nodePath);
             }
 
             if (i instanceof Version) {
@@ -512,7 +518,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 if (pi.hasNext()) {
                     Property p = pi.nextProperty();
                     i = p.getParent();
-                    jcrPath = i.getPath();
+                    nodePath = pr.getQPath(i.getPath());
                 }
             }
 
@@ -522,8 +528,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 n = (Node) i;
             } else {
                 n = i.getParent();
-                jcrPath = StringUtils.substringBeforeLast(jcrPath, "/");
+                nodePath = nodePath.getAncestor(1);
             }
+
+            jcrPath = pr.getJCRPath(nodePath);
 
             // Translation permissions
             if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {
@@ -549,7 +557,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             if(permissions.contains(getPrivilegeName(Privilege.JCR_ADD_CHILD_NODES, workspaceName))) {
                 String childNodeName = pr.getJCRName(absPath.getName());
                 if((childNodeName.startsWith("j:translation_") || childNodeName.startsWith("j:referenceInField_")) &&
-                        hasPrivileges(jcrPath, new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
+                        hasPrivileges(nodePath, new Privilege[] {privilegeFromName(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))})){
                     return true;
                 }
             }
@@ -574,7 +582,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 //            }
 
 
-            res = recurseOnACPs(jcrPath, getSecuritySession(), permissions, site);
+            res = recurseOnACPs(nodePath, getSecuritySession(), permissions, site);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
@@ -614,19 +622,17 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     }
 
 
-    private boolean recurseOnACPs(String jcrPath, Session s, Set<String> permissions, String site) throws RepositoryException {
+    private boolean recurseOnACPs(Path nodePath, JahiaSystemSession s, Set<String> permissions, String site) throws RepositoryException {
         Set<String> foundRoles = new HashSet<String>();
         permissions = new HashSet<String>(permissions);
-        while (jcrPath.length() > 0) {
-            Map<String, Boolean> roles;
-
-            CompiledAcl acl = compiledAcls.get(jcrPath);
+        while (nodePath.getLength() > 0) {
+            CompiledAcl acl = compiledAcls.get(nodePath);
 
             if (acl == null) {
                 acl = new CompiledAcl();
-                compiledAcls.put(jcrPath, acl);
+                compiledAcls.put(nodePath, acl);
 
-                Item i = s.getItem(jcrPath);
+                Item i = s.getItem(nodePath);
                 if (i.isNode()) {
                     Node node = (Node) i;
                     if (node.hasNode("j:acl")) {
@@ -687,12 +693,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 return false;
             }
 
-            if ("/".equals(jcrPath)) {
+            if (nodePath.denotesRoot()) {
                 return false;
-            } else if (jcrPath.lastIndexOf('/') > 0) {
-                jcrPath = jcrPath.substring(0, jcrPath.lastIndexOf('/'));
             } else {
-                jcrPath = "/";
+                nodePath = nodePath.getAncestor(1);
             }
         }
         return false;
@@ -887,6 +891,10 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
 
 
     public boolean hasPrivileges(String absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
+        return hasPrivileges(resolver.getQPath(absPath), privileges);
+    }
+
+    public boolean hasPrivileges(Path absPath, Privilege[] privileges) throws PathNotFoundException, RepositoryException {
         checkInitialized();
         checkValidNodePath(absPath);
         if (privileges == null || privileges.length == 0) {
@@ -902,9 +910,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 privs.add(privilege.getName());
             }
 
-            Path p = resolver.getQPath(absPath);
-
-            return isGranted(p, privs);
+            return isGranted(absPath, privs);
         }
     }
 
@@ -1030,6 +1036,9 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
     private void pathPermissionCachePut(String key, Boolean value) {
         if (!isAliased) {
             pathPermissionCache.put(key, value);
+        }
+        if (logger.isDebugEnabled() && pathPermissionCache.size() == SettingsBean.getInstance().getAccessManagerPathPermissionCacheMaxSize()) {
+            logger.debug("ACL cache size exceeded, putting new key : "+key);
         }
     }
 

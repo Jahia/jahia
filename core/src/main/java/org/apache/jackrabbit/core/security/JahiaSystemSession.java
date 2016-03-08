@@ -49,13 +49,12 @@ import org.apache.jackrabbit.core.config.WorkspaceConfig;
 import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.security.authorization.AccessControlProvider;
 import org.apache.jackrabbit.core.security.authorization.WorkspaceAccessManager;
+import org.apache.jackrabbit.core.session.SessionContext;
+import org.apache.jackrabbit.core.session.SessionOperation;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.Path;
 
-import javax.jcr.AccessDeniedException;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.jcr.*;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.AccessControlPolicy;
 import javax.jcr.security.Privilege;
@@ -119,6 +118,59 @@ public class JahiaSystemSession extends SessionImpl {
         }
         return systemAccessManager;
     }
+
+
+    /**
+     * Returns <code>true</code> if an item exists at <code>absPath</code> and
+     * this <code>Session</code> has read access to it; otherwise returns
+     * <code>false</code>.
+     *
+     * Shortcut to standard itemExists method when a Path object is already available
+     *
+     * @param absPath An absolute path.
+     * @return a <code>boolean</code>
+     * @throws RepositoryException if <code>absPath</code> is not a well-formed
+     *                             absolute path.
+     */
+    public boolean itemExists(final Path absPath) throws RepositoryException {
+        return context.getSessionState().perform(new SessionOperation<Boolean>() {
+            @Override @SuppressWarnings("deprecation")
+            public Boolean perform(SessionContext context) throws RepositoryException {
+                return context.getItemManager().itemExists(absPath);
+            }
+        });
+    }
+
+    /**
+     * Returns the node at the specified absolute path in the workspace. If no
+     * such node exists, then it returns the property at the specified path.
+     * <p>
+     * This method should only be used if the application does not know whether
+     * the item at the indicated path is property or node. In cases where the
+     * application has this information, either {@link #getNode} or {@link
+     * #getProperty} should be used, as appropriate. In many repository
+     * implementations the node and property-specific methods are likely to be
+     * more efficient than <code>getItem</code>.
+     *
+     * Shortcut to standard getItem method when a Path object is already available
+     *
+     * @param absPath An absolute path.
+     * @return the specified <code>Item</code>.
+     * @throws PathNotFoundException if no accessible item is found at the
+     *                               specified path.
+     * @throws RepositoryException   if another error occurs.
+     */
+    public Item getItem(final Path absPath) throws RepositoryException {
+        return context.getSessionState().perform(new SessionOperation<Item>() {
+            @Override @SuppressWarnings("deprecation")
+            public Item perform(SessionContext context) throws RepositoryException {
+                return context.getItemManager().getItem(absPath);
+            }
+        });
+    }
+
+
+
 
 //--------------------------------------------------------< inner classes >
 

@@ -119,7 +119,7 @@ public class CookieAuthValveImpl extends BaseAuthValve {
             searchCriterias.setProperty(userPropertyName, value);
             Set<JCRUserNode> foundUsers = null;
             try {
-                foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession(null, null, null));
+                foundUsers = ServicesRegistry.getInstance().getJahiaUserManagerService().searchUsers(searchCriterias, realm, null, JCRSessionFactory.getInstance().getCurrentSystemSession("live", null, null));
                 if (foundUsers.size() == 1) {
                     jahiaUser = foundUsers.iterator().next();
                     if (jahiaUser.isAccountLocked()) {

@@ -115,7 +115,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     private Map<String, JahiaUserManagerProvider> legacyUserProviders = new HashMap<String, JahiaUserManagerProvider>();
 
     private UserCacheHelper cacheHelper;
-    
+
     private PasswordService passwordService;
 
     // Initialization on demand holder idiom: thread-safe singleton initialization
@@ -361,7 +361,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
                 String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
-                String query = "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER + "] AS username ORDER BY localname(username) and isdescendantnode(username,'"+usersPath+"')";
+                String query = String.format("SELECT [j:nodename] FROM [%s] AS username WHERE isdescendantnode(username,'%s') ORDER BY localname(username)", Constants.JAHIANT_USER, usersPath);
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();
@@ -971,7 +971,7 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
         }
         return user;
     }
-    
+
     public void setPasswordService(PasswordService passwordService) {
         this.passwordService = passwordService;
     }

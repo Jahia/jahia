@@ -435,14 +435,14 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
             return true;
         }
 
-        String jcrPath = pr.getJCRPath(absPath);
-
         absPath = absPath.getCanonicalPath();
         if (permissions.size() == 1 && absPath.denotesRoot() && permissions.contains(getPrivilegeName(Privilege.JCR_READ, workspaceName))) {
             return true;
         }
 
         boolean res = false;
+
+        String jcrPath = pr.getJCRPath(absPath);
 
         String cacheKey = jcrPath + " : " + permissions;
 
@@ -531,7 +531,7 @@ public class JahiaAccessManager extends AbstractAccessControlManager implements 
                 nodePath = nodePath.getAncestor(1);
             }
 
-            jcrPath = pr.getJCRPath(nodePath);
+            jcrPath = nodePath != absPath ? pr.getJCRPath(nodePath) : jcrPath;
 
             // Translation permissions
             if (permissions.contains(getPrivilegeName(Privilege.JCR_MODIFY_PROPERTIES, workspaceName))) {

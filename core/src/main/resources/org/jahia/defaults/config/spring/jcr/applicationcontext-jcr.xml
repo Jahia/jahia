@@ -210,9 +210,7 @@
                         </bean>
                         <bean class="org.jahia.services.mail.MailSettingsListener"/>
                         <bean class="org.jahia.services.search.SearchSettingsListener"/>
-                        <bean class="org.jahia.services.content.MountPointListener">
-                            <property name="providerChecker" ref="JCRStoreProviderChecker"/>
-                        </bean>
+                        <ref bean="mountPointListener"/>
                     </list>
                 </entry>
                 <entry key="live">
@@ -355,7 +353,12 @@
         </property>
         <property name="providerChecker" ref="JCRStoreProviderChecker"/>
     </bean>
-    
+
+    <bean id="mountPointListener" class="org.jahia.services.content.MountPointListener">
+        <property name="schedulerService" ref="SchedulerService"/>
+        <property name="providerChecker" ref="JCRStoreProviderChecker"/>
+    </bean>
+
     <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">
         <property name="requiredTypes" value="String"/>
         <property name="selectors" value="RichText"/>

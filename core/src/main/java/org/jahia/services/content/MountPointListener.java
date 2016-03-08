@@ -46,6 +46,11 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -69,9 +74,14 @@ public class MountPointListener extends DefaultEventListener implements External
     private static final String[] NODETYPES = new String[]{Constants.JAHIANT_MOUNTPOINT};
 
     private JCRStoreProviderChecker providerChecker;
+    private SchedulerService schedulerService;
 
     public void setProviderChecker(JCRStoreProviderChecker providerChecker) {
         this.providerChecker = providerChecker;
+    }
+
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
     }
 
     private static final ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>() {
@@ -154,6 +164,7 @@ public class MountPointListener extends DefaultEventListener implements External
         }
         try {
             inListener.set(true);
+            boolean isExternal = false;
             Map<String, MountPointEventValue> changeLog = new LinkedHashMap<String, MountPointEventValue>(1);
             while (events.hasNext()) {
                 try {
@@ -167,23 +178,40 @@ public class MountPointListener extends DefaultEventListener implements External
                         }
                     }
                     setStatus(changeLog, evt.getIdentifier(), evtType,isExternal(evt));
+                    isExternal = isExternal(evt);
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
                 }
             }
+            if (!isExternal) {
+                processEvents(changeLog);
+            } else {
+                // If event is external, trigger a parallel job to do mountpoint operations in background
+                try {
+                    JobDetail jobDetail = BackgroundJob.createJahiaJob("Mount point job", MountPointJob.class);
+                    JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                    jobDataMap.put("changeLog", changeLog);
 
-            for (Map.Entry<String, MountPointEventValue> change : changeLog.entrySet()) {
-                String uuid = change.getKey();
-                Integer status = change.getValue().getStatus();
-                boolean isExternal = change.getValue().isExternal();
-                JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
-                unmount(uuid, p);
-                if (status != Event.NODE_REMOVED) {
-                    mount(uuid, p,isExternal);
+                    schedulerService.scheduleJobNow(jobDetail, true);
+                } catch (SchedulerException e) {
+                    logger.error(e.getMessage(), e);
                 }
             }
         } finally {
             inListener.set(false);
+        }
+    }
+
+    public void processEvents(Map<String, MountPointEventValue> changeLog) {
+        for (Map.Entry<String, MountPointEventValue> change : changeLog.entrySet()) {
+            String uuid = change.getKey();
+            Integer status = change.getValue().getStatus();
+            boolean isExternal = change.getValue().isExternal();
+            JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
+            unmount(uuid, p);
+            if (status != Event.NODE_REMOVED) {
+                mount(uuid, p,isExternal);
+            }
         }
     }
 
@@ -210,7 +238,7 @@ public class MountPointListener extends DefaultEventListener implements External
     /**
      * Mount Point Event Value holder
      */
-    public class MountPointEventValue implements Serializable {
+    public static class MountPointEventValue implements Serializable {
         private static final long serialVersionUID = 1L;
         Integer status;
         boolean external;

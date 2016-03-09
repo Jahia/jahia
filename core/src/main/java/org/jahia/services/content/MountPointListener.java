@@ -189,6 +189,7 @@ public class MountPointListener extends DefaultEventListener implements External
                 // If event is external, trigger a parallel job to do mountpoint operations in background
                 try {
                     JobDetail jobDetail = BackgroundJob.createJahiaJob("Mount point job", MountPointJob.class);
+                    jobDetail.setDurability(false);
                     JobDataMap jobDataMap = jobDetail.getJobDataMap();
                     jobDataMap.put("changeLog", changeLog);
 

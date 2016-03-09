@@ -127,6 +127,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         if (isExternal) {
             try {
                 JobDetail jobDetail = BackgroundJob.createJahiaJob("Cache flush", HtmlCacheEventJob.class);
+                jobDetail.setDurability(false);
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
                 jobDataMap.put("events", list);
 

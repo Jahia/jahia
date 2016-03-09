@@ -294,19 +294,7 @@
                         <bean class="org.jahia.services.content.files.FileCacheListener">
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
-                        <bean class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
-                            <property name="cacheProvider" ref="ModuleCacheProvider"/>
-                            <property name="aggregateCacheFilter" ref="cacheFilter"/>
-                            <property name="availableDuringPublish" value="true"/>
-                            <property name="operationTypes">
-                                <set value-type="java.lang.Integer">
-                                    <value type="java.lang.Integer">1</value>
-                                    <value type="java.lang.Integer">12</value>
-                                    <value type="java.lang.Integer">13</value>
-                                    <value type="java.lang.Integer">4</value>
-                                </set>
-                            </property>
-                        </bean>
+                        <ref bean="htmlCacheEventListener"/>
                         <bean class="org.jahia.services.render.filter.cache.RenderServiceTemplateCacheEventListener">
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
@@ -360,6 +348,21 @@
     <bean id="mountPointListener" class="org.jahia.services.content.MountPointListener">
         <property name="schedulerService" ref="SchedulerService"/>
         <property name="providerChecker" ref="JCRStoreProviderChecker"/>
+    </bean>
+
+    <bean id="htmlCacheEventListener" class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
+        <property name="schedulerService" ref="SchedulerService"/>
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="aggregateCacheFilter" ref="cacheFilter"/>
+        <property name="availableDuringPublish" value="true"/>
+        <property name="operationTypes">
+            <set value-type="java.lang.Integer">
+                <value type="java.lang.Integer">1</value>
+                <value type="java.lang.Integer">12</value>
+                <value type="java.lang.Integer">13</value>
+                <value type="java.lang.Integer">4</value>
+            </set>
+        </property>
     </bean>
 
     <bean id="abstractRichTextPropertyInterceptor" class="org.jahia.services.content.interceptor.BaseInterceptor" abstract="true">

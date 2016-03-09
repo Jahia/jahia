@@ -46,11 +46,16 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.apache.jackrabbit.core.observation.EventImpl;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.query.QueryResultWrapper;
+import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.scheduler.SchedulerService;
 import org.jahia.services.seo.jcr.VanityUrlManager;
 import org.jahia.settings.SettingsBean;
+import org.quartz.JobDataMap;
+import org.quartz.JobDetail;
+import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,6 +64,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import javax.jcr.query.Query;
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -75,6 +82,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     private ModuleCacheProvider cacheProvider;
     private AggregateCacheFilter aggregateCacheFilter;
+    private SchedulerService schedulerService;
 
     @Override
     public int getEventTypes() {
@@ -91,6 +99,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         return "(?!/jcr:system).*";
     }
 
+    public void setSchedulerService(SchedulerService schedulerService) {
+        this.schedulerService = schedulerService;
+    }
+
     /**
      * This method is called when a bundle of events is dispatched.
      *
@@ -101,19 +113,46 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         if (logger.isDebugEnabled()) {
             logger.debug("{} events received. Operation type {}", events.getSize(), operationType);
         }
+
+        boolean isExternal = false;
+        List<FlushEvent> list = new ArrayList<>();
+        while (events.hasNext()) {
+            Event event = (Event) events.next();
+            try {
+                list.add(new FlushEvent(event.getPath(), event.getIdentifier(), event.getType()));
+                isExternal = isExternal(event);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+
+        if (isExternal) {
+            try {
+                JobDetail jobDetail = BackgroundJob.createJahiaJob("Cache flush", HtmlCacheEventJob.class);
+                JobDataMap jobDataMap = jobDetail.getJobDataMap();
+                jobDataMap.put("events", list);
+
+                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail, true);
+
+            } catch (SchedulerException e) {
+                logger.error(e.getMessage(), e);
+            }
+        } else {
+            processEvents(list, ((JCREventIterator) events).getSession(), false);
+        }
+    }
+
+    public void processEvents(List<FlushEvent> events, JCRSessionWrapper sessionWrapper, boolean propagateToOtherClusterNodes) {
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
 
         AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
         final Set<String> userGroupsKeyToFlush = new HashSet<String>();
-
-        while (events.hasNext()) {
-            Event event = (Event) events.next();
+        for (FlushEvent event : events) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Event: {}", event);
             }
-            boolean propagateToOtherClusterNodes = !isExternal(event);
             try {
                 String path = event.getPath();
                 boolean flushParent = false;
@@ -180,8 +219,8 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         final String fPath = path;
                         JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(null, workspace, null, new JCRCallback<Object>() {
                             @Override
-                            public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                final QueryManagerWrapper queryManager = session.getWorkspace().getQueryManager();
+                            public Object doInJCR(JCRSessionWrapper systemSession) throws RepositoryException {
+                                final QueryManagerWrapper queryManager = systemSession.getWorkspace().getQueryManager();
                                 QueryResultWrapper result = queryManager.createQuery("select * from ['jnt:ace'] where isdescendantnode('" + JCRContentUtils.sqlEncode(fPath) + "/')", Query.JCR_SQL2).execute();
                                 for (JCRNodeWrapper nodeWrapper : result.getNodes()) {
                                     String principal = nodeWrapper.getProperty("j:principal").getString();
@@ -206,11 +245,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
                 flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                 try {
-                    flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                    flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                 } catch (PathNotFoundException e) {
-                    if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                        flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getChildId().toString(), propagateToOtherClusterNodes);
-                    }
+                    //
                 }
                 flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
 
@@ -222,12 +259,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     path = StringUtils.substringBeforeLast(path, "/");
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
-                        if (event instanceof EventImpl && (((EventImpl) event).getParentId() != null)) {
-                            flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getParentId().toString(),
-                                    propagateToOtherClusterNodes);
-                        }
+                        //
                     }
                     flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                 }
@@ -236,11 +270,9 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     path = StringUtils.substringBeforeLast(path, "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE);
                     flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
                     try {
-                        flushDependenciesOfPath(depCache, flushed, ((JCREventIterator) events).getSession().getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
                     } catch (PathNotFoundException e) {
-                        if (event instanceof EventImpl && (((EventImpl) event).getChildId() != null)) {
-                            flushDependenciesOfPath(depCache, flushed, ((EventImpl) event).getChildId().toString(), propagateToOtherClusterNodes);
-                        }
+                        //
                     }
                 }
 
@@ -326,5 +358,29 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     public void setAggregateCacheFilter(AggregateCacheFilter aggregateCacheFilter) {
         this.aggregateCacheFilter = aggregateCacheFilter;
+    }
+
+    public static class FlushEvent implements Serializable {
+        private String path;
+        private String id;
+        private int type;
+
+        public FlushEvent(String path, String id, int type) {
+            this.path = path;
+            this.id = id;
+            this.type = type;
+        }
+
+        public String getPath() {
+            return path;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public int getType() {
+            return type;
+        }
     }
 }

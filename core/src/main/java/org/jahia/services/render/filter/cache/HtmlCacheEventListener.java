@@ -46,7 +46,6 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
-import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -73,9 +72,8 @@ import java.util.Set;
 /**
  * Output cache invalidation listener.
  *
- * @author : rincevent
+ * @author rincevent
  * @since JAHIA 6.5
- * Created : 12 janv. 2010
  */
 public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener {
     private static Logger logger = LoggerFactory.getLogger(HtmlCacheEventListener.class);
@@ -132,7 +130,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 JobDataMap jobDataMap = jobDetail.getJobDataMap();
                 jobDataMap.put("events", list);
 
-                ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail, true);
+                schedulerService.scheduleJobNow(jobDetail, true);
 
             } catch (SchedulerException e) {
                 logger.error(e.getMessage(), e);
@@ -303,6 +301,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             if (logger.isDebugEnabled()) {
                 logger.debug("Flushing path: {}", path);
             }
+            @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
                 AggregateCacheFilter.flushNotCacheableFragment();
@@ -361,6 +360,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     }
 
     public static class FlushEvent implements Serializable {
+        private static final long serialVersionUID = -4835978210219006748L;
         private String path;
         private String id;
         private int type;

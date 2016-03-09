@@ -47,6 +47,7 @@ import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.WordUtils;
+import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
 import org.jahia.ajax.gwt.client.data.GWTResourceBundle;
 import org.jahia.ajax.gwt.client.data.node.GWTBitSet;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -721,6 +722,7 @@ class NodeHelper {
         BitSet bs = node.getPermissionsAsBitSet();
         if (bs != null) {
             GWTBitSet gwtBs = new GWTBitSet(bs.size());
+            gwtBs.setReferenceHashCode(JahiaPrivilegeRegistry.getRegisteredPrivilegeNames().hashCode());
 
             for (int i = bs.nextSetBit(0); i >= 0; i = bs.nextSetBit(i + 1)) {
                 gwtBs.set(i);

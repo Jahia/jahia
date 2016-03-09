@@ -495,6 +495,21 @@ public interface JahiaContentManagementService extends RemoteService {
      * @return the matching tags retrieved
      */
     List<GWTJahiaValueDisplayBean> getTags(String prefix, String startPath, Long minCount, Long limit, Long offset, boolean sortByCount) throws GWTJahiaServiceException;
+    
+    /**
+     * Retrieve all currently available registered permissions. 
+     * 
+     * The list of permissions may change during runtime. This can happen for instance after module deployment or when
+     * a user's session gets directed to a new server on fail-over. The permissions for a node are held in a BitSet variable,
+     * where the bits point to indexes in the permissions list. This makes it very important that on resolving the permissions from
+     * the BitSet we use the very same permissions list, which was used when creating the BitSet. 
+     * 
+     * As the list is cached on the client and bcause of the possibility that the list changed on the server, we may detect that the
+     * list has to be reloaded.   
+     * 
+     * @return the permissions retrieved
+     */
+    List<String> getAvailablePermissions() throws GWTJahiaServiceException;
 
     /**
      * Convert a given tag using the TagHandler service,

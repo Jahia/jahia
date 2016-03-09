@@ -53,7 +53,7 @@ import java.io.Serializable;
 public class GWTBitSet implements Cloneable, Serializable {
     private final static int ADDRESS_BITS_PER_WORD = 6;
     private long[] words;
-
+    private int referenceHashCode;
 
     public GWTBitSet() {
     }
@@ -97,6 +97,22 @@ public class GWTBitSet implements Cloneable, Serializable {
         result.words = new long[words.length];
         System.arraycopy(words, 0, result.words, 0, words.length);
         return result;
+    }
+
+    /**
+     * @return the hashcode of an eventual reference
+     */
+    public int getReferenceHashCode() {
+        return referenceHashCode;
+    }
+
+    /**
+     * Setter of a reference HashCode. If the bitset is used to reference to another list/array, then a 
+     * hashcode can be set to uniquely identify that reference.  
+     * @param referenceHashCode
+     */
+    public void setReferenceHashCode(int referenceHashCode) {
+        this.referenceHashCode = referenceHashCode;
     }
 
 }

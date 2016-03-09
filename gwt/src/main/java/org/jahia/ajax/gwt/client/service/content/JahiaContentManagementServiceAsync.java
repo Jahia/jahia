@@ -64,6 +64,7 @@ import org.jahia.ajax.gwt.client.data.toolbar.GWTManagerConfiguration;
 import org.jahia.ajax.gwt.client.data.wcag.WCAGValidationResult;
 import org.jahia.ajax.gwt.client.data.workflow.*;
 import org.jahia.ajax.gwt.client.data.workflow.history.GWTJahiaWorkflowHistoryItem;
+import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.SessionValidationResult;
 
 import java.util.Date;
@@ -426,4 +427,19 @@ public interface JahiaContentManagementServiceAsync {
      * @param async Callback to handle the converted tag returned
      */
     void convertTag(String tag, AsyncCallback<String> async);
+    
+    /**
+     * Retrieve all currently available registered permissions. 
+     * 
+     * The list of permissions may change during runtime. This can happen for instance after module deployment or when
+     * a user's session gets directed to a new server on fail-over. The permissions for a node are held in a BitSet variable,
+     * where the bits point to indexes in the permissions list. This makes it very important that on resolving the permissions from
+     * the BitSet we use the very same permissions list, which was used when creating the BitSet. 
+     * 
+     * As the list is cached on the client and bcause of the possibility that the list changed on the server, we may detect that the
+     * list has to be reloaded.   
+     * 
+     * @param async Callback to handle the permissions returned 
+     */
+    void getAvailablePermissions(AsyncCallback<List<String>> async);
 }

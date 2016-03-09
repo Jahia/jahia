@@ -51,7 +51,6 @@ import net.htmlparser.jericho.StartTag;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.apache.taglibs.standard.tag.common.core.ImportSupport;
 import org.jahia.ajax.gwt.client.data.*;
 import org.jahia.ajax.gwt.client.data.acl.GWTJahiaNodeACE;
@@ -141,7 +140,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private TemplateHelper template;
     private ImageHelper image;
     private ZipHelper zip;
-    private ACLHelper acl;
+    private ACLHelper aclHelper;
     private DiffHelper diff;
     private SeoHelper seo;
     private int sessionPollingFrequency;
@@ -156,7 +155,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
     private TaggingService taggingService;
 
     public void setAcl(ACLHelper acl) {
-        this.acl = acl;
+        this.aclHelper = acl;
     }
 
     public void setContentDefinition(ContentDefinitionHelper contentDefinition) {
@@ -858,12 +857,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
                     );
                     if (needPermissionReload) {
                         // need to load the permissions
-                        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
-                        List<String> permissions = new ArrayList<String>();
-                        for (Privilege privilege : p) {
-                            permissions.add(((PrivilegeImpl) privilege).getPrefixedName());
-                        }
-                        result.put(GWTJahiaNode.PERMISSIONS, permissions);
+                        result.put(GWTJahiaNode.PERMISSIONS, getAvailablePermissions());
                     }
                 } catch (RepositoryException e) {
                     logger.error(e.getMessage(), e);
@@ -1103,7 +1097,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNodeACE createDefaultUsersGroupACE(List<String> permissions, boolean grand)
             throws GWTJahiaServiceException {
-        return acl.createUsersGroupACE(permissions, grand, getSite());
+        return aclHelper.createUsersGroupACE(permissions, grand, getSite());
     }
 
     public List<GWTJahiaNodeUsage> getUsages(List<String> paths) throws GWTJahiaServiceException {
@@ -2628,4 +2622,10 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
         }
         return Messages.getInternal("label.gwt.error."+e.getClass().getName(), getUILocale(), StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(e.getClass().getName()), " "));
     }
+
+    @Override
+    public List<String> getAvailablePermissions() throws GWTJahiaServiceException {
+        return JahiaPrivilegeRegistry.getRegisteredPrivilegeNames();
+    }
+
 }

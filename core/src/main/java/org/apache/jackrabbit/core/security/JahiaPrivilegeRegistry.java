@@ -51,6 +51,8 @@ import javax.jcr.*;
 import javax.jcr.security.AccessControlException;
 import javax.jcr.security.Privilege;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * The <code>PrivilegeRegistry</code> defines the set of <code>Privilege</code>s
@@ -79,9 +81,14 @@ public final class JahiaPrivilegeRegistry {
      * Per instance map containing the instance specific representation of
      * the registered privileges.
      */
-    private static final Map<String, Privilege> map = new LinkedHashMap<String, Privilege>();
+    private static final Map<String, Privilege> privilegesByName = new LinkedHashMap<String, Privilege>();
     private static Privilege[] registeredPrivileges;
+    private static List<String> registeredPrivilegeNames;
 
+    private static ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
+    private static Lock readLock = readWriteLock.readLock();
+    private static Lock writeLock = readWriteLock.writeLock();
+    
     private NamespaceRegistry ns;
 
     public static void init(Session session) throws RepositoryException {
@@ -95,14 +102,25 @@ public final class JahiaPrivilegeRegistry {
     private static void init(Session session, String path) throws RepositoryException {
         Node perms = session.getNode(path != null ? (path + "/permissions") : "/permissions");
 
-        Set<Privilege> privileges = new HashSet<Privilege>(20);
+        Set<Privilege> privileges = new LinkedHashSet<Privilege>(20);
 
         registerPrivileges(perms, privileges);
-
-        for (Privilege p : privileges) {
-            map.put(p.getName(), p);
+        if (!privileges.isEmpty()) {
+            writeLock.lock();
+            try {
+                for (Privilege p : privileges) {
+                    privilegesByName.put(p.getName(), p);
+                }
+                registeredPrivileges = privilegesByName.values().toArray(new Privilege[privilegesByName.size()]);
+            } finally {
+                writeLock.unlock();
+            }
+            List<String> privilegeNames = new ArrayList<String>();
+            for (Privilege privilege : registeredPrivileges) {
+                privilegeNames.add(((PrivilegeImpl) privilege).getPrefixedName());
+            }
+            registeredPrivilegeNames = privilegeNames;
         }
-        registeredPrivileges = map.values().toArray(new Privilege[map.size()]);
     }
     
     public JahiaPrivilegeRegistry(NamespaceRegistry ns) {
@@ -124,7 +142,13 @@ public final class JahiaPrivilegeRegistry {
         try {
             String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
             boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
-            PrivilegeImpl priv =(PrivilegeImpl) map.get(expandedName);
+            PrivilegeImpl priv;
+            readLock.lock();
+            try {
+                priv = (PrivilegeImpl) privilegesByName.get(expandedName);
+            } finally {
+                readLock.unlock();
+            }
             if (priv == null) {
                 priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges, node.getPath());
             } else {
@@ -166,6 +190,15 @@ public final class JahiaPrivilegeRegistry {
     public static Privilege[] getRegisteredPrivileges() {
         return registeredPrivileges;
     }
+    
+    /**
+     * Returns all registered privileges.
+     *
+     * @return all registered privileges.
+     */
+    public static List<String> getRegisteredPrivilegeNames() {
+        return registeredPrivilegeNames;
+    }
 
     /**
      * Returns the privilege with the specified <code>privilegeName</code>.
@@ -184,11 +217,16 @@ public final class JahiaPrivilegeRegistry {
         privilegeName = JCRContentUtils.getExpandedName(privilegeName, ns);
 
         String s = JahiaAccessManager.getPrivilegeName(privilegeName, workspaceName);
-        Privilege privilege = map.get(s);
-        if (privilege != null) {
-            return privilege;
+        Privilege privilege;
+        readLock.lock();
+        try {
+            privilege = privilegesByName.get(s);
+            if (privilege == null) {
+                privilege = privilegesByName.get(privilegeName);
+            }
+        } finally {
+            readLock.unlock();
         }
-        privilege = map.get(privilegeName);
         if (privilege != null) {
             return privilege;
         }
@@ -197,7 +235,13 @@ public final class JahiaPrivilegeRegistry {
 
     public Privilege getPrivilege(Node node) throws AccessControlException, RepositoryException {
         String privilegeName = JCRContentUtils.getExpandedName(node.getName(), ns);
-        Privilege privilege = map.get(privilegeName);
+        Privilege privilege;
+        readLock.lock();
+        try {
+            privilege = privilegesByName.get(privilegeName);
+        } finally {
+            readLock.unlock();
+        }
         if (privilege != null) {
             return privilege;
         }

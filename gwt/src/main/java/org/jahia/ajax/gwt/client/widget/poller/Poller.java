@@ -48,14 +48,17 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
+import com.google.gwt.user.client.Window;
 
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
+import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
+import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -73,7 +76,7 @@ public class Poller {
         SSE_SUPPORT = !(GXT.isIE || userAgent != null && userAgent.indexOf("trident/7") != -1);
     }
 
-    private static final int RECONNECT_INTERVAL_MS = 5000;
+    private static final int RECONNECT_INTERVAL_MS = 2000;
     private static final int CONNECTION_RESTORED_NOTIFICATION_DELAY_MS = 15000;
 
     private static Poller instance;
@@ -129,6 +132,7 @@ public class Poller {
                     @Override
                     public void onReconnect(RequestConfig request, AtmosphereResponse response) {
                         GWT.log("RPC reconnection");
+                        onConnectionReconnect();                        
                     }
                 });
 
@@ -195,6 +199,10 @@ public class Poller {
         InfoConfig infoConfig = new InfoConfig(Messages.get("label.information"), Messages.get("instantMessaging.connectionRecovered.notification"));
         infoConfig.display = CONNECTION_RESTORED_NOTIFICATION_DELAY_MS;
         Info.display(infoConfig);
+    }
+    
+    private void onConnectionReconnect() {
+        PermissionsUtils.triggerPermissionsReload();
     }
 
     public void registerListener(PollListener listener, Class eventType) {

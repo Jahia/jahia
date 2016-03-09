@@ -45,7 +45,6 @@ package org.jahia.ajax.gwt.helper;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.security.JahiaPrivilegeRegistry;
-import org.apache.jackrabbit.core.security.PrivilegeImpl;
 import org.jahia.ajax.gwt.client.data.GWTJahiaProperty;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.*;
@@ -83,7 +82,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.security.Privilege;
 import javax.script.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.StringWriter;
@@ -390,7 +388,7 @@ public class UIConfigHelper {
                 gwtConfig.setShowWorkInProgress(config.isShowWorkInProgress());
 
                 gwtConfig.setSiteNode(navigation.getGWTJahiaNode(site, GWTJahiaNode.DEFAULT_SITE_FIELDS, uiLocale));
-                setAvailablePermissions(gwtConfig);
+                gwtConfig.setPermissions(JahiaPrivilegeRegistry.getRegisteredPrivilegeNames());
 
                 return gwtConfig;
             } else {
@@ -707,7 +705,7 @@ public class UIConfigHelper {
                     gwtConfig.setSitesMap(sitesMap);
                 }
 
-                setAvailablePermissions(gwtConfig);
+                gwtConfig.setPermissions(JahiaPrivilegeRegistry.getRegisteredPrivilegeNames());
 
                 gwtConfig.setChannels(channelHelper.getChannels());
 
@@ -722,16 +720,6 @@ public class UIConfigHelper {
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.config.not.found", uiLocale, name, e.getLocalizedMessage()));
         }
     }
-
-    private void setAvailablePermissions(GWTConfiguration config) throws RepositoryException, GWTJahiaServiceException {
-        Privilege[] p = JahiaPrivilegeRegistry.getRegisteredPrivileges();
-        List<String> l = new ArrayList<String>();
-        for (Privilege privilege : p) {
-            l.add(((PrivilegeImpl)privilege).getPrefixedName());
-        }
-        config.setPermissions(l);
-    }
-
 
     /**
      * Create GWTSidePanelTab list

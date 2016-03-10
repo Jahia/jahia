@@ -45,7 +45,9 @@ package org.apache.jackrabbit.core.cluster;
 
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.journal.*;
+import org.apache.jackrabbit.core.state.ChangeLog;
 import org.apache.jackrabbit.core.state.ItemState;
+import org.apache.jackrabbit.core.state.NodeReferences;
 import org.jahia.services.content.JCRStoreService;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.slf4j.Logger;
@@ -316,7 +318,7 @@ public class JahiaClusterNode extends ClusterNode {
             }
             log.debug("Getting change  " + record.getRevision() + " : " + nodeIdList);
         }
-        super.process(record);
+        super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
     }
 
     @Override
@@ -346,6 +348,23 @@ public class JahiaClusterNode extends ClusterNode {
     public void reallySetRevision(long revision) {
         log.debug("Set revision : " + revision);
         super.setRevision(revision);
+    }
+
+    public static class ExternalChangeLog extends ChangeLog {
+        public ExternalChangeLog(ChangeLog changes) {
+            for (ItemState state : changes.addedStates()) {
+                added(state);
+            }
+            for (ItemState state : changes.deletedStates()) {
+                deleted(state);
+            }
+            for (ItemState state : changes.modifiedStates()) {
+                modified(state);
+            }
+            for (NodeReferences ref : changes.modifiedRefs()) {
+                modified(ref);
+            }
+        }
     }
 
 }

@@ -124,6 +124,9 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
     }
 
     public void beforeRemove(JCRNodeWrapper node, String name, ExtendedPropertyDefinition definition) throws VersionException, LockException, ConstraintViolationException, RepositoryException {
+    	
+        //if name contains a : it must be encoded (like j:about)
+        name = name.replaceAll(":", "%3A");
         if (node.isNodeType(JAHIAMIX_REFERENCES_IN_FIELD)) {
             NodeIterator ni = node.getNodes(JAHIA_REFERENCE_IN_FIELD_PREFIX);
             if (definition.isInternationalized()) {
@@ -163,8 +166,12 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
      */
     public Value beforeSetValue(final JCRNodeWrapper node, String name, final ExtendedPropertyDefinition definition, Value originalValue) throws ValueFormatException, VersionException, LockException, ConstraintViolationException, RepositoryException {
         String content = originalValue.getString();
+        
+        //if name contains a : it must be encoded (like j:about)
+        name = name.replaceAll(":", "%3A");        
         // if the node is a translated node, then take the parent to have the references
         JCRNodeWrapper nodeWithReferences = node.isNodeType(Constants.JAHIANT_TRANSLATION) ? node.getParent() : node;
+
         if (definition.isInternationalized()) {
             Locale locale = node.getSession().getLocale();
             if (locale == null) {
@@ -303,7 +310,7 @@ public class URLInterceptor extends BaseInterceptor implements InitializingBean 
         final Map<Long, String> refs = new HashMap<Long, String>();
 
         final ExtendedPropertyDefinition definition = (ExtendedPropertyDefinition) property.getDefinition();
-        String name = definition.getName();
+        String name = definition.getName().replaceAll(":", "%3A");
         JCRNodeWrapper parent = property.getParent();
         if (definition.isInternationalized()) {
             name += "_" + property.getLocale();

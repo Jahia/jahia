@@ -239,7 +239,7 @@ public class ReferencesHelper {
             int id = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
             pName = StringUtils.substringAfter(pName, "]");
             // encode : in property name (eg. for j:about)
-            pName.replaceAll(":", "%3A");
+            pName = pName.replaceAll(":", "%3A");
             if (n.isNodeType("jnt:translation") && n.hasProperty("jcr:language")) {
                 pName += "_" + n.getProperty("jcr:language").getString();
                 n = n.getParent();

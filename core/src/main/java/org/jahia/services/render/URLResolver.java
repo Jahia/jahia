@@ -172,7 +172,7 @@ public class URLResolver {
             path = StringUtils.substring(getUrlPathInfo(), servletPart.length() + 2,
                     getUrlPathInfo().length());
         } 
-        if (!resolveUrlMapping(serverName)) {
+        if (!resolveUrlMapping(serverName, request)) {
             init();
             if (!Url.isLocalhost(serverName) && isMappable()
                     && SettingsBean.getInstance().isPermanentMoveForVanityURL()) {
@@ -182,11 +182,7 @@ public class URLResolver {
                                 .getVanityUrlForWorkspaceAndLocale(getNode(),
                                         this.workspace, locale, siteKey);
                         if (defaultVanityUrl != null && defaultVanityUrl.isActive()) {
-                            if (request == null || StringUtils.isEmpty(request.getQueryString())) {
-                                setRedirectUrl(defaultVanityUrl.getUrl());
-                            } else {
-                                setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
-                            }
+                            redirect(request, defaultVanityUrl);
                         }
                     }
                 } catch (PathNotFoundException e) {
@@ -197,6 +193,14 @@ public class URLResolver {
                     logger.warn("Error when trying to check whether there is a vanity URL mapping", e);
                 }
             }
+        }
+    }
+
+    private void redirect(HttpServletRequest request, VanityUrl defaultVanityUrl) {
+        if (request == null || StringUtils.isEmpty(request.getQueryString())) {
+            setRedirectUrl(defaultVanityUrl.getUrl());
+        } else {
+            setRedirectUrl(defaultVanityUrl.getUrl() + "?" + request.getQueryString());
         }
     }
 
@@ -282,7 +286,7 @@ public class URLResolver {
         return isServletAllowingUrlMapping;
     }
 
-    protected boolean resolveUrlMapping(String serverName) {
+    protected boolean resolveUrlMapping(String serverName, HttpServletRequest request) {
         boolean mappingResolved = false;
 
         try {
@@ -355,7 +359,7 @@ public class URLResolver {
                                         workspace, locale, siteKey);
                         if (defaultVanityUrl != null
                                 && defaultVanityUrl.isActive() && !resolvedVanityUrl.equals(defaultVanityUrl)) {
-                            setRedirectUrl(defaultVanityUrl.getUrl());
+                            redirect(request, defaultVanityUrl);
                         }
                     }
                     mappingResolved = true;

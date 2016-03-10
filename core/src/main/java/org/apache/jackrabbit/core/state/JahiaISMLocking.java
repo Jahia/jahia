@@ -56,7 +56,7 @@ public class JahiaISMLocking implements ISMLocking {
 
     private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
     private final Lock rl = lock.readLock();
-    private final Lock wl = lock.readLock();
+    private final Lock wl = lock.writeLock();
 
     /**
      * The read lock instance used by readers to release the acquired lock.

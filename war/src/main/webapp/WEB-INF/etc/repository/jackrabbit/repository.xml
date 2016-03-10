@@ -94,11 +94,11 @@
             <param name="typesUsingOptimizedACEIndexation" value="nt:file"/>
         </SearchIndex>
 
+        <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
+
         <NodeTypeInstanceHandler class="org.apache.jackrabbit.core.JahiaNodeTypeInstanceHandlerFactory">
 
         </NodeTypeInstanceHandler>
-
-        <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
     </Workspace>
 
     <Cluster id="${cluster.node.serverId}">
@@ -140,7 +140,7 @@
           <param name="consistencyFix" value="${jahia.jackrabbit.consistencyFix}"/>
 		</PersistenceManager>
 
-
+        <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
     </Versioning>
 
     <!--
@@ -156,8 +156,6 @@
         <param name="forceConsistencyCheck" value="${jahia.jackrabbit.searchIndex.forceConsistencyCheck}"/>
         <param name="autoRepair" value="${jahia.jackrabbit.searchIndex.autoRepair}"/>
     </SearchIndex>
-
-    <ISMLocking class="${jahia.jackrabbit.ismLocking}"/>
 
     <DataStore class="org.apache.jackrabbit.core.data.FileDataStore">
         <param name="path" value="${jahia.jackrabbit.datastore.path}"/>

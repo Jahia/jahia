@@ -539,7 +539,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
         
-        setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.JahiaMixedISMLocking"));
+        setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.FineGrainedISMLocking"));
 
         try {
             File repoHome = getRepositoryHome();

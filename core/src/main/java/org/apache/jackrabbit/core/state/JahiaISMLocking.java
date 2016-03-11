@@ -54,9 +54,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class JahiaISMLocking implements ISMLocking {
 
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private final Lock rl = lock.readLock();
-    private final Lock wl = lock.writeLock();
+    private final ReentrantReadWriteLock lock;
+    private final Lock rl;
+    private final Lock wl;
 
     /**
      * The read lock instance used by readers to release the acquired lock.
@@ -84,6 +84,25 @@ public class JahiaISMLocking implements ISMLocking {
             return readLock;
         }
     };
+    
+    /**
+     * Initializes an instance of this class.
+     */
+    public JahiaISMLocking() {
+        this(false);
+    }
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param fair {@code true} if this lock should use a fair ordering policy
+     */
+    public JahiaISMLocking(boolean fair) {
+        super();
+        lock = new ReentrantReadWriteLock(fair);
+        rl = lock.readLock();
+        wl = lock.writeLock();
+    }
 
     /**
      * Increments the reader count and returns the acquired read lock once

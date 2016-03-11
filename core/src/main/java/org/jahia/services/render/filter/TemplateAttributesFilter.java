@@ -107,12 +107,12 @@ public class TemplateAttributesFilter extends AbstractFilter {
 
         Script script = (Script) request.getAttribute("script");
         Locale locale = (Locale) request.getAttribute(FORCED_LOCALE_ATTRIBUTE);
+        locale = (locale != null ? locale : resource.getLocale());
         chain.pushAttribute(
                 context.getRequest(),
                 Config.FMT_LOCALIZATION_CONTEXT + ".request",
-                new LocalizationContext(ResourceBundles.get(templatePackage
-                                .getResourceBundleName(), script.getView().getModule(),
-                        locale != null ? locale : resource.getLocale())));
+                new LocalizationContext(ResourceBundles.get(templatePackage.getResourceBundleName(), script.getView()
+                        .getModule(), locale),locale));
         return null;
     }
 

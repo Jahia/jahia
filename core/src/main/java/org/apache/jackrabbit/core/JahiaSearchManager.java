@@ -45,6 +45,7 @@ package org.apache.jackrabbit.core;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -84,12 +85,28 @@ import org.slf4j.LoggerFactory;
 
 public class JahiaSearchManager extends SearchManager {
     private static final String TRANSLATION_LOCALNODENAME_PREFIX = "translation_";
-    
+
+    public static final String INDEX_LOCK_TYPES_SYSTEM_PROPERTY = "jahia.jackrabbit.searchIndex.indexLockTypesProperty";
+
+    private static final Set<String> IGNORED_LOCK_PROPERTIES_DEFAULT = new HashSet<>(
+            Arrays.asList("{http://www.jcp.org/jcr/1.0}lockOwner", "{http://www.jcp.org/jcr/1.0}lockIsDeep",
+                    "{http://www.jahia.org/jahia/1.0}locktoken"));
+
+    private static final Set<String> IGNORED_LOCK_PROPERTIES_ALL;
+
+    static {
+        IGNORED_LOCK_PROPERTIES_ALL = new HashSet<>(IGNORED_LOCK_PROPERTIES_DEFAULT);
+        IGNORED_LOCK_PROPERTIES_ALL.add("{http://www.jahia.org/jahia/1.0}lockTypes");
+    }
+
+    private static Set<String> ignoredProperties = Boolean.getBoolean(INDEX_LOCK_TYPES_SYSTEM_PROPERTY) ? IGNORED_LOCK_PROPERTIES_DEFAULT
+            : IGNORED_LOCK_PROPERTIES_ALL;
+
     /**
      * Logger instance for this class
      */
-    private static final Logger log = LoggerFactory.getLogger(JahiaSearchManager.class);    
-    
+    private static final Logger log = LoggerFactory.getLogger(JahiaSearchManager.class);
+
     /**
      * The shared item state manager instance for the workspace.
      */
@@ -350,5 +367,24 @@ public class JahiaSearchManager extends SearchManager {
             }
             return item;
         }
+    }
+
+    @Override
+    protected boolean isExcluded(EventImpl event) {
+        if (super.isExcluded(event)) {
+            return true;
+        }
+
+        int type = event.getType();
+        if (type == Event.PROPERTY_ADDED || type == Event.PROPERTY_REMOVED || type == Event.PROPERTY_CHANGED) {
+            try {
+                String name = event.getQPath().getLastElement().getName().toString();
+                return ignoredProperties.contains(name);
+            } catch (RepositoryException e) {
+                log.warn("Error getting JCR path from the event: " + event, e);
+            }
+        }
+
+        return false;
     }
 }

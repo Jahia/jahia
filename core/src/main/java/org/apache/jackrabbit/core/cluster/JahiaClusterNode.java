@@ -274,12 +274,13 @@ public class JahiaClusterNode extends ClusterNode {
             }
             update.setAttribute("allIds", nodeIdList);
         }
-<<<<<<< .working
-=======
-        super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
->>>>>>> .merge-right.r54026
     }
 
+    @Override
+    public void process(ChangeLogRecord record) {
+        super.process(new ChangeLogRecord(new ExternalChangeLog(record.getChanges()), record.getEvents(), null, record.getWorkspace(), record.getTimestamp(), record.getUserData()));
+    }
+    
     @Override
     public void process(NamespaceRecord record) {
         NodeTypeRegistry.getInstance().getNamespaces().put( record.getNewPrefix() , record.getUri());
@@ -312,6 +313,8 @@ public class JahiaClusterNode extends ClusterNode {
         log.debug("Set revision : " + revision);
         super.setRevision(revision);
     }
+
+
     public static class ExternalChangeLog extends ChangeLog {
         public ExternalChangeLog(ChangeLog changes) {
             for (ItemState state : changes.addedStates()) {
@@ -328,5 +331,4 @@ public class JahiaClusterNode extends ClusterNode {
             }
         }
     }
-
 }

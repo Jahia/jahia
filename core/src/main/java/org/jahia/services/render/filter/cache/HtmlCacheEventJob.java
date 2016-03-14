@@ -51,6 +51,8 @@ import org.jahia.services.scheduler.BackgroundJob;
 import org.quartz.JobExecutionContext;
 
 import javax.jcr.RepositoryException;
+import javax.jcr.observation.Event;
+
 import java.util.List;
 
 /**
@@ -64,7 +66,7 @@ public class HtmlCacheEventJob extends BackgroundJob {
             public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
                 HtmlCacheEventListener htmlCacheEventListener = (HtmlCacheEventListener) SpringContextSingleton.getBean("htmlCacheEventListener");
                 @SuppressWarnings("unchecked")
-                List<HtmlCacheEventListener.FlushEvent> events = (List<HtmlCacheEventListener.FlushEvent>) jobExecutionContext.getJobDetail().getJobDataMap().get("events");
+                List<Event> events = (List<Event>) jobExecutionContext.getJobDetail().getJobDataMap().get("events");
                 htmlCacheEventListener.processEvents(events, session, true);
                 return null;
             }

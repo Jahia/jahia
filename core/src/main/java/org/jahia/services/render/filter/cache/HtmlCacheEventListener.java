@@ -67,6 +67,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -113,12 +114,12 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
 
         boolean isExternal = false;
-        List<FlushEvent> list = new ArrayList<>();
+        List<Event> list = new ArrayList<>();
         while (events.hasNext()) {
             Event event = (Event) events.next();
             try {
-                list.add(new FlushEvent(event.getPath(), event.getIdentifier(), event.getType()));
-                isExternal = isExternal(event);
+                isExternal = isExternal || isExternal(event);
+                list.add(isExternal ? new FlushEvent(event.getPath(), event.getIdentifier(), event.getType()) : event);
             } catch (RepositoryException e) {
                 logger.error(e.getMessage(), e);
             }
@@ -141,19 +142,20 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
     }
 
-    public void processEvents(List<FlushEvent> events, JCRSessionWrapper sessionWrapper, boolean propagateToOtherClusterNodes) {
+    public void processEvents(List<Event> events, JCRSessionWrapper sessionWrapper, boolean propagateToOtherClusterNodes) {
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
 
         AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
         final Set<String> userGroupsKeyToFlush = new HashSet<String>();
-        for (FlushEvent event : events) {
+        for (Event event : events) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Event: {}", event);
             }
             try {
-                String path = event.getPath();
+                String eventNodePath = event.getPath();  
+                String path = eventNodePath;
                 boolean flushParent = false;
                 boolean flushChilds = false;
                 boolean flushForVanityUrl = false;
@@ -169,6 +171,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         flushParent = true;
                     }
                     path = path.substring(0, path.lastIndexOf("/"));
+                    eventNodePath = path;
                 } else if (type == Event.NODE_ADDED || type == Event.NODE_MOVED || type == Event.NODE_REMOVED) {
                     flushParent = true;
                 }
@@ -242,13 +245,18 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     }
                 }
                 path = StringUtils.substringBeforeLast(StringUtils.substringBeforeLast(path, "/j:translation"), "/j:acl");
-                flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
-                try {
-                    flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
-                } catch (PathNotFoundException e) {
-                    //
+                if (!flushed.contains(path)) {
+                    flushed.add(path);
+                    flushDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
+                    try {
+                        // if the path is the original one, we have the UUID in the event, otherwise get it from JCR
+                        String uuid = path == eventNodePath ? event.getIdentifier() : sessionWrapper.getNode(path).getIdentifier();
+                        flushDependenciesOfPath(depCache, uuid, propagateToOtherClusterNodes);
+                    } catch (PathNotFoundException e) {
+                        //
+                    }
+                    flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                 }
-                flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
 
                 if (flushChilds) {
                     flushChildsDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
@@ -256,22 +264,28 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
                 if (flushParent) {
                     path = StringUtils.substringBeforeLast(path, "/");
-                    flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
-                    try {
-                        flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
-                    } catch (PathNotFoundException e) {
-                        //
+                    if (!flushed.contains(path)) {
+                        flushed.add(path);
+                        flushDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
+                        try {
+                            flushDependenciesOfPath(depCache, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        } catch (PathNotFoundException e) {
+                            //
+                        }
+                        flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                     }
-                    flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
                 }
 
                 if (flushForVanityUrl) {
                     path = StringUtils.substringBeforeLast(path, "/" + VanityUrlManager.VANITYURLMAPPINGS_NODE);
-                    flushDependenciesOfPath(depCache, flushed, path, propagateToOtherClusterNodes);
-                    try {
-                        flushDependenciesOfPath(depCache, flushed, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
-                    } catch (PathNotFoundException e) {
-                        //
+                    if (!flushed.contains(path)) {
+                        flushed.add(path);
+                        flushDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
+                        try {
+                            flushDependenciesOfPath(depCache, sessionWrapper.getNode(path).getIdentifier(), propagateToOtherClusterNodes);
+                        } catch (PathNotFoundException e) {
+                            //
+                        }
                     }
                 }
 
@@ -292,15 +306,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
     }
 
-    private void flushDependenciesOfPath(Cache depCache, Set<String> flushed, String path, boolean propagateToOtherClusterNodes) {
-        Element element = !flushed.contains(path) ? depCache.get(path) : null;
+    private void flushDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
+        Element element = depCache.get(path);
         if (element != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Flushing dependencies for path: {}", path);
-            }
-            flushed.add(path);
-            if (logger.isDebugEnabled()) {
-                logger.debug("Flushing path: {}", path);
             }
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
@@ -360,7 +370,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         this.aggregateCacheFilter = aggregateCacheFilter;
     }
 
-    public static class FlushEvent implements Serializable {
+    public static class FlushEvent implements Event, Serializable {
         private static final long serialVersionUID = -4835978210219006748L;
         private String path;
         private String id;
@@ -372,16 +382,40 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             this.type = type;
         }
 
-        public String getPath() {
-            return path;
+        @Override
+        public String getUserID() {
+            return null;
         }
 
-        public String getId() {
+        @Override
+        public String getIdentifier() throws RepositoryException {
             return id;
         }
 
+        @SuppressWarnings("rawtypes")
+        @Override
+        public Map getInfo() throws RepositoryException {
+            return null;
+        }
+
+        @Override
+        public String getUserData() throws RepositoryException {
+            return null;
+        }
+
+        @Override
+        public long getDate() throws RepositoryException {
+            return 0;
+        }
+
+        @Override
         public int getType() {
             return type;
+        }
+
+        @Override
+        public String getPath() throws RepositoryException {
+            return path;
         }
     }
 }

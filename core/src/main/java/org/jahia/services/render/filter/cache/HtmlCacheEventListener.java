@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.observation.EventState;
 import org.jahia.services.content.*;
 import org.jahia.services.query.QueryResultWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
@@ -416,6 +417,18 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         @Override
         public String getPath() throws RepositoryException {
             return path;
+        }
+
+        /**
+         * Returns a String representation of this <code>Event</code>.
+         *
+         * @return a String representation of this <code>Event</code>.
+         */
+        public String toString() {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Event: Path: ").append(path).append(", ID: ").append(id).append(", Type: ")
+                    .append(EventState.valueOf(getType()));
+            return sb.toString();
         }
     }
 }

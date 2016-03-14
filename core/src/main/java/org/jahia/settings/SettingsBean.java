@@ -67,6 +67,7 @@ import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.commons.lang.StringUtils;
+import org.apache.jackrabbit.core.JahiaSearchManager;
 import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.core.stats.StatManager;
@@ -538,6 +539,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         setSystemProperty(QueryEngine.NATIVE_SORT_SYSTEM_PROPERTY, getString("jahia.jackrabbit.useNativeSort", "true"));
 
         setSystemProperty(StatManager.QUERY_STATS_ENABLED_PROPERTY, getString("jahia.jackrabbit.queryStatsEnabled", "true"));
+        
+        setSystemProperty(JahiaSearchManager.INDEX_LOCK_TYPES_SYSTEM_PROPERTY, getString("jahia.jackrabbit.searchIndex.indexLockTypesProperty", "true"));
         
         setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.FineGrainedISMLocking"));
 

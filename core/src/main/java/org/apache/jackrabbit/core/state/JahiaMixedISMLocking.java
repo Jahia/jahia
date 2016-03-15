@@ -43,23 +43,23 @@
  */
 package org.apache.jackrabbit.core.state;
 
+import EDU.oswego.cs.dl.util.concurrent.Latch;
+import EDU.oswego.cs.dl.util.concurrent.ReadWriteLock;
+import EDU.oswego.cs.dl.util.concurrent.Sync;
+import EDU.oswego.cs.dl.util.concurrent.WriterPreferenceReadWriteLock;
 import org.apache.jackrabbit.core.cluster.JahiaClusterNode;
 import org.apache.jackrabbit.core.id.ItemId;
 import org.apache.jackrabbit.core.id.NodeId;
 import org.apache.jackrabbit.core.id.PropertyId;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
 import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
 
 /**
- * <code>FineGrainedISMLocking</code>...
+ * <code>JahiaMixedISMLocking</code>...
  */
 public class JahiaMixedISMLocking implements ISMLocking {
 
@@ -80,7 +80,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
 
     private volatile Object activeWriterId;
 
-    private ReadWriteLock writerStateRWLock = new ReentrantReadWriteLock(true);
+    private ReadWriteLock writerStateRWLock = new WriterPreferenceReadWriteLock();
 
     /**
      * Map that contains the read locks.
@@ -91,17 +91,17 @@ public class JahiaMixedISMLocking implements ISMLocking {
      * List of waiting readers that are blocked because they conflict with
      * the current writer.
      */
-    private List<CountDownLatch> waitingReaders =
-        Collections.synchronizedList(new LinkedList<CountDownLatch>());
+    private List<Sync> waitingReaders =
+            Collections.synchronizedList(new LinkedList<Sync>());
 
     /**
      * List of waiting writers that are blocked because there is already a
      * current writer or one of the current reads conflicts with the change log
      * of the blocked writer.
      */
-    private List<CountDownLatch> waitingWriters = new LinkedList<CountDownLatch>();
+    private List<Sync> waitingWriters = new LinkedList<Sync>();
 
-    private List<CountDownLatch> waitingGlobalWriters = new LinkedList<CountDownLatch>();
+    private List<Sync> waitingGlobalWriters = new LinkedList<Sync>();
 
     /**
      * {@inheritDoc}
@@ -117,27 +117,27 @@ public class JahiaMixedISMLocking implements ISMLocking {
         // if we get here the following is true:
         // - the current thread does not hold a write lock
         for (;;) {
-            CountDownLatch signal;
+            Sync signal;
             // make sure writer state does not change
-            Lock shared = writerStateRWLock.readLock();
-            shared.lock();
+            Sync shared = writerStateRWLock.readLock();
+            shared.acquire();
             try {
                 if (activeWriter == null
                         || !hasDependency(activeWriter.changes, id)) {
                     readLockMap.addLock(id);
                     return new ReadLockImpl(id);
                 } else {
-                    signal = new CountDownLatch(1);
+                    signal = new Latch();
                     waitingReaders.add(signal);
                 }
             } finally {
-                shared.unlock();
+                shared.release();
             }
 
             // if we get here there was an active writer with
             // a dependency to the current id.
             // wait for the writer until it is done, then try again
-            signal.await();
+            signal.acquire();
         }
     }
 
@@ -151,10 +151,10 @@ public class JahiaMixedISMLocking implements ISMLocking {
             changeLog = null;
         }
         for (;;) {
-            CountDownLatch signal;
+            Sync signal;
             // we want to become the current writer
-            Lock exclusive = writerStateRWLock.writeLock();
-            exclusive.lock();
+            Sync exclusive = writerStateRWLock.writeLock();
+            exclusive.acquire();
             try {
                 // No active writer and either no active reader at all, or no dependency on active readers
                 if (activeWriter == null
@@ -163,15 +163,19 @@ public class JahiaMixedISMLocking implements ISMLocking {
                     activeWriterId = getCurrentThreadId();
                     return activeWriter;
                 } else {
-                    signal = new CountDownLatch(1);
-                    waitingWriters.add(signal);
+                    signal = new Latch();
+                    if (changeLog == null) {
+                        waitingGlobalWriters.add(signal);
+                    } else {
+                        waitingWriters.add(signal);
+                    }
                 }
             } finally {
-                exclusive.unlock();
+                exclusive.release();
             }
             // if we get here there is an active writer or there is a read
             // lock that conflicts with the change log
-            signal.await();
+            signal.acquire();
         }
     }
 
@@ -186,8 +190,16 @@ public class JahiaMixedISMLocking implements ISMLocking {
         }
 
         public void release() {
-            Lock exclusive = writerStateRWLock.writeLock();
-            exclusive.lock();
+            Sync exclusive = writerStateRWLock.writeLock();
+            for (;;) {
+                try {
+                    exclusive.acquire();
+                    break;
+                } catch (InterruptedException e) {
+                    // try again
+                    Thread.interrupted();
+                }
+            }
             try {
                 activeWriter = null;
                 activeWriterId = null;
@@ -195,14 +207,22 @@ public class JahiaMixedISMLocking implements ISMLocking {
                 notifyWaitingReaders();
                 notifyWaitingWriters(changes == null || readLockMap.readerCount.get() == 0);
             } finally {
-                exclusive.unlock();
+                exclusive.release();
             }
         }
 
         public ReadLock downgrade() {
             readLockMap.addLock(null);
-            Lock exclusive = writerStateRWLock.writeLock();
-            exclusive.lock();
+            Sync exclusive = writerStateRWLock.writeLock();
+            for (;;) {
+                try {
+                    exclusive.acquire();
+                    break;
+                } catch (InterruptedException e) {
+                    // try again
+                    Thread.interrupted();
+                }
+            }
             try {
                 activeWriter = null;
                 // only notify waiting readers since we still hold a down
@@ -210,7 +230,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
                 // other writers
                 notifyWaitingReaders();
             } finally {
-                exclusive.unlock();
+                exclusive.release();
             }
             return anonymousReadLock;
         }
@@ -230,8 +250,16 @@ public class JahiaMixedISMLocking implements ISMLocking {
         }
 
         public void release() {
-            Lock shared = writerStateRWLock.readLock();
-            shared.lock();
+            Sync shared = writerStateRWLock.readLock();
+            for (;;) {
+                try {
+                    shared.acquire();
+                    break;
+                } catch (InterruptedException e) {
+                    // try again
+                    Thread.interrupted();
+                }
+            }
             try {
                 int count = readLockMap.removeLock(id);
                 if (count == 0 && activeWriter == null) {
@@ -243,7 +271,7 @@ public class JahiaMixedISMLocking implements ISMLocking {
                     notifyWaitingWriters(count == 0);
                 }
             } finally {
-                shared.unlock();
+                shared.release();
             }
         }
     }
@@ -267,9 +295,9 @@ public class JahiaMixedISMLocking implements ISMLocking {
      * only one thread calls this method at a time.
      */
     private void notifyWaitingReaders() {
-        Iterator<CountDownLatch> it = waitingReaders.iterator();
+        Iterator<Sync> it = waitingReaders.iterator();
         while (it.hasNext()) {
-            it.next().countDown();
+            it.next().release();
             it.remove();
         }
     }
@@ -288,23 +316,23 @@ public class JahiaMixedISMLocking implements ISMLocking {
         }
     }
 
-    private void notifyWaitingWriters(List<CountDownLatch> waitingWriters) {
+    private void notifyWaitingWriters(List<Sync> waitingWriters) {
         if (waitingWriters.isEmpty()) {
             return;
         }
-        Iterator<CountDownLatch> it = waitingWriters.iterator();
+        Iterator<Sync> it = waitingWriters.iterator();
         while (it.hasNext()) {
-            it.next().countDown();
+            it.next().release();
             it.remove();
         }
+
     }
 
     private static final class LockMap {
-
         /**
          * Number of current readers.
          */
-        protected final AtomicInteger readerCount = new AtomicInteger(0);
+        private final AtomicInteger readerCount = new AtomicInteger(0);
 
         /**
          * 16 slots
@@ -405,9 +433,11 @@ public class JahiaMixedISMLocking implements ISMLocking {
 
             for (int i = 0; i < slots.length; i++) {
                 Map<ItemId, Integer> locks = slots[i];
-                for (ItemId id : locks.keySet()) {
-                    if (JahiaMixedISMLocking.hasDependency(changes, id)) {
-                        return true;
+                synchronized (locks) {
+                    for (ItemId id : locks.keySet()) {
+                        if (JahiaMixedISMLocking.hasDependency(changes, id)) {
+                            return true;
+                        }
                     }
                 }
             }

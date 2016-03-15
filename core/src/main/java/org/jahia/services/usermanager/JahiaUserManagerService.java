@@ -360,8 +360,12 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
             JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.LIVE_WORKSPACE, null, null);
             List<String> users = new ArrayList<String>();
             if (session.getWorkspace().getQueryManager() != null) {
-                String usersPath = (siteKey == null) ? "/users/" : "/sites/" + siteKey + "/users/";
-                String query = String.format("SELECT [j:nodename] FROM [%s] AS username WHERE isdescendantnode(username,'%s') ORDER BY localname(username)", Constants.JAHIANT_USER, usersPath);
+                String query = siteKey == null
+                        ? "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER
+                                + "] AS username WHERE isdescendantnode(username,'/users/') ORDER BY localname(username)"
+                        : "SELECT [j:nodename] FROM [" + Constants.JAHIANT_USER
+                                + "] AS username WHERE isdescendantnode(username,'/sites/" + siteKey
+                                + "/users/') ORDER BY localname(username)";
                 Query q = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2);
                 QueryResult qr = q.execute();
                 RowIterator rows = qr.getRows();

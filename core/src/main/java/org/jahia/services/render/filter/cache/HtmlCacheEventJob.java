@@ -67,7 +67,7 @@ public class HtmlCacheEventJob extends BackgroundJob {
                 HtmlCacheEventListener htmlCacheEventListener = (HtmlCacheEventListener) SpringContextSingleton.getBean("htmlCacheEventListener");
                 @SuppressWarnings("unchecked")
                 List<Event> events = (List<Event>) jobExecutionContext.getJobDetail().getJobDataMap().get("events");
-                htmlCacheEventListener.processEvents(events, session, true);
+                htmlCacheEventListener.processEvents(events, session, false);
                 return null;
             }
         });

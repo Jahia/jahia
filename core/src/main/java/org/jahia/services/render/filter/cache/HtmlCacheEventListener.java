@@ -139,7 +139,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 logger.error(e.getMessage(), e);
             }
         } else {
-            processEvents(list, ((JCREventIterator) events).getSession(), false);
+            processEvents(list, ((JCREventIterator) events).getSession(), true);
         }
     }
 

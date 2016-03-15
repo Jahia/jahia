@@ -681,6 +681,13 @@ public class TemplatePackageRegistry {
         }
     }
 
+    public void postProcessBeforeDestruction(Map<String,Object> o) {
+        ModuleRegistry registry = (ModuleRegistry) SpringContextSingleton.getBean("org.jahia.modules.default.ModuleRegistry");
+        for (Map.Entry<String, Object> entry : o.entrySet()) {
+            registry.postProcessBeforeDestruction(entry.getValue(), entry.getKey());
+        }
+    }
+
 // -------------------------- INNER CLASSES --------------------------
 
     static class ModuleRegistry implements DestructionAwareBeanPostProcessor, ApplicationListener<ApplicationContextEvent> {

@@ -142,13 +142,7 @@ public final class JahiaPrivilegeRegistry {
         try {
             String expandedName = JCRContentUtils.getExpandedName(node.getName(), node.getSession().getWorkspace().getNamespaceRegistry());
             boolean isAbstract = node.hasProperty("j:isAbstract") && node.getProperty("j:isAbstract").getBoolean();
-            PrivilegeImpl priv;
-            readLock.lock();
-            try {
-                priv = (PrivilegeImpl) privilegesByName.get(expandedName);
-            } finally {
-                readLock.unlock();
-            }
+            PrivilegeImpl priv = (PrivilegeImpl) getPrivilegeByName(expandedName);
             if (priv == null) {
                 priv = new PrivilegeImpl(node.getName(), expandedName, isAbstract, subPrivileges, node.getPath());
             } else {
@@ -199,6 +193,23 @@ public final class JahiaPrivilegeRegistry {
     public static List<String> getRegisteredPrivilegeNames() {
         return registeredPrivilegeNames;
     }
+    
+    private static Privilege getPrivilegeByName(String... privilegeNames) {
+        Privilege privilege = null;
+        readLock.lock();
+        try {
+            for (String name : privilegeNames) {
+                privilege = privilegesByName.get(name);
+                if (privilege != null) {
+                    break;
+                }
+            }
+        } finally {
+            readLock.unlock();
+        }
+
+        return privilege;
+    }
 
     /**
      * Returns the privilege with the specified <code>privilegeName</code>.
@@ -217,16 +228,7 @@ public final class JahiaPrivilegeRegistry {
         privilegeName = JCRContentUtils.getExpandedName(privilegeName, ns);
 
         String s = JahiaAccessManager.getPrivilegeName(privilegeName, workspaceName);
-        Privilege privilege;
-        readLock.lock();
-        try {
-            privilege = privilegesByName.get(s);
-            if (privilege == null) {
-                privilege = privilegesByName.get(privilegeName);
-            }
-        } finally {
-            readLock.unlock();
-        }
+        Privilege privilege = getPrivilegeByName(s, privilegeName);
         if (privilege != null) {
             return privilege;
         }
@@ -235,13 +237,7 @@ public final class JahiaPrivilegeRegistry {
 
     public Privilege getPrivilege(Node node) throws AccessControlException, RepositoryException {
         String privilegeName = JCRContentUtils.getExpandedName(node.getName(), ns);
-        Privilege privilege;
-        readLock.lock();
-        try {
-            privilege = privilegesByName.get(privilegeName);
-        } finally {
-            readLock.unlock();
-        }
+        Privilege privilege = getPrivilegeByName(privilegeName);
         if (privilege != null) {
             return privilege;
         }

@@ -825,7 +825,6 @@ public class ModuleBuildHelper implements InitializingBean {
         }
     }
 
-    @SuppressWarnings("unchecked")
     private boolean saveFile(InputStream source, File target) throws IOException {
         Charset transCodeTarget = null;
         if (target.getParentFile().getName().equals("resources") && target.getName().endsWith(".properties")) {

@@ -770,9 +770,6 @@
         </property>
         <property name="titleKey" value="label.clearLock"/>
         <property name="icon" value="unlock"/>
-        <property name="visibility">
-            <bean class="org.jahia.services.uicomponents.bean.contentmanager.RootUserVisibility"/>
-        </property>
     </bean>
 
     <bean id="Toolbar.Item.ClearAllLocks" class="org.jahia.services.uicomponents.bean.toolbar.Item" scope="prototype">

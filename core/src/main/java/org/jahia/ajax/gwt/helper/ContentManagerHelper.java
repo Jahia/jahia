@@ -969,8 +969,16 @@ public class ContentManagerHelper {
             if (currentUserSession.getUserNode().isRoot()) {
                 JCRContentUtils.clearAllLocks(path, processChildNodes, currentUserSession.getWorkspace().getName());
             } else {
-                logger.error("Error when clearing all locks on node " + path);
-                throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.when.clearing.all.locks.on.node", uiLocale, path, currentUserSession.getUser().getUserKey()));
+                JCRNodeWrapper node = currentUserSession.getNode(path);
+                Map<String, List<String>> lockInfos = node.getLockInfos();
+                List<String> locks = lockInfos.get(null);
+                if (locks != null) {
+                    for (String lock : locks) {
+                        if (StringUtils.substringBefore(lock, ":").equals(currentUserSession.getUserID())) {
+                            node.unlock(StringUtils.substringAfter(lock, ":"));
+                        }
+                    }
+                }
             }
         } catch (RepositoryException e) {
             logger.error("Repository error when clearing all locks on node " + path, e);

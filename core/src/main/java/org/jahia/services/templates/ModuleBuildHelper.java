@@ -86,7 +86,6 @@ import org.xml.sax.SAXException;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 import javax.xml.transform.TransformerException;
-
 import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -875,7 +874,7 @@ public class ModuleBuildHelper implements InitializingBean {
 
                 LinkedList<DiffMatchPatch.Patch> l = dmp.patch_make(StringUtils.join(previouslyGeneratedContent, "\n"), StringUtils.join(sourceContent, "\n"));
 
-                if (previouslyGenerated.exists()) {
+                if (target.getName().equals("repository.xml")) {
                     // Keep generated file uptodate
                     FileUtils.writeLines(new File(target.getPath() + ".generated"), transCodeTarget != null ? transCodeTarget.name() : "UTF-8", sourceContent);
                 }

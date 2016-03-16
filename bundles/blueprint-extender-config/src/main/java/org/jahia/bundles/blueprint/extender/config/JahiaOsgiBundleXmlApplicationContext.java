@@ -45,10 +45,10 @@ package org.jahia.bundles.blueprint.extender.config;
 
 import org.eclipse.gemini.blueprint.context.OsgiBundleApplicationContextExecutor;
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.templates.TemplatePackageRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -131,13 +131,21 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
             if (BundleUtils.isJahiaModuleBundle(getBundle())) {
                 final ModuleState state = BundleUtils.getModule(getBundle()).getState();
                 if (state != null && state.getState() != null && state.getState() == ModuleState.State.STOPPING) {
-                    Map<String,Object> l = JahiaOsgiBundleXmlApplicationContext.this.getBeansOfType(Object.class);
                     // Module is currently stopping,
                     JahiaOsgiBundleXmlApplicationContext.this.normalClose();
 
-                    // Call again bean post processors, as beans may not have been properly removed if context is closed multiple times (QA-8326)
-                    TemplatePackageRegistry t = (TemplatePackageRegistry) SpringContextSingleton.getBean("org.jahia.services.templates.TemplatePackageRegistry");
-                    t.postProcessBeforeDestruction(l);
+                    if (JahiaOsgiBundleXmlApplicationContext.this.hasBeanFactory() && JahiaContextLoaderListener.isRunning()) {
+                        String symbolicName = getBundle().getSymbolicName();
+                        try {
+                            logger.info("Destroying beans for bundle {}", symbolicName);
+                            
+                            JahiaOsgiBundleXmlApplicationContext.this.destroyBeans();
+                            
+                            logger.info("Done destroying beans for bundle {}", symbolicName);
+                        } catch (Exception e) {
+                            logger.error("Error destroying beans for the context of a bundle " + symbolicName, e);
+                        }
+                    }
                 } else {
                     // Reset contextToStart if module has never been registered in jahia
                     BundleUtils.setContextToStartForModule(getBundle(), null);

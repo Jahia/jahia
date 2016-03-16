@@ -503,9 +503,9 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
             for (Map.Entry<String, File> entry : NodeTypeRegistry.getSystemDefinitionsFiles().entrySet()) {
                 String systemId = entry.getKey();
                 File file = entry.getValue();
+                NodeTypeRegistry.getInstance().addDefinitionsFile(file, systemId);
                 if (isLatestDefinitions(systemId, new ModuleVersion(Jahia.VERSION), file.lastModified())) {
                     initializedSystemIds.add(systemId);
-                    NodeTypeRegistry.getInstance().addDefinitionsFile(file, systemId);
                     deployDefinitions(systemId, Jahia.VERSION, file.lastModified());
                 }
             }

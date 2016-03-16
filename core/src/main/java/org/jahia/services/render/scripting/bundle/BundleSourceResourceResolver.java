@@ -55,11 +55,11 @@ public class BundleSourceResourceResolver {
                 if (s == null) {
                     s = model.getParent().getVersion();
                 } else if (s.matches("\\$\\{.*\\}")) {
-                    logger.warn("'version' contains an expression but should be a constant. Stopping mount of source forlder.");
+                    logger.warn("'version' contains an expression but should be a constant. Stopping mount of source folder.");
                     return null;
                 }
                 if (!s.equals(bundle.getHeaders().get("Implementation-Version"))) {
-                    logger.warn("pom.xml 'version' is not matching the Manifest Implementation-Version. Stopping mount of source forlder.");
+                    logger.warn("pom.xml 'version' is not matching the Manifest Implementation-Version. Stopping mount of source folder.");
                     return null;
                 }
             } catch (Exception e) {

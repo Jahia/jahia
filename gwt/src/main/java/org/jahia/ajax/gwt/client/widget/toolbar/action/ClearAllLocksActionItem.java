@@ -45,6 +45,7 @@ package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.MessageBox;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
+import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -53,6 +54,7 @@ import org.jahia.ajax.gwt.client.widget.Linker;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -98,6 +100,18 @@ public class ClearAllLocksActionItem extends BaseActionItem {
         GWTJahiaNode singleSelection = lh.getSingleSelection();
         setEnabled(singleSelection!=null && singleSelection.isLockable() && hasPermission(lh.getSelectionPermissions()) &&
                 PermissionsUtils.isPermitted("jcr:lockManagement", lh.getSelectionPermissions()) && singleSelection.getLockInfos() != null &&
-                !lh.getSingleSelection().getLockInfos().isEmpty());
+                !lh.getSingleSelection().getLockInfos().isEmpty() &&
+                ("root".equals(JahiaGWTParameters.getCurrentUser()) || checkLockInfos(singleSelection.getLockInfos())));
+    }
+
+    private boolean checkLockInfos(Map<String,List<String>> lockInfos) {
+        for (List<String> list : lockInfos.values()) {
+            for (String s : list) {
+                if (!s.equals(JahiaGWTParameters.getCurrentUser())) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

@@ -43,6 +43,7 @@
  */
 package org.jahia.services.deamons.filewatcher;
 
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.registries.ServicesRegistry;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
@@ -111,6 +112,9 @@ public class FileMonitorJob implements StatefulJob {
      *            the background job name to stop and delete
      */
     public static void unschedule(String jobName) {
+        if (!JahiaContextLoaderListener.isRunning()) {
+            return;
+        }
         try {
             ServicesRegistry.getInstance().getSchedulerService().getRAMScheduler()
                     .deleteJob(jobName, Scheduler.DEFAULT_GROUP);

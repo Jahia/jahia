@@ -45,6 +45,7 @@ package org.jahia.services.importexport;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.ISO9075;
+import org.apache.jackrabbit.util.Text;
 import org.jahia.api.Constants;
 import org.jahia.services.content.*;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
@@ -238,8 +239,6 @@ public class ReferencesHelper {
         if (pName.startsWith("[")) {
             int id = Integer.parseInt(StringUtils.substringBetween(pName, "[", "]"));
             pName = StringUtils.substringAfter(pName, "]");
-            // encode : in property name (eg. for j:about)
-            pName = pName.replaceAll(":", "%3A");
             if (n.isNodeType("jnt:translation") && n.hasProperty("jcr:language")) {
                 pName += "_" + n.getProperty("jcr:language").getString();
                 n = n.getParent();
@@ -250,7 +249,7 @@ public class ReferencesHelper {
             if (logger.isDebugEnabled()) {
                 logger.debug("New references : " + value);
             }
-            JCRNodeWrapper ref = n.addNode("j:referenceInField_" + pName + "_" + id, "jnt:referenceInField");
+            JCRNodeWrapper ref = n.addNode("j:referenceInField_" + Text.escapeIllegalJcrChars(pName) + "_" + id, "jnt:referenceInField");
             ref.setProperty("j:fieldName", pName);
             ref.setProperty("j:reference", value);
         } else {

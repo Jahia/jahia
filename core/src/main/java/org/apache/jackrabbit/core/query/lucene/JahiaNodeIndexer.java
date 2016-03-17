@@ -657,6 +657,24 @@ public class JahiaNodeIndexer extends NodeIndexer {
 
     @Override
     public Document createDoc() throws RepositoryException {
+        // Clean up nodestate before starting indexation, as ISM cache may contain removed entries
+        Set<Name> props = node.getPropertyNames();
+        Set<Name> toRemove = new HashSet<>();
+        for (Name propName : props) {
+            PropertyId id = new PropertyId(node.getNodeId(), propName);
+            try {
+                PropertyState propState = (PropertyState) stateProvider.getItemState(id);
+            } catch (NoSuchItemStateException e) {
+                toRemove.add(propName);
+            } catch (ItemStateException e) {
+                //
+            }
+        }
+        for (Name name : toRemove) {
+            logger.debug("Removed non-existing property {} from {}", name, node.getNodeId());
+            node.removePropertyName(name);
+        }
+
         Document doc = super.createDoc();
         if (isAddAclUuidInIndex() && isIndexed(J_ACL)) {
             addAclUuid(doc);

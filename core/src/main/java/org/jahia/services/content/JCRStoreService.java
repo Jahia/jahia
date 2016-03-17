@@ -284,12 +284,14 @@ public class JCRStoreService extends JahiaService implements JahiaAfterInitializ
      * @throws RepositoryException
      */
     public void deployDefinitions(String systemId, String moduleVersion, long lastModified) throws IOException, RepositoryException {
+        registerNamespaces();
+
         for (JCRStoreProvider provider : sessionFactory.getProviders().values()) {
             if (provider.canRegisterCustomNodeTypes()) {
+                provider.registerNamespaces();
                 provider.deployDefinitions(systemId);
             }
         }
-        registerNamespaces();
 
         logger.info("Added {} definitions, updating database cnd", systemId);
 

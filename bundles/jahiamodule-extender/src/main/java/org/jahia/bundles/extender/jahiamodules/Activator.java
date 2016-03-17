@@ -591,12 +591,33 @@ public class Activator implements BundleActivator {
             return;
         }
 
+<<<<<<< .working
         if (!checkImported(bundle, jahiaTemplatesPackage)) {
             bundleStarter.stopBundle(bundle);
             return;
         }
 
 
+=======
+        final String id = jahiaTemplatesPackage.getId();
+        if (!checkImported(bundle, jahiaTemplatesPackage)) {
+            return;
+        }
+
+        for (String depend : dependsList) {
+            JahiaTemplatesPackage pack = templatePackageRegistry.lookupById(depend);
+            if (pack == null) {
+                pack = templatePackageRegistry.lookup(depend);
+            }
+            if (pack == null) {
+                logger.debug("Delaying module {} startup because it depends on module {} that is not yet started.", symbolicName, depend);
+                addToBeStarted(bundle, depend);
+                setModuleState(bundle, ModuleState.State.WAITING_TO_BE_STARTED, depend);
+                return;
+            }
+        }
+
+>>>>>>> .merge-right.r54076
         logger.info("--- Start DX OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();
 

@@ -895,20 +895,6 @@ public class JCRSessionWrapper implements Session {
                 s.addLockToken(token);
             }
 
-            NamespaceRegistry namespaceRegistryWrapper = getWorkspace().getNamespaceRegistry();
-            NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
-
-
-            if (providerNamespaceRegistry != null) {
-                for (String prefix : namespaceRegistryWrapper.getPrefixes()) {
-                    try {
-                        providerNamespaceRegistry.getURI(prefix);
-                    } catch (NamespaceException ne) {
-                        providerNamespaceRegistry.registerNamespace(prefix, namespaceRegistryWrapper.getURI(prefix));
-                    }
-                }
-            }
-
             for (String prefix : prefixToNs.keySet()) {
                 s.setNamespacePrefix(prefix, prefixToNs.get(prefix));
             }

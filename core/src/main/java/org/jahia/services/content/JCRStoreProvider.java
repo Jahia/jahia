@@ -58,6 +58,7 @@ import org.jahia.services.content.decorator.JCRFrozenNodeAsRegular;
 import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.content.nodetypes.ExtendedPropertyDefinition;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUser;
@@ -624,6 +625,32 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
             session.save();
         } finally {
             session.logout();
+        }
+    }
+
+    /**
+     * Deploy all namespaces into provider
+     *
+     * @throws RepositoryException
+     */
+    public void registerNamespaces() throws RepositoryException {
+        Session s = getSystemSession();
+        try {
+            NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
+            if (providerNamespaceRegistry != null) {
+                for (Map.Entry<String, String> namespaceEntry : NodeTypeRegistry.getInstance().getNamespaces().entrySet()) {
+                    try {
+                        if (providerNamespaceRegistry.getURI(namespaceEntry.getKey()).equals(namespaceEntry.getValue())) {
+                            continue;
+                        }
+                    } catch (NamespaceException ne) {
+                        // prfix not yet registered
+                    }
+                    providerNamespaceRegistry.registerNamespace(namespaceEntry.getKey(), namespaceEntry.getValue());
+                }
+            }
+        } finally {
+            s.logout();
         }
     }
 

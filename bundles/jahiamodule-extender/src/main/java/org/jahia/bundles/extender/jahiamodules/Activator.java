@@ -602,6 +602,11 @@ public class Activator implements BundleActivator {
             dependsList.add("default");
         }
 
+        final String id = jahiaTemplatesPackage.getId();
+        if (!checkImported(bundle, jahiaTemplatesPackage)) {
+            return;
+        }
+
         for (String depend : dependsList) {
             JahiaTemplatesPackage pack = templatePackageRegistry.lookupById(depend);
             if (pack == null) {
@@ -614,12 +619,6 @@ public class Activator implements BundleActivator {
                 return;
             }
         }
-
-        final String id = jahiaTemplatesPackage.getId();
-        if (!checkImported(bundle, jahiaTemplatesPackage)) {
-            return;
-        }
-
 
         logger.info("--- Start Jahia OSGi bundle {} --", getDisplayName(bundle));
         long startTime = System.currentTimeMillis();

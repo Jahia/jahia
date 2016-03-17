@@ -94,7 +94,7 @@ import java.util.*;
 public class PrincipalViewHelper implements Serializable {
 
     private static final long serialVersionUID = -3791113369394869324L;
-    
+
     public static final String PRINCIPAL = "Principal";
     public static final String PERMISSIONS = "Permissions";
     public static final String PROVIDER = "Provider";
@@ -105,12 +105,13 @@ public class PrincipalViewHelper implements Serializable {
     public static final String INHERITANCE = "Inheritance";
 
     private static transient final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(PrincipalViewHelper.class);
-    
+
     private static transient final Comparator<JCRNodeWrapper> PRINCIPAL_COMPARATOR = new PrincipalComparator();
 
     private static Set<String> selectBoxFieldsHeading = new HashSet<String>();
     private List<Integer> selectBoxFieldsSize = new ArrayList<Integer>();
     private List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
+    private static PrincipalViewHelperExtension principalViewHelperExtension = null;
 
     static {
         selectBoxFieldsHeading.add(PRINCIPAL);
@@ -256,18 +257,17 @@ public class PrincipalViewHelper implements Serializable {
     public static String getDisplayName(Object p) {
         return getDisplayName(p, null);
     }
-    
+
     /**
      * Return a displayable name, using resource bundles for the guest user and group.
      * @param p the principal for which to build the displayable name
-     * @param locale the locale to use for looking up resource bundle values 
+     * @param locale the locale to use for looking up resource bundle values
      * @return a String containing the displayable name for the user, ready for display in the user interface
      */
     public static String getDisplayName(Object p, Locale locale) {
         if (p instanceof JCRUserNode) {
             JCRUserNode jahiaUser = (JCRUserNode) p;
-            String userName = jahiaUser.getName();
-            userName = getUserDisplayName(userName, locale);
+            String userName = getUserDisplayName(jahiaUser.getJahiaUser(), locale);
             return userName;
         } else if (p instanceof JCRGroupNode) {
             JCRGroupNode jahiaGroup = (JCRGroupNode) p;
@@ -276,8 +276,7 @@ public class PrincipalViewHelper implements Serializable {
             return groupName;
         } else if (p instanceof JahiaUser) {
             JahiaUser jahiaUser = (JahiaUser) p;
-            String userName = jahiaUser.getName();
-            userName = getUserDisplayName(userName, locale);
+            String userName = getUserDisplayName(jahiaUser, locale);
             return userName;
         } else if (p instanceof JahiaGroup) {
             JahiaGroup jahiaGroup = (JahiaGroup) p;
@@ -294,7 +293,7 @@ public class PrincipalViewHelper implements Serializable {
     /**
      * Returns the displayable name for a group based on the group name. This method will for the moment only use
      * resource bundle to localized the guest group name.
-     * @param groupName the group name to localize 
+     * @param groupName the group name to localize
      * @return the localized name for the group
      */
     public static String getGroupDisplayName(String groupName) {
@@ -305,7 +304,7 @@ public class PrincipalViewHelper implements Serializable {
      * Returns the displayable name for a group based on the group name. This method will for the moment only use
      * resource bundle to localized the guest group name.
      * @param groupName the group name to localize
-     * @param locale the locale to use for looking up resource bundle values  
+     * @param locale the locale to use for looking up resource bundle values
      * @return the localized name for the group
      */
     public static String getGroupDisplayName(String groupName, Locale locale) {
@@ -324,12 +323,12 @@ public class PrincipalViewHelper implements Serializable {
     public static String getUserDisplayName(String userName) {
         return getUserDisplayName(userName, null);
     }
-    
+
     /**
      * Returns the displayable name for a user based on the user name. This method will for the moment only use a
      * resource bundle lookup to localize the guest user name.
      * @param userName the user name to localize
-     * @param locale the locale to use for looking up resource bundle values  
+     * @param locale the locale to use for looking up resource bundle values
      * @return the localized user name
      */
     public static String getUserDisplayName(String userName, Locale locale) {
@@ -338,6 +337,25 @@ public class PrincipalViewHelper implements Serializable {
         }
         return userName;
     }
+
+    /**
+     * Returns the displayable name of a {@link JahiaUser}. This method will use a
+     * resource bundle lookup to localize the guest user name, and use a {@link PrincipalViewHelperExtension} for the
+     * other users if defined (falling back on the login name otherwise).
+     * @param jahiaUser the user
+     * @param locale the locale to use for looking up resource bundle values
+     * @return the displayable name
+     */
+    public static String getUserDisplayName(JahiaUser jahiaUser, Locale locale) {
+        String userName = jahiaUser.getName();
+        if (Constants.GUEST_USERNAME.equals(userName)) {
+            userName = Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()), SettingsBean.getInstance().getGuestUserResourceKey(), locale != null ? locale : getLocale(), userName);
+        } else if (principalViewHelperExtension != null) {
+            userName = principalViewHelperExtension.getUserDisplayName(jahiaUser);
+        }
+        return userName;
+    }
+
 
     /**
      * Construct a displayable principal name string
@@ -433,7 +451,7 @@ public class PrincipalViewHelper implements Serializable {
             return 'g';
         }
     }
-    
+
     /**
      * Get a principal displayable properties. A user displays its
      * first name and a last name or e-mail to display.
@@ -575,7 +593,7 @@ public class PrincipalViewHelper implements Serializable {
                 return getSearchResult(siteKey, providers, jahiaUserManagerService, searchParameters, includeGlobalUsers);
             }
         }
-        
+
         return new TreeSet<>(PRINCIPAL_COMPARATOR);
     }
 
@@ -695,7 +713,7 @@ public class PrincipalViewHelper implements Serializable {
         }
         return usersWithoutJahiaAdmin;
     }
-    
+
     private static String getI18n(String key, String defaultValue) {
         Locale locale = getLocale();
 
@@ -726,6 +744,10 @@ public class PrincipalViewHelper implements Serializable {
             }
             return str + emtpyStr;
         }
+    }
+
+    public static void setPrincipalViewHelperExtension(PrincipalViewHelperExtension principalViewHelperExtension) {
+        PrincipalViewHelper.principalViewHelperExtension = principalViewHelperExtension;
     }
 
     private static class PrincipalComparator implements Comparator<JCRNodeWrapper>,Serializable {

@@ -49,6 +49,7 @@ import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -214,10 +215,11 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                             boolean found = false;
                             Node displayedNode = node;
                             if (node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE)) {
+                                JCRPropertyWrapper nodeProperty = node.getProperty(Constants.NODE);
                                 try {
-                                    displayedNode = node.getProperty(Constants.NODE).getNode();
+                                    displayedNode = nodeProperty.getNode();
                                 } catch (ItemNotFoundException e) {
-                                    currentResource.getDependencies().add(node.getProperty(Constants.NODE).getString());
+                                    currentResource.getDependencies().add(nodeProperty.getString());
                                     return EVAL_PAGE;
                                 }
                             }

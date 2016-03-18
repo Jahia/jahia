@@ -633,7 +633,7 @@ public class JCRStoreProvider implements Comparable<JCRStoreProvider> {
      * @throws RepositoryException
      */
     public void registerNamespaces() throws RepositoryException {
-        Session s = getSystemSession();
+        Session s = getSystemSession().getProviderSession(this);
         try {
             NamespaceRegistry providerNamespaceRegistry = s.getWorkspace().getNamespaceRegistry();
             if (providerNamespaceRegistry != null) {

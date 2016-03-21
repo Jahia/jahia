@@ -498,7 +498,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 //            return Constants.JAHIANT_CONTENT;
         }
 
-        return Constants.NT_BASE;
+        return Constants.JAHIAMIX_SEARCHABLE;
     }
 
     private StringBuilder appendConstraints(SearchCriteria params,

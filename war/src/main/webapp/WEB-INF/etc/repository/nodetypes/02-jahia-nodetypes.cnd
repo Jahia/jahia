@@ -197,6 +197,8 @@
 [jnt:query] > nt:query, mix:title, jmix:publication, jmix:list, jmix:queryContent,  jmix:renderableList, jmix:basemetadata, jmix:manuallyOrderable
  - maxItems (long) = 10 indexed=no
 
+[jmix:searchable] mixin
+
 //---------------------------------------------------------
 // Files
 //---------------------------------------------------------
@@ -205,9 +207,9 @@
  - j:extractedText (binary) protected hidden
  - j:lastExtractionDate (date) protected nofulltext hidden
 
-[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list
+[jnt:folder] > nt:folder, jmix:nodenameInfo, jmix:basemetadata, jmix:publication, jmix:observable, jmix:list, jmix:searchable
 
-[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable, mix:title
+[jnt:file] > nt:file, jmix:lockable, jmix:nodenameInfo, jmix:basemetadata, jmix:thumbnail, jmix:publication, jmix:observable, mix:title, jmix:searchable
 
 [jmix:image] mixin
  - j:height (long) protected
@@ -718,7 +720,7 @@ extends = jnt:content
 
 [jmix:navMenuItem] mixin
 
-[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode
+[jnt:page] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, mix:title, jmix:publication, jmix:tagged, jmix:navMenuItem, jmix:hasTemplateNode, jmix:searchable
  orderable
  - jcr:title (string) i18n mandatory boost=2.0
  - j:templateName (string,choicelist[templatesNode]) mandatory nofulltext
@@ -730,7 +732,7 @@ extends = jnt:content
 - jcr:title (string) mandatory boost=2.0
 - jcr:description (string)
 
-[jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata
+[jnt:content] > nt:base, jmix:nodenameInfo, jmix:observable, jmix:basemetadata, jmix:searchable
 
 [jnt:contentList] > jnt:content, jmix:listContent, mix:title, jmix:list, jmix:renderableList
  orderable

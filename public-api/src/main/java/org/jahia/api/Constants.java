@@ -171,6 +171,8 @@ public class Constants {
     public static final String JAHIAMIX_HIDDEN_NODE = "jmix:hiddenNode";
 
     public final static String JAHIAMIX_RB_TITLE = "jmix:rbTitle";
+    
+    public static final String JAHIAMIX_SEARCHABLE = "jmix:searchable";
 
     public static final String JAHIANT_FOLDER = "jnt:folder";
     public static final String JAHIANT_FILE = "jnt:file";

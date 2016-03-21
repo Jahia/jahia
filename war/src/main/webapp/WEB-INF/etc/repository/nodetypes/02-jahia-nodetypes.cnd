@@ -1018,7 +1018,6 @@ extends = jnt:content
     - jmix:legacyPageKey (string) hidden nofulltext
 
 [jmix:legacyFile] > jmix:legacyContent mixin
-<<<<<<< .working
     - jmix:legacyPath (string) hidden nofulltext
 
 
@@ -1079,5 +1078,3 @@ extends = jnt:content
   - j:dependsOn (weakreference) multiple < jnt:moduleManagementNodeOperation
   - j:state (string) nofulltext < 'open', 'processing', 'successful', 'failed'
   - j:info (string) indexed=no
-=======
-    - jmix:legacyPath (string) hidden nofulltext>>>>>>> .merge-right.r54090

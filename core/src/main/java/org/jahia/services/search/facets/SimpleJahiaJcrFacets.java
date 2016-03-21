@@ -78,6 +78,7 @@ import org.apache.solr.handler.component.ResponseBuilder;
 import org.apache.solr.request.SimpleFacets;
 import org.apache.solr.schema.*;
 import org.apache.solr.schema.DateField;
+import org.apache.solr.search.QParser;
 import org.apache.solr.search.QueryParsing;
 import org.apache.solr.search.SolrIndexSearcher;
 import org.apache.solr.util.DateMathParser;
@@ -409,7 +410,7 @@ public class SimpleJahiaJcrFacets {
                     String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);
                     String locale = params.getFieldParam(f, "facet.locale");
                     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f." + f + ".facet.nodetype")).getPropertyDefinition(fieldName);
-                    String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, locale, true);
+                    String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, locale);
                     
                     parseParams(FacetParams.FACET_FIELD, f);
                    // TODO: can we use the key to add item in result like in original Solr ??? 
@@ -791,19 +792,19 @@ public class SimpleJahiaJcrFacets {
         return res;
     }
 
-    public String getFieldNameInIndex(String field, String propertyFieldName, ExtendedPropertyDefinition epd, String langCode, boolean useJackrabbitField) {
+    public String getFieldNameInIndex(String field, String propertyFieldName, ExtendedPropertyDefinition epd, String langCode) {
         String fieldName = propertyFieldName;
         try {
             fieldName = resolver.getJCRName(NameFactoryImpl.getInstance().create(session.getNamespaceURI(epd.getPrefix()), epd.getLocalName()));
             int idx = fieldName.indexOf(':');
             if (epd != null && epd.isFacetable()) {
                 fieldName = fieldName.substring(0, idx + 1) + JahiaNodeIndexer.FACET_PREFIX + fieldName.substring(idx + 1);
-            } else if ((epd == null || !epd.isFacetable()) && useJackrabbitField) {
+            } else if ((epd == null || !epd.isFacetable())) {
                 String prefix = params.getFieldParam(field, FacetParams.FACET_PREFIX);
                 if (params instanceof MapSolrParams) {
-                    ((MapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, fieldName + (prefix != null ? prefix : ""));
+                    ((MapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, fieldName + "[" + (prefix != null ? prefix : ""));
                 } else if (params instanceof MultiMapSolrParams) {
-                    ((MultiMapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, new String[]{fieldName + (prefix != null ? prefix : "")});
+                    ((MultiMapSolrParams) params).getMap().put("f." + field + '.' + FacetParams.FACET_PREFIX, new String[]{fieldName + "[" + (prefix != null ? prefix : "")});
                 }
                 fieldName = FieldNames.PROPERTIES;
             } else {
@@ -858,8 +859,10 @@ public class SimpleJahiaJcrFacets {
       String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
       ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
       String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, params.getFieldParam(f,
-              "facet.locale"), false);
-      final SchemaField sf = new SchemaField(fieldNameInIndex, JahiaQueryParser.DATE_TYPE);
+              "facet.locale"));
+      String prefix = params.getFieldParam(f, FacetParams.FACET_PREFIX);
+      DateField ft = StringUtils.isEmpty(prefix) ? JahiaQueryParser.DATE_TYPE : JahiaQueryParser.JR_DATE_TYPE;
+      final SchemaField sf = new SchemaField(fieldNameInIndex, ft);
       
 // TODO: Should we use the key now ?
       //    resOuter.add(key, resInner);
@@ -945,8 +948,9 @@ public class SimpleJahiaJcrFacets {
               final boolean includeUpper =
                   (include.contains(FacetRangeInclude.UPPER) ||
                       (include.contains(FacetRangeInclude.EDGE) && high.equals(end)));
-                  
-              Query rangeQuery = JahiaQueryParser.DATE_TYPE.getRangeQuery(null, sf, low,high,includeLower,includeUpper);
+              
+              Query rangeQuery = getRangeQuery(ft, null, sf, prefix, low, high, includeLower, includeUpper);
+
               int count = rangeCount(rangeQuery);
               if (count >= minCount) {
 // TODO: Can we use just label here ?                  
@@ -981,7 +985,7 @@ public class SimpleJahiaJcrFacets {
               boolean all = others.contains(FacetDateOther.ALL);
 
               if (all || others.contains(FacetDateOther.BEFORE)) {
-                  Query rangeQuery = JahiaQueryParser.DATE_TYPE.getRangeQuery(null, sf, null, start, false,
+                  Query rangeQuery = getRangeQuery(ft, null, sf, prefix, null, start, false,
                           (include.contains(FacetRangeInclude.OUTER) ||
                                   (! (include.contains(FacetRangeInclude.LOWER) ||
                                       include.contains(FacetRangeInclude.EDGE)))));
@@ -992,7 +996,7 @@ public class SimpleJahiaJcrFacets {
                   }
               }
               if (all || others.contains(FacetDateOther.AFTER)) {
-                    Query rangeQuery = JahiaQueryParser.DATE_TYPE.getRangeQuery(null, sf,
+                    Query rangeQuery = getRangeQuery(ft, null, sf, prefix, 
                             end,
                             null,
                             (include.contains(FacetRangeInclude.OUTER) || (!(include
@@ -1005,7 +1009,7 @@ public class SimpleJahiaJcrFacets {
                   }
               }
               if (all || others.contains(FacetDateOther.BETWEEN)) {
-                  Query rangeQuery = JahiaQueryParser.DATE_TYPE.getRangeQuery(null, sf, start, end,
+                  Query rangeQuery = getRangeQuery(ft, null, sf, prefix, start, end,
                           (include.contains(FacetRangeInclude.LOWER) ||
                                   include.contains(FacetRangeInclude.EDGE)),
                               (include.contains(FacetRangeInclude.UPPER) ||
@@ -1019,7 +1023,26 @@ public class SimpleJahiaJcrFacets {
           }
       }  
   }
+  
+  private Query getRangeQuery(DateField fieldType, QParser parser, SchemaField schemaField, String prefix, Date low, Date high, boolean minInclusive, boolean maxInclusive) {
+      return prefixRangeQuery(fieldType.getRangeQuery(parser, schemaField, low, high, minInclusive, maxInclusive), prefix);
+  }
 
+  private Query getRangeQuery(FieldType fieldType, QParser parser, SchemaField schemaField, String prefix, String low, String high, boolean minInclusive, boolean maxInclusive) {
+      return prefixRangeQuery(fieldType.getRangeQuery(parser, schemaField, low, high, minInclusive, maxInclusive), prefix);
+  }
+  
+  private Query prefixRangeQuery(Query noPrefixQuery, String prefix) {
+      TermRangeQuery rangeQuery = (TermRangeQuery)noPrefixQuery;
+      if (StringUtils.isNotEmpty(prefix)) {
+            rangeQuery = new TermRangeQuery(rangeQuery.getField(),
+                    rangeQuery.getLowerTerm() == null ? prefix : prefix + rangeQuery.getLowerTerm(),
+                    rangeQuery.getUpperTerm() == null ? prefix + "zzzzzzzzzzzz" : prefix + rangeQuery.getUpperTerm(), rangeQuery.includesLower(),
+                    rangeQuery.includesUpper());
+      }
+      return rangeQuery;
+  }
+  
   /**
    * Returns a list of value constraints and the associated facet
    * counts for each facet numerical field, range, and interval
@@ -1056,7 +1079,7 @@ public class SimpleJahiaJcrFacets {
     String fieldName = StringUtils.substringBeforeLast(f, PROPNAME_INDEX_SEPARATOR);            
     ExtendedPropertyDefinition epd = NodeTypeRegistry.getInstance().getNodeType(params.get("f."+f+".facet.nodetype")).getPropertyDefinition(fieldName);
     String fieldNameInIndex = getFieldNameInIndex(f, fieldName, epd, params.getFieldParam(f,
-            "facet.locale"), false);
+            "facet.locale"));
     SchemaField sf = new SchemaField(fieldNameInIndex, getType(epd));
     final FieldType ft = sf.getType();
 
@@ -1105,6 +1128,7 @@ public class SimpleJahiaJcrFacets {
   private <T extends Comparable<T>> NamedList<Object> getFacetRangeCounts
     (final SchemaField sf, final String f,
      final RangeEndpointCalculator<T> calc) throws IOException {
+    String prefix = params.getFieldParam(f, FacetParams.FACET_PREFIX);
     
     final NamedList<Object> res = new SimpleOrderedMap<Object>();
     final NamedList<Object> counts = new NamedList<Object>();
@@ -1158,7 +1182,7 @@ public class SimpleJahiaJcrFacets {
       final String lowS = calc.formatValue(low);
       final String highS = calc.formatValue(high);
 
-      Query rangeQ = sf.getType().getRangeQuery(null, sf, lowS, highS,
+      Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, lowS, highS,
               includeLower,includeUpper);      
       final int count = rangeCount(rangeQ);
       if (count >= minCount) {
@@ -1193,7 +1217,7 @@ public class SimpleJahiaJcrFacets {
 
         if (all || others.contains(FacetRangeOther.BEFORE)) {
           // include upper bound if "outer" or if first gap doesn't already include it
-            Query rangeQ = sf.getType().getRangeQuery(null,sf,null,startS,
+            Query rangeQ = getRangeQuery(sf.getType(),null,sf,prefix,null,startS,
                     false,
                     (include.contains(FacetRangeInclude.OUTER) ||
                      (! (include.contains(FacetRangeInclude.LOWER) ||
@@ -1207,7 +1231,7 @@ public class SimpleJahiaJcrFacets {
         }
         if (all || others.contains(FacetRangeOther.AFTER)) {
           // include lower bound if "outer" or if last gap doesn't already include it
-            Query rangeQ = sf.getType().getRangeQuery(null, sf,endS,null,
+            Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, endS, null,
                     (include.contains(FacetRangeInclude.OUTER) ||
                             (! (include.contains(FacetRangeInclude.UPPER) ||
                                 include.contains(FacetRangeInclude.EDGE)))),  
@@ -1219,7 +1243,7 @@ public class SimpleJahiaJcrFacets {
             }  
         }
         if (all || others.contains(FacetRangeOther.BETWEEN)) {
-            Query rangeQ = sf.getType().getRangeQuery(null, sf,startS,endS,
+            Query rangeQ = getRangeQuery(sf.getType(), null, sf, prefix, startS, endS,
                     (include.contains(FacetRangeInclude.LOWER) ||
                             include.contains(FacetRangeInclude.EDGE)),
                            (include.contains(FacetRangeInclude.UPPER) ||
@@ -1675,13 +1699,13 @@ public class SimpleJahiaJcrFacets {
                 type = JahiaQueryParser.BOOLEAN_TYPE;
                 break;
             case PropertyType.DATE:
-                type = JahiaQueryParser.DATE_TYPE;
+                type = epd.isFacetable() ? JahiaQueryParser.DATE_TYPE : JahiaQueryParser.JR_DATE_TYPE;
                 break;            
             case PropertyType.DOUBLE:
-                type = JahiaQueryParser.SORTABLE_DOUBLE_TYPE;
+                type = epd.isFacetable() ? JahiaQueryParser.SORTABLE_DOUBLE_TYPE : JahiaQueryParser.JR_DOUBLE_TYPE;
                 break;              
             case PropertyType.LONG:
-                type = JahiaQueryParser.SORTABLE_LONG_TYPE;
+                type = epd.isFacetable() ? JahiaQueryParser.SORTABLE_LONG_TYPE : JahiaQueryParser.JR_LONG_TYPE;
                 break;            
             case PropertyType.NAME:
                 type = JahiaQueryParser.STRING_TYPE;                

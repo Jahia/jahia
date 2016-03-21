@@ -62,6 +62,9 @@ public class JahiaQueryParser extends QueryParser {
     public static final BinaryField BINARY_TYPE = new BinaryField();    
     public static final BoolField BOOLEAN_TYPE = new BoolField();    
     public static final DateField DATE_TYPE = new DateField();    
+    public static final JackrabbitDateField JR_DATE_TYPE = new JackrabbitDateField();    
+    public static final JackrabbitDoubleField JR_DOUBLE_TYPE = new JackrabbitDoubleField();
+    public static final JackrabbitLongField JR_LONG_TYPE = new JackrabbitLongField();
     public static final DoubleField DOUBLE_TYPE = new DoubleField();
     public static final SortableDoubleField SORTABLE_DOUBLE_TYPE = new SortableDoubleField();
     public static final LongField LONG_TYPE = new LongField();

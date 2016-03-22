@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render.webflow;
 
+import com.google.common.collect.Maps;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
@@ -57,6 +58,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.web.util.WebUtils;
 import org.springframework.webflow.definition.registry.FlowDefinitionRegistry;
 
+import javax.annotation.Nullable;
 import javax.jcr.RepositoryException;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -119,26 +121,6 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             }
         }
 
-        HttpServletRequest request = context.getRequest();
-        HttpServletResponse response = context.getResponse();
-
-        if (xssFilteringEnabled) {
-            @SuppressWarnings("unchecked")
-            final Map<String, List<String>> parameters = (Map<String, List<String>>) request.getAttribute("actionParameters");
-            if (parameters != null) {
-                request = new HttpServletRequestWrapper(request) {
-                    @Override
-                    public String[] getParameterValues(String name) {
-                        List<String> l = parameters.get(name);
-                        if (l != null) {
-                            return l.toArray(new String[l.size()]);
-                        }
-                        return null;
-                    }
-                };
-            }
-        }
-
         String identifier;
         try {
             identifier = resource.getNode().getIdentifier();
@@ -146,9 +128,26 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
             throw new RenderException(e);
         }
         String identifierNoDashes = StringUtils.replace(identifier, "-", "_");
-
         if (!view.getKey().equals("default")) {
             identifierNoDashes += "__" + view.getKey();
+        }
+
+        HttpServletRequest request;
+        HttpServletResponse response = context.getResponse();
+
+        @SuppressWarnings("unchecked")
+        final Map<String, List<String>> parameters = (Map<String, List<String>>) context.getRequest().getAttribute("actionParameters");
+
+        if (xssFilteringEnabled && parameters != null) {
+            final Map<String, String[]> m = Maps.transformEntries(parameters, new Maps.EntryTransformer<String, List<String>, String[]>() {
+                @Override
+                public String[] transformEntry(@Nullable String key, @Nullable List<String> value) {
+                    return value != null ? value.toArray(new String[value.size()]) : null;
+                }
+            });
+            request = new WebflowHttpServletRequestWrapper(context.getRequest(), m, identifierNoDashes);
+        } else {
+            request = new WebflowHttpServletRequestWrapper(context.getRequest(), new HashMap<>(context.getRequest().getParameterMap()), identifierNoDashes);
         }
 
         String s = (String) request.getSession().getAttribute("webflowResponse"+identifierNoDashes);
@@ -282,5 +281,40 @@ public class WebflowDispatcherScript extends RequestDispatcherScript {
         final String contentType = req.getHeader("Content-Type");
 
         return ((contentType != null) && (contentType.indexOf("multipart/form-data") >= 0));
+    }
+
+    private static class WebflowHttpServletRequestWrapper extends HttpServletRequestWrapper {
+        private final Map<String, String[]> m;
+        private final String identifierNoDashes;
+
+        public WebflowHttpServletRequestWrapper(HttpServletRequest request, Map<String, String[]> m, String identifierNoDashes) {
+            super(request);
+            this.m = m;
+            this.identifierNoDashes = identifierNoDashes;
+            m.remove("webflowexecution" + identifierNoDashes);
+        }
+
+        @Override
+        public String[] getParameterValues(String name) {
+            return m.get(name);
+        }
+
+        @Override
+        public String getParameter(String name) {
+            if (name.equals("webflowexecution" + identifierNoDashes)) {
+                return super.getParameter(name);
+            }
+            return (m.get(name) != null && m.get(name).length > 0) ? m.get(name)[0] : null;
+        }
+
+        @Override
+        public Map<String, String[]> getParameterMap() {
+           return m;
+        }
+
+        @Override
+        public Enumeration<String> getParameterNames() {
+            return new Vector(m.keySet()).elements();
+        }
     }
 }

@@ -59,7 +59,9 @@ import static org.apache.jackrabbit.core.TransactionContext.getCurrentThreadId;
 import static org.apache.jackrabbit.core.TransactionContext.isSameThreadId;
 
 /**
- * <code>JahiaMixedISMLocking</code>...
+ * <code>JahiaMixedISMLocking</code> is a mix of the FineGrainedISMLocking (for synchronizing 
+ * changes from other nodes) and the coarse grained global lock like DefaultISMLocking (for writes 
+ * to repository initiated on the current VM).
  */
 public class JahiaMixedISMLocking implements ISMLocking {
 
@@ -427,7 +429,9 @@ public class JahiaMixedISMLocking implements ISMLocking {
             }
 
             if (changes == null && readerCount.get() > 0) {
-                // testing against global write lock - pass only if no reader at all
+                // testing against global write lock (ChangeLog is null) 
+                // - only if there are no readers, dependency may be false if no
+                // locks are found in the slots
                 return true;
             }
 

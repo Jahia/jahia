@@ -87,6 +87,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     private List<AbstractHit<?>> usages;
 
     private JCRNodeWrapper displayableNode = null;
+    private boolean isDisplayableNodeChecked = false;
 
     private Set<String> usageFilterSites;
 
@@ -230,7 +231,8 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public JCRNodeWrapper getDisplayableNode() {
-        if (displayableNode == null) {
+        if (!isDisplayableNodeChecked && displayableNode == null) {
+        	isDisplayableNodeChecked = true;
             JCRSiteNode site;
             try {
                 site = resource.getResolveSite();

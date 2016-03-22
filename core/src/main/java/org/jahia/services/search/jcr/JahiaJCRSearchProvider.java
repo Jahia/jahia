@@ -176,7 +176,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
                             
-                            if (!skipNode) {  //check if node is invisible (or don't have a displayable parent)
+                            if (!skipNode) {  //check if node is invisible (or don't have a displayable parent or reference)
                                 skipNode = hit.getDisplayableNode() == null;
                             }                            
                             if (!skipNode && usageFilterSites != null

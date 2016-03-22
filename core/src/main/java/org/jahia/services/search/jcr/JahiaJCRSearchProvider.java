@@ -176,7 +176,10 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                             boolean skipNode = isNodeToSkip(node, criteria, languages);
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
-
+                            
+                            if (!skipNode) {  //check if node is invisible (or don't have a displayable parent)
+                                skipNode = hit.getDisplayableNode() == null;
+                            }                            
                             if (!skipNode && usageFilterSites != null
                                     && !usageFilterSites.contains(node.getResolveSite().getName())) {
                                 skipNode = hit.getUsages().isEmpty();
@@ -261,10 +264,6 @@ public class JahiaJCRSearchProvider implements SearchProvider {
         try {
             if (typesToHideFromSearchResults.contains(node.getPrimaryNodeTypeName())) {
                 return true;
-            }
-            //Check visibility of parents
-            if (!node.isFile() && JCRContentUtils.getParentOfType(node, "jnt:page") == null && JCRContentUtils.getParentOfType(node, "jnt:contentFolder") == null) {
-            	return true;
             }
             if (!languages.isEmpty() && isSiteSearch(criteria)
                     && (node.isFile() || node.isNodeType(Constants.NT_FOLDER))) {

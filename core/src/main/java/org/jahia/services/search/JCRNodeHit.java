@@ -52,9 +52,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
+
 import javax.jcr.PropertyIterator;
 import javax.jcr.RepositoryException;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
 import org.jahia.api.Constants;
@@ -119,7 +121,7 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getLink() {
-        if (link == null) {
+        if (link == null && getDisplayableNode() != null) {
             link = context.getURLGenerator().getContext() + resolveURL(getLinkTemplateType()) + getQueryParameter();
         }
         return link;
@@ -158,6 +160,9 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
     }
 
     public String getTitle() {
+    	if (getDisplayableNode() == null) {
+    		return null;
+    	}
         return getDisplayableNode().getDisplayableName();
     }
 
@@ -198,13 +203,12 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
                             JCRNodeWrapper refNode = (JCRNodeWrapper) it.nextProperty().getParent().getParent();
                             if (usageFilterSites == null || usageFilterSites.contains(refNode.getResolveSite().getName())) {
                                 JCRNodeWrapper node = JCRContentUtils.findDisplayableNode(refNode, context, refNode.getResolveSite());
-                                if (node == null) {
-                                    node = refNode;
-                                }
-                                AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(node, context) : new JCRNodeHit(
-                                        node, context);
-                                if (!node.equals(resource) && addedLinks.add(hit.getLink())) {
-                                    usages.add(hit);
+                                if (node != null) {
+                                    AbstractHit<?> hit = node.isNodeType(Constants.JAHIANT_PAGE) ? new PageHit(node, context)
+                                            : new JCRNodeHit(node, context);
+                                    if (!node.equals(resource) && addedLinks.add(hit.getLink())) {
+                                        usages.add(hit);
+                                    }
                                 }
                             }
                         } catch (Exception e) {
@@ -234,15 +238,18 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
                 site = null;
             }
             displayableNode = JCRContentUtils.findDisplayableNode(resource, context, site);
-            if (displayableNode == null) {
-                displayableNode = resource;
+            if (displayableNode == null && !CollectionUtils.isEmpty(getUsages())) {
+                 displayableNode = ((JCRNodeHit)getUsages().get(0)).getDisplayableNode();
             }
         }
         return displayableNode;
     }
 
     private String resolveURL(String templateType) {
-        return context.getURLGenerator().buildURL(getDisplayableNode(), getDisplayableNode().getLanguage(), null, templateType);
+    	if (getDisplayableNode() != null) {
+            return context.getURLGenerator().buildURL(getDisplayableNode(), getDisplayableNode().getLanguage(), null, templateType);
+    	}
+    	return null;
     }
 
     public void setUsageFilterSites(Set<String> usageFilterSites) {

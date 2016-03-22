@@ -45,15 +45,13 @@ package org.jahia.services.templates;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import org.apache.commons.exec.CommandLine;
 import org.apache.commons.exec.DefaultExecutor;
 import org.apache.commons.exec.ExecuteException;
 import org.apache.commons.exec.PumpStreamHandler;
+import org.apache.commons.io.FileUtils;
 import org.jahia.utils.StringOutputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +65,18 @@ public class SourceControlFactory {
     private static final Logger logger = LoggerFactory.getLogger(SourceControlFactory.class);
     
     private Map<String, String> sourceControlExecutables;
+
+    private List<String> ignoredFiles;
+
+
+    public List<String> getIgnoredFiles() {
+        return ignoredFiles;
+    }
+
+    public void setIgnoredFiles(List<String> ignoredFiles) {
+        this.ignoredFiles = ignoredFiles;
+    }
+
 
     /**
      * Performs checkout of the remote SCM content into the provided working directory.
@@ -87,12 +97,29 @@ public class SourceControlFactory {
         if (scm != null) {
             String scmUrl = getScmURL(scmURI);
             if (initRepository) {
+                addIgnore(workingDir);
                 scm.sendToSCM(workingDir, scmUrl);
             } else  {
                 scm.getFromSCM(workingDir, scmUrl, branchOrTag);
             }
         }
         return scm;
+    }
+
+    private void addIgnore(File path) throws IOException {
+        File ignore = new File(path,".gitignore");
+        List<String> lines;
+        if (ignore.exists()) {
+            lines = FileUtils.readLines(ignore, "UTF-8");
+        } else {
+            lines = new ArrayList<>();
+        }
+        for (String ignoredFile : ignoredFiles) {
+            if (!lines.contains(ignoredFile)) {
+                lines.add(ignoredFile);
+            }
+        }
+        FileUtils.writeLines(ignore, "UTF-8",lines);
     }
 
     /**

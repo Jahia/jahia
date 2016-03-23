@@ -348,7 +348,7 @@ public class JahiaSearchIndex extends SearchIndex {
                 List<NodeState> l = null;
                 while (add.hasNext()) {
                     NodeState state = add.next();
-                    if (!ignoredTypes.contains(state.getNodeTypeName())) {
+                    if (state != null && !ignoredTypes.contains(state.getNodeTypeName())) {
                         if (l == null) {
                             l = new LinkedList<NodeState>();
                         }

@@ -349,7 +349,7 @@ class NodeHelper {
 
         Boolean isModuleNode = null;
 
-        JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance()
+        final JahiaTemplateManagerService templateManagerService = ServicesRegistry.getInstance()
                 .getJahiaTemplateManagerService();
         try {
             if (fields.contains("j:versionInfo")) {
@@ -421,6 +421,25 @@ class NodeHelper {
         populateWCAG(n, node);
 
         populateInvalidLanguages(n, node);
+
+        List<String> installedModules = (List<String>) n.get("j:installedModules");
+        if (installedModules != null) {
+            Collections.sort(installedModules, new Comparator<String>() {
+                @Override
+                public int compare(String o1, String o2) {
+                    JahiaTemplatesPackage pack1 = templateManagerService.getTemplatePackageById(o1);
+                    JahiaTemplatesPackage pack2 = templateManagerService.getTemplatePackageById(o2);
+                    if (pack1 != null && pack2 != null) {
+                        if (pack1.getDependencies().contains(pack2)) {
+                            return 1;
+                        } else if (pack2.getDependencies().contains(pack1)) {
+                            return -1;
+                        }
+                    }
+                    return 0;
+                }
+            });
+        }
 
         return n;
     }

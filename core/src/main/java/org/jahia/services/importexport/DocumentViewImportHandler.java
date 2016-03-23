@@ -626,6 +626,11 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     logger.warn("Cannot add node type " + e.getMessage());
                 }
             }
+        } else {
+            // remove all mixins as none is set on the node
+            for (ExtendedNodeType mixin : child.getMixinNodeTypes()) {
+                child.removeMixin(mixin.getName());
+            }
         }
     }
 

@@ -57,7 +57,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.*;
 import javax.jcr.lock.LockException;
 import javax.jcr.nodetype.ConstraintViolationException;
-import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
@@ -171,9 +170,17 @@ public class QueryWrapper implements Query {
             }
         }
         if (statement != null) {
+            boolean facetDelimiterReplaced = false;
             if (jcrStoreProvider.isDefault() && jrQOM != null) {
                 query = jrQOM;
             } else {
+                if(statement.contains("rep:facet")) {
+                    facetDelimiterReplaced = true;
+                    int selectIndex = StringUtils.indexOfIgnoreCase(statement, "select ");
+                    int fromIndex = StringUtils.indexOfIgnoreCase(statement, " from ");
+                    String rewritedColumns = statement.substring(selectIndex, fromIndex).replaceAll("&", "JAHIA_TEMP_FACET_DELIMITER_PLACEHOLDER");
+                    statement = statement.substring(0, selectIndex) + rewritedColumns + statement.substring(fromIndex, statement.length());
+                }
                 query = qm.createQuery(statement, language);
             }
             QueryObjectModelFactory factory = qm.getQOMFactory();
@@ -219,7 +226,19 @@ public class QueryWrapper implements Query {
                     } else {
                         constraint = qom.getConstraint();
                     }
-                    query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), qom.getColumns());
+
+                    Column[] columns;
+                    if(facetDelimiterReplaced) {
+                        columns = new Column[qom.getColumns().length];
+                        for (int i = 0; i < qom.getColumns().length; i++) {
+                            Column column = qom.getColumns()[i];
+                            columns[i] = factory.column(column.getSelectorName(), column.getPropertyName(), column.getColumnName().replaceAll("JAHIA_TEMP_FACET_DELIMITER_PLACEHOLDER", "&"));
+                        }
+                    } else {
+                        columns = qom.getColumns();
+                    }
+
+                    query = factory.createQuery(qom.getSource(), constraint, qom.getOrderings(), columns);
                 }
                 if (query instanceof JahiaQueryObjectModelImpl) {
                     JahiaLuceneQueryFactoryImpl lqf = (JahiaLuceneQueryFactoryImpl) ((JahiaQueryObjectModelImpl) query)

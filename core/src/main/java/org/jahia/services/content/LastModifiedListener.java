@@ -45,6 +45,8 @@ package org.jahia.services.content;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
+import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.usermanager.JahiaUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,12 +104,27 @@ public class LastModifiedListener extends DefaultEventListener {
                                 session.getNodeByIdentifier(event.getIdentifier());
                             } catch (ItemNotFoundException infe) {
                                 try {
-                                    JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(), "/"));
+                                    final JCRNodeWrapper parent = session.getNode(StringUtils.substringBeforeLast(event.getPath(), "/"));
                                     if (!session.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) && parent.getProvider().getMountPoint().equals("/")) {
                                         // Test if published and has lastPublished property
                                         boolean lastPublished = JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(user, Constants.LIVE_WORKSPACE, null, new JCRCallback<Boolean>() {
                                             public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                                                return session.getNodeByIdentifier(event.getIdentifier()).hasProperty(Constants.LASTPUBLISHED);
+                                                JCRNodeWrapper nodeByIdentifier = session.getNodeByIdentifier(event.getIdentifier());
+                                                boolean lastPublished = nodeByIdentifier.hasProperty(Constants.LASTPUBLISHED);
+                                                if (lastPublished && !parent.isNodeType("jmix:autoPublish")) {
+                                                    List<String> nodeTypes = (event instanceof JCRObservationManager.EventWrapper) ? ((JCRObservationManager.EventWrapper) event).getNodeTypes() : null;
+                                                    if (nodeTypes != null) {
+                                                        for (String nodeType : nodeTypes) {
+                                                            ExtendedNodeType eventNodeType = NodeTypeRegistry.getInstance().getNodeType(nodeType);
+                                                            if (eventNodeType != null && eventNodeType.isNodeType("jmix:autoPublish")) {
+                                                                nodeByIdentifier.remove();
+                                                                session.save();
+                                                                return false;
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                                return lastPublished;
                                             }
                                         });
 

@@ -65,6 +65,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -242,6 +243,13 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
             displayableNode = JCRContentUtils.findDisplayableNode(resource, context, site);
             if (displayableNode == null && !CollectionUtils.isEmpty(getUsages())) {
                  displayableNode = ((JCRNodeHit)getUsages().get(0)).getDisplayableNode();
+            }
+            //special check for 7.1.x.x --> old functionality when no displayable node found set the resource
+            //because if customers has own searchprovider implementation it could lead to NullPointers 
+            if (displayableNode == null 
+            	  && SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat") != null
+            	  && Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) {
+            	displayableNode = resource;
             }
         }
         return displayableNode;

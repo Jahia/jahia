@@ -47,6 +47,9 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.jahia.osgi.BundleUtils;
+import org.quartz.jobs.NoOpJob;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.quartz.ResourceLoaderClassLoadHelper;
 
 /**
@@ -57,6 +60,8 @@ import org.springframework.scheduling.quartz.ResourceLoaderClassLoadHelper;
  * @author Sergiy Shyrkov
  */
 public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoadHelper {
+    
+    private static final Logger logger = LoggerFactory.getLogger(ModulesResourceLoaderClassLoadHelper.class);
 
     private Map<String, Boolean> coreClassesChecks = new ConcurrentHashMap<String, Boolean>();
 
@@ -80,6 +85,15 @@ public class ModulesResourceLoaderClassLoadHelper extends ResourceLoaderClassLoa
         }
 
         // lookup class in module class loaders
-        return BundleUtils.loadModuleClass(className);
+        Class<?> loadModuleClass = null;
+        try {
+            loadModuleClass = BundleUtils.loadModuleClass(className);
+        } catch (ClassNotFoundException e) {
+            logger.error("Unable to lookup class " + className + " for the job scheduler.", e);
+            // fallback to NoOpJob
+            loadModuleClass = NoOpJob.class;
+        }
+        
+        return loadModuleClass;
     }
 }

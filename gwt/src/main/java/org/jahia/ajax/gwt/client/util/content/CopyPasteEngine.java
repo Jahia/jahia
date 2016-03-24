@@ -88,7 +88,10 @@ public class CopyPasteEngine {
             JahiaContentManagementService
                     .App.getInstance().paste(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, isCut(), childNodeTypesToSkip, new BaseAsyncCallback() {
                 public void onApplicationFailure(Throwable throwable) {
-                    Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                    final String message = isCut() ? throwable
+                            .getLocalizedMessage() : Messages.get("failure.paste.label") + "\n" + throwable
+                            .getLocalizedMessage();
+                    Window.alert(message);
                     if (linker instanceof ManagerLinker) {
                         ManagerLinker managerLinker = (ManagerLinker) linker;
                         managerLinker.getLeftComponent().unmask();
@@ -108,7 +111,10 @@ public class CopyPasteEngine {
         JahiaContentManagementService
                 .App.getInstance().pasteReferences(JCRClientUtils.getPathesList(getCopiedNodes()), m.getPath(), null, new BaseAsyncCallback() {
             public void onApplicationFailure(Throwable throwable) {
-                Window.alert(Messages.get("failure.paste.label") + "\n" + throwable.getLocalizedMessage());
+                final String message = isCut() ? throwable
+                        .getLocalizedMessage() : Messages.get("failure.paste.label") + "\n" + throwable
+                        .getLocalizedMessage();
+                Window.alert(message);
                 if (linker instanceof ManagerLinker) {
                     ManagerLinker managerLinker = (ManagerLinker) linker;
                     managerLinker.getLeftComponent().unmask();

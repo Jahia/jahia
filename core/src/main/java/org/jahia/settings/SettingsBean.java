@@ -542,7 +542,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
         
         setSystemProperty(JahiaSearchManager.INDEX_LOCK_TYPES_SYSTEM_PROPERTY, getString("jahia.jackrabbit.searchIndex.indexLockTypesProperty", "true"));
         
-        setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.FineGrainedISMLocking"));
+        setSystemProperty("jahia.jackrabbit.ismLocking", getString("jahia.jackrabbit.ismLocking", "org.apache.jackrabbit.core.state.DefaultISMLocking"));
 
         try {
             File repoHome = getRepositoryHome();

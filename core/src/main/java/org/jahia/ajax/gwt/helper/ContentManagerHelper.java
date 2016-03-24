@@ -368,6 +368,7 @@ public class ContentManagerHelper {
                                    final boolean cut, final boolean reference,final List<String> childNodeTypesToSkip, boolean allLanguages,
                                    JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
+        final List<String> restrictionErrors = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
         // perform a check to prevent pasting content to itself or its children
@@ -417,6 +418,10 @@ public class ContentManagerHelper {
                             } else {
                                 missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
                             }
+                        } catch (AccessDeniedException e) {
+                            logger.error("Exception", e);
+                            restrictionErrors.clear();
+                            restrictionErrors.add("Access denied");
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
                             missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
@@ -435,6 +440,14 @@ public class ContentManagerHelper {
                 uuids = JCRTemplate.getInstance().doExecute(currentUserSession.getUser(), currentUserSession.getWorkspace().getName(), null, callback);
             } else {
                 uuids = callback.doInJCR(currentUserSession);
+            }
+
+            if (restrictionErrors.size() > 0) {
+                    StringBuilder errors = new StringBuilder("Write Access Problems : ");
+                    for (String err : restrictionErrors) {
+                        errors.append("\n").append(err);
+                    }
+                    throw new GWTJahiaServiceException(errors.toString());
             }
 
             if (missedPaths.size() > 0) {

@@ -47,8 +47,8 @@ package org.jahia.data.templates;
  * Represents the state of a module in its life cycle.
  */
 public class ModuleState {
-    public static enum State {
-        ERROR_DURING_START, INSTALLED, PARSED, ERROR_WITH_DEFINITIONS, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_PARSED, WAITING_TO_BE_STARTED, WAITING_TO_BE_IMPORTED, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
+    public enum State {
+        INSTALLED, ERROR_WITH_DEFINITIONS, RESOLVED, STARTED, STARTING, STOPPED, STOPPING, UNINSTALLED, UNRESOLVED, UPDATED, WAITING_TO_BE_IMPORTED, SPRING_NOT_STARTED, INCOMPATIBLE_VERSION;
 
         @Override
         public String toString() {
@@ -59,10 +59,6 @@ public class ModuleState {
                     return "Unresolved";
                 case RESOLVED:
                     return "Resolved";
-                case WAITING_TO_BE_PARSED:
-                    return "Waiting to be parsed";
-                case PARSED:
-                    return "Parsed";
                 case ERROR_WITH_DEFINITIONS:
                     return "Error when parsing definitions";
                 case INSTALLED:
@@ -75,10 +71,6 @@ public class ModuleState {
                     return "Stopping";
                 case STARTING:
                     return "Starting";
-                case WAITING_TO_BE_STARTED:
-                    return "Waiting to be started";
-                case ERROR_DURING_START:
-                    return "Error during start";
                 case STARTED:
                     return "Started";
                 case SPRING_NOT_STARTED:

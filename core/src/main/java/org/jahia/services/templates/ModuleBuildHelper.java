@@ -59,7 +59,6 @@ import org.jahia.api.Constants;
 import org.jahia.commons.Version;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.data.templates.ModuleReleaseInfo;
-import org.jahia.data.templates.ModuleState;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
@@ -150,9 +149,6 @@ public class ModuleBuildHelper implements InitializingBean {
         JahiaTemplatesPackage pkg = BundleUtils.getModule(bundle);
         if (pkg == null) {
             throw new IOException("Cannot deploy module");
-        }
-        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_PARSED) {
-            throw new IOException("Missing dependency : " + pkg.getState().getDetails().toString());
         }
         bundle.start();
         if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
@@ -624,13 +620,7 @@ public class ModuleBuildHelper implements InitializingBean {
             FileUtils.deleteQuietly(dstFolder);
             throw new IOException("Cannot deploy module");
         }
-        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_PARSED) {
-            throw new BundleException("Missing dependency : " + pkg.getState().getDetails().toString());
-        }
         bundle.start();
-        if (pkg.getState().getState() == ModuleState.State.WAITING_TO_BE_STARTED) {
-            throw new BundleException("Missing dependency : " + pkg.getState().getDetails().toString());
-        }
         if (BundleUtils.getContextStartException(bundle.getSymbolicName()) != null && BundleUtils.getContextStartException(bundle.getSymbolicName()) instanceof LicenseCheckException) {
             throw new BundleException(BundleUtils.getContextStartException(bundle.getSymbolicName()).getLocalizedMessage());
         }
@@ -1001,6 +991,10 @@ public class ModuleBuildHelper implements InitializingBean {
      */
     public void setMavenArchetypeVersion(String mavenArchetypeVersion) {
         this.mavenArchetypeVersion = mavenArchetypeVersion;
+    }
+
+    public int getModuleStartLevel() {
+        return moduleStartLevel;
     }
 
     public void setModuleStartLevel(int moduleStartLevel) {

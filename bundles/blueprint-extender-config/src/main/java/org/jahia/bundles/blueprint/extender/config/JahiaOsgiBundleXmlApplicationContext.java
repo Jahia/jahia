@@ -43,10 +43,10 @@
  */
 package org.jahia.bundles.blueprint.extender.config;
 
-import org.eclipse.gemini.blueprint.context.OsgiBundleApplicationContextExecutor;
 import org.eclipse.gemini.blueprint.context.support.OsgiBundleXmlApplicationContext;
 import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleUtils;
+import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.springframework.beans.BeansException;
 import org.springframework.core.io.Resource;
@@ -60,18 +60,34 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicationContext {
 
-    private OsgiBundleApplicationContextExecutor executor = new JahiaOsgiApplicationContextExecutor();
-
     public JahiaOsgiBundleXmlApplicationContext(String[] configLocations) {
         super(configLocations);
     }
 
+    private static Map<String, Resource[]> rootClassPathResourcesCache = new ConcurrentHashMap<>();
+
     @Override
     public void refresh() throws BeansException, IllegalStateException {
-        executor.refresh();
+        if (BundleUtils.isJahiaModuleBundle(getBundle())) {
+            final ModuleState state = BundleUtils.getModule(getBundle()).getState();
+            if (state != null && state.getState() != null && state.getState() == ModuleState.State.STARTED) {
+                // Module is already started by activator, start context now
+                BundleUtils.setContextToStartForModule(getBundle(), null);
+                try {
+                    JahiaOsgiBundleXmlApplicationContext.super.refresh();
+                } catch (Exception e) {
+                    setFailingSpringStartup(e);
+                    throw e;
+                }
+            } else {
+                // Delegate start to activator
+                BundleUtils.setContextToStartForModule(getBundle(), JahiaOsgiBundleXmlApplicationContext.this);
+            }
+        } else {
+            // Standard bundle, start context now
+            JahiaOsgiBundleXmlApplicationContext.super.refresh();
+        }
     }
-
-    private static Map<String, Resource[]> rootClassPathResourcesCache = new ConcurrentHashMap<>();
 
     public Resource[] getResources(String locationPattern) throws IOException {
         if (locationPattern.startsWith("rootclasspath")) {
@@ -83,28 +99,22 @@ public class JahiaOsgiBundleXmlApplicationContext extends OsgiBundleXmlApplicati
         return super.getResources(locationPattern);
     }
 
-
-    private class JahiaOsgiApplicationContextExecutor implements OsgiBundleApplicationContextExecutor {
-        @Override
-        public void refresh() throws BeansException, IllegalStateException {
-            if (BundleUtils.isJahiaModuleBundle(getBundle())) {
-                final ModuleState state = BundleUtils.getModule(getBundle()).getState();
-                if (state != null && state.getState() != null && state.getState() == ModuleState.State.STARTED) {
-                    // Module is already started by activator, start context now
-                    BundleUtils.setContextToStartForModule(getBundle(), null);
-                    JahiaOsgiBundleXmlApplicationContext.super.refresh();
-                } else {
-                    // Delegate start to activator
-                    BundleUtils.setContextToStartForModule(getBundle(), JahiaOsgiBundleXmlApplicationContext.this);
-                }
-            } else {
-                // Standard bundle, start context now
-                JahiaOsgiBundleXmlApplicationContext.super.refresh();
-            }
+    @Override
+    public void completeRefresh() {
+        try {
+            super.completeRefresh();
+        } catch (Throwable e) {
+            setFailingSpringStartup(e);
+            throw e;
         }
+    }
 
-        @Override
-        public void close() {
+    private void setFailingSpringStartup(Throwable e) {
+        // Catch failed spring startup to update module state
+        ModuleState moduleState = ServicesRegistry.getInstance().getJahiaTemplateManagerService().getModuleStates().get(getBundle());
+        if (moduleState != null) {
+            moduleState.setState(ModuleState.State.SPRING_NOT_STARTED);
+            moduleState.setDetails(e);
         }
     }
 }

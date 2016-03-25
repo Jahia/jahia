@@ -43,17 +43,6 @@
  */
 package org.jahia.services.templates;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.*;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.xml.transform.TransformerException;
-
 import com.google.common.collect.ImmutableSet;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
@@ -99,6 +88,17 @@ import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.context.ApplicationListener;
 import org.xml.sax.SAXException;
 
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.xml.transform.TransformerException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.*;
+
 /**
  * Template and template set deployment and management service.
  *
@@ -128,8 +128,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     private final Map<Bundle, JahiaTemplatesPackage> registeredBundles = new HashMap<>();
     private final Set<Bundle> installedBundles = new HashSet<>();
     private final Set<Bundle> initializedBundles = new HashSet<>();
-    private final Map<String, List<Bundle>> toBeParsed = new HashMap<>();
-    private final Map<String, List<Bundle>> toBeStarted = new HashMap<>();
+    private final Map<String, List<Bundle>> toBeResolved = new HashMap<>();
 
     private final OutputFormat prettyPrint = OutputFormat.createPrettyPrint();
 
@@ -373,7 +372,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         FileInputStream is = new FileInputStream(generatedWar);
         try {
             Bundle bundle = FrameworkService.getBundleContext().installBundle(generatedWar.toURI().toString(), is);
-            bundle.adapt(BundleStartLevel.class).setStartLevel(2);
+            bundle.adapt(BundleStartLevel.class).setStartLevel(moduleBuildHelper.getModuleStartLevel());
         } finally {
             IOUtils.closeQuietly(is);
         }
@@ -966,12 +965,8 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
         return initializedBundles;
     }
 
-    public Map<String, List<Bundle>> getToBeParsed() {
-        return toBeParsed;
-    }
-
-    public Map<String, List<Bundle>> getToBeStarted() {
-        return toBeStarted;
+    public Map<String, List<Bundle>> getToBeResolved() {
+        return toBeResolved;
     }
 
     /**

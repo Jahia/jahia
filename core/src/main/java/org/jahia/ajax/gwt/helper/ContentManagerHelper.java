@@ -366,17 +366,16 @@ public class ContentManagerHelper {
 
     public List<GWTJahiaNode> copy(final List<String> pathsToCopy, final String destinationPath, final String newName, final boolean moveOnTop,
                                    final boolean cut, final boolean reference,final List<String> childNodeTypesToSkip, boolean allLanguages,
-                                   JCRSessionWrapper currentUserSession, Locale uiLocale) throws GWTJahiaServiceException {
+                                   JCRSessionWrapper currentUserSession, final Locale uiLocale) throws GWTJahiaServiceException {
         final List<String> missedPaths = new ArrayList<String>();
-        final List<String> restrictionErrors = new ArrayList<String>();
         final List<GWTJahiaNode> res = new ArrayList<GWTJahiaNode>();
 
         // perform a check to prevent pasting content to itself or its children
         for (Iterator<String> iterator = pathsToCopy.iterator(); iterator.hasNext(); ) {
             String toCopy = iterator.next();
             if (destinationPath.equals(toCopy) || destinationPath.startsWith(toCopy + "/")) {
-                missedPaths.add(Messages.getInternalWithArguments("failure.paste.cannot.paste", uiLocale,
-                        "Content {0} cannot be pasted into {1}", toCopy, destinationPath));
+                    missedPaths.add(Messages.getInternalWithArguments("failure.paste.cannot.paste", uiLocale,
+                            "Content {0} cannot be pasted into {1}", toCopy, destinationPath));
                 iterator.remove();
             }
         }
@@ -418,13 +417,17 @@ public class ContentManagerHelper {
                             } else {
                                 missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
                             }
-                        } catch (AccessDeniedException e) {
-                            logger.error("Exception", e);
-                            restrictionErrors.clear();
-                            restrictionErrors.add("Access denied");
                         } catch (RepositoryException e) {
                             logger.error("Exception", e);
-                            missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
+                            if(cut)
+                            {
+                                missedPaths.add(Messages.getInternalWithArguments("failure.cut.cannot.cut",
+                                        uiLocale,
+                                        name, targetParent.getPath() , node.getPath(), session.getUser().getName()));
+                            }
+                            else {
+                                missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
+                            }
                         } catch (JahiaException e) {
                             logger.error("Exception", e);
                             missedPaths.add("File " + name + " could not be referenced in " + targetParent.getPath());
@@ -442,18 +445,19 @@ public class ContentManagerHelper {
                 uuids = callback.doInJCR(currentUserSession);
             }
 
-            if (restrictionErrors.size() > 0) {
-                    StringBuilder errors = new StringBuilder("Write Access Problems : ");
-                    for (String err : restrictionErrors) {
+            if (missedPaths.size() > 0) {
+                StringBuilder errors = new StringBuilder();
+                if(cut)
+                {
+                    for (String err : missedPaths) {
                         errors.append("\n").append(err);
                     }
-                    throw new GWTJahiaServiceException(errors.toString());
-            }
-
-            if (missedPaths.size() > 0) {
-                StringBuilder errors = new StringBuilder("The following files could not have their reference pasted:");
-                for (String err : missedPaths) {
-                    errors.append("\n").append(err);
+                }
+                else {
+                    errors.append("The following files could not have their reference pasted:");
+                    for (String err : missedPaths) {
+                        errors.append("\n").append(err);
+                    }
                 }
                 throw new GWTJahiaServiceException(errors.toString());
             }

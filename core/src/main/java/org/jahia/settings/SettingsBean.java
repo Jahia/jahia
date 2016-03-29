@@ -518,12 +518,19 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                         bindAddress);
             } else {
                 bindAddress = detectIpAddress();
-                logger.info("Detected non-loopback network bind address: {}", bindAddress);
+                if (bindAddress != null) {
+                    logger.info("Detected non-loopback network bind address: {}", bindAddress);
+                } else {
+                    logger.warn("Unable to detect non-loopback network bind address."
+                            + " Please configure cluster.tcp.bindAddress in jahia.node.properties explicitly.");
+                }
             }
         }
-        logger.info("Setting JGroups bind address to: {}", bindAddress);
-        setSystemProperty("cluster.tcp.bindAddress", bindAddress);
-        setSystemProperty("jgroups.bind_addr", bindAddress);
+        if (bindAddress != null) {
+            logger.info("Setting JGroups bind address to: {}", bindAddress);
+            setSystemProperty("cluster.tcp.bindAddress", bindAddress);
+            setSystemProperty("jgroups.bind_addr", bindAddress);
+        }
     }
 
     private void initJcrSystemProperties() {

@@ -1433,6 +1433,14 @@ public class JCRPublicationService extends JahiaService {
         this.referencedNodeTypesToSkip = tokenize(referencedNodeTypesToSkip);
     }
 
+    public void addReferencedNodeTypesToSkip(String referencedNodeTypesToSkip) {
+        this.referencedNodeTypesToSkip.addAll(tokenize(referencedNodeTypesToSkip));
+    }
+
+    public void addPropertiesToSkipForReferences(String propertiesToSkipForReferences) {
+        this.propertiesToSkipForReferences.addAll(tokenize(propertiesToSkipForReferences));
+    }
+
     private static Set<String> tokenize(String input) {
         Set<String> result;
         String[] tokens = StringUtils.split(input, " ,");

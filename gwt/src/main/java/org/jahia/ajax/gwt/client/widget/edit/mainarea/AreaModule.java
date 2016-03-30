@@ -231,4 +231,8 @@ public class AreaModule extends SimpleModule {
             callback.onSuccess(node);
         }
     }
+
+    public boolean isMissingList() {
+        return missingList;
+    }
 }

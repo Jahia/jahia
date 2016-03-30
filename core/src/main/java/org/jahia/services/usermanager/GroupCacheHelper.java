@@ -55,9 +55,13 @@ import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.Searchable;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
+import net.sf.ehcache.search.Result;
+import net.sf.ehcache.search.Results;
+import net.sf.ehcache.search.expression.EqualTo;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.exceptions.JahiaException;
@@ -167,7 +171,7 @@ public class GroupCacheHelper {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
                 if (groupPathByGroupNameCache == null) {
-                    groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new GroupPathByGroupNameCacheEntryFactory());
+                    groupPathByGroupNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaGroupManagerService.groupPathByGroupNameCache", new Searchable(), new GroupPathByGroupNameCacheEntryFactory());
                 }
             }
         }
@@ -287,5 +291,13 @@ public class GroupCacheHelper {
 
     public void updatePathCacheRemoved(String groupPath) {
         getGroupPathByGroupNameCache().remove(getPathCacheKey(groupPath));
+    }
+
+    public void clearNonExistingGroupsCache() {
+        SelfPopulatingCache cache = getGroupPathByGroupNameCache();
+        Results results = cache.createQuery().addCriteria(new EqualTo("value", "")).includeKeys().execute();
+        for (Result result : results.all()) {
+            cache.remove(result.getKey());
+        }
     }
 }

@@ -156,13 +156,18 @@ public class AreaModule extends SimpleModule {
             head.addTool(p);
             layout();
         } else if (missingList && editable) {
-            Image icon =  ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
-            icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
-            LayoutContainer p = new HorizontalPanel();
+            //If We are on edit mode and not in the studio remove the enable/disable button
+            if(!mainModule.getPath().startsWith("/sites")) {
+                LayoutContainer p = new HorizontalPanel();
 
-            p.add(icon);
-            p.sinkEvents(Event.ONCLICK);
-            p.addStyleName("button-enable");
+                Image icon = ToolbarIconProvider.getInstance().getIcon("enableArea").createImage();
+                icon.setTitle(Messages.get("label.areaEnable", "Enable area"));
+
+
+                p.add(icon);
+                p.sinkEvents(Event.ONCLICK);
+                p.addStyleName("button-enable");
+
             p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
                 public void handleEvent(ComponentEvent be) {
                     createNode(new BaseAsyncCallback<GWTJahiaNode>() {
@@ -175,7 +180,7 @@ public class AreaModule extends SimpleModule {
                 }
             });
             head.addTool(p);
-
+            }
             addStyleName(mainModule.getConfig().getName() + "DisableArea");
             content.addStyleName(mainModule.getConfig().getName() + "DisableAreaContent");
             layout();
@@ -183,13 +188,17 @@ public class AreaModule extends SimpleModule {
     }
 
     public void setEnabledEmptyArea() {
-        Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
-        icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
-        final HorizontalPanel p = new HorizontalPanel();
-        p.add(icon);
-        p.sinkEvents(Event.ONCLICK);
-        p.addStyleName("button-disable");
-        p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
+        //If We are on edit mode and not in the studio remove the enable/disable button
+        if(!mainModule.getPath().startsWith("/sites"))
+        {
+            HorizontalPanel p = new HorizontalPanel();
+            Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
+            icon.setTitle(Messages.get("label.areaDisable", "Disable area"));
+            p.add(icon);
+            p.sinkEvents(Event.ONCLICK);
+            p.addStyleName("button-disable");
+
+            p.addListener(Events.OnClick, new Listener<ComponentEvent>() {
             public void handleEvent(ComponentEvent be) {
                 JahiaContentManagementService.App.getInstance().deletePaths(Arrays.asList(path), new BaseAsyncCallback<GWTJahiaNode>() {
                     public void onSuccess(GWTJahiaNode result) {
@@ -199,9 +208,10 @@ public class AreaModule extends SimpleModule {
                     }
                 });
             }
-        });
-        head.addTool(p);
-        addStyleName(mainModule.getConfig().getName()+"EnabledEmptyArea");
+            });
+            head.addTool(p);
+        }
+        addStyleName(mainModule.getConfig().getName() + "EnabledEmptyArea");
         content.addStyleName(mainModule.getConfig().getName()+"EnabledEmptyAreaContent");
         layout();
     }

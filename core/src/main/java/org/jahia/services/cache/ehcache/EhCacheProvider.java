@@ -48,6 +48,7 @@ import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.config.CacheConfiguration;
 import net.sf.ehcache.config.Configuration;
 import net.sf.ehcache.config.PinningConfiguration;
+import net.sf.ehcache.config.Searchable;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 import org.slf4j.Logger;
@@ -152,12 +153,25 @@ public class EhCacheProvider implements CacheProvider {
      * @return teh instance of the registered cache
      */
     public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, CacheEntryFactory factory) {
+        return registerSelfPopulatingCache(cacheName, null, factory);
+    }
+
+    /**
+     * This method register a SelfPopulatingCache in the CacheManager.
+     * @param cacheName the name of the cache to be registered
+     * @param factory the CacheFactory to be used to fill the CacheEntry
+     * @return teh instance of the registered cache
+     */
+    public synchronized SelfPopulatingCache registerSelfPopulatingCache(String cacheName, Searchable searchable, CacheEntryFactory factory) {
         // Call getEhCache to be sure to have the decorated cache. We manipulate only EhCache not Cache object
         if (cacheManager.getEhcache(cacheName) == null) {
             // get the default configuration four the self populating Caches
             Configuration configuration = cacheManager.getConfiguration();
             Map<String,CacheConfiguration> cacheConfigurations = configuration.getCacheConfigurations();
             CacheConfiguration cacheConfiguration = cacheConfigurations.get("org.jahia.selfPopulatingReplicatedCache");
+            if (searchable != null) {
+                cacheConfiguration.addSearchable(searchable);
+            }
             PinningConfiguration pinningConfiguration = new PinningConfiguration();
             pinningConfiguration.setStore("INCACHE");
             cacheConfiguration.addPinning(pinningConfiguration);

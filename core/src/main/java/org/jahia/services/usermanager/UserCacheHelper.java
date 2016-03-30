@@ -50,9 +50,13 @@ import javax.jcr.query.Query;
 import javax.jcr.query.RowIterator;
 
 import net.sf.ehcache.Element;
+import net.sf.ehcache.config.Searchable;
 import net.sf.ehcache.constructs.blocking.CacheEntryFactory;
 import net.sf.ehcache.constructs.blocking.SelfPopulatingCache;
 
+import net.sf.ehcache.search.Result;
+import net.sf.ehcache.search.Results;
+import net.sf.ehcache.search.expression.EqualTo;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
@@ -146,7 +150,7 @@ public class UserCacheHelper {
             // Then check-again-and-initialize-if-needed within the synchronized block to ensure check-and-initialization consistency.
             synchronized (this) {
                 if (userPathByUserNameCache == null) {
-                    userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new UserPathByUserNameCacheEntryFactory());
+                    userPathByUserNameCache = ehCacheProvider.registerSelfPopulatingCache("org.jahia.services.usermanager.JahiaUserManagerService.userPathByUserNameCache", new Searchable(), new UserPathByUserNameCacheEntryFactory());
                 }
             }
         }
@@ -204,5 +208,13 @@ public class UserCacheHelper {
 
     private String getSiteKey(String userPath) {
         return userPath.startsWith("/sites/") ? StringUtils.substringBetween(userPath, "/sites/", "/") : null;
+    }
+
+    public void clearNonExistingUsersCache() {
+        SelfPopulatingCache cache = getUserPathByUserNameCache();
+        Results results = cache.createQuery().addCriteria(new EqualTo("value", "")).includeKeys().execute();
+        for (Result result : results.all()) {
+            cache.remove(result.getKey());
+        }
     }
 }

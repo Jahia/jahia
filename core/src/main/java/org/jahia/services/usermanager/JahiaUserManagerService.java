@@ -954,6 +954,13 @@ public class JahiaUserManagerService extends JahiaService implements JahiaAfterI
     }
 
     /**
+     * Remove all cache entries for non existing groups
+     */
+    public void clearNonExistingUsersCache() {
+        cacheHelper.clearNonExistingUsersCache();;
+    }
+
+    /**
      * Performs the lookup of the user, detecting the type of the provided lookup key (either a JCR path, a user name or a legacy user key).
      *
      * @param lookupKey

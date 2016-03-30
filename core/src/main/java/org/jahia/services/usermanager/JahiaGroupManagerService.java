@@ -753,6 +753,13 @@ public class JahiaGroupManagerService extends JahiaService {
     }
 
     /**
+     * Remove all cache entries for non existing groups
+     */
+    public void clearNonExistingGroupsCache() {
+        cacheHelper.clearNonExistingGroupsCache();
+    }
+
+    /**
      * Return the list of groups to which the specified user has access.
      *
      * @param principalPath The user/group path

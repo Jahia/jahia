@@ -57,7 +57,6 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
@@ -317,7 +316,7 @@ class NodeHelper {
                 logger.error("Cannot get property j:width on node {}", node.getPath());
             }
         }
-        
+
         if (fields.contains("j:view") && n.isNodeType("jmix:renderable")) {
             try {
                 if (node.hasProperty("j:view")) {
@@ -670,8 +669,10 @@ class NodeHelper {
             if (node.getPath().equals("/")) {
                 n.setDisplayName("root");
                 n.setName("root");
-            } else if (node instanceof JCRUserNode || node instanceof JCRGroupNode) {
-                n.setDisplayName(PrincipalViewHelper.getDisplayName(node, uiLocale));
+            } else if (node instanceof JCRUserNode) {
+                n.setDisplayName(((JCRUserNode) node).getDisplayableName(uiLocale));
+            } else if (node instanceof JCRGroupNode) {
+                n.setDisplayName(((JCRGroupNode) node).getDisplayableName(uiLocale));
             } else {
                 n.setDisplayName(WordUtils.abbreviate(
                         JCRContentUtils.unescapeLocalNodeName(node.getDisplayableName()), 70, 90,

@@ -111,7 +111,6 @@ public class PrincipalViewHelper implements Serializable {
     private static Set<String> selectBoxFieldsHeading = new HashSet<String>();
     private List<Integer> selectBoxFieldsSize = new ArrayList<Integer>();
     private List<Method> selectBoxFieldsMethod = new ArrayList<Method>();
-    private static PrincipalViewHelperExtension principalViewHelperExtension = null;
 
     static {
         selectBoxFieldsHeading.add(PRINCIPAL);
@@ -266,27 +265,29 @@ public class PrincipalViewHelper implements Serializable {
      */
     public static String getDisplayName(Object p, Locale locale) {
         if (p instanceof JCRUserNode) {
-            JCRUserNode jahiaUser = (JCRUserNode) p;
-            String userName = getUserDisplayName(jahiaUser.getJahiaUser(), locale);
-            return userName;
+            return ((JCRUserNode) p).getDisplayableName(locale);
         } else if (p instanceof JCRGroupNode) {
-            JCRGroupNode jahiaGroup = (JCRGroupNode) p;
-            String groupName = jahiaGroup.getName();
-            groupName = getGroupDisplayName(groupName, locale);
-            return groupName;
+            return ((JCRGroupNode) p).getDisplayableName(locale);
         } else if (p instanceof JahiaUser) {
-            JahiaUser jahiaUser = (JahiaUser) p;
-            String userName = getUserDisplayName(jahiaUser, locale);
-            return userName;
+            final JahiaUser jahiaUser = (JahiaUser) p;
+            try {
+                return ((JCRUserNode) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(jahiaUser.getLocalPath())).getDisplayableName(locale);
+            } catch (RepositoryException e) {
+                logger.error("", e);
+            }
+            return jahiaUser.getName();
         } else if (p instanceof JahiaGroup) {
-            JahiaGroup jahiaGroup = (JahiaGroup) p;
-            String groupName = jahiaGroup.getName();
-            groupName = getGroupDisplayName(groupName, locale);
-            return groupName;
+            final JahiaGroup jahiaGroup = (JahiaGroup) p;
+            try {
+                return ((JCRGroupNode) JCRSessionFactory.getInstance().getCurrentUserSession().getNode(jahiaGroup.getLocalPath())).getDisplayableName(locale);
+            } catch (RepositoryException e) {
+                logger.error("", e);
+            }
+            return jahiaGroup.getName();
         } else if (p instanceof Principal) {
             return ((Principal) p).getName();
         } else {
-            throw new IllegalArgumentException("getFullName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
+            throw new IllegalArgumentException("getDisplayName only support Principal, JCRGroupNode, JCRUserNode, " + p.getClass().getName() + " is not supported ");
         }
     }
 
@@ -337,25 +338,6 @@ public class PrincipalViewHelper implements Serializable {
         }
         return userName;
     }
-
-    /**
-     * Returns the displayable name of a {@link JahiaUser}. This method will use a
-     * resource bundle lookup to localize the guest user name, and use a {@link PrincipalViewHelperExtension} for the
-     * other users if defined (falling back on the login name otherwise).
-     * @param jahiaUser the user
-     * @param locale the locale to use for looking up resource bundle values
-     * @return the displayable name
-     */
-    public static String getUserDisplayName(JahiaUser jahiaUser, Locale locale) {
-        String userName = jahiaUser.getName();
-        if (Constants.GUEST_USERNAME.equals(userName)) {
-            userName = Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()), SettingsBean.getInstance().getGuestUserResourceKey(), locale != null ? locale : getLocale(), userName);
-        } else if (principalViewHelperExtension != null) {
-            userName = principalViewHelperExtension.getUserDisplayName(jahiaUser);
-        }
-        return userName;
-    }
-
 
     /**
      * Construct a displayable principal name string
@@ -744,10 +726,6 @@ public class PrincipalViewHelper implements Serializable {
             }
             return str + emtpyStr;
         }
-    }
-
-    public static void setPrincipalViewHelperExtension(PrincipalViewHelperExtension principalViewHelperExtension) {
-        PrincipalViewHelper.principalViewHelperExtension = principalViewHelperExtension;
     }
 
     private static class PrincipalComparator implements Comparator<JCRNodeWrapper>,Serializable {

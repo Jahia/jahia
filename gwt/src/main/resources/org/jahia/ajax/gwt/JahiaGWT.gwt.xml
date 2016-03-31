@@ -13,7 +13,7 @@
 
     <set-property name="gwt.suppressNonStaticFinalFieldWarnings" value="true" />
 
-    <!--<set-property name="user.agent" value="gecko,gecko1_8,safari"/>-->
+    <set-property name="user.agent" value="ie8,ie9,gecko1_8,safari,opera"/>
 
     <extend-property name="locale" values="en,fr,de"/> 
 	<set-property-fallback name="locale" value="en"/> 

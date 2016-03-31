@@ -58,7 +58,6 @@ import org.jahia.ajax.gwt.content.server.UploadedPendingFile;
 import org.jahia.api.Constants;
 import org.jahia.bin.SessionNamedDataStorage;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.exceptions.JahiaException;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.*;
@@ -792,7 +791,7 @@ public class ContentManagerHelper {
                     if (g != null) {
                         ace.setHidden(g.isHidden());
                         ace.setPrincipalKey(g.getPath());
-                        String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
+                        String groupName = g.getDisplayableName(uiLocale);
                         ace.setPrincipalDisplayName(groupName);
                     } else {
                         continue;
@@ -801,7 +800,7 @@ public class ContentManagerHelper {
                     JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
                     if (u != null) {
                         ace.setPrincipalKey(u.getPath());
-                        String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
+                        String userName = u.getDisplayableName(uiLocale);
                         ace.setPrincipalDisplayName(userName);
                     } else {
                         continue;
@@ -860,7 +859,7 @@ public class ContentManagerHelper {
                             }
                             if (g != null) {
                                 ace.setHidden(g.isHidden());
-                                String groupName = PrincipalViewHelper.getDisplayName(g, uiLocale);
+                                String groupName = g.getDisplayableName(uiLocale);
                                 ace.setPrincipalKey(g.getPath());
                                 ace.setPrincipalDisplayName(groupName);
                             }
@@ -868,7 +867,7 @@ public class ContentManagerHelper {
                             JCRUserNode u = ServicesRegistry.getInstance().getJahiaUserManagerService().lookupUser(ace.getPrincipal(), node.getResolveSite().getName());
                             if (u != null) {
                                 ace.setPrincipalKey(u.getPath());
-                                String userName = PrincipalViewHelper.getDisplayName(u, uiLocale);
+                                String userName = u.getDisplayableName(uiLocale);
                                 ace.setPrincipalDisplayName(userName);
                             }
                         }

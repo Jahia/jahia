@@ -116,12 +116,26 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
                             com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
                         }
                         try {
-                            JSONObject refreshData = JSONParser.parseStrict(response.getText()).isObject().get("refreshData").isObject();
-                            Map data = new HashMap();
-                            for (String s : refreshData.keySet()) {
-                                data.put(s, refreshData.get(s));
+                            JSONObject jsondata = JSONParser.parseStrict(response.getText()).isObject();
+                            if (jsondata.get("refreshData") != null) {
+                                JSONObject refreshData = jsondata.get("refreshData").isObject();
+                                Map data = new HashMap();
+                                for (String s : refreshData.keySet()) {
+                                    data.put(s, refreshData.get(s));
+                                }
+                                linker.refresh(data);
                             }
-                            linker.refresh(data);
+                            if (jsondata.get("messageDisplay") != null) {
+                                JSONObject object = jsondata.get("messageDisplay").isObject();
+                                String title = object.get("title").isString().stringValue();
+                                String text = object.get("text").isString().stringValue();
+                                String type = object.get("messageBoxType").isString().stringValue();
+                                if ("alert".equals(type)) {
+                                    MessageBox.alert(title, text, null);
+                                } else {
+                                    MessageBox.info(title, text, null);
+                                }
+                            }
                         } catch (Exception e) {
                             // Ignore
                         }

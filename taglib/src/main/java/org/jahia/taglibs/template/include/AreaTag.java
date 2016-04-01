@@ -137,6 +137,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
             JCRNodeWrapper parent = null;
             String areaPath = path;
+            JCRSessionWrapper session = renderContext.getMainResource().getNode().getSession();
             if (!path.startsWith("/")) {
                 if (areaAsSubNode && resource.getNode().getPath().startsWith(renderContext.getMainResource().getNode().getPath())) {
                     areaPath = resource.getNode().getPath() + "/" + path;
@@ -158,7 +159,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
                 }
             } else {
                 try {
-                    parent = renderContext.getMainResource().getNode().getSession()
+                    parent = session
                             .getNode(StringUtils.substringBeforeLast(areaPath, "/"));
                 } catch (PathNotFoundException e) {
                     // ignore
@@ -168,7 +169,15 @@ public class AreaTag extends ModuleTag implements ParamParent {
             boolean isEditable = true;
 
             StringBuilder additionalParameters = new StringBuilder();
-            additionalParameters.append("missingList=\"true\"");
+            boolean enableArea = !renderContext.getMainResource().getPath().startsWith("/modules");
+            JCRNodeWrapper createdNode = null;
+            if (enableArea) {
+                createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath,"/")).addNode(StringUtils.substringAfterLast(areaPath,"/"), areaType);
+                session.save();
+                additionalParameters.append(" areaAutoEnabled=\"true\"");
+            } else {
+                additionalParameters.append(" missingList=\"true\"");
+            }
             if (conflictsWith != null) {
                 additionalParameters.append(" conflictsWith=\"").append(conflictsWith).append("\"");
             }
@@ -194,6 +203,13 @@ public class AreaTag extends ModuleTag implements ParamParent {
             }
             
             printModuleStart(getModuleType(renderContext), areaPath, null, null, additionalParameters.toString());
+            if (enableArea && createdNode != null) {
+                try {
+                    render(renderContext, new Resource(createdNode, resource.getTemplateType(), resource.getTemplate(), Resource.CONFIGURATION_WRAPPEDCONTENT));
+                } catch (RenderException e) {
+                    logger.error("error while rendering auto created node {}", createdNode.getPath(), e);
+                }
+            }
             if (getBodyContent() != null) {
                 getPreviousOut().write(getBodyContent().getString());
             }

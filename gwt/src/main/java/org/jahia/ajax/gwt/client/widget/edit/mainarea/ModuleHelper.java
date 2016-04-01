@@ -55,7 +55,6 @@ import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
-import org.jahia.ajax.gwt.client.widget.Linker;
 
 import java.util.*;
 
@@ -118,13 +117,11 @@ public class ModuleHelper {
         mainPath = null;
         String mainTemplate = null;
 
-        final List<String> activatedModuleIds = new ArrayList<String>();
-
         Set<String> allNodetypes = new HashSet<String>();
         for (Element divElement : elBody) {
             String jahiatype = DOM.getElementAttribute(divElement, JAHIA_TYPE);
             if ("module".equals(jahiatype)) {
-                final String id = DOM.getElementAttribute(divElement, "id");
+                String id = DOM.getElementAttribute(divElement, "id");
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
@@ -132,31 +129,6 @@ public class ModuleHelper {
                 if (type.equals("main")) {
                 } else if (type.equals("area") || type.equals("absoluteArea")) {
                     module = new AreaModule(id, path, divElement, type, mainModule);
-                    if (mainModule.getPath().startsWith("/sites") && ((AreaModule) module).isMissingList()) {
-                        activatedModuleIds.add(id);
-                        ((AreaModule) module).createNode(new BaseAsyncCallback<GWTJahiaNode>() {
-                            @Override
-                            public void onSuccess(GWTJahiaNode result) {
-                                if (activatedModuleIds.contains(id)) {
-                                    activatedModuleIds.remove(id);
-                                }
-                                if (activatedModuleIds.isEmpty()) {
-                                    Map<String, Object> data = new HashMap<String, Object>();
-                                    data.put(Linker.REFRESH_MAIN, true);
-                                    mainModule.getEditLinker().refresh(data);
-                                }
-                            }
-                            @Override
-                            public void onFailure(Throwable caught) {
-                                super.onFailure(caught);
-                                activatedModuleIds.clear();
-                                Map<String, Object> data = new HashMap<String, Object>();
-                                data.put(Linker.REFRESH_MAIN, true);
-                                mainModule.getEditLinker().refresh(data);
-                            }
-                        });
-
-                    }
                 } else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement, mainModule);
                 } else if (type.equals("existingNode")) {
@@ -199,6 +171,7 @@ public class ModuleHelper {
                 linkedContentInfoType.put(node, type);
             }
         }
+
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {

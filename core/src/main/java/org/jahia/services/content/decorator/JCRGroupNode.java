@@ -236,9 +236,9 @@ public class JCRGroupNode extends JCRNodeDecorator {
                     l = getSession().getLocale();
                 } catch (RepositoryException e) {
                     logger.error("", e);
-                    l = SettingsBean.getInstance().getDefaultLocale();
-                    if (l == null) l = Locale.ENGLISH;
                 }
+                if (l == null) l = SettingsBean.getInstance().getDefaultLocale();
+                if (l == null) l = Locale.ENGLISH;
             }
             return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestGroupResourceModuleName()),
                     SettingsBean.getInstance().getGuestGroupResourceKey(), l, groupName);

@@ -53,6 +53,7 @@ import org.jahia.ajax.gwt.client.service.GWTJahiaServiceException;
 import org.jahia.ajax.gwt.client.util.Constants;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.ActionItem;
 import org.jahia.ajax.gwt.client.widget.toolbar.action.LanguageAware;
+import org.jahia.data.viewhelper.principal.PrincipalViewHelper;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -383,7 +384,7 @@ public class UIConfigHelper {
                     List<GWTEngineTab> managerTabs = createGWTEngineList(contextNode, site, jahiaUser, locale, uiLocale, request, config.getEngineTabs());
                     gwtConfig.setManagerEngineTabs(managerTabs);
                 }
-                
+
                 gwtConfig.setSuppressPublicationInfo(config.isSuppressPublicationInfo());
                 gwtConfig.setShowWorkInProgress(config.isShowWorkInProgress());
 
@@ -867,6 +868,8 @@ public class UIConfigHelper {
                 final Bindings bindings = new SimpleBindings();
                 bindings.put("currentSite", site);
                 bindings.put("currentUser", jahiaUser);
+                bindings.put("currentLocale", locale);
+                bindings.put("PrincipalViewHelper", PrincipalViewHelper.class);
                 scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
                 scriptContext.setBindings(scriptEngine.getContext().getBindings(ScriptContext.GLOBAL_SCOPE), ScriptContext.GLOBAL_SCOPE);
                 scriptContext.setWriter(new StringWriter());

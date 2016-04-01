@@ -223,9 +223,9 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
                     l = getSession().getLocale();
                 } catch (RepositoryException e) {
                     logger.error("", e);
-                    l = SettingsBean.getInstance().getDefaultLocale();
-                    if (l == null) l = Locale.ENGLISH;
                 }
+                if (l == null) l = SettingsBean.getInstance().getDefaultLocale();
+                if (l == null) l = Locale.ENGLISH;
             }
             return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()),
                     SettingsBean.getInstance().getGuestUserResourceKey(), l, userName);

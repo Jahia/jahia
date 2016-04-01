@@ -61,8 +61,8 @@
 
 package org.jahia.settings;
 
-import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
-
+import net.htmlparser.jericho.Config;
+import net.htmlparser.jericho.LoggerProvider;
 import org.apache.commons.collections.FastHashMap;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -73,20 +73,20 @@ import org.apache.jackrabbit.core.query.lucene.JahiaSearchIndex;
 import org.apache.jackrabbit.core.query.lucene.join.QueryEngine;
 import org.apache.jackrabbit.core.stats.StatManager;
 import org.jahia.api.Constants;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.jahia.bin.Jahia;
+import org.jahia.bin.listeners.JahiaContextLoaderListener;
+import org.jahia.configuration.deployers.ServerDeploymentFactory;
+import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.tools.patches.SqlPatcher;
 import org.jahia.utils.DatabaseUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.PathResolver;
-import org.jahia.bin.Jahia;
-import org.jahia.bin.listeners.JahiaContextLoaderListener;
-import org.jahia.configuration.deployers.ServerDeploymentFactory;
-import org.jahia.configuration.deployers.ServerDeploymentInterface;
 import org.jahia.utils.properties.PropertiesManager;
 import org.jahia.utils.zip.ZipEntryCharsetDetector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -96,12 +96,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.util.SystemPropertyUtils;
 import org.springframework.web.context.ServletContextAware;
 
-import net.htmlparser.jericho.Config;
-import net.htmlparser.jericho.LoggerProvider;
-
 import javax.servlet.ServletContext;
 import javax.sql.DataSource;
-
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
@@ -110,6 +106,8 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.*;
+
+import static org.jahia.bin.listeners.JahiaContextLoaderListener.setSystemProperty;
 
 public class SettingsBean implements ServletContextAware, InitializingBean, ApplicationContextAware {
 
@@ -179,6 +177,7 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
     private String[] authorizedRedirectHosts;
     private boolean useWebsockets = false;
     private String atmosphereAsyncSupport;
+    private boolean areaAutoActivated;
 
     // this is the list of jahia.properties server disk path and context path values...
     private String server;
@@ -445,6 +444,8 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
             atmosphereAsyncSupport = getString("atmosphere.asyncSupport", null);
 
             useWebsockets = getBoolean("atmosphere.useWebsockets", false);
+
+            areaAutoActivated = getBoolean("area.auto.activated", true);
 
             String authorizedRedirectHostsStr = getString("authorizedRedirectHosts", null);
             authorizedRedirectHosts = StringUtils.isBlank(authorizedRedirectHostsStr) ? new String[0] : authorizedRedirectHostsStr.trim().split("\\s*,\\s*");
@@ -1425,5 +1426,9 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
 
     public void setAtmosphereAsyncSupport(String atmosphereAsyncSupport) {
         this.atmosphereAsyncSupport = atmosphereAsyncSupport;
+    }
+
+    public boolean isAreaAutoActivated() {
+        return areaAutoActivated;
     }
 }

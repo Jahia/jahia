@@ -55,6 +55,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
+import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -169,7 +170,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             boolean isEditable = true;
 
             StringBuilder additionalParameters = new StringBuilder();
-            boolean enableArea = !renderContext.getMainResource().getPath().startsWith("/modules");
+            boolean enableArea = !renderContext.getMainResource().getPath().startsWith("/modules") && SettingsBean.getInstance().isAreaAutoActivated();
             JCRNodeWrapper createdNode = null;
             if (enableArea) {
                 createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath,"/")).addNode(StringUtils.substringAfterLast(areaPath,"/"), areaType);

@@ -241,7 +241,7 @@ public class JCRGroupNode extends JCRNodeDecorator {
                 }
             }
             return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestGroupResourceModuleName()),
-                    SettingsBean.getInstance().getGuestGroupResourceKey(), locale, groupName);
+                    SettingsBean.getInstance().getGuestGroupResourceKey(), l, groupName);
         }
         return super.getDisplayableName();
 

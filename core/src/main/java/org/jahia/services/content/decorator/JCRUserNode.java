@@ -228,7 +228,7 @@ public class JCRUserNode extends JCRProtectedNodeAbstractDecorator {
                 }
             }
             return Messages.get(ServicesRegistry.getInstance().getJahiaTemplateManagerService().getTemplatePackage(SettingsBean.getInstance().getGuestUserResourceModuleName()),
-                    SettingsBean.getInstance().getGuestUserResourceKey(), locale, userName);
+                    SettingsBean.getInstance().getGuestUserResourceKey(), l, userName);
         }
         return super.getDisplayableName();
     }

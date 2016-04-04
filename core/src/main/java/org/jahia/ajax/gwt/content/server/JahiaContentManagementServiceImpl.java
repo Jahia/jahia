@@ -1519,7 +1519,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNode createModule(String moduleName, String artifactId, String groupId, String siteType, String sources) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.createModule(moduleName, artifactId, groupId, siteType, sources, retrieveCurrentSession());
+            return moduleHelper.createModule(moduleName, artifactId, groupId, siteType, sources, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot create module", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.create.module", getUILocale(), e.getLocalizedMessage()));
@@ -1528,7 +1528,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNode checkoutModule(String moduleId, String scmURI, String scmType, String branchOrTag, String sources) throws GWTJahiaServiceException {
         try {
-            return moduleHelper.checkoutModule(moduleId, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession());
+            return moduleHelper.checkoutModule(moduleId, scmURI, scmType, branchOrTag, sources, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot checkout module", e);
             String message = e.getLocalizedMessage();
@@ -1541,7 +1541,7 @@ public class JahiaContentManagementServiceImpl extends JahiaRemoteService implem
 
     public GWTJahiaNode sendToSourceControl(String moduleId, String scmURI, String scmType) throws GWTJahiaServiceException {
         try {
-            return contentManager.sendToSourceControl(moduleId, scmURI, scmType, retrieveCurrentSession());
+            return contentManager.sendToSourceControl(moduleId, scmURI, scmType, retrieveCurrentSession(null));
         } catch (Exception e) {
             logger.error("Cannot init remote repository", e);
             throw new GWTJahiaServiceException(Messages.getInternalWithArguments("label.gwt.error.cannot.init.remote.repo", getUILocale(), e.getLocalizedMessage()));

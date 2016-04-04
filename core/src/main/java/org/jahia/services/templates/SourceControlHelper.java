@@ -196,6 +196,9 @@ public class SourceControlHelper {
                 if (sourceVersion != null && sourceVersion.equals(pack.getVersion().toString())) {
                     return true;
                 }
+                if (sourceVersion != null && sourceVersion.matches("\\$\\{.*\\}")) {
+                    logger.warn("'version' contains an expression but should be a constant. Stopping mount of source folder.");
+                }
             } catch (Exception e) {
                 logger.error("Cannot parse pom.xml file at " + pom, e);
             }

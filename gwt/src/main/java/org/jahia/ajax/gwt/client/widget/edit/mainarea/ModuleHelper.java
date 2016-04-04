@@ -46,6 +46,8 @@ package org.jahia.ajax.gwt.client.widget.edit.mainarea;
 import com.allen_sauer.gwt.log.client.Log;
 import com.extjs.gxt.ui.client.data.BaseModelData;
 import com.extjs.gxt.ui.client.data.ModelData;
+import com.extjs.gxt.ui.client.widget.Info;
+import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Element;
@@ -54,6 +56,7 @@ import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
 import org.jahia.ajax.gwt.client.data.toolbar.GWTEditConfiguration;
+import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 
 import java.util.*;
@@ -69,6 +72,7 @@ public class ModuleHelper {
     private static final List<String> FIELDS_FULL_INFO = Arrays.asList(GWTJahiaNode.LOCKS_INFO, GWTJahiaNode.PERMISSIONS, GWTJahiaNode.PUBLICATION_INFO, GWTJahiaNode.WORKFLOW_INFO, GWTJahiaNode.VISIBILITY_INFO, GWTJahiaNode.SUBNODES_CONSTRAINTS_INFO);
 
     public final static String JAHIA_TYPE = "jahiatype";
+    private static final int AREA_CREATED_NOTIFICATION_DELAY_MS = 10000;
 
     private static List<Module> modules;
     private static String mainPath;
@@ -115,6 +119,7 @@ public class ModuleHelper {
         linkedContentInfoType = new HashMap<String, String>();
 
         mainPath = null;
+        boolean areaEnabled = false;
         String mainTemplate = null;
 
         Set<String> allNodetypes = new HashSet<String>();
@@ -125,6 +130,7 @@ public class ModuleHelper {
                 String type = DOM.getElementAttribute(divElement, "type");
                 String path = DOM.getElementAttribute(divElement, "path");
                 String nodetypes = DOM.getElementAttribute(divElement, "nodetypes");
+                areaEnabled = areaEnabled || "true".equals(DOM.getElementAttribute(divElement, "areaAutoEnabled"));
                 Module module = null;
                 if (type.equals("main")) {
                 } else if (type.equals("area") || type.equals("absoluteArea")) {
@@ -172,6 +178,11 @@ public class ModuleHelper {
             }
         }
 
+        if (areaEnabled) {
+            InfoConfig ic = new InfoConfig(Messages.get("created.area.title", "Area(s) created"), Messages.get("created.area.desc", "One or more areas have been enabled, the publication status of the page has changed"));
+            ic.display = AREA_CREATED_NOTIFICATION_DELAY_MS;
+            Info.display(ic);
+        }
 
         ArrayList<String> list = new ArrayList<String>();
         for (String s : modulesByPath.keySet()) {

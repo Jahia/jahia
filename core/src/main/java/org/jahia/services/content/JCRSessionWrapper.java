@@ -46,7 +46,6 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
 import org.apache.jackrabbit.core.security.JahiaLoginModule;
-import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRNodeDecorator;
 import org.jahia.services.content.decorator.JCRUserNode;
@@ -63,6 +62,7 @@ import org.jahia.services.usermanager.JahiaUser;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.i18n.Messages;
+import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -85,7 +85,6 @@ import javax.jcr.version.VersionManager;
 import javax.validation.ConstraintViolation;
 import javax.validation.groups.Default;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -711,15 +710,7 @@ public class JCRSessionWrapper implements Session {
             documentViewImportHandler.setReferences(references);
         }
         try {
-            SAXParserFactory factory;
-
-            factory = new SAXParserFactoryImpl();
-
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            SAXParser parser = factory.newSAXParser();
+            SAXParser parser = JahiaSAXParserFactory.newInstance().newSAXParser();
 
             parser.parse(inputStream, documentViewImportHandler);
         } catch (SAXParseException e) {

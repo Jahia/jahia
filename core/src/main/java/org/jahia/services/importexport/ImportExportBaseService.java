@@ -56,7 +56,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.math.NumberUtils;
 import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.jackrabbit.commons.xml.SystemViewExporter;
-import org.apache.xerces.jaxp.SAXParserFactoryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.Jahia;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -86,6 +85,7 @@ import org.jahia.utils.DateUtils;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
 import org.jahia.utils.Url;
+import org.jahia.utils.xml.JahiaSAXParserFactory;
 import org.jahia.utils.zip.DirectoryZipInputStream;
 import org.jahia.utils.zip.DirectoryZipOutputStream;
 import org.slf4j.Logger;
@@ -99,7 +99,6 @@ import org.xml.sax.helpers.DefaultHandler;
 
 import javax.jcr.*;
 import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.Templates;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerConfigurationException;
@@ -1507,15 +1506,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
 
     private void handleImport(InputStream is, DefaultHandler h, String fileName) {
         try {
-            SAXParserFactory factory;
-
-            factory = new SAXParserFactoryImpl();
-
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            SAXParser parser = factory.newSAXParser();
+            SAXParser parser = JahiaSAXParserFactory.newInstance().newSAXParser();
 
             parser.parse(is, h);
             if (h instanceof DocumentViewImportHandler) {
@@ -1545,15 +1536,7 @@ public class ImportExportBaseService extends JahiaService implements ImportExpor
     public int detectXmlFormat(InputStream is) {
         XMLFormatDetectionHandler handler = new XMLFormatDetectionHandler();
         try {
-            SAXParserFactory factory;
-
-            factory = new SAXParserFactoryImpl();
-
-            factory.setNamespaceAware(true);
-            factory.setValidating(false);
-            factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-
-            SAXParser parser = factory.newSAXParser();
+            SAXParser parser = JahiaSAXParserFactory.newInstance().newSAXParser();
 
             parser.parse(is, handler);
         } catch (Exception e) {

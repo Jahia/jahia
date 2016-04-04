@@ -48,6 +48,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.commons.Version;
 import org.jahia.services.content.JCRSessionFactory;
+import org.jahia.utils.xml.JahiaDocumentBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -58,7 +59,6 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.jcr.RepositoryException;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -189,7 +189,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
 
 
     private boolean clean(InputStream inputStream, OutputStream outputStream, Map<String, String> pathMapping) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, TransformerException {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
+        Document doc = JahiaDocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList nodes = (NodeList) xpath.evaluate("//*[@*[name()='jcr:primaryType'] = 'jnt:usersFolder']", doc, XPathConstants.NODESET);
@@ -209,7 +209,7 @@ public class ExternalUsersImportUpdater extends ImportFileUpdater {
     }
 
     private boolean transform(InputStream inputStream, OutputStream outputStream, Map<String, String> pathMapping) throws IOException, ParserConfigurationException, SAXException, XPathExpressionException, TransformerException {
-        Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
+        Document doc = JahiaDocumentBuilderFactory.newInstance().newDocumentBuilder().parse(new InputSource(inputStream));
 
         XPath xpath = XPathFactory.newInstance().newXPath();
         NodeList nodes = (NodeList) xpath.evaluate("//*[@*[name()='jcr:primaryType'] = 'jnt:user' and @*[name()='j:external'] = 'true']", doc, XPathConstants.NODESET);

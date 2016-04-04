@@ -49,7 +49,7 @@
     </bean>
 
     <bean id="jcrSessionFactory" class="org.jahia.services.content.JCRSessionFactory" factory-method="getInstance"
-          lazy-init="true" init-method="start">
+          lazy-init="true" init-method="start" depends-on="JahiaSAXParserFactory">
         <property name="userService" ref="JahiaUserManagerService"/>
         <property name="validatorFactoryBean" ref="validatorFactoryBean"/>
         <property name="descriptors">

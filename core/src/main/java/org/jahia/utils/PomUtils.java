@@ -52,13 +52,13 @@ import org.apache.tika.io.IOUtils;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.codehaus.plexus.util.xml.Xpp3DomBuilder;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
+import org.jahia.utils.xml.JahiaDocumentBuilderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -303,8 +303,7 @@ public final class PomUtils {
     public static void write(Model model, File targetPomXmlFile) throws IOException {
         String copyright = null;
         try {
-            DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
+            DocumentBuilder docBuilder = JahiaDocumentBuilderFactory.newInstance().newDocumentBuilder();
             Document doc = docBuilder.parse(targetPomXmlFile);
             Node firstChild = doc.getFirstChild();
             if (firstChild.getNodeType() == Node.COMMENT_NODE) {

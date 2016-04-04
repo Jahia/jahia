@@ -286,4 +286,22 @@
     </property>
   </bean>
 
+    
+    <bean id="BaseXMLParserFactory" class="org.jahia.utils.xml.BaseXMLParserFactory" abstract="true">
+        <property name="namespaceAware" value="true"/>
+        <property name="validating" value="false"/>
+        <property name="xIncludeAware" value="false"/>
+        <property name="features">
+            <map key-type="java.lang.String" value-type="java.lang.Boolean">
+                <entry key="http://apache.org/xml/features/nonvalidating/load-external-dtd" value="false"/>
+                <entry key="http://xml.org/sax/features/external-general-entities" value="false"/>
+                <entry key="http://xml.org/sax/features/external-parameter-entities" value="false"/>
+                <entry key="http://apache.org/xml/features/disallow-doctype-decl" value="true"/>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="JahiaSAXParserFactory" class="org.jahia.utils.xml.JahiaSAXParserFactory" parent="BaseXMLParserFactory"/>
+
+    <bean id="JahiaDocumentBuilderFactory" class="org.jahia.utils.xml.JahiaDocumentBuilderFactory" parent="BaseXMLParserFactory"/>
 </beans>

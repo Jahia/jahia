@@ -53,7 +53,6 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
-import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -126,8 +125,6 @@ public class Activator implements BundleActivator {
     private BundleScriptEngineManager scriptEngineManager;
     private Map<String, List<Bundle>> toBeResolved;
 
-    private FrameworkStartedListener frameworkStartedListener;
-
     private Map<Bundle, ModuleState> moduleStates;
 
     private static Activator instance = null;
@@ -172,8 +169,6 @@ public class Activator implements BundleActivator {
         // register view script observers
         bundleScriptResolver.registerObservers();
         final ScriptBundleObserver scriptBundleObserver = bundleScriptResolver.getBundleObserver();
-
-        frameworkStartedListener = new FrameworkStartedListener();
 
         extensionObservers.put(FLOW_SCANNER, new BundleObserver<URL>() {
             @Override
@@ -285,7 +280,6 @@ public class Activator implements BundleActivator {
     }
 
     private synchronized void setupBundleListener(BundleContext context) {
-        context.addFrameworkListener(frameworkStartedListener);
         context.addBundleListener(bundleListener = new SynchronousBundleListener() {
 
                     public void bundleChanged(final BundleEvent bundleEvent) {
@@ -349,10 +343,8 @@ public class Activator implements BundleActivator {
         }
 
         context.removeBundleListener(bundleListener);
-        context.removeFrameworkListener(frameworkStartedListener);
 
         bundleListener = null;
-        frameworkStartedListener = null;
 
         for (Iterator<ServiceRegistration<?>> iterator = serviceRegistrations.iterator(); iterator.hasNext(); ) {
             try {
@@ -873,18 +865,6 @@ public class Activator implements BundleActivator {
             modulesByState.put(moduleState, bundlesInState);
         }
         return modulesByState;
-    }
-
-    private class FrameworkStartedListener implements FrameworkListener {
-        @Override
-        public synchronized void frameworkEvent(FrameworkEvent event) {
-            switch (event.getType()) {
-                case FrameworkEvent.STARTED:
-                    logger.info("Got started event from OSGi framework");
-                    FrameworkService.notifyStarted();
-                    break;
-            }
-        }
     }
 
     public ModuleState getModuleState(Bundle bundle) {

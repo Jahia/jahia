@@ -220,20 +220,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
 
             final FrameworkService instance = FrameworkService.getInstance();
             instance.start();
-            boolean stopWaiting = false;
-            synchronized (instance) {
-                while (!stopWaiting && !instance.isStarted()) {
-                    try {
-                        instance.wait(10 * 60 * 1000L);
-                        stopWaiting = true;
-                        logger.info("Stopped waiting for OSGi framework startup");
-                    } catch (InterruptedException e) {
-                        // ignore
-                    }
-                }
-            }
-
-            logger.info("OSGi platform service initialized in {} ms", (System.currentTimeMillis() - timer));
 
             // do initialization of all services, implementing JahiaAfterInitializationService
             initJahiaAfterInitializationServices();

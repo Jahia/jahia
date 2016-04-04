@@ -246,7 +246,13 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
     }
 
     public JahiaTemplatesPackage compileAndDeploy(final String moduleId, File sources, JCRSessionWrapper session) throws RepositoryException, IOException, BundleException {
-        return moduleBuildHelper.compileAndDeploy(moduleId, sources, session);
+        JahiaTemplatesPackage templatesPackage = moduleBuildHelper.compileAndDeploy(moduleId, sources, session);
+        File file = new File(sources, "src/main/import/repository.xml.generated");
+        if (file.exists()) {
+            file.delete();
+        }
+        regenerateImportFile(moduleId, sources, session);
+        return templatesPackage;
     }
 
     public File compileModule(File sources) throws IOException {

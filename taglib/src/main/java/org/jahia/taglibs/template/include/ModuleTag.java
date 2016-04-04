@@ -99,6 +99,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     protected StringBuilder builder = new StringBuilder();
     protected Map<String, String> parameters = new HashMap<String, String>();
     protected boolean checkConstraints = true;
+    protected boolean showAreaButton = true;
 
     public String getPath() {
         return path;
@@ -578,6 +579,8 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         if (additionalParameters != null) {
             builder.append(" ").append(additionalParameters);
         }
+
+        builder.append("showAreaButton=\"").append(showAreaButton).append("\"");
 
         builder.append(">");
 

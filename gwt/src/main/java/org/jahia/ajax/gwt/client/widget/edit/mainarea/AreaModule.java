@@ -79,7 +79,7 @@ public class AreaModule extends SimpleModule {
     private String mockupStyle;
     private String areaType = "jnt:contentList";
     private String areaHolder;
-    private boolean areaAutoEnabled;
+    private boolean showAreaButton;
     private boolean missingList;
     private final LayoutContainer content;
     private String conflictsWith = null;
@@ -99,7 +99,7 @@ public class AreaModule extends SimpleModule {
 
         this.mockupStyle = DOM.getElementAttribute(divElement, "mockupStyle");
         this.missingList = "true".equals(DOM.getElementAttribute(divElement, "missingList"));
-        this.areaAutoEnabled = "true".equals(DOM.getElementAttribute(divElement, "areaAutoEnabled"));
+        this.showAreaButton = "true".equals(DOM.getElementAttribute(divElement, "showAreaButton"));
         this.areaHolder =  DOM.getElementAttribute(divElement, "areaHolder");
         this.conflictsWith = DOM.getElementAttribute(divElement, "conflictsWith");
         String areaType = DOM.getElementAttribute(divElement, "areaType");
@@ -157,7 +157,7 @@ public class AreaModule extends SimpleModule {
             }
             head.addTool(p);
             layout();
-        } else if (missingList && editable && !areaAutoEnabled) {
+        } else if (missingList && editable && showAreaButton) {
             //If We are on edit mode and not in the studio remove the enable/disable button
                 LayoutContainer p = new HorizontalPanel();
 
@@ -189,7 +189,7 @@ public class AreaModule extends SimpleModule {
 
     public void setEnabledEmptyArea() {
         //If We are on edit mode and not in the studio remove the enable/disable button
-        if(!areaAutoEnabled)
+        if(showAreaButton)
         {
             HorizontalPanel p = new HorizontalPanel();
             Image icon =  ToolbarIconProvider.getInstance().getIcon("disableArea").createImage();
@@ -210,10 +210,10 @@ public class AreaModule extends SimpleModule {
             }
             });
             head.addTool(p);
+            addStyleName(mainModule.getConfig().getName() + "EnabledEmptyArea");
+            content.addStyleName(mainModule.getConfig().getName()+"EnabledEmptyAreaContent");
+            layout();
         }
-        addStyleName(mainModule.getConfig().getName() + "EnabledEmptyArea");
-        content.addStyleName(mainModule.getConfig().getName()+"EnabledEmptyAreaContent");
-        layout();
     }
 
     public String getAreaHolder() {

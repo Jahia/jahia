@@ -170,7 +170,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
             boolean isEditable = true;
 
             StringBuilder additionalParameters = new StringBuilder();
-            boolean enableArea = !renderContext.getMainResource().getPath().startsWith("/modules") && SettingsBean.getInstance().isAreaAutoActivated();
+            boolean enableArea = !showAreaButton;
             JCRNodeWrapper createdNode = null;
             if (enableArea) {
                 createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath,"/")).addNode(StringUtils.substringAfterLast(areaPath,"/"), areaType);
@@ -238,7 +238,7 @@ public class AreaTag extends ModuleTag implements ParamParent {
 
     protected void findNode(RenderContext renderContext, Resource currentResource) throws IOException {
         Resource mainResource = renderContext.getMainResource();
-
+        showAreaButton = renderContext.getMainResource().getPath().startsWith("/modules") || !SettingsBean.getInstance().isAreaAutoActivated();
         if (renderContext.isAjaxRequest() && renderContext.getAjaxResource() != null) {
             mainResource = renderContext.getAjaxResource();
         }

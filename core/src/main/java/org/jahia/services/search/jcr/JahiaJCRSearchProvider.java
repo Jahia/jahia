@@ -65,6 +65,7 @@ import org.jahia.services.search.SearchCriteria.Term;
 import org.jahia.services.search.SearchCriteria.Term.MatchType;
 import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.spell.CompositeSpellChecker;
+import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
@@ -92,7 +93,7 @@ import static org.jahia.services.content.JCRContentUtils.*;
  *
  * @author Benjamin Papez
  */
-public class JahiaJCRSearchProvider implements SearchProvider {
+public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.SupportsSuggestion {
 
     private static final Pattern AND_PATTERN = Pattern.compile(" AND ");
 
@@ -1118,14 +1119,26 @@ public class JahiaJCRSearchProvider implements SearchProvider {
     }
 
     /* (non-Javadoc)
-    * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
-    */
+        * @see org.jahia.services.search.SearchProvider#suggest(java.lang.String, java.lang.String, java.util.Locale)
+        */
     public Suggestion suggest(String originalQuery, RenderContext context, int maxTerms) {
+        return suggest(originalQuery, new String[] { context.getSite().getSiteKey() }, context, maxTerms);
+    }
+
+    public Suggestion suggest(SearchCriteria originalQuery, RenderContext context, int maxTermsToSuggest) {
+        return suggest(originalQuery.getTerms().get(0).getTerm(), originalQuery.getSites().getValues(), context, maxTermsToSuggest);
+    }
+
+    public Suggestion suggest(String originalQuery, String[] sites, RenderContext context, int maxTermsToSuggest) {
         if (StringUtils.isBlank(originalQuery)) {
             return null;
         }
 
-        String siteKey = context.getSite().getSiteKey();
+        if (sites.length == 1 && sites[0].equals("-all-")) {
+            List<String> sitesNames = JahiaSitesService.getInstance().getSitesNames();
+            sites = sitesNames.toArray(new String[sitesNames.size()]);
+        }
+
         Locale locale = context.getMainResourceLocale();
         
         Suggestion suggestion = null;
@@ -1139,14 +1152,14 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                     .append(stringToJCRSearchExp(originalQuery
                             + CompositeSpellChecker.SEPARATOR_IN_SUGGESTION
                             + CompositeSpellChecker.MAX_TERMS_PARAM + "="
-                            + maxTerms)).append(")");
+                            + maxTermsToSuggest
+                            + CompositeSpellChecker.SEPARATOR_IN_SUGGESTION
+                            + CompositeSpellChecker.SITES_PARAM + "=" + StringUtils.join(sites, "*")
+                    )).append(")");
             if (locale != null) {
                 xpath.append(" or @jcr:language='").append(locale).append("'");
             }
             xpath.append("]");
-            if (siteKey != null) {
-                xpath.append("/sites/").append(siteKey);
-            }
             xpath.append("/(rep:spellcheck())");
 
             Query query = qm.createQuery(xpath.toString(), Query.XPATH);
@@ -1160,7 +1173,7 @@ public class JahiaJCRSearchProvider implements SearchProvider {
                 }
                 if (logger.isDebugEnabled()) {
                     logger.debug("Making spell check suggestion for '" + originalQuery + "' site '"
-                            + siteKey + "' and locale '" + locale + "' using XPath query ["
+                            + Arrays.asList(sites) + "' and locale '" + locale + "' using XPath query ["
                             + xpath.toString() + "]. Result suggestion: " + suggestion);
                 }
             }

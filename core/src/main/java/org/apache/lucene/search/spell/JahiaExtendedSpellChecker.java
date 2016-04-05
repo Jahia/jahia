@@ -52,9 +52,10 @@ import org.apache.lucene.index.Term;
 import org.apache.lucene.search.*;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.store.Directory;
+import org.jahia.utils.LuceneUtils;
 
 import java.io.IOException;
-import java.util.Iterator;
+import java.util.*;
 
 public class JahiaExtendedSpellChecker extends SpellChecker {
 
@@ -113,10 +114,6 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
      * @param ir
      *            the indexReader of the user index (can be null see field
      *            param)
-     * @param field
-     *            the field of the user index: if field is not null, the
-     *            suggested words are restricted to the words present in this
-     *            field.
      * @param morePopular
      *            return only the suggest words that are as frequent or more
      *            frequent than the searched word (only if restricted mode =
@@ -127,14 +124,23 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
      *         (only if restricted mode): the popularity of the suggest words in
      *         the field of the user index
      */
-    public String[] suggestSimilar(String word, int numSug, IndexReader ir, String field, boolean morePopular,
-            String site, String language) throws IOException {
+    public String[] suggestSimilar(String word, int numSug, IndexReader ir, boolean morePopular,
+                                   String[] sites, String language) throws IOException {
 
         float min = this.minScore;
         final int lengthWord = word.length();
 
-        final int freq = (ir != null && field != null) ? ir.docFreq(new Term(field, word)) : 0;
-        final int goalFreq = (morePopular && ir != null && field != null) ? freq : 0;
+        List<String> fields = new ArrayList<>();
+        for (String site : sites) {
+            fields.add(LuceneUtils.getFullTextFieldName(site, language));
+        }
+
+        int freq = 0;
+        for (String aField : fields) {
+            freq += (ir != null) ? ir.docFreq(new Term(aField, word)) : 0;
+        }
+
+        final int goalFreq = (morePopular && ir != null) ? freq : 0;
         // if the word exists in the real index and we don't care for word
         // frequency, return the word itself
         if (!morePopular && freq > 0) {
@@ -151,8 +157,10 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         }
 
         // ensure site
-        if (site != null) {
-            add(query, F_SITE, site, BooleanClause.Occur.MUST);
+        BooleanQuery subQuery = new BooleanQuery();
+        query.add(new BooleanClause(subQuery, BooleanClause.Occur.MUST));
+        for (String site : sites) {
+            add(subQuery, F_SITE, site, Occur.SHOULD);
         }
 
         for (int ng = getMin(lengthWord); ng <= getMax(lengthWord); ng++) {
@@ -212,6 +220,7 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
         int stop = hits == null ? 0 : Math.min(hits.length, 10 * numSug);
 
         SuggestWord sugWord = new SuggestWord();
+        Set<String> foundWords = new HashSet<>();
         for (int i = 0; i < stop; i++) {
 
             sugWord.string = usedSearcher.doc(hits[i].doc).get(language != null ? (F_WORD + "-" + language) : F_WORD); // get
@@ -223,14 +232,24 @@ public class JahiaExtendedSpellChecker extends SpellChecker {
                 continue;
             }
 
+            if (foundWords.contains(sugWord.string)) {
+                continue;
+            }
+
+            foundWords.add(sugWord.string);
+
             // edit distance
             sugWord.score = getStringDistance().getDistance(word, sugWord.string);
             if (sugWord.score < min) {
                 continue;
             }
 
-            if (ir != null && field != null) { // use the user index
-                sugWord.freq = ir.docFreq(new Term(field, sugWord.string)); // freq
+            if (ir != null) { // use the user index
+                sugWord.freq = 0;
+                for (String aField : fields) {
+                    sugWord.freq += ir.docFreq(new Term(aField, sugWord.string)); // freq
+                }
+
                 // in
                 // the
                 // index

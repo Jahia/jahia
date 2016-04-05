@@ -68,6 +68,7 @@
         <module>jspapiusage-repackaging</module>
         <module>slf4j-loglistener</module>
         <module>bridging-log4j-appender</module>
+        <module>jaas-module</module>
         <!--<module>hazelcast-discovery</module>-->
     </modules>
 

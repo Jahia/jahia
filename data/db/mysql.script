@@ -11,7 +11,7 @@ jahia.database.datasource = jdbc/jahia
 jahia.quartz.jdbcDelegate = org.quartz.impl.jdbcjobstore.StdJDBCDelegate
 jahia.jackrabbit.persistence = org.apache.jackrabbit.core.persistence.pool.MySqlPersistenceManager
 jahia.jackrabbit.filesystem = org.apache.jackrabbit.core.fs.db.DbFileSystem
-jahia.jackrabbit.journal = org.apache.jackrabbit.core.journal.DatabaseJournal
+jahia.jackrabbit.journal = org.jahia.services.content.impl.jackrabbit.JahiaDatabaseJournal
 jahia.jackrabbit.schema = mysql
 
 jahia.database.schemascriptdir = sql/schema/mysql

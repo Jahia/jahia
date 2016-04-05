@@ -175,6 +175,10 @@ public class AreaTag extends ModuleTag implements ParamParent {
             if (enableArea) {
                 createdNode = session.getNode(StringUtils.substringBeforeLast(areaPath,"/")).addNode(StringUtils.substringAfterLast(areaPath,"/"), areaType);
                 session.save();
+                List<String> contributeTypes = contributeTypes(renderContext, resource.getNode());
+                if (contributeTypes != null) {
+                    nodeTypes = StringUtils.join(contributeTypes, " ");
+                }
                 additionalParameters.append(" areaAutoEnabled=\"true\"");
             } else {
                 additionalParameters.append(" missingList=\"true\"");

@@ -389,7 +389,7 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
         return exclusionFilter;
     }
 
-    private List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
+    protected List<String> contributeTypes(RenderContext renderContext, JCRNodeWrapper node) {
         if (!"contributemode".equals(renderContext.getEditModeConfigName())) {
             return null;
         }

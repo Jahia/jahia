@@ -46,8 +46,10 @@ package org.jahia.services.content;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.decorator.JCRMountPointNode;
+import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
+import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -59,6 +61,7 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -75,6 +78,7 @@ public class MountPointListener extends DefaultEventListener implements External
 
     private JCRStoreProviderChecker providerChecker;
     private SchedulerService schedulerService;
+    private ModuleCacheProvider cacheProvider;
 
     public void setProviderChecker(JCRStoreProviderChecker providerChecker) {
         this.providerChecker = providerChecker;
@@ -82,6 +86,10 @@ public class MountPointListener extends DefaultEventListener implements External
 
     public void setSchedulerService(SchedulerService schedulerService) {
         this.schedulerService = schedulerService;
+    }
+
+    public void setCacheProvider(ModuleCacheProvider cacheProvider) {
+        this.cacheProvider = cacheProvider;
     }
 
     private static final ThreadLocal<Boolean> inListener = new ThreadLocal<Boolean>() {
@@ -210,6 +218,7 @@ public class MountPointListener extends DefaultEventListener implements External
             boolean isExternal = change.getValue().isExternal();
             JCRStoreProvider p = JCRStoreService.getInstance().getSessionFactory().getProviders().get(uuid);
             unmount(uuid, p);
+
             if (status != Event.NODE_REMOVED) {
                 mount(uuid, p,isExternal);
             }
@@ -229,6 +238,7 @@ public class MountPointListener extends DefaultEventListener implements External
     }
 
     private void unmount(String uuid, JCRStoreProvider p) {
+        cacheProvider.flushChildrenDependenciesOfPath(cacheProvider.getDependenciesCache(), p.getMountPoint(),true);
         providerChecker.remove(uuid);
         if (p != null) {
             logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), p.getKey());

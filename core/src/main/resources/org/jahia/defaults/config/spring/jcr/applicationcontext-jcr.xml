@@ -345,6 +345,7 @@
     <bean id="mountPointListener" class="org.jahia.services.content.MountPointListener">
         <property name="schedulerService" ref="SchedulerService"/>
         <property name="providerChecker" ref="JCRStoreProviderChecker"/>
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
 
     <bean id="htmlCacheEventListener" class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">

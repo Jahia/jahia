@@ -582,6 +582,17 @@ public class SettingsBean implements ServletContextAware, InitializingBean, Appl
                 setSystemProperty("org.apache.jackrabbit.server.remoting.davex.batchread-config",
                         "/jahia/batchread.properties");
             }
+            
+            if (System.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") == null
+                    && properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace") != null) {
+                setSystemProperty("jahia.jackrabbit.bundleCacheSize.workspace",
+                        properties.getProperty("jahia.jackrabbit.bundleCacheSize.workspace"));
+            }
+            if (System.getProperty("jahia.jackrabbit.bundleCacheSize.versioning") == null
+                    && properties.getProperty("jahia.jackrabbit.bundleCacheSize.versioning") != null) {
+                setSystemProperty("jahia.jackrabbit.bundleCacheSize.versioning",
+                        properties.getProperty("jahia.jackrabbit.bundleCacheSize.versioning"));
+            }
         } catch (IOException e) {
             logger.error("Unable to determine JCR repository home", e);
         }

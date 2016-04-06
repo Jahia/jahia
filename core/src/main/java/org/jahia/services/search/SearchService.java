@@ -94,22 +94,5 @@ public abstract class SearchService extends JahiaService {
      *         checker does not know how to correct the query <code>null</code>
      *         is returned.
      */
-    public abstract Suggestion suggest(SearchCriteria originalQuery, RenderContext context, int maxTermsToSuggest);
-
-    /**
-     * Returns a modified suggestion for the original query based on the spell
-     * checker dictionary. If the spelling is correct or the spell checker does
-     * not know how to correct the query or the provider does not support this
-     * feature <code>null</code> is returned.
-     *
-     * @param originalQuery original query string
-     * @param context context object, containing information about current site, workspace, locale etc.
-     * @param maxTermsToSuggest the maximum number of terms to be suggested
-     * @return a modified suggestion for the original query based on the spell
-     *         checker dictionary. If the spelling is correct or the spell
-     *         checker does not know how to correct the query <code>null</code>
-     *         is returned.
-     * @deprecated use suggest(SearchCriteria originalQuery, RenderContext context, int maxTermsToSuggest)
-     */
     public abstract Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest);
 }

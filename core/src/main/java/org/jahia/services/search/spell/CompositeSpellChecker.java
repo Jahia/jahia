@@ -45,10 +45,7 @@ package org.jahia.services.search.spell;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.core.query.QueryHandler;
-import org.apache.jackrabbit.core.query.lucene.FieldNames;
-import org.apache.jackrabbit.core.query.lucene.JahiaIndexingConfigurationImpl;
-import org.apache.jackrabbit.core.query.lucene.JahiaSecondaryIndex;
-import org.apache.jackrabbit.core.query.lucene.SearchIndex;
+import org.apache.jackrabbit.core.query.lucene.*;
 import org.apache.jackrabbit.spi.Name;
 import org.apache.jackrabbit.spi.commons.query.*;
 import org.apache.lucene.analysis.Analyzer;
@@ -97,7 +94,6 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
 
     public static final String SEPARATOR_IN_SUGGESTION = "#!#";
     public static final String MAX_TERMS_PARAM = "maxTerms";
-    public static final String SITES_PARAM = "sites";
 
     public static final class FiveSecondsRefreshInterval extends CompositeSpellChecker {
         public FiveSecondsRefreshInterval() {
@@ -206,12 +202,8 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                     if (!spellcheckInfo.containsKey("statement")
                             && node.getOperation() == RelationQueryNode.OPERATION_SPELLCHECK) {
                         String spellCheckParams = node.getStringValue();
-                        String[] s = spellCheckParams.split(SEPARATOR_IN_SUGGESTION);
-                        spellcheckInfo.put("statement", s[0]);
-                        spellcheckInfo.put("maxTermCount", StringUtils.substringAfter(s[1], MAX_TERMS_PARAM + "="));
-                        if (s.length > 2) {
-                            spellcheckInfo.put("sites", StringUtils.substringAfter(s[2], SITES_PARAM + "="));
-                        }
+                        spellcheckInfo.put("statement", StringUtils.substringBefore(spellCheckParams, SEPARATOR_IN_SUGGESTION));
+                        spellcheckInfo.put("maxTermCount", StringUtils.substringAfter(spellCheckParams, SEPARATOR_IN_SUGGESTION + MAX_TERMS_PARAM + "="));
                     } else if (!spellcheckInfo.containsKey("language") && node.getRelativePath() != null
                             && node.getRelativePath().getNumOperands() > 0) {
                         Name propertyName = ((LocationStepQueryNode) node.getRelativePath().getOperands()[0])
@@ -227,7 +219,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                     for (int i : new int[]{0, 1}) {
                         if (node.getPathSteps().length > i + 1
                                 && "sites".equals(node.getPathSteps()[i].getNameTest().getLocalName())) {
-                            spellcheckInfo.put("sites", node.getPathSteps()[++i].getNameTest().getLocalName());
+                            spellcheckInfo.put("site", node.getPathSteps()[++i].getNameTest().getLocalName());
                         }
                     }
                     return super.visit(node, data);
@@ -255,7 +247,9 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                 maxTermCount = parsedMaxTermCount;
             }
         }
-        return spellChecker.suggest(spellcheckInfo.get("statement"), StringUtils.split(spellcheckInfo.get("sites"), "*"), spellcheckInfo.get("language"), maxTermCount);
+
+        return spellChecker.suggest(spellcheckInfo.get("statement"), spellcheckInfo
+                .get("site"), spellcheckInfo.get("language"), maxTermCount);
     }
 
     public void close() {
@@ -341,18 +335,18 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * correct <code>null</code> is returned.
          *
          * @param statement      the fulltext query statement.
-         * @param sites          the sites being searched
+         * @param site           the site being searched
          * @param language       the language being searched
          * @param maxSuggestions maximum number of suggestions to return
          * @return a suggestion or <code>null</code>.
          */
-        String suggest(String statement, String[] sites, String language, int maxSuggestions) throws IOException {
+        String suggest(String statement, String site, String language, int maxSuggestions) throws IOException {
             // tokenize the statement (field name doesn't matter actually...)
             List<String> words = new ArrayList<String>();
             List<Token> tokens = new ArrayList<Token>();
-            tokenize(statement, words, tokens, null, language);
+            tokenize(statement, words, tokens, site, language);
 
-            String[][] suggestions = check((String[]) words.toArray(new String[words.size()]), sites, language, maxSuggestions);
+            String[][] suggestions = check((String[]) words.toArray(new String[words.size()]), site, language, maxSuggestions);
             if (suggestions != null) {
                 int possibleSuggestionsCount = 1;
                 for (String[] suggestionsPerWord : suggestions) {
@@ -460,7 +454,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
          * <code>words</code> are spelled correctly.
          * @throws IOException if an error occurs while spell checking.
          */
-        private String[][] check(String words[], String[] sites, String language, int maxSuggestionCount) throws IOException {
+        private String[][] check(String words[], String site, String language, int maxSuggestionCount) throws IOException {
             refreshSpellChecker();
             boolean hasSuggestion = false;
             IndexReader reader = handler.getIndexReader();
@@ -470,7 +464,7 @@ public class CompositeSpellChecker implements org.apache.jackrabbit.core.query.l
                         String[][] suggestion = new String[words.length][];
                         for (int i = 0; i < words.length; i++) {
                             String[] similar = spellChecker.suggestSimilar(words[i], maxSuggestionCount, reader,
-                                    true, sites, language);
+                                    LuceneUtils.getFullTextFieldName(site, language), true, site, language);
                             if (similar.length > 0) {
                                 suggestion[i] = similar;
                                 hasSuggestion = true;

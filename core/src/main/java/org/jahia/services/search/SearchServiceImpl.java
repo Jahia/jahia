@@ -57,6 +57,7 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.exception.InvalidSearchProviderException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.context.ApplicationListener;
@@ -130,22 +131,8 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
     }
 
     @Override
-    public Suggestion suggest(SearchCriteria originalQuery, RenderContext context, int maxTermsToSuggest) {
-        if (getCurrentProvider() instanceof SearchProvider.SupportsSuggestion) {
-            return ((SearchProvider.SupportsSuggestion) getCurrentProvider()).suggest(originalQuery, context, maxTermsToSuggest);
-        } else {
-            return getCurrentProvider().suggest(originalQuery.getTerms().get(0).getTerm(), context, maxTermsToSuggest);
-        }
-    }
-
-    @Override
     public Suggestion suggest(String originalQuery, RenderContext context, int maxTermsToSuggest) {
-        SearchCriteria sc = new SearchCriteria();
-        sc.setTerm(originalQuery);
-        SearchCriteria.CommaSeparatedMultipleValue value = new SearchCriteria.CommaSeparatedMultipleValue();
-        value.setValue(context.getSite().getSiteKey());
-        sc.setSites(value);
-        return suggest(sc, context, maxTermsToSuggest);
+        return getCurrentProvider().suggest(originalQuery, context, maxTermsToSuggest);
     }
 
     /**

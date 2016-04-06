@@ -43,16 +43,17 @@
  */
 package org.jahia.taglibs.search;
 
+import java.util.List;
+
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.PageContext;
+
 import org.apache.commons.lang.SerializationUtils;
+import org.slf4j.Logger;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.search.SearchCriteria;
 import org.jahia.services.search.Suggestion;
-import org.slf4j.Logger;
-
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.PageContext;
-import java.util.List;
 
 /**
  * Performs the content search and exposes search results for being displayed.
@@ -167,7 +168,7 @@ public class SuggestionsTag extends ResultsTag {
         SearchCriteria suggestedCriteria = null;
         if (!criteria.getTerms().isEmpty() && !criteria.getTerms().get(0).isEmpty()) {
             suggestion = ServicesRegistry.getInstance().getSearchService().suggest(
-                    criteria, getRenderContext(), maxTermsToSuggest);
+                    criteria.getTerms().get(0).getTerm(), getRenderContext(), maxTermsToSuggest);
             if (logger.isDebugEnabled()) {
                 logger.debug("Suggestion for search query '" + criteria.getTerms().get(0).getTerm() + "' site '"
                         + getRenderContext().getSite().getSiteKey() + "' and locale "

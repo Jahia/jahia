@@ -260,7 +260,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
 
                 if (flushChilds) {
-                    flushChildsDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
+                    cacheProvider.flushChildrenDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
                 }
 
                 if (flushParent) {
@@ -344,22 +344,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
         if (SettingsBean.getInstance().isClusterActivated()) {
             cacheProvider.propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
-        }
-    }
-
-    private void flushChildsDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path: {}", path);
-        }
-        @SuppressWarnings("unchecked")
-        List<String> keys = depCache.getKeys();
-        for (String key : keys) {
-            if (key.startsWith(path)) {
-                cacheProvider.invalidate(key, propagateToOtherClusterNodes);
-            }
-        }
-        if (SettingsBean.getInstance().isClusterActivated()) {
-            cacheProvider.propagateChildrenDependenciesFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }
 

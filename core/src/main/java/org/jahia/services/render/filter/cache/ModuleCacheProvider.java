@@ -59,10 +59,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import java.text.ParseException;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Instantiates and provides access to the module output and dependency caches.
@@ -269,6 +266,28 @@ public class ModuleCacheProvider implements InitializingBean {
                 logger.debug("Sending flush of children of {} across cluster", path);
             }
             syncCache.put(new Element("FLUSH_CHILDS-" + UUID.randomUUID(), new CacheClusterEvent(path,getClusterRevision())));
+        }
+    }
+
+    /**
+     * Flush Children dependencies of a specific path
+     * @param depCache dependency cache
+     * @param path path to flush all its children cache
+     * @param propagateToOtherClusterNodes true if it should propagate to other cluster nodes
+     */
+    public void flushChildrenDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing dependencies for path: {}", path);
+        }
+        @SuppressWarnings("unchecked")
+        List<String> keys = depCache.getKeys();
+        for (String key : keys) {
+            if (key.startsWith(path)) {
+                invalidate(key, propagateToOtherClusterNodes);
+            }
+        }
+        if (SettingsBean.getInstance().isClusterActivated()) {
+            propagateChildrenDependenciesFlushToCluster(path, propagateToOtherClusterNodes);
         }
     }
 

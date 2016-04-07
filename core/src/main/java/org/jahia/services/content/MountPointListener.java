@@ -239,7 +239,7 @@ public class MountPointListener extends DefaultEventListener implements External
 
     private void unmount(String uuid, JCRStoreProvider p) {
         providerChecker.remove(uuid);
-        if (p != null) {
+        if (p != null && cacheProvider != null) {
             cacheProvider.flushChildrenDependenciesOfPath(cacheProvider.getDependenciesCache(), p.getMountPoint(), true);
             logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), p.getKey());
             p.stop();

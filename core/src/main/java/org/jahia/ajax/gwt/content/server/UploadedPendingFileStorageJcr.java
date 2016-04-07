@@ -57,9 +57,7 @@ import org.apache.jackrabbit.value.BinaryImpl;
 import org.jahia.api.Constants;
 import org.jahia.bin.SessionNamedDataStorageSupport;
 import org.jahia.exceptions.JahiaRuntimeException;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRSessionFactory;
-import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.*;
 
 /**
  * File storage that keeps files in JCR.
@@ -131,13 +129,21 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     @Override
     public void removeIfExists(String sessionID) {
-        sessionID = Text.escapeIllegalJcrChars(sessionID);
-        Session session = getSession();
+        final String escapedSessionID = Text.escapeIllegalJcrChars(sessionID);
         try {
-            session.removeItem(getPathString(jcrFolderName, sessionID));
-            session.save();
-        } catch (PathNotFoundException e) {
-            // Session folder does not exist.
+            // Use dedicated system session, as this may be called outside of the scope of a request
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+                @Override
+                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    try {
+                        session.removeItem(getPathString(jcrFolderName, escapedSessionID));
+                        session.save();
+                    } catch (PathNotFoundException e) {
+                        // Session folder does not exist.
+                    }
+                    return null;
+                }
+            });
         } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }

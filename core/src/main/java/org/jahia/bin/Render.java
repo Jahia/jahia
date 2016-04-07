@@ -455,7 +455,8 @@ public class Render extends HttpServlet implements Controller, ServletConfigAwar
             final Attributes attributes = element.getAttributes();
             if (attributes != null) {
                 for (Attribute attribute : attributes) {
-                    if (EVENT_ATTRIBUTE_NAMES.contains(attribute.getName())) {
+                    String name = attribute.getName();
+                    if (name != null && EVENT_ATTRIBUTE_NAMES.contains(name.toLowerCase())) {
                         outputDocument.remove(attribute);
                     }
                 }

@@ -177,7 +177,7 @@ class NodeHelper {
         }
         try{
             if(!node.getPath().equals("/") && node.getParent().isNodeType(Constants.JAHIAMIX_AUTOSPLITFOLDERS)) {
-                //reload the node for splittype to have all pathes are correct, to load the permissions
+                //reload the node for splittype to have all pathes correct, to load the permissions
                 node = JCRSessionFactory.getInstance().getCurrentUserSession(node.getSession().getWorkspace().getName(), node.getSession().getLocale()).getNodeByUUID(node.getIdentifier());
             }
         }catch(Exception ex) {

@@ -49,7 +49,6 @@ import org.jahia.services.content.decorator.JCRMountPointNode;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.scheduler.BackgroundJob;
 import org.jahia.services.scheduler.SchedulerService;
-import org.jahia.settings.SettingsBean;
 import org.quartz.JobDataMap;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
@@ -61,7 +60,6 @@ import javax.jcr.observation.Event;
 import javax.jcr.observation.EventIterator;
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -239,9 +237,13 @@ public class MountPointListener extends DefaultEventListener implements External
 
     private void unmount(String uuid, JCRStoreProvider p) {
         providerChecker.remove(uuid);
-        if (p != null && cacheProvider != null) {
-            cacheProvider.flushChildrenDependenciesOfPath(cacheProvider.getDependenciesCache(), p.getMountPoint(), true);
-            logger.info("Unmounting the provider {} with key {}", p.getMountPoint(), p.getKey());
+        if (p != null) {
+            String mountPointPath = p.getMountPoint();
+            if (cacheProvider != null) {
+                logger.info("Flushing caches for provider mount path {}", mountPointPath);
+                cacheProvider.flushChildrenDependenciesOfPath(mountPointPath, false);
+            }
+            logger.info("Unmounting the provider {} with key {}", mountPointPath, p.getKey());
             p.stop();
         }
     }

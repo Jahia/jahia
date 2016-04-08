@@ -271,18 +271,21 @@ public class ModuleCacheProvider implements InitializingBean {
 
     /**
      * Flush Children dependencies of a specific path
-     * @param depCache dependency cache
      * @param path path to flush all its children cache
      * @param propagateToOtherClusterNodes true if it should propagate to other cluster nodes
      */
-    public void flushChildrenDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
+    public void flushChildrenDependenciesOfPath(String path, boolean propagateToOtherClusterNodes) {
         if (logger.isDebugEnabled()) {
             logger.debug("Flushing dependencies for path: {}", path);
         }
         @SuppressWarnings("unchecked")
-        List<String> keys = depCache.getKeys();
+        List<String> keys = dependenciesCache.getKeys();
+        String pathWithTrailingSlash = null;
+        if (!keys.isEmpty()) {
+            pathWithTrailingSlash = path + '/';
+        }
         for (String key : keys) {
-            if (key.startsWith(path)) {
+            if (key.equals(path) || key.startsWith(pathWithTrailingSlash)) {
                 invalidate(key, propagateToOtherClusterNodes);
             }
         }

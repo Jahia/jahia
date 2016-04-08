@@ -151,6 +151,8 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     private Set<String> missingDependencies = new HashSet<String>();
 
+    private boolean removeMixins = false;
+
     public DocumentViewImportHandler(JCRSessionWrapper session, String rootPath) throws IOException {
         this(session, rootPath, null, null);
     }
@@ -605,19 +607,20 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
     private void addMixins(JCRNodeWrapper child, Attributes atts) throws RepositoryException {
         ExtendedNodeType[] existingMixinNodeTypes = child.getMixinNodeTypes();
         String m = atts.getValue(Constants.JCR_MIXINTYPES);
-        if(m!=null){
+        if (m != null) {
             Set<String> addedMixins =  new LinkedHashSet<String>(Arrays.asList(StringUtils.split(m, " ,")));
-            // first we remove existing mixins that are no longer present in added mixins
-            for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
-                String existingMixinName = existingMixin.getName();
-                if (!addedMixins.contains(existingMixinName)) {
-                    if (logger.isDebugEnabled()) {
-                        logger.debug("Removing mixin {} from node {}", existingMixinName, child.getPath());
+            if (removeMixins) {
+                // first we remove existing mixins that are no longer present in added mixins
+                for (ExtendedNodeType existingMixin : existingMixinNodeTypes) {
+                    String existingMixinName = existingMixin.getName();
+                    if (!addedMixins.contains(existingMixinName)) {
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("Removing mixin {} from node {}", existingMixinName, child.getPath());
+                        }
+                        child.removeMixin(existingMixinName);
                     }
-                    child.removeMixin(existingMixinName);
                 }
             }
-
             // and now we add the mixins
             for (String addedMixin : addedMixins) {
                 try {
@@ -626,7 +629,7 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
                     logger.warn("Cannot add node type " + e.getMessage());
                 }
             }
-        } else {
+        } else if (removeMixins) {
             // remove all mixins as none is set on the node
             for (ExtendedNodeType mixin : child.getMixinNodeTypes()) {
                 child.removeMixin(mixin.getName());
@@ -1026,5 +1029,13 @@ public class DocumentViewImportHandler extends BaseDocumentViewHandler implement
 
     public void setDocumentLocator(Locator documentLocator) {
         this.documentLocator = documentLocator;
+    }
+
+    public boolean isRemoveMixins() {
+        return removeMixins;
+    }
+
+    public void setRemoveMixins(boolean removeMixins) {
+        this.removeMixins = removeMixins;
     }
 }

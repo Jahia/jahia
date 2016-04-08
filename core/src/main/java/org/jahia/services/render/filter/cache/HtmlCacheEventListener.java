@@ -260,7 +260,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 }
 
                 if (flushChilds) {
-                    cacheProvider.flushChildrenDependenciesOfPath(depCache, path, propagateToOtherClusterNodes);
+                    cacheProvider.flushChildrenDependenciesOfPath(path, propagateToOtherClusterNodes);
                 }
 
                 if (flushParent) {

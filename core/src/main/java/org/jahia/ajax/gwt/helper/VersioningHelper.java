@@ -184,15 +184,18 @@ public class VersioningHelper {
                 }
                 versionManager.checkout(node.getPath());
                 UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
-                InputStream is = null;
                 try {
-                    is = item.getContentStream();
-                    node.getFileContent().uploadFile(is, JCRContentUtils.getMimeType(StringUtils.isNotEmpty(tmpName) ? tmpName : node.getName(), item.getContentType()));
+                    InputStream is = null;
+                    try {
+                        is = item.getContentStream();
+                        node.getFileContent().uploadFile(is, JCRContentUtils.getMimeType(StringUtils.isNotEmpty(tmpName) ? tmpName : node.getName(), item.getContentType()));
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                    }
                 } finally {
-                    IOUtils.closeQuietly(is);
+                    item.close();
                     fileStorage.remove(httpSessionID, tmpName);
                 }
-
                 session.save();
                 versionManager.checkpoint(node.getPath());
                 versionService.addVersionLabel(node, getVersionLabelCurrent());

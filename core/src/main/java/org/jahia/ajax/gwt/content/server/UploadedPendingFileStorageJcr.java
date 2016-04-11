@@ -49,7 +49,6 @@ import java.io.InputStream;
 import javax.jcr.Binary;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.Session;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.jackrabbit.util.Text;
@@ -71,25 +70,40 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
     }
 
     @Override
-    public void put(String sessionID, String name, UploadedPendingFile file) {
-        sessionID = Text.escapeIllegalJcrChars(sessionID);
-        name = Text.escapeIllegalJcrChars(name);
-        JCRNodeWrapper pendingFiles = getFolderCreateIfNeeded(getRootNode(), jcrFolderName);
-        JCRNodeWrapper sessionPendingFiles = getFolderCreateIfNeeded(pendingFiles, sessionID);
+    public void put(String sessionID, String name, final UploadedPendingFile file) {
+
+        final String finalSessionID = Text.escapeIllegalJcrChars(sessionID);
+        final String finalName = Text.escapeIllegalJcrChars(name);
+
         try {
-            if (sessionPendingFiles.hasNode(name)) {
-                sessionPendingFiles.getNode(name).remove();
-            }
-            JCRNodeWrapper fileNode = sessionPendingFiles.addNode(name, Constants.JAHIANT_TEMP_FILE);
-            fileNode.setProperty(Constants.JCR_MIMETYPE, file.getContentType());
-            Binary contentBinary = new BinaryImpl(file.getContentStream());
-            try {
-                fileNode.setProperty(Constants.JCR_DATA, contentBinary);
-            } finally {
-                contentBinary.dispose();
-            }
-            getSession().save();
-        } catch (RepositoryException | IOException e) {
+
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+
+                @Override
+                public Void doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
+                    JCRNodeWrapper pendingFiles = getFolderCreateIfNeeded(jcrSession.getRootNode(), jcrFolderName);
+                    JCRNodeWrapper sessionPendingFiles = getFolderCreateIfNeeded(pendingFiles, finalSessionID);
+                    if (sessionPendingFiles.hasNode(finalName)) {
+                        sessionPendingFiles.getNode(finalName).remove();
+                    }
+                    JCRNodeWrapper fileNode = sessionPendingFiles.addNode(finalName, Constants.JAHIANT_TEMP_FILE);
+                    fileNode.setProperty(Constants.JCR_MIMETYPE, file.getContentType());
+                    Binary contentBinary;
+                    try {
+                        contentBinary = new BinaryImpl(file.getContentStream());
+                    } catch (IOException e) {
+                        throw new JahiaRuntimeException(e);
+                    }
+                    try {
+                        fileNode.setProperty(Constants.JCR_DATA, contentBinary);
+                    } finally {
+                        contentBinary.dispose();
+                    }
+                    jcrSession.save();
+                    return null;
+                }
+            });
+        } catch (RepositoryException e) {
             throw new JahiaRuntimeException(e);
         }
     }
@@ -116,31 +130,18 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     @Override
     public void remove(String sessionID, String name) {
-        sessionID = Text.escapeIllegalJcrChars(sessionID);
-        name = Text.escapeIllegalJcrChars(name);
-        Session session = getSession();
-        try {
-            session.removeItem(getPathString(jcrFolderName, sessionID, name));
-            session.save();
-        } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
-        }
-    }
 
-    @Override
-    public void removeIfExists(String sessionID) {
-        final String escapedSessionID = Text.escapeIllegalJcrChars(sessionID);
+        final String finalSessionID = Text.escapeIllegalJcrChars(sessionID);
+        final String finalName = Text.escapeIllegalJcrChars(name);
+
         try {
-            // Use dedicated system session, as this may be called outside of the scope of a request
-            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Object>() {
+
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
+
                 @Override
-                public Object doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    try {
-                        session.removeItem(getPathString(jcrFolderName, escapedSessionID));
-                        session.save();
-                    } catch (PathNotFoundException e) {
-                        // Session folder does not exist.
-                    }
+                public Void doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
+                    jcrSession.removeItem(getPathString(jcrFolderName, finalSessionID, finalName));
+                    jcrSession.save();
                     return null;
                 }
             });
@@ -149,41 +150,42 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
         }
     }
 
-    private JCRNodeWrapper getFolderCreateIfNeeded(JCRNodeWrapper parent, String name) {
+    @Override
+    public void removeIfExists(String sessionID) {
+
+        final String finalSessionID = Text.escapeIllegalJcrChars(sessionID);
 
         try {
 
-            if (parent.hasNode(name)) {
-                return parent.getNode(name);
-            }
-            parent.addNode(name, Constants.JAHIANT_TEMP_FOLDER);
-            getSession().save();
+            JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Void>() {
 
-            // Even though we check target folder existence before adding a new one, there might be a concurrent thread doing the same
-            // simultaneously, so we both may succeed adding a new folder in case multiple equally named child nodes are allowed by the
-            // parent node (this is the actual case with the root node). So, to make sure any threads always use the same folder, just
-            // pick the one with index equal to 1 (this is what getNode() does in case there are multiple equally named items exist).
+                @Override
+                public Void doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
+                    jcrSession.removeItem(getPathString(jcrFolderName, finalSessionID));
+                    jcrSession.save();
+                    return null;
+                }
+            });
+        } catch (PathNotFoundException e) {
+            // Session folder does not exist.
+        } catch (RepositoryException e) {
+            throw new JahiaRuntimeException(e);
+        }
+    }
+
+    private JCRNodeWrapper getFolderCreateIfNeeded(JCRNodeWrapper parent, String name) throws RepositoryException {
+
+        if (parent.hasNode(name)) {
             return parent.getNode(name);
-
-        } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
         }
-    }
+        parent.addNode(name, Constants.JAHIANT_TEMP_FOLDER);
+        parent.getSession().save();
 
-    private static JCRSessionWrapper getSession() {
-        try {
-            return JCRSessionFactory.getInstance().getCurrentSystemSession(Constants.EDIT_WORKSPACE, null, null);
-        } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
-        }
-    }
-
-    private static JCRNodeWrapper getRootNode() {
-        try {
-            return getSession().getRootNode();
-        } catch (RepositoryException e) {
-            throw new JahiaRuntimeException(e);
-        }
+        // Even though we check target folder existence before adding a new one, there might be a concurrent thread doing the same
+        // simultaneously, so we both may succeed adding a new folder in case multiple equally named child nodes are allowed by the
+        // parent node (this is the actual case with the root node). So, to make sure any threads always use the same folder, just
+        // pick the one with index equal to 1 (this is what getNode() does in case there are multiple equally named items exist).
+        return parent.getNode(name);
     }
 
     private static String getPathString(String... pathElements) {
@@ -192,31 +194,40 @@ public class UploadedPendingFileStorageJcr extends SessionNamedDataStorageSuppor
 
     private UploadedPendingFile retrieve(String sessionID, String name) throws RepositoryException {
 
-        sessionID = Text.escapeIllegalJcrChars(sessionID);
-        name = Text.escapeIllegalJcrChars(name);
-        final JCRNodeWrapper fileNode;
-        fileNode = getSession().getNode(getPathString(jcrFolderName, sessionID, name));
+        final String finalSessionID = Text.escapeIllegalJcrChars(sessionID);
+        final String finalName = Text.escapeIllegalJcrChars(name);
 
-        return new UploadedPendingFile() {
+        return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<UploadedPendingFile>() {
 
             @Override
-            public String getContentType() {
-                return fileNode.getPropertyAsString(Constants.JCR_MIMETYPE);
-            }
+            public UploadedPendingFile doInJCR(JCRSessionWrapper jcrSession) throws RepositoryException {
 
-            @Override
-            public InputStream getContentStream() {
-                try {
-                    Binary contentBinary = fileNode.getProperty(Constants.JCR_DATA).getBinary();
-                    try {
-                        return contentBinary.getStream();
-                    } finally {
+                JCRNodeWrapper fileNode = jcrSession.getNode(getPathString(jcrFolderName, finalSessionID, finalName));
+                final Binary contentBinary = fileNode.getProperty(Constants.JCR_DATA).getBinary();
+                final String contentType = fileNode.getPropertyAsString(Constants.JCR_MIMETYPE);
+
+                return new UploadedPendingFile() {
+
+                    @Override
+                    public String getContentType() {
+                        return contentType;
+                    }
+
+                    @Override
+                    public InputStream getContentStream() {
+                        try {
+                            return contentBinary.getStream();
+                        } catch (RepositoryException e) {
+                            throw new JahiaRuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void close() {
                         contentBinary.dispose();
                     }
-                } catch (RepositoryException e) {
-                    throw new JahiaRuntimeException(e);
-                }
+                };
             }
-        };
+        });
     }
 }

@@ -57,6 +57,15 @@ public interface UploadedPendingFile {
 
     /**
      * @return File bytes stream
+     * <p>
+     * It is invoker code responsibility, to close any stream retrieved via this method.
      */
     InputStream getContentStream();
+
+    /**
+     * Release any associated internal resources (but not streams obtained via getContentStream).
+     * <p>
+     * The uploaded file object shouldn't/cannot be used after close invocation.
+     */
+    void close();
 }

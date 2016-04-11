@@ -289,6 +289,10 @@ public class GWTFileManagerUploadServlet extends HttpServlet {
                     public InputStream getContentStream() {
                         return contentStream;
                     }
+
+                    @Override
+                    public void close() {
+                    }
                 });
             } finally {
                 contentStream.close();

@@ -397,39 +397,45 @@ public class PropertiesHelper {
                                 // storage in this case. QA-8249 is to refactor the front end to not submit fake values like "application/pdf" as an
                                 // actual file names.
                                 UploadedPendingFile fileItem = fileStorage.get(httpSessionID, propValue.getString());
+                                try {
 
-                                boolean clear = propValue.getString().equals("clear");
-                                if (!clear && fileItem == null) {
-                                    continue;
-                                }
+                                    boolean clear = propValue.getString().equals("clear");
+                                    if (!clear && fileItem == null) {
+                                        continue;
+                                    }
 
-                                ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
-                                if (end != null) {
-                                    try {
-                                        if (!clear) {
-                                            Node content;
-                                            String s = end.getRequiredPrimaryTypeNames()[0];
-                                            if (objectNode.hasNode(prop.getName())) {
-                                                content = objectNode.getNode(prop.getName());
+                                    ExtendedNodeDefinition end = ((ExtendedNodeType) objectNode.getPrimaryNodeType()).getChildNodeDefinitionsAsMap().get(prop.getName());
+                                    if (end != null) {
+                                        try {
+                                            if (!clear) {
+                                                Node content;
+                                                String s = end.getRequiredPrimaryTypeNames()[0];
+                                                if (objectNode.hasNode(prop.getName())) {
+                                                    content = objectNode.getNode(prop.getName());
+                                                } else {
+                                                    content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
+                                                }
+                                                content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
+                                                InputStream is = fileItem.getContentStream();
+                                                try {
+                                                    content.setProperty(Constants.JCR_DATA, is);
+                                                } finally {
+                                                    IOUtils.closeQuietly(is);
+                                                }
+                                                content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
                                             } else {
-                                                content = objectNode.addNode(prop.getName(), s.equals("nt:base") ? "jnt:resource" : s);
+                                                if (objectNode.hasNode(prop.getName())) {
+                                                    objectNode.getNode(prop.getName()).remove();
+                                                }
                                             }
-                                            content.setProperty(Constants.JCR_MIMETYPE, fileItem.getContentType());
-                                            InputStream is = fileItem.getContentStream();
-                                            try {
-                                                content.setProperty(Constants.JCR_DATA, is);
-                                            } finally {
-                                                IOUtils.closeQuietly(is);
-                                                fileStorage.remove(httpSessionID, propValue.getString());
-                                            }
-                                            content.setProperty(Constants.JCR_LASTMODIFIED, new GregorianCalendar());
-                                        } else {
-                                            if (objectNode.hasNode(prop.getName())) {
-                                                objectNode.getNode(prop.getName()).remove();
-                                            }
+                                        } catch (Exception e) {
+                                            logger.error(e.getMessage(), e);
                                         }
-                                    } catch (Exception e) {
-                                        logger.error(e.getMessage(), e);
+                                    }
+                                } finally {
+                                    if (fileItem != null) {
+                                        fileItem.close();
+                                        fileStorage.remove(httpSessionID, propValue.getString());
                                     }
                                 }
                             } else if (propValue.getType() == GWTJahiaNodePropertyType.PAGE_LINK) {

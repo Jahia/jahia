@@ -664,61 +664,65 @@ public class ContentManagerHelper {
         try {
 
             UploadedPendingFile item = fileStorage.getRequired(httpSessionID, fileKey);
-            ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
-            JCRNodeWrapper parent = session.getNode(parentPath);
-            JCRSiteNode resolveSite = parent.getResolveSite();
-            String detectedContentType = ImportExportBaseService.detectImportContentType(item.getContentType(), fileKey);
-            InputStream itemStream = null;
-            ValidationResults results;
             try {
-                itemStream = item.getContentStream();
-                results = importExport.validateImportFile(session, itemStream, detectedContentType, resolveSite != null ? resolveSite.getInstalledModules() : null);
-            } finally {
-                IOUtils.closeQuietly(itemStream);
-            }
 
-            if (results.isSuccessful()) {
+                ImportExportService importExport = ServicesRegistry.getInstance().getImportExportService();
+                JCRNodeWrapper parent = session.getNode(parentPath);
+                JCRSiteNode resolveSite = parent.getResolveSite();
+                String detectedContentType = ImportExportBaseService.detectImportContentType(item.getContentType(), fileKey);
+                InputStream itemStream = null;
+                ValidationResults results;
                 try {
-                    // First let's copy the file in the JCR
-                    JCRNodeWrapper privateFilesFolder = JCRContentUtils.getInstance().getUserPrivateFilesFolder(session);
-                    String importFilename = "import" + Math.random() * 1000;
                     itemStream = item.getContentStream();
-                    JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
-                    session.save();
-                    // let's schedule an import job.
-                    JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(fileKey), ImportJob.class);
-                    JobDataMap jobDataMap;
-                    jobDataMap = jobDetail.getJobDataMap();
-                    jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
-                    jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
-                    jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(fileKey));
-                    jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
-
-                    ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+                    results = importExport.validateImportFile(session, itemStream, detectedContentType, resolveSite != null ? resolveSite.getInstalledModules() : null);
                 } finally {
                     IOUtils.closeQuietly(itemStream);
                 }
-            } else {
-                StringBuilder buffer = new StringBuilder();
-                for (ValidationResult result : results.getResults()) {
-                    if (!result.isSuccessful()) {
-                        if (result instanceof MissingModulesValidationResult) {
-                            MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
-                            if (missingModule.isTargetTemplateSetPresent()) {
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", uiLocale, missingModule.getTargetTemplateSet()));
+
+                if (results.isSuccessful()) {
+                    try {
+                        // First let's copy the file in the JCR
+                        JCRNodeWrapper privateFilesFolder = JCRContentUtils.getInstance().getUserPrivateFilesFolder(session);
+                        String importFilename = "import" + Math.random() * 1000;
+                        itemStream = item.getContentStream();
+                        JCRNodeWrapper jcrNodeWrapper = privateFilesFolder.uploadFile(importFilename, itemStream, detectedContentType);
+                        session.save();
+                        // let's schedule an import job.
+                        JobDetail jobDetail = BackgroundJob.createJahiaJob(Messages.getInternal("import.file", uiLocale, "Import file") + " " + FilenameUtils.getName(fileKey), ImportJob.class);
+                        JobDataMap jobDataMap;
+                        jobDataMap = jobDetail.getJobDataMap();
+                        jobDataMap.put(ImportJob.DESTINATION_PARENT_PATH, parentPath);
+                        jobDataMap.put(ImportJob.URI, jcrNodeWrapper.getPath());
+                        jobDataMap.put(ImportJob.FILENAME, FilenameUtils.getName(fileKey));
+                        jobDataMap.put(ImportJob.REPLACE_CONTENT, replaceContent);
+                        ServicesRegistry.getInstance().getSchedulerService().scheduleJobNow(jobDetail);
+                    } finally {
+                        IOUtils.closeQuietly(itemStream);
+                    }
+                } else {
+                    StringBuilder buffer = new StringBuilder();
+                    for (ValidationResult result : results.getResults()) {
+                        if (!result.isSuccessful()) {
+                            if (result instanceof MissingModulesValidationResult) {
+                                MissingModulesValidationResult missingModule = ((MissingModulesValidationResult) result);
+                                if (missingModule.isTargetTemplateSetPresent()) {
+                                    buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplateSet", uiLocale, missingModule.getTargetTemplateSet()));
+                                }
+                                if (!missingModule.getMissingModules().isEmpty()) {
+                                    buffer.append(Messages.getInternalWithArguments("failure.import.missingModules", uiLocale, missingModule.getMissingModules().size())).append(missingModule.getMissingModules());
+                                }
+                            } else if (result instanceof MissingNodetypesValidationResult) {
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", uiLocale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
+                            } else if (result instanceof MissingTemplatesValidationResult) {
+                                MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
+                                buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size())).append(missingTemplates.getMissingTemplates().keySet());
                             }
-                            if (!missingModule.getMissingModules().isEmpty()) {
-                                buffer.append(Messages.getInternalWithArguments("failure.import.missingModules", uiLocale, missingModule.getMissingModules().size())).append(missingModule.getMissingModules());
-                            }
-                        } else if (result instanceof MissingNodetypesValidationResult) {
-                            buffer.append(Messages.getInternalWithArguments("failure.import.missingNodetypes", uiLocale, ((MissingNodetypesValidationResult) result).getMissingNodetypes(), ((MissingNodetypesValidationResult) result).getMissingMixins()));
-                        } else if (result instanceof MissingTemplatesValidationResult) {
-                            MissingTemplatesValidationResult missingTemplates = ((MissingTemplatesValidationResult) result);
-                            buffer.append(Messages.getInternalWithArguments("failure.import.missingTemplates", uiLocale, missingTemplates.getMissingTemplates().size())).append(missingTemplates.getMissingTemplates().keySet());
                         }
                     }
+                    throw new GWTJahiaServiceException(buffer.toString());
                 }
-                throw new GWTJahiaServiceException(buffer.toString());
+            } finally {
+                item.close();
             }
         } catch (GWTJahiaServiceException e) {
             throw e;
@@ -1105,12 +1109,16 @@ public class ContentManagerHelper {
                     throw new GWTJahiaServiceException(Messages.getInternal("label.gwt.error.file.exists", uiLocale));
                 }
                 UploadedPendingFile item = fileStorage.getRequired(httpSessionID, tmpName);
-                InputStream is = null;
                 try {
-                    is = item.getContentStream();
-                    parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
+                    InputStream is = null;
+                    try {
+                        is = item.getContentStream();
+                        parent.uploadFile(newName, is, JCRContentUtils.getMimeType(newName, item.getContentType()));
+                    } finally {
+                        IOUtils.closeQuietly(is);
+                    }
                 } finally {
-                    IOUtils.closeQuietly(is);
+                    item.close();
                     fileStorage.remove(httpSessionID, tmpName);
                 }
             }

@@ -52,7 +52,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -98,7 +99,7 @@ public class JcrBundleTransformer extends AbstractURLStreamHandlerService{
                 return result;
             } catch (RepositoryException e) {
                 logger.warn("Couldn't resolve the jcr: protocol path for : "+ url.getFile() );
-                return  null;
+                throw new IOException(e);
             }
         }
 

@@ -47,46 +47,20 @@ import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 /**
- * Interface that defines a filter usable in the {@link RenderChain}.
+ * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments
  *
- * Each filter can either call the next filter and transform the output, or generate its own output. It can execute
- * operations before/after calling the next filter.
- *
- * Date: Nov 24, 2009
- * Time: 12:08:45 PM
+ * Created by jkevan on 12/04/2016.
  */
-public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilter> {
+public class AggregateFilter extends AbstractFilter{
+    @Override
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        //TODO
+        return super.prepare(renderContext, resource, chain);
+    }
 
-    /**
-     * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-     *
-     * @return priority
-     */
-    int getPriority();
-
-    public boolean areConditionsMatched(RenderContext renderContext, Resource resource);
-
-    String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception;
-
-    String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
-
-    String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e);
-
-    void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain);
-
-    /**
-     * Interface that define a float priority variable, this allow to create more accurate render filter
-     * So filters can be placed in 16,2 or 16,3, etc.
-     * if a render filter implement this AccurateRenderFilter the priority will be calculate using getAccuratePriority instead of getPriority
-     */
-    interface AccurateRenderFilter {
-
-        /**
-         * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-         *
-         * @return priority
-         */
-        float getAccuratePriority();
+    @Override
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        //TODO
+        return super.execute(previousOut, renderContext, resource, chain);
     }
 }

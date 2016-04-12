@@ -45,17 +45,15 @@ package org.jahia.services.modulemanager.model;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Bean;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Field;
-import org.apache.jackrabbit.ocm.mapper.impl.annotation.Node;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+import org.springframework.core.io.Resource;
 
-import javax.persistence.Transient;
-import java.io.File;
+import java.io.Serializable;
 
 /**
  * DTO for handling bundle information
  */
-public class BundleDTO extends BasePersistentObject {
+public class BundleDTO implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -92,23 +90,11 @@ public class BundleDTO extends BasePersistentObject {
     /**
      * Jar File
      */
-    private File jarFile;
+    private Resource jarFile;
 
-    /**
-     * Initializes an instance of this class.
-     */
-    public BundleDTO() {
-        super();
-    }
+    private String bundleKey;
 
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param name the bundle entry name
-     */
-    public BundleDTO(String name) {
-        super(name);
-    }
+    private String path;
 
     @Override
     public boolean equals(Object obj) {
@@ -117,7 +103,7 @@ public class BundleDTO extends BasePersistentObject {
 
         if (obj != null && this.getClass() == obj.getClass()) {
             BundleDTO other = (BundleDTO) obj;
-            return StringUtils.equals(getName(), other.getName())
+            return StringUtils.equals(getBundleKey(), other.getBundleKey())
                     && StringUtils.equals(getChecksum(), other.getChecksum());
         }
 
@@ -147,7 +133,7 @@ public class BundleDTO extends BasePersistentObject {
 
     @Override
     public int hashCode() {
-        return new HashCodeBuilder().append(getName()).append(getChecksum()).toHashCode();
+        return new HashCodeBuilder().append(getBundleKey()).append(getChecksum()).toHashCode();
     }
 
     public void setChecksum(String checksum) {
@@ -178,11 +164,36 @@ public class BundleDTO extends BasePersistentObject {
         this.groupId = groupId;
     }
 
-    public File getJarFile() {
+    public Resource getJarFile() {
         return jarFile;
     }
 
-    public void setJarFile(File jarFile) {
+    public void setJarFile(Resource jarFile) {
         this.jarFile = jarFile;
+    }
+
+    public String getBundleKey() {
+        return bundleKey;
+    }
+
+    public String getPath() {
+        if (path == null) {
+            path = groupId.replace('.', '/') + "/" + symbolicName + "/" + version + "/" + symbolicName + "-" + version + ".jar";
+        }
+
+        return path;
+    }
+
+    public void setBundleKey(String bundleKey) {
+        this.bundleKey = bundleKey;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
     }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -55,27 +55,27 @@ import java.util.List;
  */
 public interface OperationResult extends Serializable {
 
-  /**
-   * Get the operation result messages
-   * @return the message
-   */
-  String[] getMessages();
-  
-  /**
-   * Get the operation result flag
-   * @return true if the operation is successfully performed otherwise false
-   */
-  boolean isSuccess();
-  
-  /**
-   * Get the information of the list of bundles
-   * @return
-   */
-  List<BundleInfo> getBundleInfoList();
-  
-  /**
-   * Add a message to the result
-   * @param v the message to add
-   */
-  void addMessage(String v);
+    /**
+     * Get the operation result messages
+     * @return the message
+     */
+    String[] getMessages();
+
+    /**
+     * Get the operation result flag
+     * @return true if the operation is successfully performed otherwise false
+     */
+    boolean isSuccess();
+
+    /**
+     * Get the information of the list of bundles
+     * @return
+     */
+    List<BundleInfo> getBundleInfoList();
+
+    /**
+     * Add a message to the result
+     * @param v the message to add
+     */
+    void addMessage(String v);
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -47,7 +47,7 @@ import java.util.Set;
 
 /**
  * Represents an information about bundle states of the current DX node.
- * 
+ *
  * @author achaabni
  */
 public class NodeStateReport {

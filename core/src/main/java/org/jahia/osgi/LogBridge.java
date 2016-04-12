@@ -14,22 +14,22 @@ public class LogBridge {
         Logger logger = LoggerFactory.getLogger(loggerName);
         switch (level) {
             case Level.TRACE_INT:
-                logger.trace(message.toString(), t);
+                logger.trace(message != null ? message.toString() : null, t);
                 break;
             case Level.DEBUG_INT:
-                logger.debug(message.toString(), t);
+                logger.debug(message != null ? message.toString() : null, t);
                 break;
             case Level.INFO_INT:
-                logger.info(message.toString(), t);
+                logger.info(message != null ? message.toString() : null, t);
                 break;
             case Level.WARN_INT:
-                logger.warn(message.toString(), t);
+                logger.warn(message != null ? message.toString() : null, t);
                 break;
             case Level.ERROR_INT:
-                logger.error(message.toString(), t);
+                logger.error(message != null ? message.toString() : null, t);
                 break;
             default:
-                logger.info(message.toString(), t);
+                logger.info(message != null ? message.toString() : null, t);
         }
     }
 }

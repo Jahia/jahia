@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -90,8 +90,6 @@ public class OperationResultImpl implements OperationResult {
 
     private boolean success;
 
-    private String operationId;
-    
     @XmlAttribute(name="bundleInfos", required = false)
     private List<BundleInfo> bundleInfoList = new ArrayList<BundleInfo>();
 
@@ -108,20 +106,11 @@ public class OperationResultImpl implements OperationResult {
         this.messages = new String[] { message };
     }
 
-    /**
-     * Initializes an instance of this class.
-     *
-     * @param success
-     *            <code>true</code> if an operation was successful
-     * @param message
-     *            description of the operation result
-     * @param operationId Operation Identifier
-     */
-    public OperationResultImpl(boolean success, String message,String operationId) {
-        this(success, message);
-        this.operationId = operationId;
+    public OperationResultImpl(boolean success, String message, BundleInfo bundleInfo) {
+        this.success = success;
+        this.messages = new String[] { message };
+        this.bundleInfoList.add(bundleInfo);
     }
-
 
     public String[] getMessages() {
         return messages;
@@ -141,14 +130,6 @@ public class OperationResultImpl implements OperationResult {
 
     public void setSuccess(boolean success) {
         this.success = success;
-    }
-
-    public String getOperationId() {
-        return operationId;
-    }
-
-    public void setOperationId(String operationId) {
-        this.operationId = operationId;
     }
 
     /**

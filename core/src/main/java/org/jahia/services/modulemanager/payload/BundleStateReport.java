@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -53,7 +53,7 @@ import java.util.Map;
 public class BundleStateReport {
 
     private String bundle;
-    
+
     private Map<String, String> nodeStates;
 
     public BundleStateReport() {

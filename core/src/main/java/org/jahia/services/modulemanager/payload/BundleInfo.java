@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -50,58 +50,58 @@ import java.io.Serializable;
  * @author bdjiba
  *
  */
-@XmlType(propOrder={"symbolicName", "version"})
-public class BundleInfo implements Serializable{
-  private static final long serialVersionUID = 1L;
-  
-  private String symbolicName;
-  private String version;
+@XmlType(propOrder = {"symbolicName", "version"})
+public class BundleInfo implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-  /**
-   * 
-   */
-  public BundleInfo() {
-  }
-  
-  public BundleInfo(String bundleSymbolicName, String bundleVersion) {
-    this.symbolicName = bundleSymbolicName;
-    this.version = bundleVersion;
-  }
+    private String symbolicName;
+    private String version;
 
-  /**
-   * @return the symbolicName
-   */
-  public String getSymbolicName() {
-    return symbolicName;
-  }
+    /**
+     *
+     */
+    public BundleInfo() {
+    }
 
-  /**
-   * @param symbolicName the symbolicName to set
-   */
-  public void setSymbolicName(String symbolicName) {
-    this.symbolicName = symbolicName;
-  }
+    public BundleInfo(String bundleSymbolicName, String bundleVersion) {
+        this.symbolicName = bundleSymbolicName;
+        this.version = bundleVersion;
+    }
 
-  /**
-   * @return the version
-   */
-  public String getVersion() {
-    return version;
-  }
+    /**
+     * @return the symbolicName
+     */
+    public String getSymbolicName() {
+        return symbolicName;
+    }
 
-  /**
-   * @param version the version to set
-   */
-  public void setVersion(String version) {
-    this.version = version;
-  }
-  
-  /**
-   * Gets the bundle informations in an array
-   * @return the bundle information array
-   */
-  public String[] getInfos() {
-    return new String[] {this.symbolicName, this.version};
-  }
+    /**
+     * @param symbolicName the symbolicName to set
+     */
+    public void setSymbolicName(String symbolicName) {
+        this.symbolicName = symbolicName;
+    }
+
+    /**
+     * @return the version
+     */
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * @param version the version to set
+     */
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
+    /**
+     * Gets the bundle informations in an array
+     * @return the bundle information array
+     */
+    public String[] getInfos() {
+        return new String[]{this.symbolicName, this.version};
+    }
 
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
@@ -45,7 +45,6 @@ package org.jahia.services.modulemanager;
 
 import org.jahia.services.modulemanager.payload.BundleStateReport;
 import org.jahia.services.modulemanager.payload.NodeStateReport;
-import org.jahia.services.modulemanager.payload.OperationState;
 import org.springframework.binding.message.MessageContext;
 import org.springframework.core.io.Resource;
 
@@ -112,11 +111,11 @@ public interface ModuleManager {
      */
     Set<NodeStateReport> getNodesBundleStates(String... targetNodes)  throws ModuleManagementException;
 
-    /**
-     * Get the operation state by its uuid
-     * @param operationUuid operation uuid
-     * @return operation state
-     * @throws ModuleManagementException thrown exception
-     */
-    OperationState getOperationState(String operationUuid) throws ModuleManagementException ;
+//    /**
+//     * Get the operation state by its uuid
+//     * @param operationUuid operation uuid
+//     * @return operation state
+//     * @throws ModuleManagementException thrown exception
+//     */
+//    OperationState getOperationState(String operationUuid) throws ModuleManagementException ;
 }

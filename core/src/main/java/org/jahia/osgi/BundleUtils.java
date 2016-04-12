@@ -2,44 +2,44 @@
  * ==========================================================================================
  * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
  * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
+ * <p/>
+ * http://www.jahia.com
+ * <p/>
+ * Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
+ * <p/>
+ * THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ * 1/GPL OR 2/JSEL
+ * <p/>
+ * 1/ GPL
+ * ==================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * <p/>
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * <p/>
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <http://www.gnu.org/licenses/>.
+ * <p/>
+ * <p/>
+ * 2/ JSEL - Commercial and Supported Versions of the program
+ * ===================================================================================
+ * <p/>
+ * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ * <p/>
+ * Alternatively, commercial and supported versions of the program - also known as
+ * Enterprise Distributions - must be used in accordance with the terms and conditions
+ * contained in a separate written agreement between you and Jahia Solutions Group SA.
+ * <p/>
+ * If you are unsure which license is appropriate for your use,
+ * please contact the sales department at sales@jahia.com.
  */
 package org.jahia.osgi;
 
@@ -54,12 +54,14 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Convenient utilities for Jahia OSGi bundles.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public final class BundleUtils {
@@ -80,7 +82,7 @@ public final class BundleUtils {
 
     /**
      * Returns a String representation for the given bundle event.
-     * 
+     *
      * @param eventType
      *            OSGi <code>BundleEvent</code> given as an int
      * @return String representation for the bundle event
@@ -98,7 +100,7 @@ public final class BundleUtils {
     /**
      * Creates an instance of the {@link BundleDelegatingClassLoader} baked by the provided bundle and having Jahia root Spring context's
      * class loader as a parent.
-     * 
+     *
      * @param bundle
      *            the bundle to create class loader for
      * @return an instance of the {@link BundleDelegatingClassLoader} baked by the provided bundle and having Jahia root Spring context's
@@ -111,7 +113,7 @@ public final class BundleUtils {
 
     /**
      * Finds the bundle by its symbolic name.
-     * 
+     *
      * @param symbolicName
      *            the bundle symbolic name 
      * @param version
@@ -129,10 +131,10 @@ public final class BundleUtils {
         }
         return null;
     }
-    
+
     /**
      * Find the bundle that is represented by the specified module and version.
-     * 
+     *
      * @param moduleId
      *            the module Id
      * @param version
@@ -154,7 +156,7 @@ public final class BundleUtils {
 
     /**
      * Returns the bundle display name containing module name (ID) and the version.
-     * 
+     *
      * @param bundle
      *            the bundle to get display name for
      * @return the bundle display name containing module name (ID) and the version
@@ -162,11 +164,11 @@ public final class BundleUtils {
     public static String getDisplayName(Bundle bundle) {
         return getModuleId(bundle) + " v" + getModuleVersion(bundle);
     }
-    
+
     /**
      * Returns the module instance that corresponds to the provided OSGi bundle. If the instance is not present yet, creates it and stores
      * internally.
-     * 
+     *
      * @param bundle
      *            the corresponding OSGi bundle
      * @return the module instance that corresponds to the provided OSGi bundle
@@ -185,8 +187,8 @@ public final class BundleUtils {
         } else {
             if (!moduleVersions.isEmpty()) {
                 JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
-                if ( ((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
-                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null)) ) {
+                if (((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
+                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null))) {
                     logger.error("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
                     return null;
                 }
@@ -215,7 +217,7 @@ public final class BundleUtils {
 
     /**
      * Returns the module name read from the provided bundle.
-     * 
+     *
      * @param bundle
      *            the bundle to read module name from
      * @return the module name read from the provided bundle
@@ -224,23 +226,21 @@ public final class BundleUtils {
         final String symbolicName = bundle.getSymbolicName();
         if (symbolicName != null) {
             return symbolicName;
-        }
-        else
-        {
+        } else {
             throw new NullPointerException("Check your bundle's MANIFEST: missing required Bundle-SymbolicName for bundle " + bundle);
         }
     }
 
     /**
      * Returns a version of the module read from the provided bundle.
-     * 
+     *
      * @param bundle
      *            the bundle to read the module version from
      * @return a version of the module read from the provided bundle
      */
     public static String getModuleVersion(Bundle bundle) {
         final String version = bundle.getVersion().toString();
-        if(version == null) {
+        if (version == null) {
             throw new NullPointerException("Check your bundle's MANIFEST: missing required Bundle-Version for bundle " + bundle);
         }
         return StringUtils.defaultIfEmpty(bundle.getHeaders().get("Implementation-Version"), version);
@@ -259,7 +259,7 @@ public final class BundleUtils {
 
     /**
      * Returns <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service).
-     * 
+     *
      * @param bundle
      *            the OSGi bundle to check
      * @return <code>true</code> if the provided bundle represents Jahia-related bundle (either a module or a service)
@@ -267,12 +267,12 @@ public final class BundleUtils {
     public static boolean isJahiaBundle(Bundle bundle) {
         return isJahiaModuleBundle(bundle)
                 || StringUtils.defaultString((String) bundle.getHeaders().get("Bundle-Category")).toLowerCase()
-                        .contains("jahia");
+                .contains("jahia");
     }
 
     /**
      * Returns <code>true</code> if the provided bundle represents Jahia module.
-     * 
+     *
      * @param bundle
      *            the OSGi bundle to check
      * @return <code>true</code> if the provided bundle represents Jahia module
@@ -306,7 +306,7 @@ public final class BundleUtils {
                     try {
                         clazz = pkg.getClassLoader().loadClass(className);
                         moduleForClass
-                                .put(className, new String[] { pkg.getId(), pkg.getVersion().toString() });
+                                .put(className, new String[]{pkg.getId(), pkg.getVersion().toString()});
                         return clazz;
                     } catch (ClassNotFoundException e) {
                         // continue searching class in other modules
@@ -320,7 +320,7 @@ public final class BundleUtils {
 
     /**
      * Removes the module instance that corresponds to the provided OSGi bundle from internal registry.
-     * 
+     *
      * @param bundle
      *            the corresponding OSGi bundle
      */
@@ -333,8 +333,8 @@ public final class BundleUtils {
         if (moduleVersions != null) {
             if (!moduleVersions.isEmpty()) {
                 JahiaTemplatesPackage firstVersionTemplatePackage = moduleVersions.values().iterator().next();
-                if ( ((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
-                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null)) ) {
+                if (((firstVersionTemplatePackage.getGroupId() != null) && (!firstVersionTemplatePackage.getGroupId().equals(groupId))) ||
+                        ((firstVersionTemplatePackage.getGroupId() == null) && (groupId != null))) {
                     logger.warn("A different Jahia Module with the Id " + bundle.getSymbolicName() + " already exists");
                     return;
                 }
@@ -361,9 +361,8 @@ public final class BundleUtils {
     }
 
     public static void setContextStartException(String key, Throwable exception) {
-        contextException.put(key,exception);
+        contextException.put(key, exception);
     }
-
 
 
 }

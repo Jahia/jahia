@@ -48,13 +48,11 @@ import com.extjs.gxt.ui.client.widget.Info;
 import com.extjs.gxt.ui.client.widget.InfoConfig;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.client.Scheduler;
-import com.google.gwt.user.client.Window;
 
 import org.atmosphere.gwt20.client.*;
 import org.atmosphere.gwt20.client.AtmosphereRequestConfig.Transport;
 import org.atmosphere.gwt20.client.managed.RPCEvent;
 import org.atmosphere.gwt20.client.managed.RPCSerializer;
-import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.core.JahiaGWTParameters;
 import org.jahia.ajax.gwt.client.messages.Messages;
 import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
@@ -132,7 +130,6 @@ public class Poller {
                     @Override
                     public void onReconnect(RequestConfig request, AtmosphereResponse response) {
                         GWT.log("RPC reconnection");
-                        onConnectionReconnect();                        
                     }
                 });
 
@@ -150,6 +147,7 @@ public class Poller {
                     @Override
                     public void onReopen(AtmosphereResponse response) {
                         GWT.log("RPC Connection reopened");
+                        PermissionsUtils.triggerPermissionsReload();
                         onConnectionOpen();
                     }
                 });
@@ -189,7 +187,6 @@ public class Poller {
     }
 
     private void onConnectionOpen() {
-
         if (!reconnectingAfterError) {
             // Suggest page reloading to the user only in case there was an unexpected communication failure, so some messages might be lost.
             return;
@@ -201,10 +198,6 @@ public class Poller {
         Info.display(infoConfig);
     }
     
-    private void onConnectionReconnect() {
-        PermissionsUtils.triggerPermissionsReload();
-    }
-
     public void registerListener(PollListener listener, Class eventType) {
         if (!listeners.containsKey(eventType)) {
             listeners.put(eventType, new ArrayList<PollListener>());

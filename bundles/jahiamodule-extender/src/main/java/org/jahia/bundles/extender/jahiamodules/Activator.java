@@ -53,6 +53,7 @@ import org.jahia.data.templates.ModuleState;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.ExtensionObserverRegistry;
+import org.jahia.osgi.FrameworkService;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.cache.CacheHelper;
@@ -73,6 +74,9 @@ import org.jahia.settings.SettingsBean;
 import org.ops4j.pax.swissbox.extender.BundleObserver;
 import org.ops4j.pax.swissbox.extender.BundleURLScanner;
 import org.osgi.framework.*;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.url.URLStreamHandlerService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -94,7 +98,7 @@ import static org.jahia.bundles.extender.jahiamodules.ModuleDependencyTransforme
 /**
  * Activator for DX Modules extender.
  */
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, EventHandler {
 
     static Logger logger = LoggerFactory.getLogger(Activator.class);
 
@@ -220,6 +224,8 @@ public class Activator implements BundleActivator {
                 }
             }
         });
+        
+        registerFileInstallEventHandler(context);
 
         fileInstallConfigurer = new FileInstallConfigurer();
         fileInstallConfigurer.start(context);
@@ -908,5 +914,24 @@ public class Activator implements BundleActivator {
                 .add(context.registerService(URLStreamHandlerService.class, new JcrBundleTransformer(), props));
     }
 
+    /**
+     * Registers this activator as the {@link EventHandler} to be able to get notified about the startup of the file installer watcher for
+     * modules.
+     * 
+     * @param context
+     *            the current bundle context
+     */
+    private void registerFileInstallEventHandler(BundleContext context) {
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put(EventConstants.EVENT_TOPIC, new String[] { "org/apache/felix/fileinstall" });
+        props.put(EventConstants.EVENT_FILTER, "(type=watcherStarted)");
+        context.registerService(EventHandler.class.getName(), this, props);
+    }
+
+    @Override
+    public void handleEvent(Event event) {
+        // notify the framework that the file install watcher has started and processed found modules
+        FrameworkService.notifyFileInstallStarted();
+    }
 
 }

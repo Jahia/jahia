@@ -85,6 +85,12 @@
             <artifactId>pax-web-jsp</artifactId>
             <version>${pax.web.jsp.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.felix</groupId>
+            <artifactId>org.apache.felix.fileinstall</artifactId>
+            <version>${felix.fileinstall.version}</version>
+        </dependency>
         
         <dependency>
             <groupId>org.apache.felix</groupId>

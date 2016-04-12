@@ -64,7 +64,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.patches.GroovyPatcher;
 import org.jahia.utils.Patterns;
-import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.FatalBeanException;
@@ -134,7 +133,48 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     @SuppressWarnings("unchecked")
     private static Map<ServletRequest, Long> requestTimes = Collections.synchronizedMap(new LRUMap(1000));
 
-    public boolean isEventInterceptorActivated(String interceptorName) {
+    @SuppressWarnings("unchecked")
+    public static void endContextInitialized() {
+        try {
+            logger.info("Finishing context initialization phase");
+
+            // do initialization of all services, implementing JahiaAfterInitializationService
+            initJahiaAfterInitializationServices();
+
+            // register listeners after the portal is started
+            ApplicationsManagerServiceImpl.getInstance().registerListeners();
+
+            // set fallback locale
+            Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
+                    .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
+
+            jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
+            if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
+                SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(getServletContext()));
+            }
+            contextInitialized = true;
+
+            // execute patches after the complete initialization
+            if (SettingsBean.getInstance().isProcessingServer()) {
+                GroovyPatcher.executeScripts(servletContext, "contextInitialized");
+            } else {
+                // we leave the possibility to provide Groovy scripts for non-processing servers
+                GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
+            }
+            logger.info("Context initialization phase finished");
+        } catch (JahiaException e) {
+            running = false;
+            logger.error(e.getMessage(), e);
+            throw new JahiaRuntimeException(e);
+        } catch (RuntimeException e) {
+            running = false;
+            throw e;
+        } finally {
+            JCRSessionFactory.getInstance().closeAllSessions();
+        }
+    }
+
+    public static boolean isEventInterceptorActivated(String interceptorName) {
         if (jahiaContextListenersConfiguration == null) {
             return false; // by default all event interceptor are deactivated.
         }
@@ -147,7 +187,6 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void contextInitialized(ServletContextEvent event) {
 
         startupTime = System.currentTimeMillis();
@@ -215,36 +254,9 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
             }
 
             // start OSGi container
-            timer = System.currentTimeMillis();
-            logger.info("Starting OSGi platform service");
-
-            final FrameworkService instance = FrameworkService.getInstance();
-            instance.start();
-
-            // do initialization of all services, implementing JahiaAfterInitializationService
-            initJahiaAfterInitializationServices();
-
-            // register listeners after the portal is started
-            ApplicationsManagerServiceImpl.getInstance().registerListeners();
-
-            // set fallback locale
-            Config.set(servletContext, Config.FMT_FALLBACK_LOCALE, (SettingsBean.getInstance().getDefaultLanguageCode() != null) ? SettingsBean
-                    .getInstance().getDefaultLanguageCode() : Locale.ENGLISH.getLanguage());
-
-            jahiaContextListenersConfiguration = (Map<String, Object>) ContextLoader.getCurrentWebApplicationContext().getBean("jahiaContextListenersConfiguration");
-            if (isEventInterceptorActivated("interceptServletContextListenerEvents")) {
-                SpringContextSingleton.getInstance().publishEvent(new ServletContextInitializedEvent(event.getServletContext()));
-            }
-            contextInitialized = true;
-
-            // execute patches after the complete initialization
-            if (isProcessingServer) {
-                GroovyPatcher.executeScripts(servletContext, "contextInitialized");
-            } else {
-                // we leave the possibility to provide Groovy scripts for non-processing servers
-                GroovyPatcher.executeScripts(servletContext, "nonProcessingServer");
-            }
-        } catch (JahiaException | BundleException e) {
+            FrameworkService.getInstance().start();
+            
+        } catch (JahiaException e) {
             running = false;
             logger.error(e.getMessage(), e);
             throw new JahiaRuntimeException(e);
@@ -770,7 +782,7 @@ public class JahiaContextLoaderListener extends PortalStartupListener implements
         }
     }
 
-    public class ServletContextInitializedEvent extends ApplicationEvent {
+    public static class ServletContextInitializedEvent extends ApplicationEvent {
         private static final long serialVersionUID = 7380625349896182566L;
         public ServletContextInitializedEvent(ServletContext servletContext) {
             super(servletContext);

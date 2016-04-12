@@ -1,63 +1,46 @@
-/*
- * JAHIA DUAL LICENSING IMPORTANT INFORMATION
- * ----------------------------------------------------------
+/**
+ * ==========================================================================================
+ * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
+ * ==========================================================================================
  *
- * This program was developed exclusively for Jahia, the next-generation Open Source CMS.
+ *                                 http://www.jahia.com
  *
- * Jahia's next-generation, open source CMS stems from a widely acknowledged vision
- * of enterprise application convergence - web, search, document, social and portal -
- * unified by the simplicity of web content management.
+ *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
  *
- * For more information, please visit http://www.jahia.com.
+ *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
+ *     1/GPL OR 2/JSEL
  *
- * Copyright (C) 2002-2015 Jahia Solutions Group SA. All rights reserved.
+ *     1/ GPL
+ *     ==================================================================================
  *
- * THIS PROGRAM IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- * 1/GPL OR 2/JSEL
+ *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * 1/ GPL
- * ----------------------------------------------------------
+ *     This program is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
  *
- * IF YOU DECIDE TO CHOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
+ *     This program is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *     GNU General Public License for more details.
  *
- * "This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ *     You should have received a copy of the GNU General Public License
+ *     along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+ *     2/ JSEL - Commercial and Supported Versions of the program
+ *     ===================================================================================
  *
- * As a special exception to the terms and conditions of version 2.0 of
- * the GPL (or any later version), you may redistribute this Program in connection
- * with Free/Libre and Open Source Software ("FLOSS") applications as described
- * in Jahia's FLOSS exception. You should have received a copy of the text
- * describing the FLOSS exception, and it is also available here:
- * http://www.jahia.com/license"
+ *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
  *
- * The GPL license is available in the LICENSE folder of this program.
+ *     Alternatively, commercial and supported versions of the program - also known as
+ *     Enterprise Distributions - must be used in accordance with the terms and conditions
+ *     contained in a separate written agreement between you and Jahia Solutions Group SA.
  *
- * 2/ JSEL - Commercial and Supported Versions of the program
- * ----------------------------------------------------------
- *
- * IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- * "Alternatively, commercial and supported versions of the program may be used
- * in accordance with the terms and conditions contained
- * in a separate written agreement between you and Jahia Solutions Group SA."
- *
- * The JSEL license is available in the LICENSE folder of this program.
- *
- * If you are unsure which license is appropriate for your use,
- * please contact the sales department at sales@jahia.com.
+ *     If you are unsure which license is appropriate for your use,
+ *     please contact the sales department at sales@jahia.com.
  */
-
 package org.jahia.bundles.jaas;
 
 import org.apache.karaf.jaas.boot.principal.GroupPrincipal;

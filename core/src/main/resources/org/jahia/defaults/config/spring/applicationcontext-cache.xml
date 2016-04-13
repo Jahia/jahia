@@ -95,7 +95,7 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="cacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
-        <property name="disabled" value="${disableOutputCache:false}"/>
+        <property name="disabled" value="true"/><!-- TODO, find other way to disable this ? -->
         <property name="priority" value="16" />
         <property name="description" value="Module content caching filter." />
     	<property name="cacheProvider" ref="ModuleCacheProvider"/>
@@ -122,6 +122,7 @@ when we flush this entry we will flush the whole cache
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
+        <property name="keyGenerator" ref="cacheKeyGenerator"/>
     </bean>
 
     <bean class="org.jahia.services.render.filter.cache.CacheFilter">
@@ -130,6 +131,9 @@ when we flush this entry we will flush the whole cache
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
+        <property name="dependenciesLimit" value="1000"/>
     </bean>
 
     <bean id="abstractFlushCacheOnNodeBackgroundAction" class="org.jahia.services.content.rules.FlushCacheOnNodeBackgroundAction" abstract="true">

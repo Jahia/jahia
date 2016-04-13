@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
@@ -60,6 +61,7 @@ import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageR
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
 import org.jahia.utils.LanguageCodeConverters;
+import org.jahia.utils.TextUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -69,6 +71,7 @@ import org.springframework.web.util.HtmlUtils;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -76,6 +79,7 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 /**
  * Module content caching filter.
@@ -93,15 +97,37 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     public static final String ALL = "ALL";
     public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
+    private static final String CACHE_TAG_START_1_NOSRC = "<!-- cache:include";
+    private static final String CACHE_TAG_START_1 = CACHE_TAG_START_1_NOSRC + " src=\"";
+    private static final String CACHE_TAG_START_2 = "\" -->\n";
+    private static final String CACHE_TAG_END = "\n<!-- /cache:include -->";
     private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
+    private static final int CACHE_TAG_LENGTH = CACHE_TAG_START_1.length() + CACHE_TAG_START_2.length() + CACHE_TAG_END.length();
 
     private static final String V = "v";
     private static final String EC = "ec";
 
+    public static final TextUtils.ReplacementGenerator GENERATOR = new TextUtils.ReplacementGenerator() {
+        @Override
+        public void appendReplacementForMatch(int matchStart, int matchEnd, char[] initialStringAsCharArray, StringBuilder builder, String prefix, String suffix) {
+            // expects match to start with: src="<what we want to extract>"
+            int firstQuoteIndex = matchStart;
+            while (initialStringAsCharArray[firstQuoteIndex++] != '"') ;
+
+            int secondQuoteIndex = firstQuoteIndex + 1;
+            while (initialStringAsCharArray[secondQuoteIndex++] != '"') ;
+
+            builder.append(CACHE_ESI_TAG_START)
+                    .append(initialStringAsCharArray, firstQuoteIndex, secondQuoteIndex - firstQuoteIndex - 1)
+                    .append(CACHE_ESI_TAG_END);
+        }
+    };
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
+
+    protected static final Pattern CLEANUP_REGEXP = Pattern.compile(CACHE_TAG_START_1 + "(.*)" + CACHE_TAG_START_2 + "|" + CACHE_TAG_END);
 
     // We use ConcurrentHashMap instead of Set since we absolutely need the thread safety of this implementation but we don't want reads to lock.
     // @todo when migrating to JDK 1.6 we can replacing this with Collections.newSetFromMap(Map m) calls.
@@ -178,18 +204,8 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // Store the cache key in module params for usage in execute
         moduleParams.put("cacheKey", key);
 
-        if (renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering") != null) {
-            renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.submodule", key);
-            return "<jahia_esi:include src=\""+key+"\"></jahia_esi:include>";
-        }
-
-        logger.debug("Rendering node "+resource.getPath());
-
-        renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering", key);
-        renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.time", System.currentTimeMillis());
-
         if (debugEnabled) {
-            logger.debug("Aggregate cache filter for {} ,  key with placeholders : {}", resource.getPath(), key);
+            logger.debug("Cache filter for key with placeholders : {}", key);
         }
 
         // If we force the generation, return null
@@ -234,26 +250,25 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
             // The element is found in the cache. Need to
             return returnFromCache(renderContext, resource, key, finalKey, element, cache);
         } else {
-            // TODO reimplemt latch
             // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
             // module - if somebody else is generating this fragment, wait for the entry to be generated and
             // return the content from the cache. Otherwise, return null to continue the render chain.
             // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
             // key like dependencies can only be calculated when the fragment has been generated.
-//            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
-//            if (countDownLatch == null) {
-//                element = cache.get(finalKey);
-//                if (element != null && element.getObjectValue() != null) {
-//                    return returnFromCache(renderContext, resource, key, finalKey, element, cache);
-//                }
-//            } else {
-//                Set<CountDownLatch> latches = processingLatches.get();
-//                if (latches == null) {
-//                    latches = new HashSet<>();
-//                    processingLatches.set(latches);
-//                }
-//                latches.add(countDownLatch);
-//            }
+            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
+            if (countDownLatch == null) {
+                element = cache.get(finalKey);
+                if (element != null && element.getObjectValue() != null) {
+                    return returnFromCache(renderContext, resource, key, finalKey, element, cache);
+                }
+            } else {
+                Set<CountDownLatch> latches = processingLatches.get();
+                if (latches == null) {
+                    latches = new HashSet<>();
+                    processingLatches.set(latches);
+                }
+                latches.add(countDownLatch);
+            }
             return null;
         }
     }
@@ -330,6 +345,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();
 
+        // Calls aggregation on the fragment content
+        cachedContent = aggregateContent(cache, cachedContent, renderContext,
+                (String) cacheEntry.getProperty("areaResource"), new Stack<String>(),
+                (Set<String>) cacheEntry.getProperty("allPaths"));
+
+        if (renderContext.getMainResource() == resource) {
+            cachedContent = removeCacheTags(cachedContent);
+        }
+
         // Add this key to the list of fragments already served from the cache to avoid to re-store it.
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
         if (servedFromCache == null) {
@@ -365,14 +389,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     private String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain, boolean bypassDependencies) throws Exception {
-        if (renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.submodule") != null) {
-            renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering.submodule");
-            return previousOut;
-        }
-
         Properties properties = getAttributesForKey(renderContext, resource);
-
-        final Cache cache = cacheProvider.getCache();
 
         if (!bypassDependencies) {
             // Add self path as dependency for this fragment (for cache flush - will not impact the key)
@@ -399,34 +416,35 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         // If this content has been served from cache, no need to cache it again
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-        if (servedFromCache == null || !servedFromCache.contains(finalKey)) {
-            logger.debug("Caching content {} , key = {}", resource.getPath(), finalKey);
-
-            // Check if the fragment is still cacheable, based on the key and cache properties
-            boolean cacheable = isCacheable(renderContext, resource, key, properties);
-            boolean debugEnabled = logger.isDebugEnabled();
-
-            if (cacheable) {
-                if (debugEnabled) {
-                    logger.debug("Caching content for final key : {}", finalKey);
-                }
-                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
-            } else {
-                notCacheableFragment.put(key, Boolean.TRUE);
-            }
+        if (servedFromCache != null && servedFromCache.contains(finalKey)) {
+            return previousOut;
         }
 
-        logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), finalKey);
-        renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering");
-        previousOut = aggregateContent(cache, previousOut, renderContext, null, new Stack<String>(), null);
+        // Check if the fragment is still cacheable, based on the key and cache properties
+        boolean cacheable = isCacheable(renderContext, resource, key, properties);
+        boolean debugEnabled = logger.isDebugEnabled();
+        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+
+        if (cacheable) {
+            final Cache cache = cacheProvider.getCache();
+            if (debugEnabled) {
+                logger.debug("Caching content for final key : {}", finalKey);
+            }
+            doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
+        } else {
+            notCacheableFragment.put(key, Boolean.TRUE);
+        }
 
         // Append debug information
-        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-            return appendDebugInformation(renderContext, key, previousOut, null);
+            return appendDebugInformation(renderContext, key, surroundWithCacheTag(key, previousOut), null);
         }
 
-        return previousOut;
+        if (renderContext.getMainResource() == resource) {
+            return removeCacheTags(previousOut);
+        } else {
+            return surroundWithCacheTag(key, previousOut);
+        }
     }
 
 
@@ -454,7 +472,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         Set<String> depNodeWrappers = Collections.emptySet();
 
         // Create the fragment entry based on the rendered content
-        CacheEntry<String> cacheEntry = new CacheEntry<>(previousOut);
+        CacheEntry<String> cacheEntry = createCacheEntry(previousOut, renderContext, resource, key);
 
         // Store some properties that may have been set during fragment execution (todo : handle this another way)
         addPropertiesToCacheEntry(resource, cacheEntry, renderContext);
@@ -639,6 +657,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     /**
+     * Create the cache entry based on the rendered content. All sub-content (which should be surrounded by
+     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;jahia_esi:include&gt; tags, keeping only the
+     * cache key (without placeholder replacements).
+     *
+     * @param previousOut   The full rendered content, coming from the render chain
+     * @param renderContext The render context
+     * @param resource      The resource that is being rendered
+     * @param key           The key of the fragment
+     * @return An entry that can be stored in the cache
+     * @throws RepositoryException
+     */
+    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
+        String out = TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR);
+        StringBuilder sb = new StringBuilder(out.length() + key.length() + CACHE_TAG_LENGTH);
+        sb.append(out);
+        // Finally, add the  <!-- cache:include --> around the content and create cache entry.
+        surroundWithCacheTag(key, sb);
+        return new CacheEntry<>(sb.toString());
+    }
+
+    /**
      * Store some properties that may have been set during fragment execution
      *
      * @param resource
@@ -686,27 +725,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         if (newDependencies.add(finalKey)) {
             cache.put(new Element(value, newDependencies));
         }
-    }
-
-    /**
-     * Create the cache entry based on the rendered content. All sub-content (which should be surrounded by
-     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;jahia_esi:include&gt; tags, keeping only the
-     * cache key (without placeholder replacements).
-     *
-     * @param previousOut   The full rendered content, coming from the render chain
-     * @param renderContext The render context
-     * @param resource      The resource that is being rendered
-     * @param key           The key of the fragment
-     * @return An entry that can be stored in the cache
-     * @throws RepositoryException
-     */
-    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
-        /*String out = TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR);
-        StringBuilder sb = new StringBuilder(out.length() + key.length() + CACHE_TAG_LENGTH);
-        sb.append(out);
-        // Finally, add the  <!-- cache:include --> around the content and create cache entry.
-        surroundWithCacheTag(key, sb);*/
-        return new CacheEntry<>(previousOut);
     }
 
     /**
@@ -796,7 +814,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                                             }
                                         }
 
-                                        logger.debug("Now aggregating subcontent for key = {}", cacheKey);
                                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
                                                 aggregateContent(cache, content, renderContext, (String) cacheEntry.getProperty("areaResource"), cacheKeyStack, (Set<String>) cacheEntry.getProperty("allPaths")));
                                     } catch (RenderException e) {
@@ -961,6 +978,24 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * Add &lt;!-- cache include --&gt; tags around the content, with the cache key as an attribute.
+     *
+     * @param key    The key of the fragment
+     * @param output The content
+     * @return The content surrounded by the tag
+     */
+    protected String surroundWithCacheTag(String key, String output) {
+        StringBuilder builder = new StringBuilder(output.length() + key.length() + CACHE_TAG_LENGTH);
+        builder.append(output);
+        surroundWithCacheTag(key, builder);
+        return builder.toString();
+    }
+
+    protected void surroundWithCacheTag(String key, StringBuilder output) {
+        output.insert(0, CACHE_TAG_START_2).insert(0, key).insert(0, CACHE_TAG_START_1).append(CACHE_TAG_END);
+    }
+
     protected String appendDebugInformation(RenderContext renderContext, String key, String renderContent,
                                             Element cachedElement) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -994,12 +1029,11 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @return
      */
     public static String removeCacheTags(String content) {
-        // TODO Cleanup call to this
-//        if (StringUtils.isNotEmpty(content)) {
-//            return CLEANUP_REGEXP.matcher(content).replaceAll(StringUtils.EMPTY);
-//        } else {
+        if (StringUtils.isNotEmpty(content)) {
+            return CLEANUP_REGEXP.matcher(content).replaceAll(StringUtils.EMPTY);
+        } else {
             return content;
-//        }
+        }
     }
 
     @Override
@@ -1047,11 +1081,6 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
-        // TODO reimplemt latch
-//        releaseLatch(resource);
-    }
-
-    private void releaseLatch(Resource resource) {
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
 
@@ -1090,19 +1119,18 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
                 acquiredSemaphore.set(key);
             }
         }
-//        if (shouldUseLatch(resource, properties)) {
+        if (shouldUseLatch(resource, properties)) {
             synchronized (generatingModules) {
                 latch = generatingModules.get(key);
                 if (latch == null) {
-                    System.out.println("take latch and generate content for "+resource.getPath());
                     latch = new CountDownLatch(1);
                     generatingModules.put(key, latch);
                     mustWait = false;
                 }
             }
-//        } else {
-//            mustWait = false;
-//        }
+        } else {
+            mustWait = false;
+        }
         if (mustWait) {
             if (acquiredSemaphore.get() != null) {
                 // another thread wanted the same module and got the latch first, so release the semaphore immediately as we must wait
@@ -1179,16 +1207,19 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
 
     public void removeNotCacheableFragment(String key) {
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
-        Map<String, String> keyAttrbs = keyGenerator.parse(key);
-        String path = keyAttrbs.get("path");
-        List<String> removableKeys = new ArrayList<String>();
-        for (String notCacheableKey : notCacheableFragment.keySet()) {
-            if (notCacheableKey.contains(path)) {
-                removableKeys.add(notCacheableKey);
+        if (keyGenerator instanceof DefaultCacheKeyGenerator) {
+            DefaultCacheKeyGenerator defaultCacheKeyGenerator = (DefaultCacheKeyGenerator) keyGenerator;
+            Map<String, String> keyAttrbs = defaultCacheKeyGenerator.parse(key);
+            String path = keyAttrbs.get("path");
+            List<String> removableKeys = new ArrayList<String>();
+            for (String notCacheableKey : notCacheableFragment.keySet()) {
+                if (notCacheableKey.contains(path)) {
+                    removableKeys.add(notCacheableKey);
+                }
             }
-        }
-        for (String removableKey : removableKeys) {
-            notCacheableFragment.remove(removableKey);
+            for (String removableKey : removableKeys) {
+                notCacheableFragment.remove(removableKey);
+            }
         }
     }
 

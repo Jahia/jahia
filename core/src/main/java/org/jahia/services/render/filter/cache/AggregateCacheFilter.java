@@ -689,6 +689,27 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     /**
+     * Create the cache entry based on the rendered content. All sub-content (which should be surrounded by
+     * &lt;!-- cache:include --&gt; tags) are removed and replaced by &lt;jahia_esi:include&gt; tags, keeping only the
+     * cache key (without placeholder replacements).
+     *
+     * @param previousOut   The full rendered content, coming from the render chain
+     * @param renderContext The render context
+     * @param resource      The resource that is being rendered
+     * @param key           The key of the fragment
+     * @return An entry that can be stored in the cache
+     * @throws RepositoryException
+     */
+    protected CacheEntry<String> createCacheEntry(String previousOut, RenderContext renderContext, Resource resource, String key) {
+        /*String out = TextUtils.replaceBoundedString(previousOut, "<!-- cache:include", "<!-- /cache:include -->", GENERATOR);
+        StringBuilder sb = new StringBuilder(out.length() + key.length() + CACHE_TAG_LENGTH);
+        sb.append(out);
+        // Finally, add the  <!-- cache:include --> around the content and create cache entry.
+        surroundWithCacheTag(key, sb);*/
+        return new CacheEntry<>(previousOut);
+    }
+
+    /**
      * Replace all placeholders in the cache key to get a final key.
      *
      * @param renderContext RenderContext

@@ -72,6 +72,7 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
     protected String action;
     protected String confirmationMessageKey;
     private Set<String> requiredNodeTypes;
+    protected Map<String,String> parameters;
 
     public void onComponentSelection() {
         if (confirmationMessageKey != null) {
@@ -100,6 +101,23 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL.replaceAll("#", "%23") + "." + action + ".do");
             try {
                 String requestData = getRequestData();
+                Map<String,String> parameterMap = getParameters();
+
+                // Add parameters values to the request data to be sent.
+                if(!parameterMap.isEmpty())
+                {
+                    StringBuffer buffer = new StringBuffer(requestData);
+                    for (String parameterKey : parameterMap.keySet())
+                    {
+                        String parameterValue = parameterMap.get(parameterKey);
+                        if(buffer.length()>0)
+                        {
+                            buffer.append("&");
+                        }
+                        buffer.append(parameterKey).append("=").append(parameterValue);
+                    }
+                    requestData = buffer.toString();
+                }
                 if (requestData != null) {
                     builder.setHeader("Content-type", "application/x-www-form-urlencoded");
                 }
@@ -188,6 +206,14 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
 
     public void setRequiredNodeTypes(Set<String> requiredNodeTypes) {
         this.requiredNodeTypes = requiredNodeTypes;
+    }
+
+    public Map<String, String> getParameters() {
+        return parameters;
+    }
+
+    public void setParameters(Map<String, String> parameters) {
+        this.parameters = parameters;
     }
 }
 

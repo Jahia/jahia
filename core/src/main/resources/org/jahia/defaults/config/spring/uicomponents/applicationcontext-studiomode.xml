@@ -919,7 +919,7 @@
                                                         <entry key="applyOn" value="jnt:globalSettings" />
                                                         <entry key="view" value="serverSettings" />
                                                         <entry key="boardType" value="server-settings-base" />
-                                                        <entry key="contentTemplateName" value="contentTemplate" />
+                                                        <entry key="contentTemplateName" value="Settings Panel" />
                                                     </map>
                                                 </property>
                                             </bean>
@@ -938,7 +938,7 @@
                                                         <entry key="applyOn" value="jnt:virtualsite" />
                                                         <entry key="view" value="siteSettings" />
                                                         <entry key="boardType" value="site-settings-base" />
-                                                        <entry key="contentTemplateName" value="contentTemplate" />
+                                                        <entry key="contentTemplateName" value="Settings Panel" />
                                                     </map>
                                                 </property>
                                             </bean>
@@ -946,6 +946,26 @@
                                         <property name="titleKey" value="label.newSiteSettingsBaseTemplate" />
                                         <property name="icon" value="siteSettings" />
                                     </bean>
+
+                                    <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
+                                        <property name="actionItem">
+                                            <bean
+                                                    class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="action" value="createBoard" />
+                                                <property name="parameters">
+                                                    <map>
+                                                        <entry key="applyOn" value="jnt:user" />
+                                                        <entry key="view" value="dashboard" />
+                                                        <entry key="boardType" value="dashboard-modules-base" />
+                                                        <entry key="contentTemplateName" value="Dashboard" />
+                                                    </map>
+                                                </property>
+                                            </bean>
+                                        </property>
+                                        <property name="titleKey" value="label.newDashboardBaseTemplate" />
+                                        <property name="icon" value="start" />
+                                    </bean>
+
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>
                                     <ref bean="Toolbar.Item.Separator"/>

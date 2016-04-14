@@ -908,49 +908,43 @@
                                         <property name="titleKey" value="label.newTemplate"/>
                                         <property name="icon" value="newTemplate"/>
                                     </bean>
+
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="newNodeName" value="server-settings-base"/>
-                                                <property name="nodeTypes" value="jnt:template"/>
-                                                <property name="mixins">
-                                                    <list>
-                                                        <value type="java.lang.String">jmix:useUILocale</value>
-                                                    </list>
-                                                </property>
-                                                <property name="nodeProperties">
-                                                    <map key-type="java.lang.String" value-type="java.lang.String">
-                                                        <entry key="j:view" value="serverSettings"/>
+                                            <bean
+                                                    class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="action" value="createBoard" />
+                                                <property name="parameters">
+                                                    <map>
+                                                        <entry key="applyOn" value="jnt:globalSettings" />
+                                                        <entry key="view" value="serverSettings" />
+                                                        <entry key="boardType" value="server-settings-base" />
+                                                        <entry key="contentTemplateName" value="contentTemplate" />
                                                     </map>
                                                 </property>
-                                                <property name="parentTypes" value="jnt:templatesFolder"/>
-                                                <property name="useEngine" value="false"/>
                                             </bean>
                                         </property>
-                                        <property name="titleKey" value="label.newServerSettingsBaseTemplate"/>
-                                        <property name="icon" value="serverSettings"/>
+                                        <property name="titleKey" value="label.newServerSettingsBaseTemplate" />
+                                        <property name="icon" value="serverSettings" />
                                     </bean>
+
                                     <bean class="org.jahia.services.uicomponents.bean.toolbar.Item">
                                         <property name="actionItem">
-                                            <bean class="org.jahia.ajax.gwt.client.widget.toolbar.action.NewContentActionItem">
-                                                <property name="newNodeName" value="site-settings-base"/>
-                                                <property name="nodeTypes" value="jnt:template"/>
-                                                <property name="mixins">
-                                                    <list>
-                                                        <value type="java.lang.String">jmix:useUILocale</value>
-                                                    </list>
-                                                </property>
-                                                <property name="nodeProperties">
-                                                    <map key-type="java.lang.String" value-type="java.lang.String">
-                                                        <entry key="j:view" value="siteSettings"/>
+                                            <bean
+                                                    class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="action" value="createBoard" />
+                                                <property name="parameters">
+                                                    <map>
+                                                        <entry key="applyOn" value="jnt:virtualsite" />
+                                                        <entry key="view" value="siteSettings" />
+                                                        <entry key="boardType" value="site-settings-base" />
+                                                        <entry key="contentTemplateName" value="contentTemplate" />
                                                     </map>
                                                 </property>
-                                                <property name="parentTypes" value="jnt:templatesFolder"/>
-                                                <property name="useEngine" value="false"/>
                                             </bean>
                                         </property>
-                                        <property name="titleKey" value="label.newSiteSettingsBaseTemplate"/>
-                                        <property name="icon" value="siteSettings"/>
+                                        <property name="titleKey" value="label.newSiteSettingsBaseTemplate" />
+                                        <property name="icon" value="siteSettings" />
                                     </bean>
                                     <ref bean="Toolbar.Item.EditContentRootNodeEditable"/>
                                     <ref bean="Toolbar.Item.DeletePermanentlyNoMarkForDeletion"/>

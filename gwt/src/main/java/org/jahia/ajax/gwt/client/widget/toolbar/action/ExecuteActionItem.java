@@ -61,10 +61,9 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * User: david
- * Date: Apr 28, 2010
- * Time: 2:26:32 PM
+ * An action item for executing configured action on the current JCR node.
  * 
+ * @author david
  */
 public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
     private static final long serialVersionUID = -1317342305404063292L;
@@ -72,7 +71,7 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
     protected String action;
     protected String confirmationMessageKey;
     private Set<String> requiredNodeTypes;
-    protected Map<String,String> parameters;
+    protected String parameterData;
 
     public void onComponentSelection() {
         if (confirmationMessageKey != null) {
@@ -101,22 +100,10 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
             RequestBuilder builder = new RequestBuilder(RequestBuilder.POST, localURL.replaceAll("#", "%23") + "." + action + ".do");
             try {
                 String requestData = getRequestData();
-                Map<String,String> parameterMap = getParameters();
-
                 // Add parameters values to the request data to be sent.
-                if(!parameterMap.isEmpty())
-                {
-                    StringBuffer buffer = new StringBuffer(requestData);
-                    for (String parameterKey : parameterMap.keySet())
-                    {
-                        String parameterValue = parameterMap.get(parameterKey);
-                        if(buffer.length()>0)
-                        {
-                            buffer.append("&");
-                        }
-                        buffer.append(parameterKey).append("=").append(parameterValue);
-                    }
-                    requestData = buffer.toString();
+                if (parameterData != null) {
+                    requestData = requestData != null && requestData.length() > 0 ? (requestData + "&" + parameterData)
+                            : parameterData;
                 }
                 if (requestData != null) {
                     builder.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -129,6 +116,7 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
                         actionExecuted(500);
                     }
 
+                    @SuppressWarnings("unchecked")
                     public void onResponseReceived(Request request, Response response) {
                         if (response.getStatusCode() != 200) {
                             com.google.gwt.user.client.Window.alert("Cannot contact remote server : error "+response.getStatusCode());
@@ -137,6 +125,7 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
                             JSONObject jsondata = JSONParser.parseStrict(response.getText()).isObject();
                             if (jsondata.get("refreshData") != null) {
                                 JSONObject refreshData = jsondata.get("refreshData").isObject();
+                                @SuppressWarnings("rawtypes")
                                 Map data = new HashMap();
                                 for (String s : refreshData.keySet()) {
                                     data.put(s, refreshData.get(s));
@@ -208,12 +197,23 @@ public class ExecuteActionItem extends NodeTypeAwareBaseActionItem {
         this.requiredNodeTypes = requiredNodeTypes;
     }
 
-    public Map<String, String> getParameters() {
-        return parameters;
-    }
-
+    /**
+     * Set the parameter map to be used for an action.
+     * 
+     * @param parameters a map of action parameters
+     */
     public void setParameters(Map<String, String> parameters) {
-        this.parameters = parameters;
+        if (parameters != null && !parameters.isEmpty()) {
+            StringBuffer buffer = new StringBuffer();
+            for (Map.Entry<String, String> param : parameters.entrySet()) {
+                if (buffer.length() > 0) {
+                    buffer.append("&");
+                }
+                buffer.append(param.getKey()).append("=").append(param.getValue());
+            }
+            parameterData = buffer.toString();
+        }
+
     }
 }
 

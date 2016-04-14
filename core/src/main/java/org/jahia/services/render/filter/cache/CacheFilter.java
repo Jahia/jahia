@@ -96,14 +96,13 @@ public class CacheFilter extends AbstractFilter {
         final boolean debugEnabled = logger.isDebugEnabled();
 
         Properties properties = (Properties) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.properties");
-        final Map<String, Serializable> moduleParams = resource.getModuleParams();
         final String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
 
-        // If we force the generation, return null
+        /* If we force the generation, return null
         final Boolean forceGeneration = (Boolean) moduleParams.remove("cache.forceGeneration");
         if (Boolean.TRUE.equals(forceGeneration)) {
             return null;
-        }
+        } */
 
         // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
         // ec parameter with the uuid of the current node.

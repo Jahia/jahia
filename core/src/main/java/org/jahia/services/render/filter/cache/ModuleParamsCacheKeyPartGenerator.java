@@ -46,16 +46,24 @@ package org.jahia.services.render.filter.cache;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
 /**
  * Cache key part generator that serializes (JSON) module parameters, if present. 
  */
-public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+    private static final Logger logger = LoggerFactory.getLogger(ModuleParamsCacheKeyPartGenerator.class);
+
     @Override
     public String getKey() {
         return "moduleParams";
@@ -74,6 +82,31 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator 
 
     private String encodeString(String toBeEncoded) {
         return toBeEncoded != null ? StringUtils.replace(toBeEncoded, "@@", "##").replace('"', '\'') : toBeEncoded;
+    }
+
+    @Override
+    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+        String params = keyValue;
+        if (StringUtils.isNotEmpty(params)) {
+            try {
+                JSONObject map = new JSONObject(URLDecoder.decode(params, "UTF-8"));
+                Iterator keys = map.keys();
+                while (keys.hasNext()) {
+                    String next = (String) keys.next();
+                    resource.getModuleParams().put(next, (Serializable) map.get(next));
+                }
+            } catch (UnsupportedEncodingException e) {
+                logger.error(e.getMessage(), e);
+            } catch (JSONException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
+
     }
 
 }

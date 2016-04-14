@@ -43,12 +43,7 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
@@ -153,4 +148,29 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return res;
     }
 
+    @Override
+    public Map<String, Object> prepareContentForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext) {
+        Map<String,Object> previous = new HashMap<>();
+        int i = 0;
+        for (Map.Entry<String, String> entry : keyParts.entrySet()) {
+            CacheKeyPartGenerator partGenerator = partGenerators.get(i);
+            if (partGenerator instanceof  ContextModifierCacheKeyPartGenerator) {
+                previous.put(entry.getKey(), ((ContextModifierCacheKeyPartGenerator)partGenerator).prepareContentForContentGeneration(entry.getValue(), resource, renderContext));
+            }
+            i++;
+        }
+        return previous;
+    }
+
+    @Override
+    public void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String,Object> previous) {
+        int i = 0;
+        for (Map.Entry<String, String> entry : keyParts.entrySet()) {
+            CacheKeyPartGenerator partGenerator = partGenerators.get(i);
+            if (partGenerator instanceof  ContextModifierCacheKeyPartGenerator) {
+                ((ContextModifierCacheKeyPartGenerator)partGenerator).restoreContextAfterContentGeneration(entry.getValue(), resource, renderContext, previous.get(entry.getKey()));
+            }
+            i++;
+        }
+    }
 }

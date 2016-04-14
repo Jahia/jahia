@@ -336,26 +336,14 @@ public class AggregateFilter extends AbstractFilter{
             if (areaIdentifier != null) {
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
+
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
 
-            String params = keyAttrbs.get("moduleParams");
-            if (StringUtils.isNotEmpty(params)) {
-                try {
-                    JSONObject map = new JSONObject(keyAttrbs.get("moduleParams"));
-                    Iterator keys = map.keys();
-                    while (keys.hasNext()) {
-                        String next = (String) keys.next();
-                        resource.getModuleParams().put(next, (Serializable) map.get(next));
-                    }
-                } catch (JSONException e) {
-                    logger.error(e.getMessage(), e);
-                }
-            }
+            Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
-            // Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
+            /* Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
             // a cache entry based on incomplete dependencies.
-            // TODO look if it's still needed
-            // resource.getModuleParams().put("cache.forceGeneration", true);
+            resource.getModuleParams().put("cache.forceGeneration", true); */
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
@@ -363,6 +351,8 @@ public class AggregateFilter extends AbstractFilter{
                 logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
                         " areaIdentifier " + areaIdentifier);
             }
+
+            keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);
 
             for (String s : addedPath) {
                 renderContext.getRenderedPaths().remove(s);

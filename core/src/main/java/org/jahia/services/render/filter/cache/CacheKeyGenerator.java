@@ -93,4 +93,8 @@ public interface CacheKeyGenerator {
     CacheKeyPartGenerator getPartGenerator(String field);
 
     String replacePlaceholdersInCacheKey(RenderContext renderContext, String key);
+
+    Map<String, Object> prepareContentForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
+
+    void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> previous);
 }

@@ -167,7 +167,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         cache.removeAll();
         depCache.flush();
         depCache.removeAll();
-        AggregateCacheFilter.flushNotCacheableFragment();
+        cacheProvider.flushNotCacheableFragment();
         CacheFilterCheckFilter.clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);

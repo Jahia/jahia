@@ -210,8 +210,7 @@ public class CacheFilter extends AbstractFilter {
                 }
                 doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
             } else {
-                // TODO MOVE notCacheableFragment
-                AggregateCacheFilter.notCacheableFragment.put(key, Boolean.TRUE);
+                cacheProvider.setFragmentKeyAsNotCacheable(key);
             }
         }
 
@@ -476,8 +475,7 @@ public class CacheFilter extends AbstractFilter {
      */
     protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties) throws RepositoryException {
         // first check if the key is not part of the non cacheable fragments
-        // TODO MOVE notCaheableFragment
-        if (AggregateCacheFilter.notCacheableFragment.containsKey(key)) {
+        if (cacheProvider.isNotCacheableFragment(key)) {
             return false;
         }
 
@@ -549,8 +547,7 @@ public class CacheFilter extends AbstractFilter {
         stringBuilder.append("<div class=\"cacheDebugInfo\">");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Expiration: </span><span>");
         String key1 = replacePlaceholdersInCacheKey(renderContext, key);
-        // TODO move notCacheableFragment
-        if (!AggregateCacheFilter.notCacheableFragment.containsKey(key)) {
+        if (!cacheProvider.isNotCacheableFragment(key)) {
             stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cacheProvider.getCache().get(
                     key1).getExpirationTime())));
         } else {

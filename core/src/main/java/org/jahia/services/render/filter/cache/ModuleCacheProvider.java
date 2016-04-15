@@ -53,13 +53,16 @@ import org.jahia.services.cache.ehcache.DependenciesCacheEvictionPolicy;
 import org.jahia.services.cache.ehcache.EhCacheProvider;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.impl.jackrabbit.SpringJackrabbitRepository;
+import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.ApplicationListener;
 
 import java.text.ParseException;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Instantiates and provides access to the module output and dependency caches.
@@ -67,7 +70,7 @@ import java.util.*;
  * @author Cedric Mailleux
  * @author Sergiy Shyrkov
  */
-public class ModuleCacheProvider implements InitializingBean {
+public class ModuleCacheProvider implements InitializingBean, ApplicationListener<TemplatePackageRedeployedEvent> {
 
     private static final String CACHE_NAME = "HTMLCache";
     private static final String CACHE_SYNC_NAME = "HTMLCacheEventSync";
@@ -90,6 +93,7 @@ public class ModuleCacheProvider implements InitializingBean {
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
     private Cache syncCache;
+    private Map<String, Boolean> notCacheableFragment;
 
     private CacheKeyGenerator keyGenerator;
 
@@ -133,6 +137,8 @@ public class ModuleCacheProvider implements InitializingBean {
                 syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
             }
         }
+
+        notCacheableFragment = new ConcurrentHashMap<String, Boolean>(512);
     }
 
     /**
@@ -226,6 +232,7 @@ public class ModuleCacheProvider implements InitializingBean {
         dependenciesCache.flush();
         regexpDependenciesCache.removeAll();
         regexpDependenciesCache.flush();
+        notCacheableFragment.clear();
     }
 
     public Cache getRegexpDependenciesCache() {
@@ -294,6 +301,48 @@ public class ModuleCacheProvider implements InitializingBean {
         }
     }
 
+    /**
+     * Remove keys from not cacheable fragment looking for path in the cache key give as parameter
+     * @param key fragment key of the fragment
+     */
+    public void removeNotCacheableFragment(String key) {
+        Map<String, String> keyAttrbs = keyGenerator.parse(key);
+        String path = keyAttrbs.get("path");
+        List<String> removableKeys = new ArrayList<String>();
+        for (String notCacheableKey : notCacheableFragment.keySet()) {
+            if (notCacheableKey.contains(path)) {
+                removableKeys.add(notCacheableKey);
+            }
+        }
+        for (String removableKey : removableKeys) {
+            notCacheableFragment.remove(removableKey);
+        }
+    }
+
+    /**
+     * Flush the not cacheable fragments map
+     */
+    public void flushNotCacheableFragment() {
+        notCacheableFragment.clear();
+    }
+
+    /**
+     * Check if fragment key is not known as not cacheable
+     * @param key fragment key
+     * @return either the fragment is known as not cacheable or not
+     */
+    public boolean isNotCacheableFragment(String key) {
+        return notCacheableFragment.containsKey(key);
+    }
+
+    /**
+     * Set the given fragment key as not cacheable
+     * @param key fragment key
+     */
+    public void setFragmentKeyAsNotCacheable(String key) {
+        notCacheableFragment.put(key, Boolean.TRUE);
+    }
+
     public void propagatePathFlushToCluster(String nodePathOrIdentifier) {
         if(syncCache != null) {
             if (logger.isDebugEnabled()) {
@@ -315,5 +364,10 @@ public class ModuleCacheProvider implements InitializingBean {
 
     public Cache getSyncCache() {
         return syncCache;
+    }
+
+    @Override
+    public void onApplicationEvent(TemplatePackageRedeployedEvent templatePackageRedeployedEvent) {
+        flushNotCacheableFragment();
     }
 }

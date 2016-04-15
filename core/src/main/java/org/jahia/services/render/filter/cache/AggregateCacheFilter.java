@@ -1202,9 +1202,15 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
-        flushNotCacheableFragment();
+        if(!this.isDisabled()) {
+            flushNotCacheableFragment();
+        }
     }
 
+    /**
+     * @deprecated As of release 7.2, replaced by {@link org.jahia.services.render.filter.cache.ModuleCacheProvider#removeNotCacheableFragment(String)}
+     * @param key
+     */
     public void removeNotCacheableFragment(String key) {
         CacheKeyGenerator keyGenerator = cacheProvider.getKeyGenerator();
         if (keyGenerator instanceof DefaultCacheKeyGenerator) {
@@ -1223,6 +1229,9 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
         }
     }
 
+    /**
+     * @deprecated As of release 7.2, replaced by {@link org.jahia.services.render.filter.cache.ModuleCacheProvider#flushNotCacheableFragment()}
+     */
     public static void flushNotCacheableFragment() {
         notCacheableFragment.clear();
     }

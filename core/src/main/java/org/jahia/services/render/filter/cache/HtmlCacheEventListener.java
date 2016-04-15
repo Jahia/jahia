@@ -316,10 +316,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
-                AggregateCacheFilter.flushNotCacheableFragment();
+                cacheProvider.flushNotCacheableFragment();
             } else {
                 for (String dep : deps) {
-                    aggregateCacheFilter.removeNotCacheableFragment(dep);
+                    cacheProvider.removeNotCacheableFragment(dep);
                 }
             }
             cacheProvider.invalidate(path, propagateToOtherClusterNodes);

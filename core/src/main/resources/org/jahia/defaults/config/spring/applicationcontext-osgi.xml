@@ -38,7 +38,6 @@
                 <prop key="org.osgi.framework.storage">#{settingsBean.jahiaVarDiskPath}/bundles-deployed</prop>
 
                 <prop key="log4j.ignoreTCL">true</prop>
-                <prop key="jahiaVarDiskPath">#{settingsBean.jahiaVarDiskPath}</prop>
 
                 <prop key="felix.webconsole.manager.root">/console</prop>
 
@@ -50,15 +49,13 @@
                 <value>/WEB-INF/etc/config/felix-framework.properties</value>
                 <value>classpath*:org/jahia/config/felix-framework*.properties</value>
                 <value>classpath*:jahia/felix-framework*.properties</value>
-                <value>classpath*:org/jahia/defaults/config/properties/osgi-framework*.properties</value>
-                <value>classpath*:org/jahia/config/osgi-framework*.properties</value>
                 <value>classpath*:jahia/osgi-framework*.properties</value>
             </list>
         </property>
     </bean>
 
     <bean id="osgiProperties" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
-        <!-- Effective Felix properties: combined (defaults + configured in files) properties
+        <!-- Effective OSGi properties: combined (defaults + configured in files) properties
             are overridden with the system properties, having "jahiaConfig." prefix -->
         <property name="propertiesArray">
             <list>

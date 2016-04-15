@@ -55,7 +55,6 @@ import org.apache.karaf.util.config.PropertiesLoader;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
 import org.jahia.exceptions.JahiaRuntimeException;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.settings.SettingsBean;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkEvent;
@@ -169,8 +168,6 @@ public class FrameworkService implements FrameworkListener {
 
     private void setupSystemProperties() {
 
-        String varDiskPath = SettingsBean.getInstance().getJahiaVarDiskPath();
-
         @SuppressWarnings("unchecked")
         Map<String,String> unreplaced = (Map<String,String>) SpringContextSingleton.getBean("osgiProperties");
         Map<String,String> newSystemProperties = new TreeMap<>();
@@ -184,13 +181,14 @@ public class FrameworkService implements FrameworkListener {
 
         for (Map.Entry<String,String> property : newSystemProperties.entrySet()) {
             String propertyName = property.getKey();
-            if (System.getProperty(propertyName) != null) {
-                logger.warn("Overriding system property " + propertyName + "=" + System.getProperty(propertyName) + " with new value=" + property.getValue());
+            String oldPropertyValue = System.getProperty(propertyName);
+            if (oldPropertyValue != null) {
+                logger.warn("Overriding system property " + propertyName + "=" + oldPropertyValue + " with new value=" + property.getValue());
             }
-            System.setProperty(propertyName, property.getValue());
+            JahiaContextLoaderListener.setSystemProperty(propertyName, property.getValue());
         }
 
-        File file = new File(varDiskPath + "/etc", "config.properties");
+        File file = new File(System.getProperty("karaf.etc"), "config.properties");
         org.apache.felix.utils.properties.Properties karafConfigProperties = null;
         try {
             karafConfigProperties = PropertiesLoader.loadConfigProperties(file);
@@ -208,7 +206,7 @@ public class FrameworkService implements FrameworkListener {
             }
         }
         if (modifiedExtraSystemPackages) {
-            System.setProperty("org.osgi.framework.system.packages.extra", extraSystemPackages.toString());
+            JahiaContextLoaderListener.setSystemProperty("org.osgi.framework.system.packages.extra", extraSystemPackages.toString());
         }
 
     }

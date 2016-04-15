@@ -43,6 +43,7 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.Template;
@@ -50,7 +51,7 @@ import org.jahia.services.render.Template;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
-public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
     @Override
     public String getKey() {
         return "templateNodes";
@@ -68,4 +69,25 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
         return keyPart;
     }
 
+    @Override
+    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+        HttpServletRequest request = renderContext.getRequest();
+        Object previousTemplate = request.getAttribute("previousTemplate");
+        if (!StringUtils.isEmpty(keyValue)) {
+            Template templateNodes = new Template(keyValue);
+            request.setAttribute("previousTemplate", templateNodes);
+        } else {
+            request.removeAttribute("previousTemplate");
+        }
+        return previousTemplate;
+    }
+
+    @Override
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
+        if (previous != null) {
+            renderContext.getRequest().setAttribute("previousTemplate", previous);
+        } else {
+            renderContext.getRequest().removeAttribute("previousTemplate");
+        }
+    }
 }

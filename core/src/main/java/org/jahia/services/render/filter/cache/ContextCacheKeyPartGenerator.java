@@ -43,12 +43,13 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
-public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator{
     @Override
     public String getKey() {
         return "context";
@@ -62,5 +63,18 @@ public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator {
     @Override
     public String replacePlaceholders(RenderContext renderContext, String keyPart) {
         return keyPart;
+    }
+
+    @Override
+    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+        if (!StringUtils.isEmpty(keyValue) && !keyValue.equals("page")) {
+            renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
+        }
+        return null;
+    }
+
+    @Override
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
+
     }
 }

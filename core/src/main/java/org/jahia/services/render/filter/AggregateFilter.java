@@ -303,17 +303,6 @@ public class AggregateFilter extends AbstractFilter{
             // Prepare to dispatch to the render service - restore all area/templates atributes
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-            Template oldOne = (Template) renderContext.getRequest().getAttribute("previousTemplate");
-            String context = keyAttrbs.get("context");
-            if (!context.equals("page")) {
-                renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
-            }
-            if (!StringUtils.isEmpty(keyAttrbs.get("templateNodes"))) {
-                Template templateNodes = new Template(keyAttrbs.get("templateNodes"));
-                renderContext.getRequest().setAttribute("previousTemplate", templateNodes);
-            } else {
-                renderContext.getRequest().removeAttribute("previousTemplate");
-            }
 
             Set<String> addedPath = new HashSet<String>();
             if (null != allPaths && !allPaths.isEmpty()) {
@@ -337,7 +326,7 @@ public class AggregateFilter extends AbstractFilter{
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
 
-            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), context);
+            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
 
             Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
@@ -362,11 +351,6 @@ public class AggregateFilter extends AbstractFilter{
                 renderContext.getRequest().setAttribute("inArea", oldInArea);
             } else {
                 renderContext.getRequest().removeAttribute("inArea");
-            }
-            if (oldOne != null) {
-                renderContext.getRequest().setAttribute("previousTemplate", oldOne);
-            } else {
-                renderContext.getRequest().removeAttribute("previousTemplate");
             }
             return content;
         } catch (RepositoryException e) {

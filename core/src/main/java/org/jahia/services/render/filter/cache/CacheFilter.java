@@ -417,12 +417,7 @@ public class CacheFilter extends AbstractFilter {
                 "jnt:mainResourceDisplay")) {
             cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
         }
-        TreeSet<String> allPaths = new TreeSet<String>();
-        allPaths.addAll(renderContext.getRenderedPaths());
-        //Add current resource too as is as been removed by the TemplatesScriptFilter already
-//        if (renderContext.getRequest().getAttribute("lastResourceRenderedByScript") != null && renderContext.getRequest().getAttribute("lastResourceRenderedByScript").equals(resource)) {
-//            allPaths.add(resource.getNode().getPath());
-//        }
+
         Map<String,Object> m = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
         if (m != null && m.containsKey("requestAttributesToCache")){
             HashMap<String,Serializable> attributes = new HashMap<>();
@@ -434,8 +429,6 @@ public class CacheFilter extends AbstractFilter {
             }
             cacheEntry.setProperty("requestAttributes", attributes);
         }
-
-        cacheEntry.setProperty("allPaths", allPaths);
     }
 
     private void releaseLatch(Resource resource) {

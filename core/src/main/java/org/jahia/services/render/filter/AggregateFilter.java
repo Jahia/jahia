@@ -55,13 +55,10 @@ import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -116,7 +113,7 @@ public class AggregateFilter extends AbstractFilter{
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
         renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering");
         renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering.properties");
-        return aggregateContent(previousOut, renderContext, null, null);
+        return aggregateContent(previousOut, renderContext, null);
     }
 
     /**
@@ -230,11 +227,9 @@ public class AggregateFilter extends AbstractFilter{
      * @param cachedContent  The fragment, as it is stored in the cache
      * @param renderContext  The render context
      * @param areaIdentifier
-     * @param allPaths
      * @return
      */
-    protected String aggregateContent(String cachedContent, RenderContext renderContext, String areaIdentifier, Set<String> allPaths) throws RenderException {
-
+    protected String aggregateContent(String cachedContent, RenderContext renderContext, String areaIdentifier) throws RenderException {
         int esiTagStartIndex = cachedContent.indexOf(CACHE_ESI_TAG_START);
         if(esiTagStartIndex == -1){
             return cachedContent;
@@ -246,7 +241,7 @@ public class AggregateFilter extends AbstractFilter{
                     String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
                     try {
                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
-                                generateContent(renderContext, cacheKey, areaIdentifier, allPaths));
+                                generateContent(renderContext, cacheKey, areaIdentifier));
                     } catch (RenderException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
@@ -273,11 +268,9 @@ public class AggregateFilter extends AbstractFilter{
      * @param renderContext  The render context
      * @param cacheKey       The cache key of the fragment to generate
      * @param areaIdentifier
-     * @param allPaths
      */
     protected String generateContent(RenderContext renderContext,
-                                     String cacheKey, String areaIdentifier,
-                                     Set<String> allPaths) throws RenderException {
+                                     String cacheKey, String areaIdentifier) throws RenderException {
         try {
             // Parse the key to get all separate key attributes like node path and template
             Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
@@ -304,22 +297,11 @@ public class AggregateFilter extends AbstractFilter{
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
 
-            Set<String> addedPath = new HashSet<String>();
-            if (null != allPaths && !allPaths.isEmpty()) {
-                for (String path : allPaths) {
-                    if (!renderContext.getRenderedPaths().contains(path)) {
-                        renderContext.getRenderedPaths().add(path);
-                        addedPath.add(path);
-                    }
-                }
-            }
-
             if (areaIdentifier != null) {
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
 
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
-
             Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
             /* Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
@@ -334,10 +316,6 @@ public class AggregateFilter extends AbstractFilter{
             }
 
             keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);
-
-            for (String s : addedPath) {
-                renderContext.getRenderedPaths().remove(s);
-            }
 
             return content;
         } catch (RepositoryException e) {

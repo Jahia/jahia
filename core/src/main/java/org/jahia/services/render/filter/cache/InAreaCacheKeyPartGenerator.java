@@ -43,13 +43,14 @@
  */
 package org.jahia.services.render.filter.cache;
 
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
-public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator {
+public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
     @Override
     public String getKey() {
         return "inArea";
@@ -67,4 +68,23 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator {
         return keyPart;
     }
 
+    @Override
+    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+        Object oldInArea = renderContext.getRequest().getAttribute("inArea");
+        if (StringUtils.isEmpty(keyValue)) {
+            renderContext.getRequest().removeAttribute("inArea");
+        } else {
+            renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(keyValue));
+        }
+        return oldInArea;
+    }
+
+    @Override
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
+        if (previous != null) {
+            renderContext.getRequest().setAttribute("inArea", previous);
+        } else {
+            renderContext.getRequest().removeAttribute("inArea");
+        }
+    }
 }

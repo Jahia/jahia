@@ -283,7 +283,7 @@ public class AggregateFilter extends AbstractFilter{
             Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
-            JCRNodeWrapper node = null;
+            JCRNodeWrapper node;
             try {
                 // Get the node associated to the fragment to generate
                 node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY));
@@ -314,14 +314,6 @@ public class AggregateFilter extends AbstractFilter{
                 }
             }
 
-            renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
-            Object oldInArea = (Object) renderContext.getRequest().getAttribute("inArea");
-            String inArea = keyAttrbs.get("inArea");
-            if (StringUtils.isEmpty(inArea)) {
-                renderContext.getRequest().removeAttribute("inArea");
-            } else {
-                renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(inArea));
-            }
             if (areaIdentifier != null) {
                 renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
             }
@@ -347,11 +339,6 @@ public class AggregateFilter extends AbstractFilter{
                 renderContext.getRenderedPaths().remove(s);
             }
 
-            if (oldInArea != null) {
-                renderContext.getRequest().setAttribute("inArea", oldInArea);
-            } else {
-                renderContext.getRequest().removeAttribute("inArea");
-            }
             return content;
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);

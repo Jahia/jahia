@@ -55,7 +55,6 @@ import org.springframework.core.ConstantException;
 import org.springframework.core.Constants;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -73,7 +72,6 @@ public final class BundleUtils {
     private static Map<String, String[]> moduleForClass = new ConcurrentHashMap<String, String[]>();
 
     private static Map<Bundle, AbstractApplicationContext> contextToStart = new HashMap<Bundle, AbstractApplicationContext>();
-    private static Map<Bundle, List<AbstractApplicationContext>> contextDependenciesToStart = new HashMap<Bundle, List<AbstractApplicationContext>>();
 
     private static Map<String, Throwable> contextException = new HashMap<String, Throwable>();
 

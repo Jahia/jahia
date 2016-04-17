@@ -184,6 +184,49 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-Name>${project.name}</Bundle-Name>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Category>jahia-module</Bundle-Category>
+
+                        <Implementation-Title>${project.name}</Implementation-Title>
+                        <Implementation-Version>${project.version}</Implementation-Version>
+                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+                        <Implementation-URL>${project.organization.url}</Implementation-URL>
+                        <Specification-Title>${project.name}</Specification-Title>
+                        <Specification-Version>${project.version}</Specification-Version>
+                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
+
+                        <!-- Jahia manifest attributes -->
+                        <Jahia-Depends>${jahia-depends}</Jahia-Depends>
+                        <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
+                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
+                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
+                        <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
+                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
+                        <Jahia-Source-Control-Tag>${project.scm.tag}</Jahia-Source-Control-Tag>
+                        <Jahia-Download-Sources-Available>${jahia-download-sources-available}</Jahia-Download-Sources-Available>
+                        <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
+                        <Jahia-Static-Resources>${jahia-static-resources}</Jahia-Static-Resources>
+                        <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
+                        <Jahia-Deploy-On-Site>${jahia-deploy-on-site}</Jahia-Deploy-On-Site>
+                        <Jahia-Block-Edit-Mode>${jahia-block-edit-mode}</Jahia-Block-Edit-Mode>
+                        <Export-Package>${export-package}</Export-Package>
+                        <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
+                        <Provide-Capability>${jahia.plugin.providedNodeTypes}${jahia.plugin.providedModulesCapabilities}</Provide-Capability>
+                        <Require-Capability>${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities}</Require-Capability>
+                        <Embed-Dependency>${embed-dependency}</Embed-Dependency>
+                        <Embed-Transitive>true</Embed-Transitive>
+                        <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
+                        <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
                 <groupId>org.jahia.server</groupId>
                 <artifactId>jahia-maven-plugin</artifactId>
                 <executions>
@@ -226,49 +269,6 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <extensions>true</extensions>
-                <configuration>
-                    <instructions>
-                        <Bundle-Name>${project.name}</Bundle-Name>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
-                        <Bundle-Category>jahia-module</Bundle-Category>
-
-                        <Implementation-Title>${project.name}</Implementation-Title>
-                        <Implementation-Version>${project.version}</Implementation-Version>
-                        <Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-                        <Implementation-URL>${project.organization.url}</Implementation-URL>
-                        <Specification-Title>${project.name}</Specification-Title>
-                        <Specification-Version>${project.version}</Specification-Version>
-                        <Specification-Vendor>${project.organization.name}</Specification-Vendor>
-
-                        <!-- Jahia manifest attributes -->
-                        <Jahia-Depends>${jahia-depends}</Jahia-Depends>
-                        <Jahia-Module-Type>${jahia-module-type}</Jahia-Module-Type>
-                        <Jahia-GroupId>${project.groupId}</Jahia-GroupId>
-                        <Jahia-Source-Folders>${project.basedir}</Jahia-Source-Folders>
-                        <Jahia-Source-Control-Connection>${project.scm.connection}</Jahia-Source-Control-Connection>
-                        <Jahia-Source-Control-DeveloperConnection>${project.scm.developerConnection}</Jahia-Source-Control-DeveloperConnection>
-                        <Jahia-Source-Control-Tag>${project.scm.tag}</Jahia-Source-Control-Tag>
-                        <Jahia-Download-Sources-Available>${jahia-download-sources-available}</Jahia-Download-Sources-Available>
-                        <Jahia-Required-Version>${jahia.version}</Jahia-Required-Version>
-                        <Jahia-Static-Resources>${jahia-static-resources}</Jahia-Static-Resources>
-                        <Jahia-Private-App-Store>${jahia-private-app-store}</Jahia-Private-App-Store>
-                        <Jahia-Deploy-On-Site>${jahia-deploy-on-site}</Jahia-Deploy-On-Site>
-                        <Jahia-Block-Edit-Mode>${jahia-block-edit-mode}</Jahia-Block-Edit-Mode>
-                        <Export-Package>${export-package}</Export-Package>
-                        <Import-Package>${jahia.plugin.projectPackageImport},*</Import-Package>
-                        <Provide-Capability>${jahia.plugin.providedNodeTypes}${jahia.plugin.providedModulesCapabilities}</Provide-Capability>
-                        <Require-Capability>${jahia.plugin.requiredNodeTypes}${jahia.plugin.requiredModulesCapabilities}</Require-Capability>
-                        <Embed-Dependency>${embed-dependency}</Embed-Dependency>
-                        <Embed-Transitive>true</Embed-Transitive>
-                        <Dynamic-ImportPackage>*</Dynamic-ImportPackage>
-                        <_removeheaders>${jahia.modules.bundle.removeheaders}</_removeheaders>
-                    </instructions>
-                </configuration>
             </plugin>
         </plugins>
     </build>

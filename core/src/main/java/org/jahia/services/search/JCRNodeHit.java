@@ -244,10 +244,8 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
             if (displayableNode == null && !CollectionUtils.isEmpty(getUsages())) {
                  displayableNode = ((JCRNodeHit)getUsages().get(0)).getDisplayableNode();
             }
-            //special check for 7.1.x.x --> old functionality when no displayable node found set the resource
-            //because if customers has own searchprovider implementation it could lead to NullPointers 
+            //search.displayableNodeCompat... don't allow to return null, if customers has own searchprovider implementations
             if (displayableNode == null 
-            	  && SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat") != null
             	  && Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) {
             	displayableNode = resource;
             }

@@ -67,6 +67,7 @@ import org.jahia.services.search.SearchCriteria.Term.SearchFields;
 import org.jahia.services.search.spell.CompositeSpellChecker;
 import org.jahia.services.sites.JahiaSitesService;
 import org.jahia.services.tags.TaggingService;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.DateUtils;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
@@ -177,7 +178,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
                             
-                            if (!skipNode) {  //check if node is invisible (or don't have a displayable parent or reference)
+                            if (!skipNode && !Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) { 
+                            	//check if node is invisible (or don't have a displayable parent or reference)
                                 skipNode = hit.getDisplayableNode() == null;
                             }                            
                             if (!skipNode && usageFilterSites != null

@@ -161,6 +161,8 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
                 List<JCRNodeHit> hitsToAdd = new ArrayList<JCRNodeHit>();
                 final int requiredHits = limit + offset;
                 
+                boolean displayableNodeCompat = Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"));
+                
                 while (it.hasNext()) {
                     count++;
                     Row row = it.nextRow();
@@ -178,7 +180,7 @@ public class JahiaJCRSearchProvider implements SearchProvider, SearchProvider.Su
 
                             JCRNodeHit hit = !skipNode ? buildHit(row, node, context, usageFilterSites) : null;
                             
-                            if (!skipNode && !Boolean.valueOf(SettingsBean.getInstance().getPropertiesFile().getProperty("search.displayableNodeCompat"))) { 
+                            if (!skipNode && !displayableNodeCompat) { 
                             	//check if node is invisible (or don't have a displayable parent or reference)
                                 skipNode = hit.getDisplayableNode() == null;
                             }                            

@@ -83,5 +83,4 @@ public abstract class Constants {
 
     public static final String MODULE_TYPE_SYSTEM = "system";
     public static final String MODULE_TYPE_TEMPLATES_SET = "templatesSet";
-    public static final String MODULE_TYPE_PROFILE_MODULE = "profileModule";
 }

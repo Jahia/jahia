@@ -233,7 +233,7 @@ public class ModuleBuildHelper implements InitializingBean {
         archetypeParams.add("archetype:generate");
         archetypeParams.add("-DarchetypeCatalog=" + mavenArchetypeCatalog + ",local");
         archetypeParams.add("-DarchetypeGroupId=org.jahia.archetypes");
-        archetypeParams.add("-DarchetypeArtifactId=jahia-" + (moduleType.equals("jahiapp") ? "app" : moduleType) + "-archetype");
+        archetypeParams.add("-DarchetypeArtifactId=jahia-" + moduleType + "-archetype");
         archetypeParams.add("-DarchetypeVersion=" + mavenArchetypeVersion);
         archetypeParams.add("-Dversion=1.0-SNAPSHOT");
         archetypeParams.add("\"-DmoduleName=" + moduleName + "\"");

@@ -106,11 +106,8 @@ import java.util.*;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
-    public static final String MODULE_TYPE_JAHIAPP = "jahiapp";
 
     public static final String MODULE_TYPE_MODULE = "module";
-
-    public static final String MODULE_TYPE_PROFILE_MODULE = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_PROFILE_MODULE;
 
     public static final String MODULE_TYPE_SYSTEM = org.jahia.ajax.gwt.client.util.Constants.MODULE_TYPE_SYSTEM;
 

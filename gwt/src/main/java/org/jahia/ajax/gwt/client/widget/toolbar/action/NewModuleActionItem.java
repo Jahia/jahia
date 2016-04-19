@@ -97,8 +97,6 @@ public class NewModuleActionItem extends BaseActionItem {
 
             moduleTypeCombo.add("module");
             moduleTypeCombo.add("templatesSet");
-            moduleTypeCombo.add("jahiapp");
-            moduleTypeCombo.add("profileModule");
             moduleTypeCombo.setSimpleValue("module");
             moduleTypeCombo.setTriggerAction(ComboBox.TriggerAction.ALL);
 

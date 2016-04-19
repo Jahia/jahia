@@ -302,7 +302,30 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         }
     }
 
-<<<<<<< .working
+    /**
+     * Flushes dependencies if the provided node path matches the corresponding key in the {@link #REGEXPDEPS_CACHE_NAME}} cache.
+     * 
+     * @param path
+     *            the concerned node path
+     * @param propagateToOtherClusterNodes
+     *            <code>true</code> in case the flush event should be propagated to other cluster nodes
+     */
+    public void flushRegexpDependenciesOfPath(String path, boolean propagateToOtherClusterNodes) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("Flushing dependencies for path: {}", path);
+        }
+        @SuppressWarnings("unchecked")
+        List<String> keys = getRegexpDependenciesCache().getKeys();
+        for (String key : keys) {
+            if (path.matches(key)) {
+                invalidateRegexp(key, propagateToOtherClusterNodes);
+            }
+        }
+        if (propagateToOtherClusterNodes && SettingsBean.getInstance().isClusterActivated()) {
+            propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
+        }
+    }
+
     /**
      * Remove keys from not cacheable fragment looking for path in the cache key give as parameter
      * @param key fragment key of the fragment
@@ -345,32 +368,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         notCacheableFragment.put(key, Boolean.TRUE);
     }
 
-=======
-    /**
-     * Flushes dependencies if the provided node path matches the corresponding key in the {@link #REGEXPDEPS_CACHE_NAME}} cache.
-     * 
-     * @param path
-     *            the concerned node path
-     * @param propagateToOtherClusterNodes
-     *            <code>true</code> in case the flush event should be propagated to other cluster nodes
-     */
-    public void flushRegexpDependenciesOfPath(String path, boolean propagateToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path: {}", path);
-        }
-        @SuppressWarnings("unchecked")
-        List<String> keys = getRegexpDependenciesCache().getKeys();
-        for (String key : keys) {
-            if (path.matches(key)) {
-                invalidateRegexp(key, propagateToOtherClusterNodes);
-            }
-        }
-        if (propagateToOtherClusterNodes && SettingsBean.getInstance().isClusterActivated()) {
-            propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
-        }
-    }
-
->>>>>>> .merge-right.r54260
     public void propagatePathFlushToCluster(String nodePathOrIdentifier) {
         if(syncCache != null) {
             if (logger.isDebugEnabled()) {

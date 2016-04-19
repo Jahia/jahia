@@ -145,7 +145,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
     public void processEvents(List<Event> events, JCRSessionWrapper sessionWrapper, boolean propagateToOtherClusterNodes) {
         final Cache depCache = cacheProvider.getDependenciesCache();
-        final Cache regexpDepCache = cacheProvider.getRegexpDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
 
         AclCacheKeyPartGenerator cacheKeyGenerator = (AclCacheKeyPartGenerator) cacheProvider.getKeyGenerator().getPartGenerator("acls");
@@ -256,7 +255,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                     } catch (PathNotFoundException e) {
                         //
                     }
-                    flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
+                    cacheProvider.flushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
                 }
 
                 if (flushChilds) {
@@ -273,7 +272,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                         } catch (PathNotFoundException e) {
                             //
                         }
-                        flushRegexpDependenciesOfPath(regexpDepCache, path, propagateToOtherClusterNodes);
+                        cacheProvider.flushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
                     }
                 }
 
@@ -328,22 +327,6 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
 
         if (propagateToOtherClusterNodes && SettingsBean.getInstance().isClusterActivated()) {
             cacheProvider.propagatePathFlushToCluster(path);
-        }
-    }
-
-    private void flushRegexpDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Flushing dependencies for path: {}", path);
-        }
-        @SuppressWarnings("unchecked")
-        List<String> keys = depCache.getKeys();
-        for (String key : keys) {
-            if (path.matches(key)) {
-                cacheProvider.invalidateRegexp(key, propagateToOtherClusterNodes);
-            }
-        }
-        if (SettingsBean.getInstance().isClusterActivated()) {
-            cacheProvider.propagateFlushRegexpDependenciesOfPath(path, propagateToOtherClusterNodes);
         }
     }
 

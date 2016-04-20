@@ -113,7 +113,7 @@ public class CacheFilter extends AbstractFilter {
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
-        // Keeps a list of keys being generated to avoid infinite loops.
+        /* TODO reimplemt Keeps a list of keys being generated to avoid infinite loops.
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<>();
@@ -123,7 +123,7 @@ public class CacheFilter extends AbstractFilter {
             return null;
         }
         userKeysLinkedList.add(0, finalKey);
-
+        */
 
         Element element = null;
         final Cache cache = cacheProvider.getCache();

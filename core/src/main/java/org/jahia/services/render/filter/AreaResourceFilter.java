@@ -51,6 +51,12 @@ import org.jahia.services.render.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 /**
+ * This render filter add the area resource in the request params
+ * to be able to calculate contribute buttons in contribute mode
+ * this filter is only use in contribute mode
+ *
+ * areaResource and areaListResource parameters are only read by ModuleTag in contribute mode
+ *
  * User: david
  * Date: 1/17/11
  * Time: 4:47 PM

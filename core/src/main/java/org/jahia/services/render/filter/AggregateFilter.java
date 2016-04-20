@@ -113,7 +113,7 @@ public class AggregateFilter extends AbstractFilter{
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
         renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering");
         renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering.properties");
-        return aggregateContent(previousOut, renderContext, null);
+        return aggregateContent(previousOut, renderContext);
     }
 
     /**
@@ -226,10 +226,9 @@ public class AggregateFilter extends AbstractFilter{
      *
      * @param cachedContent  The fragment, as it is stored in the cache
      * @param renderContext  The render context
-     * @param areaIdentifier
      * @return
      */
-    protected String aggregateContent(String cachedContent, RenderContext renderContext, String areaIdentifier) throws RenderException {
+    protected String aggregateContent(String cachedContent, RenderContext renderContext) throws RenderException {
         int esiTagStartIndex = cachedContent.indexOf(CACHE_ESI_TAG_START);
         if(esiTagStartIndex == -1){
             return cachedContent;
@@ -241,7 +240,7 @@ public class AggregateFilter extends AbstractFilter{
                     String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
                     try {
                         esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
-                                generateContent(renderContext, cacheKey, areaIdentifier));
+                                generateContent(renderContext, cacheKey));
                     } catch (RenderException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
@@ -267,10 +266,8 @@ public class AggregateFilter extends AbstractFilter{
      *
      * @param renderContext  The render context
      * @param cacheKey       The cache key of the fragment to generate
-     * @param areaIdentifier
      */
-    protected String generateContent(RenderContext renderContext,
-                                     String cacheKey, String areaIdentifier) throws RenderException {
+    protected String generateContent(RenderContext renderContext, String cacheKey) throws RenderException {
         try {
             // Parse the key to get all separate key attributes like node path and template
             Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
@@ -289,19 +286,15 @@ public class AggregateFilter extends AbstractFilter{
                 return StringUtils.EMPTY;
             }
             if (logger.isDebugEnabled()) {
-                logger.debug("Calling render service for generating content for key " + cacheKey + " with attributes : " +
-                        " areaIdentifier " + areaIdentifier);
+                logger.debug("Calling render service for generating content for key " + cacheKey);
             }
 
             // Prepare to dispatch to the render service - restore all area/templates atributes
             renderContext.getRequest().removeAttribute(
                     "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
 
-            if (areaIdentifier != null) {
-                renderContext.getRequest().setAttribute("areaListResource", currentUserSession.getNodeByIdentifier(areaIdentifier));
-            }
-
             Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
+
             Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
             /* Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
@@ -311,8 +304,7 @@ public class AggregateFilter extends AbstractFilter{
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
             if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                logger.error("Empty generated content for key " + cacheKey + " with attributes : " +
-                        " areaIdentifier " + areaIdentifier);
+                logger.error("Empty generated content for key " + cacheKey);
             }
 
             keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);

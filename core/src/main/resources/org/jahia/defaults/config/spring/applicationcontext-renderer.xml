@@ -142,6 +142,7 @@
         <property name="description" value="Set attributes areaListResource and areaResource in the request"/>
         <property name="applyOnNodeTypes" value="jnt:area,jmix:list,jnt:mainResourceDisplay"/>
         <property name="applyOnConfigurations" value="module,wrappedcontent"/>
+        <property name="applyOnModes" value="contribute"/>
         <property name="priority" value="4"/>
     </bean>
 

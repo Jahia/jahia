@@ -116,7 +116,7 @@ public class Login implements Controller {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
-                    response.sendRedirect(request.getParameter("failureRedirect")+"?loginError="+result);
+                    response.sendRedirect(request.getParameter("failureRedirect") + ((request.getParameter("failureRedirect").indexOf("?") > -1) ? "&loginError=" : "?loginError=")  + result);
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));

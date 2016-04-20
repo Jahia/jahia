@@ -150,13 +150,9 @@
         <dependency.plugin.version>2.8</dependency.plugin.version>
 
         <!-- OSGi versions -->
-        <felix.framework.version>4.6.1</felix.framework.version>
         <felix.http.version>2.2.1</felix.http.version>
-        <felix.bundlerepository.version>2.0.4</felix.bundlerepository.version>
         <felix.webconsole.version>4.2.8</felix.webconsole.version>
-        <felix.log.version>1.0.1</felix.log.version>
-        <felix.configadmin.version>1.8.2</felix.configadmin.version>
-        <felix.eventadmin.version>1.4.2</felix.eventadmin.version>
+        <felix.configadmin.version>1.8.8</felix.configadmin.version>
         <felix.fileinstall.version>3.5.4-jahia1</felix.fileinstall.version>
         <felix.utils.version>1.8.0</felix.utils.version>
         <gemini.blueprint.version>1.0.2.RELEASE</gemini.blueprint.version>
@@ -167,7 +163,7 @@
         <slf4j.version>1.6.6</slf4j.version>
         <osgi.version>6.0.0</osgi.version>
         <osgi.compendium.version>5.0.0</osgi.compendium.version>
-        <pax.logging.version>1.7.0</pax.logging.version>
+        <pax.logging.version>1.8.5</pax.logging.version>
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
         <pax.web.api.version>3.0.7</pax.web.api.version>
         <pax.web.jsp.version>3.0.7-jahia4</pax.web.jsp.version>

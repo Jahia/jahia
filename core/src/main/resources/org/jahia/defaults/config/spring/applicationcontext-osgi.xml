@@ -25,6 +25,7 @@
         <property name="properties">
             <props value-type="java.lang.String">
 
+                <prop key="karaf.name">dx</prop>
                 <prop key="karaf.home">${jahiaWebAppRoot}/WEB-INF/karaf</prop>
                 <prop key="karaf.base">${jahiaWebAppRoot}/WEB-INF/karaf</prop>
                 <prop key="karaf.data">#{settingsBean.jahiaVarDiskPath}/karaf</prop>

@@ -48,6 +48,7 @@
             <list>
                 <value>classpath*:org/jahia/defaults/config/properties/felix-framework*.properties</value>
                 <value>/WEB-INF/etc/config/felix-framework.properties</value>
+                <value>/WEB-INF/etc/config/osgi-framework.properties</value>
                 <value>classpath*:org/jahia/config/felix-framework*.properties</value>
                 <value>classpath*:jahia/felix-framework*.properties</value>
                 <value>classpath*:jahia/osgi-framework*.properties</value>

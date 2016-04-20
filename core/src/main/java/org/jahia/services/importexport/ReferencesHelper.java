@@ -270,52 +270,64 @@ public class ReferencesHelper {
                     return;
                 }
             }
-            if (propertyDefinition.isMultiple()) {
-                Value[] newValues;
-                if (n.hasProperty(pName)) {
-                    final Value[] oldValues = n.getProperty(pName).getValues();
-                    newValues = new Value[oldValues.length + 1];
-                    for (Value oldValue : oldValues) {
-                        // value already set
-                        if (oldValue.getString().equals(value)) {
-                            return;
-                        }
-                    }
-                    System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
-                } else {
-                    newValues = new Value[1];
-                }
-                newValues[newValues.length - 1] = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
-                if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
-                    session.checkout(n);
-                    JCRPropertyWrapper property = n.setProperty(pName, newValues);
-
-                    if (live) {
-                        try {
-                            property.getParent().getCorrespondingNodePath("live");
-                            String key = property.getParent().getIdentifier() + "/" + property.getName();
-                            if (!session.getResolvedReferences().containsKey(key)) {
-                                session.getResolvedReferences().put(key, new HashSet<String>());
+            try {
+                if (propertyDefinition.isMultiple()) {
+                    Value[] newValues;
+                    if (n.hasProperty(pName)) {
+                        final Value[] oldValues = n.getProperty(pName).getValues();
+                        newValues = new Value[oldValues.length + 1];
+                        for (Value oldValue : oldValues) {
+                            // value already set
+                            if (oldValue.getString().equals(value)) {
+                                return;
                             }
-                            ((Set<String>) session.getResolvedReferences().get(key)).add(value);
-                        } catch (ItemNotFoundException e) {
-                            // Not in live
+                        }
+                        System.arraycopy(oldValues, 0, newValues, 0, oldValues.length);
+                    } else {
+                        newValues = new Value[1];
+                    }
+                    newValues[newValues.length - 1] = session.getValueFactory().createValue(value, propertyDefinition.getRequiredType());
+                    if (!n.hasProperty(pName) || !Arrays.equals(newValues, n.getProperty(pName).getValues())) {
+                        session.checkout(n);
+                        JCRPropertyWrapper property = n.setProperty(pName, newValues);
+    
+                        if (live) {
+                            try {
+                                property.getParent().getCorrespondingNodePath("live");
+                                String key = property.getParent().getIdentifier() + "/" + property.getName();
+                                if (!session.getResolvedReferences().containsKey(key)) {
+                                    session.getResolvedReferences().put(key, new HashSet<String>());
+                                }
+                                ((Set<String>) session.getResolvedReferences().get(key)).add(value);
+                            } catch (ItemNotFoundException e) {
+                                // Not in live
+                            }
+                        }
+                    }
+                } else {
+                    if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
+                        session.checkout(n);
+                        JCRPropertyWrapper property = n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
+                        String key = property.getParent().getIdentifier() + "/" + property.getName();
+                        if (live) {
+                            try {
+                                property.getParent().getCorrespondingNodePath("live");
+                                session.getResolvedReferences().put(key, property.getValue().getString());
+                            } catch (ItemNotFoundException e) {
+                                // Not in live
+                            }
                         }
                     }
                 }
-            } else {
-                if (!n.hasProperty(pName) || !value.equals(n.getProperty(pName).getString())) {
-                    session.checkout(n);
-                    JCRPropertyWrapper property = n.setProperty(pName, session.getValueFactory().createValue(value, propertyDefinition.getRequiredType()));
-                    String key = property.getParent().getIdentifier() + "/" + property.getName();
-                    if (live) {
-                        try {
-                            property.getParent().getCorrespondingNodePath("live");
-                            session.getResolvedReferences().put(key, property.getValue().getString());
-                        } catch (ItemNotFoundException e) {
-                            // Not in live
-                        }
-                    }
+            } catch (RuntimeException e) {
+                String msg = "Error setting property " + pName + " on node " + n.getPath() + " definition "
+                        + propertyDefinition + " required type " + propertyDefinition.getRequiredType()
+                        + ". Cause: " + e.getMessage();
+                if (logger.isDebugEnabled()) {
+                    // in debug we log the full exception stacktrace
+                    logger.error(msg, e);
+                } else {
+                    logger.error(msg);
                 }
             }
         }

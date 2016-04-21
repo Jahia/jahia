@@ -7,8 +7,6 @@
 
     <display-name>Jahia</display-name>
 
-    <distributable/>
-
     <context-param>
         <description>Required on IBM WebSphere to disable deployment into a built-in portlet container and allow deployment into a custom portlet container (Pluto)</description>
         <param-name>com.ibm.websphere.portletcontainer.PortletDeploymentEnabled</param-name>

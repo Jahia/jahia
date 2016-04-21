@@ -112,11 +112,12 @@ public class Login implements Controller {
             }
         } else {
             if (!restMode) {
-                if (isAuthorizedRedirect(request, request.getParameter("failureRedirect"), false)) {
+                String failureRedirect = request.getParameter("failureRedirect");
+                if (isAuthorizedRedirect(request, failureRedirect, false)) {
                     if ("bad_password".equals(result)) {
                         result = "unknown_user";
                     }
-                    response.sendRedirect(request.getParameter("failureRedirect") + ((request.getParameter("failureRedirect").indexOf("?") > -1) ? "&loginError=" : "?loginError=")  + result);
+                    response.sendRedirect(failureRedirect + ((failureRedirect.indexOf("?") > -1) ? "&loginError=" : "?loginError=")  + result);
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));

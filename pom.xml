@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia</groupId>
         <artifactId>jahia-parent</artifactId>
-        <version>7.1.2.0-SNAPSHOT</version>
+        <version>7.1.2.0</version>
         <relativePath>jahia-parent/pom.xml</relativePath>
     </parent>
     
@@ -61,9 +61,9 @@
     <description>Jahia Base Package</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_2_0</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_2_0</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/tags/JAHIA_7_1_2_0</url>
     </scm>
 
     <repositories>

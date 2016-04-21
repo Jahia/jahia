@@ -63,7 +63,7 @@ public class Login implements Controller {
     
     // TODO move this into configuration
     private static final String CONTROLLER_MAPPING = "/login";
-    private static final String LOGIN_ERR_PARAM_NAM = "loginError";
+    private static final String LOGIN_ERR_PARAM_NAME = "loginError";
     private static final String FAIL_REDIRECT_PARAM = "failureRedirect";
 
     public static String getMapping() {
@@ -120,7 +120,7 @@ public class Login implements Controller {
                     }
                     //[QA-7582] FIXME: we need to sanitize the URL a dirty quick fix to avoid working on jsp templates that depend on this Servlet
                     String failureRedirectUrl = sanitizeRedirectURL(request);
-                    response.sendRedirect(failureRedirectUrl + ((failureRedirectUrl.indexOf("?") > -1) ? "&" + LOGIN_ERR_PARAM_NAM + "=" : "?" + LOGIN_ERR_PARAM_NAM + "=") + result);
+                    response.sendRedirect(failureRedirectUrl + ((failureRedirectUrl.indexOf("?") > -1) ? "&" + LOGIN_ERR_PARAM_NAME + "=" : "?" + LOGIN_ERR_PARAM_NAME + "=") + result);
                 } else {
                     if (request.getParameter("redirect") != null) {
                         request.setAttribute("javax.servlet.error.request_uri", request.getParameter("redirect"));
@@ -136,7 +136,7 @@ public class Login implements Controller {
 
     private String sanitizeRedirectURL(HttpServletRequest request) {
         String failureRedirectUrl = request.getParameter(FAIL_REDIRECT_PARAM);
-        if (StringUtils.isNotEmpty(failureRedirectUrl) && failureRedirectUrl.indexOf(LOGIN_ERR_PARAM_NAM) > -1) {
+        if (StringUtils.isNotEmpty(failureRedirectUrl) && failureRedirectUrl.indexOf(LOGIN_ERR_PARAM_NAME) > -1) {
             // remove failure redirect param before we add it again
             String[] urlParts = StringUtils.split(failureRedirectUrl, "\\?");
             StringBuilder sanitizedUrlSb = new StringBuilder(urlParts[0]);
@@ -144,7 +144,7 @@ public class Login implements Controller {
               String[] urlParams = StringUtils.split(urlParts[1], "&");
               StringBuilder paramSb = new StringBuilder();
               for (int i = 0; i < urlParams.length; i++) {
-                if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAM) == -1) {
+                if (urlParams[i].indexOf(LOGIN_ERR_PARAM_NAME) == -1) {
                   paramSb.append(urlParams[i]);
                 }
               }

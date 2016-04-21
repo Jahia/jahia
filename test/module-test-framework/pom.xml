@@ -59,8 +59,8 @@
     <description>This is the Jahia Module Test Framework for running unit/integration tests for Digital Experience Manager modules.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</developerConnection>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/branches/JAHIA_7_1_0_1_RC</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/branches/JAHIA_7_1_0_1_RC</developerConnection>
     </scm>
 
     <repositories>

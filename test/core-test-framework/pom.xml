@@ -49,18 +49,18 @@
     <parent>
         <groupId>org.jahia.test</groupId>
         <artifactId>jahia-test-parent</artifactId>        
-        <version>7.1.2.0-SNAPSHOT</version>
+        <version>7.1.2.1-SNAPSHOT</version>
     </parent>
     <groupId>org.jahia.test</groupId>
     <artifactId>core-test-framework</artifactId>
     <name>Jahia Core Test Framework</name>
-    <version>7.1.2.0-SNAPSHOT</version>    
+    <version>7.1.2.1-SNAPSHOT</version>    
     <packaging>jar</packaging>
     <description>This is the Jahia Core Test Framework for running unit/integration tests of the core Digital Experience Manager module.</description>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/branches/JAHIA_7_1_0_1_RC</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/branches/JAHIA_7_1_0_1_RC</developerConnection>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/branches/JAHIA_7_1_0_1_RC</developerConnection>
     </scm>
 
     <repositories>

@@ -49,7 +49,7 @@
     <parent>
         <artifactId>jahia-modules</artifactId>
         <groupId>org.jahia.modules</groupId>
-        <version>7.1.2.0-SNAPSHOT</version>
+        <version>7.1.2.1-SNAPSHOT</version>
         <relativePath>../../modules</relativePath>
     </parent>
     <groupId>org.jahia.test</groupId>
@@ -57,10 +57,10 @@
     <name>Jahia Test Module</name>
     <packaging>bundle</packaging>
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/test/jahia-test-module</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/test/jahia-test-module
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/test/jahia-test-module</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/test/jahia-test-module
         </developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/test/jahia-test-module</url>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/test/jahia-test-module</url>
     </scm>
 
     <repositories>
@@ -123,7 +123,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-impl</artifactId>
-            <version>7.1.2.0-SNAPSHOT</version>
+            <version>7.1.2.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -163,7 +163,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-gwt</artifactId>
-            <version>7.1.2.0-SNAPSHOT</version>
+            <version>7.1.2.1-SNAPSHOT</version>
             <scope>provided</scope>
             <exclusions>
                 <exclusion>
@@ -347,7 +347,7 @@
         <dependency>
             <groupId>org.jahia.server</groupId>
             <artifactId>jahia-taglib</artifactId>
-            <version>7.1.2.0-SNAPSHOT</version>
+            <version>7.1.2.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>

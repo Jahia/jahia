@@ -50,7 +50,7 @@
     <artifactId>jahia-parent</artifactId>
     <name>Jahia Common Project Parent</name>
     <groupId>org.jahia</groupId>
-    <version>7.1.2.0-SNAPSHOT</version>
+    <version>7.1.2.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <inceptionYear>2004</inceptionYear>
     <!--
@@ -198,9 +198,9 @@
     </properties>
 
     <scm>
-        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/jahia-parent</connection>
-        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/jahia-parent</developerConnection>
-        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA_7_1_2_0_RC/jahia-parent</url>
+        <connection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</connection>
+        <developerConnection>scm:svn:https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</developerConnection>
+        <url>https://devtools.jahia.com/svn/jahia/branches/JAHIA-7-1-X-X-BRANCH/jahia-parent</url>
     </scm>
     <developers>
         <developer>

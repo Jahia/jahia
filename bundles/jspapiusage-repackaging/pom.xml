@@ -49,7 +49,7 @@
     <parent>
         <groupId>org.jahia.bundles</groupId>
         <artifactId>jahia-bundles</artifactId>
-        <version>7.1.2.0-SNAPSHOT</version>
+        <version>7.1.2.1-SNAPSHOT</version>
     </parent>
 
     <name>Jahia JSP API Libraries Repackaging</name>

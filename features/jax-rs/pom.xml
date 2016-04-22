@@ -60,7 +60,7 @@
             <dependency>
                 <groupId>org.jahia.modules</groupId>
                 <artifactId>jaxrs-osgi-extender-bom</artifactId>
-                <version>2.0.3</version>
+                <version>2.0.4-SNAPSHOT</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -119,6 +119,11 @@
         <dependency>
             <groupId>org.glassfish.jersey.media</groupId>
             <artifactId>jersey-media-multipart</artifactId>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-sse</artifactId>
             <scope>compile</scope>
         </dependency>
         <dependency>

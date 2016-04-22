@@ -726,7 +726,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
         for (ViewResourceInfo res : sortedScripts) {
             if (!views.containsKey(res.viewKey)) {
                 if (!scriptFactoryMap.containsKey(res.extension)) {
-                    logger.error("Script extension " + res.extension + " can not be handle by this system.");
+                    logger.error("Script extension " + res.extension + " can not be handled by this system.");
                     break;
                 }
                 BundleView view = new BundleView(res.path, res.viewKey, tplPackage, res.filename);

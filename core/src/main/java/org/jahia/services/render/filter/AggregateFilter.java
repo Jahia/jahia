@@ -44,16 +44,12 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
-import org.jahia.services.render.filter.cache.CacheFilter;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
-import org.jahia.services.render.scripting.Script;
-import org.jahia.settings.SettingsBean;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 
@@ -78,11 +74,17 @@ public class AggregateFilter extends AbstractFilter{
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final boolean debugEnabled = logger.isDebugEnabled();
-        // Generates the key of the requested fragment. The KeyGenerator will create a key based on the request
+        // Generates the key of the requested fragment. if we are currently aggregating a subfragment we already have the key
+        // in the request, if not the KeyGenerator will create a key based on the request
         // (resource and context) and the cache properties. The generated key will contains temporary placeholders
         // that will be replaced to have the final key.
-        Properties properties = getAttributesForKey(renderContext, resource);
-        String key = keyGenerator.generate(resource, renderContext, properties);
+        String key;
+        if(renderContext.getRequest().getAttribute("aggregateCacheFilter.aggregating") != null) {
+            key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.aggregating");
+            renderContext.getRequest().removeAttribute("aggregateCacheFilter.aggregating");
+        } else {
+            key = keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
+        }
 
         if (renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering") != null) {
             renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.submodule", key);
@@ -92,7 +94,6 @@ public class AggregateFilter extends AbstractFilter{
         logger.debug("Rendering node " + resource.getPath());
 
         renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering", key);
-        renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.properties", properties);
         renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.time", System.currentTimeMillis());
 
         if (debugEnabled) {
@@ -112,112 +113,7 @@ public class AggregateFilter extends AbstractFilter{
         String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
         renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering");
-        renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering.properties");
         return aggregateContent(previousOut, renderContext);
-    }
-
-    /**
-     * Get all cache attributes that need to be applied on this fragment and that will impact key generation. The
-     * cache properties may come from the script properties file, or from the jmix:cache mixin (for cache.perUser
-     * only).
-     * <p/>
-     * If the component is a list, the properties can also come from its hidden.load script properties.
-     * <p/>
-     * cache.perUser : is the cache entry specific for each user. Is set by j:perUser node property or cache.perUser
-     * property in script properties
-     * <p/>
-     * cache.mainResource : is the cache entry dependant on the main resource. Is set by cache.mainResource property
-     * in script properties, or automatically set if the component is bound.
-     * <p/>
-     * cache.requestParameters : list of request parameter that will impact the rendering of the resource. Is set
-     * by cache.requestParameters property in script properties. ec,v,cacheinfo and moduleinfo are automatically added.
-     * <p/>
-     * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
-     * j:expiration node property or the cache.expiration property in script properties.
-     *
-     * @param renderContext
-     * @param resource
-     * @return
-     * @throws RepositoryException
-     */
-    protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        final JCRNodeWrapper node = resource.getNode();
-        boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
-        boolean isList = node.isNodeType(Constants.JAHIAMIX_LIST);
-
-        Properties properties = new Properties();
-
-        if (script != null) {
-            properties.putAll(script.getView().getDefaultProperties());
-            properties.putAll(script.getView().getProperties());
-        }
-
-        if (isList) {
-            Resource listLoader = new Resource(node, resource.getTemplateType(), "hidden.load", Resource.CONFIGURATION_INCLUDE);
-            try {
-                Script s = service.resolveScript(listLoader, renderContext);
-                properties.putAll(s.getView().getProperties());
-            } catch (TemplateNotFoundException e) {
-                logger.error("Cannot find loader script for list " + node.getPath(), e);
-            }
-        }
-
-        if (node.hasProperty(CacheFilter.CACHE_PER_USER_PROPERTY)) {
-            properties.put(CacheFilter.CACHE_PER_USER, node.getProperty(CacheFilter.CACHE_PER_USER_PROPERTY).getString());
-        }
-        if (isBound) {
-            // TODO check this, if the component is a binded component don't mean that it's always bind to the main ressource
-            properties.put("cache.mainResource", "true");
-        }
-
-        // update requestParameters if needed
-        final StringBuilder updatedRequestParameters;
-        final String requestParameters = properties.getProperty("cache.requestParameters");
-        if (!StringUtils.isEmpty(requestParameters)) {
-            updatedRequestParameters = new StringBuilder(requestParameters + ",ec,v");
-        } else {
-            updatedRequestParameters = new StringBuilder("ec,v");
-        }
-        if (SettingsBean.getInstance().isDevelopmentMode()) {
-            updatedRequestParameters.append(",cacheinfo,moduleinfo");
-        }
-        properties.put("cache.requestParameters", updatedRequestParameters.toString());
-
-        // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
-        String viewExpiration = properties.getProperty(CacheFilter.CACHE_EXPIRATION);
-        final Object requestExpiration = renderContext.getRequest().getAttribute("expiration");
-        if (requestExpiration != null) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, requestExpiration);
-        } else if (node.hasProperty("j:expiration")) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
-        } else if (viewExpiration != null) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, viewExpiration);
-        } else {
-            properties.put(CacheFilter.CACHE_EXPIRATION, "-1");
-        }
-
-        String propertiesScript = properties.getProperty("cache.propertiesScript");
-        if (propertiesScript != null) {
-            Resource props = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
-            try {
-                Script s = service.resolveScript(props, renderContext);
-                try {
-                    renderContext.getRequest().setAttribute("cacheProperties", properties);
-                    s.execute(props, renderContext);
-                } catch (RenderException e) {
-                    logger.error("Cannot execute script",e);
-                } finally {
-                    renderContext.getRequest().removeAttribute("cacheProperties");
-                }
-            } catch (TemplateNotFoundException e) {
-                logger.error(
-                        "Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(),
-                        e);
-            }
-        }
-
-        return properties;
     }
 
     /**
@@ -302,6 +198,7 @@ public class AggregateFilter extends AbstractFilter{
             resource.getModuleParams().put("cache.forceGeneration", true); */
 
             // Dispatch to the render service to generate the content
+            renderContext.getRequest().setAttribute("aggregateCacheFilter.aggregating", cacheKey);
             String content = RenderService.getInstance().render(resource, renderContext);
             if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
                 logger.error("Empty generated content for key " + cacheKey);

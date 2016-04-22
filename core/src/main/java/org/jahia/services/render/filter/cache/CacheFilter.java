@@ -76,8 +76,8 @@ public class CacheFilter extends AbstractFilter {
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String CACHE_PER_USER_PROPERTY = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
-    private static final String V = "v";
-    private static final String EC = "ec";
+    public static final String V = "v";
+    public static final String EC = "ec";
     public static final String ALL = "ALL";
     public static final Set<String> ALL_SET = Collections.singleton(ALL);
 
@@ -94,8 +94,6 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         final boolean debugEnabled = logger.isDebugEnabled();
-
-        Properties properties = (Properties) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.properties");
         final String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
 
         /* If we force the generation, return null
@@ -104,9 +102,7 @@ public class CacheFilter extends AbstractFilter {
             return null;
         } */
 
-        // First check if the key is in the list of non-cacheable keys. The cache can also be skipped by specifying the
-        // ec parameter with the uuid of the current node.
-        if (!isCacheable(renderContext, resource, key, properties)) {
+        if (!isCacheable(renderContext, key)) {
             return null;
         }
 
@@ -172,25 +168,14 @@ public class CacheFilter extends AbstractFilter {
 
     private String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain, boolean bypassDependencies) throws Exception {
         final Cache cache = cacheProvider.getCache();
-        Properties properties = (Properties) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.properties");
         String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
 
-        if (!bypassDependencies) {
-            // Add self path as dependency for this fragment (for cache flush - will not impact the key)
-            resource.getDependencies().add(resource.getNode().getCanonicalPath());
-
-            // Add main resource if cache.mainResource is set
-            if ("true".equals(properties.getProperty("cache.mainResource"))) {
-                resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
-            }
-        }
-
         // Generates the cache key - check
-        // TODO do we still need this check ?
+        /* TODO do we still need this check ?
         String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
         if (!generatedKey.equals(key)) {
             logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
-        }
+        } */
 
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
@@ -201,14 +186,28 @@ public class CacheFilter extends AbstractFilter {
             logger.debug("Caching content {} , key = {}", resource.getPath(), finalKey);
 
             // Check if the fragment is still cacheable, based on the key and cache properties
-            boolean cacheable = isCacheable(renderContext, resource, key, properties);
+            boolean cacheable = isCacheable(renderContext, key);
             boolean debugEnabled = logger.isDebugEnabled();
 
             if (cacheable) {
+                if (!bypassDependencies) {
+                    // Add self path as dependency for this fragment (for cache flush - will not impact the key)
+                    resource.getDependencies().add(resource.getNode().getCanonicalPath());
+
+                    // Add main resource if cache.mainResource is set
+                    if (renderContext.getRequest().getAttribute("cacheFilter.fragmentDependsOnMR") != null) {
+                        resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
+                    }
+                }
+
                 if (debugEnabled) {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
-                doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, bypassDependencies);
+                // if cacheFilter.fragmentExpiration not specify it's mean we are on the template fragment, first fragment of the page
+                Long expiration = renderContext.getRequest().getAttribute("cacheFilter.fragmentExpiration") != null ?
+                        Long.parseLong(((String) renderContext.getRequest().getAttribute("cacheFilter.fragmentExpiration"))) :
+                        -1L;
+                doCache(previousOut, renderContext, resource, expiration, cache, finalKey, bypassDependencies);
             } else {
                 cacheProvider.setFragmentKeyAsNotCacheable(key);
             }
@@ -239,8 +238,8 @@ public class CacheFilter extends AbstractFilter {
             renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
 
-            final Properties properties = (Properties) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.properties");
-            final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+            final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext,
+                    cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource));
             final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
             Element element = null;
@@ -272,7 +271,7 @@ public class CacheFilter extends AbstractFilter {
 //        }
     }
 
-    /**
+    /*
      * Create the fragment and store it into the cache.
      *
      * @param previousOut
@@ -284,15 +283,15 @@ public class CacheFilter extends AbstractFilter {
      * @param finalKey
      * @throws RepositoryException
      * @throws ParseException
-     */
+
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
                            Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
         doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, false);
     }
+     */
 
-    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
-                           Cache cache, String key, String finalKey, boolean bypassDependencies) throws RepositoryException, ParseException {
-        Long expiration = Long.parseLong(properties.getProperty(CACHE_EXPIRATION));
+    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Long expiration,
+                           Cache cache, String finalKey, boolean bypassDependencies) throws RepositoryException, ParseException {
         Set<String> depNodeWrappers = Collections.emptySet();
 
         // Create the fragment entry based on the rendered content
@@ -412,11 +411,6 @@ public class CacheFilter extends AbstractFilter {
      */
     private void addPropertiesToCacheEntry(Resource resource, CacheEntry<String> cacheEntry,
                                            RenderContext renderContext) throws RepositoryException {
-        if (resource.getNode().isNodeType("jnt:area") || resource.getNode().isNodeType(
-                "jnt:mainResourceDisplay")) {
-            cacheEntry.setProperty("areaResource", resource.getNode().getIdentifier());
-        }
-
         Map<String,Object> m = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
         if (m != null && m.containsKey("requestAttributesToCache")){
             HashMap<String,Serializable> attributes = new HashMap<>();
@@ -464,43 +458,15 @@ public class CacheFilter extends AbstractFilter {
     }
 
     /**
-     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the ec or v parameter.
+     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the info put in request by CachePropertiesKeyPartGenerator
      *
      * @param renderContext render context
-     * @param resource      current resource
      * @param key           calculated cache key
-     * @param properties    cache properties
      * @return true if fragments is cacheable, false if not
      * @throws RepositoryException
      */
-    protected boolean isCacheable(RenderContext renderContext, Resource resource, String key, Properties properties) throws RepositoryException {
-        // first check if the key is not part of the non cacheable fragments
-        if (cacheProvider.isNotCacheableFragment(key)) {
-            return false;
-        }
-
-        // check v parameter
-        if (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn()) {
-            return false;
-        }
-
-        // check ec parameter
-        final String ecParameter = renderContext.getRequest().getParameter(EC);
-        if (ecParameter != null) {
-            if (ecParameter.equals(resource.getNode().getIdentifier())) {
-                return false;
-            }
-            for (Resource parent : renderContext.getResourcesStack()) {
-                if (ecParameter.equals(parent.getNode().getIdentifier())) {
-                    return false;
-                }
-            }
-        }
-
-        // check if we have a valid cache expiration
-        final String cacheExpiration = properties.getProperty(CACHE_EXPIRATION);
-        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
-        return expiration != 0L;
+    protected boolean isCacheable(RenderContext renderContext, String key) throws RepositoryException {
+        return !cacheProvider.isNotCacheableFragment(key) && renderContext.getRequest().getAttribute("cacheFilter.fragmentNotCacheable") == null;
     }
 
     /**

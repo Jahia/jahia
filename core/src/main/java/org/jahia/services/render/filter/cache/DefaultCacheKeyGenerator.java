@@ -46,8 +46,14 @@ package org.jahia.services.render.filter.cache;
 import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.render.RenderContext;
-import org.jahia.services.render.Resource;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.render.*;
+import org.jahia.services.render.scripting.Script;
+import org.jahia.settings.SettingsBean;
+import org.slf4j.Logger;
+
+import javax.jcr.RepositoryException;
 
 /**
  * Default implementation of the module output cache key generator.
@@ -56,6 +62,8 @@ import org.jahia.services.render.Resource;
  * @author Sergiy Shyrkov
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
+    protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
+
     private List<CacheKeyPartGenerator> partGenerators;
     private LinkedHashMap<String, Integer> fields;
 
@@ -172,5 +180,86 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             }
             i++;
         }
+    }
+
+    @Override
+    public Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
+        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        final JCRNodeWrapper node = resource.getNode();
+        boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
+        boolean isList = node.isNodeType(Constants.JAHIAMIX_LIST);
+
+        Properties properties = new Properties();
+
+        if (script != null) {
+            properties.putAll(script.getView().getDefaultProperties());
+            properties.putAll(script.getView().getProperties());
+        }
+
+        if (isList) {
+            Resource listLoader = new Resource(node, resource.getTemplateType(), "hidden.load", Resource.CONFIGURATION_INCLUDE);
+            try {
+                Script s = RenderService.getInstance().resolveScript(listLoader, renderContext);
+                properties.putAll(s.getView().getProperties());
+            } catch (TemplateNotFoundException e) {
+                logger.error("Cannot find loader script for list " + node.getPath(), e);
+            }
+        }
+
+        if (node.hasProperty(CacheFilter.CACHE_PER_USER_PROPERTY)) {
+            properties.put(CacheFilter.CACHE_PER_USER, node.getProperty(CacheFilter.CACHE_PER_USER_PROPERTY).getString());
+        }
+        if (isBound) {
+            // TODO check this, if the component is a binded component don't mean that it's always bind to the main ressource
+            properties.put("cache.mainResource", "true");
+        }
+
+        // update requestParameters if needed
+        final StringBuilder updatedRequestParameters;
+        final String requestParameters = properties.getProperty("cache.requestParameters");
+        if (!StringUtils.isEmpty(requestParameters)) {
+            updatedRequestParameters = new StringBuilder(requestParameters + ",ec,v");
+        } else {
+            updatedRequestParameters = new StringBuilder("ec,v");
+        }
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            updatedRequestParameters.append(",cacheinfo,moduleinfo");
+        }
+        properties.put("cache.requestParameters", updatedRequestParameters.toString());
+
+        // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
+        String viewExpiration = properties.getProperty(CacheFilter.CACHE_EXPIRATION);
+        final Object requestExpiration = renderContext.getRequest().getAttribute("expiration");
+        if (requestExpiration != null) {
+            properties.put(CacheFilter.CACHE_EXPIRATION, requestExpiration);
+        } else if (node.hasProperty("j:expiration")) {
+            properties.put(CacheFilter.CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
+        } else if (viewExpiration != null) {
+            properties.put(CacheFilter.CACHE_EXPIRATION, viewExpiration);
+        } else {
+            properties.put(CacheFilter.CACHE_EXPIRATION, "-1");
+        }
+
+        String propertiesScript = properties.getProperty("cache.propertiesScript");
+        if (propertiesScript != null) {
+            Resource props = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
+            try {
+                Script s = RenderService.getInstance().resolveScript(props, renderContext);
+                try {
+                    renderContext.getRequest().setAttribute("cacheProperties", properties);
+                    s.execute(props, renderContext);
+                } catch (RenderException e) {
+                    logger.error("Cannot execute script",e);
+                } finally {
+                    renderContext.getRequest().removeAttribute("cacheProperties");
+                }
+            } catch (TemplateNotFoundException e) {
+                logger.error(
+                        "Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(),
+                        e);
+            }
+        }
+
+        return properties;
     }
 }

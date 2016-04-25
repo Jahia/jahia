@@ -27,5 +27,4 @@
     <import resource="classpath:/org/jahia/defaults/config/spring/jcr/applicationcontext-test-jcr.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-renderer.xml" />
     <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-notification.xml" />
-    <import resource="classpath:/org/jahia/defaults/config/spring/applicationcontext-test-module-manager.xml" />           
 </beans>

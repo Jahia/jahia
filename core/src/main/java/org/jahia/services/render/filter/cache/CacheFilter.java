@@ -102,10 +102,6 @@ public class CacheFilter extends AbstractFilter {
             return null;
         } */
 
-        if (!isCacheable(renderContext, key)) {
-            return null;
-        }
-
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
@@ -183,10 +179,11 @@ public class CacheFilter extends AbstractFilter {
         @SuppressWarnings("unchecked")
         Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
         if (servedFromCache == null || !servedFromCache.contains(finalKey)) {
+            Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
             logger.debug("Caching content {} , key = {}", resource.getPath(), finalKey);
 
             // Check if the fragment is still cacheable, based on the key and cache properties
-            boolean cacheable = isCacheable(renderContext, key);
+            boolean cacheable = isCacheable(renderContext, key, resource, fragmentProperties);
             boolean debugEnabled = logger.isDebugEnabled();
 
             if (cacheable) {
@@ -195,7 +192,7 @@ public class CacheFilter extends AbstractFilter {
                     resource.getDependencies().add(resource.getNode().getCanonicalPath());
 
                     // Add main resource if cache.mainResource is set
-                    if (renderContext.getRequest().getAttribute("cacheFilter.fragmentDependsOnMR") != null) {
+                    if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
                         resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
                     }
                 }
@@ -204,10 +201,7 @@ public class CacheFilter extends AbstractFilter {
                     logger.debug("Caching content for final key : {}", finalKey);
                 }
                 // if cacheFilter.fragmentExpiration not specify it's mean we are on the template fragment, first fragment of the page
-                Long expiration = renderContext.getRequest().getAttribute("cacheFilter.fragmentExpiration") != null ?
-                        Long.parseLong(((String) renderContext.getRequest().getAttribute("cacheFilter.fragmentExpiration"))) :
-                        -1L;
-                doCache(previousOut, renderContext, resource, expiration, cache, finalKey, bypassDependencies);
+                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CACHE_EXPIRATION)), cache, finalKey, bypassDependencies);
             } else {
                 cacheProvider.setFragmentKeyAsNotCacheable(key);
             }
@@ -458,15 +452,43 @@ public class CacheFilter extends AbstractFilter {
     }
 
     /**
-     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the info put in request by CachePropertiesKeyPartGenerator
+     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the ec or v parameter.
      *
      * @param renderContext render context
+     * @param resource      current resource
      * @param key           calculated cache key
+     * @param properties    fragment properties
      * @return true if fragments is cacheable, false if not
      * @throws RepositoryException
      */
-    protected boolean isCacheable(RenderContext renderContext, String key) throws RepositoryException {
-        return !cacheProvider.isNotCacheableFragment(key) && renderContext.getRequest().getAttribute("cacheFilter.fragmentNotCacheable") == null;
+    protected boolean isCacheable(RenderContext renderContext, String key, Resource resource, Properties properties) throws RepositoryException {
+        // first check if the key is not part of the non cacheable fragments
+        if (cacheProvider.isNotCacheableFragment(key)) {
+            return false;
+        }
+
+        // check v parameter
+        if (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn()) {
+            return false;
+        }
+
+        // check ec parameter
+        final String ecParameter = renderContext.getRequest().getParameter(EC);
+        if (ecParameter != null) {
+            if (ecParameter.equals(resource.getNode().getIdentifier())) {
+                return false;
+            }
+            for (Resource parent : renderContext.getResourcesStack()) {
+                if (ecParameter.equals(parent.getNode().getIdentifier())) {
+                    return false;
+                }
+            }
+        }
+
+        // check if we have a valid cache expiration
+        final String cacheExpiration = properties.getProperty(CACHE_EXPIRATION);
+        Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
+        return expiration != 0L;
     }
 
     /**

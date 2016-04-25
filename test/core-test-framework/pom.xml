@@ -146,7 +146,72 @@
     </dependencies>            
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources/WEB-INF/classes/</directory>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources</directory>
+                <excludes>
+                    <exclude>WEB-INF/classes/**.*</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources-data/db/sql/schema</directory>
+                <targetPath>WEB-INF/var/patches/sql</targetPath>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources-data/db</directory>
+                <targetPath>WEB-INF/var/patches</targetPath>
+                <includes>
+                    <include>*.script</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${project.build.directory}/generated-resources-data/repository</directory>
+                <targetPath>WEB-INF/var/repository</targetPath>
+            </resource>
+        </resources>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>overlay-resources</id>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-war</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <includes>WEB-INF/classes/ehcache-*.xml, WEB-INF/classes/tika-config-*.xml, WEB-INF/etc/repository/*.xml, WEB-INF/etc/repository/nodetypes/**, WEB-INF/etc/repository/rules/**</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-data</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>zip</type>
+                                    <classifier>package</classifier>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources-data</outputDirectory>
+                                    <includes>db/derby_embedded.script, db/sql/schema/derby/**, repository/**</includes>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>

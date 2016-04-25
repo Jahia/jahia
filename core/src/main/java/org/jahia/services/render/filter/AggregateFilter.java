@@ -135,8 +135,12 @@ public class AggregateFilter extends AbstractFilter{
                 if (esiTagEndIndex != -1) {
                     String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
                     try {
-                        esiTagStartIndex = replaceInContent(sb, esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH,
-                                generateContent(renderContext, cacheKey));
+                        String replacement = generateContent(renderContext, cacheKey);
+                        if (replacement == null) {
+                            replacement = "";
+                        }
+                        sb.replace(esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, replacement);
+                        esiTagStartIndex = sb.indexOf(CACHE_ESI_TAG_START, esiTagStartIndex + replacement.length());
                     } catch (RenderException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
@@ -147,14 +151,6 @@ public class AggregateFilter extends AbstractFilter{
             }
             return sb.toString();
         }
-    }
-
-    private int replaceInContent(StringBuilder sb, int start, int end, String replacement) {
-        if (replacement == null) {
-            replacement = "";
-        }
-        sb.replace(start, end, replacement);
-        return sb.indexOf(CACHE_ESI_TAG_START, start + replacement.length());
     }
 
     /**
@@ -193,12 +189,10 @@ public class AggregateFilter extends AbstractFilter{
 
             Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
-            /* Fragment with full final key is not in the cache, set cache.forceGeneration parameter to avoid returning
-            // a cache entry based on incomplete dependencies.
-            resource.getModuleParams().put("cache.forceGeneration", true); */
+            // Store sub fragment key in attribute to use it in prepare() instead of re generating the sub fragment key
+            renderContext.getRequest().setAttribute("aggregateCacheFilter.aggregating", cacheKey);
 
             // Dispatch to the render service to generate the content
-            renderContext.getRequest().setAttribute("aggregateCacheFilter.aggregating", cacheKey);
             String content = RenderService.getInstance().render(resource, renderContext);
             if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
                 logger.error("Empty generated content for key " + cacheKey);

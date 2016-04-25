@@ -96,12 +96,6 @@ public class CacheFilter extends AbstractFilter {
         final boolean debugEnabled = logger.isDebugEnabled();
         final String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
 
-        /* If we force the generation, return null
-        final Boolean forceGeneration = (Boolean) moduleParams.remove("cache.forceGeneration");
-        if (Boolean.TRUE.equals(forceGeneration)) {
-            return null;
-        } */
-
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 

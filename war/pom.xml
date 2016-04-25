@@ -503,7 +503,7 @@
                         </goals>
                         <configuration>
                             <propertiesInputFile>
-                                ${project.basedir}/src/main/webapp/WEB-INF/karaf/etc/config.properties
+                                ${project.build.directory}/filtered-resources/config.properties
                             </propertiesInputFile>
                             <propertiesOutputFile>
                                 ${project.build.directory}/generated-resources/config.properties
@@ -574,6 +574,14 @@
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>src/main/webapp/WEB-INF/karaf/etc</directory>
+                <includes>
+                    <include>config.properties</include>
+                </includes>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/filtered-resources</targetPath>
             </resource>
         </resources>
 

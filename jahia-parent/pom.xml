@@ -167,7 +167,7 @@
         <pax.swissbox.version>1.5.0</pax.swissbox.version>
         <pax.web.api.version>3.0.7</pax.web.api.version>
         <pax.web.jsp.version>3.0.7-jahia4</pax.web.jsp.version>
-        <karaf.version>4.0.4</karaf.version>
+        <karaf.version>4.0.5</karaf.version>
         <cellar.version>4.0.0</cellar.version>
         <!-- End of OSGi versions -->
 

@@ -148,75 +148,66 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.apache.portals.jetspeed-2</groupId>
-                <artifactId>jetspeed-unpack-maven-plugin</artifactId>
-                <version>2.3.0</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>jahia-war</artifactId>
-                        <version>${project.version}</version>
-                        <type>war</type>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.jahia.server</groupId>
-                        <artifactId>jahia-data</artifactId>
-                        <version>${project.version}</version>
-                        <type>zip</type>
-                        <classifier>package</classifier>
-                    </dependency>
-                </dependencies>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-jahia-war</id>
+                        <id>overlay-resources</id>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
-                        <phase>generate-resources</phase>
                         <configuration>
-                            <unpack>
-                                <artifact>org.jahia.server:jahia-war:war</artifact>
-                                <targetDirectory>${project.build.directory}/classes</targetDirectory>
-                                <resources>
-                                    <resource>
-                                        <path>WEB-INF/classes</path>
-                                        <include>ehcache-*.xml, tika-config-*.xml</include>
-                                    </resource>
-                                    <resource>
-                                        <path>/</path>
-                                        <include>WEB-INF/etc/repository/*.xml, WEB-INF/etc/repository/nodetypes/**, WEB-INF/etc/repository/rules/**</include>
-                                    </resource>
-                                </resources>
-                            </unpack>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-war</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>war</type>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
+                                    <includes>WEB-INF/classes/ehcache-*.xml, WEB-INF/classes/tika-config-*.xml, WEB-INF/etc/repository/*.xml, WEB-INF/etc/repository/nodetypes/**, WEB-INF/etc/repository/rules/**</includes>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.jahia.server</groupId>
+                                    <artifactId>jahia-data</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>zip</type>
+                                    <classifier>package</classifier>
+                                    <overWrite>true</overWrite>
+                                    <outputDirectory>${project.build.directory}/generated-resources-data</outputDirectory>
+                                    <includes>db/derby_embedded.script, db/sql/schema/derby/**, repository/**</includes>
+                                </artifactItem>
+                            </artifactItems>
                         </configuration>
                     </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
                     <execution>
-                        <id>unpack-jahia-data</id>
+                        <phase>process-classes</phase>
                         <goals>
-                            <goal>unpack</goal>
+                            <goal>run</goal>
                         </goals>
-                        <phase>generate-resources</phase>
                         <configuration>
-                            <unpack>
-                                <artifact>org.jahia.server:jahia-data:zip</artifact>
-                                <targetDirectory>${project.build.directory}/classes/WEB-INF</targetDirectory>
-                                <resources>
-                                    <resource>
-                                        <path>db</path>
-                                        <include>derby_embedded.script</include>
-                                        <destination>var/patches</destination>
-                                    </resource>
-                                    <resource>
-                                        <path>db/sql/schema</path>
-                                        <include>derby/**</include>
-                                        <destination>var/patches/sql</destination>
-                                    </resource>
-                                    <resource>
-                                        <path>repository</path>
-                                        <destination>var/repository</destination>
-                                    </resource>
-                                </resources>
-                            </unpack>
+                            <target>
+                                <move todir="${project.build.directory}/classes">
+                                    <fileset dir="${project.build.directory}/generated-resources/WEB-INF/classes" />
+                                </move>
+                                <move todir="${project.build.directory}/classes/WEB-INF">
+                                    <fileset dir="${project.build.directory}/generated-resources/WEB-INF" />
+                                </move>
+                                <move todir="${project.build.directory}/classes/WEB-INF/var/repository">
+                                    <fileset dir="${project.build.directory}/generated-resources-data/repository" />
+                                </move>
+                                <move todir="${project.build.directory}/classes/WEB-INF/var/patches/sql">
+                                    <fileset dir="${project.build.directory}/generated-resources-data/db/sql/schema" />
+                                </move>
+                                <move file="${project.build.directory}/generated-resources-data/db/derby_embedded.script" todir="${project.build.directory}/classes/WEB-INF/var/patches"/>
+                            </target>
                         </configuration>
                     </execution>
                 </executions>

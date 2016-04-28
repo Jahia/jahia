@@ -55,24 +55,25 @@ public class LogBridge {
 
     public static void log(String loggerName, int level, Object message, Throwable t) {
         Logger logger = LoggerFactory.getLogger(loggerName);
+        String msg = (message != null ? message.toString() : null);
         switch (level) {
             case Level.TRACE_INT:
-                logger.trace(message != null ? message.toString() : null, t);
+                logger.trace(msg, t);
                 break;
             case Level.DEBUG_INT:
-                logger.debug(message != null ? message.toString() : null, t);
+                logger.debug(msg, t);
                 break;
             case Level.INFO_INT:
-                logger.info(message != null ? message.toString() : null, t);
+                logger.info(msg, t);
                 break;
             case Level.WARN_INT:
-                logger.warn(message != null ? message.toString() : null, t);
+                logger.warn(msg, t);
                 break;
             case Level.ERROR_INT:
-                logger.error(message != null ? message.toString() : null, t);
+                logger.error(msg, t);
                 break;
             default:
-                logger.info(message != null ? message.toString() : null, t);
+                logger.info(msg, t);
         }
     }
 }

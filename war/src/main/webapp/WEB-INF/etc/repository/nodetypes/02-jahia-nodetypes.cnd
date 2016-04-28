@@ -1033,8 +1033,8 @@ extends = jnt:content
   + * (jnt:moduleManagementBundle) = jnt:moduleManagementBundle
 
 [jnt:moduleManagementBundle] > nt:file, mix:created, mix:lastModified, jmix:nolive
-  - j:version (string) nofulltext
+  - j:groupId (string) nofulltext
   - j:symbolicName (string) nofulltext
+  - j:version (string) nofulltext
   - j:displayName (string) nofulltext
-  - j:fileName (String) nofulltext
   - j:checksum (string) nofulltext

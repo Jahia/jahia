@@ -43,7 +43,16 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import org.apache.commons.codec.binary.Hex;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+
+import javax.jcr.RepositoryException;
+
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
@@ -54,13 +63,12 @@ import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
 import org.jahia.services.modulemanager.ModuleManagerHelper;
 import org.jahia.services.modulemanager.OperationResult;
-import org.jahia.services.modulemanager.model.BundleDTO;
-import org.jahia.services.modulemanager.model.ClusterNodeInfo;
 import org.jahia.services.modulemanager.payload.BundleInfo;
 import org.jahia.services.modulemanager.payload.BundleStateReport;
 import org.jahia.services.modulemanager.payload.NodeStateReport;
 import org.jahia.services.modulemanager.payload.OperationResultImpl;
-import org.jahia.services.modulemanager.persistence.ModuleInfoPersister;
+import org.jahia.services.modulemanager.persistence.BundlePersister;
+import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.settings.SettingsBean;
@@ -73,20 +81,6 @@ import org.springframework.binding.message.MessageContext;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
-import javax.jcr.RepositoryException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.DigestInputStream;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.JarFile;
-import java.util.jar.JarInputStream;
-import java.util.jar.Manifest;
-
 /**
  * The main entry point service for the module management service, providing functionality for module deployment, undeployment, start and
  * stop operations, which are performed in a seamless way on a standalone installation as well as across the platform cluster.
@@ -95,149 +89,30 @@ import java.util.jar.Manifest;
  */
 public class ModuleManagerImpl implements ModuleManager {
 
-    private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
-    private ClusterNodeInfo clusterNodeInfo;
+    private static enum Operation {
+        start, stop, uninstall;
+    }
 
-    // MEGA-JAR handling review: template manager service
+    private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
+
+    private BundlePersister persister;
+
     private JahiaTemplateManagerService templateManagerService;
 
-    private ModuleInfoPersister persister;
-
-    private static void populateFromManifest(BundleDTO bundle, Resource bundleFile) throws IOException {
-        JarInputStream jarIs = new JarInputStream(bundleFile.getInputStream());
-        try {
-            Manifest mf = jarIs.getManifest();
-            if (mf != null) {
-                bundle.setSymbolicName(mf.getMainAttributes().getValue("Bundle-SymbolicName"));
-                String version = mf.getMainAttributes().getValue("Implementation-Version");
-                if (version == null) {
-                    version = mf.getMainAttributes().getValue("Bundle-Version");
-                }
-                bundle.setVersion(version);
-                bundle.setDisplayName(mf.getMainAttributes().getValue("Bundle-Name"));
-                bundle.setGroupId(mf.getMainAttributes().getValue("Jahia-GroupId"));
-            }
-        } finally {
-            IOUtils.closeQuietly(jarIs);
-        }
-    }
-
-    private static BundleDTO toBundle(Resource bundleResource) throws IOException {
-        // store bundle into a temporary file
-        DigestInputStream dis = toDigestInputStream(bundleResource.getInputStream());
-
-        BundleDTO b = new BundleDTO();
-        // populate data from manifest
-        populateFromManifest(b, bundleResource);
-
-        if (StringUtils.isBlank(b.getSymbolicName()) || StringUtils.isBlank(b.getVersion())) {
-            // not a valid JAR or bundle information is missing -> we stop here
-            return null;
-        }
-
-        b.setBundleKey(b.getSymbolicName() + "-" + b.getVersion());
-
-        // calculate checksum
-        b.setChecksum(Hex.encodeHexString(dis.getMessageDigest().digest()));
-
-        // keep original filename if available
-        b.setFileName(StringUtils.defaultIfBlank(bundleResource.getFilename(),
-                b.getSymbolicName() + "-" + b.getVersion() + ".jar"));
-
-        b.setJarFile(bundleResource);
-
-        return b;
-    }
-
-    static DigestInputStream toDigestInputStream(InputStream is) {
-        try {
-            return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private OperationResult installModule(Resource bundleResource, Manifest manifest, MessageContext context, List<String> providedBundles, boolean forceUpdate, String... nodes) throws IOException, BundleException {
-        String symbolicName = ModuleManagerHelper.getManifestSymbolicName(manifest);
-        String version = ModuleManagerHelper.getManifestVersion(manifest);
-        String groupId = ModuleManagerHelper.getManifestGroupId(manifest);
-
-        try {
-
-            if (ModuleManagerHelper.isDifferentModuleWithSameIdExists(symbolicName, groupId, context, templateManagerService)) {
-                return new OperationResultImpl(false, "Module installation failed because a module exists with the same name " + symbolicName, new BundleInfo(symbolicName, version));
-            }
-
-            if (!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(), symbolicName, version, context)) {
-                return new OperationResultImpl(false, "Module installation failed because a module exists with the same name and version. " + symbolicName + "-" + version , new BundleInfo(symbolicName, version));
-            }
-
-            final BundleDTO bundle = toBundle(bundleResource);
-
-            if (bundle == null) {
-                return OperationResultImpl.NOT_VALID_BUNDLE;
-            }
-
-            // check, if we have this bundle already installed
-            // FIXME: and what about forceUpdate ??
-            if (persister.alreadyInstalled(bundle)) {
-                // we have exactly same bundle installed already -> refuse
-                return OperationResultImpl.ALREADY_INSTALLED;
-            }
-
-            // TODO check for missing dependencies before installing?
-
-            persister.addBundle(bundle);
-
-            // store bundle in JCR and create operation node
-            OperationResult result = install(persister.getLocation(bundle), nodes);
-            result.getBundleInfoList().add(new BundleInfo(symbolicName, version));
-
-            return result;
-        } catch (Exception ex) {
-            // Add message to the context
-            if (context != null) {
-                context.addMessage(new MessageBuilder().source("moduleInstallionFailed")
-                        .code("serverSettings.manageModules.install.failed")
-                        .arg(ex.getMessage())
-                        .error()
-                        .build());
-            }
-            return new OperationResultImpl(false, ex.getMessage(), new BundleInfo(symbolicName, version));
-        }
-    }
-
-    private void startBundles(MessageContext context, List<BundleInfo> bundleInfoList, SettingsBean settingsBean) throws BundleException {
-        for (BundleInfo bundleInfo : bundleInfoList) {
-            org.osgi.framework.Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-            if (bundle != null) {
-                Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry().getAvailableVersionsForModule(bundle.getSymbolicName());
-                JahiaTemplatesPackage currentVersion = templateManagerService.getTemplatePackageRegistry().lookupById(bundle.getSymbolicName());
-                if (allVersions.size() == 1 ||
-                        ((settingsBean.isDevelopmentMode() && currentVersion != null && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
-                    start(bundleInfo.getSymbolicName() + "-" + bundleInfo.getVersion());
-                    if (context != null) {
-                        context.addMessage(new MessageBuilder().source("moduleFile")
-                                .code("serverSettings.manageModules.install.uploadedAndStarted")
-                                .args(new String[]{bundle.getSymbolicName(), bundle.getVersion().toString()})
-                                .build());
-                    }
-                    logger.info("Module has been successfully uploaded and started. Please check its status in the list.");
-                } else {
-                    if (context != null) {
-                        context.addMessage(new MessageBuilder().source("moduleFile")
-                                .code("serverSettings.manageModules.install.uploaded")
-                                .args(new String[]{bundle.getSymbolicName(), bundle.getVersion().toString()})
-                                .build());
-                    }
-                    logger.info("Module has been successfully uploaded. Check status in the list.");
-                }
-            }
-        }
+    @Override
+    public BundleStateReport getBundleState(final String bundleKey, String... targetNodes)
+            throws ModuleManagementException {
+        return null;
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, MessageContext context, String originalFilename, boolean forceUpdate, String... nodes) throws ModuleManagementException {
+    public Set<NodeStateReport> getNodesBundleStates(String... targetNodes) throws ModuleManagementException {
+        return null;
+    }
+
+    @Override
+    public OperationResult install(Resource bundleResource, MessageContext context, String originalFilename,
+            boolean forceUpdate, String... nodes) throws ModuleManagementException {
         // save to a temporary file and create Bundle data object
 
         OperationResult installResult = null;
@@ -251,7 +126,10 @@ public class ModuleManagerImpl implements ModuleManager {
                         ModulesPackage pack = ModulesPackage.create(jarFile);
                         List<String> providedBundles = new ArrayList<String>(pack.getModules().keySet());
                         for (Map.Entry<String, ModulesPackage.PackagedModule> entry : pack.getModules().entrySet()) {
-                            OperationResult res = installModule(new FileSystemResource(entry.getValue().getModuleFile()), ModuleManagerHelper.getJarFileManifest(entry.getValue().getModuleFile()), context, providedBundles, forceUpdate);
+                            OperationResult res = installModule(
+                                    new FileSystemResource(entry.getValue().getModuleFile()),
+                                    ModuleManagerHelper.getJarFileManifest(entry.getValue().getModuleFile()), context,
+                                    providedBundles, forceUpdate);
                             // to be reviewed
                             if (installResult == null) {
                                 installResult = res;
@@ -268,7 +146,8 @@ public class ModuleManagerImpl implements ModuleManager {
                     }
 
                 } else {
-                    installResult = new OperationResultImpl(false, "Operation aborted. Please, check the bundle package name or license.");
+                    installResult = new OperationResultImpl(false,
+                            "Operation aborted. Please, check the bundle package name or license.");
                 }
             } else {
                 installResult = installModule(bundleResource, manifest, context, null, forceUpdate);
@@ -288,178 +167,168 @@ public class ModuleManagerImpl implements ModuleManager {
         return installResult;
     }
 
-    private OperationResult install(String location, final String[] nodeIds) throws RepositoryException {
+    private OperationResult install(PersistedBundle info, final String[] nodeIds) throws RepositoryException {
         try {
-            Bundle b = FrameworkService.getBundleContext().installBundle(location);
-            return new OperationResultImpl(true, "Operation successfully performed", new BundleInfo(b.getSymbolicName(), b.getVersion().toString()));
+            FrameworkService.getBundleContext().installBundle(info.getLocation());
+            return new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
     }
 
+    private OperationResult installModule(Resource bundleResource, Manifest manifest, MessageContext context,
+            List<String> providedBundles, boolean forceUpdate, String... nodes) throws IOException, BundleException {
+        String symbolicName = ModuleManagerHelper.getManifestSymbolicName(manifest);
+        String version = ModuleManagerHelper.getManifestVersion(manifest);
+        String groupId = ModuleManagerHelper.getManifestGroupId(manifest);
 
-    public void setPersister(ModuleInfoPersister persister) {
-        this.persister = persister;
+        try {
+
+            if (ModuleManagerHelper.isDifferentModuleWithSameIdExists(symbolicName, groupId, context,
+                    templateManagerService)) {
+                return new OperationResultImpl(false,
+                        "Module installation failed because a module exists with the same name " + symbolicName,
+                        new BundleInfo(symbolicName, version));
+            }
+
+            if (!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(),
+                    symbolicName, version, context)) {
+                return new OperationResultImpl(false,
+                        "Module installation failed because a module exists with the same name and version. "
+                                + symbolicName + "-" + version,
+                        new BundleInfo(symbolicName, version));
+            }
+
+            final PersistedBundle moduleInfo = persister.extract(bundleResource);
+
+            if (moduleInfo == null) {
+                return OperationResultImpl.NOT_VALID_BUNDLE;
+            }
+
+            // TODO check for missing dependencies before installing?
+
+            persister.store(moduleInfo);
+
+            // store bundle in JCR and create operation node
+            OperationResult result = install(moduleInfo, nodes);
+            result.getBundleInfoList().add(moduleInfo.getBundleInfo());
+
+            return result;
+        } catch (Exception ex) {
+            // Add message to the context
+            if (context != null) {
+                context.addMessage(new MessageBuilder().source("moduleInstallionFailed")
+                        .code("serverSettings.manageModules.install.failed").arg(ex.getMessage()).error().build());
+            }
+            return new OperationResultImpl(false, ex.getMessage(), new BundleInfo(symbolicName, version));
+        }
     }
 
-
-    @Override
-    public OperationResult start(String bundleKey, String... nodes) {
+    /**
+     * Performs the specified operation of the bundle.
+     * 
+     * @param bundleKey
+     *            the key of the bundle to perform operation on
+     * @param operation
+     *            the operation type to be performed
+     * @param nodes
+     *            the target nodes
+     * @return the result of the operation
+     */
+    private OperationResult performOperation(String bundleKey, Operation operation, String... nodes) {
+        logger.info("Performing {} operation for bundle {} on nodes {}", new Object[] { operation, bundleKey, nodes });
         try {
-            BundleDTO bundleDTO = persister.getBundle(bundleKey);
-            if (bundleDTO != null) {
-                Bundle bundle = BundleUtils.getBundle(bundleDTO.getSymbolicName(), bundleDTO.getVersion());
+            PersistedBundle info = persister.find(bundleKey);
+            if (info != null) {
+                Bundle bundle = BundleUtils.getBundle(info.getSymbolicName(), info.getVersion());
                 if (bundle != null) {
-                    bundle.start();
-                    return new OperationResultImpl(true, "Operation successfully performed", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
+                    switch (operation) {
+                        case start:
+                            bundle.start();
+                            break;
+
+                        case stop:
+                            bundle.stop();
+                            break;
+
+                        case uninstall:
+                            bundle.uninstall();
+                            break;
+
+                        default:
+                            throw new UnsupportedOperationException("Unknown bundle operation: " + operation);
+                    }
+
+                    return new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
                 }
-                return new OperationResultImpl(true, "Bundle not found", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
+                return new OperationResultImpl(true, "Bundle not found", info.getBundleInfo());
             }
             return new OperationResultImpl(false, "Bundle not found");
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
+        }
+    }
+
+    public void setPersister(BundlePersister persister) {
+        this.persister = persister;
+    }
+
+    /**
+     * Set the Jahia template manager service
+     * 
+     * @param templateManagerService
+     *            the template manager service bean to set
+     */
+    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
+        this.templateManagerService = templateManagerService;
+    }
+
+    @Override
+    public OperationResult start(String bundleKey, String... nodes) {
+        return performOperation(bundleKey, Operation.start, nodes);
+    }
+
+    private void startBundles(MessageContext context, List<BundleInfo> bundleInfoList, SettingsBean settingsBean)
+            throws BundleException {
+        for (BundleInfo bundleInfo : bundleInfoList) {
+            org.osgi.framework.Bundle bundle = BundleUtils.getBundle(bundleInfo.getSymbolicName(),
+                    bundleInfo.getVersion());
+            if (bundle != null) {
+                Set<ModuleVersion> allVersions = templateManagerService.getTemplatePackageRegistry()
+                        .getAvailableVersionsForModule(bundle.getSymbolicName());
+                JahiaTemplatesPackage currentVersion = templateManagerService.getTemplatePackageRegistry()
+                        .lookupById(bundle.getSymbolicName());
+                if (allVersions.size() == 1 || ((settingsBean.isDevelopmentMode() && currentVersion != null
+                        && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
+                    start(bundleInfo.getKey());
+                    if (context != null) {
+                        context.addMessage(new MessageBuilder().source("moduleFile")
+                                .code("serverSettings.manageModules.install.uploadedAndStarted")
+                                .args(new String[] { bundle.getSymbolicName(), bundle.getVersion().toString() })
+                                .build());
+                    }
+                    logger.info(
+                            "Module has been successfully uploaded and started. Please check its status in the list.");
+                } else {
+                    if (context != null) {
+                        context.addMessage(new MessageBuilder().source("moduleFile")
+                                .code("serverSettings.manageModules.install.uploaded")
+                                .args(new String[] { bundle.getSymbolicName(), bundle.getVersion().toString() })
+                                .build());
+                    }
+                    logger.info("Module has been successfully uploaded. Check status in the list.");
+                }
+            }
         }
     }
 
     @Override
     public OperationResult stop(String bundleKey, String... nodes) {
-        try {
-            BundleDTO bundleDTO = persister.getBundle(bundleKey);
-            if (bundleDTO != null) {
-                Bundle bundle = BundleUtils.getBundle(bundleDTO.getSymbolicName(), bundleDTO.getVersion());
-                if (bundle != null) {
-                    bundle.stop();
-                    return new OperationResultImpl(true, "Operation successfully performed", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
-                }
-                return new OperationResultImpl(true, "Bundle not found", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
-            }
-            return new OperationResultImpl(false, "Bundle not found");
-        } catch (BundleException e) {
-            throw new ModuleManagementException(e);
-        }
+        return performOperation(bundleKey, Operation.stop, nodes);
     }
 
     @Override
     public OperationResult uninstall(String bundleKey, String... nodes) {
-        try {
-            BundleDTO bundleDTO = persister.getBundle(bundleKey);
-            if (bundleDTO != null) {
-                Bundle bundle = BundleUtils.getBundle(bundleDTO.getSymbolicName(), bundleDTO.getVersion());
-                if (bundle != null) {
-                    bundle.uninstall();
-                    return new OperationResultImpl(true, "Operation successfully performed", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
-                }
-                return new OperationResultImpl(true, "Bundle not found", new BundleInfo(bundleDTO.getSymbolicName(), bundleDTO.getVersion()));
-            }
-            return new OperationResultImpl(false, "Bundle not found");
-        } catch (BundleException e) {
-            throw new ModuleManagementException(e);
-        }
-    }
-
-    public void setClusterNodeInfo(ClusterNodeInfo clusterNodeInfo) {
-        this.clusterNodeInfo = clusterNodeInfo;
-    }
-
-    @Override
-    public BundleStateReport getBundleState(final String bundleKey, String... targetNodes) throws ModuleManagementException {
-//        final String[] finalTargetNodes = targetNodes == null || targetNodes.length == 0
-//                ? new String[] { clusterNodeInfo.getId() } : targetNodes;
-//
-//        Map<String, String> map = new HashMap<String,String>();
-//        try {
-//            map = persister.doExecute(new OCMCallback<Map<String, String>>() {
-//                @Override
-//                public Map<String, String>  doInOCM(ObjectContentManager ocm) {
-//                    Map<String, String> result = new HashMap<String,String>();
-//                    for (String targetNode : finalTargetNodes) {
-//                        String path = "/module-management/nodes/" +targetNode+ "/bundles/" + bundleKey;
-//                        NodeBundle nodeBundle = (NodeBundle) ocm.getObject(NodeBundle.class, path);
-//                        if (nodeBundle != null) {
-//                            result.put(targetNode, nodeBundle.getState());
-//                        }
-//                    }
-//                    return result;
-//                }
-//            });
-//
-//            BundleStateReport bundleStateReport = new BundleStateReport(bundleKey,map);
-//            return  bundleStateReport;
-//        } catch (RepositoryException e) {
-//            throw new ModuleManagementException(e);
-//        }
-        return null;
-    }
-
-    @Override
-    public Set<NodeStateReport> getNodesBundleStates(String... targetNodes) throws ModuleManagementException {
-//        final Set<String> finalTargetNodes = new HashSet<>();
-//        if (targetNodes == null || targetNodes.length == 0) {
-//            finalTargetNodes.add(clusterNodeInfo.getId());
-//        } else {
-//            finalTargetNodes.addAll(Arrays.asList(targetNodes));
-//        }
-//        Set<NodeStateReport> result = new HashSet<NodeStateReport>();
-//        try {
-//            result = persister.doExecute(new OCMCallback<Set<NodeStateReport>>() {
-//                @Override
-//                public Set<NodeStateReport> doInOCM(ObjectContentManager ocm) throws RepositoryException {
-//                    List<ClusterNode> nodes = new ArrayList<ClusterNode>();
-//                    Set<NodeStateReport> result = new HashSet<NodeStateReport>();
-//                    Node node = ocm.getSession().getNode("/module-management/nodes");
-//                    NodeIterator ops = node.getNodes();
-//                    if (ops.hasNext()) {
-//                        String nodePath = ops.nextNode().getPath();
-//                        if(finalTargetNodes.contains(nodePath.substring("/module-management/nodes/".length()))) {
-//                            nodes.add((ClusterNode) ocm.getObject(ClusterNode.class, nodePath));
-//                        }
-//                    }
-//                    for (ClusterNode clusterNode : nodes)
-//                    {
-//                        Set<BundleStateReport> bundleStateReports = new HashSet<BundleStateReport>();
-//                        for (String key : clusterNode.getBundles().keySet()) {
-//                            Map<String,String> map = new HashMap<String, String>();
-//                            NodeBundle nodeBundle = clusterNode.getBundles().get(key);
-//                            map.put(nodeBundle.getBundle().getIdentifier(),nodeBundle.getState());
-//                            BundleStateReport bundleStateReport = new BundleStateReport(nodeBundle.getBundle().getName(),map);
-//                            bundleStateReports.add(bundleStateReport);
-//                        }
-//                        NodeStateReport nodeStateReport = new NodeStateReport(clusterNode.getIdentifier(),bundleStateReports);
-//                        result.add(nodeStateReport);
-//                    }
-//                    return result;
-//                }
-//            });
-//        } catch (RepositoryException e) {
-//            throw new ModuleManagementException(e);
-//        }
-//        return result;
-        return null;
-    }
-
-//    @Override
-//    public OperationState getOperationState(final String operationId) throws ModuleManagementException {
-//        try {
-//            Operation operation = persister.doExecute(new OCMCallback<Operation>() {
-//                @Override
-//                public Operation doInOCM(ObjectContentManager ocm) throws RepositoryException {
-//                    return (Operation) ocm.getObjectByUuid(operationId);
-//                }
-//            });
-//            OperationState operationState = new OperationState(operation.getName(), operation.getAction(), operation.getInfo(), operation.getState(), operation.isCompleted());
-//            return operationState;
-//        } catch (RepositoryException e) {
-//            throw new ModuleManagementException(e);
-//        }
-//    }
-//
-
-
-    /**
-     * Set the Jahia template manager service
-     * @param templateManagerService the template manager service bean to set
-     */
-    public void setTemplateManagerService(JahiaTemplateManagerService templateManagerService) {
-        this.templateManagerService = templateManagerService;
+        return performOperation(bundleKey, Operation.uninstall, nodes);
     }
 }

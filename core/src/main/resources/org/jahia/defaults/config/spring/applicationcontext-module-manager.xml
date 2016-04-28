@@ -4,88 +4,15 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean id="ClusterNodeInfo" class="org.jahia.services.modulemanager.model.ClusterNodeInfo">
-        <property name="id" value="${cluster.node.serverId:jahiaServer1}" />
-        <property name="processingServer" value="${processingServer:true}" />
-        <property name="clusterActivated" value="false" />
-    </bean>
-
-    <bean id="BundleService" class="org.jahia.services.modulemanager.impl.BundleServiceImpl">
-        <!--<property name="felixProperties" ref="felixProperties"/>-->
-    </bean>
-
-    <bean id="ModuleInfoPersister" class="org.jahia.services.modulemanager.persistence.ModuleInfoPersister">
-        <property name="bundleService" ref="BundleService"/>
-    </bean>
+    <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
 
     <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
-        <property name="persister" ref="ModuleInfoPersister"/>
-        <property name="clusterNodeInfo" ref="ClusterNodeInfo"/>
+        <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
         <property name="templateManagerService" ref="JahiaTemplateManagerService" />
     </bean>
-
-    <!--<bean parent="jobSchedulingBean">
-        <property name="ramJob" value="true"/>
-        <property name="overwriteExisting" value="true"/>
-        <property name="jobDetail">
-            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
-                <property name="name" value="OperationProcessorJob" />
-                <property name="group" value="Modules" />
-                <property name="jobClass" value="org.jahia.services.modulemanager.impl.OperationProcessorJob" />
-                <property name="description" value="Processes open operations for module management" />
-                <property name="durability" value="true" />
-                <property name="jobDataAsMap">
-                    <map>
-                        <entry key="operationProcessor"  value-ref="OperationProcessor" />
-                    </map>
-                </property>
-            </bean>
-        </property>
-        <property name="trigger">
-            <bean class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-                <property name="name" value="OperationProcessorJobTrigger"/>
-                <property name="group" value="Modules" />
-                <property name="startDelay" value="${jahia.moduleManager.operationProcessor.startDelay:2000}"/>
-                <property name="repeatCount" value="0"/>
-            </bean>
-        </property>
-    </bean>-->
-
-    <!--<bean parent="jobSchedulingBean">
-        <property name="ramJob" value="true"/>
-        <property name="overwriteExisting" value="true"/>
-        <property name="jobDetail">
-            <bean class="org.springframework.scheduling.quartz.JobDetailBean">
-                <property name="name" value="NodeOperationProcessorJob" />
-                <property name="group" value="Modules" />
-                <property name="jobClass" value="org.jahia.services.modulemanager.impl.OperationProcessorJob" />
-                <property name="description" value="Processes open node-level operations for module management" />
-                <property name="durability" value="true" />
-                <property name="jobDataAsMap">
-                    <map>
-                        <entry key="operationProcessor"  value-ref="NodeOperationProcessor" />
-                    </map>
-                </property>
-            </bean>
-        </property>
-        <property name="trigger">
-            <bean class="org.springframework.scheduling.quartz.SimpleTriggerBean">
-                <property name="name" value="NodeOperationProcessorJobTrigger"/>
-                <property name="group" value="Modules" />
-                <property name="startDelay" value="${jahia.moduleManager.nodeOperationProcessor.startDelay:2000}"/>
-                <property name="repeatCount" value="0"/>
-            </bean>
-        </property>
+    
+    <bean id="BundlePersistanceStorageInitializer" class="org.jahia.services.modulemanager.persistence.BundlePersistanceStorageInitializer">
+        <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
     </bean>
--->
-    <!--<bean id="NodeOperationEventListener" class="org.jahia.services.modulemanager.impl.NodeOperationEventListener">-->
-        <!--<property name="workspace" value="default"/>-->
-        <!--<property name="operationTypes">-->
-            <!--<set value-type="java.lang.Integer">-->
-                <!--<value type="java.lang.Integer">1</value>-->
-            <!--</set>-->
-        <!--</property>-->
-        <!--<property name="clusterNodeInfo" ref="ClusterNodeInfo"/>-->
-        <!--<property name="operationProcessor" ref="NodeOperationProcessor"/>-->
-    <!--</bean>-->
+
 </beans>

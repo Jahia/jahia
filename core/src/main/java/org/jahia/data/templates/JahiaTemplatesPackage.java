@@ -56,6 +56,7 @@ import org.jahia.bin.Jahia;
 import org.jahia.osgi.BundleResource;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.services.JahiaAfterInitializationService;
+import org.jahia.services.modulemanager.payload.BundleInfo;
 import org.jahia.services.templates.ModuleVersion;
 import org.jahia.services.templates.SourceControlManagement;
 import org.jahia.settings.SettingsBean;
@@ -93,6 +94,8 @@ public class JahiaTemplatesPackage {
     }
 
     private Bundle bundle = null;
+    
+    private String bundleKey;
 
     private ModuleState state;
 
@@ -317,6 +320,8 @@ public class JahiaTemplatesPackage {
 
     public void setGroupId(String groupId) {
         this.groupId = groupId;
+        // force recompute of bundle key
+        this.bundleKey = null;
     }
 
     /**
@@ -1134,5 +1139,19 @@ public class JahiaTemplatesPackage {
 
     public void setEditModeBlocked(boolean editModeBlocked) {
         this.editModeBlocked = editModeBlocked;
+    }
+
+    /**
+     * Returns unique bundle key which corresponds to this module, including group ID, bundle symbolic name and version.
+     * 
+     * @return unique bundle key which corresponds to this module, including group ID, bundle symbolic name and version
+     * @see BundleInfo
+     */
+    public String getBundleKey() {
+        if (bundleKey == null) {
+            bundleKey = new BundleInfo(getGroupId(), bundle.getSymbolicName(), bundle.getVersion().toString()).getKey();
+        }
+
+        return bundleKey;
     }
 }

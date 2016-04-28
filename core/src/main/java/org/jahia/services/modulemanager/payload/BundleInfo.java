@@ -43,65 +43,154 @@
  */
 package org.jahia.services.modulemanager.payload;
 
-import javax.xml.bind.annotation.XmlType;
 import java.io.Serializable;
 
+import javax.xml.bind.annotation.XmlType;
+
+import org.apache.commons.lang.StringUtils;
+import org.jahia.osgi.BundleUtils;
+import org.osgi.framework.Bundle;
+
 /**
+ * Represents the bundle basic information.
+ * 
  * @author bdjiba
- *
  */
-@XmlType(propOrder = {"symbolicName", "version"})
+@XmlType(propOrder = { "groupId", "symbolicName", "version" })
 public class BundleInfo implements Serializable {
-    private static final long serialVersionUID = 1L;
+
+    private static final long serialVersionUID = -2594724069028562931L;
+
+    /**
+     * Creates the {@link BundleInfo} instance using provided bundle key.
+     * 
+     * @param key
+     *            the bundle key
+     */
+    public static BundleInfo fromKey(String key) {
+        if (key == null || key.indexOf('/') == -1) {
+            throw new IllegalArgumentException("Illegal bundle key: " + key);
+        }
+
+        String version = StringUtils.substringAfterLast(key, "/");
+        String symbolicName = StringUtils.substringBeforeLast(key, "/");
+        String groupId = null;
+        if (symbolicName.indexOf('/') != -1) {
+            groupId = StringUtils.substringBefore(symbolicName, "/");
+            symbolicName = StringUtils.substringAfter(symbolicName, "/");
+        }
+
+        return new BundleInfo(groupId, symbolicName, version);
+    }
+
+    /**
+     * Creates the {@link BundleInfo} instance using provided module ID and version.
+     *
+     * @param moduleId
+     *            the ID of the module
+     * @param moduleVersion
+     *            the module version
+     */
+    public static BundleInfo fromModuleInfo(String moduleId, String moduleVersion) {
+        if (moduleId == null || moduleVersion == null) {
+            throw new IllegalArgumentException("Illegal module info (id/version): " + moduleId + '/' + moduleVersion);
+        }
+
+        Bundle bundle = BundleUtils.getBundle(moduleId, moduleVersion);
+
+        return bundle != null ? new BundleInfo(BundleUtils.getModuleGroupId(bundle), bundle.getSymbolicName(),
+                bundle.getVersion().toString()) : null;
+    }
+
+    private String groupId;
+
+    private String key;
 
     private String symbolicName;
+
     private String version;
 
     /**
-     *
+     * Initializes an instance of this class.
+     * 
+     * @param symbolicName
+     *            the symbolic name of this bundle
+     * @param version
+     *            the version of this bundle
      */
-    public BundleInfo() {
-    }
-
-    public BundleInfo(String bundleSymbolicName, String bundleVersion) {
-        this.symbolicName = bundleSymbolicName;
-        this.version = bundleVersion;
+    public BundleInfo(String symbolicName, String version) {
+        this(null, symbolicName, version);
     }
 
     /**
-     * @return the symbolicName
+     * Initializes an instance of this class.
+     * 
+     * @param groupId
+     *            the ID of the group for this bundle
+     * @param symbolicName
+     *            the symbolic name of this bundle
+     * @param version
+     *            the version of this bundle
+     */
+    public BundleInfo(String groupId, String symbolicName, String version) {
+        super();
+        if (symbolicName == null || symbolicName.length() == 0 || version == null || version.length() == 0) {
+            throw new IllegalArgumentException("Symbolic name and version for the bundle cannot be null or empty");
+        }
+        this.groupId = groupId;
+        this.symbolicName = symbolicName;
+        this.version = version;
+        this.key = groupId != null ? (groupId + '/' + symbolicName + '/' + version) : (symbolicName + '/' + version);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+
+        return obj != null && obj.getClass() == this.getClass() && ((BundleInfo) obj).getKey().equals(getKey());
+    }
+
+    /**
+     * Returns the ID of the group for this bundle. This value could be null.
+     * 
+     * @return the ID of the group for this bundle
+     */
+    public String getGroupId() {
+        return groupId;
+    }
+
+    /**
+     * The unique key of this bundle, which is composed of the group ID, symbolic name and version.
+     * 
+     * @return unique key of this bundle, which is composed of the group ID, symbolic name and version
+     */
+    public String getKey() {
+        return key;
+    }
+
+    /**
+     * Returns the symbolic name for this bundle.
+     * 
+     * @return the symbolic name for this bundle
      */
     public String getSymbolicName() {
         return symbolicName;
     }
 
     /**
-     * @param symbolicName the symbolicName to set
-     */
-    public void setSymbolicName(String symbolicName) {
-        this.symbolicName = symbolicName;
-    }
-
-    /**
-     * @return the version
+     * Returns the version of this bundle.
+     * 
+     * @return the version of this bundle
      */
     public String getVersion() {
         return version;
     }
 
-    /**
-     * @param version the version to set
-     */
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    /**
-     * Gets the bundle informations in an array
-     * @return the bundle information array
-     */
-    public String[] getInfos() {
-        return new String[]{this.symbolicName, this.version};
+    @Override
+    public int hashCode() {
+        return getKey().hashCode();
     }
 
 }

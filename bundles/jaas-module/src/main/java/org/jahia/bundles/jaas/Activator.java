@@ -46,22 +46,26 @@ package org.jahia.bundles.jaas;
 import org.apache.karaf.jaas.config.JaasRealm;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
- * Enable JAAS realm for Jahia
+ * Enable JAAS realm for DX.
  */
 public class Activator implements BundleActivator {
 
+    private ServiceRegistration<JaasRealm> serviceRegistration;
 
     @Override
     public void start(BundleContext bundleContext) throws Exception {
         JahiaJaasRealmService jahiaRealm = new JahiaJaasRealmService(bundleContext);
 
-        bundleContext.registerService(JaasRealm.class, jahiaRealm, null);
+        serviceRegistration = bundleContext.registerService(JaasRealm.class, jahiaRealm, null);
     }
 
     @Override
     public void stop(BundleContext bundleContext) throws Exception {
-
+        if (serviceRegistration != null) {
+            serviceRegistration.unregister();
+        }
     }
 }

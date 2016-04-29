@@ -44,19 +44,13 @@
 package org.jahia.services.modulemanager.impl;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import javax.jcr.RepositoryException;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.jahia.data.templates.JahiaTemplatesPackage;
-import org.jahia.data.templates.ModulesPackage;
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
 import org.jahia.services.modulemanager.ModuleManagementException;
@@ -78,7 +72,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.binding.message.MessageBuilder;
 import org.springframework.binding.message.MessageContext;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 /**
@@ -100,74 +93,17 @@ public class ModuleManagerImpl implements ModuleManager {
     private JahiaTemplateManagerService templateManagerService;
 
     @Override
-    public BundleStateReport getBundleState(final String bundleKey, String... targetNodes)
+    public BundleStateReport getBundleState(final String bundleKey, String target)
             throws ModuleManagementException {
         return null;
     }
 
     @Override
-    public Set<NodeStateReport> getNodesBundleStates(String... targetNodes) throws ModuleManagementException {
+    public Set<NodeStateReport> getNodesBundleStates(String target) throws ModuleManagementException {
         return null;
     }
 
-    @Override
-    public OperationResult install(Resource bundleResource, MessageContext context, String originalFilename,
-            boolean forceUpdate, String... nodes) throws ModuleManagementException {
-        // save to a temporary file and create Bundle data object
-
-        OperationResult installResult = null;
-        try {
-            // get the manifest
-            Manifest manifest = ModuleManagerHelper.getJarFileManifest(bundleResource.getFile());
-            if (ModuleManagerHelper.isPackageModule(manifest)) {
-                if (ModuleManagerHelper.isValidJahiaPackageFile(manifest, context, originalFilename)) {
-                    JarFile jarFile = new JarFile(bundleResource.getFile());
-                    try {
-                        ModulesPackage pack = ModulesPackage.create(jarFile);
-                        List<String> providedBundles = new ArrayList<String>(pack.getModules().keySet());
-                        for (Map.Entry<String, ModulesPackage.PackagedModule> entry : pack.getModules().entrySet()) {
-                            OperationResult res = installModule(
-                                    new FileSystemResource(entry.getValue().getModuleFile()),
-                                    ModuleManagerHelper.getJarFileManifest(entry.getValue().getModuleFile()), context,
-                                    providedBundles, forceUpdate);
-                            // to be reviewed
-                            if (installResult == null) {
-                                installResult = res;
-                            } else {
-                                if (res != null && res.isSuccess()) {
-                                    installResult.getBundleInfoList().addAll(res.getBundleInfoList());
-                                }
-                            }
-                        }
-                    } catch (Exception ex) {
-                        logger.error("Error during jahia package installation.", ex);
-                    } finally {
-                        IOUtils.closeQuietly(jarFile);
-                    }
-
-                } else {
-                    installResult = new OperationResultImpl(false,
-                            "Operation aborted. Please, check the bundle package name or license.");
-                }
-            } else {
-                installResult = installModule(bundleResource, manifest, context, null, forceUpdate);
-            }
-
-        } catch (Exception e) {
-            throw new ModuleManagementException(e);
-        }
-
-        if (installResult != null && installResult.isSuccess()) {
-            try {
-                startBundles(context, installResult.getBundleInfoList(), SettingsBean.getInstance());
-            } catch (BundleException bex) {
-                logger.error("An error occured during starting installed bundles", bex);
-            }
-        }
-        return installResult;
-    }
-
-    private OperationResult install(PersistedBundle info, final String[] nodeIds) throws RepositoryException {
+    private OperationResult install(PersistedBundle info, final String target) throws RepositoryException {
         try {
             FrameworkService.getBundleContext().installBundle(info.getLocation());
             return new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
@@ -176,8 +112,107 @@ public class ModuleManagerImpl implements ModuleManager {
         }
     }
 
+    @Override
+    public OperationResult install(Resource bundleResource, String target) throws ModuleManagementException {
+        return install(bundleResource, target, false);
+        // save to a temporary file and create Bundle data object
+
+//        OperationResult result = null;
+//        try {
+            // get the manifest
+//            Manifest manifest = ModuleManagerHelper.getJarFileManifest(bundleResource.getFile());
+//            if (ModuleManagerHelper.isPackageModule(manifest)) {
+//                if (ModuleManagerHelper.isValidJahiaPackageFile(manifest, context, originalFilename)) {
+//                    JarFile jarFile = new JarFile(bundleResource.getFile());
+//                    try {
+//                        ModulesPackage pack = ModulesPackage.create(jarFile);
+//                        List<String> providedBundles = new ArrayList<String>(pack.getModules().keySet());
+//                        for (Map.Entry<String, ModulesPackage.PackagedModule> entry : pack.getModules().entrySet()) {
+//                            OperationResult res = installModule(
+//                                    new FileSystemResource(entry.getValue().getModuleFile()),
+//                                    ModuleManagerHelper.getJarFileManifest(entry.getValue().getModuleFile()), context,
+//                                    providedBundles, forceUpdate);
+//                            // to be reviewed
+//                            if (installResult == null) {
+//                                installResult = res;
+//                            } else {
+//                                if (res != null && res.isSuccess()) {
+//                                    installResult.getBundleInfoList().addAll(res.getBundleInfoList());
+//                                }
+//                            }
+//                        }
+//                    } catch (Exception ex) {
+//                        logger.error("Error during jahia package installation.", ex);
+//                    } finally {
+//                        IOUtils.closeQuietly(jarFile);
+//                    }
+//
+//                } else {
+//                    installResult = new OperationResultImpl(false,
+//                            "Operation aborted. Please, check the bundle package name or license.");
+//                }
+//            } else {
+//                installResult = installModule(bundleResource, manifest, context, null, forceUpdate);
+//            }
+
+//            final PersistedBundle moduleInfo = persister.extract(bundleResource);
+//
+//            if (moduleInfo == null) {
+//                return OperationResultImpl.NOT_VALID_BUNDLE;
+//            }
+//
+//            // TODO check for missing dependencies before installing?
+//
+//            persister.store(moduleInfo);
+//
+//            // store bundle in JCR and create operation node
+//            result = install(moduleInfo, target);
+//        } catch (Exception e) {
+//            throw new ModuleManagementException(e);
+//        }
+
+//        if (installResult != null && installResult.isSuccess()) {
+//            try {
+//                startBundles(context, installResult.getBundleInfoList(), SettingsBean.getInstance());
+//            } catch (BundleException bex) {
+//                logger.error("An error occured during starting installed bundles", bex);
+//            }
+//        }
+//        return result;
+    }
+
+    @Override
+    public OperationResult install(Resource bundleResource, String target, boolean start)
+            throws ModuleManagementException {
+        OperationResult result = null;
+        try {
+            final PersistedBundle moduleInfo = persister.extract(bundleResource);
+
+            if (moduleInfo == null) {
+                return OperationResultImpl.NOT_VALID_BUNDLE;
+            }
+
+            // TODO check for missing dependencies before installing?
+
+            persister.store(moduleInfo);
+
+            // store bundle in JCR and create operation node
+            result = install(moduleInfo, target);
+            if (result.isSuccess()) {
+                Bundle bundle = BundleUtils.getBundle(moduleInfo.getSymbolicName(), moduleInfo.getVersion());
+                if (bundle != null) {
+                    bundle.start();
+                }
+            }
+        } catch (Exception e) {
+            throw new ModuleManagementException(e);
+        }
+
+        return result;
+    }
+
     private OperationResult installModule(Resource bundleResource, Manifest manifest, MessageContext context,
-            List<String> providedBundles, boolean forceUpdate, String... nodes) throws IOException, BundleException {
+            List<String> providedBundles, String target) throws IOException, BundleException {
         String symbolicName = ModuleManagerHelper.getManifestSymbolicName(manifest);
         String version = ModuleManagerHelper.getManifestVersion(manifest);
         String groupId = ModuleManagerHelper.getManifestGroupId(manifest);
@@ -191,13 +226,13 @@ public class ModuleManagerImpl implements ModuleManager {
                         new BundleInfo(symbolicName, version));
             }
 
-            if (!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(),
-                    symbolicName, version, context)) {
-                return new OperationResultImpl(false,
-                        "Module installation failed because a module exists with the same name and version. "
-                                + symbolicName + "-" + version,
-                        new BundleInfo(symbolicName, version));
-            }
+//            if (!forceUpdate && ModuleManagerHelper.isModuleExists(templateManagerService.getTemplatePackageRegistry(),
+//                    symbolicName, version, context)) {
+//                return new OperationResultImpl(false,
+//                        "Module installation failed because a module exists with the same name and version. "
+//                                + symbolicName + "-" + version,
+//                        new BundleInfo(symbolicName, version));
+//            }
 
             final PersistedBundle moduleInfo = persister.extract(bundleResource);
 
@@ -210,7 +245,7 @@ public class ModuleManagerImpl implements ModuleManager {
             persister.store(moduleInfo);
 
             // store bundle in JCR and create operation node
-            OperationResult result = install(moduleInfo, nodes);
+            OperationResult result = install(moduleInfo, target);
             result.getBundleInfoList().add(moduleInfo.getBundleInfo());
 
             return result;
@@ -231,12 +266,12 @@ public class ModuleManagerImpl implements ModuleManager {
      *            the key of the bundle to perform operation on
      * @param operation
      *            the operation type to be performed
-     * @param nodes
-     *            the target nodes
+     * @param target
+     *            the target cluster group
      * @return the result of the operation
      */
-    private OperationResult performOperation(String bundleKey, Operation operation, String... nodes) {
-        logger.info("Performing {} operation for bundle {} on nodes {}", new Object[] { operation, bundleKey, nodes });
+    private OperationResult performOperation(String bundleKey, Operation operation, String target) {
+        logger.info("Performing {} operation for bundle {} on nodes {}", new Object[] { operation, bundleKey, target });
         try {
             PersistedBundle info = persister.find(bundleKey);
             if (info != null) {
@@ -284,8 +319,8 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     @Override
-    public OperationResult start(String bundleKey, String... nodes) {
-        return performOperation(bundleKey, Operation.start, nodes);
+    public OperationResult start(String bundleKey, String target) {
+        return performOperation(bundleKey, Operation.start, target);
     }
 
     private void startBundles(MessageContext context, List<BundleInfo> bundleInfoList, SettingsBean settingsBean)
@@ -300,7 +335,7 @@ public class ModuleManagerImpl implements ModuleManager {
                         .lookupById(bundle.getSymbolicName());
                 if (allVersions.size() == 1 || ((settingsBean.isDevelopmentMode() && currentVersion != null
                         && BundleUtils.getModule(bundle).getVersion().compareTo(currentVersion.getVersion()) > 0))) {
-                    start(bundleInfo.getKey());
+                    start(bundleInfo.getKey(), null);
                     if (context != null) {
                         context.addMessage(new MessageBuilder().source("moduleFile")
                                 .code("serverSettings.manageModules.install.uploadedAndStarted")
@@ -323,12 +358,12 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     @Override
-    public OperationResult stop(String bundleKey, String... nodes) {
-        return performOperation(bundleKey, Operation.stop, nodes);
+    public OperationResult stop(String bundleKey, String target) {
+        return performOperation(bundleKey, Operation.stop, target);
     }
 
     @Override
-    public OperationResult uninstall(String bundleKey, String... nodes) {
-        return performOperation(bundleKey, Operation.uninstall, nodes);
+    public OperationResult uninstall(String bundleKey, String target) {
+        return performOperation(bundleKey, Operation.uninstall, target);
     }
 }

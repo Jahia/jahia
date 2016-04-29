@@ -43,79 +43,131 @@
  */
 package org.jahia.services.modulemanager;
 
+import java.util.Set;
+
 import org.jahia.services.modulemanager.payload.BundleStateReport;
 import org.jahia.services.modulemanager.payload.NodeStateReport;
-import org.springframework.binding.message.MessageContext;
 import org.springframework.core.io.Resource;
-
-import java.util.Set;
 
 /**
  * Entry point interface for the module management service, providing functionality for module deployment, undeployment, start and stop
  * operations, which are performed in a seamless way on a standalone installation as well as across the platform cluster.
+ * <p>
+ * The following bundle key format is supported in the most of operations of this service:
+ * <p>
+ * <code>
+ * <pre>&lt;groupId&gt;/&lt;symbolicName&gt;/&lt;version&gt;</pre>
+ * </code>
+ * <p>
+ * For example:
+ * <p>
+ * <code>
+ * <pre>org.jahia.modules/article/2.0.2</pre>
+ * </code>
+ * <p>
+ * In some cases, when the bundle can be unambiguously identified by the symbolic name and version, the group ID could me omitted, i.e.:
+ * <p>
+ * <code>
+ * <pre>article/2.0.2</pre>
+ * </code>
+ * <p>
+ * The value of the <code>target</code> group of cluster nodes could be specified as <code>null</code>, meaning the default group is
+ * concerned, which includes all cluster node.
  * 
  * @author Sergiy Shyrkov
  */
 public interface ModuleManager {
 
     /**
-     * Install a bundle in a list of cluster nodes.
-     * @param bundleResource the resource, representing a bundle to install
-     * @param nodes set of cluster nodes id targeted by the install operation
-     * @return the result of the install operation
-     * @throws ModuleManagementException thrown exception is case of problems
+     * Get the state report of a bundle on the target group of cluster nodes.
+     * 
+     * @param bundleKey
+     *            bundle key (see class JavaDoc for the supported key format)
+     * @param target
+     *            the group of cluster nodes (see class JavaDoc for the supported values)
+     * @return the state report of the bundle in the target nodes
+     * @throws ModuleManagementException
+     *             thrown exception
      */
-    OperationResult install(Resource bundleResource, MessageContext context, String originalFilename, boolean forceUpdate, String... nodes) throws ModuleManagementException;
-
-    /**
-     * Start a bundle on a list of cluster nodes.
-     * @param bundleKey bundle key to start
-     * @param nodes list of cluster nodes targeted by the start operation
-     * @return the result of the start operation
-     * @throws ModuleManagementException thrown exception is case of problems
-     */
-    OperationResult start(String bundleKey, String... nodes) throws ModuleManagementException;
-
-    /**
-     * Stop a bundle on a list of cluster nodes.
-     * @param bundleKey bundle key to stop
-     * @param nodes a set of cluster node id targeted by the stop operation
-     * @return the result of the stop operation
-     * @throws ModuleManagementException thrown exception is case of problems
-     */
-    OperationResult stop(String bundleKey, String... nodes) throws ModuleManagementException;
-
-    /**
-     * Uninstall a bundle on a list of cluster nodes.
-     * @param bundleKey bundle key to uninstall
-     * @param nodes set of cluster nodes id targeted by the uninstall operation
-     * @return the result of the uninstall operation
-     * @throws ModuleManagementException thrown exception is case of problems
-     */
-    OperationResult uninstall(String bundleKey, String... nodes) throws ModuleManagementException;
-
-    /**
-     * Get the state report of a bundle in a list of target nodes
-     * @param bundleKey bundle key
-     * @param targetNodes list of target nodes
-     * @return  the state report of the bundle in the target nodes
-     * @throws ModuleManagementException thrown exception
-     */
-    BundleStateReport getBundleState(String bundleKey, String... targetNodes) throws ModuleManagementException;
+    BundleStateReport getBundleState(String bundleKey, String target) throws ModuleManagementException;
 
     /**
      * Get the state report of a list of Nodes including their own bundles
-     * @param targetNodes list of target nodes
-     * @return  the state report of the bundle in the target nodes
-     * @throws ModuleManagementException thrown exception
+     * 
+     * @param target
+     *            the group of cluster nodes (see class JavaDoc for the supported values)
+     * @return the state report of the bundle in the target nodes
+     * @throws ModuleManagementException
+     *             thrown exception
      */
-    Set<NodeStateReport> getNodesBundleStates(String... targetNodes)  throws ModuleManagementException;
+    Set<NodeStateReport> getNodesBundleStates(String targetNodes) throws ModuleManagementException;
 
-//    /**
-//     * Get the operation state by its uuid
-//     * @param operationUuid operation uuid
-//     * @return operation state
-//     * @throws ModuleManagementException thrown exception
-//     */
-//    OperationState getOperationState(String operationUuid) throws ModuleManagementException ;
+    /**
+     * Install the specified bundle on the target group of cluster nodes.
+     * 
+     * @param bundleResource
+     *            the resource, representing a bundle to install
+     * @param target
+     *            the group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @return the result of the install operation
+     * @throws ModuleManagementException
+     *             thrown exception is case of problems
+     */
+    OperationResult install(Resource bundleResource, String target) throws ModuleManagementException;
+
+    /**
+     * Install the specified bundle on the target group of cluster nodes, optionally starting it right after if the <code>start</code>
+     * parameter is <code>true</code>.
+     * 
+     * @param bundleResource
+     *            the resource, representing a bundle to install
+     * @param target
+     *            the group of cluster nodes targeted by the install operation (see class JavaDoc for the supported values)
+     * @param start
+     *            <code>true</code> if the installed bundle should be started right away; <code>false</code> to keep it in the installed
+     *            stated
+     * @return the result of the install operation
+     * @throws ModuleManagementException
+     *             thrown exception is case of problems
+     */
+    OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException;
+
+    /**
+     * Start the specified bundle on the target group of cluster nodes.
+     * 
+     * @param bundleKey
+     *            bundle key to start (see class JavaDoc for the supported key format)
+     * @param target
+     *            the group of cluster nodes targeted by the start operation (see class JavaDoc for the supported values)
+     * @return the result of the start operation
+     * @throws ModuleManagementException
+     *             thrown exception is case of problems
+     */
+    OperationResult start(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Stop the specified bundle on the target group of cluster nodes.
+     * 
+     * @param bundleKey
+     *            bundle key to stop (see class JavaDoc for the supported key format)
+     * @param target
+     *            the group of cluster nodes targeted by the stop operation (see class JavaDoc for the supported values)
+     * @return the result of the stop operation
+     * @throws ModuleManagementException
+     *             thrown exception is case of problems
+     */
+    OperationResult stop(String bundleKey, String target) throws ModuleManagementException;
+
+    /**
+     * Uninstall the specified bundle on the target group of cluster nodes.
+     * 
+     * @param bundleKey
+     *            bundle key to uninstall (see class JavaDoc for the supported key format)
+     * @param target
+     *            the group of cluster nodes targeted by the uninstall operation (see class JavaDoc for the supported values)
+     * @return the result of the uninstall operation
+     * @throws ModuleManagementException
+     *             thrown exception is case of problems
+     */
+    OperationResult uninstall(String bundleKey, String target) throws ModuleManagementException;
 }

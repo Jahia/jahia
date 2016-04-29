@@ -59,7 +59,7 @@ import java.util.HashSet;
 import java.util.Map;
 
 /**
- * Login module checks against jahia tools user
+ * Login module checks against Jahia tools user.
  */
 public class JahiaLoginModule extends AbstractKarafLoginModule {
     @Override
@@ -73,10 +73,10 @@ public class JahiaLoginModule extends AbstractKarafLoginModule {
         if(this.callbackHandler != null) {
             try {
                 this.callbackHandler.handle(callbacks);
-            } catch (IOException var13) {
-                throw new LoginException(var13.getMessage());
-            } catch (UnsupportedCallbackException var14) {
-                throw new LoginException(var14.getMessage() + " not available to obtain information from user");
+            } catch (IOException e) {
+                throw new LoginException(e.getMessage());
+            } catch (UnsupportedCallbackException e) {
+                throw new LoginException(e.getMessage() + " not available to obtain information from user");
             }
         }
 
@@ -90,11 +90,11 @@ public class JahiaLoginModule extends AbstractKarafLoginModule {
                 String password = new String(((PasswordCallback) callbacks[1]).getPassword());
                 boolean userCheck = user.equals(SettingsBean.getInstance().getPropertiesFile().getProperty("jahiaToolManagerUsername"));
                 if (!userCheck) {
-                    throw new FailedLoginException((new StringBuilder()).append("User ").append(user).append(" does not exist").toString());
+                    throw new FailedLoginException(new StringBuilder().append("User ").append(user).append(" does not exist").toString());
                 }
                 boolean passwordCheck = PasswordService.getInstance().matches(password, SettingsBean.getInstance().getPropertiesFile().getProperty("jahiaToolManagerPassword"));
                 if (!passwordCheck) {
-                    throw new FailedLoginException((new StringBuilder()).append("Password for ").append(user).append(" does not match").toString());
+                    throw new FailedLoginException(new StringBuilder().append("Password for ").append(user).append(" does not match").toString());
                 }
                 principals = new HashSet<>();
                 principals.add(new UserPrincipal(user));

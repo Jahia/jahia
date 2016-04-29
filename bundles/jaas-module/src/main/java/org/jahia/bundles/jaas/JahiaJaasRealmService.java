@@ -52,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * JAAS Realm definition for jahia
+ * JAAS Realm definition for DX.
  */
 public class JahiaJaasRealmService implements JaasRealm {
 

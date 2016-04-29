@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderException;
@@ -127,6 +128,13 @@ public class CacheFilter extends AbstractFilter {
             // The element is found in the cache. Need to
             return returnFromCache(renderContext, resource, key, finalKey, element, cache);
         } else {
+            // resource is lazy in aggregation so call .getNode(), will load the node from jcr and store it in the resource
+            if (resource.safeLoadNode() == null) {
+                // Node is not available anymore, return empty content for this fragment
+                // TODO throw NodeNotFoundException ?
+                return StringUtils.EMPTY;
+            }
+
             // TODO reimplemt latch
             // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
             // module - if somebody else is generating this fragment, wait for the entry to be generated and

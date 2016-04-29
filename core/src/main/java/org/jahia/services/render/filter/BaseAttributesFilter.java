@@ -45,12 +45,9 @@ package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.SpringContextSingleton;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.URLGenerator;
-import org.jahia.services.render.scripting.Script;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
@@ -67,20 +64,9 @@ public class BaseAttributesFilter extends AbstractFilter {
     public Set<String> configurationToSkipInResourceRenderedPath;
 
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
-        JCRNodeWrapper node = resource.getNode();
-
         final HttpServletRequest request = context.getRequest();
 
         request.setAttribute("renderContext", context);
-        try {
-            final Script script = service.resolveScript(resource, context);
-            chain.pushAttribute(request, "script", script);
-            chain.pushAttribute(request, "scriptInfo", script.getView().getInfo());
-        } catch (TemplateNotFoundException e) {
-            chain.pushAttribute(request, "script", null);
-            chain.pushAttribute(request, "scriptInfo", null);
-        }
-        chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentResource", resource);
 
         String contextPath = null;
@@ -94,17 +80,15 @@ public class BaseAttributesFilter extends AbstractFilter {
         String mode = contextPath + "/" + resource.getWorkspace();
 
         chain.pushAttribute(request, "currentLocale", resource.getLocale());
-        chain.pushAttribute(request, "currentWorkspace", resource.getNode().getSession().getWorkspace().getName());
         chain.pushAttribute(request, "currentMode", mode);
         chain.pushAttribute(request, "currentUser", context.getMainResource().getNode().getSession().getUser());
         chain.pushAttribute(request, "currentAliasUser", context.getMainResource().getNode().getSession().getAliasedUser());
         if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {
-            chain.pushAttribute(request, "currentNode", node);
             chain.pushAttribute(request, "url", new URLGenerator(context, resource));
         }
         boolean added = false;
         if(!configurationToSkipInResourceRenderedPath.contains(resource.getContextConfiguration())) {
-            added = context.getRenderedPaths().add(resource.getNode().getPath());
+            added = context.getRenderedPaths().add(resource.getNodePath());
         }
         chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
         return null;
@@ -113,7 +97,7 @@ public class BaseAttributesFilter extends AbstractFilter {
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         if (renderContext.getRequest().getAttribute("resourceAddedInRenderedPath").equals(true)) {
-            renderContext.getRenderedPaths().remove(resource.getNode().getPath());
+            renderContext.getRenderedPaths().remove(resource.getNodePath());
         }
         return super.execute(previousOut, renderContext, resource, chain);
     }

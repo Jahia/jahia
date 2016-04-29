@@ -146,13 +146,15 @@ public class RenderChain {
 
         String nodePath = "empty resource";
         if (resource != null) {
-            nodePath = resource.getNode().getPath();
+            nodePath = resource.getNodePath();
         }
+        int finalFilterIndex = 0;
         try {
             for (; index<filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
                 	long timer = System.currentTimeMillis();
+                    finalFilterIndex = index;
                     out = filter.prepare(renderContext, resource, this);
                     if (logger.isDebugEnabled()) { 
                         logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
@@ -188,7 +190,7 @@ public class RenderChain {
                 throw new RenderFilterException(e);
             }
         } finally {
-            for (index = 0; index<filters.size(); index++) {
+            for (index = 0; index <= finalFilterIndex; index++) {
                 try {
                     RenderFilter filter = filters.get(index);
                     if (filter.areConditionsMatched(renderContext, resource)) {

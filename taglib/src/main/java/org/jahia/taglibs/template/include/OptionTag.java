@@ -113,11 +113,6 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
             if (node.isNodeType(primaryNodeType)) {
                 ExtendedNodeType mixinNodeType = NodeTypeRegistry.getInstance().getNodeType(primaryNodeType);
 
-                // what is this for? This doesn't seem to be used anywhere else in the code
-                if (pageContext.getAttribute("optionsAutoRendering", PageContext.REQUEST_SCOPE) == null) {
-                    currentResource.removeOption(mixinNodeType);
-                }
-
                 // create a resource to render the current node with the specified view
                 Resource wrappedResource = new Resource(node, currentResource.getTemplateType(), view, Resource.CONFIGURATION_INCLUDE);
                 wrappedResource.setResourceNodeType(mixinNodeType);

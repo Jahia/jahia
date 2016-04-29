@@ -44,6 +44,9 @@
 package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.api.Constants;
+import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -72,6 +75,14 @@ public class Resource {
     private String template;
     private String contextConfiguration;
     private Stack<String> wrappers;
+    private Script script;
+
+    // lazy properties
+    private String nodePath;
+    private JCRSessionWrapper sessionWrapper;
+    // Flag set after cache filter have been executed
+    // used to detect node load before the cache filter that should be avoid for perf issues
+    private boolean lazyNodeFlagWarning = true;
 
     private Set<String> dependencies;
     private List<String> missingResources;
@@ -91,6 +102,7 @@ public class Resource {
      */
     public Resource(JCRNodeWrapper node, String templateType, String template, String contextConfiguration) {
         this.node = node;
+        this.nodePath = node.getPath();
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
@@ -102,8 +114,72 @@ public class Resource {
         options = new ArrayList<Option>();
     }
 
+    /**
+     * Lazy resource, that take the path instead of a node, the node will be load at first getNode() call using sessionWrapper
+     *
+     * @param path                 The path to the node to display
+     * @param sessionWrapper       The session that will be used to load the node
+     * @param templateType         template type
+     * @param template
+     * @param contextConfiguration
+     */
+    public Resource(String path, JCRSessionWrapper sessionWrapper, String templateType, String template, String contextConfiguration) {
+        this.nodePath = path;
+        this.sessionWrapper = sessionWrapper;
+        this.templateType = templateType;
+        this.template = template;
+        this.contextConfiguration = contextConfiguration;
+        dependencies = new HashSet<String>();
+        dependencies.add(path);
+        regexpDependencies = new LinkedHashSet<String>();
+        missingResources = new ArrayList<String>();
+        wrappers = new Stack<String>();
+        options = new ArrayList<Option>();
+    }
+
+    /**
+     * Get the node associated to the current resource, in case of a lazy resource the node will be load from jcr if it's null
+     * This function shouldn't not be call before the CacheFilter to avoid loading of node from JCR.
+     * Since CacheFilter is executed for each fragments now even if there are in cache.
+     *
+     * If the node is needed it should be requested after the CacheFilter or for cache key generation during aggregation
+     *
+     * @return The JCR Node if found, null if not
+     */
     public JCRNodeWrapper getNode() {
+        if (isLazy()){
+            try {
+                if(lazyNodeFlagWarning &&
+                        sessionWrapper.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) &&
+                        !CONFIGURATION_PAGE.equals(contextConfiguration)) {
+
+                    logger.warn("Performance warning: node loaded from JCR before the cache filter for resource: " +
+                            nodePath + ", render filter implementations have to be review, " +
+                            "to avoid reading the node from the resource before the cache");
+                }
+
+                node = sessionWrapper.getNode(nodePath);
+            } catch (RepositoryException e) {
+                logger.error(e.getMessage(), e);
+            }
+        }
         return node;
+    }
+
+    /**
+     * get the associate Node, but set the flag for lazy load to "It's ok to load the node from JCR if necessary"
+     * To avoid warning message about performance.
+     *
+     * This function should be use ONLY after Cache Filter or for key generation.
+     * @return The JCR Node if found, null if not
+     */
+    public JCRNodeWrapper safeLoadNode() {
+        lazyNodeFlagWarning = false;
+        return getNode();
+    }
+
+    private boolean isLazy() {
+        return node == null && StringUtils.isNotEmpty(nodePath) && sessionWrapper != null;
     }
 
     public void setNode(JCRNodeWrapper node) {
@@ -120,7 +196,7 @@ public class Resource {
 
     public String getWorkspace() {
         try {
-            return node.getSession().getWorkspace().getName();
+            return isLazy() ? sessionWrapper.getWorkspace().getName() : node.getSession().getWorkspace().getName();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -129,7 +205,7 @@ public class Resource {
 
     public Locale getLocale() {
         try {
-            return node.getSession().getLocale();
+            return isLazy() ? sessionWrapper.getLocale() : node.getSession().getLocale();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -148,8 +224,8 @@ public class Resource {
         String resolvedTemplate = template;
         if (StringUtils.isEmpty(resolvedTemplate)) {
             try {
-                if (node.isNodeType("jmix:renderable") && node.hasProperty("j:view")) {
-                    resolvedTemplate = node.getProperty("j:view").getString();
+                if (getNode().isNodeType("jmix:renderable") && getNode().hasProperty("j:view")) {
+                    resolvedTemplate = getNode().getProperty("j:view").getString();
                 } else {
                     resolvedTemplate = "default";
                 }
@@ -200,33 +276,45 @@ public class Resource {
     }
 
     public String getPath() {
-        return node.getPath() + "." + getTemplate() + "." + templateType;
+        return nodePath + "." + getTemplate() + "." + templateType;
     }
 
     @Override
     public String toString() {
         String primaryNodeTypeName = null;
         try {
-            primaryNodeTypeName = node.getPrimaryNodeTypeName();
+            primaryNodeTypeName = getNode().getPrimaryNodeTypeName();
         } catch (RepositoryException e) {
             logger.error("Error while retrieving node primary node type name", e);
         }
-        return "Resource{" + "node=" + node.getPath() + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + "', template='" +
+        return "Resource{" + "node=" + nodePath + ", primaryNodeTypeName='" + primaryNodeTypeName + "', templateType='" + templateType + "', template='" +
                 getTemplate() + "', configuration='" + contextConfiguration + "'}";
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
         options.add(new Option(wrapper, nodeType));
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     public List<Option> getOptions() {
         return options;
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     public boolean hasOptions() {
         return !options.isEmpty();
     }
 
+    /**
+     * @deprecated not used anymore
+     */
     public void removeOption(ExtendedNodeType mixinNodeType) {
         options.remove(new Option("", mixinNodeType));
     }
@@ -237,6 +325,31 @@ public class Resource {
 
     public void setContextConfiguration(String contextConfiguration) {
         this.contextConfiguration = contextConfiguration;
+    }
+
+    /**
+     * Get the script for the current resource, if the script is null and renderContext is provide as parameter
+     * we try do the resolution of the script, then store it in the current resource, so it's available for the rest
+     * of the render chain.
+     *
+     * @param context renderContext, needed to resolve the script
+     * @return the Script if one is find, null if not
+     * @throws RepositoryException
+     */
+    public Script getScript(RenderContext context) throws RepositoryException{
+        if(script == null && context != null) {
+            try {
+                script = RenderService.getInstance().resolveScript(this, context);
+            } catch (TemplateNotFoundException e) {
+                logger.debug("Script not found for resource: ", this.getPath());
+                // do nothing keep the current script to null, script can be null
+            }
+        }
+        return script;
+    }
+
+    public String getNodePath() {
+        return nodePath;
     }
 
     public void setResourceNodeType(ExtendedNodeType resourceNodeType) {
@@ -255,6 +368,9 @@ public class Resource {
         Resource resource = (Resource) o;
 
         if (node != null ? !node.getCanonicalPath().equals(resource.node.getCanonicalPath()) : resource.node != null) {
+            return false;
+        }
+        if (nodePath != null ? !nodePath.equals(resource.nodePath) : resource.nodePath != null) {
             return false;
         }
         if (templateType != null ? !templateType.equals(resource.templateType) : resource.templateType != null) {
@@ -283,6 +399,7 @@ public class Resource {
     @Override
     public int hashCode() {
         int result = node != null ? node.hashCode() : 0;
+        result = 31 * result + (nodePath != null ? nodePath.hashCode() : 0);
         result = 31 * result + (templateType != null ? templateType.hashCode() : 0);
         result = 31 * result + (getTemplate() != null ? getTemplate().hashCode() : 0);
         result = 31 * result + (wrappers != null ? wrappers.hashCode() : 0);

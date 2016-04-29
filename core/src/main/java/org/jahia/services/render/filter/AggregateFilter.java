@@ -44,7 +44,6 @@
 package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
@@ -53,7 +52,6 @@ import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
 
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import java.util.*;
 
@@ -165,27 +163,10 @@ public class AggregateFilter extends AbstractFilter{
             Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
                     renderContext.getFallbackLocale());
-            JCRNodeWrapper node;
-            try {
-                // Get the node associated to the fragment to generate
-                node = currentUserSession.getNode(StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY));
-            } catch (PathNotFoundException e) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Node {} is no longer available." + " Replacing output with empty content.",
-                            keyAttrbs.get("path"));
-                }
-                // Node is not found, return empty content
-                return StringUtils.EMPTY;
-            }
-            if (logger.isDebugEnabled()) {
-                logger.debug("Calling render service for generating content for key " + cacheKey);
-            }
+            String path = StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
 
-            // Prepare to dispatch to the render service - restore all area/templates atributes
-            renderContext.getRequest().removeAttribute(
-                    "areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-
-            Resource resource = new Resource(node, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
+            // create lazy resource
+            Resource resource = new Resource(path, currentUserSession, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
 
             Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 

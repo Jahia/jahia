@@ -184,8 +184,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     @Override
     public Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
-        final JCRNodeWrapper node = resource.getNode();
+        final Script script = resource.getScript(renderContext);
+        final JCRNodeWrapper node = resource.safeLoadNode();
         boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
         boolean isList = node.isNodeType(Constants.JAHIAMIX_LIST);
 

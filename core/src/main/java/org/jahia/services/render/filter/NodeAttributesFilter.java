@@ -41,59 +41,53 @@
  *     If you are unsure which license is appropriate for your use,
  *     please contact the sales department at sales@jahia.com.
  */
-package org.jahia.services.render.filter.cache;
+package org.jahia.services.render.filter;
 
 import org.apache.commons.lang.StringUtils;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.jahia.services.render.scripting.Script;
 
-import java.util.Properties;
+import javax.servlet.http.HttpServletRequest;
 
 /**
- * Key part generator to store restrictions in cache key to be able to re add them in the request attributes
- * This restrictions are directly handle in the ModuleTag, we need to restore them to be able to recalculate the node that should'nt be display
- * by the ModuleTag
+ * Add node related attributes in request, this was done after the cache filter because the node related info are not needed
+ * if fragment is in cache.
  *
- * Created by jkevan on 22/04/2016.
+ * Before cache refactoring this operations was done in the BaseAttributesFilter, but we move this here to avoid
+ * reading the node before the cache filter
+ *
+ * Created by jkevan on 27/04/2016.
  */
-public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class NodeAttributesFilter extends AbstractFilter{
     @Override
-    public String getKey() {
-        return "restriction";
-    }
-
-    @Override
-    public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        Integer level = (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
-        if(level != null) {
-            String restrictions = (String) renderContext.getRequest().getAttribute("areaNodeTypesRestriction" + level);
-            if(StringUtils.isNotEmpty(restrictions)) {
-                return restrictions + "_" + level;
-            }
+    public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+        // calling resource.safeLoadNode() here will load the node from jcr and store it in resource, if resource is lazy
+        JCRNodeWrapper node = resource.safeLoadNode();
+        if (node == null) {
+            // Node is not available anymore, return empty content for this fragment
+            // TODO throw NodeNotFoundException ?
+            return StringUtils.EMPTY;
         }
-        return "";
-    }
+        HttpServletRequest request = renderContext.getRequest();
 
-    @Override
-    public String replacePlaceholders(RenderContext renderContext, String keyPart) {
-        return keyPart;
-    }
+        chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());
+        chain.pushAttribute(request, "currentWorkspace", node.getSession().getWorkspace().getName());
 
-
-    @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-        if(StringUtils.isNotEmpty(keyValue)) {
-            String[] keyValues = keyValue.split("_");
-            Integer level = Integer.parseInt(keyValues[1]);
-            renderContext.getRequest().setAttribute("org.jahia.modules.level", level);
-            renderContext.getRequest().setAttribute("areaNodeTypesRestriction" + level, keyValues[0]);
+        final Script script = resource.getScript(renderContext);
+        if (script != null) {
+            chain.pushAttribute(request, "script", script);
+            chain.pushAttribute(request, "scriptInfo", script.getView().getInfo());
+        } else {
+            chain.pushAttribute(request, "script", null);
+            chain.pushAttribute(request, "scriptInfo", null);
         }
+
+        if (!Resource.CONFIGURATION_INCLUDE.equals(resource.getContextConfiguration())) {
+            chain.pushAttribute(request, "currentNode", node);
+        }
+
         return null;
-    }
-
-    @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-        // nothing to do
     }
 }

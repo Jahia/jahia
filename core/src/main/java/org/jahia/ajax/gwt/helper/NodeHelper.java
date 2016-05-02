@@ -415,21 +415,38 @@ class NodeHelper {
 
         List<String> installedModules = (List<String>) n.get("j:installedModules");
         if (installedModules != null) {
-            Collections.sort(installedModules, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    JahiaTemplatesPackage pack1 = templateManagerService.getTemplatePackageById(o1);
-                    JahiaTemplatesPackage pack2 = templateManagerService.getTemplatePackageById(o2);
-                    if (pack1 != null && pack2 != null) {
-                        if (pack1.getDependencies().contains(pack2)) {
-                            return 1;
-                        } else if (pack2.getDependencies().contains(pack1)) {
-                            return -1;
+            List<JahiaTemplatesPackage> s = new ArrayList<>();
+            LinkedHashMap<JahiaTemplatesPackage, List<JahiaTemplatesPackage>> deps = new LinkedHashMap<>();
+            for (String packId : installedModules) {
+                JahiaTemplatesPackage pack = templateManagerService.getTemplatePackageById(packId);
+                if (pack != null) {
+                    deps.put(pack, new ArrayList<JahiaTemplatesPackage>());
+                }
+            }
+            installedModules.clear();
+            for (Map.Entry<JahiaTemplatesPackage, List<JahiaTemplatesPackage>> entry : deps.entrySet()) {
+                List<JahiaTemplatesPackage> allDeps = entry.getKey().getDependencies();
+                for (JahiaTemplatesPackage dep : allDeps) {
+                    if (deps.keySet().contains(dep)) {
+                        entry.getValue().add(dep);
+                    }
+                }
+                if (entry.getValue().isEmpty()) {
+                    s.add(entry.getKey());
+                }
+            }
+            while (!s.isEmpty()) {
+                JahiaTemplatesPackage pack = s.remove(0);
+                installedModules.add(pack.getId());
+                for (Map.Entry<JahiaTemplatesPackage, List<JahiaTemplatesPackage>> entry : deps.entrySet()) {
+                    if (entry.getValue().contains(pack)) {
+                        entry.getValue().remove(pack);
+                        if (entry.getValue().isEmpty()) {
+                            s.add(entry.getKey());
                         }
                     }
-                    return 0;
                 }
-            });
+            }
         }
 
         return n;

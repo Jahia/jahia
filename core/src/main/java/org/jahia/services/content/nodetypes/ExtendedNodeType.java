@@ -944,7 +944,14 @@ public class ExtendedNodeType implements NodeType {
                         }
 
                         public Value[] getDefaultValues() {
-                            return def.getDefaultValues();
+                            List<Value> res = new ArrayList<Value>();
+                            Value[] defaultValues = def.getDefaultValuesAsUnexpandedValue();
+                            for (Value defaultValue : defaultValues) {
+                                if (!(defaultValue instanceof DynamicValueImpl)) {
+                                    res.add(defaultValue);
+                                }
+                            }
+                            return res.toArray(new Value[res.size()]);
                         }
 
                         public boolean isMultiple() {

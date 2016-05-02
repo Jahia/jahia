@@ -213,7 +213,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", null, Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {
@@ -328,7 +328,7 @@ public class WorkflowServiceTest {
         final HashMap<String, Object> map = new HashMap<String, Object>();
         map.put("startDate", new WorkflowVariable());
         map.put("endDate", new WorkflowVariable());
-        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", Locale.ENGLISH);
+        final List<WorkflowDefinition> workflowList = service.getWorkflowDefinitionsForType("publish", null, Locale.ENGLISH);
         assertTrue("There should be some workflows already deployed", workflowList.size() > 0);
         WorkflowDefinition workflow = null;
         for (WorkflowDefinition workflowDefinition : workflowList) {

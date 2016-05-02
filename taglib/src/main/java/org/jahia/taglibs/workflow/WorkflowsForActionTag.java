@@ -75,7 +75,7 @@ public class WorkflowsForActionTag extends AbstractJahiaTag {
     public int doEndTag() throws JspException {
         List<WorkflowDefinition> defs = null;
         try {
-            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, locale != null ? locale : getUILocale());
+            defs = WorkflowService.getInstance().getWorkflowDefinitionsForType(workflowAction, null, locale != null ? locale : getUILocale());
         } catch (RepositoryException e) {
             logger.error("Could not retrieve workflows", e);
         }

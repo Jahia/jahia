@@ -4,15 +4,20 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.2.xsd">
 
-    <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
-
     <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
-        <property name="bundleService" ref="org.jahia.services.modulemanager.spi.BundleService"/>
+        <property name="bundleServiceLocator" ref="org.jahia.services.modulemanager.spi.BundleServiceLocator"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
     </bean>
     
-    <bean id="org.jahia.services.modulemanager.spi.BundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
+    <bean id="org.jahia.services.modulemanager.spi.BundleServiceLocator" class="org.jahia.services.modulemanager.spi.BundleServiceLocator">
+        <property name="settingsBean" ref="settingsBean"/>
+        <property name="defaultBundleService" ref="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
+    </bean>
     
+    <bean id="org.jahia.services.modulemanager.spi.impl.DefaultBundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
+    
+    <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
+
     <bean id="BundlePersistanceStorageInitializer" class="org.jahia.services.modulemanager.persistence.BundlePersistanceStorageInitializer">
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
     </bean>

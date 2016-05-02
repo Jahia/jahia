@@ -55,6 +55,7 @@ import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.jahia.services.modulemanager.spi.BundleService.Operation;
+import org.jahia.services.modulemanager.spi.BundleServiceLocator;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +71,18 @@ public class ModuleManagerImpl implements ModuleManager {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
-    private BundleService bundleService;
+    private BundleServiceLocator bundleServiceLocator;
 
     private BundlePersister persister;
+
+    /**
+     * Returns the most suitable instance of the {@link BundleService}.
+     * 
+     * @return the most suitable instance of the {@link BundleService}
+     */
+    private BundleService getBundleService() {
+        return bundleServiceLocator.lookup();
+    }
 
     @Override
     public BundleStateReport getBundleState(final String bundleKey, String target) throws ModuleManagementException {
@@ -87,7 +97,7 @@ public class ModuleManagerImpl implements ModuleManager {
     private OperationResult install(PersistedBundle info, final String target, boolean start)
             throws ModuleManagementException {
         try {
-            bundleService.install(info.getLocation(), target, start);
+            getBundleService().install(info.getLocation(), target, start);
             return new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
@@ -121,7 +131,7 @@ public class ModuleManagerImpl implements ModuleManager {
             // store bundle in JCR and create operation node
             result = install(bundleInfo, target, start);
             if (result.isSuccess()) {
-                bundleService.performOperation(bundleInfo, Operation.START, target);
+                getBundleService().performOperation(bundleInfo, Operation.START, target);
             }
         } catch (Exception e) {
             throw new ModuleManagementException(e);
@@ -155,7 +165,7 @@ public class ModuleManagerImpl implements ModuleManager {
         try {
             info = persister.find(bundleKey);
             if (info != null) {
-                bundleService.performOperation(info, operation, target);
+                getBundleService().performOperation(info, operation, target);
                 opResult = new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
             } else {
                 opResult = new OperationResultImpl(false, "Bundle not found");
@@ -172,6 +182,10 @@ public class ModuleManagerImpl implements ModuleManager {
         }
 
         return opResult;
+    }
+
+    public void setBundleServiceLocator(BundleServiceLocator bundleServiceLocator) {
+        this.bundleServiceLocator = bundleServiceLocator;
     }
 
     public void setPersister(BundlePersister persister) {
@@ -191,9 +205,5 @@ public class ModuleManagerImpl implements ModuleManager {
     @Override
     public OperationResult uninstall(String bundleKey, String target) {
         return performOperation(bundleKey, Operation.UNINSTALL, target);
-    }
-
-    public void setBundleService(BundleService bundleService) {
-        this.bundleService = bundleService;
     }
 }

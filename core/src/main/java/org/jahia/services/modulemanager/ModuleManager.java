@@ -65,6 +65,9 @@ import org.springframework.core.io.Resource;
  * <pre>org.jahia.modules/article/2.0.2</pre>
  * </code>
  * <p>
+ * Note, please, the version here is the <code>Bundle-Version</code>. In case of SNAPSHOT versions it can differ in the format from the
+ * module version.
+ * <p>
  * In some cases, when the bundle can be unambiguously identified by the symbolic name and version, the group ID could me omitted, i.e.:
  * <p>
  * <code>

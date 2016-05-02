@@ -385,19 +385,29 @@ public class Activator implements BundleActivator, EventHandler {
             }
 
             logger.info("--- Installing DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
-
             registeredBundles.put(bundle, pkg);
-            templatePackageRegistry.registerPackageVersion(pkg);
-
             installedBundles.add(bundle);
             setModuleState(bundle, ModuleState.State.INSTALLED, null);
         }
     }
 
     private synchronized void update(final Bundle bundle) {
-        setModuleState(bundle, ModuleState.State.UPDATED, null);
         BundleUtils.unregisterModule(bundle);
-        installedBundles.add(bundle);
+        final JahiaTemplatesPackage pkg = BundleUtils.isJahiaModuleBundle(bundle) ? BundleUtils.getModule(bundle) : null;
+
+        if (pkg != null) {
+            pkg.setState(getModuleState(bundle));
+
+            //Check required version
+            if (!checkRequiredVersion(bundle)) {
+                return;
+            }
+
+            logger.info("--- Updating DX OSGi bundle {} v{} --", pkg.getId(), pkg.getVersion());
+            registeredBundles.put(bundle, pkg);
+            installedBundles.add(bundle);
+            setModuleState(bundle, ModuleState.State.UPDATED, null);
+        }
     }
 
     private synchronized void uninstall(Bundle bundle) {

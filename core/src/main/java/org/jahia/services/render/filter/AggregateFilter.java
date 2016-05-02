@@ -51,8 +51,11 @@ import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
 import org.jahia.utils.LanguageCodeConverters;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 /**
@@ -60,8 +63,9 @@ import java.util.*;
  *
  * Created by jkevan on 12/04/2016.
  */
-public class AggregateFilter extends AbstractFilter{
-    protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateFilter.class);
+public class AggregateFilter extends AbstractFilter {
+
+    private static final Logger logger = LoggerFactory.getLogger(AggregateFilter.class);
 
     private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
     private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
@@ -71,46 +75,48 @@ public class AggregateFilter extends AbstractFilter{
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        final boolean debugEnabled = logger.isDebugEnabled();
-        // Generates the key of the requested fragment. if we are currently aggregating a subfragment we already have the key
+
+        HttpServletRequest request = renderContext.getRequest();
+
+        // Generates the key of the requested fragment. if we are currently aggregating a sub-fragment we already have the key
         // in the request, if not the KeyGenerator will create a key based on the request
-        // (resource and context) and the cache properties. The generated key will contains temporary placeholders
+        // (resource and context) and the cache properties. The generated key will contain temporary placeholders
         // that will be replaced to have the final key.
-        String key;
-        if(renderContext.getRequest().getAttribute("aggregateCacheFilter.aggregating") != null) {
-            key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.aggregating");
-            renderContext.getRequest().removeAttribute("aggregateCacheFilter.aggregating");
+        String key = (String) request.getAttribute("aggregateCacheFilter.aggregating");
+        if (key != null) {
+            request.removeAttribute("aggregateCacheFilter.aggregating");
         } else {
             key = keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
         }
 
-        if (renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering") != null) {
-            renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.submodule", key);
+        if (request.getAttribute("aggregateCacheFilter.rendering") != null) {
+            request.setAttribute("aggregateCacheFilter.rendering.submodule", key);
             return CACHE_ESI_TAG_START + key + CACHE_ESI_TAG_END;
         }
 
         logger.debug("Rendering node " + resource.getPath());
 
-        renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering", key);
-        renderContext.getRequest().setAttribute("aggregateCacheFilter.rendering.time", System.currentTimeMillis());
+        request.setAttribute("aggregateCacheFilter.rendering", key);
+        request.setAttribute("aggregateCacheFilter.rendering.time", System.currentTimeMillis());
 
-        if (debugEnabled) {
-            logger.debug("Aggregate cache filter for {} ,  key with placeholders : {}", resource.getPath(), key);
-        }
+        logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
 
         return null;
     }
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        if (renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering.submodule") != null) {
-            renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering.submodule");
+
+        HttpServletRequest request = renderContext.getRequest();
+
+        if (request.getAttribute("aggregateCacheFilter.rendering.submodule") != null) {
+            request.removeAttribute("aggregateCacheFilter.rendering.submodule");
             return previousOut;
         }
 
-        String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
+        String key = (String) request.getAttribute("aggregateCacheFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
-        renderContext.getRequest().removeAttribute("aggregateCacheFilter.rendering");
+        request.removeAttribute("aggregateCacheFilter.rendering");
         return aggregateContent(previousOut, renderContext);
     }
 
@@ -120,15 +126,14 @@ public class AggregateFilter extends AbstractFilter{
      *
      * @param cachedContent  The fragment, as it is stored in the cache
      * @param renderContext  The render context
-     * @return
      */
-    protected String aggregateContent(String cachedContent, RenderContext renderContext) throws RenderException {
+    protected String aggregateContent(String cachedContent, RenderContext renderContext) {
         int esiTagStartIndex = cachedContent.indexOf(CACHE_ESI_TAG_START);
-        if(esiTagStartIndex == -1){
+        if (esiTagStartIndex == -1) {
             return cachedContent;
         } else {
             StringBuilder sb = new StringBuilder(cachedContent);
-            while (esiTagStartIndex != -1){
+            while (esiTagStartIndex != -1) {
                 int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
                 if (esiTagEndIndex != -1) {
                     String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
@@ -158,7 +163,9 @@ public class AggregateFilter extends AbstractFilter{
      * @param cacheKey       The cache key of the fragment to generate
      */
     protected String generateContent(RenderContext renderContext, String cacheKey) throws RenderException {
+
         try {
+
             // Parse the key to get all separate key attributes like node path and template
             Map<String, String> keyAttrbs = keyGenerator.parse(cacheKey);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),

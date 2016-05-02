@@ -7,9 +7,11 @@
     <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
 
     <bean id="ModuleManager" class="org.jahia.services.modulemanager.impl.ModuleManagerImpl">
+        <property name="bundleService" ref="org.jahia.services.modulemanager.spi.BundleService"/>
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
-        <property name="templateManagerService" ref="JahiaTemplateManagerService" />
     </bean>
+    
+    <bean id="org.jahia.services.modulemanager.spi.BundleService" class="org.jahia.services.modulemanager.spi.impl.DefaultBundleService"/>
     
     <bean id="BundlePersistanceStorageInitializer" class="org.jahia.services.modulemanager.persistence.BundlePersistanceStorageInitializer">
         <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>

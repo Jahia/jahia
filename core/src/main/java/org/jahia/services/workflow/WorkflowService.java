@@ -60,6 +60,7 @@ import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.decorator.JCRUserNode;
 import org.jahia.services.query.QueryWrapper;
 import org.jahia.services.scheduler.BackgroundJob;
+import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.jahia.services.usermanager.*;
 import org.jahia.utils.LanguageCodeConverters;
 import org.jahia.utils.Patterns;
@@ -70,6 +71,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -82,7 +85,7 @@ import java.util.*;
  * @author rincevent
  * @since JAHIA 6.5
  */
-public class WorkflowService implements BeanPostProcessor {
+public class WorkflowService implements BeanPostProcessor, ApplicationListener<JahiaTemplateManagerService.ModuleDeployedOnSiteEvent> {
     public static final String CANDIDATE = "candidate";
     public static final String START_ROLE = "start";
     public static final String WORKFLOWRULES_NODE_NAME = "j:workflowRules";
@@ -267,21 +270,28 @@ public class WorkflowService implements BeanPostProcessor {
      * Returns a list of available workflow definitions for the specified type.
      *
      * @param type   workflow type
-     * @param uiLocale the locale used to localize workflow labels
-     * @return a list of available workflow definitions for the specified type
+     * @param siteNode
+     *@param uiLocale the locale used to localize workflow labels  @return a list of available workflow definitions for the specified type
      * @throws RepositoryException in case of an error
      */
-    public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, Locale uiLocale) throws RepositoryException {
+    public List<WorkflowDefinition> getWorkflowDefinitionsForType(String type, JCRSiteNode siteNode, Locale uiLocale) throws RepositoryException {
         List<WorkflowDefinition> workflowsByProvider = new ArrayList<WorkflowDefinition>();
         for (Map.Entry<String, WorkflowProvider> providerEntry : providers.entrySet()) {
             List<WorkflowDefinition> defs = providerEntry.getValue().getAvailableWorkflows(uiLocale);
             for (WorkflowDefinition def : defs) {
-                if (workflowRegistrationByDefinition.get(def.getKey()).getType().equals(type)) {
+                WorklowTypeRegistration worklowTypeRegistration = workflowRegistrationByDefinition.get(def.getKey());
+                if (worklowTypeRegistration.getType().equals(type) && isRegistrationAvailableForSite(siteNode, worklowTypeRegistration)) {
                     workflowsByProvider.add(def);
                 }
             }
         }
         return workflowsByProvider;
+    }
+
+    private boolean isRegistrationAvailableForSite(JCRSiteNode siteNode, WorklowTypeRegistration worklowTypeRegistration) {
+        return siteNode == null ||
+//                worklowTypeRegistration.getModule().getModuleType().equals("system") ||
+                siteNode.getInstalledModulesWithAllDependencies().contains(worklowTypeRegistration.getModule().getId());
     }
 
     /**
@@ -882,7 +892,7 @@ public class WorkflowService implements BeanPostProcessor {
     public boolean hasActiveWorkflowForType(JCRNodeWrapper node, String type) {
         List<Workflow> workflows = new ArrayList<Workflow>();
         try {
-            final List<WorkflowDefinition> forAction = getWorkflowDefinitionsForType(type, null);
+            final List<WorkflowDefinition> forAction = getWorkflowDefinitionsForType(type, null, null);
             if (node.isNodeType(Constants.JAHIAMIX_WORKFLOW) && node.hasProperty(Constants.PROCESSID)) {
                 addActiveWorkflows(workflows, node.getProperty(Constants.PROCESSID), node.getSession().getLocale());
             }
@@ -947,6 +957,7 @@ public class WorkflowService implements BeanPostProcessor {
 
             Map<String,List<String>> perms = new HashMap<>();
 
+
             JCRNodeWrapper rootNode = objectNode.getSession().getNode("/");
             JahiaAccessManager accessControlManager = (JahiaAccessManager) rootNode.getRealNode().getSession().getAccessControlManager();
 
@@ -988,19 +999,13 @@ public class WorkflowService implements BeanPostProcessor {
         }
 
         if ("/".equals(nodePath)) {
-            results = new HashMap<String, WorkflowRule>();
-            Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
-            for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
-                if (registration.isCanBeUsedForDefault() &&
-                        (!m.containsKey(registration.getType()) || m.get(registration.getType()).getDefaultPriority() < registration.getDefaultPriority())) {
-                    m.put(registration.getType(), registration);
-                }
-            }
-            for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
-                results.put(entry.getValue().getType(), new WorkflowRule("/", "/", entry.getValue().getProvider(), entry.getValue().getDefinition(), entry.getValue().getPermissions()));
-            }
+            results = getDefaultRules(n);
         } else {
             results = recurseOnRules(n.getParent());
+
+            if (n.isNodeType("jnt:virtualsite")) {
+                results = new HashMap<String, WorkflowRule>(getDefaultRules(n));
+            }
 
             if (n.hasNode(WORKFLOWRULES_NODE_NAME)) {
                 results = new HashMap<String, WorkflowRule>(results);
@@ -1023,6 +1028,27 @@ public class WorkflowService implements BeanPostProcessor {
             }
         }
         cache.put(nodePath, results);
+        return results;
+    }
+
+    public void onApplicationEvent(JahiaTemplateManagerService.ModuleDeployedOnSiteEvent event) {
+        cache.flush();
+    }
+
+    private Map<String, WorkflowRule> getDefaultRules(JCRNodeWrapper n) throws RepositoryException {
+        Map<String, WorkflowRule> results;
+        results = new HashMap<String, WorkflowRule>();
+        Map<String, WorklowTypeRegistration> m = new HashMap<String, WorklowTypeRegistration>();
+        for (WorklowTypeRegistration registration : workflowRegistrationByDefinition.values()) {
+            if (registration.isCanBeUsedForDefault() &&
+                    (!m.containsKey(registration.getType()) || m.get(registration.getType()).getDefaultPriority() < registration.getDefaultPriority()) &&
+                    isRegistrationAvailableForSite(n.getResolveSite(), registration)) {
+                m.put(registration.getType(), registration);
+            }
+        }
+        for (Map.Entry<String, WorklowTypeRegistration> entry : m.entrySet()) {
+            results.put(entry.getValue().getType(), new WorkflowRule("/", "/", entry.getValue().getProvider(), entry.getValue().getDefinition(), entry.getValue().getPermissions()));
+        }
         return results;
     }
 

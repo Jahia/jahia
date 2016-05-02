@@ -469,22 +469,24 @@ public class WorkflowHelper {
             Map<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>> result = new HashMap<GWTJahiaWorkflowType, List<GWTJahiaWorkflowDefinition>>();
             Map<String, List<GWTJahiaWorkflowDefinition>> keyToMap = new HashMap<String, List<GWTJahiaWorkflowDefinition>>();
 
+            JCRNodeWrapper node = session.getNode(path);
+
             final Set<String> workflowTypes = service.getTypesOfWorkflow();
             for (String workflowType : workflowTypes) {
                 List<GWTJahiaWorkflowDefinition> definitions = new ArrayList<GWTJahiaWorkflowDefinition>();
                 List<WorkflowDefinition> workflowDefinitions = service.getWorkflowDefinitionsForType(workflowType,
-                        uiLocale);
+                        node.getResolveSite(), uiLocale);
                 for (WorkflowDefinition definition : workflowDefinitions) {
                     final GWTJahiaWorkflowDefinition workflowDefinition = getGWTJahiaWorkflowDefinition(definition);
                     definitions.add(workflowDefinition);
                     rev.put(definition.getKey(), workflowType);
                 }
                 GWTJahiaWorkflowType t = getGWTJahiaWorkflowType(workflowType);
-                result.put(t, definitions);
+                if (!definitions.isEmpty()) {
+                    result.put(t, definitions);
+                }
                 keyToMap.put(workflowType, definitions);
             }
-
-            JCRNodeWrapper node = session.getNode(path);
 
             // Get local definitions
             Collection<WorkflowRule> map = service.getWorkflowRules(node);
@@ -527,7 +529,7 @@ public class WorkflowHelper {
             List<GWTJahiaWorkflowDefinition> definitions = new ArrayList<GWTJahiaWorkflowDefinition>();
             for (String workflowType : workflowTypes) {
                 final List<WorkflowDefinition> workflowDefinitions = service.getWorkflowDefinitionsForType(workflowType,
-                        locale);
+                        null, locale);
                 for (WorkflowDefinition definition : workflowDefinitions) {
                     definitions.add(getGWTJahiaWorkflowDefinition(definition));
                 }

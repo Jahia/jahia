@@ -115,6 +115,7 @@ public class CreateContentEngine extends AbstractContentEngine {
     }
 
     public void close() {
+        super.close();
         container.closeEngine();
     }
 
@@ -194,6 +195,9 @@ public class CreateContentEngine extends AbstractContentEngine {
     private void loadEngine() {
         JahiaContentManagementService.App.getInstance().initializeCreateEngine(nodeTypes.iterator().next().getName(), parentPath, targetName, new BaseAsyncCallback<GWTJahiaCreateEngineInitBean>() {
             public void onSuccess(GWTJahiaCreateEngineInitBean result) {
+                if (closed) {
+                    return;
+                }
                 mixin = result.getMixin();
                 choiceListInitializersValues = result.getChoiceListInitializersValues();
                 defaultValues = result.getDefaultValues();

@@ -114,7 +114,7 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
     protected GWTJahiaLanguage language;
     private Map<String, Boolean> workInProgressByLocale = new HashMap<String, Boolean>();
     protected boolean workInProgressCheckedByDefault = false;
-
+    protected boolean closed = false;
 
     // general properties
     protected final List<GWTJahiaNodeProperty> changedProperties = new ArrayList<GWTJahiaNodeProperty>();
@@ -157,6 +157,10 @@ public abstract class AbstractContentEngine extends LayoutContainer implements N
 
         container.getPanel().setFooter(true);
         loading();
+    }
+
+    public void close() {
+        closed = true;
     }
 
     /**

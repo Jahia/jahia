@@ -112,6 +112,7 @@ public class EditContentEngine extends AbstractContentEngine {
     }
 
     public void close() {
+        super.close();
         JahiaContentManagementService.App.getInstance().closeEditEngine(contentPath, new BaseAsyncCallback<Object>() {
             public void onSuccess(Object result) {
             }
@@ -198,6 +199,9 @@ public class EditContentEngine extends AbstractContentEngine {
 
         JahiaContentManagementService.App.getInstance().initializeEditEngine(contentPath, true, new BaseAsyncCallback<GWTJahiaEditEngineInitBean>() {
             public void onSuccess(GWTJahiaEditEngineInitBean result) {
+                if (closed) {
+                    return;
+                }
                 node = result.getNode();
                 nodeTypes = result.getNodeTypes();
                 properties = result.getProperties();

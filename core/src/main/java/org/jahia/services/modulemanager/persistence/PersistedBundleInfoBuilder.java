@@ -93,8 +93,8 @@ public final class PersistedBundleInfoBuilder {
                 Attributes attrs = mf.getMainAttributes();
                 groupId = attrs.getValue(ATTR_GROUP_ID);
                 symbolicName = attrs.getValue(ATTR_SYMBOLIC_NAME);
-                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_IMPL_VERSION),
-                        attrs.getValue(ATTR_BUNDLE_VERSION));
+                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_BUNDLE_VERSION),
+                        attrs.getValue(ATTR_IMPL_VERSION));
                 displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_IMPL_TITLE),
                         attrs.getValue(ATTR_BUNDLE_NAME));
             }

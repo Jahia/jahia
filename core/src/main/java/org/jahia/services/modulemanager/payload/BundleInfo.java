@@ -48,6 +48,7 @@ import java.io.Serializable;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 import org.jahia.osgi.BundleUtils;
 import org.osgi.framework.Bundle;
 
@@ -193,4 +194,9 @@ public class BundleInfo implements Serializable {
         return getKey().hashCode();
     }
 
+    
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
 }

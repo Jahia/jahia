@@ -101,8 +101,8 @@ public class PersistedBundleInfoBuilderTest {
 
         assertEquals("org.jahia.modules", info.getGroupId());
         assertEquals("external-provider-modules", info.getSymbolicName());
-        assertEquals("3.1.0-SNAPSHOT", info.getVersion());
-        assertEquals("org.jahia.modules/external-provider-modules/3.1.0-SNAPSHOT", info.getKey());
+        assertEquals("3.1.0.SNAPSHOT", info.getVersion());
+        assertEquals("org.jahia.modules/external-provider-modules/3.1.0.SNAPSHOT", info.getKey());
         assertEquals("Jahia External Provider Modules", info.getDisplayName());
     }
 
@@ -119,8 +119,8 @@ public class PersistedBundleInfoBuilderTest {
 
         assertEquals(null, info.getGroupId());
         assertEquals("org.apache.commons.codec", info.getSymbolicName());
-        assertEquals("1.8", info.getVersion());
-        assertEquals("org.apache.commons.codec/1.8", info.getKey());
+        assertEquals("1.8.0", info.getVersion());
+        assertEquals("org.apache.commons.codec/1.8.0", info.getKey());
         assertEquals("Commons Codec", info.getDisplayName());
     }
 }

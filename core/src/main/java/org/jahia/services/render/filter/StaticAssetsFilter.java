@@ -558,8 +558,8 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String key = getKey(entry.getKey());
                 Resource resource = getResource(key);
                 if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && resource != null) {
-                    pathsToAggregate.put(key, resource);
                     long lastModified = resource.lastModified();
+                    pathsToAggregate.put(key + "_" + lastModified, resource);
                     if (lastModified > maxLastModified) {
                         maxLastModified = lastModified;
                     }
@@ -601,7 +601,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             minifiedAggregatedPath += "?" + maxLastModified;
         }
 
-        if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < maxLastModified) {
+        if (!minifiedAggregatedFile.exists()) {
 
             generatedResourcesFolder.mkdirs();
 
@@ -612,7 +612,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 Resource resource = entry.getValue();
                 String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                 File minifiedFile = new File(getFileSystemPath(minifiedFileName));
-                if (!minifiedFile.exists() || minifiedFile.lastModified() < resource.lastModified()) {
+                if (!minifiedFile.exists()) {
                     minify(path, resource, type, minifiedFile);
                 }
                 minifiedFileNames.put(path, minifiedFileName);

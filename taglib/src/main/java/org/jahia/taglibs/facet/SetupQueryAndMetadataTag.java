@@ -240,7 +240,7 @@ public class SetupQueryAndMetadataTag extends AbstractJahiaTag {
                                 if (facet.isNodeType("jnt:fieldHierarchicalFacet") && name.equals("prefix")) {
                                     final List<KeyValue> active = activeFacets != null ? this.activeFacets.get(facetPropertyName) : Collections.<KeyValue>emptyList();
                                     if (active == null || active.isEmpty()) {
-                                        value = Functions.getIndexPrefixedPath(value);
+                                        value = Functions.getIndexPrefixedPath(value, getRenderContext().getWorkspace());
                                     } else {
                                         value = Functions.getDrillDownPrefix((String) active.get(active.size() - 1).getKey());
                                     }

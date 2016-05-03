@@ -50,6 +50,7 @@ import org.apache.solr.client.solrj.response.FacetField;
 import org.apache.solr.client.solrj.response.RangeFacet;
 import org.jahia.services.content.JCRCallback;
 import org.jahia.services.content.JCRNodeWrapper;
+import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.JCRTemplate;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
@@ -388,15 +389,27 @@ public class Functions {
 
     /**
      * Get the index prefixed path of a hierarchical facet root. For example, 1/sites/systemsite/categories.
-     *
+     * @deprecated use getIndexPrefixedPath(facePath, workspace)
      * @param facetPath the hierarchical facet path
      * @return the index prefixed path
      */
+    
     public static String getIndexPrefixedPath(final String facetPath) {
+    	return getIndexPrefixedPath(facetPath, null);
+    }
+    /**
+     * Get the index prefixed path of a hierarchical facet root. For example, 1/sites/systemsite/categories.
+
+     * @param facetPath the hierarchical facet path
+     * @param workspace current workspace (null = default workspace)
+     * @return the index prefixed path
+     */    
+    public static String getIndexPrefixedPath(final String facetPath, final String workspace) {
         try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<String>() {
+        
+            return JCRTemplate.getInstance().doExecuteWithSystemSessionAsUser(JCRSessionFactory.getInstance().getCurrentUser(), workspace, JCRSessionFactory.getInstance().getCurrentLocale(), new JCRCallback<String>() {
                 public String doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    int prefix = 1;
+                    int prefix = 1; 
                     JCRNodeWrapper node = session.getNode(facetPath);
                     String typeName = node.getPrimaryNodeTypeName();
                     while (typeName.equals(node.getParent().getPrimaryNodeTypeName())) {

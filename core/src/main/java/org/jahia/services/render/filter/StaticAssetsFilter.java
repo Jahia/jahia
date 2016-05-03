@@ -556,23 +556,12 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             for (; i < entries.size(); i++) {
                 Map.Entry<String, Map<String, String>> entry = entries.get(i);
                 String key = getKey(entry.getKey());
-<<<<<<< .working
                 Resource resource = getResource(key);
                 if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && resource != null) {
                     pathsToAggregate.put(key, resource);
                     long lastModified = resource.lastModified();
                     if (lastModified > maxLastModified) {
                         maxLastModified = lastModified;
-=======
-                org.springframework.core.io.Resource r = getResource(key);
-                if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null) {
-                    long lastModified = r.lastModified();
-                    // add last modified date in key, if module version change from admin, css and js files may have the same name as before
-                    // but content can differ, so we need to generate a minified file for each versions, we use the last modified date of files for that
-                    pathsToAggregate.put(key + "_" + lastModified, r);
-                    if (filesDates < lastModified) {
-                        filesDates = lastModified;
->>>>>>> .merge-right.r54335
                     }
                 } else {
                     // In case current entry should not be aggregated for whatever reason, let's stop and aggregate a group of entries preceding it.
@@ -598,17 +587,11 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
             }
         }
 
-<<<<<<< .working
         return newEntries;
     }
-=======
-                if (!minifiedAggregatedFile.exists()) {
-                    generatedResourcesFolder.mkdirs();
->>>>>>> .merge-right.r54335
 
     private String aggregate(Map<String, Resource> pathsToAggregate, String type, long maxLastModified) throws IOException {
 
-<<<<<<< .working
         String aggregatedKey = generateAggregateName(pathsToAggregate.keySet());
         String minifiedAggregatedFileName = aggregatedKey + ".min." + type;
         String minifiedAggregatedRealPath = getFileSystemPath(minifiedAggregatedFileName);
@@ -617,33 +600,6 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
         if (addLastModifiedDate) {
             minifiedAggregatedPath += "?" + maxLastModified;
         }
-=======
-                    LinkedHashMap<String,String> minifiedFileNames = new LinkedHashMap<String, String>();
-                    for (Map.Entry<String, org.springframework.core.io.Resource> entry : pathsToAggregate.entrySet()) {
-                        final String path = entry.getKey();
-                        String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
-                        final File minifiedFile = new File(getFileSystemPath(minifiedFileName));
-                        final org.springframework.core.io.Resource f = entry.getValue();
-                        if (!minifiedFile.exists()) {
-                            // minify the file
-                            Reader reader = null;
-                            Writer writer = null;
-                            File tmpMinifiedFile = new File(minifiedFile.getParentFile(), minifiedFile.getName() + "." + System.nanoTime());
-                            try {
-                                reader = new InputStreamReader(f.getInputStream(), "UTF-8");
-                                writer = new OutputStreamWriter(new FileOutputStream(tmpMinifiedFile), "UTF-8");
-                                boolean compress = true;
-                                if (compress && type.equals("css")) {
-                                    String s = IOUtils.toString(reader);
-                                    IOUtils.closeQuietly(reader);
-                                    if (s.indexOf("url(") != -1) {
-                                        String url = StringUtils.substringBeforeLast(path, "/") + "/";
-                                        s = URL_PATTERN_1.matcher(s).replaceAll("url(");
-                                        s = URL_PATTERN_2.matcher(s).replaceAll("url(\".." + url);
-                                        s = URL_PATTERN_3.matcher(s).replaceAll("url('.." + url);
-                                        s = URL_PATTERN_4.matcher(s).replaceAll("url(.." + url);
-                                    }
->>>>>>> .merge-right.r54335
 
         if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < maxLastModified) {
 

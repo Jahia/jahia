@@ -11,7 +11,7 @@
     <bean id="noCacheProvider" class="org.jahia.services.cache.dummy.DummyCacheProvider"/>
 
     <bean id="ehCacheProvider" class="org.jahia.services.cache.ehcache.EhCacheProvider" depends-on="jahiaProperties">
-    	<property name="configurationResource" value="#{jahiaProperties['jahia.cache.configuration.resource'] != null ? jahiaProperties['jahia.cache.configuration.resource'] : ('classpath:/ehcache-jahia' + (jahiaProperties['cluster.activated'] == 'true' ? '-cluster.xml' : '.xml'))}"/>
+        <property name="configurationResource" value="#{jahiaProperties['jahia.cache.configuration.resource'] != null ? jahiaProperties['jahia.cache.configuration.resource'] : ('classpath:/ehcache-jahia' + (jahiaProperties['cluster.activated'] == 'true' ? '-cluster.xml' : '.xml'))}"/>
         <!-- This property allows to fix a limit for cache entries dependencies management,
 if an entry have more than this value of dependencies then
 when we flush this entry we will flush the whole cache
@@ -37,14 +37,14 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean id="JahiaCacheService" class="org.jahia.services.cache.CacheFactory" parent="jahiaServiceTemplate" factory-method="getInstance" init-method="start">
-		<property name="cacheProviders">
-			<map>
-				<entry key="default" value-ref="ehCacheProvider" />
-				<entry key="ehcache" value-ref="ehCacheProvider"/>
+        <property name="cacheProviders">
+            <map>
+                <entry key="default" value-ref="ehCacheProvider" />
+                <entry key="ehcache" value-ref="ehCacheProvider"/>
                 <entry key="nocache" value-ref="noCacheProvider"/>
                 <entry key="bigcache" value-ref="bigEhCacheProvider"/>
-			</map>
-		</property>
+            </map>
+        </property>
         <property name="cacheProviderForCache">
             <map>
                 <entry key="FileContentCache" value="bigcache"/>
@@ -81,11 +81,11 @@ when we flush this entry we will flush the whole cache
         <property name="template" ref="jcrTemplate"/>
     </bean>
 
-	<bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
+    <bean id="ModuleCacheProvider" class="org.jahia.services.render.filter.cache.ModuleCacheProvider">
         <property name="cacheProvider" ref="bigEhCacheProvider"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
         <property name="jcrSessionFactory" ref="jcrSessionFactory"/>
-	</bean>
+    </bean>
 
     <bean id="moduleGeneratorQueue" class="org.jahia.services.render.filter.cache.ModuleGeneratorQueue">
         <property name="maxModulesToGenerateInParallel" value="${maxModulesToGenerateInParallel}"/>
@@ -99,8 +99,8 @@ when we flush this entry we will flush the whole cache
         <property name="disabled" value="true"/><!-- TODO, find other way to disable this ? -->
         <property name="priority" value="16" />
         <property name="description" value="Module content caching filter." />
-    	<property name="cacheProvider" ref="ModuleCacheProvider"/>
-    	<property name="skipOnTemplateTypes" value="json"/>
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
         <property name="generatorQueue" ref="moduleGeneratorQueue"/>
@@ -118,8 +118,8 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean class="org.jahia.services.render.filter.AggregateFilter">
-        <property name="accuratePriority" value="16.0" />
-        <property name="description" value="Aggregate filter, aggregate contents by resolving sub fragments" />
+        <property name="accuratePriority" value="16.0"/>
+        <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
@@ -127,8 +127,8 @@ when we flush this entry we will flush the whole cache
     </bean>
 
     <bean class="org.jahia.services.render.filter.cache.CacheFilter">
-        <property name="accuratePriority" value="16.5" />
-        <property name="description" value="Cache filter, provide the html result (from the cache or by generating it) of the fragment and cache it necessary" />
+        <property name="accuratePriority" value="16.5"/>
+        <property name="description" value="Cache filter, provides the html result (either from the cache or by generating it) of the fragment and caches it if necessary"/>
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
         <property name="applyOnModes" value="live"/>
@@ -140,7 +140,7 @@ when we flush this entry we will flush the whole cache
     <bean id="abstractFlushCacheOnNodeBackgroundAction" class="org.jahia.services.content.rules.FlushCacheOnNodeBackgroundAction" abstract="true">
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
     </bean>
-    
+
     <bean id="cacheReferencesFilter" class="org.jahia.services.render.filter.cache.ReferencesToDependenciesFilter">
         <property name="disabled" value="${disableOutputCache:false}"/>
         <property name="priority" value="25" />

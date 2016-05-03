@@ -949,6 +949,23 @@ public class ExtendedNodeType implements NodeType {
                             for (Value defaultValue : defaultValues) {
                                 if (!(defaultValue instanceof DynamicValueImpl)) {
                                     res.add(defaultValue);
+                                } else {
+                                    // Use fake default value - value will be calculated by JahiaNodeTypeInstanceHandler
+                                    switch (getRequiredType()) {
+                                        case PropertyType.LONG:
+                                        case PropertyType.DOUBLE:
+                                        case PropertyType.DECIMAL:
+                                            res.add(new ValueImpl("0", getRequiredType()));
+                                            break;
+                                        case PropertyType.DATE:
+                                            res.add(new ValueImpl(new GregorianCalendar()));
+                                            break;
+                                        case PropertyType.BOOLEAN:
+                                            res.add(new ValueImpl(true));
+                                            break;
+                                        default:
+                                            res.add(new ValueImpl("", getRequiredType()));
+                                    }
                                 }
                             }
                             return res.toArray(new Value[res.size()]);

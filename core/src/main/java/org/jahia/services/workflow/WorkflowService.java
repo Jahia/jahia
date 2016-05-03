@@ -290,7 +290,7 @@ public class WorkflowService implements BeanPostProcessor, ApplicationListener<J
 
     private boolean isRegistrationAvailableForSite(JCRSiteNode siteNode, WorklowTypeRegistration worklowTypeRegistration) {
         return siteNode == null ||
-//                worklowTypeRegistration.getModule().getModuleType().equals("system") ||
+                worklowTypeRegistration.getModule().getModuleType().equals("system") ||
                 siteNode.getInstalledModulesWithAllDependencies().contains(worklowTypeRegistration.getModule().getId());
     }
 

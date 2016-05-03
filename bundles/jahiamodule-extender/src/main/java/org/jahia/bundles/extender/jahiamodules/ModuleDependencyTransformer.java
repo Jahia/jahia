@@ -102,7 +102,7 @@ public class ModuleDependencyTransformer extends AbstractURLStreamHandlerService
                 ZipEntry zipEntry;
                 while ((zipEntry = zis.getNextEntry()) != null) {
                     zos.putNextEntry(new ZipEntry(zipEntry.getName()));
-                    if (zipEntry.getName().equals("META-INF/MANIFEST.MF")) {
+                    if ("META-INF/MANIFEST.MF".equals(zipEntry.getName())) {
                         addDependsCapabilitiesToManifest(zis, zos);
                     } else {
                         IOUtils.copy(zis, zos);
@@ -231,13 +231,7 @@ public class ModuleDependencyTransformer extends AbstractURLStreamHandlerService
         } catch (IOException e) {
             // ignore
         } finally {
-            if (jar != null) {
-                try {
-                    jar.close();
-                } catch (IOException ioe) {
-                    // ignore
-                }
-            }
+            IOUtils.closeQuietly(jar);
         }
 
         return false;

@@ -114,16 +114,16 @@ public class Activator implements BundleActivator, EventHandler {
         }
     };
 
-    private CndBundleObserver cndBundleObserver = null;
+    private CndBundleObserver cndBundleObserver;
     private List<ServiceRegistration<?>> serviceRegistrations = new ArrayList<ServiceRegistration<?>>();
-    private BundleListener bundleListener = null;
+    private BundleListener bundleListener;
     private Set<Bundle> installedBundles;
     private Set<Bundle> initializedBundles;
     private Map<Bundle, JahiaTemplatesPackage> registeredBundles;
     private Map<Bundle, ServiceTracker<HttpService, HttpService>> bundleHttpServiceTrackers = new HashMap<Bundle, ServiceTracker<HttpService, HttpService>>();
     private JahiaTemplateManagerService templatesService;
-    private TemplatePackageRegistry templatePackageRegistry = null;
-    private TemplatePackageDeployer templatePackageDeployer = null;
+    private TemplatePackageRegistry templatePackageRegistry;
+    private TemplatePackageDeployer templatePackageDeployer;
 
     private ExtensionObserverRegistry extensionObservers;
     private BundleScriptEngineManager scriptEngineManager;
@@ -131,7 +131,7 @@ public class Activator implements BundleActivator, EventHandler {
 
     private Map<Bundle, ModuleState> moduleStates;
 
-    private static Activator instance = null;
+    private static Activator instance;
 
     private FileInstallConfigurer fileInstallConfigurer;
 
@@ -902,7 +902,7 @@ public class Activator implements BundleActivator, EventHandler {
      * @param context the OSGi bundle context object.
      */
     private void registerLegacyTransformer(BundleContext context) {
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("url.handler.protocol", HANDLER_PREFIX);
         serviceRegistrations
                 .add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyTransformer(), props));
@@ -918,7 +918,7 @@ public class Activator implements BundleActivator, EventHandler {
      * @param context the OSGi bundle context object.
      */
     private void registerJcrUrlHandler(BundleContext context) throws IOException {
-        Hashtable<String, Object> props = new Hashtable<String, Object>();
+        Dictionary<String, Object> props = new Hashtable<String, Object>();
         props.put("url.handler.protocol", "jcr");
         serviceRegistrations
                 .add(context.registerService(URLStreamHandlerService.class, new JcrBundleTransformer(), props));

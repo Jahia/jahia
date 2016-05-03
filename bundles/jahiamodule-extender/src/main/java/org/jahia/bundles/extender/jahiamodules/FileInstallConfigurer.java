@@ -130,7 +130,7 @@ class FileInstallConfigurer {
         String watchedDir = felixProperties.getProperty("felix.fileinstall.dir");
         Configuration cfg = findExisting(configurationAdmin, watchedDir);
         if (cfg != null) {
-            logger.info("FileInstall confiuguration for directory {} already exists. No need to create it: {}",
+            logger.info("FileInstall configuration for directory {} already exists. No need to create it: {}",
                     watchedDir, cfg);
             return;
         }
@@ -148,7 +148,7 @@ class FileInstallConfigurer {
             }
             cfg.setBundleLocation(null);
             cfg.update(properties);
-            logger.info("Registered FileInstall confiuguration for directory {}: {}", watchedDir, cfg);
+            logger.info("Registered FileInstall configuration for directory {}: {}", watchedDir, cfg);
         } catch (IOException e) {
             logger.error("Cannot update FileInstall configuration", e);
         }
@@ -182,7 +182,7 @@ class FileInstallConfigurer {
         if (cfg != null) {
             try {
                 cfg.delete();
-                logger.info("Unregistered FileInstall confiuguration for directory {}: {}", watchedDir, cfg);
+                logger.info("Unregistered FileInstall configuration for directory {}: {}", watchedDir, cfg);
             } catch (IOException e) {
                 logger.error("Unable to remove FileInstall configuration", e);
             }

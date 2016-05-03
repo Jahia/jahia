@@ -523,8 +523,10 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                 String key = getKey(entry.getKey());
                 org.springframework.core.io.Resource r = getResource(key);
                 if (entry.getValue().isEmpty() && !excludesFromAggregateAndCompress.contains(key) && r != null) {
-                    pathsToAggregate.put(key, r);
                     long lastModified = r.lastModified();
+                    // add last modified date in key, if module version change from admin, css and js files may have the same name as before
+                    // but content can differ, so we need to generate a minified file for each versions, we use the last modified date of files for that
+                    pathsToAggregate.put(key + "_" + lastModified, r);
                     if (filesDates < lastModified) {
                         filesDates = lastModified;
                     }
@@ -546,7 +548,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                     minifiedAggregatedPath += "?" + filesDates;
                 }
 
-                if (!minifiedAggregatedFile.exists() || minifiedAggregatedFile.lastModified() < filesDates) {
+                if (!minifiedAggregatedFile.exists()) {
                     generatedResourcesFolder.mkdirs();
 
                     // aggregate minified resources
@@ -557,7 +559,7 @@ public class StaticAssetsFilter extends AbstractFilter implements ApplicationLis
                         String minifiedFileName = Patterns.SLASH.matcher(path).replaceAll("_") + ".min." + type;
                         final File minifiedFile = new File(getFileSystemPath(minifiedFileName));
                         final org.springframework.core.io.Resource f = entry.getValue();
-                        if (!minifiedFile.exists() || minifiedFile.lastModified() < f.lastModified()) {
+                        if (!minifiedFile.exists()) {
                             // minify the file
                             Reader reader = null;
                             Writer writer = null;

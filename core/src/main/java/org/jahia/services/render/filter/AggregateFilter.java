@@ -136,9 +136,9 @@ public class AggregateFilter extends AbstractFilter {
             while (esiTagStartIndex != -1) {
                 int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
                 if (esiTagEndIndex != -1) {
-                    String cacheKey = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
+                    String key = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
                     try {
-                        String replacement = generateContent(renderContext, cacheKey);
+                        String replacement = generateContent(renderContext, key);
                         if (replacement == null) {
                             replacement = "";
                         }

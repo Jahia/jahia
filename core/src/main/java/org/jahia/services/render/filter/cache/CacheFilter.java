@@ -74,15 +74,16 @@ import java.util.concurrent.CountDownLatch;
  */
 public class CacheFilter extends AbstractFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
-
     public static final String CACHE_PER_USER = "cache.perUser";
     public static final String CACHE_PER_USER_PROPERTY = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
-    public static final String V = "v";
-    public static final String EC = "ec";
-    public static final String ALL = "ALL";
-    public static final Set<String> ALL_SET = Collections.singleton(ALL);
+
+    private static final String V = "v";
+    private static final String EC = "ec";
+    private static final String ALL = "ALL";
+    private static final Set<String> ALL_SET = Collections.singleton(ALL);
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     protected ModuleCacheProvider cacheProvider;
     protected ModuleGeneratorQueue generatorQueue;
@@ -240,8 +241,7 @@ public class CacheFilter extends AbstractFilter {
             renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
 
-            final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext,
-                    cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource));
+            final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource));
             final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
             Element element = null;
@@ -316,7 +316,6 @@ public class CacheFilter extends AbstractFilter {
      * Store the dependencies in the dependency cache. For each dependency, an entry in the dependencies cache is
      * created, containing the list of keys which depends on it. The current fragment key is added to that list.
      *
-     * @param renderContext
      * @param resource        The current resource
      * @param depNodeWrappers The list of dependencies
      */
@@ -376,10 +375,10 @@ public class CacheFilter extends AbstractFilter {
      */
     @SuppressWarnings("unchecked")
     private void addPropertiesToCacheEntry(CacheEntry<String> cacheEntry, RenderContext renderContext) {
-        Map<String,Object> m = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
-        if (m != null && m.containsKey("requestAttributesToCache")){
+        Map<String,Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
+        if (moduleMap != null && moduleMap.containsKey("requestAttributesToCache")){
             HashMap<String,Serializable> attributes = new HashMap<>();
-            Collection<String> requestAttributesToCache = (Collection<String>) m.get("requestAttributesToCache");
+            Collection<String> requestAttributesToCache = (Collection<String>) moduleMap.get("requestAttributesToCache");
             for (String attributesToCache : requestAttributesToCache) {
                 if (renderContext.getRequest().getAttribute(attributesToCache) instanceof Serializable) {
                     attributes.put(attributesToCache, (Serializable) renderContext.getRequest().getAttribute(attributesToCache));

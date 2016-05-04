@@ -49,7 +49,8 @@ import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
-public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator{
+public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     @Override
     public String getKey() {
         return "context";
@@ -74,7 +75,6 @@ public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, Cont
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
     }
 }

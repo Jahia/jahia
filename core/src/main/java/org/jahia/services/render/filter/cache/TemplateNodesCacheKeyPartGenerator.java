@@ -52,6 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
 public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     @Override
     public String getKey() {
         return "templateNodes";
@@ -72,20 +73,20 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     @Override
     public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
-        Object previousTemplate = request.getAttribute("previousTemplate");
+        Object original = request.getAttribute("previousTemplate");
         if (!StringUtils.isEmpty(keyValue)) {
-            Template templateNodes = new Template(keyValue);
-            request.setAttribute("previousTemplate", templateNodes);
+            Template template = new Template(keyValue);
+            request.setAttribute("previousTemplate", template);
         } else {
             request.removeAttribute("previousTemplate");
         }
-        return previousTemplate;
+        return original;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-        if (previous != null) {
-            renderContext.getRequest().setAttribute("previousTemplate", previous);
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+        if (original != null) {
+            renderContext.getRequest().setAttribute("previousTemplate", original);
         } else {
             renderContext.getRequest().removeAttribute("previousTemplate");
         }

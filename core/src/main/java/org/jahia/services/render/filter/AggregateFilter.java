@@ -165,6 +165,7 @@ public class AggregateFilter extends AbstractFilter {
     protected String generateContent(RenderContext renderContext, String key) throws RenderException {
 
         try {
+
             // Parse the key to get all separate key attributes like node path and template
             Map<String, String> keyAttrbs = keyGenerator.parse(key);
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
@@ -188,6 +189,7 @@ public class AggregateFilter extends AbstractFilter {
             keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);
 
             return content;
+
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
             return StringUtils.EMPTY;

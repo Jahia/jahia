@@ -504,6 +504,9 @@ public class MainModule extends Module {
     }
 
     public String getUrl(String path, String template, String channel, String variant) {
+        if (template != null && "default".equals(template)) {
+            template = null;
+        }
         StringBuilder url = new StringBuilder(getBaseUrl() + path + (template != null && !template.equals("") ? ("." + template) : "") + ".html");
         // add channel parameters if needed
         if (channel != null && channel.equals("generic") && (editLinker.getActiveChannel() == null || editLinker.getActiveChannel().getValue().equals("generic"))) {

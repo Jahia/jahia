@@ -263,25 +263,6 @@ public class CacheFilter extends AbstractFilter {
         }
     }
 
-    /*
-     * Create the fragment and store it into the cache.
-     *
-     * @param previousOut
-     * @param renderContext
-     * @param resource
-     * @param properties
-     * @param cache
-     * @param key
-     * @param finalKey
-     * @throws RepositoryException
-     * @throws ParseException
-
-    protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Properties properties,
-                           Cache cache, String key, String finalKey) throws RepositoryException, ParseException {
-        doCache(previousOut, renderContext, resource, properties, cache, key, finalKey, false);
-    }
-     */
-
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Long expiration, Cache cache, String finalKey, boolean bypassDependencies) {
 
         Set<String> depNodeWrappers = Collections.emptySet();

@@ -52,6 +52,7 @@ import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 
@@ -62,7 +63,8 @@ import javax.jcr.RepositoryException;
  * @author Sergiy Shyrkov
  */
 public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
-    protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
 
     private List<CacheKeyPartGenerator> partGenerators;
     private LinkedHashMap<String, Integer> fields;
@@ -84,11 +86,12 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         }
     }
 
+    @Override
     public String generate(Resource resource, RenderContext renderContext, Properties properties) {
         return StringUtils.join(getArguments(resource, renderContext, properties), "@@");
     }
 
-    private Collection getArguments(Resource resource, RenderContext renderContext, Properties properties) {
+    private Collection<String> getArguments(Resource resource, RenderContext renderContext, Properties properties) {
         List<String> args = new LinkedList<>();
         for (CacheKeyPartGenerator generator : partGenerators) {
             args.add(generator.getValue(resource, renderContext, properties));
@@ -96,6 +99,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return args;
     }
 
+    @Override
     public Map<String, String> parse(String key) {
         String[] values = getSplit(key);
         Map<String, String> result = new LinkedHashMap<>(fields.size());
@@ -111,16 +115,19 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         return result;
     }
 
+    @Override
     public String replaceField(String key, String fieldName, String newValue) {
         String[] args = getSplit(key);
         args[fields.get(fieldName)] = newValue;
         return StringUtils.join(args, "@@");
     }
 
+    @Override
     public CacheKeyPartGenerator getPartGenerator(String field) {
         return partGenerators.get(fields.get(field));
     }
 
+    @Override
     public String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
         String[] args = getSplit(key);
         String[] newArgs = new String[args.length];
@@ -129,16 +136,6 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             newArgs[i] = partGenerators.get(i).replacePlaceholders(renderContext,value);
         }
         String s = StringUtils.join(newArgs,"@@");
-//        if (SettingsBean.getInstance().isProductionMode()) {
-//            try {
-//                byte[] b = DigestUtils.getSha512Digest().digest(s.getBytes("UTF-8"));
-//                StringWriter sw = new StringWriter();
-//                Base64.encode(b, 0, b.length, sw);
-//                return sw.toString();
-//            } catch (Exception e) {
-//                logger.warn("Issue while digesting key",e);
-//            }
-//        }
         return s;
     }
 
@@ -158,25 +155,25 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     @Override
     public Map<String, Object> prepareContentForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext) {
-        Map<String,Object> previous = new HashMap<>();
+        Map<String, Object> original = new HashMap<>();
         int i = 0;
         for (Map.Entry<String, String> entry : keyParts.entrySet()) {
             CacheKeyPartGenerator partGenerator = partGenerators.get(i);
             if (partGenerator instanceof  ContextModifierCacheKeyPartGenerator) {
-                previous.put(entry.getKey(), ((ContextModifierCacheKeyPartGenerator)partGenerator).prepareContentForContentGeneration(entry.getValue(), resource, renderContext));
+                original.put(entry.getKey(), ((ContextModifierCacheKeyPartGenerator) partGenerator).prepareContentForContentGeneration(entry.getValue(), resource, renderContext));
             }
             i++;
         }
-        return previous;
+        return original;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String,Object> previous) {
+    public void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original) {
         int i = 0;
         for (Map.Entry<String, String> entry : keyParts.entrySet()) {
             CacheKeyPartGenerator partGenerator = partGenerators.get(i);
             if (partGenerator instanceof  ContextModifierCacheKeyPartGenerator) {
-                ((ContextModifierCacheKeyPartGenerator)partGenerator).restoreContextAfterContentGeneration(entry.getValue(), resource, renderContext, previous.get(entry.getKey()));
+                ((ContextModifierCacheKeyPartGenerator) partGenerator).restoreContextAfterContentGeneration(entry.getValue(), resource, renderContext, original.get(entry.getKey()));
             }
             i++;
         }

@@ -54,14 +54,14 @@ import javax.jcr.RepositoryException;
 
 /**
  * Describes the module output cache key generator.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public interface CacheKeyGenerator {
 
     /**
      * Generates the output cache key based on the provided data.
-     * 
+     *
      *
      * @param resource the current resource being rendered
      * @param renderContext the current rendering context
@@ -72,7 +72,7 @@ public interface CacheKeyGenerator {
 
     /**
      * Parses the specified key into separate fields.
-     * 
+     *
      * @param key the cache key to be decomposed
      * @return a map with key field values
      * @throws ParseException in case of a malformed key
@@ -82,7 +82,7 @@ public interface CacheKeyGenerator {
     /**
      * Decomposes the key, replaces the specified field with the provided value
      * and generates the new key.
-     * 
+     *
      * @param key the cache key to be decomposed
      * @param fieldName the name of the field to be replaced
      * @param newValue the value of the field to be used in a new key
@@ -98,7 +98,7 @@ public interface CacheKeyGenerator {
 
     Map<String, Object> prepareContentForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
 
-    void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> previous);
+    void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original);
 
     /**
      * Get all cache attributes that need to be applied on this fragment and that will impact key generation. The

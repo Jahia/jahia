@@ -59,9 +59,10 @@ import java.util.Map;
 import java.util.Properties;
 
 /**
- * Cache key part generator that serializes (JSON) module parameters, if present. 
+ * Cache key part generator that serializes JSON module parameters, if present.
  */
 public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     private static final Logger logger = LoggerFactory.getLogger(ModuleParamsCacheKeyPartGenerator.class);
 
     @Override
@@ -86,14 +87,13 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
 
     @Override
     public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        String params = keyValue;
-        if (StringUtils.isNotEmpty(params)) {
+        if (StringUtils.isNotEmpty(keyValue)) {
             try {
-                JSONObject map = new JSONObject(URLDecoder.decode(params, "UTF-8"));
-                Iterator keys = map.keys();
+                JSONObject map = new JSONObject(URLDecoder.decode(keyValue, "UTF-8"));
+                Iterator<?> keys = map.keys();
                 while (keys.hasNext()) {
-                    String next = (String) keys.next();
-                    resource.getModuleParams().put(next, (Serializable) map.get(next));
+                    String key = (String) keys.next();
+                    resource.getModuleParams().put(key, (Serializable) map.get(key));
                 }
             } catch (UnsupportedEncodingException e) {
                 logger.error(e.getMessage(), e);
@@ -106,7 +106,5 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
 
     @Override
     public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-
     }
-
 }

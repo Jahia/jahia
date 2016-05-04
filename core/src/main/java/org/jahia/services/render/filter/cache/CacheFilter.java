@@ -98,7 +98,7 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        final String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
+        final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
@@ -169,7 +169,7 @@ public class CacheFilter extends AbstractFilter {
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
 
         final Cache cache = cacheProvider.getCache();
-        String key = (String) renderContext.getRequest().getAttribute("aggregateCacheFilter.rendering");
+        String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Generates the cache key - check
         /* TODO do we still need this check ?

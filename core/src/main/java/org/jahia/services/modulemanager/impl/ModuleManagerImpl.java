@@ -128,11 +128,7 @@ public class ModuleManagerImpl implements ModuleManager {
 
             persister.store(bundleInfo);
 
-            // store bundle in JCR and create operation node
             result = install(bundleInfo, target, start);
-            if (result.isSuccess()) {
-                getBundleService().performOperation(bundleInfo, Operation.START, target);
-            }
         } catch (Exception e) {
             throw new ModuleManagementException(e);
         } finally {
@@ -172,7 +168,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         } catch (BundleException e) {
             if (BundleException.RESOLVE_ERROR == e.getType()) {
-                opResult = new OperationResultImpl(false, "Bundle not found", info.getBundleInfo());
+                opResult = new OperationResultImpl(false, "Bundle not found", info != null ? info.getBundleInfo() : null);
             } else {
                 throw new ModuleManagementException(e);
             }

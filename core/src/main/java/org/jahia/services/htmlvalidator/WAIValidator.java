@@ -298,19 +298,8 @@ public class WAIValidator {
             return ve;
         }
 
-        // Criteria 6.3
-        final Attribute title = node.getAttributes().get("title");
-        if (title == null) {
-            Result ve = new Result(
-                    getFormatted("org.jahia.services.htmlvalidator.WAIValidator.6.3",
-                            "Missing 'title' attribute for 'hyperlink' element",
-                            new Object[]{linkValue}), node.toString(), node.toString(), getMessage(
-                    "org.jahia.services.htmlvalidator.WAIValidator.6.3.example", ""));
-            setPosition(node, source, ve);
-            return ve;
-        }
-
         // Criteria 6.3 bis
+        final Attribute title = node.getAttributes().get("title");
         if (title != null) {
             final String titleValue = text2XMLEntityRef(title.getValue());
             final int length2 = titleValue.length();

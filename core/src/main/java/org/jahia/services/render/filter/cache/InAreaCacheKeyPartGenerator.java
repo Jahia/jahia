@@ -51,6 +51,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
 public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     @Override
     public String getKey() {
         return "inArea";
@@ -70,19 +71,19 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Conte
 
     @Override
     public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        Object oldInArea = renderContext.getRequest().getAttribute("inArea");
+        Object original = renderContext.getRequest().getAttribute("inArea");
         if (StringUtils.isEmpty(keyValue)) {
             renderContext.getRequest().removeAttribute("inArea");
         } else {
             renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(keyValue));
         }
-        return oldInArea;
+        return original;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-        if (previous != null) {
-            renderContext.getRequest().setAttribute("inArea", previous);
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+        if (original != null) {
+            renderContext.getRequest().setAttribute("inArea", original);
         } else {
             renderContext.getRequest().removeAttribute("inArea");
         }

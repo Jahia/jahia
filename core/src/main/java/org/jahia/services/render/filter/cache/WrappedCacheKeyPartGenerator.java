@@ -48,7 +48,8 @@ import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
-public class WrappedCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator{
+public class WrappedCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     @Override
     public String getKey() {
         return "wrapped";
@@ -71,7 +72,6 @@ public class WrappedCacheKeyPartGenerator implements CacheKeyPartGenerator, Cont
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
     }
 }

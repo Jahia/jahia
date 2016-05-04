@@ -122,7 +122,6 @@ when we flush this entry we will flush the whole cache
         <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
-        <property name="applyOnModes" value="live"/>
         <property name="keyGenerator" ref="cacheKeyGenerator"/>
     </bean>
 

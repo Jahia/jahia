@@ -408,7 +408,7 @@ public class BundleScriptResolver implements ScriptResolver, ApplicationListener
             for (URL script : scripts) {
                 addBundleScript(bundle, script.getPath());
             }
-            logger.info("Bundle {} registered {} views", bundle, scripts);
+            logger.info("Bundle {} registered {} views", bundle, logger.isDebugEnabled() ? scripts : scripts.size());
         }
     }
 

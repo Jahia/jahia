@@ -514,24 +514,12 @@ public class CacheFilter extends AbstractFilter {
         return stringBuilder.toString();
     }
 
-    public ModuleCacheProvider getCacheProvider() {
-        return cacheProvider;
-    }
-
     public void setCacheProvider(ModuleCacheProvider cacheProvider) {
         this.cacheProvider = cacheProvider;
     }
 
-    public boolean isCascadeFragmentErrors() {
-        return cascadeFragmentErrors;
-    }
-
     public void setCascadeFragmentErrors(boolean cascadeFragmentErrors) {
         this.cascadeFragmentErrors = cascadeFragmentErrors;
-    }
-
-    public int getErrorCacheExpiration() {
-        return errorCacheExpiration;
     }
 
     public void setErrorCacheExpiration(int errorCacheExpiration) {

@@ -67,9 +67,9 @@ public class AggregateFilter extends AbstractFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(AggregateFilter.class);
 
-    private static final String CACHE_ESI_TAG_START = "<jahia_esi:include src=\"";
-    private static final String CACHE_ESI_TAG_END = "\"></jahia_esi:include>";
-    private static final int CACHE_ESI_TAG_END_LENGTH = CACHE_ESI_TAG_END.length();
+    private static final String ESI_TAG_START = "<jahia_esi:include src=\"";
+    private static final String ESI_TAG_END = "\"></jahia_esi:include>";
+    private static final int ESI_TAG_END_LENGTH = ESI_TAG_END.length();
 
     private CacheKeyGenerator keyGenerator;
 
@@ -82,22 +82,22 @@ public class AggregateFilter extends AbstractFilter {
         // in the request, if not the KeyGenerator will create a key based on the request
         // (resource and context) and the cache properties. The generated key will contain temporary placeholders
         // that will be replaced to have the final key.
-        String key = (String) request.getAttribute("aggregateCacheFilter.aggregating");
+        String key = (String) request.getAttribute("aggregateFilter.aggregating");
         if (key != null) {
-            request.removeAttribute("aggregateCacheFilter.aggregating");
+            request.removeAttribute("aggregateFilter.aggregating");
         } else {
             key = keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
         }
 
-        if (request.getAttribute("aggregateCacheFilter.rendering") != null) {
-            request.setAttribute("aggregateCacheFilter.rendering.submodule", key);
-            return CACHE_ESI_TAG_START + key + CACHE_ESI_TAG_END;
+        if (request.getAttribute("aggregateFilter.rendering") != null) {
+            request.setAttribute("aggregateFilter.rendering.submodule", key);
+            return ESI_TAG_START + key + ESI_TAG_END;
         }
 
         logger.debug("Rendering node " + resource.getPath());
 
-        request.setAttribute("aggregateCacheFilter.rendering", key);
-        request.setAttribute("aggregateCacheFilter.rendering.time", System.currentTimeMillis());
+        request.setAttribute("aggregateFilter.rendering", key);
+        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
 
         logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
 
@@ -109,14 +109,14 @@ public class AggregateFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
 
-        if (request.getAttribute("aggregateCacheFilter.rendering.submodule") != null) {
-            request.removeAttribute("aggregateCacheFilter.rendering.submodule");
+        if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
+            request.removeAttribute("aggregateFilter.rendering.submodule");
             return previousOut;
         }
 
-        String key = (String) request.getAttribute("aggregateCacheFilter.rendering");
+        String key = (String) request.getAttribute("aggregateFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
-        request.removeAttribute("aggregateCacheFilter.rendering");
+        request.removeAttribute("aggregateFilter.rendering");
         return aggregateContent(previousOut, renderContext);
     }
 
@@ -124,26 +124,26 @@ public class AggregateFilter extends AbstractFilter {
      * Aggregate the content that are inside the cached fragment to get a full HTML content with all sub modules
      * embedded.
      *
-     * @param cachedContent  The fragment, as it is stored in the cache
+     * @param content  The fragment, as it is stored in the cache
      * @param renderContext  The render context
      */
-    protected String aggregateContent(String cachedContent, RenderContext renderContext) {
-        int esiTagStartIndex = cachedContent.indexOf(CACHE_ESI_TAG_START);
+    protected String aggregateContent(String content, RenderContext renderContext) {
+        int esiTagStartIndex = content.indexOf(ESI_TAG_START);
         if (esiTagStartIndex == -1) {
-            return cachedContent;
+            return content;
         } else {
-            StringBuilder sb = new StringBuilder(cachedContent);
+            StringBuilder sb = new StringBuilder(content);
             while (esiTagStartIndex != -1) {
-                int esiTagEndIndex = sb.indexOf(CACHE_ESI_TAG_END, esiTagStartIndex);
+                int esiTagEndIndex = sb.indexOf(ESI_TAG_END, esiTagStartIndex);
                 if (esiTagEndIndex != -1) {
-                    String key = sb.substring(esiTagStartIndex + CACHE_ESI_TAG_START.length(), esiTagEndIndex);
+                    String key = sb.substring(esiTagStartIndex + ESI_TAG_START.length(), esiTagEndIndex);
                     try {
                         String replacement = generateContent(renderContext, key);
                         if (replacement == null) {
                             replacement = "";
                         }
-                        sb.replace(esiTagStartIndex, esiTagEndIndex + CACHE_ESI_TAG_END_LENGTH, replacement);
-                        esiTagStartIndex = sb.indexOf(CACHE_ESI_TAG_START, esiTagStartIndex + replacement.length());
+                        sb.replace(esiTagStartIndex, esiTagEndIndex + ESI_TAG_END_LENGTH, replacement);
+                        esiTagStartIndex = sb.indexOf(ESI_TAG_START, esiTagStartIndex + replacement.length());
                     } catch (RenderException e) {
                         throw new RuntimeException(e.getMessage(), e);
                     }
@@ -160,32 +160,32 @@ public class AggregateFilter extends AbstractFilter {
      * Generates content for a sub fragment.
      *
      * @param renderContext  The render context
-     * @param cacheKey       The cache key of the fragment to generate
+     * @param key       The cache key of the fragment to generate
      */
-    protected String generateContent(RenderContext renderContext, String cacheKey) throws RenderException {
+    protected String generateContent(RenderContext renderContext, String key) throws RenderException {
 
         try {
-
             // Parse the key to get all separate key attributes like node path and template
-            Map<String, String> keyAttrs = keyGenerator.parse(cacheKey);
-            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
-            String path = StringUtils.replace(keyAttrs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
+            Map<String, String> keyAttrbs = keyGenerator.parse(key);
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
+                    renderContext.getFallbackLocale());
+            String path = StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
 
             // create lazy resource
-            Resource resource = new Resource(path, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
+            Resource resource = new Resource(path, currentUserSession, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
 
-            Map<String, Object> original = keyGenerator.prepareContentForContentGeneration(keyAttrs, resource, renderContext);
+            Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
 
             // Store sub fragment key in attribute to use it in prepare() instead of re generating the sub fragment key
-            renderContext.getRequest().setAttribute("aggregateCacheFilter.aggregating", cacheKey);
+            renderContext.getRequest().setAttribute("aggregateFilter.aggregating", key);
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);
             if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                logger.error("Empty generated content for key " + cacheKey);
+                logger.error("Empty generated content for key " + key);
             }
 
-            keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, original);
+            keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);
 
             return content;
         } catch (RepositoryException e) {
@@ -194,9 +194,6 @@ public class AggregateFilter extends AbstractFilter {
         }
     }
 
-    public CacheKeyGenerator getKeyGenerator() {
-        return keyGenerator;
-    }
 
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;

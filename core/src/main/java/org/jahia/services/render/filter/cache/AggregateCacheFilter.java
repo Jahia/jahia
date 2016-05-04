@@ -48,7 +48,7 @@ import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
 
 import org.apache.commons.lang.StringUtils;
-import org.jahia.api.Constants;
+
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -56,7 +56,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-import org.jahia.services.render.scripting.Script;
+
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
@@ -88,6 +88,7 @@ import java.util.regex.Pattern;
  * @since JAHIA 6.5
  * Created : 8 janv. 2010
  */
+@Deprecated
 public class AggregateCacheFilter extends AbstractFilter implements ApplicationListener<TemplatePackageRedeployedEvent> {
     protected transient static final Logger logger = org.slf4j.LoggerFactory.getLogger(AggregateCacheFilter.class);
 

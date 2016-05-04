@@ -209,7 +209,7 @@ public class CacheFilter extends AbstractFilter {
                 doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CACHE_EXPIRATION)), cache, finalKey, bypassDependencies);
 
             } else {
-                cacheProvider.setFragmentKeyAsNotCacheable(key);
+                cacheProvider.addNonCacheableFragment(key);
             }
         }
 
@@ -423,7 +423,7 @@ public class CacheFilter extends AbstractFilter {
     }
 
     /**
-     * Is the current fragment cacheable or not. Based on the notCacheableFragment list and the ec or v parameter.
+     * Is the current fragment cacheable or not. Based on the nonCacheableFragments list and the ec or v parameter.
      *
      * @param renderContext render context
      * @param resource      current resource
@@ -434,7 +434,7 @@ public class CacheFilter extends AbstractFilter {
     protected boolean isCacheable(RenderContext renderContext, String key, Resource resource, Properties properties) throws RepositoryException {
 
         // first check if the key is not part of the non cacheable fragments
-        if (cacheProvider.isNotCacheableFragment(key)) {
+        if (cacheProvider.isNonCacheableFragment(key)) {
             return false;
         }
 
@@ -502,7 +502,7 @@ public class CacheFilter extends AbstractFilter {
         stringBuilder.append("<div class=\"cacheDebugInfo\">");
         stringBuilder.append("<span class=\"cacheDebugInfoLabel\">Expiration: </span><span>");
         String key1 = replacePlaceholdersInCacheKey(renderContext, key);
-        if (!cacheProvider.isNotCacheableFragment(key)) {
+        if (!cacheProvider.isNonCacheableFragment(key)) {
             stringBuilder.append(SimpleDateFormat.getDateTimeInstance().format(new Date(cacheProvider.getCache().get(
                     key1).getExpirationTime())));
         } else {

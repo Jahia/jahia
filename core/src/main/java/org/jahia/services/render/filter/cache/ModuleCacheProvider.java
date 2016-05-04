@@ -78,26 +78,22 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private static final String REGEXPDEPS_CACHE_NAME = "HTMLREGEXPDependenciesCache";
 
     private static Logger logger = LoggerFactory.getLogger(ModuleCacheProvider.class);
+
     private Cache regexpDependenciesCache;
+    private Cache htmlCache;
+    private EhCacheProvider cacheProvider;
+    private Cache dependenciesCache;
+    private Cache syncCache;
+    private Map<String, Boolean> nonCacheableFragments;
+    private CacheKeyGenerator keyGenerator;
+    private JCRSessionFactory jcrSessionFactory;
 
     /**
-     * Returns an instance of this class
-     *
      * @return an instance of this class
      */
     public static ModuleCacheProvider getInstance() {
         return (ModuleCacheProvider) SpringContextSingleton.getBean("ModuleCacheProvider");
     }
-
-    private Cache htmlCache;
-    private EhCacheProvider cacheProvider;
-    private Cache dependenciesCache;
-    private Cache syncCache;
-    private Map<String, Boolean> notCacheableFragment;
-
-    private CacheKeyGenerator keyGenerator;
-
-    private JCRSessionFactory jcrSessionFactory;
 
     /**
      * Invoked by a BeanFactory after it has set all bean properties supplied
@@ -111,6 +107,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      *                   set an essential property) or if initialization fails.
      */
     public void afterPropertiesSet() throws Exception {
+
         CacheManager cacheManager = cacheProvider.getCacheManager();
         htmlCache = cacheManager.getCache(CACHE_NAME);
         if (htmlCache == null) {
@@ -138,7 +135,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
             }
         }
 
-        notCacheableFragment = new ConcurrentHashMap<String, Boolean>(512);
+        nonCacheableFragments = new ConcurrentHashMap<String, Boolean>(512);
     }
 
     /**
@@ -175,6 +172,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     public void invalidate(Collection<String> nodePathOrIdentifiers, boolean propagateToOtherClusterNodes) {
+
         Set<String> all = new HashSet<>();
         for (String nodePathOrIdentifier : nodePathOrIdentifiers) {
             Element element = dependenciesCache.get(nodePathOrIdentifier);
@@ -233,7 +231,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         dependenciesCache.flush();
         regexpDependenciesCache.removeAll();
         regexpDependenciesCache.flush();
-        notCacheableFragment.clear();
+        nonCacheableFragments.clear();
     }
 
     public Cache getRegexpDependenciesCache() {
@@ -304,7 +302,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
 
     /**
      * Flushes dependencies if the provided node path matches the corresponding key in the {@link #REGEXPDEPS_CACHE_NAME}} cache.
-     * 
+     *
      * @param path
      *            the concerned node path
      * @param propagateToOtherClusterNodes
@@ -327,49 +325,49 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     /**
-     * Remove keys from not cacheable fragment looking for path in the cache key give as parameter
+     * Set the given fragment key as non-cacheable
+     * @param key fragment key
+     */
+    public void addNonCacheableFragment(String key) {
+        nonCacheableFragments.put(key, Boolean.TRUE);
+    }
+
+    /**
+     * Remove keys from the non-cacheable fragments map looking for path in the cache key given as parameter
      * @param key fragment key of the fragment
      */
-    public void removeNotCacheableFragment(String key) {
-        Map<String, String> keyAttrbs = keyGenerator.parse(key);
-        String path = keyAttrbs.get("path");
+    public void removeNonCacheableFragment(String key) {
+        Map<String, String> keyAttrs = keyGenerator.parse(key);
+        String path = keyAttrs.get("path");
         List<String> removableKeys = new ArrayList<String>();
-        for (String notCacheableKey : notCacheableFragment.keySet()) {
-            if (notCacheableKey.contains(path)) {
-                removableKeys.add(notCacheableKey);
+        for (String nonCacheableKey : nonCacheableFragments.keySet()) {
+            if (nonCacheableKey.contains(path)) {
+                removableKeys.add(nonCacheableKey);
             }
         }
         for (String removableKey : removableKeys) {
-            notCacheableFragment.remove(removableKey);
+            nonCacheableFragments.remove(removableKey);
         }
     }
 
     /**
-     * Flush the not cacheable fragments map
+     * Flush the non-cacheable fragments map
      */
-    public void flushNotCacheableFragment() {
-        notCacheableFragment.clear();
+    public void flushNonCacheableFragments() {
+        nonCacheableFragments.clear();
     }
 
     /**
-     * Check if fragment key is not known as not cacheable
+     * Check if fragment key is known as non-cacheable
      * @param key fragment key
-     * @return either the fragment is known as not cacheable or not
+     * @return whether the fragment is known as non-cacheable
      */
-    public boolean isNotCacheableFragment(String key) {
-        return notCacheableFragment.containsKey(key);
-    }
-
-    /**
-     * Set the given fragment key as not cacheable
-     * @param key fragment key
-     */
-    public void setFragmentKeyAsNotCacheable(String key) {
-        notCacheableFragment.put(key, Boolean.TRUE);
+    public boolean isNonCacheableFragment(String key) {
+        return nonCacheableFragments.containsKey(key);
     }
 
     public void propagatePathFlushToCluster(String nodePathOrIdentifier) {
-        if(syncCache != null) {
+        if (syncCache != null) {
             if (logger.isDebugEnabled()) {
                 logger.debug("Sending flush of {} across cluster", nodePathOrIdentifier);
             }
@@ -379,7 +377,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
 
     private long getClusterRevision() {
         final ClusterNode clusterNode = ((JahiaRepositoryImpl) ((SpringJackrabbitRepository) jcrSessionFactory.getDefaultProvider().getRepository()).getRepository()).getContext().getClusterNode();
-
         return clusterNode.getRevision();
     }
 
@@ -393,6 +390,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
 
     @Override
     public void onApplicationEvent(TemplatePackageRedeployedEvent templatePackageRedeployedEvent) {
-        flushNotCacheableFragment();
+        flushNonCacheableFragments();
     }
 }

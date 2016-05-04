@@ -60,7 +60,6 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRGroupNode;
 import org.jahia.services.content.decorator.JCRUserNode;
-import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.render.filter.cache.ModuleCacheProvider;
 import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.services.sites.JahiaSite;
@@ -87,19 +86,20 @@ import java.util.regex.Pattern;
 import static org.junit.Assert.*;
 
 public class CacheFilterHttpTest extends JahiaTestCase {
-    transient static Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
-    private final static String TESTSITE_NAME = "cachetest";
+
+    private static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
+    private static final String TESTSITE_NAME = "cachetest";
     private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
+
         try {
+
             JahiaSite site = TestHelper.createSite(TESTSITE_NAME, "localhost", "templates-web-blue");
             assertNotNull(site);
-            JCRStoreService jcrService = ServicesRegistry.getInstance()
-                    .getJCRStoreService();
-            JCRSessionWrapper session = jcrService.getSessionFactory()
-                    .getCurrentUserSession();
+            JCRStoreService jcrService = ServicesRegistry.getInstance().getJCRStoreService();
+            JCRSessionWrapper session = jcrService.getSessionFactory().getCurrentUserSession();
 
             ServicesRegistry.getInstance().getJahiaTemplateManagerService().installModule("jahia-test-module", SITECONTENT_ROOT_NODE, session.getUser().getName());
 
@@ -125,13 +125,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             groupC.addMember(userBC);
 
             InputStream importStream = CacheFilterHttpTest.class.getClassLoader().getResourceAsStream("imports/cachetest-site.xml");
-            session.importXML(SITECONTENT_ROOT_NODE, importStream,
-                    ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
+            session.importXML(SITECONTENT_ROOT_NODE, importStream, ImportUUIDBehavior.IMPORT_UUID_COLLISION_REMOVE_EXISTING);
             importStream.close();
             session.save();
             JCRNodeWrapper siteNode = session.getNode(SITECONTENT_ROOT_NODE);
-            JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null,
-                    true, null);
+            JCRPublicationService.getInstance().publishByMainId(siteNode.getIdentifier(), Constants.EDIT_WORKSPACE, Constants.LIVE_WORKSPACE, null, true, null);
 
         } catch (Exception e) {
             logger.warn("Exception during test setUp", e);
@@ -167,7 +165,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         cache.removeAll();
         depCache.flush();
         depCache.removeAll();
-        cacheProvider.flushNotCacheableFragment();
+        cacheProvider.flushNonCacheableFragments();
         CacheFilterCheckFilter.clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);
@@ -189,6 +187,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     private void testACLs(String path) throws Exception {
+
         String guest = getContent(getUrl(path), null, null, null);
         String root = getContent(getUrl(path), "root", "root1234", null);
         String userAB = getContent(getUrl(path), "userAB", "password", null);
@@ -203,7 +202,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
+
         try {
+
             n.revokeRolesForPrincipal("g:groupA");
             n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
             session.save();
@@ -258,8 +259,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testModuleWait() throws Exception {
+
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+
         try {
+
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
             URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
             HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
@@ -301,9 +305,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testMaxConcurrent() throws Exception {
+
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+
         try {
+
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
 
@@ -328,6 +335,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testReferencesFlush() throws Exception {
+
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
         getContent(url, "root", "root1234", null);
 
@@ -352,7 +360,9 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
+    @SuppressWarnings("unchecked")
     public void testRandomFlush() throws Exception {
+
         JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
         Query q = session.getWorkspace().getQueryManager().createQuery("select * from [jnt:page] as p where isdescendantnode(p,'" + SITECONTENT_ROOT_NODE + "/home')", Query.JCR_SQL2);
         List<String> paths = new ArrayList<String>();
@@ -408,36 +418,37 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             checkCacheContent(cache, cacheCopy, toFlush);
         }
     }
-    
+
     @Test
     public void testACLsUserPerContent() throws Exception {
         // test for https://jira.jahia.org/browse/QA-7383
         String path = SITECONTENT_ROOT_NODE + "/home/user-per-content-test";
-        
+
         String contentForUser1 = getContent(getUrl(path), "user1", "password", "testACLs11");
         assertTrue("user1 cannot see content, she should see", contentForUser1.contains("content for user1"));
         assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user2"));
         assertFalse("user1 sees content, she should not see", contentForUser1.contains("content for user3"));
-        
+
         String contentForUser2 = getContent(getUrl(path), "user2", "password", "testACLs12");
         assertTrue("user2 cannot see content, she should see", contentForUser2.contains("content for user2"));
         assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user1"));
         assertFalse("user2 sees content, she should not see", contentForUser2.contains("content for user3"));
-        
+
         String contentForUser3 = getContent(getUrl(path), "user3", "password", "testACLs13");
         assertTrue("user3 cannot see content, she should see", contentForUser3.contains("content for user3"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user1"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
     }
-    
 
+
+    @SuppressWarnings("unchecked")
     private void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
         List<String> keysNow = cache.getKeys();
         for (String s : keysNow) {
-            CacheEntry c1 = ((CacheEntry) cacheCopy.get(s));
+            CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s));
             final Element element = cache.get(s);
             if (element != null && c1 != null) {
-                CacheEntry c2 = ((CacheEntry) element.getObjectValue());
+                CacheEntry<?> c2 = ((CacheEntry<?>) element.getObjectValue());
                 assertEquals("Cache fragment different for : " + s + " after flushing : " + toFlush, c1.getObject(), c2.getObject());
                 assertEquals("Cache properties different for : " + s + " after flushing : " + toFlush, c1.getExtendedProperties(), c2.getExtendedProperties());
             }
@@ -494,7 +505,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return new URL(baseurl + "/render/live/en" + path + ".html");
     }
 
-    class HttpThread extends Thread {
+    private class HttpThread extends Thread {
+
         private String result;
         private int resultCode;
         private URL url;
@@ -508,7 +520,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             this.password = password;
             this.requestId = requestId;
         }
-
 
         String getResult() {
             return result;
@@ -526,9 +537,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             } finally {
                 if (method != null) {
                     method.releaseConnection();
-                }    
+                }
             }
         }
     }
-
 }

@@ -78,10 +78,10 @@ import java.util.Set;
  * @since JAHIA 6.5
  */
 public class HtmlCacheEventListener extends DefaultEventListener implements ExternalEventListener {
+
     private static Logger logger = LoggerFactory.getLogger(HtmlCacheEventListener.class);
 
     private ModuleCacheProvider cacheProvider;
-    private AggregateCacheFilter aggregateCacheFilter;
     private SchedulerService schedulerService;
 
     @Override
@@ -109,6 +109,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
      * @param events The event set received.
      */
     public void onEvent(EventIterator events) {
+
         final int operationType = ((JCREventIterator) events).getOperationType();
         if (logger.isDebugEnabled()) {
             logger.debug("{} events received. Operation type {}", events.getSize(), operationType);
@@ -144,6 +145,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     }
 
     public void processEvents(List<Event> events, JCRSessionWrapper sessionWrapper, boolean propagateToOtherClusterNodes) {
+
         final Cache depCache = cacheProvider.getDependenciesCache();
         final Set<String> flushed = new HashSet<String>();
 
@@ -154,7 +156,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 logger.debug("Event: {}", event);
             }
             try {
-                String eventNodePath = event.getPath();  
+                String eventNodePath = event.getPath();
                 String path = eventNodePath;
                 boolean flushParent = false;
                 boolean flushChilds = false;
@@ -307,6 +309,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
     }
 
     private void flushDependenciesOfPath(Cache depCache, String path, boolean propagateToOtherClusterNodes) {
+
         Element element = depCache.get(path);
         if (element != null) {
             if (logger.isDebugEnabled()) {
@@ -315,10 +318,10 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
             @SuppressWarnings("unchecked")
             Set<String> deps = (Set<String>) element.getObjectValue();
             if (deps.contains("ALL")) {
-                cacheProvider.flushNotCacheableFragment();
+                cacheProvider.flushNonCacheableFragments();
             } else {
                 for (String dep : deps) {
-                    cacheProvider.removeNotCacheableFragment(dep);
+                    cacheProvider.removeNonCacheableFragment(dep);
                 }
             }
             cacheProvider.invalidate(path, propagateToOtherClusterNodes);
@@ -334,11 +337,8 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         this.cacheProvider = cacheProvider;
     }
 
-    public void setAggregateCacheFilter(AggregateCacheFilter aggregateCacheFilter) {
-        this.aggregateCacheFilter = aggregateCacheFilter;
-    }
-
     public static class FlushEvent implements Event, Serializable {
+
         private static final long serialVersionUID = -4835978210219006748L;
         private String path;
         private String id;
@@ -387,14 +387,11 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
         }
 
         /**
-         * Returns a String representation of this <code>Event</code>.
-         *
          * @return a String representation of this <code>Event</code>.
          */
         public String toString() {
             StringBuilder sb = new StringBuilder();
-            sb.append("Event: Path: ").append(path).append(", ID: ").append(id).append(", Type: ")
-                    .append(EventState.valueOf(getType()));
+            sb.append("Event: Path: ").append(path).append(", ID: ").append(id).append(", Type: ").append(EventState.valueOf(getType()));
             return sb.toString();
         }
     }

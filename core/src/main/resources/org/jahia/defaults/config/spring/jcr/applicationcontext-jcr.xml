@@ -134,7 +134,7 @@
                 <value>jnt:vanityUrl</value>
                 <value>jnt:vanityUrls</value>
                 <value>jnt:virtualsite</value>
-                <value>jnt:virtualsitesFolder</value>                
+                <value>jnt:virtualsitesFolder</value>
                 <value>rep:root</value>
             </set>
         </property>
@@ -142,7 +142,7 @@
             <set>
                 <value>jnt:file</value>
             </set>
-        </property>        
+        </property>
         <property name="listeners">
             <map>
                 <entry key="default">
@@ -290,7 +290,7 @@
                             <property name="extractionService"
                                       ref="org.jahia.services.content.rules.ExtractionService"/>
                             <property name="schedulerService" ref="SchedulerService"/>
-                        </bean>                        
+                        </bean>
                         <bean class="org.jahia.services.content.files.FileCacheListener">
                             <property name="availableDuringPublish" value="true"/>
                         </bean>
@@ -354,7 +354,6 @@
     <bean id="htmlCacheEventListener" class="org.jahia.services.render.filter.cache.HtmlCacheEventListener">
         <property name="schedulerService" ref="SchedulerService"/>
         <property name="cacheProvider" ref="ModuleCacheProvider"/>
-        <property name="aggregateCacheFilter" ref="cacheFilter"/>
         <property name="availableDuringPublish" value="true"/>
         <property name="operationTypes">
             <set value-type="java.lang.Integer">
@@ -569,7 +568,7 @@
         <value>j:staticMountPointProviderKey</value>
         <value>j:dynamicMountPointProviderPath</value>
     </util:set>
-    
+
     <util:map id="ImportDefinitionsMappingMetadata">
         <entry key="jahia:defaultCategory">
             <bean class="org.jahia.services.importexport.DefinitionsMapping$PropertyMapping">
@@ -620,7 +619,7 @@
             </bean>
         </entry>
     </util:map>
-    
+
     <bean id="DocumentViewValidationHandler" class="org.jahia.services.importexport.validation.DocumentViewValidationHandler" scope="prototype">
         <property name="validators">
             <list>

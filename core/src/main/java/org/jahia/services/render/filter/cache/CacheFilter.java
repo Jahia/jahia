@@ -78,10 +78,10 @@ public class CacheFilter extends AbstractFilter {
     public static final String CACHE_PER_USER_PROPERTY = "j:perUser";
     public static final String CACHE_EXPIRATION = "cache.expiration";
 
-    private static final String V = "v";
-    private static final String EC = "ec";
-    private static final String ALL = "ALL";
-    private static final Set<String> ALL_SET = Collections.singleton(ALL);
+    private static final String FLAG_VERSION = "v";
+    private static final String FLAG_RANDOM = "ec";
+    private static final String FLAG_ALL = "ALL";
+    private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
 
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
@@ -328,9 +328,9 @@ public class CacheFilter extends AbstractFilter {
                 if(!path.startsWith("/modules")) {
                     Element element1 = dependenciesCache.get(path);
                     Set<String> dependencies = element1 != null ? (Set<String>) element1.getObjectValue() : Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
-                    if (!dependencies.contains(ALL)) {
+                    if (!dependencies.contains(FLAG_ALL)) {
                         if ((dependencies.size() + 1) > dependenciesLimit) {
-                            Element element = new Element(path, ALL_SET);
+                            Element element = new Element(path, FLAGS_ALL_SET);
                             element.setEternal(true);
                             dependenciesCache.put(element);
                         } else {
@@ -439,12 +439,12 @@ public class CacheFilter extends AbstractFilter {
         }
 
         // check v parameter
-        if (renderContext.getRequest().getParameter(V) != null && renderContext.isLoggedIn()) {
+        if (renderContext.getRequest().getParameter(FLAG_VERSION) != null && renderContext.isLoggedIn()) {
             return false;
         }
 
         // check ec parameter
-        final String ecParameter = renderContext.getRequest().getParameter(EC);
+        final String ecParameter = renderContext.getRequest().getParameter(FLAG_RANDOM);
         if (ecParameter != null) {
             if (ecParameter.equals(resource.getNode().getIdentifier())) {
                 return false;

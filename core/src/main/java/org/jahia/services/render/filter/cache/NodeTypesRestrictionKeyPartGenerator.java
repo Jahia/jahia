@@ -49,14 +49,18 @@ import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
- * Key part generator to store restrictions in cache key to be able to re add them in the request attributes
- * This restrictions are directly handle in the ModuleTag, we need to restore them to be able to recalculate the node that should'nt be display
- * by the ModuleTag
+ * Key part generator to store node type restrictions in cache key to be able to re-add them in the request attributes.
+ *
+ * These restrictions are directly handled in the ModuleTag; we need to restore them to be able to re-calculate nodes that should'nt be displayed
+ * by the ModuleTag.
  *
  * Created by jkevan on 22/04/2016.
  */
 public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+
     @Override
     public String getKey() {
         return "restriction";
@@ -64,10 +68,11 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
 
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
-        Integer level = (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
-        if(level != null) {
-            String restrictions = (String) renderContext.getRequest().getAttribute("areaNodeTypesRestriction" + level);
-            if(StringUtils.isNotEmpty(restrictions)) {
+        HttpServletRequest request = renderContext.getRequest();
+        Integer level = (Integer) request.getAttribute("org.jahia.modules.level");
+        if (level != null) {
+            String restrictions = (String) request.getAttribute("areaNodeTypesRestriction" + level);
+            if (StringUtils.isNotEmpty(restrictions)) {
                 return restrictions + "_" + level;
             }
         }
@@ -79,21 +84,21 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
         return keyPart;
     }
 
-
     @Override
     public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + renderContext.getRequest().getAttribute("org.jahia.modules.level"));
-        if(StringUtils.isNotEmpty(keyValue)) {
+        HttpServletRequest request = renderContext.getRequest();
+        request.removeAttribute("areaNodeTypesRestriction" + request.getAttribute("org.jahia.modules.level"));
+        if (StringUtils.isNotEmpty(keyValue)) {
             String[] keyValues = keyValue.split("_");
             Integer level = Integer.parseInt(keyValues[1]);
-            renderContext.getRequest().setAttribute("org.jahia.modules.level", level);
-            renderContext.getRequest().setAttribute("areaNodeTypesRestriction" + level, keyValues[0]);
+            String restrictions = keyValues[0];
+            request.setAttribute("org.jahia.modules.level", level);
+            request.setAttribute("areaNodeTypesRestriction" + level, restrictions);
         }
         return null;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
-        // nothing to do
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
     }
 }

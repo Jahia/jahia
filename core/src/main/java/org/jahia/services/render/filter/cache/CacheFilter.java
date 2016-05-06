@@ -124,7 +124,7 @@ public class CacheFilter extends AbstractFilter {
 
         if (element != null && element.getObjectValue() != null) {
             // The element is found in the cache. Need to
-            result =  returnFromCache(renderContext, resource, key, finalKey, element, cache);
+            result =  returnFromCache(renderContext, key, finalKey, element);
             logMethodGenereationTime(resource, timer,"prepare");
             return result;
         } else {
@@ -189,10 +189,7 @@ public class CacheFilter extends AbstractFilter {
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
         // If this content has been served from cache, no need to cache it again
-        Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-
-        if (servedFromCache == null || !servedFromCache.contains(finalKey)) {
-
+        if (renderContext.getRequest().getAttribute("cacheFilter.servedFromCache") == null) {
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
             logger.debug("Caching content {}, key = {}", resource.getPath(), finalKey);
 
@@ -220,6 +217,8 @@ public class CacheFilter extends AbstractFilter {
                 cacheProvider.addNonCacheableFragment(key);
             }
         }
+        // remove this attr to allow reuse it by other generations in current request
+        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
 
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
@@ -266,7 +265,7 @@ public class CacheFilter extends AbstractFilter {
             }
 
             if (element != null && element.getObjectValue() != null) {
-                return returnFromCache(renderContext, resource, key, finalKey, element, cache);
+                return returnFromCache(renderContext, key, finalKey, element);
             }
 
             // Returns a fragment with an error comment
@@ -461,29 +460,20 @@ public class CacheFilter extends AbstractFilter {
      * full content by aggregating all included fragments.
      *
      * @param renderContext The render context
-     * @param resource      The resource being rendered
      * @param key           The key with placeholders
      * @param finalKey      The final key with placeholders replaced
      * @param element       The cached element
-     * @param cache         The cache
      */
     @SuppressWarnings("unchecked")
-    protected String returnFromCache(RenderContext renderContext, Resource resource, String key, String finalKey, Element element, Cache cache) {
-
+    protected String returnFromCache(RenderContext renderContext, String key, String finalKey, Element element) {
         logger.debug("Content retrieved from cache for node with key: {}", finalKey);
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();
 
-        // Add this key to the list of fragments already served from the cache to avoid to re-store it.
-        Set<String> servedFromCache = (Set<String>) renderContext.getRequest().getAttribute("servedFromCache");
-        if (servedFromCache == null) {
-            servedFromCache = new HashSet<>();
-            renderContext.getRequest().setAttribute("servedFromCache", servedFromCache);
-        }
-        servedFromCache.add(finalKey);
+        // Add attr to say that this fragment have been served by the cache, to avoid cache it again
+        renderContext.getRequest().setAttribute("cacheFilter.servedFromCache", Boolean.TRUE);
 
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
-
         if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {
             return appendDebugInformation(renderContext, key, cachedContent);
         } else {

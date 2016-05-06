@@ -99,7 +99,6 @@ public class AggregateFilter extends AbstractFilter {
         logger.debug("Rendering node " + resource.getPath());
 
         request.setAttribute("aggregateFilter.rendering", key);
-        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
 
         logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
 

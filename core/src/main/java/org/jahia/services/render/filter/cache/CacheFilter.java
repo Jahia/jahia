@@ -74,10 +74,6 @@ import java.util.concurrent.CountDownLatch;
  */
 public class CacheFilter extends AbstractFilter {
 
-    public static final String CACHE_PER_USER = "cache.perUser";
-    public static final String CACHE_PER_USER_PROPERTY = "j:perUser";
-    public static final String CACHE_EXPIRATION = "cache.expiration";
-
     private static final String FLAG_VERSION = "v";
     private static final String FLAG_RANDOM = "ec";
     private static final String FLAG_ALL = "ALL";
@@ -171,12 +167,12 @@ public class CacheFilter extends AbstractFilter {
         final Cache cache = cacheProvider.getCache();
         String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
-        // Generates the cache key - check
-        /* TODO do we still need this check ?
-        String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
-        if (!generatedKey.equals(key)) {
-            logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
-        } */
+          // TODO (BACKLOG-6511) do we still need this check?
+          // Generates the cache key - check
+//        String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
+//        if (!generatedKey.equals(key)) {
+//            logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
+//        }
 
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
@@ -206,7 +202,7 @@ public class CacheFilter extends AbstractFilter {
                 logger.debug("Caching content for final key: {}", finalKey);
 
                 // if cacheFilter.fragmentExpiration is not specified, it means that we are on the template fragment, the first fragment of the page
-                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CACHE_EXPIRATION)), cache, finalKey, bypassDependencies);
+                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cache, finalKey, bypassDependencies);
 
             } else {
                 cacheProvider.addNonCacheableFragment(key);
@@ -438,7 +434,7 @@ public class CacheFilter extends AbstractFilter {
         }
 
         // check if we have a valid cache expiration
-        final String cacheExpiration = properties.getProperty(CACHE_EXPIRATION);
+        final String cacheExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
         Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
         return expiration != 0L;
     }

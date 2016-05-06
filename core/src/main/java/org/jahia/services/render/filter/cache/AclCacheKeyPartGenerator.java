@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
@@ -61,6 +62,7 @@ import org.springframework.beans.factory.InitializingBean;
 import javax.jcr.*;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
+
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.regex.Pattern;
@@ -71,6 +73,7 @@ import java.util.regex.Pattern;
  * Time: 12:24 PM
  */
 public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, InitializingBean {
+
     public static final String PER_USER = "_perUser_";
     public static final String MR_ACL = "_mraclmr_";
     public static final String PER_USER_MR_ACL = PER_USER + "," + MR_ACL;
@@ -141,9 +144,10 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
     @Override
     public String getValue(Resource resource, final RenderContext renderContext, Properties properties) {
         try {
+
             final Set<String> aclsKeys = new TreeSet<String>();
 
-            if ("true".equals(properties.get("cache.perUser"))) {
+            if ("true".equals(properties.get(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER))) {
                 aclsKeys.add(PER_USER);
             }
 
@@ -330,7 +334,9 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
 
     private final ConcurrentMap<String, Semaphore> processings = new ConcurrentHashMap<String, Semaphore>();
 
+    @SuppressWarnings("unchecked")
     private Map<String, Set<String>> getPrincipalAcl(final String aclKey, final String siteKey) throws RepositoryException {
+
         final String cacheKey = siteKey != null ? aclKey + ":" + siteKey : aclKey;
         Element element = cache.get(cacheKey);
         if (element == null) {
@@ -350,7 +356,8 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                 long l = System.currentTimeMillis();
 
                 Map<String, Set<String>> map = template.doExecuteWithSystemSessionAsUser(null, Constants.LIVE_WORKSPACE, null, new JCRCallback<Map<String, Set<String>>>() {
-                    @SuppressWarnings("unchecked")
+
+                    @Override
                     public Map<String, Set<String>> doInJCR(JCRSessionWrapper session) throws RepositoryException {
                         Query query = session.getWorkspace().getQueryManager().createQuery(
                                 "select * from [jnt:ace] as ace where ace.[j:principal] = '" + JCRContentUtils.sqlEncode(aclKey) + "'",
@@ -397,7 +404,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
                                 }
                             }
                         }
-
                         return mapGranted;
                     }
                 });
@@ -410,8 +416,6 @@ public class AclCacheKeyPartGenerator implements CacheKeyPartGenerator, Initiali
             } finally {
                 semaphore.release();
             }
-
-
         }
         return (Map<String, Set<String>>) element.getObjectValue();
     }

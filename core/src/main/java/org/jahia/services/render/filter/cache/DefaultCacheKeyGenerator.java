@@ -181,6 +181,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     @Override
     public Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
+
         final Script script = resource.getScript(renderContext);
         final JCRNodeWrapper node = resource.safeLoadNode();
         boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
@@ -203,8 +204,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             }
         }
 
-        if (node.hasProperty(CacheFilter.CACHE_PER_USER_PROPERTY)) {
-            properties.put(CacheFilter.CACHE_PER_USER, node.getProperty(CacheFilter.CACHE_PER_USER_PROPERTY).getString());
+        if (node.hasProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER)) {
+            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER, node.getProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER).getString());
         }
         if (isBound) {
             // TODO check this, if the component is a binded component don't mean that it's always bind to the main ressource
@@ -225,16 +226,16 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         properties.put("cache.requestParameters", updatedRequestParameters.toString());
 
         // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
-        String viewExpiration = properties.getProperty(CacheFilter.CACHE_EXPIRATION);
+        String viewExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
         final Object requestExpiration = renderContext.getRequest().getAttribute("expiration");
         if (requestExpiration != null) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, requestExpiration);
+            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, requestExpiration);
         } else if (node.hasProperty("j:expiration")) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
+            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
         } else if (viewExpiration != null) {
-            properties.put(CacheFilter.CACHE_EXPIRATION, viewExpiration);
+            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, viewExpiration);
         } else {
-            properties.put(CacheFilter.CACHE_EXPIRATION, "-1");
+            properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, "-1");
         }
 
         String propertiesScript = properties.getProperty("cache.propertiesScript");

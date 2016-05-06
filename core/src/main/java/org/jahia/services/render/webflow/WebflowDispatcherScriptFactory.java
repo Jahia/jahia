@@ -44,19 +44,20 @@
 package org.jahia.services.render.webflow;
 
 import org.jahia.services.render.View;
+import org.jahia.services.render.filter.cache.CacheUtils;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.services.render.scripting.ScriptFactory;
 
 public class WebflowDispatcherScriptFactory implements ScriptFactory {
-    
+
     private boolean xssFilteringEnabled = true;
-    
+
     public Script createScript(View view) {
         return new WebflowDispatcherScript(view, xssFilteringEnabled);
     }
 
     public void initView(View view) {
-        view.getProperties().put("cache.expiration", "0");
+        view.getProperties().put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, "0");
     }
 
     public void setXssFilteringEnabled(boolean xssFilteringEnabled) {

@@ -43,10 +43,15 @@
  */
 package org.jahia.services.render.filter;
 
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.cache.CacheKeyGenerator;
 import org.jahia.services.render.filter.cache.PathCacheKeyPartGenerator;
 import org.jahia.utils.LanguageCodeConverters;
@@ -55,8 +60,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
-import java.util.*;
 
 /**
  * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments
@@ -78,10 +81,9 @@ public class AggregateFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
 
-        // Generates the key of the requested fragment. if we are currently aggregating a sub-fragment we already have the key
-        // in the request, if not the KeyGenerator will create a key based on the request
-        // (resource and context) and the cache properties. The generated key will contain temporary placeholders
-        // that will be replaced to have the final key.
+        // Generates the key of the requested fragment. If we are currently aggregating a sub-fragment we already have the key
+        // in the request. If not, the KeyGenerator will create a key based on the request (resource and context).
+        // The generated key will contain temporary placeholders that will be replaced to have the final key.
         String key = (String) request.getAttribute("aggregateFilter.aggregating");
         if (key != null) {
             request.removeAttribute("aggregateFilter.aggregating");
@@ -121,11 +123,10 @@ public class AggregateFilter extends AbstractFilter {
     }
 
     /**
-     * Aggregate the content that are inside the cached fragment to get a full HTML content with all sub modules
-     * embedded.
+     * Aggregate the content that are inside the fragment to get a full HTML content with all sub modules embedded.
      *
-     * @param content  The fragment, as it is stored in the cache
-     * @param renderContext  The render context
+     * @param content The fragment
+     * @param renderContext The render context
      */
     protected String aggregateContent(String content, RenderContext renderContext) {
         int esiTagStartIndex = content.indexOf(ESI_TAG_START);
@@ -159,8 +160,8 @@ public class AggregateFilter extends AbstractFilter {
     /**
      * Generates content for a sub fragment.
      *
-     * @param renderContext  The render context
-     * @param key       The cache key of the fragment to generate
+     * @param renderContext The render context
+     * @param key The key of the fragment to generate
      */
     protected String generateContent(RenderContext renderContext, String key) throws RenderException {
 

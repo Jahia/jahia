@@ -44,13 +44,14 @@
 package org.jahia.test.services.providers;
 
 import com.google.common.collect.Sets;
-import org.apache.log4j.Logger;
+
 import org.jahia.api.Constants;
 import org.jahia.data.templates.JahiaTemplatesPackage;
 import org.jahia.registries.ServicesRegistry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.render.filter.cache.CacheUtils;
 import org.jahia.services.templates.JahiaTemplateManagerService;
 import org.junit.After;
 import org.junit.Before;
@@ -59,6 +60,7 @@ import org.junit.Test;
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.HashSet;
@@ -73,7 +75,6 @@ import static org.junit.Assert.*;
  * Time: 10:23 AM
  */
 public class ModulesProviderTest {
-    private static transient Logger logger = Logger.getLogger(ModulesProviderTest.class);
 
     private Node root;
     private JahiaTemplatesPackage dummyPackage;
@@ -131,7 +132,7 @@ public class ModulesProviderTest {
         // write properties
         String testString = System.currentTimeMillis() + "\n";
         viewNode.setProperty("sourceCode", sourceCode + testString);
-        viewNode.setProperty("cache.perUser", true);
+        viewNode.setProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER, true);
         viewNode.setProperty("cache.requestParameters", "dummyParam");
         s.save();
 
@@ -142,7 +143,7 @@ public class ModulesProviderTest {
         root = s.getNode("/modules/" + dummyPackage.getIdWithVersion() + "/sources/src/main/resources");
         viewNode = root.getNode("jnt_testComponent1/html/testComponent1.jsp");
         assertTrue("testComponent1 source not match", viewNode.getProperty("sourceCode").getString().endsWith(testString));
-        assertTrue("cache.perUser not set to true", viewNode.getProperty("cache.perUser").getBoolean());
+        assertTrue("cache.perUser not set to true", viewNode.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER).getBoolean());
         assertTrue("cache.requestParameters not set to dummyParam", viewNode.getProperty("cache.requestParameters").getString().equals("dummyParam"));
 
         viewNode.setProperty("sourceCode", sourceCode);

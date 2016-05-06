@@ -117,14 +117,6 @@ when we flush this entry we will flush the whole cache
         </property>
     </bean>
 
-    <bean class="org.jahia.services.render.filter.AggregateFilter">
-        <property name="accuratePriority" value="16.0"/>
-        <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
-        <property name="skipOnTemplateTypes" value="json"/>
-        <property name="skipOnConfigurations" value="include,wrapper,option"/>
-        <property name="keyGenerator" ref="cacheKeyGenerator"/>
-    </bean>
-
     <bean class="org.jahia.services.render.filter.cache.CacheFilter">
         <property name="accuratePriority" value="16.5"/>
         <property name="description" value="Cache filter, provides the html result (either from the cache or by generating it) of the fragment and caches it if necessary"/>

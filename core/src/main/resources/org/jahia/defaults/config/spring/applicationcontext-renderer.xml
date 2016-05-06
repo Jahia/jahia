@@ -442,4 +442,12 @@
 
     <bean id="jahiaBundleFlowRegistry" class="org.jahia.services.render.webflow.BundleFlowRegistry"/>
 
+    <bean class="org.jahia.services.render.filter.AggregateFilter">
+        <property name="accuratePriority" value="16.0"/>
+        <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
+        <property name="skipOnTemplateTypes" value="json"/>
+        <property name="skipOnConfigurations" value="include,wrapper,option"/>
+        <property name="keyGenerator" ref="cacheKeyGenerator"/>
+    </bean>
+
 </beans>

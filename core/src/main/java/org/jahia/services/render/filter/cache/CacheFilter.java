@@ -93,8 +93,10 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        long timer = System.currentTimeMillis();
         String result = null;
+        long timer = System.currentTimeMillis();
+        renderContext.getRequest().setAttribute("cacheFilter.caching.time", System.currentTimeMillis());
+
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Replace the placeholders to have the final key that is used in the cache.
@@ -125,7 +127,6 @@ public class CacheFilter extends AbstractFilter {
         if (element != null && element.getObjectValue() != null) {
             // The element is found in the cache. Need to
             result =  returnFromCache(renderContext, key, finalKey, element);
-            logMethodGenereationTime(resource, timer,"prepare");
             return result;
         } else {
             // resource is lazy in aggregation so call .getNode(), will load the node from jcr and store it in the resource
@@ -133,7 +134,6 @@ public class CacheFilter extends AbstractFilter {
                 // Node is not available anymore, return empty content for this fragment
                 // TODO throw NodeNotFoundException ?
                 result =  StringUtils.EMPTY;
-                logMethodGenereationTime(resource, timer,"prepare");
                 return result;
             }
 
@@ -157,14 +157,8 @@ public class CacheFilter extends AbstractFilter {
 //                }
 //                latches.add(countDownLatch);
 //            }
-            logMethodGenereationTime(resource, timer, "prepare");
             return result;
         }
-    }
-
-    private void logMethodGenereationTime(Resource resource, long timer,String method) {
-        logger.debug("Cache "+ method+ " for  {} done in {} ms", resource.getNode().getPath(), System.currentTimeMillis
-                () - timer);
     }
 
     @Override
@@ -217,27 +211,31 @@ public class CacheFilter extends AbstractFilter {
                 cacheProvider.addNonCacheableFragment(key);
             }
         }
-        // remove this attr to allow reuse it by other generations in current request
-        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
 
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
             result = appendDebugInformation(renderContext, key, previousOut);
-            logMethodGenereationTime(resource,timer,"execute");
             return result;
         }
         result = previousOut;
-        logMethodGenereationTime(resource,timer,"execute");
+        String cacheLogMsg = null;
+        Object servedFromCacheAttribute = renderContext.getRequest().getAttribute("cacheFilter.servedFromCache");
+        Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
+        cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms":"CacheFilter generated {} in {} ms";
+        logger.debug(cacheLogMsg, resource.getPath(), System
+                .currentTimeMillis()
+                - ((Long)
+                renderContext.getRequest().getAttribute("cacheFilter.caching.time")).longValue());
+        // remove this attr to allow reuse it by other generations in current request
+        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
         return result;
     }
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
-        long timer = System.currentTimeMillis();
         // TODO re-implement latch
 //        releaseLatch(resource);
-        logMethodGenereationTime(resource,timer,"finalize");
     }
 
     @Override

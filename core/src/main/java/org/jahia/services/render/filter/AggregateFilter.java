@@ -80,6 +80,7 @@ public class AggregateFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
         HttpServletRequest request = renderContext.getRequest();
+        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
 
         // Generates the key of the requested fragment. If we are currently aggregating a sub-fragment we already have the key
         // in the request. If not, the KeyGenerator will create a key based on the request (resource and context).
@@ -107,7 +108,7 @@ public class AggregateFilter extends AbstractFilter {
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-
+        String result = null;
         HttpServletRequest request = renderContext.getRequest();
 
         if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
@@ -118,7 +119,10 @@ public class AggregateFilter extends AbstractFilter {
         String key = (String) request.getAttribute("aggregateFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
         request.removeAttribute("aggregateFilter.rendering");
-        return aggregateContent(previousOut, renderContext);
+        result = aggregateContent(previousOut, renderContext);
+        logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(),  System.currentTimeMillis() - ((Long)
+                request.getAttribute("aggregateFilter.rendering.time")).longValue());
+        return result;
     }
 
     /**

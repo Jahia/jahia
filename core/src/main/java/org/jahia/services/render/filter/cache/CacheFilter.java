@@ -99,7 +99,7 @@ public class CacheFilter extends AbstractFilter {
         // Replace the placeholders to have the final key that is used in the cache.
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
-        /* TODO re-implement Keeps a list of keys being generated to avoid infinite loops.
+        /* TODO (BACKLOG-6447) re-implement Keeps a list of keys being generated to avoid infinite loops.
         LinkedList<String> userKeysLinkedList = userKeys.get();
         if (userKeysLinkedList == null) {
             userKeysLinkedList = new LinkedList<>();
@@ -132,7 +132,7 @@ public class CacheFilter extends AbstractFilter {
                 return StringUtils.EMPTY;
             }
 
-            // TODO re-implement latch
+            // TODO (BACKLOG-6447) re-implement latch
             // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
             // module - if somebody else is generating this fragment, wait for the entry to be generated and
             // return the content from the cache. Otherwise, return null to continue the render chain.

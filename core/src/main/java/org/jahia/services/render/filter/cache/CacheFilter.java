@@ -212,6 +212,18 @@ public class CacheFilter extends AbstractFilter {
             }
         }
 
+        if(logger.isDebugEnabled()) {
+            String cacheLogMsg = null;
+            Object servedFromCacheAttribute = renderContext.getRequest().getAttribute("cacheFilter.servedFromCache");
+            Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
+            cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms" : "CacheFilter generated {} in {} ms";
+            logger.debug(cacheLogMsg, resource.getPath(), System
+                    .currentTimeMillis()
+                    - ((Long)
+                    renderContext.getRequest().getAttribute("cacheFilter.caching.time")).longValue());
+            // remove this attr to allow reuse it by other generations in current request
+            renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
+        }
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
@@ -219,16 +231,6 @@ public class CacheFilter extends AbstractFilter {
             return result;
         }
         result = previousOut;
-        String cacheLogMsg = null;
-        Object servedFromCacheAttribute = renderContext.getRequest().getAttribute("cacheFilter.servedFromCache");
-        Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
-        cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms":"CacheFilter generated {} in {} ms";
-        logger.debug(cacheLogMsg, resource.getPath(), System
-                .currentTimeMillis()
-                - ((Long)
-                renderContext.getRequest().getAttribute("cacheFilter.caching.time")).longValue());
-        // remove this attr to allow reuse it by other generations in current request
-        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
         return result;
     }
 

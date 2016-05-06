@@ -93,8 +93,8 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String result = null;
         long timer = System.currentTimeMillis();
+        String result = null;
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Replace the placeholders to have the final key that is used in the cache.

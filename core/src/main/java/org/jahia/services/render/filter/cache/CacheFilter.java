@@ -93,7 +93,8 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-
+        String result = null;
+        long timer = System.currentTimeMillis();
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Replace the placeholders to have the final key that is used in the cache.
@@ -123,13 +124,17 @@ public class CacheFilter extends AbstractFilter {
 
         if (element != null && element.getObjectValue() != null) {
             // The element is found in the cache. Need to
-            return returnFromCache(renderContext, resource, key, finalKey, element, cache);
+            result =  returnFromCache(renderContext, resource, key, finalKey, element, cache);
+            logMethodGenereationTime(resource, timer,"prepare");
+            return result;
         } else {
             // resource is lazy in aggregation so call .getNode(), will load the node from jcr and store it in the resource
             if (resource.safeLoadNode() == null) {
                 // Node is not available anymore, return empty content for this fragment
                 // TODO throw NodeNotFoundException ?
-                return StringUtils.EMPTY;
+                result =  StringUtils.EMPTY;
+                logMethodGenereationTime(resource, timer,"prepare");
+                return result;
             }
 
             // TODO (BACKLOG-6447) re-implement latch
@@ -152,8 +157,14 @@ public class CacheFilter extends AbstractFilter {
 //                }
 //                latches.add(countDownLatch);
 //            }
-            return null;
+            logMethodGenereationTime(resource, timer, "prepare");
+            return result;
         }
+    }
+
+    private void logMethodGenereationTime(Resource resource, long timer,String method) {
+        logger.debug("Cache "+ method+ " for  {} done in {} ms", resource.getNode().getPath(), System.currentTimeMillis
+                () - timer);
     }
 
     @Override
@@ -163,7 +174,8 @@ public class CacheFilter extends AbstractFilter {
 
     @SuppressWarnings("unchecked")
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
-
+        long timer = System.currentTimeMillis();
+        String result = null;
         final Cache cache = cacheProvider.getCache();
         String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
@@ -212,16 +224,21 @@ public class CacheFilter extends AbstractFilter {
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-            return appendDebugInformation(renderContext, key, previousOut);
+            result = appendDebugInformation(renderContext, key, previousOut);
+            logMethodGenereationTime(resource,timer,"execute");
+            return result;
         }
-
-        return previousOut;
+        result = previousOut;
+        logMethodGenereationTime(resource,timer,"execute");
+        return result;
     }
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
+        long timer = System.currentTimeMillis();
         // TODO re-implement latch
 //        releaseLatch(resource);
+        logMethodGenereationTime(resource,timer,"finalize");
     }
 
     @Override

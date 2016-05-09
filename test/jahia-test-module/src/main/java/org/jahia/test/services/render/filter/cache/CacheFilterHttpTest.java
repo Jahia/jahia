@@ -305,7 +305,11 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     @Test
     public void testMaxConcurrent() throws Exception {
-
+        /*
+            TODO: BACKLOG-6408, TO be fixed, AggregateCacheFilter (old) was generating the all fragments in the page before caching making latch waiting for the all
+            TODO: page to be generate before having access to the fragment, that's why this test was working for old impl but not with the new one
+            TODO: now fragments are stored in cache as they are generate, we need to find a better way to test this
+         */
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
 

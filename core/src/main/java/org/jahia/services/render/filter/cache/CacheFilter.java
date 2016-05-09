@@ -65,7 +65,6 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
 
 /**
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
@@ -83,79 +82,62 @@ public class CacheFilter extends AbstractFilter {
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     protected ModuleCacheProvider cacheProvider;
-    protected ModuleGeneratorQueue generatorQueue;
+
+    private CacheLatchService cacheLatchService;
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
     protected int dependenciesLimit = 1000;
-
-    protected static ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
-    protected static ThreadLocal<String> acquiredSemaphore = new ThreadLocal<String>();
-    protected static ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
         renderContext.getRequest().setAttribute("cacheFilter.caching.time", System.currentTimeMillis());
-
+        final String path = resource.getNodePath();
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
         // Replace the placeholders to have the final key that is used in the cache.
-        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
-
-        /* TODO (BACKLOG-6447) re-implement Keeps a list of keys being generated to avoid infinite loops.
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList == null) {
-            userKeysLinkedList = new LinkedList<>();
-            userKeys.set(userKeysLinkedList);
-        }
-        if (userKeysLinkedList.contains(finalKey)) {
-            return null;
-        }
-        userKeysLinkedList.add(0, finalKey);
-        */
+        final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
         Element element = null;
         final Cache cache = cacheProvider.getCache();
 
         try {
-            logger.debug("Try to get content from cache for node with final key: {}", finalKey);
+            logger.debug("Try to get fragment from cache for node with final key: {}", finalKey);
             element = cache.get(finalKey);
         } catch (LockTimeoutException e) {
             logger.warn("Error while rendering " + renderContext.getMainResource() + e.getMessage(), e);
         }
 
         if (element != null && element.getObjectValue() != null) {
-            // The element is found in the cache. Need to
+            logger.debug("Fragment found in cache for node: {} ", path);
             return returnFromCache(renderContext, key, finalKey, element);
         } else {
-            // resource is lazy in aggregation so call .getNode(), will load the node from jcr and store it in the resource
+            logger.debug("Fragment not found in cache for node: {} ", path);
+            // resource is lazy in aggregation calling .getNode(), will load the node from jcr and store it in the resource
             if (resource.safeLoadNode() == null) {
+                logger.warn("Fragment node: {} is not available anymore, return empty html for it", path);
                 // Node is not available anymore, return empty content for this fragment
                 // TODO throw NodeNotFoundException ?
                 return StringUtils.EMPTY;
             }
 
-            // TODO (BACKLOG-6447) re-implement latch
-            // The element is not found in the cache with that key. Use CountLatch to avoid parallel processing of the
-            // module - if somebody else is generating this fragment, wait for the entry to be generated and
-            // return the content from the cache. Otherwise, return null to continue the render chain.
-            // Note that the fragment MIGHT be in cache, but the key may not be correct - some parameters impacting the
-            // key like dependencies can only be calculated when the fragment has been generated.
-//            CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest(), resource, properties);
-//            if (countDownLatch == null) {
-//                element = cache.get(finalKey);
-//                if (element != null && element.getObjectValue() != null) {
-//                    return returnFromCache(renderContext, resource, key, finalKey, element, cache);
-//                }
-//            } else {
-//                Set<CountDownLatch> latches = processingLatches.get();
-//                if (latches == null) {
-//                    latches = new HashSet<>();
-//                    processingLatches.set(latches);
-//                }
-//                latches.add(countDownLatch);
-//            }
-            return null;
+            // The element is not found in the cache with that key. use CacheLatchService to allow only one thread to generate the fragment
+            // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be execute
+            // for all the waiting threads.
+            logger.debug("Use latch to decide between generate or waiting fragment for node: ", path);
+            return cacheLatchService.getLatch(renderContext, finalKey, new CacheLatchService.LatchReleasedCallback() {
+                @Override
+                public String doAfterLatchReleased(RenderContext renderContext, String finalKey) {
+                    // Latch have been released, let's get the fragment from the cache
+                    Element element = cache.get(finalKey);
+                    if (element != null && element.getObjectValue() != null) {
+                        logger.debug("Latch released for node: {} and fragment found in cache", path);
+                        return returnFromCache(renderContext, key, finalKey, element);
+                    }
+                    logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
+                    return null;
+                }
+            });
         }
     }
 
@@ -207,7 +189,13 @@ public class CacheFilter extends AbstractFilter {
             } else {
                 cacheProvider.addNonCacheableFragment(key);
             }
+
+            // content is in cache and available, release latch for other threads waiting for this fragment
+            cacheLatchService.releaseLatch();
         }
+
+        // remove this attr to allow reuse it by other generations in current request
+        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
 
         if (logger.isDebugEnabled()) {
 
@@ -216,8 +204,6 @@ public class CacheFilter extends AbstractFilter {
             String cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms" : "CacheFilter generated {} in {} ms";
             long start = (Long) request.getAttribute("cacheFilter.caching.time");
             logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
-
-            request.removeAttribute("cacheFilter.servedFromCache");
         }
 
         // Append debug information
@@ -231,8 +217,9 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
-        // TODO re-implement latch
-//        releaseLatch(resource);
+        // If an error occured during render and the latch is not release during the execute() it's important that we release it
+        // in any case to avoid threads waiting for nothing
+        cacheLatchService.releaseLatch();
     }
 
     @Override
@@ -376,29 +363,6 @@ public class CacheFilter extends AbstractFilter {
         }
     }
 
-    private void releaseLatch(Resource resource) {
-
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
-
-            String finalKey = userKeysLinkedList.remove(0);
-            if (finalKey.equals(acquiredSemaphore.get())) {
-                generatorQueue.getAvailableProcessings().release();
-                acquiredSemaphore.set(null);
-            }
-
-            Set<CountDownLatch> latches = processingLatches.get();
-            Map<String, CountDownLatch> countDownLatchMap = generatorQueue.getGeneratingModules();
-            CountDownLatch latch = countDownLatchMap.get(finalKey);
-            if (latches != null && latches.contains(latch)) {
-                latch.countDown();
-                synchronized (countDownLatchMap) {
-                    latches.remove(countDownLatchMap.remove(finalKey));
-                }
-            }
-        }
-    }
-
     /**
      * Replace all placeholders in the cache key to get a final key.
      *
@@ -509,7 +473,7 @@ public class CacheFilter extends AbstractFilter {
         this.dependenciesLimit = dependenciesLimit;
     }
 
-    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
-        this.generatorQueue = generatorQueue;
+    public void setCacheLatchService(CacheLatchService cacheLatchService) {
+        this.cacheLatchService = cacheLatchService;
     }
 }

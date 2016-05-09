@@ -62,7 +62,34 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments
+ * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments, list of request parameters:
+ *
+ * aggregateFilter.rendering:                   Used to store the current fragment key, set at the end of prepare()
+ *                                              Reuse by other filter coming after to know the current fragment key,
+ *                                              Also use to know if we are currently rendering a fragment, to avoid
+ *                                              rendering of sub fragments.
+ *                                              It's removed in the execute() just before starting the aggregation
+ *                                              of sub fragments
+ *
+ * aggregateFilter.rendering.submodule:         Used to store the current sub fragment, allow to know that we are
+ *                                              rendering a sub fragment and we have to avoid the generation of it.
+ *                                              Returning a placeholder <jahia_esi:include src="KEY"></jahia_esi:include>
+ *                                              instead. This attr is store in prepare() and removed in execute().
+ *                                              This attr is set in request only when "aggregateFilter.rendering"
+ *                                              is present, meaning that we are already rendering a fragment and the
+ *                                              current one is a sub fragment.
+ *
+ * aggregateFilter.rendering.time:              Used to measure the time to generate a fragment, set in prepare()
+ *                                              used in execute()
+ *
+ * aggregateFilter.aggregating:                 Used to store the key of a subfragment during aggregation, this avoid
+ *                                              to recalculate the fragment key unnecessary because it have been store
+ *                                              in the parent fragment, using a placeholder.
+ *                                              This attr is set in execute() during aggregation, used and remove
+ *                                              in prepare() because the prepare() concern the new render chain started
+ *                                              during aggregation for this sub fragment
+ *
+ *
  *
  * Created by jkevan on 12/04/2016.
  */

@@ -68,7 +68,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
- * Then cache the result if necessary
+ * Then cache the result if necessary, list of request parameters:
+ *
+ * cacheFilter.caching.time:                    Used to measure the time to generate a fragment, set in prepare()
+ *                                              used in execute()
+ *
+ * cacheFilter.servedFromCache:                 Used to put a flag in request when content is served by the cache
+ *                                              This allow to avoid re cache it again when it's not needed.
+ *                                              Set in the prepare() and used/removed in the execute()
  *
  * Created by jkevan on 12/04/2016.
  */

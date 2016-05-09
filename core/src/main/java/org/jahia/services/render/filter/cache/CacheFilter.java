@@ -59,6 +59,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.util.HtmlUtils;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -93,8 +94,7 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String result = null;
-        long timer = System.currentTimeMillis();
+
         renderContext.getRequest().setAttribute("cacheFilter.caching.time", System.currentTimeMillis());
 
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
@@ -126,15 +126,13 @@ public class CacheFilter extends AbstractFilter {
 
         if (element != null && element.getObjectValue() != null) {
             // The element is found in the cache. Need to
-            result =  returnFromCache(renderContext, key, finalKey, element);
-            return result;
+            return returnFromCache(renderContext, key, finalKey, element);
         } else {
             // resource is lazy in aggregation so call .getNode(), will load the node from jcr and store it in the resource
             if (resource.safeLoadNode() == null) {
                 // Node is not available anymore, return empty content for this fragment
                 // TODO throw NodeNotFoundException ?
-                result =  StringUtils.EMPTY;
-                return result;
+                return StringUtils.EMPTY;
             }
 
             // TODO (BACKLOG-6447) re-implement latch
@@ -157,7 +155,7 @@ public class CacheFilter extends AbstractFilter {
 //                }
 //                latches.add(countDownLatch);
 //            }
-            return result;
+            return null;
         }
     }
 
@@ -166,12 +164,10 @@ public class CacheFilter extends AbstractFilter {
         return execute(previousOut, renderContext, resource, false);
     }
 
-    @SuppressWarnings("unchecked")
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
-        long timer = System.currentTimeMillis();
-        String result = null;
-        final Cache cache = cacheProvider.getCache();
-        String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
+
+        HttpServletRequest request = renderContext.getRequest();
+        String key = (String) request.getAttribute("aggregateFilter.rendering");
 
           // TODO (BACKLOG-6511) do we still need this check?
           // Generates the cache key - check
@@ -183,7 +179,8 @@ public class CacheFilter extends AbstractFilter {
         String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
         // If this content has been served from cache, no need to cache it again
-        if (renderContext.getRequest().getAttribute("cacheFilter.servedFromCache") == null) {
+        if (request.getAttribute("cacheFilter.servedFromCache") == null) {
+
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
             logger.debug("Caching content {}, key = {}", resource.getPath(), finalKey);
 
@@ -205,33 +202,31 @@ public class CacheFilter extends AbstractFilter {
                 logger.debug("Caching content for final key: {}", finalKey);
 
                 // if cacheFilter.fragmentExpiration is not specified, it means that we are on the template fragment, the first fragment of the page
-                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cache, finalKey, bypassDependencies);
+                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
 
             } else {
                 cacheProvider.addNonCacheableFragment(key);
             }
         }
 
-        if(logger.isDebugEnabled()) {
-            String cacheLogMsg = null;
-            Object servedFromCacheAttribute = renderContext.getRequest().getAttribute("cacheFilter.servedFromCache");
+        if (logger.isDebugEnabled()) {
+
+            Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
             Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
-            cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms" : "CacheFilter generated {} in {} ms";
-            logger.debug(cacheLogMsg, resource.getPath(), System
-                    .currentTimeMillis()
-                    - ((Long)
-                    renderContext.getRequest().getAttribute("cacheFilter.caching.time")).longValue());
-            // remove this attr to allow reuse it by other generations in current request
-            renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
+            String cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms" : "CacheFilter generated {} in {} ms";
+            long start = (Long) request.getAttribute("cacheFilter.caching.time");
+            logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
+
+            request.removeAttribute("cacheFilter.servedFromCache");
         }
+
         // Append debug information
-        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
+        boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(request.getParameter("cacheinfo"));
         if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-            result = appendDebugInformation(renderContext, key, previousOut);
-            return result;
+            return appendDebugInformation(renderContext, key, previousOut);
         }
-        result = previousOut;
-        return result;
+
+        return previousOut;
     }
 
     @Override
@@ -257,8 +252,8 @@ public class CacheFilter extends AbstractFilter {
             final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
             Element element = null;
-            final Cache cache = cacheProvider.getCache();
             try {
+                Cache cache = cacheProvider.getCache();
                 element = cache.get(finalKey);
             } catch (LockTimeoutException ex) {
                 logger.warn("Error while rendering " + renderContext.getMainResource() + ex.getMessage(), ex);
@@ -464,8 +459,8 @@ public class CacheFilter extends AbstractFilter {
      * @param finalKey      The final key with placeholders replaced
      * @param element       The cached element
      */
-    @SuppressWarnings("unchecked")
     protected String returnFromCache(RenderContext renderContext, String key, String finalKey, Element element) {
+
         logger.debug("Content retrieved from cache for node with key: {}", finalKey);
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();

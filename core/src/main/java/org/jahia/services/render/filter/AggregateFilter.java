@@ -108,7 +108,7 @@ public class AggregateFilter extends AbstractFilter {
 
     @Override
     public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
-        String result = null;
+
         HttpServletRequest request = renderContext.getRequest();
 
         if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
@@ -119,9 +119,9 @@ public class AggregateFilter extends AbstractFilter {
         String key = (String) request.getAttribute("aggregateFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
         request.removeAttribute("aggregateFilter.rendering");
-        result = aggregateContent(previousOut, renderContext);
-        logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(),  System.currentTimeMillis() - ((Long)
-                request.getAttribute("aggregateFilter.rendering.time")).longValue());
+        String result = aggregateContent(previousOut, renderContext);
+        long start = (Long) request.getAttribute("aggregateFilter.rendering.time");
+        logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(),  System.currentTimeMillis() - start);
         return result;
     }
 
@@ -199,7 +199,6 @@ public class AggregateFilter extends AbstractFilter {
             return StringUtils.EMPTY;
         }
     }
-
 
     public void setKeyGenerator(CacheKeyGenerator keyGenerator) {
         this.keyGenerator = keyGenerator;

@@ -184,7 +184,7 @@
     </bean>
 
     <bean class="org.jahia.services.render.filter.AggregateFilter">
-        <property name="accuratePriority" value="16.0"/>
+        <property name="priority" value="16.0"/>
         <property name="description" value="Aggregate filter, aggregates contents by resolving sub fragments"/>
         <property name="skipOnTemplateTypes" value="json"/>
         <property name="skipOnConfigurations" value="include,wrapper,option"/>
@@ -192,7 +192,7 @@
     </bean>
 
     <bean id="nodeAttributesFilter" class="org.jahia.services.render.filter.NodeAttributesFilter">
-        <property name="accuratePriority" value="16.8"/>
+        <property name="priority" value="16.8"/>
         <property name="description"
                   value="Like the BaseAttributesFilter store the required request parameters,
                   but only the one related to nodes, this is done here to avoid reading node from jcr before the cache filter"/>

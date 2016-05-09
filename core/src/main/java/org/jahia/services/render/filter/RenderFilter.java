@@ -62,7 +62,7 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
      *
      * @return priority
      */
-    int getPriority();
+    float getPriority();
 
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource);
 
@@ -74,19 +74,4 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
     String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e);
 
     void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain);
-
-    /**
-     * Interface that define a float priority variable, this allow to create more accurate render filter
-     * So filters can be placed in 16,2 or 16,3, etc.
-     * if a render filter implement this AccurateRenderFilter the priority will be calculate using getAccuratePriority instead of getPriority
-     */
-    interface AccurateRenderFilter {
-
-        /**
-         * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-         *
-         * @return priority
-         */
-        float getAccuratePriority();
-    }
 }

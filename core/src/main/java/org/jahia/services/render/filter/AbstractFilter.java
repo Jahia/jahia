@@ -43,7 +43,6 @@
  */
 package org.jahia.services.render.filter;
 
-import com.google.common.base.Objects;
 import org.slf4j.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
@@ -67,7 +66,7 @@ import java.util.regex.Pattern;
  * @author Thomas Draier
  * @author Sergiy Shyrkov
  */
-public abstract class AbstractFilter implements RenderFilter, RenderFilter.AccurateRenderFilter {
+public abstract class AbstractFilter implements RenderFilter {
 
     public static class AjaxRequestCondition implements ExecutionCondition {
 
@@ -370,7 +369,7 @@ public abstract class AbstractFilter implements RenderFilter, RenderFilter.Accur
         public boolean matches(RenderContext renderContext, Resource resource) {
             return name != null
                     && StringUtils.equals(
-                            String.valueOf(renderContext.getRequest().getAttribute(name)), value);
+                    String.valueOf(renderContext.getRequest().getAttribute(name)), value);
         }
     }
 
@@ -512,18 +511,7 @@ public abstract class AbstractFilter implements RenderFilter, RenderFilter.Accur
 
     private boolean disabled;
 
-    private int priority = 99;
-
-    private Float accuratePriority;
-
-    @Override
-    public float getAccuratePriority() {
-        return accuratePriority != null ? accuratePriority : priority;
-    }
-
-    public void setAccuratePriority(float filterPriority) {
-        this.accuratePriority = filterPriority;
-    }
+    private float priority = 99;
 
     protected RenderService service;
 
@@ -580,27 +568,34 @@ public abstract class AbstractFilter implements RenderFilter, RenderFilter.Accur
     }
 
     public int compareTo(RenderFilter o) {
-        int i;
-        if (o instanceof RenderFilter.AccurateRenderFilter) {
-            i = Float.compare(getAccuratePriority(), ((AccurateRenderFilter) o).getAccuratePriority());
-        } else {
-            i = Float.compare(getAccuratePriority(), o.getPriority());
-        }
+        if(o == null)
+        {return 1;}
+        int i = Float.valueOf(getPriority()).compareTo(Float.valueOf(o.getPriority()));
         return i != 0 ? i : getClass().getName().compareTo(o.getClass().getName());
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        AbstractFilter that = (AbstractFilter) o;
-        return Objects.equal(getAccuratePriority(), that.getAccuratePriority());
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (this.getClass() == obj.getClass()) {
+            return this.getPriority() == ((AbstractFilter) obj).getPriority();
+        }
+        return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.getClass().getName(), getAccuratePriority());
+        int result = this.getClass().getName().hashCode();
+        // Put 100 as a multiplier for our priority field.
+        result = 31 * result + Float.floatToIntBits(priority*100);
+        return result;
     }
+
 
     /**
      *
@@ -657,7 +652,7 @@ public abstract class AbstractFilter implements RenderFilter, RenderFilter.Accur
      *
      * @return priority
      */
-    public int getPriority() {
+    public float getPriority() {
         return priority;
     }
 
@@ -866,7 +861,7 @@ public abstract class AbstractFilter implements RenderFilter, RenderFilter.Accur
         this.disabled = disabled;
     }
 
-    public void setPriority(int priority) {
+    public void setPriority(float priority) {
         this.priority = priority;
     }
 

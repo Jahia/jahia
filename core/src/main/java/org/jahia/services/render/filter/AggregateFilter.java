@@ -74,7 +74,7 @@ import javax.servlet.http.HttpServletRequest;
  * aggregateFilter.rendering.submodule:         Used to store the current sub fragment, allow to know that we are
  *                                              rendering a sub fragment and we have to avoid the generation of it.
  *                                              Returning a placeholder <jahia_esi:include src="KEY"></jahia_esi:include>
- *                                              instead. This attr is store in prepare() and removed in execute().
+ *                                              instead. This attr is store in prepare() and removed in finalize().
  *                                              This attr is set in request only when "aggregateFilter.rendering"
  *                                              is present, meaning that we are already rendering a fragment and the
  *                                              current one is a sub fragment.
@@ -89,7 +89,11 @@ import javax.servlet.http.HttpServletRequest;
  *                                              in prepare() because the prepare() concern the new render chain started
  *                                              during aggregation for this sub fragment
  *
- *
+ * Every request attrs, should be correctly remove from request in case of error, the finalize() function is used for that
+ * Some logic have been used to know where we are in renderchain to remove the appropriate attr.
+ * For exemple, when rendering a subfragment if an error occur (in jsp, or next filters) we didn't go throw the execute() for the
+ * current main fragment. So "aggregateFilter.rendering" will not be remove, we need to remove it only when we are not rendering a sub
+ * fragment, because if we remove it during rendering of a sub fragment it will break the render of next sibling sub fragments.
  *
  * Created by jkevan on 12/04/2016.
  */
@@ -139,7 +143,6 @@ public class AggregateFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
 
         if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
-            request.removeAttribute("aggregateFilter.rendering.submodule");
             return previousOut;
         }
 
@@ -150,6 +153,26 @@ public class AggregateFilter extends AbstractFilter {
         long start = (Long) request.getAttribute("aggregateFilter.rendering.time");
         logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(),  System.currentTimeMillis() - start);
         return result;
+    }
+
+    @Override
+    public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+
+        HttpServletRequest request = renderContext.getRequest();
+
+        // aggregateFilter.rendering.submodule is always remove in finalize, if it's set, it's mean we are rendering a sub fragment
+        if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
+            request.removeAttribute("aggregateFilter.rendering.submodule");
+        } else {
+            // if aggregateFilter.rendering.submodule is not set, it's mean that every sub fragments have been rendered and aggregation
+            // is done, but if an error occur between this two step we need to remove "aggregateFilter.rendering" from request,
+            // to avoid blocking render of sibling fragments
+            request.removeAttribute("aggregateFilter.rendering");
+        }
+
+        // always remove aggregateFilter.aggregating attr, because it should be remove by the new render chain for a sub fragment
+        // during aggregation, but if an error occur before AggregateFilter for this fragment render chain, we need to remove it from request
+        request.removeAttribute("aggregateFilter.aggregating");
     }
 
     /**

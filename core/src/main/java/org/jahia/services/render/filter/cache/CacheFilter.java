@@ -75,7 +75,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * cacheFilter.servedFromCache:                 Used to put a flag in request when content is served by the cache
  *                                              This allow to avoid re cache it again when it's not needed.
- *                                              Set in the prepare() and used/removed in the execute()
+ *                                              Set in the prepare() and used in the execute() and removed in finalize()
  *
  * Created by jkevan on 12/04/2016.
  */
@@ -201,9 +201,6 @@ public class CacheFilter extends AbstractFilter {
             cacheLatchService.releaseLatch();
         }
 
-        // remove this attr to allow reuse it by other generations in current request
-        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
-
         if (logger.isDebugEnabled()) {
 
             Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
@@ -224,6 +221,9 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
+        // remove request attr, to allow reuse it in other render chains
+        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
+
         // If an error occured during render and the latch is not release during the execute() it's important that we release it
         // in any case to avoid threads waiting for nothing
         cacheLatchService.releaseLatch();

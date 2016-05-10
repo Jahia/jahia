@@ -655,7 +655,7 @@ public abstract class AbstractFilter implements RenderFilter {
 
     @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
+        logger.debug("Handling exception {} in {}", e.getMessage(), resource.getPath());
         return null;
     }
 

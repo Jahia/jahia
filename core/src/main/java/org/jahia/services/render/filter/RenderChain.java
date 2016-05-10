@@ -44,11 +44,13 @@
 package org.jahia.services.render.filter;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.*;
 
 /**
@@ -58,7 +60,8 @@ import java.util.*;
  * Time: 12:33:52 PM
  */
 public class RenderChain {
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(RenderChain.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(RenderChain.class);
 
     private List<RenderFilter> filters = new ArrayList<RenderFilter>();
 
@@ -134,8 +137,9 @@ public class RenderChain {
      * @throws RenderFilterException in case of a rendering errors
      */
     public String doFilter(RenderContext renderContext, Resource resource) throws RenderFilterException {
+
         String out = null;
-        int index=0;
+        int index = 0;
 
         if (logger.isTraceEnabled()) {
             logger.trace("Configured filters:");
@@ -150,42 +154,41 @@ public class RenderChain {
         }
         int finalFilterIndex = 0;
         try {
-            for (; index<filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
+            for (; index < filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
-                	long timer = System.currentTimeMillis();
+                    long timer = System.currentTimeMillis();
                     finalFilterIndex = index;
                     out = filter.prepare(renderContext, resource, this);
-                    if (logger.isDebugEnabled()) { 
+                    if (logger.isDebugEnabled()) {
                         logger.debug("{}: prepare filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }
             index--;
-            for (; index>=0 && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index--) {
+            for (; index >= 0 && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index--) {
                 RenderFilter filter = filters.get(index);
                 if (filter.areConditionsMatched(renderContext, resource)) {
-                	long timer = System.currentTimeMillis();
+                    long timer = System.currentTimeMillis();
                     out = filter.execute(out, renderContext, resource, this);
-                    if (logger.isDebugEnabled()) { 
-                    	logger.debug("{}: execute filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("{}: execute filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }
         } catch (Exception e) {
             out = null;
             logger.error("Error while rendering the resource: " + resource + " -> " + e.toString());
-            for (index++; index>0 && renderContext.getRedirect() == null && out == null; index--) {
+            for (index++; index > 0 && renderContext.getRedirect() == null && out == null; index--) {
                 RenderFilter filter = filters.get(index-1);
                 if (filter.areConditionsMatched(renderContext, resource)) {
-                	long timer = System.currentTimeMillis();
+                    long timer = System.currentTimeMillis();
                     out = filter.getContentForError(renderContext, resource, this, e);
-                    if (logger.isDebugEnabled()) { 
-                    	logger.debug("{}: handling error for filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+                    if (logger.isDebugEnabled()) {
+                        logger.debug("{}: handling error for filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                     }
                 }
             }
-
             if (out == null) {
                 throw new RenderFilterException(e);
             }
@@ -194,10 +197,10 @@ public class RenderChain {
                 try {
                     RenderFilter filter = filters.get(index);
                     if (filter.areConditionsMatched(renderContext, resource)) {
-                    	long timer = System.currentTimeMillis();
+                        long timer = System.currentTimeMillis();
                         filter.finalize(renderContext, resource, this);
-                        if (logger.isDebugEnabled()) { 
-                        	logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+                        if (logger.isDebugEnabled()) {
+                            logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
                         }
                     }
                 } catch (Exception e) {
@@ -233,7 +236,7 @@ public class RenderChain {
 
     /**
      * Returns an unmodifiable view of the list of filters, used by this chain.
-     * 
+     *
      * @return an unmodifiable view of the list of filters, used by this chain
      */
     @SuppressWarnings("unchecked")

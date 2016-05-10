@@ -89,11 +89,11 @@ public class CacheFilter extends AbstractFilter {
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
     protected ModuleCacheProvider cacheProvider;
-
-    private CacheLatchService cacheLatchService;
     protected boolean cascadeFragmentErrors = false;
     protected int errorCacheExpiration = 5;
     protected int dependenciesLimit = 1000;
+
+    private CacheLatchService cacheLatchService;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {

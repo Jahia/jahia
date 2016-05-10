@@ -63,7 +63,9 @@ public class BaseAttributesFilter extends AbstractFilter {
 
     public Set<String> configurationToSkipInResourceRenderedPath;
 
+    @Override
     public String prepare(RenderContext context, Resource resource, RenderChain chain) throws Exception {
+
         final HttpServletRequest request = context.getRequest();
 
         request.setAttribute("renderContext", context);

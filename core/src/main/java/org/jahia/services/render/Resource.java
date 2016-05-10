@@ -48,10 +48,12 @@ import org.jahia.api.Constants;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
+
 import java.io.Serializable;
 import java.util.*;
 
@@ -62,6 +64,7 @@ import java.util.*;
  * @author toto
  */
 public class Resource {
+
     public static final String CONFIGURATION_PAGE = "page";
     public static final String CONFIGURATION_GWT = "gwt";
     public static final String CONFIGURATION_MODULE = "module";
@@ -69,7 +72,8 @@ public class Resource {
     public static final String CONFIGURATION_WRAPPER = "wrapper";
     public static final String CONFIGURATION_WRAPPEDCONTENT = "wrappedcontent";
 
-    private static Logger logger = org.slf4j.LoggerFactory.getLogger(Resource.class);
+    private static Logger logger = LoggerFactory.getLogger(Resource.class);
+
     private JCRNodeWrapper node;
     private String templateType;
     private String template;
@@ -147,9 +151,9 @@ public class Resource {
      * @return The JCR Node if found, null if not
      */
     public JCRNodeWrapper getNode() {
-        if (isLazy()){
+        if (isLazy()) {
             try {
-                if(lazyNodeFlagWarning &&
+                if (lazyNodeFlagWarning &&
                         sessionWrapper.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) &&
                         !CONFIGURATION_PAGE.equals(contextConfiguration)) {
 
@@ -294,6 +298,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
+    @Deprecated
     public void addOption(String wrapper, ExtendedNodeType nodeType) {
         options.add(new Option(wrapper, nodeType));
     }
@@ -301,6 +306,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
+    @Deprecated
     public List<Option> getOptions() {
         return options;
     }
@@ -308,6 +314,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
+    @Deprecated
     public boolean hasOptions() {
         return !options.isEmpty();
     }
@@ -315,6 +322,7 @@ public class Resource {
     /**
      * @deprecated not used anymore
      */
+    @Deprecated
     public void removeOption(ExtendedNodeType mixinNodeType) {
         options.remove(new Option("", mixinNodeType));
     }
@@ -333,11 +341,10 @@ public class Resource {
      * of the render chain.
      *
      * @param context renderContext, needed to resolve the script
-     * @return the Script if one is find, null if not
-     * @throws RepositoryException
+     * @return the Script if one is found, null if not
      */
     public Script getScript(RenderContext context) throws RepositoryException{
-        if(script == null && context != null) {
+        if (script == null && context != null) {
             try {
                 script = RenderService.getInstance().resolveScript(this, context);
             } catch (TemplateNotFoundException e) {
@@ -358,6 +365,7 @@ public class Resource {
 
     @Override
     public boolean equals(Object o) {
+
         if (this == o) {
             return true;
         }
@@ -409,7 +417,9 @@ public class Resource {
         return result;
     }
 
+    @Deprecated
     public class Option implements Comparable<Option> {
+
         private final String wrapper;
         private final ExtendedNodeType nodeType;
 
@@ -429,7 +439,7 @@ public class Resource {
         /* (non-Javadoc)
          * @see java.lang.Comparable#compareTo(java.lang.Object)
          */
-
+        @Override
         public int compareTo(Option o) {
             return nodeType.getName().compareTo(o.getNodeType().getName());
         }

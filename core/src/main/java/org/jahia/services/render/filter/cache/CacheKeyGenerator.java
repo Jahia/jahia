@@ -118,11 +118,6 @@ public interface CacheKeyGenerator {
      * <p/>
      * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
      * j:expiration node property or the cache.expiration property in script properties.
-     *
-     * @param renderContext
-     * @param resource
-     * @return
-     * @throws RepositoryException
      */
     Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException;
 }

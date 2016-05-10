@@ -51,12 +51,14 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.HashMap;
@@ -70,8 +72,10 @@ import java.util.Map;
  * @since JAHIA 6.5 Created : 27 oct. 2009
  */
 public class OptionTag extends BodyTagSupport implements ParamParent {
+
     private static final long serialVersionUID = -4688234914421053917L;
-    private transient static Logger logger = org.slf4j.LoggerFactory.getLogger(OptionTag.class);
+    private static final Logger logger = LoggerFactory.getLogger(OptionTag.class);
+
     private String nodetype;
     private JCRNodeWrapper node;
     private String view;
@@ -86,6 +90,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
      */
     @Override
     public int doEndTag() throws JspException {
+
         try {
             renderNodeWithViewAndTypes(node, view, nodetype, pageContext, parameters);
         } catch (Exception e) {
@@ -101,6 +106,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
     }
 
     public static void renderNodeWithViewAndTypes(JCRNodeWrapper node, String view, String commaConcatenatedNodeTypes, PageContext pageContext, Map<String, String> parameters) throws RepositoryException, IOException, RenderException {
+
         String charset = pageContext.getResponse().getCharacterEncoding();
         // Todo test if module is active
         RenderContext renderContext = (RenderContext) pageContext.getAttribute("renderContext", PageContext.REQUEST_SCOPE);
@@ -174,6 +180,7 @@ public class OptionTag extends BodyTagSupport implements ParamParent {
         this.view = view;
     }
 
+    @Override
     public void addParameter(String name, String value) {
         parameters.put(name, value);
     }

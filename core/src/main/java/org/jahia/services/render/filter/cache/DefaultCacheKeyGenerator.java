@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Default implementation of the module output cache key generator.
@@ -182,6 +183,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     @Override
     public Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
 
+        HttpServletRequest request = renderContext.getRequest();
         final Script script = resource.getScript(renderContext);
         final JCRNodeWrapper node = resource.safeLoadNode();
         boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
@@ -197,8 +199,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         if (isList) {
             Resource listLoader = new Resource(node, resource.getTemplateType(), "hidden.load", Resource.CONFIGURATION_INCLUDE);
             try {
-                Script s = RenderService.getInstance().resolveScript(listLoader, renderContext);
-                properties.putAll(s.getView().getProperties());
+                Script listScript = RenderService.getInstance().resolveScript(listLoader, renderContext);
+                properties.putAll(listScript.getView().getProperties());
             } catch (TemplateNotFoundException e) {
                 logger.error("Cannot find loader script for list " + node.getPath(), e);
             }
@@ -208,7 +210,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
             properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_PER_USER, node.getProperty(CacheUtils.NODE_PROPERTY_CACHE_PER_USER).getString());
         }
         if (isBound) {
-            // TODO check this, if the component is a binded component don't mean that it's always bind to the main ressource
+            // TODO check this, if the component is a bound component don't mean that it's always bound to the main resource
             properties.put("cache.mainResource", "true");
         }
 
@@ -227,7 +229,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
         // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
         String viewExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
-        final Object requestExpiration = renderContext.getRequest().getAttribute("expiration");
+        final Object requestExpiration = request.getAttribute("expiration");
         if (requestExpiration != null) {
             properties.put(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION, requestExpiration);
         } else if (node.hasProperty("j:expiration")) {
@@ -240,21 +242,19 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
         String propertiesScript = properties.getProperty("cache.propertiesScript");
         if (propertiesScript != null) {
-            Resource props = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
+            Resource propsResource = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
             try {
-                Script s = RenderService.getInstance().resolveScript(props, renderContext);
+                Script propsScript = RenderService.getInstance().resolveScript(propsResource, renderContext);
                 try {
-                    renderContext.getRequest().setAttribute("cacheProperties", properties);
-                    s.execute(props, renderContext);
+                    request.setAttribute("cacheProperties", properties);
+                    propsScript.execute(propsResource, renderContext);
                 } catch (RenderException e) {
                     logger.error("Cannot execute script",e);
                 } finally {
-                    renderContext.getRequest().removeAttribute("cacheProperties");
+                    request.removeAttribute("cacheProperties");
                 }
             } catch (TemplateNotFoundException e) {
-                logger.error(
-                        "Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(),
-                        e);
+                logger.error("Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(), e);
             }
         }
 

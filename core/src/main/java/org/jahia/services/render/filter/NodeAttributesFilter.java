@@ -60,9 +60,11 @@ import javax.servlet.http.HttpServletRequest;
  *
  * Created by jkevan on 27/04/2016.
  */
-public class NodeAttributesFilter extends AbstractFilter{
+public class NodeAttributesFilter extends AbstractFilter {
+
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+
         // calling resource.safeLoadNode() here will load the node from jcr and store it in resource, if resource is lazy
         JCRNodeWrapper node = resource.safeLoadNode();
         if (node == null) {

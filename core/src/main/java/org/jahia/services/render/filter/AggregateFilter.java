@@ -198,17 +198,16 @@ public class AggregateFilter extends AbstractFilter {
         try {
 
             // Parse the key to get all separate key attributes like node path and template
-            Map<String, String> keyAttrbs = keyGenerator.parse(key);
-            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrbs.get("language")),
-                    renderContext.getFallbackLocale());
-            String path = StringUtils.replace(keyAttrbs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
+            Map<String, String> keyAttrs = keyGenerator.parse(key);
 
-            // create lazy resource
-            Resource resource = new Resource(path, currentUserSession, keyAttrbs.get("templateType"), keyAttrbs.get("template"), keyAttrbs.get("context"));
+            // Create lazy resource
+            String path = StringUtils.replace(keyAttrs.get("path"), PathCacheKeyPartGenerator.MAIN_RESOURCE_KEY, StringUtils.EMPTY);
+            JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
+            Resource resource = new Resource(path, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
 
-            Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrbs, resource, renderContext);
+            Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrs, resource, renderContext);
 
-            // Store sub fragment key in attribute to use it in prepare() instead of re generating the sub fragment key
+            // Store sub fragment key in attribute to use it in prepare() instead of generating the sub fragment key from scratch
             renderContext.getRequest().setAttribute("aggregateFilter.aggregating", key);
 
             // Dispatch to the render service to generate the content
@@ -217,7 +216,7 @@ public class AggregateFilter extends AbstractFilter {
                 logger.error("Empty generated content for key " + key);
             }
 
-            keyGenerator.restoreContextAfterContentGeneration(keyAttrbs, resource, renderContext, previous);
+            keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, previous);
 
             return content;
 

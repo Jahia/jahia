@@ -193,9 +193,7 @@
 
     <bean id="nodeAttributesFilter" class="org.jahia.services.render.filter.NodeAttributesFilter">
         <property name="priority" value="16.8"/>
-        <property name="description"
-                  value="Like the BaseAttributesFilter store the required request parameters,
-                  but only the one related to nodes, this is done here to avoid reading node from jcr before the cache filter"/>
+        <property name="description" value="Sets request parameters related to the JCR node; separated from the BaseAttributesFilter in order to avoid reading the node from JCR before the cache filter"/>
     </bean>
 
     <bean id="urlSystemAttributesAppenderFilter" class="org.jahia.services.render.filter.URLSystemAttributesAppenderFilter">

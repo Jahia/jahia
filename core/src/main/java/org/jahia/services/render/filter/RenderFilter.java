@@ -59,15 +59,12 @@ public interface RenderFilter extends RenderServiceAware, Comparable<RenderFilte
 
     /**
      * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-     *
-     * @return priority
      */
     float getPriority();
 
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource);
 
-    String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception;
+    String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
 
     String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception;
 

@@ -44,6 +44,7 @@
 package org.jahia.services.render.filter;
 
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
@@ -53,6 +54,7 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.utils.Patterns;
 
 import javax.jcr.RepositoryException;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
@@ -68,7 +70,15 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractFilter implements RenderFilter {
 
-    public static class AjaxRequestCondition implements ExecutionCondition {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractFilter.class);
+
+    private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
+    private String description;
+    private boolean disabled;
+    private float priority = 99;
+    protected RenderService service;
+
+    public interface ExecutionCondition {
 
         /**
          * Returns <code>true</code> if the condition matches the specified
@@ -79,6 +89,20 @@ public abstract class AbstractFilter implements RenderFilter {
          * @return <code>true</code> if the condition matches the specified
          *         resource
          */
+        boolean matches(RenderContext renderContext, Resource resource);
+    }
+
+    public static class AjaxRequestCondition implements ExecutionCondition {
+
+        /**
+         * Returns <code>true</code> if the condition matches the specified
+         * resource.
+         *
+         * @param renderContext Current RenderContext
+         * @param resource      Resource being displayed
+         * @return <code>true</code> if the condition matches the specified resource
+         */
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.isAjaxRequest();
         }
@@ -103,6 +127,7 @@ public abstract class AbstractFilter implements RenderFilter {
             conditions.add(condition);
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             boolean matches = false;
             for (ExecutionCondition condition : conditions) {
@@ -128,12 +153,14 @@ public abstract class AbstractFilter implements RenderFilter {
     }
 
     public static class ConfigurationCondition implements ExecutionCondition {
+
         private String conf;
 
         public ConfigurationCondition(String conf) {
             this.conf = conf;
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return (resource.getContextConfiguration().equals(conf));
         }
@@ -144,19 +171,6 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
-    public interface ExecutionCondition {
-        /**
-         * Returns <code>true</code> if the condition matches the specified
-         * resource.
-         *
-         * @param renderContext Current RenderContext
-         * @param resource      Resource being displayed
-         * @return <code>true</code> if the condition matches the specified
-         *         resource
-         */
-        boolean matches(RenderContext renderContext, Resource resource);
-    }
-
     /**
      * Evaluates to <code>true</code> if the current resource is the main resource
      *
@@ -164,6 +178,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class MainResourceCondition implements ExecutionCondition {
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return (renderContext.getMainResource().getNode().getPath().equals(resource.getNode().getPath()));
         }
@@ -182,14 +197,6 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class ModeCondition implements ExecutionCondition {
 
-        public static boolean matches(RenderContext renderContext, String mode) {
-            if (mode.equals("contribution")) {
-                mode = "contribute"; // Legacy compatibility
-            }
-
-            return renderContext.getMode() != null && renderContext.getMode().equals(mode);
-        }
-
         private String mode;
 
         /**
@@ -198,10 +205,10 @@ public abstract class AbstractFilter implements RenderFilter {
          * @param mode the target mode to check for
          */
         public ModeCondition(String mode) {
-            super();
             this.mode = mode;
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return matches(renderContext, mode);
         }
@@ -209,6 +216,13 @@ public abstract class AbstractFilter implements RenderFilter {
         @Override
         public String toString() {
             return "mode == " + mode;
+        }
+
+        public static boolean matches(RenderContext renderContext, String mode) {
+            if (mode.equals("contribution")) {
+                mode = "contribute"; // Legacy compatibility
+            }
+            return renderContext.getMode() != null && renderContext.getMode().equals(mode);
         }
     }
 
@@ -220,6 +234,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class EditModeCondition implements ExecutionCondition {
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.isEditMode();
         }
@@ -246,6 +261,7 @@ public abstract class AbstractFilter implements RenderFilter {
             super(module, isRegExp);
         }
 
+        @Override
         public String getValue(RenderContext renderContext, Resource resource) {
             return ((Script) renderContext.getRequest().getAttribute("script")).getView().getModule().getName();
         }
@@ -267,10 +283,10 @@ public abstract class AbstractFilter implements RenderFilter {
         private String nodeTypeName;
 
         public NodeTypeCondition(String nodeTypeName) {
-            super();
             this.nodeTypeName = nodeTypeName;
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             boolean matches = false;
             JCRNodeWrapper node = resource.getNode();
@@ -303,10 +319,10 @@ public abstract class AbstractFilter implements RenderFilter {
         private ExecutionCondition condition;
 
         public NotCondition(ExecutionCondition condition) {
-            super();
             this.condition = condition;
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return !condition.matches(renderContext, resource);
         }
@@ -336,17 +352,16 @@ public abstract class AbstractFilter implements RenderFilter {
          *                 not as an exact string?
          */
         public PatternCondition(String pattern, boolean isRegExp) {
-            super();
             if (isRegExp) {
                 this.pattern = Pattern.compile(pattern);
             } else {
                 exactMatch = pattern;
             }
-
         }
 
         protected abstract String getValue(RenderContext renderContext, Resource resource);
 
+        @Override
         public final boolean matches(RenderContext renderContext, Resource resource) {
             return pattern != null ? pattern.matcher(getValue(renderContext, resource)).matches() : exactMatch.equals(
                     getValue(renderContext, resource));
@@ -366,6 +381,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class RequestAttributeCondition extends RequestCondition {
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return name != null
                     && StringUtils.equals(
@@ -382,7 +398,6 @@ public abstract class AbstractFilter implements RenderFilter {
     public static abstract class RequestCondition implements ExecutionCondition {
 
         protected String name;
-
         protected String value;
 
         public void setName(String name) {
@@ -402,6 +417,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class RequestHeaderCondition extends RequestCondition {
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return name != null
                     && StringUtils.equals(renderContext.getRequest().getHeader(name), value);
@@ -416,6 +432,7 @@ public abstract class AbstractFilter implements RenderFilter {
      */
     public static class RequestParameterCondition extends RequestCondition {
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return name != null
                     && StringUtils.equals(renderContext.getRequest().getParameter(name), value);
@@ -437,6 +454,7 @@ public abstract class AbstractFilter implements RenderFilter {
             super(template, isRegExp);
         }
 
+        @Override
         public String getValue(RenderContext renderContext, Resource resource) {
             return resource.getResolvedTemplate();
         }
@@ -463,6 +481,7 @@ public abstract class AbstractFilter implements RenderFilter {
             super(templateType, isRegExp);
         }
 
+        @Override
         public String getValue(RenderContext renderContext, Resource resource) {
             return resource.getTemplateType();
         }
@@ -489,10 +508,10 @@ public abstract class AbstractFilter implements RenderFilter {
          * @param templateSet the template set name to match
          */
         public SiteTemplateSetCondition(String templateSet) {
-            super();
             this.templateSet = templateSet;
         }
 
+        @Override
         public boolean matches(RenderContext renderContext, Resource resource) {
             return renderContext.getSite() != null && renderContext.getSite().getInstalledModules().contains(templateSet);
         }
@@ -503,32 +522,12 @@ public abstract class AbstractFilter implements RenderFilter {
         }
     }
 
-    private static final Logger logger = org.slf4j.LoggerFactory.getLogger(AbstractFilter.class);
-
-    private List<ExecutionCondition> conditions = new LinkedList<ExecutionCondition>();
-
-    private String description;
-
-    private boolean disabled;
-
-    private float priority = 99;
-
-    protected RenderService service;
-
-    /**
-     * Initializes an instance of this class.
-     */
-    public AbstractFilter() {
-        super();
-    }
-
     /**
      * Initializes an instance of this class.
      *
      * @param conditions the execution conditions to be matched.
      */
     public AbstractFilter(ExecutionCondition... conditions) {
-        this();
         for (ExecutionCondition cond : conditions) {
             addCondition(cond);
         }
@@ -552,11 +551,11 @@ public abstract class AbstractFilter implements RenderFilter {
         conditions.add(index, condition);
     }
 
+    @Override
     public boolean areConditionsMatched(RenderContext renderContext, Resource resource) {
         if (disabled) {
             return false;
         }
-
         boolean matches = true;
         for (ExecutionCondition condition : conditions) {
             if (!condition.matches(renderContext, resource)) {
@@ -567,11 +566,10 @@ public abstract class AbstractFilter implements RenderFilter {
         return matches;
     }
 
-    public int compareTo(RenderFilter o) {
-        if(o == null)
-        {return 1;}
-        int i = Float.valueOf(getPriority()).compareTo(Float.valueOf(o.getPriority()));
-        return i != 0 ? i : getClass().getName().compareTo(o.getClass().getName());
+    @Override
+    public int compareTo(RenderFilter filter) {
+        int result = Float.valueOf(getPriority()).compareTo(Float.valueOf(filter.getPriority()));
+        return result != 0 ? result : getClass().getName().compareTo(filter.getClass().getName());
     }
 
     @Override
@@ -591,11 +589,9 @@ public abstract class AbstractFilter implements RenderFilter {
     @Override
     public int hashCode() {
         int result = this.getClass().getName().hashCode();
-        // Put 100 as a multiplier for our priority field.
-        result = 31 * result + Float.floatToIntBits(priority*100);
+        result = 31 * result + Float.floatToIntBits(priority);
         return result;
     }
-
 
     /**
      *
@@ -604,15 +600,14 @@ public abstract class AbstractFilter implements RenderFilter {
      * @param resource The resource to render
      * @param chain The render chain
      * @return Filtered content
-     * @throws Exception
      */
-    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-            throws Exception {
+    @Override
+    public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         return previousOut;
     }
 
+    @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
-        // do nothing
     }
 
     /**
@@ -634,7 +629,6 @@ public abstract class AbstractFilter implements RenderFilter {
             }
             out.append("(").append(cond).append(")");
         }
-
         return out.toString();
     }
 
@@ -649,9 +643,8 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Get the priority number of the filter. Filter will be executed in order of priority, lower first.
-     *
-     * @return priority
      */
+    @Override
     public float getPriority() {
         return priority;
     }
@@ -660,10 +653,9 @@ public abstract class AbstractFilter implements RenderFilter {
         return disabled;
     }
 
+    @Override
     public String getContentForError(RenderContext renderContext, Resource resource, RenderChain renderChain, Exception e) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
-        }
+        logger.debug("Handling exception {} in {}", e.getMessage(), resource.getNode().getPath());
         return null;
     }
 
@@ -673,8 +665,8 @@ public abstract class AbstractFilter implements RenderFilter {
      * @param resource The resource to render
      * @param chain The render chain
      * @return Content to stop the chain, or null to continue
-     * @throws Exception
      */
+    @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         return null;
     }
@@ -865,6 +857,7 @@ public abstract class AbstractFilter implements RenderFilter {
         this.priority = priority;
     }
 
+    @Override
     public final void setRenderService(RenderService service) {
         this.service = service;
     }

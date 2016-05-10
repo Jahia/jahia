@@ -45,12 +45,11 @@ package org.jahia.services.modulemanager.impl;
 
 import java.util.Set;
 
+import org.jahia.services.modulemanager.BundleStateReport;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
+import org.jahia.services.modulemanager.NodeStateReport;
 import org.jahia.services.modulemanager.OperationResult;
-import org.jahia.services.modulemanager.payload.BundleStateReport;
-import org.jahia.services.modulemanager.payload.NodeStateReport;
-import org.jahia.services.modulemanager.payload.OperationResultImpl;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.jahia.services.modulemanager.spi.BundleService;
@@ -98,7 +97,7 @@ public class ModuleManagerImpl implements ModuleManager {
             throws ModuleManagementException {
         try {
             getBundleService().install(info.getLocation(), target, start);
-            return new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
+            return OperationResult.success(info.getBundleInfo());
         } catch (BundleException e) {
             throw new ModuleManagementException(e);
         }
@@ -121,7 +120,7 @@ public class ModuleManagerImpl implements ModuleManager {
             bundleInfo = persister.extract(bundleResource);
 
             if (bundleInfo == null) {
-                return OperationResultImpl.NOT_VALID_BUNDLE;
+                return OperationResult.BUNDLE_NOT_VALID;
             }
 
             // TODO check for missing dependencies before installing?
@@ -162,13 +161,13 @@ public class ModuleManagerImpl implements ModuleManager {
             info = persister.find(bundleKey);
             if (info != null) {
                 getBundleService().performOperation(info, operation, target);
-                opResult = new OperationResultImpl(true, "Operation successfully performed", info.getBundleInfo());
+                opResult = OperationResult.success(info.getBundleInfo());
             } else {
-                opResult = new OperationResultImpl(false, "Bundle not found");
+                opResult = OperationResult.BUNDLE_NOT_FOUND;
             }
         } catch (BundleException e) {
             if (BundleException.RESOLVE_ERROR == e.getType()) {
-                opResult = new OperationResultImpl(false, "Bundle not found", info != null ? info.getBundleInfo() : null);
+                opResult = OperationResult.notFound(info != null ? info.getBundleInfo() : null);
             } else {
                 throw new ModuleManagementException(e);
             }

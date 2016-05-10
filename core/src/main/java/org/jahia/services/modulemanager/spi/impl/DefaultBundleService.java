@@ -45,7 +45,7 @@ package org.jahia.services.modulemanager.spi.impl;
 
 import org.jahia.osgi.BundleUtils;
 import org.jahia.osgi.FrameworkService;
-import org.jahia.services.modulemanager.payload.BundleInfo;
+import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.spi.BundleService;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleException;

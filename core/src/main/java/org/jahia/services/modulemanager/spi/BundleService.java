@@ -43,8 +43,8 @@
  */
 package org.jahia.services.modulemanager.spi;
 
+import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.ModuleManager;
-import org.jahia.services.modulemanager.payload.BundleInfo;
 import org.osgi.framework.BundleException;
 
 /**

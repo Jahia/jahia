@@ -46,7 +46,7 @@ package org.jahia.services.modulemanager.persistence;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.jahia.services.modulemanager.payload.BundleInfo;
+import org.jahia.services.modulemanager.BundleInfo;
 import org.springframework.core.io.Resource;
 
 /**

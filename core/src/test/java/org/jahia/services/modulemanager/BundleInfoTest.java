@@ -46,7 +46,6 @@ package org.jahia.services.modulemanager;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.jahia.services.modulemanager.payload.BundleInfo;
 import org.junit.Test;
 
 /**

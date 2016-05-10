@@ -43,39 +43,159 @@
  */
 package org.jahia.services.modulemanager;
 
-import org.jahia.services.modulemanager.payload.BundleInfo;
-
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
-/**
- * An interface that represent the processed module operation result.
+import javax.xml.bind.annotation.XmlAttribute;
 
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+/**
+ * Represents the result of the bundle operation, conducted by the {@link ModuleManager} service.
+ * 
  * @author bdjiba
+ * @author Sergiy Shyrkov
  */
-public interface OperationResult extends Serializable {
+public class OperationResult implements Serializable {
+
+    public static enum StatusCode {
+        BundleNotFound, BundleNotValid, Failure, Success;
+    }
 
     /**
-     * Get the operation result messages
-     * @return the message
+     * Represents an operation result, indicating that the supplied file is not a valid bundle.
      */
-    String[] getMessages();
+    public static final OperationResult BUNDLE_NOT_FOUND = new OperationResult(StatusCode.BundleNotFound,
+            "Bundle not found");
+
+    /**
+     * Represents an operation result, indicating that the supplied file is not a valid bundle.
+     */
+    public static final OperationResult BUNDLE_NOT_VALID = new OperationResult(StatusCode.BundleNotValid,
+            "Submitted bundle is either not a valid OSGi bundle or has no required manifest headers"
+                    + " Bundle-SymbolicName and Implementation-Version/Bundle-Version");
+
+    /**
+     * Represents a default failed operation.
+     */
+    public static final OperationResult FAILURE = new OperationResult(StatusCode.Failure, "Operation failed");
+
+    private static final long serialVersionUID = 5330025844927356487L;
+
+    /**
+     * Represents a successfully fulfilled operation.
+     */
+    public static final OperationResult SUCCESS = new OperationResult(StatusCode.Success,
+            "Operation successfully performed");
+
+    /**
+     * Returns an operation result indicating that the specified bundle was not found.
+     *
+     * @param bundleInfo
+     *            the information about the target bundle
+     */
+    public static OperationResult notFound(BundleInfo bundleInfo) {
+        return new OperationResult(BUNDLE_NOT_FOUND.getStatusCode(), BUNDLE_NOT_FOUND.getMessage(), bundleInfo);
+    }
+
+    /**
+     * Returns an operation result indicating successful operation for the specified bundle.
+     *
+     * @param bundleInfo
+     *            the information about the target bundle
+     */
+    public static OperationResult success(BundleInfo bundleInfo) {
+        return new OperationResult(SUCCESS.getStatusCode(), SUCCESS.getMessage(), bundleInfo);
+    }
+
+    @XmlAttribute(name = "bundleInfos", required = false)
+    private List<BundleInfo> bundleInfos = new LinkedList<>();
+
+    private String message;
+
+    private StatusCode statusCode = StatusCode.Success;
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param statusCode
+     *            the operation result status code
+     * @param message
+     *            description of the operation result
+     */
+    public OperationResult(StatusCode statusCode, String message) {
+        super();
+        this.statusCode = statusCode;
+        this.message = message;
+    }
+
+    /**
+     * Initializes an instance of this class.
+     *
+     * @param statusCode
+     *            the operation result status code
+     * @param message
+     *            description of the operation result
+     * @param bundleInfo
+     *            the information about the target bundle
+     */
+    public OperationResult(StatusCode statusCode, String message, BundleInfo bundleInfo) {
+        this(statusCode, message);
+        if (bundleInfo != null) {
+            this.bundleInfos.add(bundleInfo);
+        }
+    }
+
+    /**
+     * Get the bundle info list
+     * 
+     * @return the bundleInfoList the list of info
+     */
+    public List<BundleInfo> getBundleInfos() {
+        return bundleInfos;
+    }
 
     /**
      * Get the operation result flag
+     * 
      * @return true if the operation is successfully performed otherwise false
      */
-    boolean isSuccess();
+    public String getMessage() {
+        return message;
+    }
 
     /**
-     * Get the information of the list of bundles
-     * @return
+     * Returns the status code of the operation.
+     * 
+     * @return the status code of the operation
      */
-    List<BundleInfo> getBundleInfoList();
+    public StatusCode getStatusCode() {
+        return statusCode;
+    }
 
     /**
-     * Add a message to the result
-     * @param v the message to add
+     * Get the operation result flag
+     * 
+     * @return true if the operation is successfully performed otherwise false
      */
-    void addMessage(String v);
+    public boolean isSuccess() {
+        return StatusCode.Success == statusCode;
+    }
+
+    /**
+     * Set the bundle info list
+     * 
+     * @param bundleInfoList
+     *            the bundleInfoList to set
+     */
+    public void setBundleInfos(List<BundleInfo> bundleInfoList) {
+        this.bundleInfos = bundleInfoList;
+    }
+
+    @Override
+    public String toString() {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
 }

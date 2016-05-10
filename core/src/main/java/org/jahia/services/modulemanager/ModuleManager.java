@@ -45,8 +45,6 @@ package org.jahia.services.modulemanager;
 
 import java.util.Set;
 
-import org.jahia.services.modulemanager.payload.BundleStateReport;
-import org.jahia.services.modulemanager.payload.NodeStateReport;
 import org.springframework.core.io.Resource;
 
 /**

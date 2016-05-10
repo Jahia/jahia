@@ -329,6 +329,31 @@
             <artifactId>org.apache.felix.http.proxy</artifactId>
             <version>${felix.http.version}</version>
         </dependency>
+        
+        <dependency>
+            <groupId>org.jahia.features</groupId>
+            <artifactId>dx-core</artifactId>
+            <version>7.2.0.0-SNAPSHOT</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.features</groupId>
+            <artifactId>dx-jax-rs</artifactId>
+            <version>7.2.0.0-SNAPSHOT</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jahia.features</groupId>
+            <artifactId>dx-standard</artifactId>
+            <version>7.2.0.0-SNAPSHOT</version>
+            <classifier>features</classifier>
+            <type>xml</type>
+            <scope>provided</scope>
+        </dependency>
 
     </dependencies>
 

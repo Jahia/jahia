@@ -111,8 +111,6 @@ public class AggregateFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
         HttpServletRequest request = renderContext.getRequest();
-        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
-
         // Generates the key of the requested fragment. If we are currently aggregating a sub-fragment we already have the key
         // in the request. If not, the KeyGenerator will create a key based on the request (resource and context).
         // The generated key will contain temporary placeholders that will be replaced to have the final key.
@@ -131,6 +129,7 @@ public class AggregateFilter extends AbstractFilter {
         logger.debug("Rendering node " + resource.getPath());
 
         request.setAttribute("aggregateFilter.rendering", key);
+        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
 
         logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
 
@@ -148,11 +147,13 @@ public class AggregateFilter extends AbstractFilter {
 
         String key = (String) request.getAttribute("aggregateFilter.rendering");
         logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
+        if(logger.isDebugEnabled()) {
+            long start = (Long) request.getAttribute("aggregateFilter.rendering.time");
+            logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(), System.currentTimeMillis() - start);
+        }
         request.removeAttribute("aggregateFilter.rendering");
-        String result = aggregateContent(previousOut, renderContext);
-        long start = (Long) request.getAttribute("aggregateFilter.rendering.time");
-        logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(),  System.currentTimeMillis() - start);
-        return result;
+        request.removeAttribute("aggregateFilter.rendering.time");
+        return aggregateContent(previousOut, renderContext);
     }
 
     @Override
@@ -168,6 +169,7 @@ public class AggregateFilter extends AbstractFilter {
             // is done, but if an error occur between this two step we need to remove "aggregateFilter.rendering" from request,
             // to avoid blocking render of sibling fragments
             request.removeAttribute("aggregateFilter.rendering");
+            request.removeAttribute("aggregateFilter.rendering.time");
         }
 
         // always remove aggregateFilter.aggregating attr, because it should be remove by the new render chain for a sub fragment

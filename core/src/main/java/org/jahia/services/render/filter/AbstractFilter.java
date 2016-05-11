@@ -524,6 +524,13 @@ public abstract class AbstractFilter implements RenderFilter {
 
     /**
      * Initializes an instance of this class.
+     */
+    public AbstractFilter() {
+        super();
+    }
+
+    /**
+     * Initializes an instance of this class.
      *
      * @param conditions the execution conditions to be matched.
      */

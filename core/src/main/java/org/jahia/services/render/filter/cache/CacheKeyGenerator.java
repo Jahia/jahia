@@ -43,7 +43,6 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.text.ParseException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -62,10 +61,9 @@ public interface CacheKeyGenerator {
     /**
      * Generates the output cache key based on the provided data.
      *
-     *
      * @param resource the current resource being rendered
      * @param renderContext the current rendering context
-     * @param properties
+     * @param properties Fragment properties
      * @return the output cache key based on the provided data
      */
     String generate(Resource resource, RenderContext renderContext, Properties properties);
@@ -75,29 +73,55 @@ public interface CacheKeyGenerator {
      *
      * @param key the cache key to be decomposed
      * @return a map with key field values
-     * @throws ParseException in case of a malformed key
      */
     Map<String, String> parse(String key);
 
     /**
-     * Decomposes the key, replaces the specified field with the provided value
-     * and generates the new key.
-     *
-     * @param key the cache key to be decomposed
-     * @param fieldName the name of the field to be replaced
-     * @param newValue the value of the field to be used in a new key
-     * @return the newly generated key, based on the old one, replacing the
-     *         specified field
-     * @throws ParseException in case of a malformed key
+     * @deprecated Not used anymore
      */
     String replaceField(String key, String fieldName, String newValue) ;
 
+    /**
+     * Return the cache key part generator corresponding to the given field
+     *
+     * @param field the given field
+     * @return the CacheKeyPartGenerator if found, null if not
+     */
     CacheKeyPartGenerator getPartGenerator(String field);
 
+    /**
+     * Transform the fragment key into the final key used for cache the fragment
+     *
+     * @param renderContext the current render context
+     * @param key the key to be process
+     * @return the transformed key
+     */
     String replacePlaceholdersInCacheKey(RenderContext renderContext, String key);
 
-    Map<String, Object> prepareContentForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
+    /**
+     * Before generate a sub fragment during aggregation this function will be call to modify the context of the sub fragment
+     * Sometime we store data in the cache key, to be able to re inject this data when a sub fragment need to be generate again.
+     *
+     * This function return a Map<String, Object>, corresponding to a map of Object that need to stored during sub fragment generation
+     * indexed by "key" of all the key part generators. This Map will be pass again after the fragment generation
+     * to the restoreContextAfterContentGeneration function
+     *
+     * @param keyParts The fragment key parsed, generally it's the result of the function parse(String key)
+     * @param resource The current rendered resource
+     * @param renderContext The current renderContext
+     * @return The map of object that need to be stored during sub fragment generation
+     */
+    Map<String, Object> prepareContextForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
 
+    /**
+     * After generate a sub fragment during aggregation this function will be call to restore the context, as it may be modify by the
+     * prepareContextForContentGeneration() function before the generation.
+     *
+     * @param keyParts The fragment key parsed, generally it's the result of the function parse(String key)
+     * @param resource The current rendered resource
+     * @param renderContext The current renderContext
+     * @param original The map of object that have been stored previously by prepareContextForContentGeneration()
+     */
     void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original);
 
     /**

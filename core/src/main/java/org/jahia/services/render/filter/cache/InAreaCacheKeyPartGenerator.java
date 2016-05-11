@@ -50,7 +50,7 @@ import org.jahia.services.render.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
-public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     @Override
     public String getKey() {
@@ -70,7 +70,7 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Conte
     }
 
     @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         Object original = renderContext.getRequest().getAttribute("inArea");
         if (StringUtils.isEmpty(keyValue)) {
             renderContext.getRequest().removeAttribute("inArea");

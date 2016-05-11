@@ -168,13 +168,10 @@ public class CacheFilter extends AbstractFilter {
 //            logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
 //        }
 
-        String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
-
         // If this content has been served from cache, no need to cache it again
         if (request.getAttribute("cacheFilter.servedFromCache") == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
-            logger.debug("Caching content {}, key = {}", resource.getPath(), finalKey);
 
             // Check if the fragment is still cacheable, based on the key and cache properties
             boolean cacheable = isCacheable(renderContext, key, resource, fragmentProperties);
@@ -191,11 +188,14 @@ public class CacheFilter extends AbstractFilter {
                     }
                 }
 
-                logger.debug("Caching content for final key: {}", finalKey);
+
+                // construct finalKey as we need it to cache the fragment
+                String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+
+                logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
 
                 // if cacheFilter.fragmentExpiration is not specified, it means that we are on the template fragment, the first fragment of the page
                 doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
-
             } else {
                 cacheProvider.addNonCacheableFragment(key);
             }
@@ -219,7 +219,7 @@ public class CacheFilter extends AbstractFilter {
     /**
      * This method logs the time the CacheFilter took to generate or server the cache.
      * @param resource Resource being displayed
-     * @param request the request
+     * @param renderContext the current render context
      */
     private void logCacheFilterRenderingTime(Resource resource, RenderContext renderContext) {
         if (!logger.isDebugEnabled()) {

@@ -49,7 +49,7 @@ import org.jahia.services.render.Resource;
 
 import java.util.Properties;
 
-public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     @Override
     public String getKey() {
@@ -67,7 +67,7 @@ public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, Cont
     }
 
     @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         if (!StringUtils.isEmpty(keyValue) && !keyValue.equals("page")) {
             renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
         }

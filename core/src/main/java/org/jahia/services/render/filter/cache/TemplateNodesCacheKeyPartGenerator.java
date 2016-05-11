@@ -51,7 +51,7 @@ import org.jahia.services.render.Template;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Properties;
 
-public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     @Override
     public String getKey() {
@@ -71,7 +71,7 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     }
 
     @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
         Object original = request.getAttribute("previousTemplate");
         if (!StringUtils.isEmpty(keyValue)) {

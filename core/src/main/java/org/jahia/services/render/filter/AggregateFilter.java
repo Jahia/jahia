@@ -232,7 +232,7 @@ public class AggregateFilter extends AbstractFilter {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
             Resource resource = new Resource(path, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
 
-            Map<String, Object> previous = keyGenerator.prepareContentForContentGeneration(keyAttrs, resource, renderContext);
+            Map<String, Object> previous = keyGenerator.prepareContextForContentGeneration(keyAttrs, resource, renderContext);
 
             // Store sub fragment key in attribute to use it in prepare() instead of generating the sub fragment key from scratch
             renderContext.getRequest().setAttribute("aggregateFilter.aggregating", key);

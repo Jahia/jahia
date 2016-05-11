@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * Created by jkevan on 22/04/2016.
  */
-public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     @Override
     public String getKey() {
@@ -85,7 +85,7 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
     }
 
     @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
         request.removeAttribute("areaNodeTypesRestriction" + request.getAttribute("org.jahia.modules.level"));
         if (StringUtils.isNotEmpty(keyValue)) {

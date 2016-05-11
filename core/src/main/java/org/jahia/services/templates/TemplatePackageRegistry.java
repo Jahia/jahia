@@ -836,9 +836,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
-                List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
-                l.remove(bean);
-                cacheKeyGenerator.setPartGenerators(l);
+                cacheKeyGenerator.unregisterPartGenerator((CacheKeyPartGenerator) bean);
                 flushCaches = true;
             }
 
@@ -1026,14 +1024,7 @@ public class TemplatePackageRegistry {
 
             if (bean instanceof CacheKeyPartGenerator) {
                 final DefaultCacheKeyGenerator cacheKeyGenerator = (DefaultCacheKeyGenerator) SpringContextSingleton.getBean("cacheKeyGenerator");
-                List<CacheKeyPartGenerator> l = new ArrayList<CacheKeyPartGenerator>(cacheKeyGenerator.getPartGenerators());
-                for (CacheKeyPartGenerator generator : cacheKeyGenerator.getPartGenerators()) {
-                    if (generator.getKey().equals(((CacheKeyPartGenerator) bean).getKey())) {
-                        l.remove(generator);
-                    }
-                }
-                l.add((CacheKeyPartGenerator) bean);
-                cacheKeyGenerator.setPartGenerators(l);
+                cacheKeyGenerator.registerPartGenerator((CacheKeyPartGenerator) bean);
                 // flush the cache only once by module
                 flushCaches = true;
             }

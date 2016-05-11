@@ -49,16 +49,43 @@ import org.jahia.services.render.Resource;
 import java.util.Properties;
 
 /**
+ * Interface used to implement custom Cache key part,
+ * This allow to create a new element in cache keys
+ *
  * User: toto
  * Date: 11/20/12
  * Time: 12:20 PM
  */
 public interface CacheKeyPartGenerator {
 
-    public String getKey();
+    /**
+     * The key to identify the part generator
+     *
+     * @return the key
+     */
+    String getKey();
 
-    public String getValue(Resource resource, RenderContext renderContext, Properties properties);
+    /**
+     * get value for this given part generator, this operation can be heavy and read JCR because it won't be construct again
+     * The value will be part of the fragment key stored in the parent fragment.
+     *
+     * @param resource the current rendered resource
+     * @param renderContext the current renderContext
+     * @param properties the current fragment properties
+     * @return the value for this part of the key
+     */
+    String getValue(Resource resource, RenderContext renderContext, Properties properties);
 
-    public String replacePlaceholders(RenderContext renderContext, String keyPart);
+    /**
+     * Replace the keyPart for construct the final key used to store the fragment in cache
+     * This function will be call every time to construct the final key and try get fragment from cache, that's why this operation
+     * need to be as light as possible.
+     * Avoid read JCR, heavy operations or heavy processes in general in this function.
+     *
+     * @param renderContext the current render context
+     * @param keyPart the key part, it's the previous value set by the getValue(...) function
+     * @return return the replaced value
+     */
+    String replacePlaceholders(RenderContext renderContext, String keyPart);
 
 }

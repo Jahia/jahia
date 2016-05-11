@@ -61,7 +61,7 @@ import java.util.Properties;
 /**
  * Cache key part generator that serializes JSON module parameters, if present.
  */
-public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator, ContextModifierCacheKeyPartGenerator {
+public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator, RenderContextTuner {
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleParamsCacheKeyPartGenerator.class);
 
@@ -86,7 +86,7 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     }
 
     @Override
-    public Object prepareContentForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
         if (StringUtils.isNotEmpty(keyValue)) {
             try {
                 JSONObject map = new JSONObject(URLDecoder.decode(keyValue, "UTF-8"));
@@ -105,6 +105,6 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object previous) {
+    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
     }
 }

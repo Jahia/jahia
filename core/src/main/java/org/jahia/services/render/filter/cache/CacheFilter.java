@@ -119,6 +119,7 @@ public class CacheFilter extends AbstractFilter {
             logger.debug("Fragment found in cache for node: {} ", path);
             return returnFromCache(renderContext, key, finalKey, element);
         } else {
+
             logger.debug("Fragment not found in cache for node: {} ", path);
             // resource is lazy in aggregation calling .getNode(), will load the node from jcr and store it in the resource
             if (resource.safeLoadNode() == null) {
@@ -129,13 +130,15 @@ public class CacheFilter extends AbstractFilter {
             }
 
             // The element is not found in the cache with that key. use CacheLatchService to allow only one thread to generate the fragment
-            // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be execute
+            // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
             // for all the waiting threads.
             logger.debug("Use latch to decide between generate or waiting fragment for node: ", path);
+
             return cacheLatchService.getLatch(renderContext, finalKey, new CacheLatchService.LatchReleasedCallback() {
+
                 @Override
                 public String doAfterLatchReleased(RenderContext renderContext, String finalKey) {
-                    // Latch have been released, let's get the fragment from the cache
+                    // Latch has been released, let's get the fragment from the cache
                     Element element = cache.get(finalKey);
                     if (element != null && element.getObjectValue() != null) {
                         logger.debug("Latch released for node: {} and fragment found in cache", path);
@@ -202,10 +205,9 @@ public class CacheFilter extends AbstractFilter {
         }
 
         if (logger.isDebugEnabled()) {
-
             Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
             Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
-            String cacheLogMsg = isServerFromCache ? "CacheFilter served  {} from Cache in {} ms" : "CacheFilter generated {} in {} ms";
+            String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
             long start = (Long) request.getAttribute("cacheFilter.caching.time");
             logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
         }
@@ -221,6 +223,7 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
+
         // remove request attr, to allow reuse it in other render chains
         renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
 

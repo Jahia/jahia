@@ -43,10 +43,17 @@
  */
 package org.jahia.services.modulemanager.persistence.jcr;
 
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
+import org.apache.commons.collections.ComparatorUtils;
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeIteratorWrapper;
@@ -54,6 +61,7 @@ import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.modulemanager.BundleInfo;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
+import org.osgi.framework.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,6 +89,53 @@ final class BundleInfoJcrHelper {
 
     static final String PATH_ROOT = '/' + NODE_NAME_ROOT;
 
+    @SuppressWarnings("unchecked")
+    private static Comparator<Version> VERSION_COMPARATOR = ComparatorUtils
+            .reversedComparator(new Comparator<Version>() {
+
+                @Override
+                public int compare(Version o1, Version o2) {
+                    if (o1 == o2) {
+                        return 0;
+                    }
+                    if (o1 == null) {
+                        return -1;
+                    }
+                    if (o2 == null) {
+                        return -1;
+                    }
+
+                    int result = o1.getMajor() - o2.getMajor();
+                    if (result != 0) {
+                        return result;
+                    }
+
+                    result = o1.getMinor() - o2.getMinor();
+                    if (result != 0) {
+                        return result;
+                    }
+
+                    result = o1.getMicro() - o2.getMicro();
+                    if (result != 0) {
+                        return result;
+                    }
+
+                    if (o1.getQualifier().equals(o2.getQualifier())) {
+                        return 0;
+                    }
+
+                    if ("SNAPSHOT".equals(o1.getQualifier())) {
+                        return -1;
+                    }
+
+                    if ("SNAPSHOT".equals(o2.getQualifier())) {
+                        return 1;
+                    }
+
+                    return o1.getQualifier().compareTo(o2.getQualifier());
+                }
+            });
+
     /**
      * Looks up the target bundle node for specified bundle key.
      * 
@@ -94,38 +149,81 @@ final class BundleInfoJcrHelper {
      */
     static JCRNodeWrapper findTargetNode(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper target = null;
-        BundleInfo info = BundleInfo.fromKey(bundleKey);
-        String path = getJcrPath(info);
-        if (session.nodeExists(path)) {
-            target = session.getNode(path);
-            logger.debug("Bundle node for key {} found at {}");
-        } else if (info.getGroupId() == null) {
-            // we have a short key (group ID is omitted), let's search for it
-            String query = new StringBuilder(128)
-                    .append("select * from [jnt:moduleManagementBundle] where [j:symbolicName]='")
-                    .append(JCRContentUtils.sqlEncode(StringUtils.substringBefore(bundleKey, "/")))
-                    .append("' and [j:version]='")
-                    .append(JCRContentUtils.sqlEncode(StringUtils.substringAfter(bundleKey, "/"))).append("'")
-                    .toString();
-            logger.debug("Search bundle using query: {}", query);
-            JCRNodeIteratorWrapper nodes = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2)
-                    .execute().getNodes();
-            long resultCount = nodes.getSize();
-            if (resultCount > 1) {
-                logger.warn("Found multiple ({}) bundle nodes matching key {}. Will take the first one found.",
-                        resultCount, bundleKey);
-            } else if (resultCount > 0) {
-                target = (JCRNodeWrapper) nodes.nextNode();
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Bundle node for key {} found at {}. Query used: {}",
-                            new Object[] { bundleKey, target.getPath(), query });
-                }
-            } else {
-                logger.debug("No bundle for key {} was found. Query used: {}", bundleKey, query);
+        String groupId = null;
+        String symbolicName = null;
+        String version = null;
+        BundleInfo info = null;
+        if (bundleKey.indexOf('/') == -1) {
+            // we have only symbolic name
+            symbolicName = bundleKey;
+        } else {
+            info = BundleInfo.fromKey(bundleKey);
+            groupId = info.getGroupId();
+            symbolicName = info.getSymbolicName();
+            version = info.getVersion();
+        }
+        if (info != null) {
+            String path = getJcrPath(info);
+            if (session.nodeExists(path)) {
+                target = session.getNode(path);
+                logger.debug("Bundle node for key {} found at {}");
             }
-
         }
 
+        if (target == null && (groupId == null || version == null)) {
+            // we do not have a full key (group ID or/and version are omitted), let's search for it
+            target = guessTargetNode(bundleKey, groupId, symbolicName, version, session);
+        }
+
+        return target;
+    }
+
+    private static JCRNodeWrapper guessTargetNode(String bundleKey, String groupId, String symbolicName, String version,
+            JCRSessionWrapper session) throws RepositoryException, InvalidQueryException {
+        JCRNodeWrapper target = null;
+        StringBuilder queryBuilder = new StringBuilder(128)
+                .append("select * from [jnt:moduleManagementBundle] where [j:symbolicName]='")
+                .append(JCRContentUtils.sqlEncode(symbolicName)).append("'");
+
+        if (version != null) {
+            queryBuilder.append(" and [j:version]='").append(JCRContentUtils.sqlEncode(version)).append("'");
+        }
+        if (groupId != null) {
+            queryBuilder.append(" and [j:groupId]='").append(JCRContentUtils.sqlEncode(groupId)).append("'");
+        }
+
+        String query = queryBuilder.toString();
+        logger.debug("Search bundle using query: {}", query);
+        JCRNodeIteratorWrapper nodes = session.getWorkspace().getQueryManager().createQuery(query, Query.JCR_SQL2)
+                .execute().getNodes();
+        long resultCount = nodes.getSize();
+        if (resultCount > 1) {
+            if (version != null) {
+                logger.warn("Found multiple ({}) bundle nodes matching key {}. Will take the first one found.",
+                        resultCount, bundleKey);
+                target = (JCRNodeWrapper) nodes.nextNode();
+            } else {
+                Map<Version, JCRNodeWrapper> matchingNodes = new TreeMap<>(VERSION_COMPARATOR);
+                while (nodes.hasNext()) {
+                    JCRNodeWrapper candidate = (JCRNodeWrapper) nodes.nextNode();
+                    matchingNodes.put(candidate.hasProperty("j:version")
+                            ? new Version(candidate.getPropertyAsString("j:version")) : null, candidate);
+                }
+                Entry<Version, JCRNodeWrapper> match = matchingNodes.entrySet().iterator().next();
+                target = match.getValue();
+                logger.info(
+                        "Found multiple ({}) bundle nodes matching key {}. Will take the one with highest version: {}.",
+                        new Object[] { resultCount, bundleKey, match.getKey() });
+            }
+        } else if (resultCount > 0) {
+            target = (JCRNodeWrapper) nodes.nextNode();
+            if (logger.isDebugEnabled()) {
+                logger.debug("Bundle node for key {} found at {}. Query used: {}",
+                        new Object[] { bundleKey, target.getPath(), query });
+            }
+        } else {
+            logger.debug("No bundle for key {} was found. Query used: {}", bundleKey, query);
+        }
         return target;
     }
 

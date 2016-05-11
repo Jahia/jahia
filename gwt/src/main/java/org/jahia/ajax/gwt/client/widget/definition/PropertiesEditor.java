@@ -68,6 +68,7 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementService;
 import org.jahia.ajax.gwt.client.util.definition.FormFieldCreator;
 import org.jahia.ajax.gwt.client.widget.content.ContentPickerField;
 import org.jahia.ajax.gwt.client.widget.content.MultipleTextField;
+import org.jahia.ajax.gwt.client.widget.contentengine.NodeHolder;
 import org.jahia.ajax.gwt.client.widget.form.tag.TagField;
 
 import java.util.*;
@@ -102,6 +103,7 @@ public class PropertiesEditor extends FormPanel {
     private String locale = "";
     private GWTBitSet permissions;
     private LangPropertiesEditor translationSource;
+    private NodeHolder engine;
 
     public void setPermissions(GWTBitSet permissions) {
         this.permissions = permissions;
@@ -126,10 +128,24 @@ public class PropertiesEditor extends FormPanel {
      */
     public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
                             List<String> datatype) {
+        this(nodeTypes, properties, datatype, null);
+    }
+
+    /**
+     * default constructor of PropertiesEditor
+     * call {@link this.renderNewFormPanel} to render the PropertiesEditor.
+     * @param nodeTypes List of nodeTypes
+     * @param properties List of properties already set
+     * @param datatype datatype of content, set by itemtype in definition, filter property fields to be displayed
+     * @param engine Engine that generates this property Editor
+     */
+    public PropertiesEditor(List<GWTJahiaNodeType> nodeTypes, Map<String, GWTJahiaNodeProperty> properties,
+                            List<String> datatype, NodeHolder engine) {
         super();
         this.nodeTypes = nodeTypes;
         this.dataType = datatype;
         originalProperties = properties;
+        this.engine = engine;
         cloneProperties();
     }
 
@@ -269,7 +285,7 @@ public class PropertiesEditor extends FormPanel {
             GWTChoiceListInitializer choiceListInitializer = choiceListInitializersValues != null ? choiceListInitializersValues.get(key) : null;
             List<GWTJahiaNodePropertyValue> propertyDefaultValues = null;
             if (this.defaultValues != null) {
-                if (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()) || !nodeTypes.contains(nodeType)) {
+                if (originalProperties.isEmpty() || originalProperties.containsKey(definition.getName()) || !nodeTypes.contains(nodeType) || (engine != null && !engine.isExistingNode())) {
                     propertyDefaultValues = this.defaultValues.get(key);
                 }
             }

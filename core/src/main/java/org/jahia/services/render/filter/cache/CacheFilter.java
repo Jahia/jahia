@@ -70,7 +70,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
  * Then cache the result if necessary, list of request parameters:
  *
- * cacheFilter.caching.time:                    Used to measure the time to generate a fragment, set in prepare()
+ * cacheFilter.rendering.time:                  Used to measure the time to generate a fragment, set in prepare()
  *                                              used in execute()
  *
  * cacheFilter.servedFromCache:                 Used to put a flag in request when content is served by the cache
@@ -98,7 +98,7 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        renderContext.getRequest().setAttribute("cacheFilter.caching.time", System.currentTimeMillis());
+        renderContext.getRequest().setAttribute("cacheFilter.rendering.time", System.currentTimeMillis());
         final String path = resource.getNodePath();
         final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
 
@@ -208,7 +208,7 @@ public class CacheFilter extends AbstractFilter {
             Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
             Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
             String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
-            long start = (Long) request.getAttribute("cacheFilter.caching.time");
+            long start = (Long) request.getAttribute("cacheFilter.rendering.time");
             logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
         }
 

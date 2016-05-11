@@ -204,38 +204,33 @@ public class CacheFilter extends AbstractFilter {
             cacheLatchService.releaseLatch();
         }
 
-
+        String result = previousOut;
 
         // Append debug information
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(request.getParameter("cacheinfo"));
-        if (displayCacheInfo && !previousOut.contains("<body") && previousOut.trim().length() > 0) {
-            String appendedInformation = appendDebugInformation(renderContext, key, previousOut);
-            //Add log for Cache Filter rendering time.
-            if (logger.isDebugEnabled()) {
-                logCacheFilterRenderingTime(resource, request);
-            }
+        if (displayCacheInfo && !result.contains("<body") && result.trim().length() > 0) {
+            result = appendDebugInformation(renderContext, key, result);
+        }
 
-            return appendedInformation;
-        }
-        //Add log for Cache Filter rendering time.
-        if (logger.isDebugEnabled()) {
-            logCacheFilterRenderingTime(resource, request);
-        }
-        return previousOut;
+        logCacheFilterRenderingTime(resource, renderContext);
+        return result;
     }
 
     /**
-     * This method log the time the CacheFilter took to generate or server the
-     * cache.
+     * This method logs the time the CacheFilter took to generate or server the cache.
      * @param resource Resource being displayed
      * @param request the request
      */
-    private void logCacheFilterRenderingTime(Resource resource, HttpServletRequest request) {
-            Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
-            Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
-            String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
-            long start = (Long) request.getAttribute("cacheFilter.rendering.time");
-            logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
+    private void logCacheFilterRenderingTime(Resource resource, RenderContext renderContext) {
+        if (!logger.isDebugEnabled()) {
+            return;
+        }
+        HttpServletRequest request = renderContext.getRequest();
+        Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
+        Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
+        String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
+        long start = (Long) request.getAttribute("cacheFilter.rendering.time");
+        logger.debug(cacheLogMsg, resource.getPath(), System.currentTimeMillis() - start);
     }
 
     @Override

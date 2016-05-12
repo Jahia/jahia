@@ -1128,9 +1128,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     public void onApplicationEvent(TemplatePackageRedeployedEvent event) {
-        if (!this.isDisabled()) {
-            flushNotCacheableFragment();
-        }
+        flushNotCacheableFragment();
     }
 
     /**

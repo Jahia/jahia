@@ -84,7 +84,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
     private Cache syncCache;
-    private Map<String, Boolean> nonCacheableFragments;
+    private Set<String> nonCacheableFragments = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());;
     private CacheKeyGenerator keyGenerator;
     private JCRSessionFactory jcrSessionFactory;
 
@@ -134,8 +134,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
                 syncCache = cacheManager.getCache(CACHE_SYNC_NAME);
             }
         }
-
-        nonCacheableFragments = new ConcurrentHashMap<String, Boolean>(512);
     }
 
     /**
@@ -231,7 +229,6 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         dependenciesCache.flush();
         regexpDependenciesCache.removeAll();
         regexpDependenciesCache.flush();
-        nonCacheableFragments.clear();
     }
 
     public Cache getRegexpDependenciesCache() {
@@ -329,7 +326,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @param key fragment key
      */
     public void addNonCacheableFragment(String key) {
-        nonCacheableFragments.put(key, Boolean.TRUE);
+        nonCacheableFragments.add(key);
     }
 
     /**
@@ -340,7 +337,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
         Map<String, String> keyAttrs = keyGenerator.parse(key);
         String path = keyAttrs.get("path");
         List<String> removableKeys = new ArrayList<String>();
-        for (String nonCacheableKey : nonCacheableFragments.keySet()) {
+        for (String nonCacheableKey : nonCacheableFragments) {
             if (nonCacheableKey.contains(path)) {
                 removableKeys.add(nonCacheableKey);
             }
@@ -363,7 +360,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
      * @return whether the fragment is known as non-cacheable
      */
     public boolean isNonCacheableFragment(String key) {
-        return nonCacheableFragments.containsKey(key);
+        return nonCacheableFragments.contains(key);
     }
 
     public void propagatePathFlushToCluster(String nodePathOrIdentifier) {

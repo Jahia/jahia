@@ -63,7 +63,7 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
 
     @Override
     public String getKey() {
-        return "restriction";
+        return "nodeTypesRestriction";
     }
 
     @Override
@@ -73,7 +73,7 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
         if (level != null) {
             String restrictions = (String) request.getAttribute("areaNodeTypesRestriction" + level);
             if (StringUtils.isNotEmpty(restrictions)) {
-                return restrictions + "_" + level;
+                return restrictions + "*" + level;
             }
         }
         return "";
@@ -89,7 +89,7 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
         HttpServletRequest request = renderContext.getRequest();
         request.removeAttribute("areaNodeTypesRestriction" + request.getAttribute("org.jahia.modules.level"));
         if (StringUtils.isNotEmpty(keyValue)) {
-            String[] keyValues = keyValue.split("_");
+            String[] keyValues = keyValue.split("\\*");
             Integer level = Integer.parseInt(keyValues[1]);
             String restrictions = keyValues[0];
             request.setAttribute("org.jahia.modules.level", level);

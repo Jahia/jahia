@@ -49,8 +49,7 @@ import org.jahia.services.render.Resource;
 import java.util.Properties;
 
 /**
- * Interface used to implement custom Cache key part,
- * This allow to create a new element in cache keys
+ * Interface used to implement custom Cache key part
  *
  * User: toto
  * Date: 11/20/12
@@ -59,15 +58,12 @@ import java.util.Properties;
 public interface CacheKeyPartGenerator {
 
     /**
-     * The key to identify the part generator
-     *
-     * @return the key
+     * @return The key to identify the part generator
      */
     String getKey();
 
     /**
-     * get value for this given part generator, this operation can be heavy and read JCR because it won't be construct again
-     * The value will be part of the fragment key stored in the parent fragment.
+     * Get value of this given key part.
      *
      * @param resource the current rendered resource
      * @param renderContext the current renderContext
@@ -77,15 +73,13 @@ public interface CacheKeyPartGenerator {
     String getValue(Resource resource, RenderContext renderContext, Properties properties);
 
     /**
-     * Replace the keyPart for construct the final key used to store the fragment in cache
-     * This function will be call every time to construct the final key and try get fragment from cache, that's why this operation
-     * need to be as light as possible.
-     * Avoid read JCR, heavy operations or heavy processes in general in this function.
+     * Replace placeholders in the keyPart to construct the final key used to store the fragment in the cache.
+     * This function will be called every time to construct the final key and try get fragment from cache,
+     * that's why this operation need to be as light as possible.
      *
      * @param renderContext the current render context
-     * @param keyPart the key part, it's the previous value set by the getValue(...) function
-     * @return return the replaced value
+     * @param keyPart the key part, a value returned by the getValue(...) function
+     * @return the final key where plecaholders replaced with actual values
      */
     String replacePlaceholders(RenderContext renderContext, String keyPart);
-
 }

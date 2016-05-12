@@ -73,17 +73,17 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     // default part generators coming from the core, they are registered in the afterPropertiesSet
     private List<CacheKeyPartGenerator> partGenerators;
 
-    // all part generators coming from the core and the modules, this map defined the order of element in the key
-    // it's important to maintain this order everywhere in key parsing, construction, transformation
-    // you can rely on this map order to access element in a given key.
-    private Map<String, CacheKeyPartGenerator> partGeneratorsIndexedByKey = new LinkedHashMap<>();
+    // All part generators coming from the core and the modules. This map defines the order of elements in the key.
+    // It's important to maintain this order everywhere in key parsing, construction, transformation.
+    // You can rely on this map iteration order to access elements in a given key.
+    private Map<String, CacheKeyPartGenerator> partGeneratorsByKey = new LinkedHashMap<>();
 
     /**
-     * Register a part generator, if part generator already exist with that key it will be replace
+     * Register a part generator, if part generator already exist with that key it will be replaced
      * @param partGenerator the part generator to be registered
      */
     public void registerPartGenerator(CacheKeyPartGenerator partGenerator) {
-        partGeneratorsIndexedByKey.put(partGenerator.getKey(), partGenerator);
+        partGeneratorsByKey.put(partGenerator.getKey(), partGenerator);
     }
 
     /**
@@ -91,15 +91,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
      * @param partGenerator the part generator to be unregistered
      */
     public void unregisterPartGenerator(CacheKeyPartGenerator partGenerator) {
-        partGeneratorsIndexedByKey.remove(partGenerator.getKey());
+        partGeneratorsByKey.remove(partGenerator.getKey());
     }
 
     @Override
     public String generate(Resource resource, RenderContext renderContext, Properties properties) {
-
-        // list of key part should have the same order of part generators registered order
         List<String> args = new LinkedList<>();
-        for (CacheKeyPartGenerator generator : partGeneratorsIndexedByKey.values()) {
+        for (CacheKeyPartGenerator generator : partGeneratorsByKey.values()) {
             args.add(generator.getValue(resource, renderContext, properties));
         }
         return StringUtils.join(args, KEY_PART_DELIMITER);
@@ -107,38 +105,33 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     @Override
     public Map<String, String> parse(String key) {
-
         String[] values = getSplit(key);
-        Map<String, String> result = new LinkedHashMap<>(partGeneratorsIndexedByKey.size());
-
+        Map<String, String> result = new LinkedHashMap<>(partGeneratorsByKey.size());
         int index = 0;
-        for (String partGeneratorKey : partGeneratorsIndexedByKey.keySet()) {
+        for (String partGeneratorKey : partGeneratorsByKey.keySet()) {
             result.put(partGeneratorKey, values[index] == null || values[index].equals("null") ? null : values[index]);
             index++;
         }
-
         return result;
     }
 
     @Override
+    @Deprecated // not used anymore
     public String replaceField(String key, String fieldName, String newValue) {
-        // deprecated, because not used anymore
         return key;
     }
 
     @Override
     public CacheKeyPartGenerator getPartGenerator(String field) {
-        return partGeneratorsIndexedByKey.get(field);
+        return partGeneratorsByKey.get(field);
     }
 
     @Override
     public String replacePlaceholdersInCacheKey(RenderContext renderContext, String key) {
-
         String[] args = getSplit(key);
         String[] newArgs = new String[args.length];
-
         int index = 0;
-        for (CacheKeyPartGenerator keyPartGenerator : partGeneratorsIndexedByKey.values()) {
+        for (CacheKeyPartGenerator keyPartGenerator : partGeneratorsByKey.values()) {
             newArgs[index] = keyPartGenerator.replacePlaceholders(renderContext, args[index]);
             index++;
         }
@@ -153,7 +146,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
      */
     private String[] getSplit(String key) {
 
-        String[] res = new String[partGeneratorsIndexedByKey.size()];
+        String[] res = new String[partGeneratorsByKey.size()];
         int index = 0;
         int start = 0;
         int end;
@@ -164,7 +157,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
         res[ index ++ ] = key.substring(start);
         while (index < res.length) res[ index ++ ] = "";
 
-        if(res.length != partGeneratorsIndexedByKey.size( )) {
+        if(res.length != partGeneratorsByKey.size( )) {
             throw new IllegalStateException("Mismatched number of parts in key");
         }
 
@@ -173,10 +166,9 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     @Override
     public Map<String, Object> prepareContextForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext) {
-
         Map<String, Object> original = new HashMap<>();
         for (Map.Entry<String, String> entry : keyParts.entrySet()) {
-            CacheKeyPartGenerator partGenerator = partGeneratorsIndexedByKey.get(entry.getKey());
+            CacheKeyPartGenerator partGenerator = partGeneratorsByKey.get(entry.getKey());
             if (partGenerator instanceof RenderContextTuner) {
                 original.put(entry.getKey(), ((RenderContextTuner) partGenerator).prepareContextForContentGeneration(entry.getValue(), resource, renderContext));
             }
@@ -186,9 +178,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
 
     @Override
     public void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original) {
-
         for (Map.Entry<String, String> entry : keyParts.entrySet()) {
-            CacheKeyPartGenerator partGenerator = partGeneratorsIndexedByKey.get(entry.getKey());
+            CacheKeyPartGenerator partGenerator = partGeneratorsByKey.get(entry.getKey());
             if (partGenerator instanceof RenderContextTuner) {
                 ((RenderContextTuner) partGenerator).restoreContextAfterContentGeneration(entry.getValue(), resource, renderContext, original.get(entry.getKey()));
             }
@@ -284,7 +275,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     public void afterPropertiesSet() throws Exception {
 
         // register all the part generators that come from the core
-        if(partGenerators != null && partGenerators.size() > 0) {
+        if (partGenerators != null && partGenerators.size() > 0) {
             for (CacheKeyPartGenerator partGenerator : partGenerators) {
                 registerPartGenerator(partGenerator);
             }

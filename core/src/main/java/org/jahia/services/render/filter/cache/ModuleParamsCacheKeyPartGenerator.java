@@ -86,10 +86,10 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     }
 
     @Override
-    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        if (StringUtils.isNotEmpty(keyValue)) {
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
+        if (StringUtils.isNotEmpty(value)) {
             try {
-                JSONObject map = new JSONObject(URLDecoder.decode(keyValue, "UTF-8"));
+                JSONObject map = new JSONObject(URLDecoder.decode(value, "UTF-8"));
                 Iterator<?> keys = map.keys();
                 while (keys.hasNext()) {
                     String key = (String) keys.next();
@@ -105,6 +105,6 @@ public class ModuleParamsCacheKeyPartGenerator implements CacheKeyPartGenerator,
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
     }
 }

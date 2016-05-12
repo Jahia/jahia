@@ -67,14 +67,14 @@ public class ContextCacheKeyPartGenerator implements CacheKeyPartGenerator, Rend
     }
 
     @Override
-    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
-        if (!StringUtils.isEmpty(keyValue) && !keyValue.equals("page")) {
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
+        if (!StringUtils.isEmpty(value) && !value.equals("page")) {
             renderContext.getRequest().setAttribute("templateSet", Boolean.TRUE);
         }
         return null;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
     }
 }

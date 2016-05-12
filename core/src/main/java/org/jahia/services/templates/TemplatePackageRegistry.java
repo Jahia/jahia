@@ -113,7 +113,8 @@ import java.util.*;
  * @author Sergiy Shyrkov
  */
 public class TemplatePackageRegistry {
-    private static Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(TemplatePackageRegistry.class);
 
     private static boolean hasEncounteredIssuesWithDefinitions = false;
 
@@ -714,7 +715,7 @@ public class TemplatePackageRegistry {
         private GWTResourceConfig gwtResourceConfig;
 
         private boolean flushCaches;
-        
+
         private PasswordService passwordService;
 
         @Override
@@ -886,7 +887,7 @@ public class TemplatePackageRegistry {
                     logger.error("Cannot unregistered search provider", e);
                 }
             }
-            
+
             if (bean instanceof PasswordDigester) {
                 passwordService.unregisterDigester(((PasswordDigester) bean).getId());
             }
@@ -1096,7 +1097,7 @@ public class TemplatePackageRegistry {
                     logger.error("Cannot register module GWT resources", e);
                 }
             }
-            
+
             if (bean instanceof PasswordDigester) {
                 passwordService.registerDigester((PasswordDigester) bean);
             }

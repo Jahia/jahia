@@ -70,18 +70,18 @@ public class InAreaCacheKeyPartGenerator implements CacheKeyPartGenerator, Rende
     }
 
     @Override
-    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         Object original = renderContext.getRequest().getAttribute("inArea");
-        if (StringUtils.isEmpty(keyValue)) {
+        if (StringUtils.isEmpty(value)) {
             renderContext.getRequest().removeAttribute("inArea");
         } else {
-            renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(keyValue));
+            renderContext.getRequest().setAttribute("inArea", Boolean.valueOf(value));
         }
         return original;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
         if (original != null) {
             renderContext.getRequest().setAttribute("inArea", original);
         } else {

@@ -66,12 +66,12 @@ public class WrappedCacheKeyPartGenerator implements CacheKeyPartGenerator, Rend
     }
 
     @Override
-    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         renderContext.getRequest().setAttribute("skipWrapper", Boolean.TRUE);
         return null;
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
     }
 }

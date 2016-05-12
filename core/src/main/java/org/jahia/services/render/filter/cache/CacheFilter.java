@@ -189,7 +189,6 @@ public class CacheFilter extends AbstractFilter {
                 }
 
 
-                // construct finalKey as we need it to cache the fragment
                 String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
 
                 logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
@@ -216,11 +215,6 @@ public class CacheFilter extends AbstractFilter {
         return result;
     }
 
-    /**
-     * This method logs the time the CacheFilter took to generate or server the cache.
-     * @param resource Resource being displayed
-     * @param renderContext the current render context
-     */
     private void logCacheFilterRenderingTime(Resource resource, RenderContext renderContext) {
         if (!logger.isDebugEnabled()) {
             return;

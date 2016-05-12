@@ -71,6 +71,9 @@ public interface CacheKeyGenerator {
     /**
      * Parses the specified key into separate fields.
      *
+     * The map returned will specifically be passed as the first argument to the prepareContextForContentGeneration and restoreContextAfterContentGeneration methods,
+     * so implementations of these three methods should be coordinated taking this fact into account.
+     *
      * @param key the cache key to be decomposed
      * @return a map with key field values
      */
@@ -79,6 +82,7 @@ public interface CacheKeyGenerator {
     /**
      * @deprecated Not used anymore
      */
+    @Deprecated
     String replaceField(String key, String fieldName, String newValue) ;
 
     /**
@@ -90,37 +94,35 @@ public interface CacheKeyGenerator {
     CacheKeyPartGenerator getPartGenerator(String field);
 
     /**
-     * Transform the fragment key into the final key used for cache the fragment
+     * Transform the fragment key into the final key used for caching the fragment
      *
      * @param renderContext the current render context
-     * @param key the key to be process
+     * @param key the key to be transformed
      * @return the transformed key
      */
     String replacePlaceholdersInCacheKey(RenderContext renderContext, String key);
 
     /**
-     * Before generate a sub fragment during aggregation this function will be call to modify the context of the sub fragment
-     * Sometime we store data in the cache key, to be able to re inject this data when a sub fragment need to be generate again.
+     * Before generating a sub-fragment during aggregation, this function will be called to modify the render context.
      *
-     * This function return a Map<String, Object>, corresponding to a map of Object that need to stored during sub fragment generation
-     * indexed by "key" of all the key part generators. This Map will be pass again after the fragment generation
-     * to the restoreContextAfterContentGeneration function
+     * This function returns a map that represents the state of the render context as it was at the moment of the method invocation.
+     * The map retrieved is to be passed as an argument to the restoreContextAfterContentGeneration method when generation of the
+     * sub-fragment completes.
      *
-     * @param keyParts The fragment key parsed, generally it's the result of the function parse(String key)
+     * @param keyParts The fragment key parsed, typically a map returned by the parse method
      * @param resource The current rendered resource
      * @param renderContext The current renderContext
-     * @return The map of object that need to be stored during sub fragment generation
+     * @return A map that represents the original state of the render context
      */
     Map<String, Object> prepareContextForContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext);
 
     /**
-     * After generate a sub fragment during aggregation this function will be call to restore the context, as it may be modify by the
-     * prepareContextForContentGeneration() function before the generation.
+     * After generating a sub-fragment during aggregation, this function will be called to restore the render context.
      *
-     * @param keyParts The fragment key parsed, generally it's the result of the function parse(String key)
+     * @param keyParts The fragment key parsed, typically a map returned by the parse method
      * @param resource The current rendered resource
      * @param renderContext The current renderContext
-     * @param original The map of object that have been stored previously by prepareContextForContentGeneration()
+     * @param original The map previously retrieved via prepareContextForContentGeneration() invocation
      */
     void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original);
 

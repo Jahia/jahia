@@ -71,11 +71,11 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     }
 
     @Override
-    public Object prepareContextForContentGeneration(String keyValue, Resource resource, RenderContext renderContext) {
+    public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
         Object original = request.getAttribute("previousTemplate");
-        if (!StringUtils.isEmpty(keyValue)) {
-            Template template = new Template(keyValue);
+        if (!StringUtils.isEmpty(value)) {
+            Template template = new Template(value);
             request.setAttribute("previousTemplate", template);
         } else {
             request.removeAttribute("previousTemplate");
@@ -84,7 +84,7 @@ public class TemplateNodesCacheKeyPartGenerator implements CacheKeyPartGenerator
     }
 
     @Override
-    public void restoreContextAfterContentGeneration(String keyValue, Resource resource, RenderContext renderContext, Object original) {
+    public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
         if (original != null) {
             renderContext.getRequest().setAttribute("previousTemplate", original);
         } else {

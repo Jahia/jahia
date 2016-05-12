@@ -93,7 +93,7 @@ public class CacheFilter extends AbstractFilter {
     protected int errorCacheExpiration = 5;
     protected int dependenciesLimit = 1000;
 
-    private CacheLatchService cacheLatchService;
+    private ModuleGeneratorQueue generatorQueue;
 
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -134,20 +134,15 @@ public class CacheFilter extends AbstractFilter {
             // for all the waiting threads.
             logger.debug("Use latch to decide between generate or waiting fragment for node: ", path);
 
-            return cacheLatchService.getLatch(renderContext, finalKey, new CacheLatchService.LatchReleasedCallback() {
-
-                @Override
-                public String doAfterLatchReleased(RenderContext renderContext, String finalKey) {
-                    // Latch has been released, let's get the fragment from the cache
-                    Element element = cache.get(finalKey);
-                    if (element != null && element.getObjectValue() != null) {
-                        logger.debug("Latch released for node: {} and fragment found in cache", path);
-                        return returnFromCache(renderContext, key, finalKey, element);
-                    }
-                    logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
-                    return null;
+            if (generatorQueue.getLatch(renderContext, finalKey)) {
+                element = cache.get(finalKey);
+                if (element != null && element.getObjectValue() != null) {
+                    logger.debug("Latch released for node: {} and fragment found in cache", path);
+                    return returnFromCache(renderContext, key, finalKey, element);
                 }
-            });
+                logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
+            }
+            return null;
         }
     }
 
@@ -200,7 +195,7 @@ public class CacheFilter extends AbstractFilter {
             }
 
             // content is in cache and available, release latch for other threads waiting for this fragment
-            cacheLatchService.releaseLatch();
+            generatorQueue.releaseLatch();
         }
 
         String result = previousOut;
@@ -235,7 +230,7 @@ public class CacheFilter extends AbstractFilter {
 
         // If an error occured during render and the latch is not release during the execute() it's important that we release it
         // in any case to avoid threads waiting for nothing
-        cacheLatchService.releaseLatch();
+        generatorQueue.releaseLatch();
     }
 
     @Override
@@ -489,7 +484,7 @@ public class CacheFilter extends AbstractFilter {
         this.dependenciesLimit = dependenciesLimit;
     }
 
-    public void setCacheLatchService(CacheLatchService cacheLatchService) {
-        this.cacheLatchService = cacheLatchService;
+    public void setGeneratorQueue(ModuleGeneratorQueue generatorQueue) {
+        this.generatorQueue = generatorQueue;
     }
 }

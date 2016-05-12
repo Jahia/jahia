@@ -65,6 +65,7 @@ import java.util.concurrent.TimeUnit;
  * Created by jkevan on 09/05/2016.
  */
 public class CacheLatchService {
+
     private static final Logger logger = LoggerFactory.getLogger(CacheLatchService.class);
 
     protected ModuleGeneratorQueue generatorQueue;
@@ -80,16 +81,15 @@ public class CacheLatchService {
      * @param key the key for the latch
      * @param request current request
      * @return return null when the latch is released, or an instance of CountDownLatch when the latch is acquired
-     * @throws Exception
      */
     private CountDownLatch avoidParallelProcessingOfSameModule(String key, HttpServletRequest request) throws Exception {
+
         CountDownLatch latch;
         boolean mustWait = true;
 
         Map<String, CountDownLatch> generatingModules = generatorQueue.getGeneratingModules();
         if (generatingModules.get(key) == null && acquiredSemaphore.get() == null) {
-            if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(),
-                    TimeUnit.MILLISECONDS)) {
+            if (!generatorQueue.getAvailableProcessings().tryAcquire(generatorQueue.getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                 manageThreadDump();
                 throw new Exception("Module generation takes too long due to maximum parallel processing reached (" +
                         generatorQueue.getMaxModulesToGenerateInParallel() + ") - " + key + " - " +
@@ -121,9 +121,7 @@ public class CacheLatchService {
                 }
                 latch = null;
             } catch (InterruptedException ie) {
-                if (logger.isDebugEnabled()) {
-                    logger.debug("The waiting thread has been interrupted :", ie);
-                }
+                logger.debug("The waiting thread has been interrupted", ie);
                 throw new Exception(ie);
             }
         }
@@ -165,27 +163,26 @@ public class CacheLatchService {
      * @param finalKey fragment key
      * @param latchReleasedCallback callback executed for waiting threads, that will be call after the latch is released by first thread
      * @return null for first thread or return the latchReleasedCallback.doAfterLatchReleased for others thread (when first thread have release the latch.
-     *
-     * @throws Exception
      */
     protected String getLatch(RenderContext renderContext, String finalKey, LatchReleasedCallback latchReleasedCallback) throws Exception {
+
         //Keeps a list of keys being generated to avoid infinite loop
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList == null) {
-            userKeysLinkedList = new LinkedList<>();
-            userKeys.set(userKeysLinkedList);
+        LinkedList<String> userKeysList = userKeys.get();
+        if (userKeysList == null) {
+            userKeysList = new LinkedList<>();
+            userKeys.set(userKeysList);
         }
-        if (userKeysLinkedList.contains(finalKey)) {
+        if (userKeysList.contains(finalKey)) {
             return null;
         }
-        userKeysLinkedList.add(0, finalKey);
+        userKeysList.add(0, finalKey);
 
         // get the latch
-        CountDownLatch countDownLatch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest());
+        CountDownLatch latch = avoidParallelProcessingOfSameModule(finalKey, renderContext.getRequest());
 
         // latch is null mean that it's have been released
-        if (countDownLatch == null) {
-            if(latchReleasedCallback != null) {
+        if (latch == null) {
+            if (latchReleasedCallback != null) {
                 return latchReleasedCallback.doAfterLatchReleased(renderContext, finalKey);
             }
         } else {
@@ -195,7 +192,7 @@ public class CacheLatchService {
                 latches = new HashSet<>();
                 processingLatches.set(latches);
             }
-            latches.add(countDownLatch);
+            latches.add(latch);
         }
         return null;
     }
@@ -205,10 +202,12 @@ public class CacheLatchService {
      * All the other waiting threads will be free to get/read the resource generate by the first thread
      */
     protected void releaseLatch() {
-        LinkedList<String> userKeysLinkedList = userKeys.get();
-        if (userKeysLinkedList != null && userKeysLinkedList.size() > 0) {
 
-            String finalKey = userKeysLinkedList.remove(0);
+        LinkedList<String> userKeysList = userKeys.get();
+
+        if (userKeysList != null && userKeysList.size() > 0) {
+
+            String finalKey = userKeysList.remove(0);
             if (finalKey.equals(acquiredSemaphore.get())) {
                 generatorQueue.getAvailableProcessings().release();
                 acquiredSemaphore.set(null);

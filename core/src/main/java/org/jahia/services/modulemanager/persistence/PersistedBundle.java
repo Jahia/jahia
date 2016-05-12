@@ -114,10 +114,20 @@ public class PersistedBundle extends BundleInfo {
         return info;
     }
 
+    /**
+     * Returns bundle file checksum.
+     * 
+     * @return bundle file checksum
+     */
     public String getChecksum() {
         return checksum;
     }
 
+    /**
+     * The display name for this bundle.
+     * 
+     * @return display name for this bundle
+     */
     public String getDisplayName() {
         return displayName;
     }
@@ -131,6 +141,11 @@ public class PersistedBundle extends BundleInfo {
         return "jcr:" + getKey();
     }
 
+    /**
+     * Returns a resource, which represents the bundle.
+     * 
+     * @return a resource, which represents the bundle
+     */
     public Resource getResource() {
         return resource;
     }
@@ -140,14 +155,32 @@ public class PersistedBundle extends BundleInfo {
         return new HashCodeBuilder().append(getKey()).append(getChecksum()).toHashCode();
     }
 
+    /**
+     * Sets the checksum of the bundle file.
+     * 
+     * @param checksum
+     *            the checksum of the bundle file
+     */
     public void setChecksum(String checksum) {
         this.checksum = checksum;
     }
 
+    /**
+     * Set the displayable name for this bundle.
+     * 
+     * @param displayName
+     *            the displayable name for this bundle
+     */
     public void setDisplayName(String displayName) {
         this.displayName = displayName;
     }
 
+    /**
+     * Sets the resource, which represents this bundle.
+     * 
+     * @param jarFile
+     *            the resource, which represents this bundle
+     */
     public void setResource(Resource jarFile) {
         this.resource = jarFile;
     }

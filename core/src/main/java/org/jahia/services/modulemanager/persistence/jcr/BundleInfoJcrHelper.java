@@ -50,7 +50,6 @@ import java.util.TreeMap;
 
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
-import javax.jcr.query.InvalidQueryException;
 import javax.jcr.query.Query;
 
 import org.apache.commons.collections.ComparatorUtils;
@@ -178,8 +177,30 @@ final class BundleInfoJcrHelper {
         return target;
     }
 
+    /**
+     * Tries to find the target bundle node based on the info we have.
+     * <p>
+     * We use a JCR query for bundle with symbolic name, group ID / version (if available). If query delivers multiple results we try our
+     * best to find the best matching node: in case no version was specified, we find the result with the highest version; if the version
+     * was specified, we log a warning that multiple candidates match the requested bundle (meaning we have multiple bundles with same
+     * symbolic name and version, but different group ID) and we take the first one from the list of matching nodes.
+     * 
+     * @param bundleKey
+     *            the original bundle key
+     * @param groupId
+     *            the group ID for the bundle
+     * @param symbolicName
+     *            bundle symbolic name
+     * @param version
+     *            the version of the bundle
+     * @param session
+     *            current JCR session
+     * @return the found bundle or <code>null</code> if no bundle could be found
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
     private static JCRNodeWrapper guessTargetNode(String bundleKey, String groupId, String symbolicName, String version,
-            JCRSessionWrapper session) throws RepositoryException, InvalidQueryException {
+            JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper target = null;
         StringBuilder queryBuilder = new StringBuilder(128)
                 .append("select * from [jnt:moduleManagementBundle] where [j:symbolicName]='")
@@ -321,6 +342,15 @@ final class BundleInfoJcrHelper {
         return target;
     }
 
+    /**
+     * Returns the module manager JCR root node, creating it if does not exist yet.
+     * 
+     * @param session
+     *            the current JCR session
+     * @return the module manager JCR root node, creating it if does not exist yet
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
     private static JCRNodeWrapper getRootNode(JCRSessionWrapper session) throws RepositoryException {
         JCRNodeWrapper root = null;
         try {

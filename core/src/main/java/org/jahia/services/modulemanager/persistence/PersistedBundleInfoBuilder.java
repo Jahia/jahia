@@ -81,6 +81,15 @@ public final class PersistedBundleInfoBuilder {
 
     private static final Logger logger = LoggerFactory.getLogger(PersistedBundleInfoBuilder.class);
 
+    /**
+     * Parses the supplied resource and builds the information for the bundle.
+     * 
+     * @param resource
+     *            the bundle resource
+     * @return the information about the supplied bundle
+     * @throws IOException
+     *             in case of resource read errors
+     */
     public static PersistedBundle build(Resource resource) throws IOException {
         // populate data from manifest
         String groupId = null;
@@ -117,6 +126,15 @@ public final class PersistedBundleInfoBuilder {
         return bundleInfo;
     }
 
+    /**
+     * Computes the digest for the supplied resource.
+     * 
+     * @param resource
+     *            the resource to calculate digest for
+     * @return the digest for the supplied resource
+     * @throws IOException
+     *             in case of resource read errors
+     */
     private static String calculateDigest(Resource resource) throws IOException {
         try (DigestInputStream digestInputStream = toDigestInputStream(
                 new BufferedInputStream(resource.getInputStream()))) {
@@ -130,6 +148,13 @@ public final class PersistedBundleInfoBuilder {
         }
     }
 
+    /**
+     * Wraps the supplied input stream into digest input stream.
+     * 
+     * @param is
+     *            the source input stream
+     * @return the digest input stream, wrapping the source one
+     */
     private static DigestInputStream toDigestInputStream(InputStream is) {
         try {
             return new DigestInputStream(is, MessageDigest.getInstance("MD5"));
@@ -138,6 +163,9 @@ public final class PersistedBundleInfoBuilder {
         }
     }
 
+    /**
+     * Initializes an instance of this class.
+     */
     private PersistedBundleInfoBuilder() {
         super();
     }

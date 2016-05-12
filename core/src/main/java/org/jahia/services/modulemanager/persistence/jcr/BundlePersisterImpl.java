@@ -91,6 +91,17 @@ public class BundlePersisterImpl implements BundlePersister {
         }
     }
 
+    /**
+     * Deletes the JCR node, which corresponds to the provided bundle key, if present.
+     * 
+     * @param bundleKey
+     *            the key of the bundle to delete the node for
+     * @param session
+     *            current JCR session
+     * @return <code>true</code> if the node was deleted; <code>false</code> in case the corresponding node is not present in JCR
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
     protected boolean delete(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
         boolean removed = false;
         String path = getJcrPath(bundleKey);
@@ -148,6 +159,17 @@ public class BundlePersisterImpl implements BundlePersister {
         return found;
     }
 
+    /**
+     * Finds the JCR node, which corresponds to the provided key and reads the bundle information from it.
+     * 
+     * @param bundleKey
+     *            the key of the bundle we are looking for
+     * @param session
+     *            current JCR session
+     * @return the information of the target bundle, which corresponds to the supplied key
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
     protected PersistedBundle find(String bundleKey, JCRSessionWrapper session) throws RepositoryException {
         PersistedBundle info = null;
         JCRNodeWrapper node = findTargetNode(bundleKey, session);
@@ -197,6 +219,18 @@ public class BundlePersisterImpl implements BundlePersister {
         logger.debug("Stored bundle info {} in {} ms", bundleInfo, System.currentTimeMillis() - startTime);
     }
 
+    /**
+     * Stores the bundle information in a JCR node.
+     * 
+     * @param bundleInfo
+     *            the bundle information to persist
+     * @param session
+     *            current JCR session
+     * @return <code>true</code> if the node was updated/created; <code>false</code> in case there is no update needed (same bundle already
+     *         present)
+     * @throws RepositoryException
+     *             in case of JCR errors
+     */
     protected boolean store(PersistedBundle bundleInfo, JCRSessionWrapper session)
             throws RepositoryException, IOException {
         String path = getJcrPath(bundleInfo);

@@ -93,6 +93,19 @@ public class ModuleManagerImpl implements ModuleManager {
         return null;
     }
 
+    /**
+     * Performs an installation of the bundle calling the bundle services.
+     * 
+     * @param info
+     *            the bundle info
+     * @param target
+     *            group of target cluster nodes for bundle installation
+     * @param start
+     *            <code>true</code>, if the bundle should be started right after installation
+     * @return the result of the operation
+     * @throws ModuleManagementException
+     *             in case of bundle service errors
+     */
     private OperationResult install(PersistedBundle info, final String target, boolean start)
             throws ModuleManagementException {
         try {
@@ -179,10 +192,22 @@ public class ModuleManagerImpl implements ModuleManager {
         return opResult;
     }
 
+    /**
+     * Injects an instance of the bundle locator.
+     * 
+     * @param bundleServiceLocator
+     *            an instance of the bundle locator
+     */
     public void setBundleServiceLocator(BundleServiceLocator bundleServiceLocator) {
         this.bundleServiceLocator = bundleServiceLocator;
     }
 
+    /**
+     * Injects an instance of the bundle persister.
+     * 
+     * @param persister
+     *            an instance of the bundle persister
+     */
     public void setPersister(BundlePersister persister) {
         this.persister = persister;
     }

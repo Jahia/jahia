@@ -193,7 +193,6 @@ public class BundleInfo implements Serializable {
     public int hashCode() {
         return getKey().hashCode();
     }
-
     
     @Override
     public String toString() {

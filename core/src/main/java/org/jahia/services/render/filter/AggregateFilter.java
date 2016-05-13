@@ -221,13 +221,16 @@ public class AggregateFilter extends AbstractFilter {
             // instead of generating the sub fragment key from scratch
             resource.getModuleParams().put(AGGREGATING, key);
 
-            // Dispatch to the render service to generate the content
-            String content = RenderService.getInstance().render(resource, renderContext);
-            if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
-                logger.error("Empty generated content for key " + key);
+            String content;
+            try {
+                // Dispatch to the render service to generate the content
+                content = RenderService.getInstance().render(resource, renderContext);
+                if (StringUtils.isBlank(content) && renderContext.getRedirect() == null) {
+                    logger.error("Empty generated content for key " + key);
+                }
+            } finally {
+                keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, original);
             }
-
-            keyGenerator.restoreContextAfterContentGeneration(keyAttrs, resource, renderContext, original);
 
             return content;
 

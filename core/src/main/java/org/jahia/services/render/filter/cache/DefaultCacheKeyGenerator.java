@@ -53,7 +53,6 @@ import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.InitializingBean;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
@@ -64,14 +63,11 @@ import javax.servlet.http.HttpServletRequest;
  * @author rincevent
  * @author Sergiy Shyrkov
  */
-public class DefaultCacheKeyGenerator implements CacheKeyGenerator, InitializingBean {
+public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(DefaultCacheKeyGenerator.class);
 
     private static final String KEY_PART_DELIMITER = "@@";
-
-    // default part generators coming from the core, they are registered in the afterPropertiesSet
-    private List<CacheKeyPartGenerator> partGenerators;
 
     // All part generators coming from the core and the modules. This map defines the order of elements in the key.
     // It's important to maintain this order everywhere in key parsing, construction, transformation.
@@ -118,7 +114,20 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     @Override
     @Deprecated // not used anymore
     public String replaceField(String key, String fieldName, String newValue) {
-        return key;
+        String[] args = getSplit(key);
+
+        Integer index = null;
+        int i = 0;
+        for (String partGeneratorKey : partGeneratorsByKey.keySet()) {
+            if(partGeneratorKey.equals(fieldName)) {
+                index = i;
+                break;
+            }
+            i++;
+        }
+
+        args[index] = newValue;
+        return StringUtils.join(args, "@@");
     }
 
     @Override
@@ -268,21 +277,10 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator, Initializing
     }
 
     public void setPartGenerators(List<CacheKeyPartGenerator> partGenerators) {
-        this.partGenerators = partGenerators;
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-
-        // register all the part generators that come from the core
-        if (partGenerators != null && partGenerators.size() > 0) {
+        if(partGenerators != null && partGenerators.size() > 0) {
             for (CacheKeyPartGenerator partGenerator : partGenerators) {
                 registerPartGenerator(partGenerator);
             }
         }
-
-        // empty the list of core part generators as they should not be used after this invocation of bean initialization
-        // only part generators that have been registered are available.
-        partGenerators = null;
     }
 }

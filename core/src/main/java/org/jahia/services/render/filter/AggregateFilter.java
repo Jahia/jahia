@@ -43,8 +43,6 @@
  */
 package org.jahia.services.render.filter;
 
-import java.util.Map;
-
 import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRSessionFactory;
 import org.jahia.services.content.JCRSessionWrapper;
@@ -60,6 +58,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments;
@@ -107,6 +106,10 @@ public class AggregateFilter extends AbstractFilter {
     // aggregating flag, put before aggregating a sub fragment, to send the sub fragmen key to the new render chain
     // to avoid reconstruct the key for this sub fragment.
     public static final String AGGREGATING = "aggregateFilter.aggregating";
+    // Security flag put in the request, The AggregateFilter is allow to aggregate fragments only
+    // when first resource is in configuration PAGE
+    // avoid issue when a new render chain is start on a resource in configuration MODULE, example: WeblowAction.java
+    public static final String AGGREGATION_ALLOWED = "aggregateFilter.allowed";
 
     private CacheKeyGenerator keyGenerator;
 
@@ -115,14 +118,24 @@ public class AggregateFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
 
+        boolean aggregating = resource.getModuleParams().get(AGGREGATING) != null;
+        boolean isPageResource = Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration());
+
+        if(isPageResource) {
+            // Put allowed flag
+            request.setAttribute(AGGREGATION_ALLOWED, Boolean.TRUE);
+        } else if (request.getAttribute(AGGREGATION_ALLOWED) == null) {
+            // Not allow to aggregate
+            return null;
+        }
+
         // Generates the key of the requested fragment. If we are currently aggregating a sub-fragment we already have the key
         // in the module params. If not, the KeyGenerator will create a key based on the request (resource and context).
         // The generated key will contain temporary placeholders that will be replaced to have the final key.
-        boolean aggregating = resource.getModuleParams().get(AGGREGATING) != null;
         String key = aggregating ? (String) resource.getModuleParams().get(AGGREGATING) :
                 keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
 
-        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) || aggregating) {
+        if (isPageResource || aggregating) {
             // we are on a main resource or aggregating a new fragment
             Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
             moduleMap.put(RENDERING, key);
@@ -144,6 +157,11 @@ public class AggregateFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
 
+        // if not allow to aggregate, just leave
+        if(request.getAttribute(AGGREGATION_ALLOWED) == null) {
+            return previousOut;
+        }
+
         if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) ||
                 resource.getModuleParams().get(AGGREGATING) != null) {
             // we are on a main resource or aggregating a new fragment
@@ -159,6 +177,13 @@ public class AggregateFilter extends AbstractFilter {
         } else {
             // we are rendering a sub fragment, break the chain to return the placeholder
             return previousOut;
+        }
+    }
+
+    @Override
+    public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
+        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration())) {
+            renderContext.getRequest().removeAttribute(AGGREGATION_ALLOWED);
         }
     }
 

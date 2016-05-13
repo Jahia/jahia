@@ -1132,7 +1132,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
     }
 
     /**
-     * @deprecated As of release 7.2, replaced by {@link org.jahia.services.render.filter.cache.ModuleCacheProvider#removeNonCacheableFragment(String)}
+     * @deprecated As of release 7.2, replaced by {@link org.jahia.services.render.filter.cache.ModuleCacheProvider#removeNonCacheableFragmentsByEncodedPath(String)}
      * @param key
      */
     public void removeNotCacheableFragment(String key) {

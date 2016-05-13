@@ -321,7 +321,7 @@ public class HtmlCacheEventListener extends DefaultEventListener implements Exte
                 cacheProvider.flushNonCacheableFragments();
             } else {
                 for (String dep : deps) {
-                    cacheProvider.removeNonCacheableFragment(dep);
+                    cacheProvider.removeNonCacheableFragmentsByEncodedPath(dep);
                 }
             }
             cacheProvider.invalidate(path, propagateToOtherClusterNodes);

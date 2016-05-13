@@ -46,6 +46,7 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
+
 import org.apache.jackrabbit.core.JahiaRepositoryImpl;
 import org.apache.jackrabbit.core.cluster.ClusterNode;
 import org.jahia.services.SpringContextSingleton;
@@ -61,7 +62,14 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationListener;
 
 import java.text.ParseException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -84,7 +92,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     private EhCacheProvider cacheProvider;
     private Cache dependenciesCache;
     private Cache syncCache;
-    private Set<String> nonCacheableFragments = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());;
+    private Set<String> nonCacheableFragments = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
     private CacheKeyGenerator keyGenerator;
     private JCRSessionFactory jcrSessionFactory;
 
@@ -330,10 +338,10 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     /**
-     * Remove keys from the non-cacheable fragments map looking for path in the cache key given as parameter
+     * Remove keys from the non-cacheable fragments list by path encoded in the cache key given as parameter
      * @param key fragment key of the fragment
      */
-    public void removeNonCacheableFragment(String key) {
+    public void removeNonCacheableFragmentsByEncodedPath(String key) {
         Map<String, String> keyAttrs = keyGenerator.parse(key);
         String path = keyAttrs.get("path");
         List<String> removableKeys = new ArrayList<String>();
@@ -348,7 +356,7 @@ public class ModuleCacheProvider implements InitializingBean, ApplicationListene
     }
 
     /**
-     * Flush the non-cacheable fragments map
+     * Flush the non-cacheable fragments list
      */
     public void flushNonCacheableFragments() {
         nonCacheableFragments.clear();

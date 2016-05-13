@@ -47,9 +47,8 @@ import org.apache.commons.lang.StringUtils;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
-import java.util.Properties;
-
 import javax.servlet.http.HttpServletRequest;
+import java.util.Properties;
 
 /**
  * Key part generator to store node type restrictions in cache key to be able to re-add them in the request attributes.
@@ -89,9 +88,9 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
         HttpServletRequest request = renderContext.getRequest();
         request.removeAttribute("areaNodeTypesRestriction" + request.getAttribute("org.jahia.modules.level"));
         if (StringUtils.isNotEmpty(value)) {
-            String[] values = value.split("\\*");
-            Integer level = Integer.parseInt(values[1]);
-            String restrictions = values[0];
+            int index = value.lastIndexOf("*");
+            Integer level = Integer.parseInt(value.substring(index + 1));
+            String restrictions = value.substring(0, index);
             request.setAttribute("org.jahia.modules.level", level);
             request.setAttribute("areaNodeTypesRestriction" + level, restrictions);
         }

@@ -52,6 +52,7 @@ import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.AggregateFilter;
 import org.jahia.services.render.filter.RenderChain;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -68,14 +69,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cache render filter, in charge of providing the html for a given fragment (from the cache or by generating it)
- * Then cache the result if necessary, list of request parameters:
- *
- * cacheFilter.rendering.time:                  Used to measure the time to generate a fragment, set in prepare()
- *                                              used in execute()
- *
- * cacheFilter.servedFromCache:                 Used to put a flag in request when content is served by the cache
- *                                              This allow to avoid re cache it again when it's not needed.
- *                                              Set in the prepare() and used in the execute() and removed in finalize()
+ * Then cache the result if necessary
  *
  * Created by jkevan on 12/04/2016.
  */
@@ -85,6 +79,8 @@ public class CacheFilter extends AbstractFilter {
     private static final String FLAG_RANDOM = "ec";
     private static final String FLAG_ALL = "ALL";
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
+    private static final String CACHE_TIMER = "cacheFilter.timer";
+    private static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.servedFromCache";
 
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
@@ -98,9 +94,11 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        renderContext.getRequest().setAttribute("cacheFilter.rendering.time", System.currentTimeMillis());
+        Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
+
+        moduleMap.put(CACHE_TIMER, System.currentTimeMillis());
         final String path = resource.getNodePath();
-        final String key = (String) renderContext.getRequest().getAttribute("aggregateFilter.rendering");
+        final String key = (String) moduleMap.get(AggregateFilter.RENDERING);
 
         // Replace the placeholders to have the final key that is used in the cache.
         final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
@@ -117,7 +115,7 @@ public class CacheFilter extends AbstractFilter {
 
         if (element != null && element.getObjectValue() != null) {
             logger.debug("Fragment found in cache for node: {} ", path);
-            return returnFromCache(renderContext, key, finalKey, element);
+            return returnFromCache(renderContext, key, finalKey, element, moduleMap);
         } else {
 
             logger.debug("Fragment not found in cache for node: {} ", path);
@@ -138,7 +136,7 @@ public class CacheFilter extends AbstractFilter {
                 element = cache.get(finalKey);
                 if (element != null && element.getObjectValue() != null) {
                     logger.debug("Latch released for node: {} and fragment found in cache", path);
-                    return returnFromCache(renderContext, key, finalKey, element);
+                    return returnFromCache(renderContext, key, finalKey, element, moduleMap);
                 }
                 logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
             }
@@ -154,7 +152,8 @@ public class CacheFilter extends AbstractFilter {
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
 
         HttpServletRequest request = renderContext.getRequest();
-        String key = (String) request.getAttribute("aggregateFilter.rendering");
+        Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
+        String key = (String) moduleMap.get(AggregateFilter.RENDERING);
 
           // TODO (BACKLOG-6511) do we still need this check?
           // Generates the cache key - check
@@ -164,7 +163,7 @@ public class CacheFilter extends AbstractFilter {
 //        }
 
         // If this content has been served from cache, no need to cache it again
-        if (request.getAttribute("cacheFilter.servedFromCache") == null) {
+        if (moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
 
@@ -206,16 +205,16 @@ public class CacheFilter extends AbstractFilter {
             result = appendDebugInformation(renderContext, key, result);
         }
 
-        logCacheFilterRenderingTime(resource, renderContext);
+        logCacheFilterRenderingTime(resource, renderContext, moduleMap);
         return result;
     }
 
-    private void logCacheFilterRenderingTime(Resource resource, RenderContext renderContext) {
+    private void logCacheFilterRenderingTime(Resource resource, RenderContext renderContext, Map<String ,Object> moduleMap) {
         if (!logger.isDebugEnabled()) {
             return;
         }
         HttpServletRequest request = renderContext.getRequest();
-        Object servedFromCacheAttribute = request.getAttribute("cacheFilter.servedFromCache");
+        Object servedFromCacheAttribute = moduleMap.get(FRAGMENT_SERVED_FROM_CACHE);
         Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
         String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
         long start = (Long) request.getAttribute("cacheFilter.rendering.time");
@@ -224,10 +223,6 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
-
-        // remove request attr, to allow reuse it in other render chains
-        renderContext.getRequest().removeAttribute("cacheFilter.servedFromCache");
-
         // If an error occured during render and the latch is not release during the execute() it's important that we release it
         // in any case to avoid threads waiting for nothing
         generatorQueue.releaseLatch();
@@ -243,7 +238,8 @@ public class CacheFilter extends AbstractFilter {
 
         try {
 
-            renderContext.getRequest().setAttribute("expiration", Integer.toString(errorCacheExpiration));
+            HttpServletRequest request = renderContext.getRequest();
+            request.setAttribute("expiration", Integer.toString(errorCacheExpiration));
             logger.error(e.getMessage(), e);
 
             final String key = cacheProvider.getKeyGenerator().generate(resource, renderContext, cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource));
@@ -258,7 +254,7 @@ public class CacheFilter extends AbstractFilter {
             }
 
             if (element != null && element.getObjectValue() != null) {
-                return returnFromCache(renderContext, key, finalKey, element);
+                return returnFromCache(renderContext, key, finalKey, element, (Map<String, Object>) request.getAttribute("moduleMap"));
             }
 
             // Returns a fragment with an error comment
@@ -433,15 +429,16 @@ public class CacheFilter extends AbstractFilter {
      * @param key           The key with placeholders
      * @param finalKey      The final key with placeholders replaced
      * @param element       The cached element
+     * @param moduleMap     The current module map
      */
-    protected String returnFromCache(RenderContext renderContext, String key, String finalKey, Element element) {
+    protected String returnFromCache(RenderContext renderContext, String key, String finalKey, Element element, Map<String, Object> moduleMap) {
 
         logger.debug("Content retrieved from cache for node with key: {}", finalKey);
         CacheEntry<?> cacheEntry = (CacheEntry<?>) element.getObjectValue();
         String cachedContent = (String) cacheEntry.getObject();
 
         // Add attr to say that this fragment have been served by the cache, to avoid cache it again
-        renderContext.getRequest().setAttribute("cacheFilter.servedFromCache", Boolean.TRUE);
+        moduleMap.put(FRAGMENT_SERVED_FROM_CACHE, Boolean.TRUE);
 
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {

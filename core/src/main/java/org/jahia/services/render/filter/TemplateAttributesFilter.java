@@ -101,10 +101,6 @@ public class TemplateAttributesFilter extends AbstractFilter {
             chain.pushAttribute(request, entry.getKey(), entry.getValue());
         }
 
-        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_INCLUDE)) {
-            chain.pushAttribute(request, "moduleMap", new HashMap());
-        }
-
         Script script = (Script) request.getAttribute("script");
         Locale locale = (Locale) request.getAttribute(FORCED_LOCALE_ATTRIBUTE);
         locale = (locale != null ? locale : resource.getLocale());

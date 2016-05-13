@@ -51,6 +51,7 @@ import org.jahia.services.render.URLGenerator;
 import org.jahia.services.uicomponents.bean.editmode.EditConfiguration;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -93,6 +94,11 @@ public class BaseAttributesFilter extends AbstractFilter {
             added = context.getRenderedPaths().add(resource.getNodePath());
         }
         chain.pushAttribute(request, "resourceAddedInRenderedPath", added);
+
+        if (!resource.getContextConfiguration().equals(Resource.CONFIGURATION_INCLUDE)) {
+            chain.pushAttribute(request, "moduleMap", new HashMap());
+        }
+
         return null;
     }
 

@@ -62,38 +62,32 @@ import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments, list of request parameters:
+ * Aggregate render filter, in charge of aggregating fragment by resolving sub fragments;
+ * The flow of aggregation is done in multiple set
  *
- * aggregateFilter.rendering:                   Used to store the current fragment key, set at the end of prepare()
- *                                              Reuse by other filter coming after to know the current fragment key,
- *                                              Also use to know if we are currently rendering a fragment, to avoid
- *                                              rendering of sub fragments.
- *                                              It's removed in the execute() just before starting the aggregation
- *                                              of sub fragments
+ * 1  - The prepare will generate a fragment A by returning null and letting the next filters do the rendering
  *
- * aggregateFilter.rendering.submodule:         Used to store the current sub fragment, allow to know that we are
- *                                              rendering a sub fragment and we have to avoid the generation of it.
- *                                              Returning a placeholder <jahia_esi:include src="KEY"></jahia_esi:include>
- *                                              instead. This attr is store in prepare() and removed in finalize().
- *                                              This attr is set in request only when "aggregateFilter.rendering"
- *                                              is present, meaning that we are already rendering a fragment and the
- *                                              current one is a sub fragment.
+ * 2  - Next filters can start new render chains, it's the case of the ModuleTag for example,
+ *      so we will pass again in the prepare() for each render chains start by next filters,
+ *      but this render chain are identify as sub fragment of fragment A. (identification is explain after)
  *
- * aggregateFilter.rendering.time:              Used to measure the time to generate a fragment, set in prepare()
- *                                              used in execute()
+ * 3  - When a sub fragment B is identify, the chain is stop and a placeholder is return:
+ *      <jahia_esi:include src="FRAGMENT B KEY"></jahia_esi:include>
+ *      Next filters are not execute.
  *
- * aggregateFilter.aggregating:                 Used to store the key of a subfragment during aggregation, this avoid
- *                                              to recalculate the fragment key unnecessary because it have been store
- *                                              in the parent fragment, using a placeholder.
- *                                              This attr is set in execute() during aggregation, used and remove
- *                                              in prepare() because the prepare() concern the new render chain started
- *                                              during aggregation for this sub fragment
+ * 4  - The render of fragment A is finished when we arrive in the execute() function for fragment A.
  *
- * Every request attrs, should be correctly remove from request in case of error, the finalize() function is used for that
- * Some logic have been used to know where we are in renderchain to remove the appropriate attr.
- * For exemple, when rendering a subfragment if an error occur (in jsp, or next filters) we didn't go throw the execute() for the
- * current main fragment. So "aggregateFilter.rendering" will not be remove, we need to remove it only when we are not rendering a sub
- * fragment, because if we remove it during rendering of a sub fragment it will break the render of next sibling sub fragments.
+ * 5  - At this state HTML of the fragment A is ready, and contain the fragment B placeholder:
+ *      <jahia_esi:include src="FRAGMENT B KEY"></jahia_esi:include>
+ *
+ * 6  - The Aggregation of the sub fragments for fragment A can start.
+ *
+ * 7  - We iterate on each sub fragments available in fragment A and start a new render chain for each
+ *
+ * 8  - A new render chain will be start for fragment B
+ *
+ * 9  - We put a flag when starting this new render chain, to say that we are aggregation and
+ *      this is how we can identify that we are not in case 2 (rendering a sub fragment from next filters)
  *
  * Created by jkevan on 12/04/2016.
  */
@@ -105,6 +99,15 @@ public class AggregateFilter extends AbstractFilter {
     private static final String ESI_TAG_END = "\"></jahia_esi:include>";
     private static final int ESI_TAG_END_LENGTH = ESI_TAG_END.length();
 
+    // rendering flag, is use to store the current fragment key in the module map,
+    // so it can be use by next filters only in the current render chain
+    public static final String RENDERING = "aggregateFilter.rendering";
+    // timer to debug rendering time of fragment
+    public static final String RENDERING_TIMER = "aggregateFilter.rendering.timer";
+    // aggregating flag, put before aggregating a sub fragment, to send the sub fragmen key to the new render chain
+    // to avoid reconstruct the key for this sub fragment.
+    public static final String AGGREGATING = "aggregateFilter.aggregating";
+
     private CacheKeyGenerator keyGenerator;
 
     @Override
@@ -113,27 +116,27 @@ public class AggregateFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
 
         // Generates the key of the requested fragment. If we are currently aggregating a sub-fragment we already have the key
-        // in the request. If not, the KeyGenerator will create a key based on the request (resource and context).
+        // in the module params. If not, the KeyGenerator will create a key based on the request (resource and context).
         // The generated key will contain temporary placeholders that will be replaced to have the final key.
-        String key = (String) request.getAttribute("aggregateFilter.aggregating");
-        if (key != null) {
-            request.removeAttribute("aggregateFilter.aggregating");
-        } else {
-            key = keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
-        }
+        boolean aggregating = resource.getModuleParams().get(AGGREGATING) != null;
+        String key = aggregating ? (String) resource.getModuleParams().get(AGGREGATING) :
+                keyGenerator.generate(resource, renderContext, keyGenerator.getAttributesForKey(renderContext, resource));
 
-        if (request.getAttribute("aggregateFilter.rendering") != null) {
-            request.setAttribute("aggregateFilter.rendering.submodule", key);
+        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) || aggregating) {
+            // we are on a main resource or aggregating a new fragment
+            Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
+            moduleMap.put(RENDERING, key);
+            moduleMap.put(RENDERING_TIMER, System.currentTimeMillis());
+
+            logger.debug("Rendering node " + resource.getPath());
+            logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
+
+            // fragment key is in moduleMap, continue the chain to the next filter
+            return null;
+        } else {
+            // we are rendering a sub fragment, break the chain to return the placeholder
             return ESI_TAG_START + key + ESI_TAG_END;
         }
-
-        request.setAttribute("aggregateFilter.rendering.time", System.currentTimeMillis());
-        request.setAttribute("aggregateFilter.rendering", key);
-
-        logger.debug("Rendering node " + resource.getPath());
-        logger.debug("Aggregate filter for {}, key with placeholders: {}", resource.getPath(), key);
-
-        return null;
     }
 
     @Override
@@ -141,42 +144,22 @@ public class AggregateFilter extends AbstractFilter {
 
         HttpServletRequest request = renderContext.getRequest();
 
-        if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
+        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) ||
+                resource.getModuleParams().get(AGGREGATING) != null) {
+            // we are on a main resource or aggregating a new fragment
+            Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
+
+            if (logger.isDebugEnabled()) {
+                long start = (Long) moduleMap.get(RENDERING_TIMER);
+                logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(), System.currentTimeMillis() - start);
+            }
+
+            logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), moduleMap.get(RENDERING));
+            return aggregateContent(previousOut, renderContext);
+        } else {
+            // we are rendering a sub fragment, break the chain to return the placeholder
             return previousOut;
         }
-
-        String key = (String) request.getAttribute("aggregateFilter.rendering");
-        request.removeAttribute("aggregateFilter.rendering");
-
-        if (logger.isDebugEnabled()) {
-            long start = (Long) request.getAttribute("aggregateFilter.rendering.time");
-            logger.debug("AggregateFilter for {}  took {} ms.", resource.getPath(), System.currentTimeMillis() - start);
-        }
-        request.removeAttribute("aggregateFilter.rendering.time");
-
-        logger.debug("Now aggregating subcontent for {}, key = {}", resource.getPath(), key);
-        return aggregateContent(previousOut, renderContext);
-    }
-
-    @Override
-    public void finalize(RenderContext renderContext, Resource resource, RenderChain renderChain) {
-
-        HttpServletRequest request = renderContext.getRequest();
-
-        // aggregateFilter.rendering.submodule is always remove in finalize, if it's set, it's mean we are rendering a sub fragment
-        if (request.getAttribute("aggregateFilter.rendering.submodule") != null) {
-            request.removeAttribute("aggregateFilter.rendering.submodule");
-        } else {
-            // if aggregateFilter.rendering.submodule is not set, it's mean that every sub fragments have been rendered and aggregation
-            // is done, but if an error occur between this two step we need to remove "aggregateFilter.rendering" from request,
-            // to avoid blocking render of sibling fragments
-            request.removeAttribute("aggregateFilter.rendering");
-            request.removeAttribute("aggregateFilter.rendering.time");
-        }
-
-        // always remove aggregateFilter.aggregating attr, because it should be remove by the new render chain for a sub fragment
-        // during aggregation, but if an error occur before AggregateFilter for this fragment render chain, we need to remove it from request
-        request.removeAttribute("aggregateFilter.aggregating");
     }
 
     /**
@@ -234,8 +217,9 @@ public class AggregateFilter extends AbstractFilter {
 
             Map<String, Object> original = keyGenerator.prepareContextForContentGeneration(keyAttrs, resource, renderContext);
 
-            // Store sub fragment key in attribute to use it in prepare() instead of generating the sub fragment key from scratch
-            renderContext.getRequest().setAttribute("aggregateFilter.aggregating", key);
+            // Store sub fragment key in module params of the resource to use it in prepare()
+            // instead of generating the sub fragment key from scratch
+            resource.getModuleParams().put(AGGREGATING, key);
 
             // Dispatch to the render service to generate the content
             String content = RenderService.getInstance().render(resource, renderContext);

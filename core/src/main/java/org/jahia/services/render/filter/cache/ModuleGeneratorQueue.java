@@ -50,7 +50,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Semaphore;
@@ -62,7 +67,6 @@ import java.util.concurrent.TimeUnit;
  * Created : 12 oct. 2010
  */
 public class ModuleGeneratorQueue implements InitializingBean {
-    private static final Logger logger = LoggerFactory.getLogger(ModuleGeneratorQueue.class);
 
     private Map<String, String> notCacheableModule = new ConcurrentHashMap<String, String>(2503);
     private Map<String, CountDownLatch> generatingModules;
@@ -72,14 +76,16 @@ public class ModuleGeneratorQueue implements InitializingBean {
     private long minimumIntervalAfterLastAutoThreadDump = 60000; // in milliseconds
     private boolean threadDumpToSystemOut = true;
     private boolean threadDumpToFile = true;
-    protected static long lastThreadDumpTime = 0L;
-    protected Byte[] threadDumpCheckLock = new Byte[0];
+    private static long lastThreadDumpTime = 0L;
+    private Byte[] threadDumpCheckLock = new Byte[0];
 
-    protected static ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
-    protected static ThreadLocal<String> generatingKeySemaphore = new ThreadLocal<String>();
+    private static ThreadLocal<Set<CountDownLatch>> processingLatches = new ThreadLocal<Set<CountDownLatch>>();
+    private static ThreadLocal<String> generatingKeySemaphore = new ThreadLocal<String>();
 
-    //TODO: BACKLOG-6531 not working anymore, need to be rework
-    protected static ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
+    // TODO (BACKLOG-6531): not working anymore, needs to be reworked
+    private static ThreadLocal<LinkedList<String>> userKeys = new ThreadLocal<LinkedList<String>>();
+
+    private static final Logger logger = LoggerFactory.getLogger(ModuleGeneratorQueue.class);
 
     public Map<String, String> getNotCacheableModule() {
         return notCacheableModule;
@@ -97,7 +103,7 @@ public class ModuleGeneratorQueue implements InitializingBean {
             synchronized (this) {
                 result = availableProcessings;
                 if (result == null) {
-                    availableProcessings = result = new Semaphore(getMaxModulesToGenerateInParallel(), true);
+                    availableProcessings = result = new Semaphore(maxModulesToGenerateInParallel, true);
                 }
             }
         }
@@ -115,13 +121,10 @@ public class ModuleGeneratorQueue implements InitializingBean {
         CountDownLatch latch;
         boolean mustWait = true;
 
-        Map<String, CountDownLatch> generatingModules = getGeneratingModules();
         if (generatingModules.get(key) == null && generatingKeySemaphore.get() == null) {
-            if (!getAvailableProcessings().tryAcquire(getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
+            if (!getAvailableProcessings().tryAcquire(moduleGenerationWaitTime, TimeUnit.MILLISECONDS)) {
                 manageThreadDump();
-                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" +
-                        getMaxModulesToGenerateInParallel() + ") - " + key + " - " +
-                        request.getRequestURI());
+                throw new Exception("Module generation takes too long due to maximum parallel processing reached (" + maxModulesToGenerateInParallel + ") - " + key + " - " + request.getRequestURI());
             } else {
                 generatingKeySemaphore.set(key);
             }
@@ -143,14 +146,12 @@ public class ModuleGeneratorQueue implements InitializingBean {
             try {
                 if (!latch.await(getModuleGenerationWaitTime(), TimeUnit.MILLISECONDS)) {
                     manageThreadDump();
-                    throw new Exception("Module generation takes too long due to module not generated fast enough (>" +
-                            getModuleGenerationWaitTime() + " ms)- " + key + " - " +
-                            request.getRequestURI());
+                    throw new Exception("Module generation takes too long due to module not generated fast enough (" + moduleGenerationWaitTime + " ms) - " + key + " - " + request.getRequestURI());
                 }
                 latch = null;
-            } catch (InterruptedException ie) {
-                logger.debug("The waiting thread has been interrupted", ie);
-                throw new Exception(ie);
+            } catch (InterruptedException e) {
+                logger.debug("The waiting thread has been interrupted", e);
+                throw new Exception(e);
             }
         }
         return latch;
@@ -158,11 +159,10 @@ public class ModuleGeneratorQueue implements InitializingBean {
 
     private void manageThreadDump() {
         boolean createDump = false;
-        long minInterval = getMinimumIntervalAfterLastAutoThreadDump();
-        if (minInterval > -1 && (isThreadDumpToSystemOut() || isThreadDumpToFile())) {
+        if (minimumIntervalAfterLastAutoThreadDump > -1 && (threadDumpToSystemOut || threadDumpToFile)) {
             long now = System.currentTimeMillis();
             synchronized (threadDumpCheckLock) {
-                if (now > (lastThreadDumpTime + minInterval)) {
+                if (now > (lastThreadDumpTime + minimumIntervalAfterLastAutoThreadDump)) {
                     createDump = true;
                     lastThreadDumpTime = now;
                 }
@@ -170,7 +170,7 @@ public class ModuleGeneratorQueue implements InitializingBean {
         }
         if (createDump) {
             ThreadMonitor tm = ThreadMonitor.getInstance();
-            tm.dumpThreadInfo(isThreadDumpToSystemOut(), isThreadDumpToFile());
+            tm.dumpThreadInfo(threadDumpToSystemOut, threadDumpToFile);
         }
     }
 
@@ -191,7 +191,7 @@ public class ModuleGeneratorQueue implements InitializingBean {
      */
     protected boolean getLatch(RenderContext renderContext, String finalKey) throws Exception {
 
-        //TODO: BACKLOG-6531 not working anymore, need to be rework
+        // TODO (BACKLOG-6531): not working anymore, needs to be reworked
         LinkedList<String> userKeysList = userKeys.get();
         if (userKeysList == null) {
             userKeysList = new LinkedList<>();
@@ -216,15 +216,16 @@ public class ModuleGeneratorQueue implements InitializingBean {
                 processingLatches.set(latches);
             }
             latches.add(latch);
+            return false;
         }
-        return false;
     }
 
     /**
-     * Release latch, this will signal that the current thread have finish his work
-     * All the other waiting threads will be free to get/read the resource generate by the first thread
+     * Release latch, this will signal that the current thread have finish its work
+     * All the other waiting threads will be free to get/read the resource generated by the first thread
      */
     protected void releaseLatch() {
+
         //TODO: BACKLOG-6531 not working anymore, need to be rework
         LinkedList<String> userKeysList = userKeys.get();
 
@@ -237,12 +238,11 @@ public class ModuleGeneratorQueue implements InitializingBean {
             }
 
             Set<CountDownLatch> latches = processingLatches.get();
-            Map<String, CountDownLatch> countDownLatchMap = getGeneratingModules();
-            CountDownLatch latch = countDownLatchMap.get(finalKey);
+            CountDownLatch latch = generatingModules.get(finalKey);
             if (latches != null && latches.contains(latch)) {
                 latch.countDown();
-                synchronized (countDownLatchMap) {
-                    latches.remove(countDownLatchMap.remove(finalKey));
+                synchronized (generatingModules) {
+                    latches.remove(generatingModules.remove(finalKey));
                 }
             }
         }

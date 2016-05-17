@@ -46,8 +46,6 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -61,7 +59,6 @@ import org.springframework.web.util.HtmlUtils;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -119,13 +116,6 @@ public class CacheFilter extends AbstractFilter {
         } else {
 
             logger.debug("Fragment not found in cache for node: {} ", path);
-            // resource is lazy in aggregation calling .getNode(), will load the node from jcr and store it in the resource
-            if (resource.safeLoadNode() == null) {
-                logger.warn("Fragment node: {} is not available anymore, return empty html for it", path);
-                // Node is not available anymore, return empty content for this fragment
-                // TODO throw NodeNotFoundException ?
-                return StringUtils.EMPTY;
-            }
 
             // The element is not found in the cache with that key. use CacheLatchService to allow only one thread to generate the fragment
             // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
@@ -173,9 +163,6 @@ public class CacheFilter extends AbstractFilter {
 
                 if (!bypassDependencies) {
 
-                    // Add self path as dependency for this fragment (for cache flush - will not impact the key)
-                    resource.getDependencies().add(resource.getNode().getCanonicalPath());
-
                     // Add main resource if cache.mainResource is set
                     if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
                         resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
@@ -187,7 +174,6 @@ public class CacheFilter extends AbstractFilter {
 
                 logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
 
-                // if cacheFilter.fragmentExpiration is not specified, it means that we are on the template fragment, the first fragment of the page
                 doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
             } else {
                 cacheProvider.addNonCacheableFragment(key);

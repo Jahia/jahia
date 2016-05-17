@@ -43,13 +43,12 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.util.Map;
-import java.util.Properties;
-
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
 
 import javax.jcr.RepositoryException;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * Describes the module output cache key generator.
@@ -127,23 +126,7 @@ public interface CacheKeyGenerator {
     void restoreContextAfterContentGeneration(Map<String, String> keyParts, Resource resource, RenderContext renderContext, Map<String, Object> original);
 
     /**
-     * Get all cache attributes that need to be applied on this fragment and that will impact key generation. The
-     * cache properties may come from the script properties file, or from the jmix:cache mixin (for cache.perUser
-     * only).
-     * <p/>
-     * If the component is a list, the properties can also come from its hidden.load script properties.
-     * <p/>
-     * cache.perUser : is the cache entry specific for each user. Is set by j:perUser node property or cache.perUser
-     * property in script properties
-     * <p/>
-     * cache.mainResource : is the cache entry dependant on the main resource. Is set by cache.mainResource property
-     * in script properties, or automatically set if the component is bound.
-     * <p/>
-     * cache.requestParameters : list of request parameter that will impact the rendering of the resource. Is set
-     * by cache.requestParameters property in script properties. ec,v,cacheinfo and moduleinfo are automatically added.
-     * <p/>
-     * cache.expiration : the expiration time of the cache entry. Can be set by the "expiration" request attribute,
-     * j:expiration node property or the cache.expiration property in script properties.
+     * Get all cache attributes that need to be applied on this fragment and that will impact key generation.
      */
     Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException;
 }

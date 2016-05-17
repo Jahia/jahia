@@ -43,14 +43,13 @@
  */
 package org.jahia.services.render.filter;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.commons.collections.list.UnmodifiableList;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.*;
 
 /**
@@ -152,7 +151,7 @@ public class RenderChain {
         if (resource != null) {
             nodePath = resource.getNodePath();
         }
-        int finalFilterIndex = 0;
+        Integer finalFilterIndex = null;
         try {
             for (; index < filters.size() && out == null && renderContext.getRedirect() == null && !renderContext.isPortletActionRequest(); index++) {
                 RenderFilter filter = filters.get(index);
@@ -193,18 +192,20 @@ public class RenderChain {
                 throw new RenderFilterException(e);
             }
         } finally {
-            for (index = 0; index <= finalFilterIndex; index++) {
-                try {
-                    RenderFilter filter = filters.get(index);
-                    if (filter.areConditionsMatched(renderContext, resource)) {
-                        long timer = System.currentTimeMillis();
-                        filter.finalize(renderContext, resource, this);
-                        if (logger.isDebugEnabled()) {
-                            logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+            if(finalFilterIndex !=  null) {
+                for (index = 0; index <= finalFilterIndex; index++) {
+                    try {
+                        RenderFilter filter = filters.get(index);
+                        if (filter.areConditionsMatched(renderContext, resource)) {
+                            long timer = System.currentTimeMillis();
+                            filter.finalize(renderContext, resource, this);
+                            if (logger.isDebugEnabled()) {
+                                logger.debug("{}: finalizing filter {} done in {} ms", new Object[] {nodePath, filter.getClass().getName(), System.currentTimeMillis() - timer});
+                            }
                         }
+                    } catch (Exception e) {
+                        logger.warn("Error during finalizing of filter", e);
                     }
-                } catch (Exception e) {
-                    logger.warn("Error during finalizing of filter", e);
                 }
             }
             popAttributes(renderContext.getRequest());

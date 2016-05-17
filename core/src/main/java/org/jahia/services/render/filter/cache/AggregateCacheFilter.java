@@ -46,9 +46,8 @@ package org.jahia.services.render.filter.cache;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.constructs.blocking.LockTimeoutException;
-
 import org.apache.commons.lang.StringUtils;
-
+import org.jahia.api.Constants;
 import org.jahia.services.cache.CacheEntry;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionFactory;
@@ -56,7 +55,7 @@ import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.filter.RenderChain;
-
+import org.jahia.services.render.scripting.Script;
 import org.jahia.services.templates.JahiaTemplateManagerService.TemplatePackageRedeployedEvent;
 import org.jahia.settings.SettingsBean;
 import org.jahia.tools.jvm.ThreadMonitor;
@@ -71,7 +70,6 @@ import org.springframework.web.util.HtmlUtils;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
-
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -579,7 +577,82 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      */
     protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
-        return cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
+        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        final JCRNodeWrapper node = resource.getNode();
+        boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
+        boolean isList = node.isNodeType(Constants.JAHIAMIX_LIST);
+
+        Properties properties = new Properties();
+
+        if (script != null) {
+            properties.putAll(script.getView().getDefaultProperties());
+            properties.putAll(script.getView().getProperties());
+        }
+
+        if (isList) {
+            Resource listLoader = new Resource(node, resource.getTemplateType(), "hidden.load", Resource.CONFIGURATION_INCLUDE);
+            try {
+                Script s = service.resolveScript(listLoader, renderContext);
+                properties.putAll(s.getView().getProperties());
+            } catch (TemplateNotFoundException e) {
+                logger.error("Cannot find loader script for list " + node.getPath(), e);
+            }
+        }
+
+        if (node.hasProperty(PER_USER)) {
+            properties.put(CACHE_PER_USER, node.getProperty(PER_USER).getString());
+        }
+        if (isBound) {
+            properties.put("cache.mainResource", "true");
+        }
+
+        // update requestParameters if needed
+        final StringBuilder updatedRequestParameters;
+        final String requestParameters = properties.getProperty("cache.requestParameters");
+        if (!StringUtils.isEmpty(requestParameters)) {
+            updatedRequestParameters = new StringBuilder(requestParameters + ",ec,v");
+        } else {
+            updatedRequestParameters = new StringBuilder("ec,v");
+        }
+        if (SettingsBean.getInstance().isDevelopmentMode()) {
+            updatedRequestParameters.append(",cacheinfo,moduleinfo");
+        }
+        properties.put("cache.requestParameters", updatedRequestParameters.toString());
+
+        // cache expiration lookup by order : request attribute -> node -> view -> -1 (forever in cache realm, 4 hours)
+        String viewExpiration = properties.getProperty(CACHE_EXPIRATION);
+        final Object requestExpiration = renderContext.getRequest().getAttribute("expiration");
+        if (requestExpiration != null) {
+            properties.put(CACHE_EXPIRATION, requestExpiration);
+        } else if (node.hasProperty("j:expiration")) {
+            properties.put(CACHE_EXPIRATION, node.getProperty("j:expiration").getString());
+        } else if (viewExpiration != null) {
+            properties.put(CACHE_EXPIRATION, viewExpiration);
+        } else {
+            properties.put(CACHE_EXPIRATION, "-1");
+        }
+
+        String propertiesScript = properties.getProperty("cache.propertiesScript");
+        if (propertiesScript != null) {
+            Resource props = new Resource(node, resource.getTemplateType(), propertiesScript, Resource.CONFIGURATION_INCLUDE);
+            try {
+                Script s = service.resolveScript(props, renderContext);
+                try {
+                    renderContext.getRequest().setAttribute("cacheProperties", properties);
+                    s.execute(props, renderContext);
+                } catch (RenderException e) {
+                    logger.error("Cannot execute script",e);
+                } finally {
+                    renderContext.getRequest().removeAttribute("cacheProperties");
+                }
+            } catch (TemplateNotFoundException e) {
+                logger.error(
+                        "Cannot find cache properties script " + propertiesScript + " for the node " + node.getPath(),
+                        e);
+            }
+        }
+
+        return properties;
     }
 
     /**

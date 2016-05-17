@@ -45,15 +45,14 @@ package org.jahia.services.render;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
+import org.jahia.services.content.nodetypes.ExtendedNodeType;
 import org.jahia.services.render.scripting.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.nodetypes.ExtendedNodeType;
 
 import javax.jcr.RepositoryException;
-
 import java.io.Serializable;
 import java.util.*;
 
@@ -78,8 +77,10 @@ public class Resource {
     private String templateType;
     private String template;
     private String contextConfiguration;
-    private Stack<String> wrappers;
+    private Stack<String> wrappers = new Stack<String>();;
     private Script script;
+    // flag to avoid script calculation when not found first time
+    private boolean scriptNotFound = false;
 
     // lazy properties
     private String nodePath;
@@ -88,13 +89,13 @@ public class Resource {
     // used to detect node load before the cache filter that should be avoid for perf issues
     private boolean lazyNodeFlagWarning = true;
 
-    private Set<String> dependencies;
-    private List<String> missingResources;
+    private Set<String> dependencies = new HashSet<String>();;
+    private List<String> missingResources = new ArrayList<String>();
 
-    private List<Option> options;
+    private List<Option> options = new ArrayList<Option>();
     private ExtendedNodeType resourceNodeType;
     private Map<String, Serializable> moduleParams = new HashMap<String, Serializable>();
-    private Set<String> regexpDependencies;
+    private Set<String> regexpDependencies = new LinkedHashSet<String>();;
 
     /**
      * Creates a resource from the specified parameter
@@ -110,12 +111,7 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
-        dependencies = new HashSet<String>();
         dependencies.add(node.getCanonicalPath());
-        regexpDependencies = new LinkedHashSet<String>();
-        missingResources = new ArrayList<String>();
-        wrappers = new Stack<String>();
-        options = new ArrayList<Option>();
     }
 
     /**
@@ -133,12 +129,7 @@ public class Resource {
         this.templateType = templateType;
         this.template = template;
         this.contextConfiguration = contextConfiguration;
-        dependencies = new HashSet<String>();
         dependencies.add(path);
-        regexpDependencies = new LinkedHashSet<String>();
-        missingResources = new ArrayList<String>();
-        wrappers = new Stack<String>();
-        options = new ArrayList<Option>();
     }
 
     /**
@@ -151,7 +142,7 @@ public class Resource {
      * @return The JCR Node if found, null if not
      */
     public JCRNodeWrapper getNode() {
-        if (isLazy()) {
+        if (node == null) {
             try {
                 if (lazyNodeFlagWarning &&
                         sessionWrapper.getWorkspace().getName().equals(Constants.LIVE_WORKSPACE) &&
@@ -164,7 +155,7 @@ public class Resource {
 
                 node = sessionWrapper.getNode(nodePath);
             } catch (RepositoryException e) {
-                logger.error(e.getMessage(), e);
+                throw new IllegalStateException("Lazy Node from resource failed to be load, because Node is not found anymore", e);
             }
         }
         return node;
@@ -182,10 +173,6 @@ public class Resource {
         return getNode();
     }
 
-    private boolean isLazy() {
-        return node == null && StringUtils.isNotEmpty(nodePath) && sessionWrapper != null;
-    }
-
     public void setNode(JCRNodeWrapper node) {
         this.node = node;
     }
@@ -198,9 +185,13 @@ public class Resource {
         this.templateType = templateType;
     }
 
+    private JCRSessionWrapper getSession() throws RepositoryException {
+        return node == null ? sessionWrapper : node.getSession();
+    }
+
     public String getWorkspace() {
         try {
-            return isLazy() ? sessionWrapper.getWorkspace().getName() : node.getSession().getWorkspace().getName();
+            return getSession().getWorkspace().getName();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -209,7 +200,7 @@ public class Resource {
 
     public Locale getLocale() {
         try {
-            return isLazy() ? sessionWrapper.getLocale() : node.getSession().getLocale();
+            return getSession().getLocale();
         } catch (RepositoryException e) {
             logger.error(e.getMessage(), e);
         }
@@ -343,11 +334,12 @@ public class Resource {
      * @param context renderContext, needed to resolve the script
      * @return the Script if one is found, null if not
      */
-    public Script getScript(RenderContext context) throws RepositoryException{
-        if (script == null && context != null) {
+    public Script getScript(RenderContext context) throws RepositoryException {
+        if (script == null && !scriptNotFound) {
             try {
                 script = RenderService.getInstance().resolveScript(this, context);
             } catch (TemplateNotFoundException e) {
+                scriptNotFound = true;
                 logger.debug("Script not found for resource: ", this.getPath());
                 // do nothing keep the current script to null, script can be null
             }
@@ -375,9 +367,6 @@ public class Resource {
 
         Resource resource = (Resource) o;
 
-        if (node != null ? !node.getCanonicalPath().equals(resource.node.getCanonicalPath()) : resource.node != null) {
-            return false;
-        }
         if (nodePath != null ? !nodePath.equals(resource.nodePath) : resource.nodePath != null) {
             return false;
         }

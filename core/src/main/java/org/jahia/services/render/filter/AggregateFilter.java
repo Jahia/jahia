@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
+
 import java.util.Map;
 
 /**
@@ -137,7 +138,10 @@ public class AggregateFilter extends AbstractFilter {
 
         if (isPageResource || aggregating) {
             // we are on a main resource or aggregating a new fragment
+
+            @SuppressWarnings("unchecked")
             Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
+
             moduleMap.put(RENDERING, key);
             moduleMap.put(RENDERING_TIMER, System.currentTimeMillis());
 
@@ -162,9 +166,10 @@ public class AggregateFilter extends AbstractFilter {
             return previousOut;
         }
 
-        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) ||
-                resource.getModuleParams().get(AGGREGATING) != null) {
+        if (Resource.CONFIGURATION_PAGE.equals(resource.getContextConfiguration()) || resource.getModuleParams().get(AGGREGATING) != null) {
             // we are on a main resource or aggregating a new fragment
+
+            @SuppressWarnings("unchecked")
             Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
 
             if (logger.isDebugEnabled()) {
@@ -240,13 +245,12 @@ public class AggregateFilter extends AbstractFilter {
             JCRSessionWrapper currentUserSession = JCRSessionFactory.getInstance().getCurrentUserSession(renderContext.getWorkspace(), LanguageCodeConverters.languageCodeToLocale(keyAttrs.get("language")), renderContext.getFallbackLocale());
             Resource resource = new Resource(path, currentUserSession, keyAttrs.get("templateType"), keyAttrs.get("template"), keyAttrs.get("context"));
 
-            Map<String, Object> original = keyGenerator.prepareContextForContentGeneration(keyAttrs, resource, renderContext);
-
             // Store sub fragment key in module params of the resource to use it in prepare()
             // instead of generating the sub fragment key from scratch
             resource.getModuleParams().put(AGGREGATING, key);
 
             String content;
+            Map<String, Object> original = keyGenerator.prepareContextForContentGeneration(keyAttrs, resource, renderContext);
             try {
                 // Dispatch to the render service to generate the content
                 content = RenderService.getInstance().render(resource, renderContext);

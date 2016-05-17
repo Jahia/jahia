@@ -43,12 +43,21 @@
  */
 package org.jahia.services.render.filter.cache;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.render.*;
+import org.jahia.services.render.RenderContext;
+import org.jahia.services.render.RenderException;
+import org.jahia.services.render.RenderService;
+import org.jahia.services.render.Resource;
+import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.scripting.Script;
 import org.jahia.settings.SettingsBean;
 import org.slf4j.Logger;
@@ -114,12 +123,13 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     @Override
     @Deprecated // not used anymore
     public String replaceField(String key, String fieldName, String newValue) {
+
         String[] args = getSplit(key);
 
         Integer index = null;
         int i = 0;
         for (String partGeneratorKey : partGeneratorsByKey.keySet()) {
-            if(partGeneratorKey.equals(fieldName)) {
+            if (partGeneratorKey.equals(fieldName)) {
                 index = i;
                 break;
             }
@@ -127,7 +137,7 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
         }
 
         args[index] = newValue;
-        return StringUtils.join(args, "@@");
+        return StringUtils.join(args, KEY_PART_DELIMITER);
     }
 
     @Override
@@ -277,10 +287,8 @@ public class DefaultCacheKeyGenerator implements CacheKeyGenerator {
     }
 
     public void setPartGenerators(List<CacheKeyPartGenerator> partGenerators) {
-        if(partGenerators != null && partGenerators.size() > 0) {
-            for (CacheKeyPartGenerator partGenerator : partGenerators) {
-                registerPartGenerator(partGenerator);
-            }
+        for (CacheKeyPartGenerator partGenerator : partGenerators) {
+            registerPartGenerator(partGenerator);
         }
     }
 }

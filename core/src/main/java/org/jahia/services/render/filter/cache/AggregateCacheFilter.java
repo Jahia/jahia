@@ -577,7 +577,7 @@ public class AggregateCacheFilter extends AbstractFilter implements ApplicationL
      * @throws RepositoryException
      */
     protected Properties getAttributesForKey(RenderContext renderContext, Resource resource) throws RepositoryException {
-        final Script script = (Script) renderContext.getRequest().getAttribute("script");
+        final Script script = resource.getScript(renderContext);
         final JCRNodeWrapper node = resource.getNode();
         boolean isBound = node.isNodeType(Constants.JAHIAMIX_BOUND_COMPONENT);
         boolean isList = node.isNodeType(Constants.JAHIAMIX_LIST);

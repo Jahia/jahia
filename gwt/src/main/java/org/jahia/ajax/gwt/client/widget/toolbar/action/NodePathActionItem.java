@@ -44,6 +44,7 @@
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
 import com.extjs.gxt.ui.client.widget.Component;
+import com.extjs.gxt.ui.client.widget.HtmlContainer;
 import com.extjs.gxt.ui.client.widget.Text;
 import com.google.gwt.user.client.ui.HTML;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -57,11 +58,19 @@ import org.jahia.ajax.gwt.client.widget.edit.mainarea.MainModule;
 @SuppressWarnings("serial")
 public class NodePathActionItem extends BaseActionItem {
     private transient Text text;
+    private transient HtmlContainer container;
 
     @Override
     public Component getCustomItem() {
         text = new Text("");
-        return text;
+        text.setTagName("span");;
+        container = new HtmlContainer("<span class='node-path-title'>" +
+                Messages.get("label.currentPagePath", "Current page path") +
+                ": " +
+                "</span><span class='x-current-page-path node-path-text'></span>");
+        container.setStyleName("node-path-container");
+        container.add(text, ".node-path-text");
+        return container;
     }
 
     @Override
@@ -71,8 +80,8 @@ public class NodePathActionItem extends BaseActionItem {
             path = path.substring(node.getSiteKey().length()+8);
         }
         text.setStyleAttribute("color","");
-        text.setText(" " + Messages.get("label.currentPagePath", "Current page path") + ": " + path);
-        text.addStyleName("x-current-page-path");
+        text.setText(path);
+        container.setToolTip(path);
         if (linker instanceof EditLinker) {
             MainModule mainModule = ((EditLinker) linker).getMainModule();
             HTML overlayLabel = mainModule.getOverlayLabel();

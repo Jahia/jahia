@@ -214,3 +214,18 @@
     text-transform: uppercase
 }
 
+/* Node path */
+
+.node-path-container {
+    max-width: calc(100% - 420px);
+    position: absolute;
+}
+
+.node-path-title {
+    font-weight: bold;
+}
+
+.node-path-text {
+    word-break: break-all;
+}
+

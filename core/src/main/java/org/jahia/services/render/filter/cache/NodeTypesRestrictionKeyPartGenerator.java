@@ -68,6 +68,11 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
     @Override
     public String getValue(Resource resource, RenderContext renderContext, Properties properties) {
         HttpServletRequest request = renderContext.getRequest();
+
+        if(request.getAttribute("areaNodeTypesRestrictionFromCache") != null) {
+            return (String) request.getAttribute("areaNodeTypesRestrictionFromCache");
+        }
+
         Integer level = (Integer) request.getAttribute("org.jahia.modules.level");
         if (level != null) {
             String restrictions = (String) request.getAttribute("areaNodeTypesRestriction" + level);

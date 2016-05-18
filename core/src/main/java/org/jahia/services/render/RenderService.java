@@ -71,7 +71,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 
-import javax.jcr.AccessDeniedException;
 import javax.jcr.Property;
 import javax.jcr.RepositoryException;
 import javax.jcr.Value;
@@ -181,6 +180,7 @@ public class RenderService {
      * @throws RenderException in case of rendering issues
      */
     public String render(Resource resource, RenderContext context) throws RenderException {
+        // TODO: BACKLOG-6496, this check is not need anymore with new AggregateFilter that handle the stack of fragments generated
         if (context.getResourcesStack().contains(resource)) {
             String resourceMessage = Messages.getInternal("label.render.loop", context.getUILocale());
             String formattedMessage = MessageFormat.format(resourceMessage, resource.getPath());

@@ -77,6 +77,7 @@ public class RenderContext {
     private URLGenerator URLGenerator;
     private Locale uiLocale;
 
+    // TODO: BACKLOG-6496, this stack is not need anymore with new AggregateFilter that handle the stack of fragments generated
     private Stack<Resource> resourcesStack = new Stack<Resource>();
     private Set<String> renderedPaths = new HashSet<String>();
 

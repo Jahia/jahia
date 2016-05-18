@@ -91,14 +91,13 @@ public class CacheFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
+        @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
 
         moduleMap.put(CACHE_TIMER, System.currentTimeMillis());
         final String path = resource.getNodePath();
-        final String key = (String) moduleMap.get(AggregateFilter.RENDERING);
-
-        // Replace the placeholders to have the final key that is used in the cache.
-        final String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
+        final String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
+        final String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
         Element element = null;
         final Cache cache = cacheProvider.getCache();
@@ -142,8 +141,9 @@ public class CacheFilter extends AbstractFilter {
     private String execute(String previousOut, RenderContext renderContext, Resource resource, boolean bypassDependencies) throws RepositoryException {
 
         HttpServletRequest request = renderContext.getRequest();
+        @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
-        String key = (String) moduleMap.get(AggregateFilter.RENDERING);
+        String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
           // TODO (BACKLOG-6511) do we still need this check?
           // Generates the cache key - check
@@ -159,6 +159,8 @@ public class CacheFilter extends AbstractFilter {
 
             // Check if the fragment is still cacheable, based on the key and cache properties
             boolean cacheable = isCacheable(renderContext, key, resource, fragmentProperties);
+            String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
+
             if (cacheable) {
 
                 if (!bypassDependencies) {
@@ -169,9 +171,6 @@ public class CacheFilter extends AbstractFilter {
                     }
                 }
 
-
-                String finalKey = replacePlaceholdersInCacheKey(renderContext, key);
-
                 logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
 
                 doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
@@ -180,7 +179,7 @@ public class CacheFilter extends AbstractFilter {
             }
 
             // content is in cache and available, release latch for other threads waiting for this fragment
-            generatorQueue.releaseLatch();
+            generatorQueue.releaseLatch(finalKey);
         }
 
         String result = previousOut;
@@ -209,9 +208,13 @@ public class CacheFilter extends AbstractFilter {
 
     @Override
     public void finalize(RenderContext renderContext, Resource resource, RenderChain chain) {
+
         // If an error occured during render and the latch is not release during the execute() it's important that we release it
         // in any case to avoid threads waiting for nothing
-        generatorQueue.releaseLatch();
+
+        @SuppressWarnings("unchecked")
+        Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
+        generatorQueue.releaseLatch((String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
     }
 
     @Override

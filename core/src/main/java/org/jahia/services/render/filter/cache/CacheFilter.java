@@ -145,17 +145,17 @@ public class CacheFilter extends AbstractFilter {
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
         String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
-          // TODO (BACKLOG-6511) do we still need this check?
-          // Generates the cache key - check
-//        String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, properties);
-//        if (!generatedKey.equals(key)) {
-//            logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
-//        }
-
         // If this content has been served from cache, no need to cache it again
         if (moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
+
+            // because fragment is not served from the cache, but the all render chain, we check that the key is still
+            // the same after prepare() and execute() of all the render filters after the cache.
+            String generatedKey = cacheProvider.getKeyGenerator().generate(resource, renderContext, fragmentProperties);
+            if (!generatedKey.equals(key)) {
+                logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
+            }
 
             // Check if the fragment is still cacheable, based on the key and cache properties
             boolean cacheable = isCacheable(renderContext, key, resource, fragmentProperties);

@@ -913,6 +913,7 @@
                                         <property name="actionItem">
                                             <bean
                                                     class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="allowedNodeTypes" value="jnt:templatesFolder"/>
                                                 <property name="action" value="createBoard" />
                                                 <property name="parameters">
                                                     <map>
@@ -932,6 +933,7 @@
                                         <property name="actionItem">
                                             <bean
                                                     class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="allowedNodeTypes" value="jnt:templatesFolder"/>
                                                 <property name="action" value="createBoard" />
                                                 <property name="parameters">
                                                     <map>
@@ -951,6 +953,7 @@
                                         <property name="actionItem">
                                             <bean
                                                     class="org.jahia.ajax.gwt.client.widget.toolbar.action.ExecuteActionItem">
+                                                <property name="allowedNodeTypes" value="jnt:templatesFolder"/>
                                                 <property name="action" value="createBoard" />
                                                 <property name="parameters">
                                                     <map>

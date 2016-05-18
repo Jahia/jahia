@@ -43,31 +43,29 @@
  */
 package org.jahia.services.search;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import javax.jcr.PropertyIterator;
-import javax.jcr.RepositoryException;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.Transformer;
 import org.apache.commons.collections.map.LazyMap;
+import org.apache.commons.lang.StringUtils;
 import org.jahia.api.Constants;
 import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.render.RenderContext;
+import org.jahia.services.search.jcr.JahiaExcerptProvider;
 import org.jahia.settings.SettingsBean;
+import org.jahia.utils.Patterns;
+import org.jahia.utils.i18n.Messages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.jcr.PropertyIterator;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
+import javax.jcr.query.Row;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Search result item, represented by the JCR node. Used as a view object in JSP
@@ -85,12 +83,14 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
 
     private Map<String, JCRPropertyWrapper> propertiesFacade;
 
-    private List<AbstractHit<?>> usages;
+    private List<Hit> usages;
 
     private JCRNodeWrapper displayableNode = null;
     private boolean isDisplayableNodeChecked = false;
 
     private Set<String> usageFilterSites;
+    private String excerpt;
+    private List<Row> rows = null;
 
     /**
      * Initializes an instance of this class.
@@ -192,13 +192,13 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         return "";
     }
 
-    public List<AbstractHit<?>> getUsages() {
+    public List<Hit> getUsages() {
         if (usages == null) {
             usages = Collections.emptyList();
 
             if (shouldRetrieveUsages(resource)) {
-                usages = new ArrayList<AbstractHit<?>>();
-                Set<String> addedLinks = new HashSet<String>();
+                usages = new ArrayList<>();
+                Set<String> addedLinks = new HashSet<>();
                 try {
                     for (PropertyIterator it = resource.getWeakReferences(); it.hasNext();) {
                         try {
@@ -264,4 +264,84 @@ public class JCRNodeHit extends AbstractHit<JCRNodeWrapper> {
         this.usageFilterSites = usageFilterSites;
     }
 
+    public String getExcerpt() {
+        if (excerpt == null && rows != null) {
+            try {
+                // this is Jackrabbit specific, so if other implementations
+                // throw exceptions, we have to do a check here
+                for (Row row : rows) {
+                    Value excerptValue = row.getValue("rep:excerpt(.)");
+                    if (excerptValue != null) {
+                        if (excerptValue.getString().contains(
+                                "###" + JahiaExcerptProvider.TAG_TYPE + "#")
+                                || excerptValue.getString().contains(
+                                "###" + JahiaExcerptProvider.CATEGORY_TYPE
+                                        + "#")) {
+                            StringBuilder r = new StringBuilder();
+                            String separator = "";
+                            String type = "";
+                            for (String s : Patterns.COMMA.split(excerptValue
+                                    .getString())) {
+                                String s2 = Messages.getInternal(s
+                                        .contains(JahiaExcerptProvider.TAG_TYPE) ? "label.tags"
+                                        : "label.category", context.getRequest().getLocale());
+                                String s1 = s.substring(s.indexOf("###"),
+                                        s.lastIndexOf("###"));
+                                String identifier = s1.substring(s1
+                                        .lastIndexOf("#") + 1);
+                                String v = "";
+                                if (identifier.startsWith("<span")) {
+                                    identifier = identifier.substring(
+                                            identifier.indexOf(">") + 1,
+                                            identifier.lastIndexOf("</span>"));
+                                    v = "<span class=\" searchHighlightedText\">"
+                                            + getTitle() + "</span>";
+                                } else {
+                                    v = getTitle();
+                                }
+                                if (!type.equals(s2)) {
+                                    r.append(s2).append(":");
+                                    type = s2;
+                                    separator = "";
+                                }
+                                r.append(separator).append(v);
+                                separator = ", ";
+
+                            }
+                            setExcerpt(r.toString());
+                            break;
+                        } else if (!StringUtils.isEmpty(excerptValue.getString())) {
+                            setExcerpt(excerptValue.getString());
+                            break;
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                logger.warn("Search details cannot be retrieved", e);
+            }
+        }
+        return excerpt;
+    }
+
+    public void setExcerpt(String excerpt) {
+        this.excerpt = excerpt;
+    }
+
+    public void addRow(Row row) {
+        if (this.rows == null) {
+            this.rows = new ArrayList<>();
+        }
+        rows.add(row);
+    }
+
+    /**
+     * Returns the row objects from the query/search linked to this hit. Multiple query results (row) can be linked to a
+     * hit, because some nodes cannot be displayed on its own as they have no template, so the hit's link URL points to a
+     * parent node having a template, which can aggregate several sub-nodes.
+     *
+     * @return list of Row objects
+     */
+    public List<Row> getRows() {
+        return rows;
+    }
 }

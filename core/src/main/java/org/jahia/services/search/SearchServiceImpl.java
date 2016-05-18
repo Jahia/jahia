@@ -155,7 +155,7 @@ public class SearchServiceImpl extends SearchService implements InitializingBean
      * @param context, current rendering context 
      */
     public static void executeURLModificationRules(
-            List<JCRNodeHit> searchHits, RenderContext context) {
+            List<? extends Hit> searchHits, RenderContext context) {
         Map<String, Object> globals = new HashMap<String, Object>();
         globals.put("renderContext", context);
         globals.put("urlService", SearchURLService.getInstance());

@@ -43,20 +43,9 @@
  */
 package org.jahia.services.search;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.jahia.services.render.RenderContext;
-import org.jahia.services.search.jcr.JahiaExcerptProvider;
-import org.jahia.utils.Patterns;
-import org.jahia.utils.i18n.Messages;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.jcr.Value;
-import javax.jcr.query.Row;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Abstract search result item, used as a view object in JSP templates.
@@ -65,15 +54,11 @@ import java.util.List;
  */
 public abstract class AbstractHit<T> implements Hit<T> {
 
-    private static Logger logger = LoggerFactory.getLogger(AbstractHit.class);
-
-    private String excerpt;
     protected T resource;
     private float score;
     protected RenderContext context;
     private String queryParameter = "";
     private String linkTemplateType = "html";
-    private List<Row> rows = null;
 
     /**
      * Initializes an instance of this class.
@@ -87,65 +72,6 @@ public abstract class AbstractHit<T> implements Hit<T> {
         this.context = context;
     }
 
-    public String getExcerpt() {
-        if (excerpt == null && rows != null) {
-            try {
-                // this is Jackrabbit specific, so if other implementations
-                // throw exceptions, we have to do a check here
-                for (Row row : rows) {
-                    Value excerptValue = row.getValue("rep:excerpt(.)");
-                    if (excerptValue != null) {
-                        if (excerptValue.getString().contains(
-                                "###" + JahiaExcerptProvider.TAG_TYPE + "#")
-                                || excerptValue.getString().contains(
-                                "###" + JahiaExcerptProvider.CATEGORY_TYPE
-                                        + "#")) {
-                            StringBuilder r = new StringBuilder();
-                            String separator = "";
-                            String type = "";
-                            for (String s : Patterns.COMMA.split(excerptValue
-                                    .getString())) {
-                                String s2 = Messages.getInternal(s
-                                        .contains(JahiaExcerptProvider.TAG_TYPE) ? "label.tags"
-                                        : "label.category", context.getRequest().getLocale());
-                                String s1 = s.substring(s.indexOf("###"),
-                                        s.lastIndexOf("###"));
-                                String identifier = s1.substring(s1
-                                        .lastIndexOf("#") + 1);
-                                String v = "";
-                                if (identifier.startsWith("<span")) {
-                                    identifier = identifier.substring(
-                                            identifier.indexOf(">") + 1,
-                                            identifier.lastIndexOf("</span>"));
-                                    v = "<span class=\" searchHighlightedText\">"
-                                            + getTitle() + "</span>";
-                                } else {
-                                    v = getTitle();
-                                }
-                                if (!type.equals(s2)) {
-                                    r.append(s2).append(":");
-                                    type = s2;
-                                    separator = "";
-                                }
-                                r.append(separator).append(v);
-                                separator = ", ";
-
-                            }
-                            setExcerpt(r.toString());
-                            break;
-                        } else if (!StringUtils.isEmpty(excerptValue.getString())) {
-                            setExcerpt(excerptValue.getString());
-                            break;
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                logger.warn("Search details cannot be retrieved", e);
-            }
-        }
-        return excerpt;
-    }
-
     public T getRawHit() {
         return resource;
     }
@@ -156,10 +82,6 @@ public abstract class AbstractHit<T> implements Hit<T> {
 
     public RenderContext getContext() {
         return context;
-    }
-
-    public void setExcerpt(String excerpt) {
-        this.excerpt = excerpt;
     }
 
     public void setScore(float score) {
@@ -201,27 +123,4 @@ public abstract class AbstractHit<T> implements Hit<T> {
         this.linkTemplateType = linkTemplateType;
     }
 
-    public void addRow(Row row) {
-        if (this.rows == null) {
-            this.rows = new ArrayList<Row>();
-        }
-        rows.add(row);
-    }
-
-    /**
-     * Returns the row objects from the query/search linked to this hit. Multiple query results (row) can be linked to a
-     * hit, because some nodes cannot be displayed on its own as they have no template, so the hit's link URL points to a
-     * parent node having a template, which can aggregate several sub-nodes.
-     *
-     * @return list of Row objects
-     */
-    public List<Row> getRows() {
-        return rows;
-    }
-
-    /**
-     * Returns the list of hits that use the current hit
-     * @return list of AbstractHit objects
-     */
-    public abstract List<AbstractHit<?>> getUsages();
 }

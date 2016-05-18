@@ -44,6 +44,7 @@
 package org.jahia.services.search;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Describes basic properties of a search hit item.
@@ -128,4 +129,13 @@ public interface Hit<T> {
      * @return the hit type
      */
     String getType();
+
+    /**
+     * Returns the list of hits that use the current hit. If the underlying implementation doesn't support usages
+     * computation, this method should return an empty list.
+     *
+     * @return the list of hits that use the current hit or an empty list if no hits use this hit (or the
+     * implementation doesn't support usages computation)
+     */
+    List<Hit> getUsages();
 }

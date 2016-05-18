@@ -43,7 +43,6 @@
  */
 package org.jahia.services.render.filter;
 
-import org.apache.commons.lang.StringUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.Resource;
@@ -65,13 +64,7 @@ public class NodeAttributesFilter extends AbstractFilter {
     @Override
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
 
-        // calling resource.safeLoadNode() here will load the node from jcr and store it in resource, if resource is lazy
-        JCRNodeWrapper node = resource.safeLoadNode();
-        if (node == null) {
-            // Node is not available anymore, return empty content for this fragment
-            // TODO throw NodeNotFoundException ?
-            return StringUtils.EMPTY;
-        }
+        JCRNodeWrapper node = resource.getNode();
         HttpServletRequest request = renderContext.getRequest();
 
         chain.pushAttribute(request, "workspace", node.getSession().getWorkspace().getName());

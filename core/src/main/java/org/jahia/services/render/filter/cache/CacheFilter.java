@@ -77,7 +77,11 @@ public class CacheFilter extends AbstractFilter {
     private static final String FLAG_ALL = "ALL";
     private static final Set<String> FLAGS_ALL_SET = Collections.singleton(FLAG_ALL);
     private static final String CACHE_TIMER = "cacheFilter.timer";
-    private static final String FRAGMENT_SERVED_FROM_CACHE = "cacheFilter.servedFromCache";
+
+    // Flag used to know if we have to cache the fragment or not,
+    // - used when the fragment is return from the cache in the prepare() to avoid cache it again in execute()
+    // - used when the fragment is not cacheable (this is calculate in the prepare)
+    private static final String DO_NOT_CACHE_FRAGMENT = "cacheFilter.doNotCacheFragment";
 
     private static final Logger logger = LoggerFactory.getLogger(CacheFilter.class);
 
@@ -116,20 +120,35 @@ public class CacheFilter extends AbstractFilter {
 
             logger.debug("Fragment not found in cache for node: {} ", path);
 
-            // The element is not found in the cache with that key. use CacheLatchService to allow only one thread to generate the fragment
-            // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
-            // for all the waiting threads.
-            logger.debug("Use latch to decide between generate or waiting fragment for node: ", path);
+            // Fragment need to be generate, load the node in the resource to avoid performance warning messages
+            // all the code execute after his allow to read the node from JCR.
+            resource.safeLoadNode();
 
-            if (generatorQueue.getLatch(renderContext, finalKey)) {
-                element = cache.get(finalKey);
-                if (element != null && element.getObjectValue() != null) {
-                    logger.debug("Latch released for node: {} and fragment found in cache", path);
-                    return returnFromCache(renderContext, key, finalKey, element, moduleMap);
+            // test if fragment is not cacheable, no need for a latch if the fragment is not cacheable
+            if (isCacheable(renderContext, key, resource)) {
+
+                // The element is not found in the cache with that key. use CacheLatchService to allow only one thread to generate the fragment
+                // All other threads will wait until the first thread finish the generation, then the LatchReleasedCallback will be executed
+                // for all the waiting threads.
+                logger.debug("Use latch to decide between generate or waiting fragment for node: ", path);
+
+                if (generatorQueue.getLatch(renderContext, finalKey)) {
+                    element = cache.get(finalKey);
+                    if (element != null && element.getObjectValue() != null) {
+                        logger.debug("Latch released for node: {} and fragment found in cache", path);
+                        return returnFromCache(renderContext, key, finalKey, element, moduleMap);
+                    }
+                    logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
                 }
-                logger.debug("Latch released for node: {} but fragment not found in cache, generate it", path);
+                return null;
+            } else {
+                // store this fragment as a known non cacheable fragment
+                cacheProvider.addNonCacheableFragment(key);
+
+                // Add flag to say that this fragment is not cacheable
+                moduleMap.put(DO_NOT_CACHE_FRAGMENT, Boolean.TRUE);
+                return null;
             }
-            return null;
         }
     }
 
@@ -145,8 +164,8 @@ public class CacheFilter extends AbstractFilter {
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
         String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
-        // If this content has been served from cache, no need to cache it again
-        if (moduleMap.get(FRAGMENT_SERVED_FROM_CACHE) == null) {
+        // Check if we have to put the fragment in cache
+        if (moduleMap.get(DO_NOT_CACHE_FRAGMENT) == null) {
 
             Properties fragmentProperties = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource);
 
@@ -157,27 +176,19 @@ public class CacheFilter extends AbstractFilter {
                 logger.warn("Key generation does not give the same result after execution , was" + key + " , now is " + generatedKey);
             }
 
-            // Check if the fragment is still cacheable, based on the key and cache properties
-            boolean cacheable = isCacheable(renderContext, key, resource, fragmentProperties);
             String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
-            if (cacheable) {
+            if (!bypassDependencies) {
 
-                if (!bypassDependencies) {
-
-                    // Add main resource if cache.mainResource is set
-                    if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
-                        resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
-                    }
+                // Add main resource if cache.mainResource is set
+                if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
+                    resource.getDependencies().add(renderContext.getMainResource().getNode().getCanonicalPath());
                 }
-
-                logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
-
-                doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
-            } else {
-                cacheProvider.addNonCacheableFragment(key);
             }
 
+            logger.debug("Caching content {} for final key: {}", resource.getPath(), finalKey);
+
+            doCache(previousOut, renderContext, resource, Long.parseLong(fragmentProperties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION)), cacheProvider.getCache(), finalKey, bypassDependencies);
             // content is in cache and available, release latch for other threads waiting for this fragment
             generatorQueue.releaseLatch(finalKey);
         }
@@ -199,7 +210,7 @@ public class CacheFilter extends AbstractFilter {
             return;
         }
         HttpServletRequest request = renderContext.getRequest();
-        Object servedFromCacheAttribute = moduleMap.get(FRAGMENT_SERVED_FROM_CACHE);
+        Object servedFromCacheAttribute = moduleMap.get(DO_NOT_CACHE_FRAGMENT);
         Boolean isServerFromCache = servedFromCacheAttribute != null && (Boolean) servedFromCacheAttribute;
         String cacheLogMsg = isServerFromCache ? "CacheFilter served {} from cache in {} ms" : "CacheFilter generated {} in {} ms";
         long start = (Long) request.getAttribute("cacheFilter.rendering.time");
@@ -376,10 +387,9 @@ public class CacheFilter extends AbstractFilter {
      * @param renderContext render context
      * @param resource      current resource
      * @param key           calculated cache key
-     * @param properties    fragment properties
      * @return true if fragments is cacheable, false if not
      */
-    protected boolean isCacheable(RenderContext renderContext, String key, Resource resource, Properties properties) throws RepositoryException {
+    protected boolean isCacheable(RenderContext renderContext, String key, Resource resource) throws RepositoryException {
 
         // first check if the key is not part of the non cacheable fragments
         if (cacheProvider.isNonCacheableFragment(key)) {
@@ -405,7 +415,7 @@ public class CacheFilter extends AbstractFilter {
         }
 
         // check if we have a valid cache expiration
-        final String cacheExpiration = properties.getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
+        final String cacheExpiration = cacheProvider.getKeyGenerator().getAttributesForKey(renderContext, resource).getProperty(CacheUtils.FRAGMNENT_PROPERTY_CACHE_EXPIRATION);
         Long expiration = cacheExpiration != null ? Long.parseLong(cacheExpiration) : -1;
         return expiration != 0L;
     }
@@ -427,7 +437,7 @@ public class CacheFilter extends AbstractFilter {
         String cachedContent = (String) cacheEntry.getObject();
 
         // Add attr to say that this fragment have been served by the cache, to avoid cache it again
-        moduleMap.put(FRAGMENT_SERVED_FROM_CACHE, Boolean.TRUE);
+        moduleMap.put(DO_NOT_CACHE_FRAGMENT, Boolean.TRUE);
 
         boolean displayCacheInfo = SettingsBean.getInstance().isDevelopmentMode() && Boolean.valueOf(renderContext.getRequest().getParameter("cacheinfo"));
         if (displayCacheInfo && !cachedContent.contains("<body") && cachedContent.trim().length() > 0) {

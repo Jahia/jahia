@@ -205,8 +205,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
                     logger.error("Error when getting list constraints", e);
                 }
                 if (checkConstraints && !hasParentConstraint && (path == null || path.equals("*"))) {
-                    String constrainedNodeTypes = null;
-                    if (currentLevel != null) {
+                    // if constraint come from the fragment key, it's mean the parent fragment is in cache and constraint have been restored in the request
+                    String constrainedNodeTypes = pageContext.getAttribute("areaNodeTypesRestrictionFromCache", PageContext.REQUEST_SCOPE) != null ?
+                            (String) pageContext.getAttribute("areaNodeTypesRestrictionFromCache", PageContext.REQUEST_SCOPE) : null;
+                    if (currentLevel != null && constrainedNodeTypes == null) {
                         constrainedNodeTypes = (String) pageContext.getAttribute(
                                 "areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
                     }

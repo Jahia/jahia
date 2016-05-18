@@ -72,7 +72,7 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
         if (level != null) {
             String restrictions = (String) request.getAttribute("areaNodeTypesRestriction" + level);
             if (StringUtils.isNotEmpty(restrictions)) {
-                return restrictions + "*" + level;
+                return restrictions;
             }
         }
         return "";
@@ -87,17 +87,15 @@ public class NodeTypesRestrictionKeyPartGenerator implements CacheKeyPartGenerat
     public Object prepareContextForContentGeneration(String value, Resource resource, RenderContext renderContext) {
         HttpServletRequest request = renderContext.getRequest();
         request.removeAttribute("areaNodeTypesRestriction" + request.getAttribute("org.jahia.modules.level"));
+
         if (StringUtils.isNotEmpty(value)) {
-            int index = value.lastIndexOf("*");
-            Integer level = Integer.parseInt(value.substring(index + 1));
-            String restrictions = value.substring(0, index);
-            request.setAttribute("org.jahia.modules.level", level);
-            request.setAttribute("areaNodeTypesRestriction" + level, restrictions);
+            request.setAttribute("areaNodeTypesRestrictionFromCache", value);
         }
         return null;
     }
 
     @Override
     public void restoreContextAfterContentGeneration(String value, Resource resource, RenderContext renderContext, Object original) {
+        renderContext.getRequest().removeAttribute("areaNodeTypesRestrictionFromCache");
     }
 }

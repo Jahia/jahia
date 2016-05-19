@@ -49,7 +49,6 @@ import org.apache.taglibs.standard.tag.common.core.ParamParent;
 import org.jahia.api.Constants;
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.content.JCRNodeWrapper;
-import org.jahia.services.content.JCRPropertyWrapper;
 import org.jahia.services.content.JCRSessionWrapper;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.ConstraintsHelper;
@@ -62,7 +61,10 @@ import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.jcr.*;
+import javax.jcr.AccessDeniedException;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
+import javax.jcr.Value;
 import javax.jcr.nodetype.NoSuchNodeTypeException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
@@ -170,13 +172,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
     }
 
     @Override
-    public int doStartTag() throws JspException {
-        Integer level = (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-        pageContext.setAttribute("org.jahia.modules.level", level != null ? level + 1 : 2, PageContext.REQUEST_SCOPE);
-        return super.doStartTag();
-    }
-
-    @Override
     public int doEndTag() throws JspException {
         try {
             RenderContext renderContext =
@@ -194,54 +189,12 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             }
 
             if (node != null) {
-                Integer currentLevel =
-                        (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-                boolean hasParentConstraint = false;
                 try {
                     constraints = ConstraintsHelper.getConstraints(node);
-                    hasParentConstraint = path == null && !StringUtils.isEmpty(ConstraintsHelper.getConstraints(node.getParent(), node.getName()));
-
                 } catch (RepositoryException e) {
                     logger.error("Error when getting list constraints", e);
                 }
-                if (checkConstraints && !hasParentConstraint && (path == null || path.equals("*"))) {
-                    // if constraint come from the fragment key, it's mean the parent fragment is in cache and constraint have been restored in the request
-                    String constrainedNodeTypes = pageContext.getAttribute("areaNodeTypesRestrictionFromCache", PageContext.REQUEST_SCOPE) != null ?
-                            (String) pageContext.getAttribute("areaNodeTypesRestrictionFromCache", PageContext.REQUEST_SCOPE) : null;
-                    if (currentLevel != null && constrainedNodeTypes == null) {
-                        constrainedNodeTypes = (String) pageContext.getAttribute(
-                                "areaNodeTypesRestriction" + (currentLevel - 1), PageContext.REQUEST_SCOPE);
-                    }
-                    try {
-                        if (constrainedNodeTypes != null && !"".equals(constrainedNodeTypes.trim()) && !node.isNodeType("jmix:skipConstraintCheck") && !node.getParent().isNodeType("jmix:skipConstraintCheck")) {
-                            StringTokenizer st = new StringTokenizer(constrainedNodeTypes, " ");
-                            boolean found = false;
-                            Node displayedNode = node;
-                            if (node.isNodeType("jnt:contentReference") && node.hasProperty(Constants.NODE)) {
-                                JCRPropertyWrapper nodeProperty = node.getProperty(Constants.NODE);
-                                try {
-                                    displayedNode = nodeProperty.getNode();
-                                } catch (ItemNotFoundException e) {
-                                    currentResource.getDependencies().add(nodeProperty.getString());
-                                    return EVAL_PAGE;
-                                }
-                            }
-                            while (st.hasMoreTokens()) {
-                                String tok = st.nextToken();
-                                if (displayedNode.isNodeType(tok) || tok.equals(resourceNodeType)) {
-                                    found = true;
-                                    break;
-                                }
-                            }
-                            // Remove test until we find a better solution to avoid displaying unecessary nodes
-                            if (!found) {
-                                return EVAL_PAGE;
-                            }
-                        }
-                    } catch (RepositoryException e) {
-                        logger.error(e.getMessage(), e);
-                    }
-                }
+
                 if (templateType == null) {
                     templateType = currentResource.getTemplateType();
                 }
@@ -347,13 +300,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             var = null;
             builder = null;
             contextSite = null;
-
-            if (!(this instanceof IncludeTag)) {
-                Integer level =
-                        (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-                pageContext.setAttribute("org.jahia.modules.level", level != null ? level - 1 : 1,
-                        PageContext.REQUEST_SCOPE);
-            }
 
             parameters.clear();
 
@@ -603,23 +549,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
     protected void render(RenderContext renderContext, Resource resource) throws IOException, RenderException {
         try {
-            final Integer level =
-                    (Integer) pageContext.getAttribute("org.jahia.modules.level", PageContext.REQUEST_SCOPE);
-
-            String restriction = null;
-            if (!StringUtils.isEmpty(nodeTypes)) {
-                restriction = nodeTypes;
-            } else if (!StringUtils.isEmpty(constraints)) {
-                restriction = constraints;
-            }
-
-            boolean setRestrictions =
-                    pageContext.getAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE) == null &&
-                            !StringUtils.isEmpty(restriction);
-            if (setRestrictions) {
-                pageContext.setAttribute("areaNodeTypesRestriction" + level, restriction, PageContext.REQUEST_SCOPE);
-            }
-
             JCRSiteNode previousSite = renderContext.getSite();
             if (contextSite != null) {
                 renderContext.setSite(contextSite);
@@ -630,9 +559,6 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
             renderContext.setSite(previousSite);
 
             printAndClean();
-            if (setRestrictions) {
-                pageContext.removeAttribute("areaNodeTypesRestriction" + level, PageContext.REQUEST_SCOPE);
-            }
         } catch (TemplateNotFoundException io) {
             builder.append(io);
             printAndClean();

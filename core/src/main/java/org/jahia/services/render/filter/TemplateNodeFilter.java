@@ -43,9 +43,9 @@
  */
 package org.jahia.services.render.filter;
 
-import org.slf4j.Logger;
-import org.jahia.services.content.*;
+import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.*;
+import org.slf4j.Logger;
 
 /**
  * WrapperFilter
@@ -100,12 +100,6 @@ public class TemplateNodeFilter extends AbstractFilter {
                 Resource wrapperResource = new Resource(templateNode,
                         resource.getTemplateType(), template.view, Resource.CONFIGURATION_WRAPPER);
                 if (service.hasView(templateNode, template.getView(), resource.getTemplateType(), renderContext)) {
-
-                    Integer currentLevel =
-                            (Integer) renderContext.getRequest().getAttribute("org.jahia.modules.level");
-                    if (currentLevel != null) {
-                        renderContext.getRequest().removeAttribute("areaNodeTypesRestriction" + (currentLevel));
-                    }
                     if (logger.isDebugEnabled()) {
                         logger.debug("Calling render service with template : " + template.serialize() +
                                 " templateNode path : " + templateNode.getPath() + " for wrapperresource " +

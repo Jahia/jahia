@@ -70,7 +70,6 @@ when we flush this entry we will flush the whole cache
                 <bean class="org.jahia.services.render.filter.cache.SiteCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.ModuleParamsCacheKeyPartGenerator"/>
                 <bean class="org.jahia.services.render.filter.cache.AjaxCacheKeyPartGenerator"/>
-                <bean class="org.jahia.services.render.filter.cache.NodeTypesRestrictionKeyPartGenerator"/>
             </list>
         </property>
     </bean>

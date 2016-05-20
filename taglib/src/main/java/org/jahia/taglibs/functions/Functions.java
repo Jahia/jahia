@@ -56,7 +56,6 @@ import org.jahia.services.content.JCRContentUtils;
 import org.jahia.services.content.JCRNodeWrapper;
 import org.jahia.services.render.RenderContext;
 import org.jahia.services.render.RenderService;
-import org.jahia.services.render.TemplateNotFoundException;
 import org.jahia.services.render.filter.cache.AggregateCacheFilter;
 import org.jahia.services.seo.VanityUrl;
 import org.jahia.services.seo.jcr.VanityUrlService;
@@ -73,7 +72,6 @@ import javax.jcr.RangeIterator;
 import javax.jcr.RepositoryException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspTagException;
-import java.security.Principal;
 import java.util.*;
 import java.util.regex.Pattern;
 
@@ -204,15 +202,20 @@ public class Functions {
         return results;
     }
 
+    /**
+     * Checks if the provided node has the specified view.
+     * 
+     * @param node
+     *            the node to check the view for
+     * @param viewName
+     *            the view name
+     * @param renderContext
+     *            current rendering context
+     * @return <code>true</code> if the provided node has the specified view; <code>false</code> otherwise
+     */
     public static Boolean hasScriptView(JCRNodeWrapper node, String viewName, RenderContext renderContext) {
-        try {
-            return RenderService.getInstance().resolveScript(new org.jahia.services.render.Resource(node, renderContext.getMainResource().getTemplateType(), viewName, renderContext.getMainResource().getContextConfiguration()), renderContext) != null;
-        } catch (TemplateNotFoundException e) {
-            //Do nothing
-        } catch (RepositoryException e) {
-           //Do nothing
-        }
-        return false;
+        return RenderService.getInstance().hasView(node, viewName, renderContext.getMainResource().getTemplateType(),
+                renderContext);
     }
 
     /**

@@ -2,9 +2,7 @@
 
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:util="http://www.springframework.org/schema/util"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd">
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
 
     <bean class="org.jahia.test.bin.TestBean">
         <property name="coreTests" value="true"/>
@@ -60,7 +58,8 @@
                 <value>org.jahia.test.services.render.filter.EmailObfuscatorFilterTest</value>
                 <value>org.jahia.test.services.render.filter.URLFilterTest</value>
                 <value>org.jahia.test.services.render.filter.WrapperFilterTest</value>
-                <value>org.jahia.test.services.render.filter.cache.CacheFilterHttpTest</value>
+                <value>org.jahia.test.services.render.filter.cache.OldCacheFilterHttpTest</value>
+                <value>org.jahia.test.services.render.filter.cache.NewCacheFilterHttpTest</value>
                 <value>org.jahia.test.services.render.filter.cache.CacheFilterTest</value>
                 <value>org.jahia.test.services.render.filter.channels.ChannelResolutionAndExclusionTest</value>
                 <value>org.jahia.test.services.search.SimpleSearchTest</value>
@@ -417,8 +416,36 @@
         </property>
     </bean>
 
-    <bean class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
+    <bean id="oldTestCacheFilter" class="org.jahia.services.render.filter.cache.AggregateCacheFilter">
+        <property name="disabled" value="true"/>
+        <property name="priority" value="16" />
+        <property name="description" value="Module content caching filter." />
+        <property name="cacheProvider" ref="ModuleCacheProvider"/>
+        <property name="skipOnTemplateTypes" value="json"/>
+        <property name="skipOnConfigurations" value="include,wrapper,option"/>
+        <property name="applyOnModes" value="live"/>
+        <property name="generatorQueue" ref="moduleGeneratorQueue"/>
+        <property name="dependenciesLimit" value="1000"/>
+        <property name="skipLatchForPaths" >
+            <set>
+                <value>/modules</value>
+            </set>
+        </property>
+        <property name="skipLatchForConfigurations">
+            <set>
+                <value>page</value>
+            </set>
+        </property>
+    </bean>
+
+    <!-- first filter in chain -->
+    <bean id="CacheHttpTestRenderFitler1"  class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
         <property name="priority" value="-99"/>
     </bean>
-    
+
+    <!-- filter coming just after the cache in chain -->
+    <bean id="CacheHttpTestRenderFitler2" class="org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter">
+        <property name="priority" value="16.6"/>
+    </bean>
+
 </beans>

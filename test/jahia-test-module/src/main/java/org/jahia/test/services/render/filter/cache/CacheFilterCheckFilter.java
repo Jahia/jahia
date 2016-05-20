@@ -55,13 +55,13 @@ import java.util.Set;
 
 public class CacheFilterCheckFilter extends AbstractFilter {
 
-    private static Map<String,RequestData> data = new HashMap<String, RequestData>();
+    private Map<String,RequestData> data = new HashMap<String, RequestData>();
 
-    public static void clear() {
+    public void clear() {
         data.clear();
     }
 
-    public static RequestData getData(String id) {
+    public RequestData getData(String id) {
         return data.get(id);
     }
 
@@ -69,7 +69,7 @@ public class CacheFilterCheckFilter extends AbstractFilter {
     public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
         String key = renderContext.getRequest().getHeader("request-id");
         if (key != null) {
-            if (resource.getContextConfiguration().equals(Resource.CONFIGURATION_PAGE)) {
+            if (!data.containsKey(key)) {
                 RequestData requestData = new RequestData();
                 data.put(key, requestData);
             }
@@ -94,41 +94,41 @@ public class CacheFilterCheckFilter extends AbstractFilter {
         return super.execute(previousOut, renderContext, resource, chain);
     }
 
-    class RequestData {
+    public class RequestData {
         private Set<String> renderCalled = new HashSet<String>();
         private Set<String> servedFromCache;
         private int count = 0;
         private long time = System.currentTimeMillis();
 
-        Set<String> getRenderCalled() {
+        public Set<String> getRenderCalled() {
             return renderCalled;
         }
 
-        void setRenderCalled(Set<String> renderCalled) {
+        public void setRenderCalled(Set<String> renderCalled) {
             this.renderCalled = renderCalled;
         }
 
-        Set<String> getServedFromCache() {
+        public Set<String> getServedFromCache() {
             return servedFromCache;
         }
 
-        void setServedFromCache(Set<String> servedFromCache) {
+        public void setServedFromCache(Set<String> servedFromCache) {
             this.servedFromCache = servedFromCache;
         }
 
-        int getCount() {
+        public int getCount() {
             return count;
         }
 
-        void setCount(int count) {
+        public void setCount(int count) {
             this.count = count;
         }
 
-        long getTime() {
+        public long getTime() {
             return time;
         }
 
-        void setTime(long time) {
+        public void setTime(long time) {
             this.time = time;
         }
     }

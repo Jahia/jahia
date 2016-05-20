@@ -1,52 +1,8 @@
-/**
- * ==========================================================================================
- * =                   JAHIA'S DUAL LICENSING - IMPORTANT INFORMATION                       =
- * ==========================================================================================
- *
- *                                 http://www.jahia.com
- *
- *     Copyright (C) 2002-2016 Jahia Solutions Group SA. All rights reserved.
- *
- *     THIS FILE IS AVAILABLE UNDER TWO DIFFERENT LICENSES:
- *     1/GPL OR 2/JSEL
- *
- *     1/ GPL
- *     ==================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE GPL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     This program is free software: you can redistribute it and/or modify
- *     it under the terms of the GNU General Public License as published by
- *     the Free Software Foundation, either version 3 of the License, or
- *     (at your option) any later version.
- *
- *     This program is distributed in the hope that it will be useful,
- *     but WITHOUT ANY WARRANTY; without even the implied warranty of
- *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *     GNU General Public License for more details.
- *
- *     You should have received a copy of the GNU General Public License
- *     along with this program. If not, see <http://www.gnu.org/licenses/>.
- *
- *
- *     2/ JSEL - Commercial and Supported Versions of the program
- *     ===================================================================================
- *
- *     IF YOU DECIDE TO CHOOSE THE JSEL LICENSE, YOU MUST COMPLY WITH THE FOLLOWING TERMS:
- *
- *     Alternatively, commercial and supported versions of the program - also known as
- *     Enterprise Distributions - must be used in accordance with the terms and conditions
- *     contained in a separate written agreement between you and Jahia Solutions Group SA.
- *
- *     If you are unsure which license is appropriate for your use,
- *     please contact the sales department at sales@jahia.com.
- */
-package org.jahia.test.services.render.filter.cache;
+package org.jahia.test.services.render.filter.cache.base;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.Ehcache;
 import net.sf.ehcache.Element;
-
 import org.apache.commons.httpclient.Credentials;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.UsernamePasswordCredentials;
@@ -67,6 +23,8 @@ import org.jahia.services.usermanager.JahiaGroupManagerService;
 import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
+import org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter;
+import org.jahia.test.services.render.filter.cache.CacheFilterTest;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +32,6 @@ import org.slf4j.LoggerFactory;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.NodeIterator;
 import javax.jcr.query.Query;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -85,11 +42,14 @@ import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
+/**
+ * Created by jkevan on 19/05/2016.
+ */
 public class CacheFilterHttpTest extends JahiaTestCase {
 
-    private static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
-    private static final String TESTSITE_NAME = "cachetest";
-    private static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
+    public static final Logger logger = LoggerFactory.getLogger(CacheFilterTest.class);
+    public static final String TESTSITE_NAME = "cachetest";
+    public static final String SITECONTENT_ROOT_NODE = "/sites/" + TESTSITE_NAME;
 
     @BeforeClass
     public static void oneTimeSetUp() throws Exception {
@@ -166,7 +126,8 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         depCache.flush();
         depCache.removeAll();
         cacheProvider.flushNonCacheableFragments();
-        CacheFilterCheckFilter.clear();
+        getCheckFilter("CacheHttpTestRenderFitler1").clear();
+        getCheckFilter("CacheHttpTestRenderFitler2").clear();
         cache.getCacheConfiguration().setEternal(true);
         depCache.getCacheConfiguration().setEternal(true);
     }
@@ -184,77 +145,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     public void testACLs() throws Exception {
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl1");
         testACLs(SITECONTENT_ROOT_NODE + "/home/acl2");
-    }
-
-    private void testACLs(String path) throws Exception {
-
-        String guest = getContent(getUrl(path), null, null, null);
-        String root = getContent(getUrl(path), "root", "root1234", null);
-        String userAB = getContent(getUrl(path), "userAB", "password", null);
-        String userBC = getContent(getUrl(path), "userBC", "password", null);
-        String userAC = getContent(getUrl(path), "userAC", "password", null);
-
-        checkAcl(guest, new boolean[]{false, false, false, false, false, false, false, false});
-        checkAcl(root, new boolean[]{true, true, true, true, true, true, true, true});
-        checkAcl(userAB, new boolean[]{false, true, true, false, false, true, true, false});
-        checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
-        checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
-
-        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
-        JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
-
-        try {
-
-            n.revokeRolesForPrincipal("g:groupA");
-            n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
-            session.save();
-
-            String guest2 = getContent(getUrl(path), null, null, "testACLs1");
-            String root2 = getContent(getUrl(path), "root", "root1234", "testACLs2");
-            String userAB2 = getContent(getUrl(path), "userAB", "password", "testACLs3");
-            String userBC2 = getContent(getUrl(path), "userBC", "password", "testACLs4");
-            String userAC2 = getContent(getUrl(path), "userAC", "password", "testACLs5");
-
-            checkAcl(guest2, new boolean[]{false, false, false, false, false, false, false, false});
-            checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
-            checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
-            checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
-            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false, true});
-        } finally {
-            n.revokeRolesForPrincipal("g:groupB");
-            n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
-            session.save();
-        }
-
-        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, "testACLs6"));
-        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", "testACLs7"));
-        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", "testACLs8"));
-        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", "testACLs9"));
-        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", "testACLs10"));
-    }
-
-    private void checkAcl(String content, boolean[] b) {
-        assertEquals(b[0], content.contains("visible for root"));
-        assertEquals(b[1], content.contains("visible for users only"));
-        assertEquals(b[2], content.contains("visible for userAB"));
-        assertEquals(b[3], content.contains("visible for userBC"));
-        assertEquals(b[4], content.contains("visible for userAC"));
-        assertEquals(b[5], content.contains("visible for groupA"));
-        assertEquals(b[6], content.contains("visible for groupB"));
-        assertEquals(b[7], content.contains("visible for groupC"));
-    }
-
-    @Test
-    public void testModuleError() throws Exception {
-        String s = getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error1");
-        assertTrue(s.contains("<!-- Module error :"));
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error2");
-        // All served from cache
-        assertEquals(1, CacheFilterCheckFilter.getData("error2").getCount());
-        Thread.sleep(5000);
-        // Error should be flushed
-        getContent(getUrl(SITECONTENT_ROOT_NODE + "/home/error"), "root", "root1234", "error3");
-        assertEquals(2, CacheFilterCheckFilter.getData("error3").getCount());
     }
 
     @Test
@@ -283,21 +173,21 @@ public class CacheFilterHttpTest extends JahiaTestCase {
             // Long module is left blank
             assertFalse(t2.getResult().contains("Very long to appear"));
             assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("Second thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait2").getTime() > 1000 && CacheFilterCheckFilter.getData("testModuleWait2").getTime() < 5900);
+            assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() > 1000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() < 5900);
 
             // Entry is cached without the long module
             assertFalse(content.contains("Very long to appear"));
             assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait3").getCount());
+            assertEquals(1, getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait3").getCount());
 
             assertTrue(t1.getResult().contains("Very long to appear"));
             assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertTrue("First thread did not spend correct time", CacheFilterCheckFilter.getData("testModuleWait1").getTime() > 6000 && CacheFilterCheckFilter.getData("testModuleWait1").getTime() < 10000);
+            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() > 6000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() < 10000);
 
             // Entry is now cached with the long module
             assertTrue(content1.contains("Very long to appear"));
             assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
-            assertEquals(1, CacheFilterCheckFilter.getData("testModuleWait4").getCount());
+            assertEquals(1, getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait4").getCount());
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
@@ -444,9 +334,71 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
     }
 
+    public void testACLs(String path) throws Exception {
+
+        String guest = getContent(getUrl(path), null, null, null);
+        String root = getContent(getUrl(path), "root", "root1234", null);
+        String userAB = getContent(getUrl(path), "userAB", "password", null);
+        String userBC = getContent(getUrl(path), "userBC", "password", null);
+        String userAC = getContent(getUrl(path), "userAC", "password", null);
+
+        checkAcl(guest, new boolean[]{false, false, false, false, false, false, false, false});
+        checkAcl(root, new boolean[]{true, true, true, true, true, true, true, true});
+        checkAcl(userAB, new boolean[]{false, true, true, false, false, true, true, false});
+        checkAcl(userBC, new boolean[]{false, true, false, true, false, false, true, true});
+        checkAcl(userAC, new boolean[]{false, true, false, false, true, true, false, true});
+
+        JCRSessionWrapper session = JCRSessionFactory.getInstance().getCurrentUserSession("live", new Locale("en"));
+        JCRNodeWrapper n = session.getNode(path + "/maincontent/simple-text-A");
+
+        try {
+
+            n.revokeRolesForPrincipal("g:groupA");
+            n.grantRoles("g:groupB", new HashSet<String>(Arrays.asList("reader")));
+            session.save();
+
+            String guest2 = getContent(getUrl(path), null, null, "testACLs1");
+            String root2 = getContent(getUrl(path), "root", "root1234", "testACLs2");
+            String userAB2 = getContent(getUrl(path), "userAB", "password", "testACLs3");
+            String userBC2 = getContent(getUrl(path), "userBC", "password", "testACLs4");
+            String userAC2 = getContent(getUrl(path), "userAC", "password", "testACLs5");
+
+            checkAcl(guest2, new boolean[]{false, false, false, false, false, false, false, false});
+            checkAcl(root2, new boolean[]{true, true, true, true, true, true, true, true});
+            checkAcl(userAB2, new boolean[]{false, true, true, false, false, true, true, false});
+            checkAcl(userBC2, new boolean[]{false, true, false, true, false, true, true, true});
+            checkAcl(userAC2, new boolean[]{false, true, false, false, true, false, false, true});
+        } finally {
+            n.revokeRolesForPrincipal("g:groupB");
+            n.grantRoles("g:groupA", new HashSet<String>(Arrays.asList("reader")));
+            session.save();
+        }
+
+        assertEquals("Content served is not the same", guest, getContent(getUrl(path), null, null, "testACLs6"));
+        assertEquals("Content served is not the same", root, getContent(getUrl(path), "root", "root1234", "testACLs7"));
+        assertEquals("Content served is not the same", userAB, getContent(getUrl(path), "userAB", "password", "testACLs8"));
+        assertEquals("Content served is not the same", userBC, getContent(getUrl(path), "userBC", "password", "testACLs9"));
+        assertEquals("Content served is not the same", userAC, getContent(getUrl(path), "userAC", "password", "testACLs10"));
+    }
+
+    public void checkAcl(String content, boolean[] b) {
+        assertEquals(b[0], content.contains("visible for root"));
+        assertEquals(b[1], content.contains("visible for users only"));
+        assertEquals(b[2], content.contains("visible for userAB"));
+        assertEquals(b[3], content.contains("visible for userBC"));
+        assertEquals(b[4], content.contains("visible for userAC"));
+        assertEquals(b[5], content.contains("visible for groupA"));
+        assertEquals(b[6], content.contains("visible for groupB"));
+        assertEquals(b[7], content.contains("visible for groupC"));
+    }
+
+    public static CacheFilterCheckFilter getCheckFilter(String id) {
+        return (CacheFilterCheckFilter) SpringContextSingleton.getBean(id);
+    }
+
 
     @SuppressWarnings("unchecked")
-    private void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
+    public void checkCacheContent(Cache cache, Map<String, Object> cacheCopy, List<String> toFlush) {
         List<String> keysNow = cache.getKeys();
         for (String s : keysNow) {
             CacheEntry<?> c1 = ((CacheEntry<?>) cacheCopy.get(s));
@@ -459,7 +411,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         }
     }
 
-    private List<String> randomizeFlush(List<String> l, int number) {
+    public List<String> randomizeFlush(List<String> l, int number) {
         Random r = new Random();
         List<String> toFlush = new ArrayList<String>();
         for (int i = 0; i < number; i++) {
@@ -470,7 +422,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return toFlush;
     }
 
-    private String getContent(URL url, String user, String password, String requestId) throws Exception {
+    public String getContent(URL url, String user, String password, String requestId) throws Exception {
         String content = null;
         GetMethod method = null;
         try {
@@ -485,7 +437,7 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return content;
     }
 
-    private GetMethod executeCall(URL url, String user, String password, String requestId) throws IOException {
+    public GetMethod executeCall(URL url, String user, String password, String requestId) throws IOException {
         HttpClient client = new HttpClient();
         client.getParams().setAuthenticationPreemptive(true);
 
@@ -504,12 +456,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         return method;
     }
 
-    private URL getUrl(String path) throws MalformedURLException {
+    public URL getUrl(String path) throws MalformedURLException {
         String baseurl = getBaseServerURL() + Jahia.getContextPath() + "/cms";
         return new URL(baseurl + "/render/live/en" + path + ".html");
     }
 
-    private class HttpThread extends Thread {
+    public class HttpThread extends Thread {
 
         private String result;
         private int resultCode;

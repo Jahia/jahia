@@ -149,64 +149,43 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>overlay-resources</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-war</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>war</type>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/generated-resources</outputDirectory>
-                                    <includes>WEB-INF/classes/ehcache-*.xml, WEB-INF/classes/tika-config-*.xml, WEB-INF/etc/repository/*.xml, WEB-INF/etc/repository/nodetypes/**, WEB-INF/etc/repository/rules/**</includes>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>org.jahia.server</groupId>
-                                    <artifactId>jahia-data</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>zip</type>
-                                    <classifier>package</classifier>
-                                    <overWrite>true</overWrite>
-                                    <outputDirectory>${project.build.directory}/generated-resources-data</outputDirectory>
-                                    <includes>db/derby_embedded.script, db/sql/schema/derby/**, repository/**</includes>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>process-classes</phase>
+                        <phase>generate-resources</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
-                                <move todir="${project.build.directory}/classes">
-                                    <fileset dir="${project.build.directory}/generated-resources/WEB-INF/classes" />
-                                </move>
-                                <move todir="${project.build.directory}/classes/WEB-INF">
-                                    <fileset dir="${project.build.directory}/generated-resources/WEB-INF" />
-                                </move>
-                                <move todir="${project.build.directory}/classes/WEB-INF/var/repository">
-                                    <fileset dir="${project.build.directory}/generated-resources-data/repository" />
-                                </move>
-                                <move todir="${project.build.directory}/classes/WEB-INF/var/patches/sql">
-                                    <fileset dir="${project.build.directory}/generated-resources-data/db/sql/schema" />
-                                </move>
-                                <move file="${project.build.directory}/generated-resources-data/db/derby_embedded.script" todir="${project.build.directory}/classes/WEB-INF/var/patches"/>
+                                <copy todir="${project.build.directory}/classes">
+                                    <fileset dir="${project.basedir}/../../war/src/main/resources">
+                                        <include name="ehcache*.xml"/>
+                                        <include name="tika-config-*.xml"/>
+                                    </fileset>
+                                    <fileset dir="${project.basedir}/../../war/src/main/webapp">
+                                        <include name="WEB-INF/etc/repository/*.xml"/>
+                                        <include name="WEB-INF/etc/repository/nodetypes/**"/>
+                                        <include name="WEB-INF/etc/repository/rules/**"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var">
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources">
+                                        <include name="repository/**"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var/patches">
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db">
+                                        <include name="derby_embedded.script"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${project.build.directory}/classes/WEB-INF/var/patches/sql">
+                                    <fileset dir="${project.basedir}/../../war/src/data/resources/db/sql/schema">
+                                        <include name="derby/**"/>
+                                    </fileset>
+                                </copy>
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="{hibernateDialect.derby}" value="hibernateDialect.derby"/>
+                                <replace file="${project.build.directory}/classes/WEB-INF/var/patches/derby_embedded.script" token="$hibernateDialect.derby" value="${hibernateDialect.derby}"/>
                             </target>
                         </configuration>
                     </execution>

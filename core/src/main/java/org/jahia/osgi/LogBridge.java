@@ -48,32 +48,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * This LogBridge is used by a custom pax-logging-service appender to bring back up the log messages inside the OSGi
- * runtime back into DX's core.
+ * This LogBridge is used by a custom pax-logging-service appender to bring back up the log messages inside the OSGi runtime back into DX's
+ * core.
  */
 public class LogBridge {
 
+    /**
+     * Performs logging of the provided message and exception.
+     * 
+     * @param loggerName
+     *            the name of the logger
+     * @param level
+     *            the logging level
+     * @param message
+     *            the message to be logged
+     * @param t
+     *            the exception to be logged
+     */
     public static void log(String loggerName, int level, Object message, Throwable t) {
+        if (level == Level.OFF_INT) {
+            return;
+        }
+
         Logger logger = LoggerFactory.getLogger(loggerName);
         String msg = (message != null ? message.toString() : null);
-        switch (level) {
-            case Level.TRACE_INT:
-                logger.trace(msg, t);
-                break;
-            case Level.DEBUG_INT:
-                logger.debug(msg, t);
-                break;
-            case Level.INFO_INT:
-                logger.info(msg, t);
-                break;
-            case Level.WARN_INT:
-                logger.warn(msg, t);
-                break;
-            case Level.ERROR_INT:
-                logger.error(msg, t);
-                break;
-            default:
-                logger.info(msg, t);
+
+        if (level >= Level.ERROR_INT) {
+            logger.error(msg, t);
+        } else if (level >= Level.WARN_INT) {
+            logger.warn(msg, t);
+        } else if (level >= Level.INFO_INT) {
+            logger.info(msg, t);
+        } else if (level >= Level.DEBUG_INT) {
+            logger.debug(msg, t);
+        } else if (level >= Level.TRACE_INT) {
+            logger.trace(msg, t);
+        } else {
+            // fallback logging level is DEBUG as in log4j
+            logger.debug(msg, t);
         }
     }
 }

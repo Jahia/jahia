@@ -55,17 +55,14 @@ public class LogBridge {
 
     /**
      * Performs logging of the provided message and exception.
-     * 
-     * @param loggerName
-     *            the name of the logger
-     * @param level
-     *            the logging level
-     * @param message
-     *            the message to be logged
-     * @param t
-     *            the exception to be logged
+     *
+     * @param loggerName the name of the logger
+     * @param level the logging level
+     * @param message the message to be logged
+     * @param t the exception to be logged
      */
     public static void log(String loggerName, int level, Object message, Throwable t) {
+
         if (level == Level.OFF_INT) {
             return;
         }
@@ -81,11 +78,8 @@ public class LogBridge {
             logger.info(msg, t);
         } else if (level >= Level.DEBUG_INT) {
             logger.debug(msg, t);
-        } else if (level >= Level.TRACE_INT) {
-            logger.trace(msg, t);
         } else {
-            // fallback logging level is DEBUG as in log4j
-            logger.debug(msg, t);
+            logger.trace(msg, t);
         }
     }
 }

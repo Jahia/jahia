@@ -43,8 +43,8 @@
  */
 package org.jahia.bundles.extender.jahiamodules;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.felix.fileinstall.ArtifactListener;
 import org.apache.felix.fileinstall.ArtifactUrlTransformer;
 import org.jahia.bin.Jahia;
 import org.jahia.bin.listeners.JahiaContextLoaderListener;
@@ -60,6 +60,8 @@ import org.jahia.services.cache.CacheHelper;
 import org.jahia.services.content.*;
 import org.jahia.services.content.decorator.JCRSiteNode;
 import org.jahia.services.content.nodetypes.NodeTypeRegistry;
+import org.jahia.services.modulemanager.transform.ModuleDependencyTransformer;
+import org.jahia.services.modulemanager.transform.ModulePersistenceTransformer;
 import org.jahia.services.render.scripting.bundle.BundleScriptEngineManager;
 import org.jahia.services.render.scripting.bundle.BundleScriptResolver;
 import org.jahia.services.render.scripting.bundle.ScriptBundleObserver;
@@ -93,7 +95,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 
-import static org.jahia.bundles.extender.jahiamodules.ModuleDependencyTransformer.HANDLER_PREFIX;
+import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_DX;
+import static org.jahia.services.modulemanager.Constants.URL_PROTOCOL_MODULE_DEPENDENCIES;
 
 /**
  * Activator for DX Modules extender.
@@ -209,9 +212,8 @@ public class Activator implements BundleActivator, EventHandler {
         // add listener for other bundle life cycle events
         setupBundleListener(context);
 
-        // Add transformer for jahia-depends capabilities
-        registerLegacyTransformer(context);
-        registerJcrUrlHandler(context);
+        // Add transformers and URL handlers for jcr persistence and jahia-depends capabilities
+        registerUrlTransformers(context);
 
         checkExistingModules(context);
 
@@ -251,7 +253,7 @@ public class Activator implements BundleActivator, EventHandler {
                 // Parse bundle if activator has not seen them before
                 if (!isRegistered && state > Bundle.INSTALLED) {
                     try {
-                        String l = BeanUtils.getProperty(bundle, "location");
+                        String l = bundle.getLocation();
                         logger.info("Found bundle {} which needs to be processed by a module extender. Location {}",
                                 BundleUtils.getDisplayName(bundle), l);
                         if (state == Bundle.ACTIVE) {
@@ -259,11 +261,9 @@ public class Activator implements BundleActivator, EventHandler {
                             toStart.add(bundle);
                         }
                         try {
-                            if (!l.startsWith(HANDLER_PREFIX) && !l.startsWith("inputstream:")
-                                    && !StringUtils.contains((String) bundle.getHeaders().get("Provide-Capability"),
-                                    "com.jahia.modules.dependencies")) {
+                            if (!l.startsWith(URL_PROTOCOL_DX)) {
                                 // transform the module
-                                bundle.update(new URL(HANDLER_PREFIX + ":" + l).openStream());
+                                bundle.update(ModulePersistenceTransformer.transform(bundle));
                             } else {
                                 bundle.update();
                             }
@@ -897,31 +897,36 @@ public class Activator implements BundleActivator, EventHandler {
     }
 
     /**
-     * Registers services for module dependency transformation.
+     * Registers the transformation services.
      *
-     * @param context the OSGi bundle context object.
+     * @param context
+     *            the OSGi bundle context object
      */
-    private void registerLegacyTransformer(BundleContext context) {
+    private void registerUrlTransformers(BundleContext context) throws IOException {
+        // register protocol handlers
         Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("url.handler.protocol", HANDLER_PREFIX);
-        serviceRegistrations
-                .add(context.registerService(URLStreamHandlerService.class, new ModuleDependencyTransformer(), props));
+        props.put("url.handler.protocol", URL_PROTOCOL_DX);
+        props.put(Constants.SERVICE_DESCRIPTION,
+                "URL stream protocol handler for DX modules that handles bundle storage and dependencies between modules");
+        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class,
+                ModulePersistenceTransformer.getURLStreamHandlerService(), props));
+        props = new Hashtable<String, Object>();
+        props.put("url.handler.protocol", URL_PROTOCOL_MODULE_DEPENDENCIES);
+        props.put(Constants.SERVICE_DESCRIPTION,
+                "URL stream protocol handler for DX modules that handles dependencies between them using OSGi capabilities");
+        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        serviceRegistrations.add(context.registerService(URLStreamHandlerService.class,
+                ModuleDependencyTransformer.getURLStreamHandlerService(), props));
 
-        serviceRegistrations.add(context.registerService(new String[]{ArtifactUrlTransformer.class.getName()},
-                new ModuleDependencyTransformer(), null));
-
-    }
-
-    /**
-     * Registers services for Jcr bundle protocol url resolution transformation.
-     *
-     * @param context the OSGi bundle context object.
-     */
-    private void registerJcrUrlHandler(BundleContext context) throws IOException {
-        Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("url.handler.protocol", "jcr");
-        serviceRegistrations
-                .add(context.registerService(URLStreamHandlerService.class, new JcrBundleTransformer(), props));
+        // register artifact listener and URL transformer
+        props = new Hashtable<String, Object>();
+        props.put(Constants.SERVICE_DESCRIPTION,
+                "Artifact listener to perist the underlying bundle and transform its URL");
+        props.put(Constants.SERVICE_VENDOR, "Jahia Solutions Group SA");
+        serviceRegistrations.add(context.registerService(
+                new String[] { ArtifactUrlTransformer.class.getName(), ArtifactListener.class.getName() },
+                new ModuleUrlTransformer(), null));
     }
 
     /**

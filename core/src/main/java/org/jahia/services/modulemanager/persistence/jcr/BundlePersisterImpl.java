@@ -130,6 +130,21 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
+    public InputStream download(final String bundleKey) throws ModuleManagementException {
+        try {
+            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<InputStream>() {
+                @Override
+                public InputStream doInJCR(JCRSessionWrapper session) throws RepositoryException {
+                    JCRNodeWrapper node = findTargetNode(bundleKey, session);
+                    return node != null ? node.getFileContent().downloadFile() : null;
+                }
+            });
+        } catch (RepositoryException e) {
+            throw new ModuleManagementException("Unable to find bundle " + bundleKey, e);
+        }
+    }
+
+    @Override
     public PersistedBundle extract(Resource resource) throws IOException {
         long startTime = System.currentTimeMillis();
 

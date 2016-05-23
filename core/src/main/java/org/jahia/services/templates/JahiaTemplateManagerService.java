@@ -106,6 +106,8 @@ import java.util.*;
  */
 public class JahiaTemplateManagerService extends JahiaService implements ApplicationEventPublisherAware, ApplicationListener<ApplicationEvent> {
 
+    public static final Set<String> DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY = new HashSet<>(
+            Arrays.asList("default", "jquery", "ckeditor", "assets"));
 
     public static final String MODULE_TYPE_MODULE = "module";
 
@@ -147,7 +149,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
 
     private List<String> nonManageableModules;
     
-    private Set<String> modulesWithNoDefaultDependency = Collections.singleton("default");
+    private Set<String> modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
 
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
         this.applicationEventPublisher = applicationEventPublisher;
@@ -1092,7 +1094,7 @@ public class JahiaTemplateManagerService extends JahiaService implements Applica
             modules.add("default");
             this.modulesWithNoDefaultDependency = Collections.unmodifiableSet(modules);
         } else {
-            this.modulesWithNoDefaultDependency = Collections.singleton("default");
+            this.modulesWithNoDefaultDependency = DEFAULT_MODULES_WITH_NO_DEFAUL_DEPENDENCY;
         }
     }
 }

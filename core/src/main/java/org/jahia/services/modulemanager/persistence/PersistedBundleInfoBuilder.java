@@ -43,6 +43,13 @@
  */
 package org.jahia.services.modulemanager.persistence;
 
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_NAME;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_VERSION;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_GROUP_ID;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_IMPL_TITLE;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_IMPL_VERSION;
+import static org.jahia.services.modulemanager.Constants.ATTR_NAME_BUNDLE_SYMBOLIC_NAME;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,18 +74,6 @@ import org.springframework.core.io.Resource;
  */
 public final class PersistedBundleInfoBuilder {
 
-    private static final Attributes.Name ATTR_BUNDLE_NAME = new Attributes.Name("Bundle-Name");
-
-    private static final Attributes.Name ATTR_BUNDLE_VERSION = new Attributes.Name("Bundle-Version");
-
-    private static final Attributes.Name ATTR_GROUP_ID = new Attributes.Name("Jahia-GroupId");
-
-    private static final Attributes.Name ATTR_IMPL_TITLE = new Attributes.Name("Implementation-Title");
-
-    private static final Attributes.Name ATTR_IMPL_VERSION = new Attributes.Name("Implementation-Version");
-
-    private static final Attributes.Name ATTR_SYMBOLIC_NAME = new Attributes.Name("Bundle-SymbolicName");
-
     private static final Logger logger = LoggerFactory.getLogger(PersistedBundleInfoBuilder.class);
 
     /**
@@ -100,12 +95,12 @@ public final class PersistedBundleInfoBuilder {
             Manifest mf = jarIs.getManifest();
             if (mf != null) {
                 Attributes attrs = mf.getMainAttributes();
-                groupId = attrs.getValue(ATTR_GROUP_ID);
-                symbolicName = attrs.getValue(ATTR_SYMBOLIC_NAME);
-                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_BUNDLE_VERSION),
-                        attrs.getValue(ATTR_IMPL_VERSION));
-                displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_IMPL_TITLE),
-                        attrs.getValue(ATTR_BUNDLE_NAME));
+                groupId = attrs.getValue(ATTR_NAME_GROUP_ID);
+                symbolicName = attrs.getValue(ATTR_NAME_BUNDLE_SYMBOLIC_NAME);
+                version = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_BUNDLE_VERSION),
+                        attrs.getValue(ATTR_NAME_IMPL_VERSION));
+                displayName = StringUtils.defaultIfBlank(attrs.getValue(ATTR_NAME_IMPL_TITLE),
+                        attrs.getValue(ATTR_NAME_BUNDLE_NAME));
             }
         }
 

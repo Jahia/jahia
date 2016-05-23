@@ -44,6 +44,7 @@
 package org.jahia.services.modulemanager.persistence;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.springframework.core.io.Resource;
@@ -66,6 +67,18 @@ public interface BundlePersister {
      *             in case of unexpected error during the delete process
      */
     boolean delete(String bundleKey) throws ModuleManagementException;
+
+    /**
+     * Returns the input stream for the persisted bundle considering the requested key.
+     * 
+     * @param bundleKey
+     *            the key of the bundle to be looked up
+     * @return the input stream for the persisted bundle considering the requested key or <code>null</code> if the corresponding bundle
+     *         cannot be found for the provided key
+     * @throws ModuleManagementException
+     *             in case of unexpected error during the download process
+     */
+    InputStream download(String bundleKey) throws ModuleManagementException;
 
     /**
      * Extracts the information from the specified bundle resource.

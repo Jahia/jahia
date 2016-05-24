@@ -119,8 +119,6 @@ public class BundlePersisterIT extends AbstractJUnitTest {
                 return null;
             }
         });
-        
-        assertFalse(service.isStorageInitialized());
     }
 
     @After
@@ -169,8 +167,6 @@ public class BundlePersisterIT extends AbstractJUnitTest {
         // store the resource
         service.store(resource);
         
-        assertTrue(service.isStorageInitialized());
-
         // search by fully-qualified key
         PersistedBundle found = service.find(info.getKey());
         assertEquals(info, found);
@@ -186,8 +182,6 @@ public class BundlePersisterIT extends AbstractJUnitTest {
         PersistedBundle info = service.extract(resource);
         // store the resource
         service.store(resource);
-        
-        assertTrue(service.isStorageInitialized());
 
         // verify the JCR node and get the last modified date
         long lastModified = verify(info);

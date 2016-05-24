@@ -102,17 +102,6 @@ public interface BundlePersister {
     PersistedBundle find(String bundleKey);
 
     /**
-     * Checks if the persistent storage is already populated with bundle information. If the storage is empty, it means that it has to be
-     * initialized.
-     * 
-     * @return <code>true</code> if the persistent bundle storage already contains bundle data; <code>false</code> in case the storage is
-     *         empty
-     * @throws ModuleManagementException
-     *             in case of an error checking the persistent storage
-     */
-    boolean isStorageInitialized() throws ModuleManagementException;
-
-    /**
      * Persists the specified bundle resource either creating a new info in the storage or updating the existing entry with the supplied
      * data.
      * 

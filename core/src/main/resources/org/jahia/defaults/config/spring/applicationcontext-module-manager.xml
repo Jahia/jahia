@@ -18,10 +18,4 @@
     
     <bean id="org.jahia.services.modulemanager.persistence.BundlePersister" class="org.jahia.services.modulemanager.persistence.jcr.BundlePersisterImpl"/>
 
-<!--
-    <bean id="BundlePersistanceStorageInitializer" class="org.jahia.services.modulemanager.persistence.BundlePersistanceStorageInitializer">
-        <property name="persister" ref="org.jahia.services.modulemanager.persistence.BundlePersister"/>
-    </bean>
--->
-
 </beans>

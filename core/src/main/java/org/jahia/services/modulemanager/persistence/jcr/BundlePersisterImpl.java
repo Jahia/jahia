@@ -199,20 +199,6 @@ public class BundlePersisterImpl implements BundlePersister {
     }
 
     @Override
-    public boolean isStorageInitialized() throws ModuleManagementException {
-        try {
-            return JCRTemplate.getInstance().doExecuteWithSystemSession(new JCRCallback<Boolean>() {
-                @Override
-                public Boolean doInJCR(JCRSessionWrapper session) throws RepositoryException {
-                    return session.nodeExists(PATH_BUNDLES) && session.getNode(PATH_BUNDLES).hasNodes();
-                }
-            });
-        } catch (RepositoryException e) {
-            throw new ModuleManagementException("Unable to check the persistent storage for bundles", e);
-        }
-    }
-
-    @Override
     public void store(final PersistedBundle bundleInfo) throws IOException, ModuleManagementException {
         long startTime = System.currentTimeMillis();
 

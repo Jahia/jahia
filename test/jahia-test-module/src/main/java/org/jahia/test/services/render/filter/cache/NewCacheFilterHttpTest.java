@@ -57,16 +57,18 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
             HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
             t2.start();
             t2.join();
+            String t2Content = t2.getResult();
 
             String content = getContent(url, "root", "root1234", "testModuleWait3");
 
             t1.join();
+            String t1Content = t1.getResult();
 
             String content1 = getContent(url, "root", "root1234", "testModuleWait4");
 
             // Long module is left blank
-            assertFalse(t2.getResult().contains("Very long to appear"));
-            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertFalse(t2Content.contains("Very long to appear"));
+            assertTrue(t2Content.contains("<h2 class=\"pageTitle\">long</h2>"));
             assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() > 1000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() < 5900);
 
             // Entry is cached without the long module
@@ -74,8 +76,8 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
             assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
             assertNull(getCheckFilter("CacheHttpTestRenderFitler2").getData("testModuleWait3"));
 
-            assertTrue(t1.getResult().contains("Very long to appear"));
-            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue(t1Content.contains("Very long to appear"));
+            assertTrue(t1Content.contains("<h2 class=\"pageTitle\">long</h2>"));
             assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() > 6000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() < 10000);
 
             // Entry is now cached with the long module

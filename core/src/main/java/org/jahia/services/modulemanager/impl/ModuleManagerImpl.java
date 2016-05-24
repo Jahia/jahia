@@ -49,7 +49,6 @@ import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
 import org.jahia.services.modulemanager.spi.BundleService;
-import org.jahia.services.modulemanager.spi.BundleService.Operation;
 import org.jahia.services.modulemanager.spi.BundleServiceLocator;
 import org.osgi.framework.BundleException;
 import org.slf4j.Logger;
@@ -63,6 +62,15 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public class ModuleManagerImpl implements ModuleManager {
+
+    /**
+     * The set of available bundle operations.
+     * 
+     * @author Sergiy Shyrkov
+     */
+    private static enum Operation {
+        START, STOP, UNINSTALL;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
@@ -159,7 +167,22 @@ public class ModuleManagerImpl implements ModuleManager {
         try {
             info = persister.find(bundleKey);
             if (info != null) {
-                getBundleService().performOperation(info, operation, target);
+                switch (operation) {
+                    case START:
+                        getBundleService().start(info, target);
+                        break;
+
+                    case STOP:
+                        getBundleService().stop(info, target);
+                        break;
+
+                    case UNINSTALL:
+                        getBundleService().uninstall(info, target);
+                        break;
+
+                    default:
+                        throw new UnsupportedOperationException("Unknown bundle operation: " + operation);
+                }
                 opResult = OperationResult.success(info.getBundleInfo());
             } else {
                 opResult = OperationResult.BUNDLE_NOT_FOUND;

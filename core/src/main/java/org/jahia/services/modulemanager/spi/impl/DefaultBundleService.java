@@ -59,6 +59,25 @@ import org.osgi.framework.BundleException;
  */
 public class DefaultBundleService implements BundleService {
 
+    /**
+     * Obtains the specified bundle or throws an exception if it does not exist.
+     * 
+     * @param bundleInfo
+     *            the information about the bundle to get
+     * @return the specified bundle
+     * @throws BundleException
+     *             in case the corresponding bundle could not be found
+     */
+    private Bundle getBundleEnsureExists(BundleInfo bundleInfo) throws BundleException {
+        Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
+        if (bundle == null) {
+            throw new BundleException("Unable to find bundle for symbolic name " + bundleInfo.getSymbolicName()
+                    + " and version " + bundleInfo.getVersion(), BundleException.RESOLVE_ERROR);
+        }
+
+        return bundle;
+    }
+
     @Override
     public void install(String uri, String target, boolean start) throws BundleException {
         Bundle installedBundle = FrameworkService.getBundleContext().installBundle(uri);
@@ -68,29 +87,18 @@ public class DefaultBundleService implements BundleService {
     }
 
     @Override
-    public void performOperation(BundleInfo bundleInfo, Operation operation, String target) throws BundleException {
-        Bundle bundle = BundleUtils.getBundleBySymbolicName(bundleInfo.getSymbolicName(), bundleInfo.getVersion());
-        if (bundle != null) {
-            switch (operation) {
-                case START:
-                    bundle.start();
-                    break;
+    public void start(BundleInfo bundleInfo, String target) throws BundleException {
+        getBundleEnsureExists(bundleInfo).start();
+    }
 
-                case STOP:
-                    bundle.stop();
-                    break;
+    @Override
+    public void stop(BundleInfo bundleInfo, String target) throws BundleException {
+        getBundleEnsureExists(bundleInfo).stop();
+    }
 
-                case UNINSTALL:
-                    bundle.uninstall();
-                    break;
-
-                default:
-                    throw new UnsupportedOperationException("Unknown bundle operation: " + operation);
-            }
-        } else {
-            throw new BundleException("Unable to find bundle for symbolic name " + bundleInfo.getSymbolicName()
-                    + " and version " + bundleInfo.getVersion(), BundleException.RESOLVE_ERROR);
-        }
-
+    @Override
+    public void uninstall(BundleInfo bundleInfo, String target) throws BundleException {
+        getBundleEnsureExists(bundleInfo).uninstall();
+        ;
     }
 }

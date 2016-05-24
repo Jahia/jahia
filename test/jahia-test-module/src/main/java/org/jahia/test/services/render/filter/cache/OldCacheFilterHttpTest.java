@@ -94,4 +94,9 @@ public class OldCacheFilterHttpTest extends CacheFilterHttpTest {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
         }
     }
+
+    @Test
+    public void testMaxConcurrent() throws Exception {
+        testMaxConcurrent(1000);
+    }
 }

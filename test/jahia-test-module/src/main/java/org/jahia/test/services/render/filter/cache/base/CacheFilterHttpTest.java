@@ -148,40 +148,6 @@ public class CacheFilterHttpTest extends JahiaTestCase {
     }
 
     @Test
-    public void testMaxConcurrent() throws Exception {
-        /*
-            TODO: BACKLOG-6408, TO be fixed, AggregateCacheFilter (old) was generating the all fragments in the page before caching making latch waiting for the all
-            TODO: page to be generate before having access to the fragment, that's why this test was working for old impl but not with the new one
-            TODO: now fragments are stored in cache as they are generate, we need to find a better way to test this
-         */
-        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
-        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
-
-        try {
-
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
-
-            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
-            t1.start();
-            Thread.sleep(500);
-
-            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
-            t2.start();
-            t2.join();
-            t1.join();
-
-            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
-            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
-
-            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
-        } finally {
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
-            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
-        }
-    }
-
-    @Test
     public void testReferencesFlush() throws Exception {
 
         URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/references");
@@ -286,6 +252,34 @@ public class CacheFilterHttpTest extends JahiaTestCase {
         assertTrue("user3 cannot see content, she should see", contentForUser3.contains("content for user3"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user1"));
         assertFalse("user3 sees content, she should not see", contentForUser3.contains("content for user2"));
+    }
+
+    public void testMaxConcurrent(int generationTime) throws Exception{
+        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+        int previousMaxModulesToGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+
+        try {
+
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(generationTime);
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
+
+            HttpThread t1 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home/long"), "root", "root1234", "testMaxConcurrent1");
+            t1.start();
+            Thread.sleep(500);
+
+            HttpThread t2 = new HttpThread(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent2");
+            t2.start();
+            t2.join();
+            t1.join();
+
+            assertEquals("Incorrect response code for first thread", 200, t1.resultCode);
+            assertEquals("Incorrect response code for second thread", 500, t2.resultCode);
+
+            assertTrue(getContent(getUrl(SITECONTENT_ROOT_NODE + "/home"), "root", "root1234", "testMaxConcurrent3").contains("<title>Home</title>"));
+        } finally {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousMaxModulesToGenerateInParallel);
+        }
     }
 
     public void testACLs(String path) throws Exception {
@@ -417,12 +411,12 @@ public class CacheFilterHttpTest extends JahiaTestCase {
 
     public class HttpThread extends Thread {
 
-        private String result;
-        private int resultCode;
-        private URL url;
-        private String user;
-        private String password;
-        private String requestId;
+        public String result;
+        public int resultCode;
+        public URL url;
+        public String user;
+        public String password;
+        public String requestId;
 
         public HttpThread(URL url, String user, String password, String requestId) {
             this.url = url;

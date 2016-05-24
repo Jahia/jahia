@@ -2,9 +2,12 @@ package org.jahia.test.services.render.filter.cache;
 
 import org.jahia.services.SpringContextSingleton;
 import org.jahia.services.render.filter.AbstractFilter;
+import org.jahia.services.render.filter.cache.ModuleGeneratorQueue;
 import org.jahia.test.services.render.filter.cache.base.CacheFilterHttpTest;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.net.URL;
 
 import static org.junit.Assert.*;
 
@@ -36,5 +39,51 @@ public class NewCacheFilterHttpTest extends CacheFilterHttpTest {
         CacheFilterCheckFilter.RequestData data = getCheckFilter("CacheHttpTestRenderFitler2").getData("error3");
         assertEquals(1, data.getCount());
         assertEquals("/sites/cachetest/home/error/maincontent/simple-text.error.html", data.getRenderCalled().toArray()[0]);
+    }
+
+    @Test
+    public void testModuleWait() throws Exception {
+
+        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+
+        try {
+
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            URL url = getUrl(SITECONTENT_ROOT_NODE + "/home/long");
+            HttpThread t1 = new HttpThread(url, "root", "root1234", "testModuleWait1");
+            t1.start();
+            Thread.sleep(200);
+
+            HttpThread t2 = new HttpThread(url, "root", "root1234", "testModuleWait2");
+            t2.start();
+            t2.join();
+
+            String content = getContent(url, "root", "root1234", "testModuleWait3");
+
+            t1.join();
+
+            String content1 = getContent(url, "root", "root1234", "testModuleWait4");
+
+            // Long module is left blank
+            assertFalse(t2.getResult().contains("Very long to appear"));
+            assertTrue(t2.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue("Second thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() > 1000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait2").getTime() < 5900);
+
+            // Entry is cached without the long module
+            assertFalse(content.contains("Very long to appear"));
+            assertTrue(content.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertNull(getCheckFilter("CacheHttpTestRenderFitler2").getData("testModuleWait3"));
+
+            assertTrue(t1.getResult().contains("Very long to appear"));
+            assertTrue(t1.getResult().contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertTrue("First thread did not spend correct time", getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() > 6000 && getCheckFilter("CacheHttpTestRenderFitler1").getData("testModuleWait1").getTime() < 10000);
+
+            // Entry is now cached with the long module
+            assertTrue(content1.contains("Very long to appear"));
+            assertTrue(content1.contains("<h2 class=\"pageTitle\">long</h2>"));
+            assertNull(getCheckFilter("CacheHttpTestRenderFitler2").getData("testModuleWait4"));
+        } finally {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+        }
     }
 }

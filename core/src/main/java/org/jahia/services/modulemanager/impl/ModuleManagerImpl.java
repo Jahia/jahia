@@ -43,12 +43,8 @@
  */
 package org.jahia.services.modulemanager.impl;
 
-import java.util.Set;
-
-import org.jahia.services.modulemanager.BundleStateReport;
 import org.jahia.services.modulemanager.ModuleManagementException;
 import org.jahia.services.modulemanager.ModuleManager;
-import org.jahia.services.modulemanager.NodeStateReport;
 import org.jahia.services.modulemanager.OperationResult;
 import org.jahia.services.modulemanager.persistence.BundlePersister;
 import org.jahia.services.modulemanager.persistence.PersistedBundle;
@@ -81,16 +77,6 @@ public class ModuleManagerImpl implements ModuleManager {
      */
     private BundleService getBundleService() {
         return bundleServiceLocator.lookup();
-    }
-
-    @Override
-    public BundleStateReport getBundleState(final String bundleKey, String target) throws ModuleManagementException {
-        return null;
-    }
-
-    @Override
-    public Set<NodeStateReport> getNodesBundleStates(String target) throws ModuleManagementException {
-        return null;
     }
 
     /**

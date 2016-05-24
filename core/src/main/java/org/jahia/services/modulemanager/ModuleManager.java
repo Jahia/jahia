@@ -43,8 +43,6 @@
  */
 package org.jahia.services.modulemanager;
 
-import java.util.Set;
-
 import org.springframework.core.io.Resource;
 
 /**
@@ -78,30 +76,6 @@ import org.springframework.core.io.Resource;
  * @author Sergiy Shyrkov
  */
 public interface ModuleManager {
-
-    /**
-     * Get the state report of a bundle on the target group of cluster nodes.
-     * 
-     * @param bundleKey
-     *            bundle key (see class JavaDoc for the supported key format)
-     * @param target
-     *            the group of cluster nodes (see class JavaDoc for the supported values)
-     * @return the state report of the bundle in the target nodes
-     * @throws ModuleManagementException
-     *             thrown exception
-     */
-    BundleStateReport getBundleState(String bundleKey, String target) throws ModuleManagementException;
-
-    /**
-     * Get the state report of a list of Nodes including their own bundles
-     * 
-     * @param target
-     *            the group of cluster nodes (see class JavaDoc for the supported values)
-     * @return the state report of the bundle in the target nodes
-     * @throws ModuleManagementException
-     *             thrown exception
-     */
-    Set<NodeStateReport> getNodesBundleStates(String targetNodes) throws ModuleManagementException;
 
     /**
      * Install the specified bundle on the target group of cluster nodes.

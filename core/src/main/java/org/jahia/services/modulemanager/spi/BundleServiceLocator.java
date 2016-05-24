@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Factory class for looking up the {@link BundleService} instances.
- * 
+ *
  * @author Sergiy Shyrkov
  */
 public class BundleServiceLocator {
@@ -60,26 +60,25 @@ public class BundleServiceLocator {
     private static final Logger logger = LoggerFactory.getLogger(BundleServiceLocator.class);
 
     private BundleService defaultBundleService;
-
     private SettingsBean settingsBean;
 
     /**
      * Looks up the most suitable instance of the {@link BundleService}.
-     * 
+     *
      * @return the most suitable instance of the {@link BundleService}
      */
     public BundleService lookup() {
-        BundleService service = settingsBean.isClusterActivated() ? lookupService() : null;
-
+        BundleService service = settingsBean.isClusterActivated() ? lookupClusteredService() : null;
         return service != null ? service : defaultBundleService;
     }
 
     /**
      * Looks up an OSGi service instance for {@link BundleService}. Returns <code>null</code> if no instance is found.
-     * 
+     *
      * @return an OSGi service instance for {@link BundleService}. Returns <code>null</code> if no instance is found
      */
-    private BundleService lookupService() {
+    private BundleService lookupClusteredService() {
+
         BundleService service = null;
         long startTime = System.currentTimeMillis();
         logger.debug("Looking up suitable BundleService instance...");
@@ -91,8 +90,7 @@ public class BundleServiceLocator {
         }
 
         if (service != null) {
-            logger.debug("Found suitable BundleService instance of type {} in {} ms", service.getClass().getName(),
-                    System.currentTimeMillis() - startTime);
+            logger.debug("Found suitable BundleService instance of type {} in {} ms", service.getClass().getName(), System.currentTimeMillis() - startTime);
         } else {
             logger.warn("Unable to find suitable cluster-aware BundleService instance. Fallback to the default one.");
         }
@@ -107,5 +105,4 @@ public class BundleServiceLocator {
     public void setSettingsBean(SettingsBean settingsBean) {
         this.settingsBean = settingsBean;
     }
-
 }

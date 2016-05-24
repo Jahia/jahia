@@ -65,22 +65,23 @@ public class ModuleManagerImpl implements ModuleManager {
 
     /**
      * The set of available bundle operations.
-     * 
+     *
      * @author Sergiy Shyrkov
      */
     private static enum Operation {
-        START, STOP, UNINSTALL;
+        START,
+        STOP,
+        UNINSTALL
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ModuleManagerImpl.class);
 
     private BundleServiceLocator bundleServiceLocator;
-
     private BundlePersister persister;
 
     /**
      * Returns the most suitable instance of the {@link BundleService}.
-     * 
+     *
      * @return the most suitable instance of the {@link BundleService}
      */
     private BundleService getBundleService() {
@@ -89,19 +90,14 @@ public class ModuleManagerImpl implements ModuleManager {
 
     /**
      * Performs an installation of the bundle calling the bundle services.
-     * 
-     * @param info
-     *            the bundle info
-     * @param target
-     *            group of target cluster nodes for bundle installation
-     * @param start
-     *            <code>true</code>, if the bundle should be started right after installation
+     *
+     * @param info the bundle info
+     * @param target group of target cluster nodes for bundle installation
+     * @param start <code>true</code>, if the bundle should be started right after installation
      * @return the result of the operation
-     * @throws ModuleManagementException
-     *             in case of bundle service errors
+     * @throws ModuleManagementException in case of bundle service errors
      */
-    private OperationResult install(PersistedBundle info, final String target, boolean start)
-            throws ModuleManagementException {
+    private OperationResult install(PersistedBundle info, final String target, boolean start) throws ModuleManagementException {
         try {
             getBundleService().install(info.getLocation(), target, start);
             return OperationResult.success(info.getBundleInfo());
@@ -116,14 +112,15 @@ public class ModuleManagerImpl implements ModuleManager {
     }
 
     @Override
-    public OperationResult install(Resource bundleResource, String target, boolean start)
-            throws ModuleManagementException {
+    public OperationResult install(Resource bundleResource, String target, boolean start) throws ModuleManagementException {
+
         long startTime = System.currentTimeMillis();
-        logger.info("Performing installation for bundle {} on target {}", new Object[] { bundleResource, target });
+        logger.info("Performing installation for bundle {} on target {}", new Object[] {bundleResource, target});
 
         OperationResult result = null;
         PersistedBundle bundleInfo = null;
         try {
+
             bundleInfo = persister.extract(bundleResource);
 
             if (bundleInfo == null) {
@@ -139,8 +136,7 @@ public class ModuleManagerImpl implements ModuleManager {
             throw new ModuleManagementException(e);
         } finally {
             logger.info("Installation completed for bundle {} on target {} in {} ms. Opearation result: {}",
-                    new Object[] { bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target,
-                            System.currentTimeMillis() - startTime, result });
+                    new Object[] {bundleInfo != null ? bundleInfo.getBundleInfo() : bundleResource, target, System.currentTimeMillis() - startTime, result});
         }
 
         return result;
@@ -148,19 +144,16 @@ public class ModuleManagerImpl implements ModuleManager {
 
     /**
      * Performs the specified operation of the bundle.
-     * 
-     * @param bundleKey
-     *            the key of the bundle to perform operation on
-     * @param operation
-     *            the operation type to be performed
-     * @param target
-     *            the target cluster group
+     *
+     * @param bundleKey the key of the bundle to perform operation on
+     * @param operation the operation type to be performed
+     * @param target the target cluster group
      * @return the result of the operation
      */
     private OperationResult performOperation(String bundleKey, Operation operation, String target) {
+
         long startTime = System.currentTimeMillis();
-        logger.info("Performing {} operation for bundle {} on target {}",
-                new Object[] { operation, bundleKey, target });
+        logger.info("Performing {} operation for bundle {} on target {}", new Object[] {operation, bundleKey, target});
 
         OperationResult opResult = null;
         PersistedBundle info = null;
@@ -171,15 +164,12 @@ public class ModuleManagerImpl implements ModuleManager {
                     case START:
                         getBundleService().start(info, target);
                         break;
-
                     case STOP:
                         getBundleService().stop(info, target);
                         break;
-
                     case UNINSTALL:
                         getBundleService().uninstall(info, target);
                         break;
-
                     default:
                         throw new UnsupportedOperationException("Unknown bundle operation: " + operation);
                 }
@@ -195,7 +185,7 @@ public class ModuleManagerImpl implements ModuleManager {
             }
         } finally {
             logger.info("{} operation completed for bundle {} on target {} in {} ms. Opearation result: {}",
-                    new Object[] { operation, bundleKey, target, System.currentTimeMillis() - startTime, opResult });
+                    new Object[] {operation, bundleKey, target, System.currentTimeMillis() - startTime, opResult});
         }
 
         return opResult;
@@ -203,9 +193,8 @@ public class ModuleManagerImpl implements ModuleManager {
 
     /**
      * Injects an instance of the bundle locator.
-     * 
-     * @param bundleServiceLocator
-     *            an instance of the bundle locator
+     *
+     * @param bundleServiceLocator an instance of the bundle locator
      */
     public void setBundleServiceLocator(BundleServiceLocator bundleServiceLocator) {
         this.bundleServiceLocator = bundleServiceLocator;
@@ -213,9 +202,8 @@ public class ModuleManagerImpl implements ModuleManager {
 
     /**
      * Injects an instance of the bundle persister.
-     * 
-     * @param persister
-     *            an instance of the bundle persister
+     *
+     * @param persister an instance of the bundle persister
      */
     public void setPersister(BundlePersister persister) {
         this.persister = persister;

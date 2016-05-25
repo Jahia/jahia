@@ -24,7 +24,6 @@ import org.jahia.services.usermanager.JahiaUserManagerService;
 import org.jahia.test.JahiaTestCase;
 import org.jahia.test.TestHelper;
 import org.jahia.test.services.render.filter.cache.CacheFilterCheckFilter;
-import org.jahia.test.services.render.filter.cache.CacheFilterTest;
 import org.junit.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

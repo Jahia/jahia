@@ -170,7 +170,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
                 });
     }
 
-    public static HttpServletResponse mockNewServletRespons() {
+    public static HttpServletResponse mockNewServletResponse() {
         return (HttpServletResponse) Proxy.newProxyInstance(
                 HttpServletResponse.class.getClassLoader(),
                 new Class[]{HttpServletResponse.class},
@@ -219,7 +219,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         waitFilter.setRenderService(RenderService.getInstance());
 
         JCRNodeWrapper node = sessionWrapper.getNode(nodePath);
-        RenderContext context = new RenderContext(mockNewServletRequest(), mockNewServletRespons(), JahiaAdminUser.getAdminUser(null));
+        RenderContext context = new RenderContext(mockNewServletRequest(), mockNewServletResponse(), JahiaAdminUser.getAdminUser(null));
         context.setSite(node.getResolveSite());
         context.setServletPath("/render");
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");

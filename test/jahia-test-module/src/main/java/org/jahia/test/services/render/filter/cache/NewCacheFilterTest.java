@@ -78,10 +78,10 @@ public class NewCacheFilterTest extends CacheFilterTest{
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
             // r1 will generate the fragment in 3000+ ms
-            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, 3000, "/sites/"+TESTSITE_NAME+"/home/testContent");
+            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, 3000, false);
             // r2 will try to get the fragment waiting for r1 to finish, r2 will wait 1000ms as configured and throw an error
             // because r1 is not quite fast
-            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, null, "/sites/"+TESTSITE_NAME+"/home/testContent");
+            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, false);
 
             r1.start();
             Thread.sleep(500);
@@ -102,6 +102,38 @@ public class NewCacheFilterTest extends CacheFilterTest{
     }
 
     @Test
+    public void testRenderError() throws Exception{
+        ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
+        JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+
+        Exception exception = null;
+        String[] result = null;
+
+        // test module error
+        try {
+            result = cacheFilterRender(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_MODULE, null, true);
+        } catch (Exception e) {
+            exception = e;
+        }
+        //error should be cache
+        final Element element = moduleCacheProvider.getCache().get(result[2]);
+
+        assertNull(exception);
+        assertTrue("<!-- Module error : Error filter triggered in render chain-->".equals(result[0]));
+        assertNotNull("Html Cache does not contains our error rendering", element);
+        assertTrue("Error Cache and rendering are not equals",((String)((CacheEntry<?>)element.getValue()).getObject()).contains(result[0]));
+
+        // test page error
+        try {
+            result = cacheFilterRender(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, true);
+        } catch (Exception e) {
+            exception = e;
+        }
+        assertNull(result);
+        assertTrue(exception != null && exception.getMessage().contains("Error filter triggered in render chain"));
+    }
+
+    @Test
     public void testMaxConcurrent() throws Exception{
         long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
         int previousModuleGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
@@ -115,10 +147,10 @@ public class NewCacheFilterTest extends CacheFilterTest{
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
             // r1 will generate the fragment in 3000+ ms
-            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, 3000, "/sites/"+TESTSITE_NAME+"/home/testContent");
+            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, 3000, false);
             // t2 will try to generate an other fragment in parallel, but should do an error
             // because r1 is not quite fast and is already generating a fragment
-            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, null, "/sites/"+TESTSITE_NAME+"/home");
+            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home", Resource.CONFIGURATION_PAGE, null, false);
 
 
             r1.start();
@@ -142,11 +174,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
     public String[] cacheFilterRender() throws Exception {
         return cacheFilterRender(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH),
-                    "/sites/"+TESTSITE_NAME+"/home/testContent");
-    }
-
-    public String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, String nodePath) throws Exception {
-        return cacheFilterRender(sessionWrapper, null, nodePath);
+                    "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, false);
     }
 
     public static HttpServletRequest mockNewServletRequest() {
@@ -182,7 +210,8 @@ public class NewCacheFilterTest extends CacheFilterTest{
                 });
     }
 
-    public static String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, final Integer waitBeforeGenerate, final String nodePath) throws Exception {
+    public static String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, final String nodePath, String resourceConfig, final Integer waitBeforeGenerate,
+                                              final boolean renderError) throws Exception {
         RenderFilter outFilter = new AbstractFilter() {
             @Override
             public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
@@ -214,9 +243,30 @@ public class NewCacheFilterTest extends CacheFilterTest{
             }
         };
 
-        outFilter.setRenderService(RenderService.getInstance());
+        RenderFilter errorFilter = new AbstractFilter() {
+            class ErrorFilterException extends Exception {
+                public ErrorFilterException(String message) {
+                    super(message);
+                }
+            };
 
+            @Override
+            public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
+                if (renderError) {
+                    throw new ErrorFilterException("Error filter triggered in render chain");
+                }
+                return null;
+            }
+
+            @Override
+            public String getDescription() {
+                return "wait filter";
+            }
+        };
+
+        outFilter.setRenderService(RenderService.getInstance());
         waitFilter.setRenderService(RenderService.getInstance());
+        errorFilter.setRenderService(RenderService.getInstance());
 
         JCRNodeWrapper node = sessionWrapper.getNode(nodePath);
         RenderContext context = new RenderContext(mockNewServletRequest(), mockNewServletResponse(), JahiaAdminUser.getAdminUser(null));
@@ -224,7 +274,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         context.setServletPath("/render");
         ChannelService channelService = (ChannelService) SpringContextSingleton.getInstance().getContext().getBean("ChannelService");
         context.setChannel(channelService.getChannel(Channel.GENERIC_CHANNEL));
-        Resource resource = new Resource(node, "html", null, Resource.CONFIGURATION_PAGE);
+        Resource resource = new Resource(node, "html", null, resourceConfig);
         context.setMainResource(resource);
         context.setWorkspace(sessionWrapper.getWorkspace().getName());
         context.getRequest().setAttribute("script",
@@ -240,7 +290,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         String finalKey = generator.replacePlaceholdersInCacheKey(context, key);
         moduleCacheProvider.getCache().removeAll();
 
-        RenderChain chain = new RenderChain(cacheFilter, waitFilter, outFilter);
+        RenderChain chain = new RenderChain(cacheFilter, waitFilter, errorFilter, outFilter);
 
         // init module map with keys, coming from AggregateFilter in normal behavior
         Map<String, Object> moduleMap = new HashMap<>();
@@ -256,14 +306,18 @@ public class NewCacheFilterTest extends CacheFilterTest{
     public static class CacheRenderThread extends Thread {
         JCRSessionWrapper sessionWrapper;
         Integer wait;
+        boolean renderError;
         String nodePath;
+        String resourceConfig;
         public String[] result;
         public Exception error;
         public long timer;
 
-        public CacheRenderThread(JCRSessionWrapper sessionWrapper, Integer wait, String nodePath) {
+        public CacheRenderThread(JCRSessionWrapper sessionWrapper, String nodePath, String resourceConfig, Integer wait, boolean renderError) {
             this.sessionWrapper = sessionWrapper;
+            this.resourceConfig = resourceConfig;
             this.wait = wait;
+            this.renderError = renderError;
             this.nodePath = nodePath;
         }
 
@@ -271,7 +325,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         public void run() {
             long time = System.currentTimeMillis();
             try {
-                result = cacheFilterRender(sessionWrapper, wait, nodePath);
+                result = cacheFilterRender(sessionWrapper, nodePath, resourceConfig, wait, renderError);
                 timer = System.currentTimeMillis() - time;
             } catch (Exception e) {
                 error = e;

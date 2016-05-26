@@ -235,7 +235,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
         ModuleCacheProvider moduleCacheProvider = (ModuleCacheProvider) SpringContextSingleton.getInstance().getContext().getBean("ModuleCacheProvider");
         CacheKeyGenerator generator = moduleCacheProvider.getKeyGenerator();
         Properties properties = new Properties();
-        properties.put("cache.requestParameters", "cacheinfo,moduleinfo");
+        properties.put("cache.requestParameters", "ec,v,cacheinfo,moduleinfo");
         String key = generator.generate(resource, context, properties);
         String finalKey = generator.replacePlaceholdersInCacheKey(context, key);
         moduleCacheProvider.getCache().removeAll();

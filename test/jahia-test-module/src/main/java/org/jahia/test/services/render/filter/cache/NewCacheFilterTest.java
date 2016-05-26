@@ -78,10 +78,47 @@ public class NewCacheFilterTest extends CacheFilterTest{
             JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
             // r1 will generate the fragment in 3000+ ms
-            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, 3000);
+            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, 3000, "/sites/"+TESTSITE_NAME+"/home/testContent");
             // r2 will try to get the fragment waiting for r1 to finish, r2 will wait 1000ms as configured and throw an error
             // because r1 is not quite fast
-            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, null);
+            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, null, "/sites/"+TESTSITE_NAME+"/home/testContent");
+
+            r1.start();
+            Thread.sleep(500);
+            r2.start();
+
+            r2.join();
+            r1.join();
+
+            assertNull(r1.error);
+            assertNotNull(r1.result);
+            assertNull(r2.result);
+            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to module not generated fast enough (1000 ms)"));
+            assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
+            assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000 && r2.timer < 2000);
+        } finally {
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+        }
+    }
+
+    @Test
+    public void testMaxConcurrent() throws Exception{
+        long previousModuleGenerationWaitTime = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getModuleGenerationWaitTime();
+        int previousModuleGenerateInParallel = ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).getMaxModulesToGenerateInParallel();
+
+        try {
+            // set generation wait to 1000 ms
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(1000);
+            // set number of fragment generate in parallel to 1 for the test
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(1);
+
+            JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+
+            // r1 will generate the fragment in 3000+ ms
+            CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, 3000, "/sites/"+TESTSITE_NAME+"/home/testContent");
+            // t2 will try to generate an other fragment in parallel, but should do an error
+            // because r1 is not quite fast and is already generating a fragment
+            CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, null, "/sites/"+TESTSITE_NAME+"/home");
 
 
             r1.start();
@@ -94,22 +131,22 @@ public class NewCacheFilterTest extends CacheFilterTest{
             assertNull(r1.error);
             assertNotNull(r1.result);
             assertNull(r2.result);
-            assertNotNull(r2.error);
+            assertTrue(r2.error != null && r2.error.getMessage().contains("Module generation takes too long due to maximum parallel processing reached (1)"));
             assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
             assertTrue("Waiting thread don't spent the correct time waiting before throw error", r2.timer > 1000 && r2.timer < 2000);
         } finally {
             ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setModuleGenerationWaitTime(previousModuleGenerationWaitTime);
+            ((ModuleGeneratorQueue) SpringContextSingleton.getBean("moduleGeneratorQueue")).setMaxModulesToGenerateInParallel(previousModuleGenerateInParallel);
         }
     }
 
-
-
     public String[] cacheFilterRender() throws Exception {
-        return cacheFilterRender(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH));
+        return cacheFilterRender(JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH),
+                    "/sites/"+TESTSITE_NAME+"/home/testContent");
     }
 
-    public String[] cacheFilterRender(JCRSessionWrapper sessionWrapper) throws Exception {
-        return cacheFilterRender(sessionWrapper, null);
+    public String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, String nodePath) throws Exception {
+        return cacheFilterRender(sessionWrapper, null, nodePath);
     }
 
     public static HttpServletRequest mockNewServletRequest() {
@@ -145,12 +182,12 @@ public class NewCacheFilterTest extends CacheFilterTest{
                 });
     }
 
-    public static String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, final Integer waitBeforeGenerate) throws Exception {
+    public static String[] cacheFilterRender(JCRSessionWrapper sessionWrapper, final Integer waitBeforeGenerate, final String nodePath) throws Exception {
         RenderFilter outFilter = new AbstractFilter() {
             @Override
             public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
                     throws Exception {
-                return "out";
+                return "render for:" + nodePath;
             }
 
             @Override
@@ -181,7 +218,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         waitFilter.setRenderService(RenderService.getInstance());
 
-        JCRNodeWrapper node = sessionWrapper.getNode("/sites/"+TESTSITE_NAME+"/home/testContent");
+        JCRNodeWrapper node = sessionWrapper.getNode(nodePath);
         RenderContext context = new RenderContext(mockNewServletRequest(), mockNewServletRespons(), JahiaAdminUser.getAdminUser(null));
         context.setSite(node.getResolveSite());
         context.setServletPath("/render");
@@ -205,6 +242,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
         RenderChain chain = new RenderChain(cacheFilter, waitFilter, outFilter);
 
+        // init module map with keys, coming from AggregateFilter in normal behavior
         Map<String, Object> moduleMap = new HashMap<>();
         moduleMap.put(AggregateFilter.RENDERING_KEY, key);
         moduleMap.put(AggregateFilter.RENDERING_FINAL_KEY, finalKey);
@@ -218,20 +256,22 @@ public class NewCacheFilterTest extends CacheFilterTest{
     public static class CacheRenderThread extends Thread {
         JCRSessionWrapper sessionWrapper;
         Integer wait;
+        String nodePath;
         public String[] result;
         public Exception error;
         public long timer;
 
-        public CacheRenderThread(JCRSessionWrapper sessionWrapper, Integer wait) {
+        public CacheRenderThread(JCRSessionWrapper sessionWrapper, Integer wait, String nodePath) {
             this.sessionWrapper = sessionWrapper;
             this.wait = wait;
+            this.nodePath = nodePath;
         }
 
         @Override
         public void run() {
             long time = System.currentTimeMillis();
             try {
-                result = cacheFilterRender(sessionWrapper, wait);
+                result = cacheFilterRender(sessionWrapper, wait, nodePath);
                 timer = System.currentTimeMillis() - time;
             } catch (Exception e) {
                 error = e;

@@ -97,6 +97,9 @@ public class CacheFilter extends AbstractFilter {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
+        if (!isCacheFilterEnabled(moduleMap)) {
+            return null;
+        }
 
         moduleMap.put(CACHE_TIMER, System.currentTimeMillis());
         final String path = resource.getNodePath();
@@ -162,6 +165,10 @@ public class CacheFilter extends AbstractFilter {
         HttpServletRequest request = renderContext.getRequest();
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) request.getAttribute("moduleMap");
+        if (!isCacheFilterEnabled(moduleMap)) {
+            return previousOut;
+        }
+
         String key = (String) moduleMap.get(AggregateFilter.RENDERING_KEY);
 
         // Check if we have to put the fragment in cache
@@ -232,7 +239,9 @@ public class CacheFilter extends AbstractFilter {
 
         @SuppressWarnings("unchecked")
         Map<String, Object> moduleMap = (Map<String, Object>) renderContext.getRequest().getAttribute("moduleMap");
-        generatorQueue.releaseLatch((String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        if (isCacheFilterEnabled(moduleMap)) {
+            generatorQueue.releaseLatch((String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY));
+        }
     }
 
     @Override
@@ -269,6 +278,10 @@ public class CacheFilter extends AbstractFilter {
         } catch (Exception e1) {
             return null;
         }
+    }
+
+    private boolean isCacheFilterEnabled(Map<String, Object> moduleMap) {
+        return moduleMap.get(AggregateFilter.RENDERING_KEY) != null && moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY) != null;
     }
 
     protected void doCache(String previousOut, RenderContext renderContext, Resource resource, Long expiration, Cache cache, String finalKey, boolean bypassDependencies) {

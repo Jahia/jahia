@@ -57,6 +57,7 @@ import org.jahia.services.content.nodetypes.NodeTypeRegistry;
 import org.jahia.services.render.*;
 import org.jahia.services.render.filter.AbstractFilter;
 import org.jahia.services.render.scripting.Script;
+import org.jahia.settings.SettingsBean;
 import org.jahia.utils.Patterns;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -526,6 +527,10 @@ public class ModuleTag extends BodyTagSupport implements ParamParent {
 
         if (additionalParameters != null) {
             builder.append(" ").append(additionalParameters);
+        }
+
+        if (type.equals("area") && SettingsBean.getInstance().isAreaAutoActivated() && path != null && !path.startsWith("/modules")) {
+            builder.append(" areaAuto=\"true\"");
         }
 
         builder.append("showAreaButton=\"").append(showAreaButton).append("\"");

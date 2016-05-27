@@ -43,9 +43,8 @@
  */
 package org.jahia.ajax.gwt.client.widget.toolbar.action;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.core.client.RunAsyncCallback;
 import org.jahia.ajax.gwt.client.core.BaseAsyncCallback;
 import org.jahia.ajax.gwt.client.data.definition.GWTJahiaNodeType;
 import org.jahia.ajax.gwt.client.data.node.GWTJahiaNode;
@@ -56,10 +55,12 @@ import org.jahia.ajax.gwt.client.service.content.JahiaContentManagementServiceAs
 import org.jahia.ajax.gwt.client.util.security.PermissionsUtils;
 import org.jahia.ajax.gwt.client.widget.LinkerSelectionContext;
 import org.jahia.ajax.gwt.client.widget.content.DeleteItemWindow;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.AreaModule;
+import org.jahia.ajax.gwt.client.widget.edit.mainarea.Module;
 import org.jahia.ajax.gwt.client.widget.edit.mainarea.ModuleHelper;
 
-import com.google.gwt.core.client.GWT;
-import com.google.gwt.core.client.RunAsyncCallback;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Action item responsible for deleting the content.
@@ -138,7 +139,12 @@ public class DeleteActionItem extends NodeTypeAwareBaseActionItem {
                 updateTitle(getGwtToolbarItem().getTitle() + " " + selection.size() + " " + Messages.get("label.items"));
             }
         }
-        boolean enabled = selection != null && selection.size() > 0
+        Module selectedModule = ModuleHelper.getModulesByPath().get(lh.getSingleSelection().getPath()).get(0);
+        boolean autoCreated = false;
+        if (selectedModule instanceof AreaModule) {
+           autoCreated = ((AreaModule) selectedModule).isAutoCreated();
+       }
+        boolean enabled = !autoCreated && selection != null && selection.size() > 0
                 && !lh.isRootNode()
                 && hasPermission(lh.getSelectionPermissions()) && PermissionsUtils.isPermitted("jcr:removeNode", lh.getSelectionPermissions())
                 && isNodeTypeAllowed(selection);

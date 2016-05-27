@@ -135,6 +135,9 @@ public class ModuleHelper {
                 if (type.equals("main")) {
                 } else if (type.equals("area") || type.equals("absoluteArea")) {
                     module = new AreaModule(id, path, divElement, type, mainModule);
+                    if ( "true".equals(DOM.getElementAttribute(divElement, "areaAuto"))) {
+                        ((AreaModule) module).setAreaAuto(true);
+                    }
                 } else if (type.equals("list")) {
                     module = new ListModule(id, path, divElement, mainModule);
                 } else if (type.equals("existingNode")) {

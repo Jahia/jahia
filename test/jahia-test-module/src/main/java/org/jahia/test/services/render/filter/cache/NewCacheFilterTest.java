@@ -72,10 +72,10 @@ public class NewCacheFilterTest extends CacheFilterTest{
         JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
 
         // r1 will generate the fragment in 3000+ ms
-        CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, 3000, false);
+        CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_MODULE, 3000, false);
         // r2 will try to get the fragment waiting for r1 to finish, r2 will wait 1000ms as configured and throw an error
         // because r1 is not quite fast
-        CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, false);
+        CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_MODULE, null, false);
 
         r1.start();
         Thread.sleep(500);
@@ -84,26 +84,76 @@ public class NewCacheFilterTest extends CacheFilterTest{
         r2.join();
         r1.join();
 
-        // new r3 thread alone with no wait
-        CacheRenderThread r3 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_PAGE, null, false);
-        r3.start();
-        r3.join();
 
         assertNull(r1.error);
         assertNull(r2.error);
-        assertNull(r3.error);
         assertNotNull(r2.result);
         assertNotNull(r1.result);
-        assertNotNull(r3.result);
 
         // r1 is the long thread, it take 3000ms to generate the fragment
         assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
         // waiting thread r2 wait that r1 release the latch, r2 is started 500ms after r1 so the fragment should be resolve in 2500ms approximately
         assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer > 2500 && r2.timer < 3000);
+
+
+        // new r3 thread alone with no wait
+        CacheRenderThread r3 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home/testContent", Resource.CONFIGURATION_MODULE, null, false);
+        r3.start();
+        r3.join();
+
+        assertNull(r3.error);
+        assertNotNull(r3.result);
+
         // free thread r3 should really speed, 1ms approximately
-        assertTrue("Free thread spent too much time generating the framgent", r3.timer > 0 && r3.timer < 100);
-        System.out.println();
+        assertTrue("Free thread spent too much time generating the fragment: " + r3.timer, r3.timer > 0 && r3.timer < 100);
     }
+
+
+    @Test
+    public void testLatchOnError() throws Exception {
+        JCRSessionWrapper sessionWrapper = JCRSessionFactory.getInstance().getCurrentUserSession(Constants.LIVE_WORKSPACE, Locale.ENGLISH);
+
+        // r1 will generate the fragment in 3000+ ms
+        CacheRenderThread r1 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home", Resource.CONFIGURATION_MODULE, 3000, true);
+        // r2 will try to get the fragment waiting for r1 to finish, r2 will wait 1000ms as configured and throw an error
+        // because r1 is not quite fast
+        CacheRenderThread r2 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home", Resource.CONFIGURATION_MODULE, null, false);
+
+        r1.start();
+        Thread.sleep(500);
+        r2.start();
+
+        r2.join();
+        r1.join();
+
+
+        assertNull(r1.error);
+        assertNull(r2.error);
+        assertNotNull(r2.result);
+        assertNotNull(r1.result);
+        assertTrue(r1.result[0].contains("<!-- Module error : Error filter triggered in render chain-->"));
+        // error is cached so r2 should also see an error when r1 release the latch
+        assertTrue(r2.result[0].contains("<!-- Module error : Error filter triggered in render chain-->"));
+
+        // r1 is the long thread, it take 3000ms to generate the fragment
+        assertTrue("Long thread don't spent the correct time to generate the fragment", r1.timer > 3000 && r1.timer < 4000);
+        // waiting thread r2 wait that r1 release the latch, r2 is started 500ms after r1 so the fragment should be resolve in 2500ms approximately
+        assertTrue("Waiting thread don't spent the correct time to get the fragment", r2.timer > 2300 && r2.timer < 3000);
+
+
+        // new r3 thread alone with no wait
+        CacheRenderThread r3 = new CacheRenderThread(sessionWrapper, "/sites/"+TESTSITE_NAME+"/home", Resource.CONFIGURATION_MODULE, null, false);
+        r3.start();
+        r3.join();
+
+        assertNull(r3.error);
+        assertNotNull(r3.result);
+        assertTrue(r3.result[0].contains("render for:/sites/test/home"));
+
+        // free thread r3 should really speed, 1ms approximately
+        assertTrue("Free thread spent too much time generating the fragment: " + r3.timer, r3.timer > 0 && r3.timer < 100);
+    }
+
 
     @Test
     public void testMaxWait() throws Exception{
@@ -253,8 +303,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
                                               final boolean renderError) throws Exception {
         RenderFilter outFilter = new AbstractFilter() {
             @Override
-            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-                    throws Exception {
+            public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
                 return "render for:" + nodePath;
             }
 
@@ -262,23 +311,32 @@ public class NewCacheFilterTest extends CacheFilterTest{
             public String getDescription() {
                 return "out filter";
             }
+
+            @Override
+            public float getPriority() {
+                return 19;
+            }
         };
 
         RenderFilter waitFilter = new AbstractFilter() {
             @Override
-            public String execute(String previousOut, RenderContext renderContext, Resource resource, RenderChain chain)
-                    throws Exception {
+            public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
                 if(waitBeforeGenerate != null) {
                     logger.info("wait filter is waiting " + waitBeforeGenerate);
                     Thread.sleep(waitBeforeGenerate);
                     logger.info("wait is finished !!");
                 }
-                return previousOut;
+                return null;
             }
 
             @Override
             public String getDescription() {
                 return "wait filter";
+            }
+
+            @Override
+            public float getPriority() {
+                return 17;
             }
         };
 
@@ -287,7 +345,7 @@ public class NewCacheFilterTest extends CacheFilterTest{
                 public ErrorFilterException(String message) {
                     super(message);
                 }
-            };
+            }
 
             @Override
             public String prepare(RenderContext renderContext, Resource resource, RenderChain chain) throws Exception {
@@ -299,7 +357,12 @@ public class NewCacheFilterTest extends CacheFilterTest{
 
             @Override
             public String getDescription() {
-                return "wait filter";
+                return "error filter";
+            }
+
+            @Override
+            public float getPriority() {
+                return 18;
             }
         };
 

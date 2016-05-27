@@ -920,7 +920,7 @@
                                                         <entry key="applyOn" value="jnt:globalSettings" />
                                                         <entry key="view" value="serverSettings" />
                                                         <entry key="boardType" value="server-settings-base" />
-                                                        <entry key="contentTemplateName" value="Settings Panel" />
+                                                        <entry key="contentTemplateName" value="settings-panel" />
                                                     </map>
                                                 </property>
                                             </bean>
@@ -940,7 +940,7 @@
                                                         <entry key="applyOn" value="jnt:virtualsite" />
                                                         <entry key="view" value="siteSettings" />
                                                         <entry key="boardType" value="site-settings-base" />
-                                                        <entry key="contentTemplateName" value="Settings Panel" />
+                                                        <entry key="contentTemplateName" value="settings-panel" />
                                                     </map>
                                                 </property>
                                             </bean>
@@ -960,7 +960,7 @@
                                                         <entry key="applyOn" value="jnt:user" />
                                                         <entry key="view" value="dashboard" />
                                                         <entry key="boardType" value="dashboard-modules-base" />
-                                                        <entry key="contentTemplateName" value="Dashboard" />
+                                                        <entry key="contentTemplateName" value="dashboard" />
                                                     </map>
                                                 </property>
                                             </bean>

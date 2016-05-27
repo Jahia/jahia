@@ -179,6 +179,13 @@ public class CacheFilter extends AbstractFilter {
             String finalKey = (String) moduleMap.get(AggregateFilter.RENDERING_FINAL_KEY);
 
             if (!bypassDependencies) {
+                // Add self path as dependency for this fragment (for cache flush - will not impact the key)
+                // necessary even if resource is already storing self node in dep, because of referenced nodes, for exemple:
+                // resource: /sites/ACMESPACE/home/main/content-reference@/news_36-3
+                // already have this path as dependency
+                // but it need the referenced node also as dependency, and the referenced node path is retrieve using getCanonicalPath() that will return this:
+                // /sites/ACMESPACE/contents/projects-news/news_36-3
+                resource.getDependencies().add(resource.getNode().getCanonicalPath());
 
                 // Add main resource if cache.mainResource is set
                 if ("true".equals(fragmentProperties.getProperty("cache.mainResource"))) {
